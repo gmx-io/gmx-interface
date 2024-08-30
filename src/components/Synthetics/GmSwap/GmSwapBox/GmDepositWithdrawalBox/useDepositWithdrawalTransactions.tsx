@@ -13,7 +13,7 @@ import {
   MarketInfo,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 

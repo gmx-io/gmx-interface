@@ -57,7 +57,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { useGlvMarketsInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 export const SyntheticsEventsContext = createContext({});
 

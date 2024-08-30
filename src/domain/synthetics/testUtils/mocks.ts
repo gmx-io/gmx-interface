@@ -1,5 +1,6 @@
 import { MarketsData, MarketsInfoData, getMarketFullName } from "domain/synthetics/markets";
-import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens/utils";
+import type { TokenData, TokensData } from "domain/synthetics/tokens";
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 

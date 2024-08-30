@@ -16,7 +16,7 @@ import { getContractMarketPrices } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
-import { GlvMarketsData } from "../tokens/useGlvMarkets";
+import { GlvMarketsData } from "./useGlvMarkets";
 import { useMemo } from "react";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 

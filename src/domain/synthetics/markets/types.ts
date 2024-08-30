@@ -1,5 +1,5 @@
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "../tokens/useGlvMarkets";
+import { GlvMarketInfo } from "./useGlvMarkets";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 

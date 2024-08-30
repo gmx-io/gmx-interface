@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { TOKEN_COLOR_MAP } from "config/tokens";
 
-import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getPoolUsdWithoutPnl, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 

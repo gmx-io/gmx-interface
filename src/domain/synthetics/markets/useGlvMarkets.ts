@@ -12,8 +12,8 @@ import {
 } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { getContractMarketPrices, getGlvMarketName, MarketInfo, MarketsInfoData } from "../markets";
-import { TokenData, TokensData } from "./types";
+import { getContractMarketPrices, getGlvMarketName, MarketInfo, MarketsInfoData } from ".";
+import { TokenData, TokensData } from "../tokens/types";
 
 export type GlvList = {
   glv: {

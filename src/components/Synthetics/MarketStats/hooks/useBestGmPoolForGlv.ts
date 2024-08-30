@@ -1,6 +1,6 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { getMaxUsdBuyableAmountInMarketWithGm, isGlv } from "domain/synthetics/markets/glv";
-import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { useGlvGmMarketsWithComposition } from "./useMarketGlvGmMarketsCompositions";
 import { useMemo } from "react";
 

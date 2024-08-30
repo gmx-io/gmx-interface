@@ -1,4 +1,4 @@
-import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { plural, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -172,7 +172,7 @@ export const useSubmitButtonState = ({
     ? getSellableInfoGlv(vaultInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
     : undefined;
 
-  const swapError = getGmSwapError({
+  const [swapError, swapErrorDescription] = getGmSwapError({
     isDeposit,
     marketInfo,
     vaultInfo,
@@ -192,7 +192,7 @@ export const useSubmitButtonState = ({
     isHighPriceImpactAccepted,
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     vaultSellableAmount: vaultSellableAmount?.totalAmount,
-  })[0];
+  });
 
   const error = commonError || swapError;
 
@@ -281,6 +281,7 @@ export const useSubmitButtonState = ({
         disabled: !shouldDisableValidation,
         onClick: onSubmit,
         tokensToApprove,
+        errorDescription: swapErrorDescription,
       };
     }
 
@@ -340,5 +341,6 @@ export const useSubmitButtonState = ({
     payTokenAddresses.length,
     isGlv,
     isHighFeeConsentError,
+    swapErrorDescription,
   ]);
 };

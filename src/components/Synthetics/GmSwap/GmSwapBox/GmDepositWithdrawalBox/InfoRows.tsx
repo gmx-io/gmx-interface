@@ -17,7 +17,7 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { MarketInfo } from "domain/synthetics/markets";
-import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { useCallback } from "react";
 import { isGlv } from "../../../../../domain/synthetics/markets/glv";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";

@@ -3,7 +3,7 @@ import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
 
-import { GlvMarketInfo } from "../../tokens/useGlvMarkets";
+import { GlvMarketInfo } from "../../markets/useGlvMarkets";
 import { WithdrawalAmounts } from "../types";
 
 export function getWithdrawalAmounts(p: {

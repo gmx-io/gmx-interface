@@ -37,7 +37,7 @@ import { useUpdateTokens } from "./useUpdateTokens";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import { getContract } from "config/contracts";
-import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -52,6 +52,7 @@ import { InfoRows } from "./InfoRows";
 import { useFees } from "./useFees";
 import { useSubmitButtonState } from "./useSubmitButtonState";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: GlvMarketInfo }) {
   const {
@@ -686,6 +687,29 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     };
   }, [firstTokenAddress, marketTokensData, marketsInfoData]);
 
+  const submitButton = useMemo(() => {
+    const btn = (
+      <Button
+        className="w-full"
+        variant="primary-action"
+        onClick={submitState.onSubmit}
+        disabled={submitState.disabled}
+      >
+        {submitState.text}
+      </Button>
+    );
+
+    if (submitState.errorDescription) {
+      return (
+        <TooltipWithPortal content={submitState.errorDescription} disableHandleStyle>
+          {btn}
+        </TooltipWithPortal>
+      );
+    }
+
+    return btn;
+  }, [submitState]);
+
   return (
     <>
       <form>
@@ -818,16 +842,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
           <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
         ) : null}
 
-        <div className="Exchange-swap-button-container">
-          <Button
-            className="w-full"
-            variant="primary-action"
-            onClick={submitState.onSubmit}
-            disabled={submitState.disabled}
-          >
-            {submitState.text}
-          </Button>
-        </div>
+        <div className="Exchange-swap-button-container">{submitButton}</div>
       </form>
     </>
   );

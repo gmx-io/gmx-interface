@@ -6,7 +6,7 @@ import {
   MarketInfo,
   MarketsInfoData,
 } from "domain/synthetics/markets";
-import { GlvMarket, GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarket, GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 import { bigMath } from "lib/bigmath";
 
