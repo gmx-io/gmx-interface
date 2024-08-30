@@ -334,7 +334,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvDepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      debugger; // eslint-disable-line
       const key = eventData.bytes32Items.items.key;
 
       if (depositStatuses[key]?.data) {

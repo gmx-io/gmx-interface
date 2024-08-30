@@ -469,7 +469,7 @@ function MarketTokenListItem({
   handleSelectToken: (address: string) => void;
   isSmallMobile: boolean;
   mintableInfo: ReturnType<typeof getMintableMarketTokens>;
-  sellableInfo: ReturnType<typeof getSellableMarketToken>;
+  sellableInfo: ReturnType<typeof getSellableMarketToken | typeof getSellableInfoGlv>;
   rowVerticalPadding: string;
   indexName?: string;
   poolName?: string;

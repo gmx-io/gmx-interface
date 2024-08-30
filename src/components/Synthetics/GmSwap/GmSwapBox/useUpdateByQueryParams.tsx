@@ -37,7 +37,7 @@ export function useUpdateByQueryParams({
   setMode: (mode: Mode) => void;
   setFirstTokenAddress?: (address: string | undefined) => void;
   onSelectMarket: (marketAddress: string) => void;
-  onSelectGlvGmMarket?: (marketAddress: string) => void;
+  onSelectGlvGmMarket?: (marketAddress?: string) => void;
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
@@ -53,7 +53,6 @@ export function useUpdateByQueryParams({
       const marketAddress = marketRaw?.toLowerCase();
 
       if (operation) {
-        debugger; // eslint-disable-line
         let finalOperation;
 
         if (operation.toLowerCase() === "buy") {

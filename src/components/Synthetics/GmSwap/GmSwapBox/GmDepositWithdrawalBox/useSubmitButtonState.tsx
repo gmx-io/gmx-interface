@@ -172,12 +172,29 @@ export const useSubmitButtonState = ({
     ? getSellableInfoGlv(vaultInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
     : undefined;
 
+  const { marketTokenToCalculateError, longTokenToCalculateError } = useMemo(() => {
+    let marketTokenToCalculateError, longTokenToCalculateError;
+
+    if (vaultInfo) {
+      marketTokenToCalculateError = isDeposit ? marketToken : vaultInfo.indexToken;
+      longTokenToCalculateError = isDeposit ? longToken : vaultInfo?.indexToken;
+    }
+
+    marketTokenToCalculateError = marketToken;
+    longTokenToCalculateError = longToken;
+
+    return {
+      marketTokenToCalculateError,
+      longTokenToCalculateError,
+    };
+  }, [isDeposit, marketToken, vaultInfo, longToken]);
+
   const [swapError, swapErrorDescription] = getGmSwapError({
     isDeposit,
     marketInfo,
     vaultInfo,
-    marketToken: isDeposit ? marketToken : vaultInfo?.indexToken,
-    longToken: isDeposit ? longToken : vaultInfo?.indexToken,
+    marketToken: marketTokenToCalculateError,
+    longToken: longTokenToCalculateError,
     shortToken: shortToken,
     marketTokenAmount,
     marketTokenUsd: amounts?.marketTokenUsd,
