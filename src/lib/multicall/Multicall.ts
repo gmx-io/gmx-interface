@@ -210,12 +210,14 @@ export class Multicall {
     const client = this.getClient();
     const isFallbackMode = this.fallbackRpcSwitcher?.isFallbackMode;
 
-    const sendCounterEvent = (event: string, isFallback?: boolean) => {
-      const environment = isWebWorker ? "worker" : "mainThread";
-      const fallback = isFallback || isFallbackMode ? ".fallback" : "";
-
+    const sendCounterEvent = (
+      event: string,
+      { isFallback, isAlchemy }: { isFallback: boolean; isAlchemy: boolean }
+    ) => {
       getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
-        event: `multicall.${environment}${fallback}.${event}`,
+        event: ["multicall", isAlchemy ? "alchemy" : "public", isFallback ? "fallback" : undefined, event]
+          .filter(Boolean)
+          .join("."),
         abFlags: this.abFlags,
       });
     };
@@ -267,7 +269,10 @@ export class Multicall {
     };
 
     const fallbackMulticall = (e: Error) => {
-      sendCounterEvent("request", true);
+      sendCounterEvent("request", {
+        isFallback: true,
+        isAlchemy: true,
+      });
 
       // eslint-disable-next-line no-console
       console.groupCollapsed("multicall error:");
@@ -298,19 +303,26 @@ export class Multicall {
             event: "multicall.error",
             isError: true,
             data: {
-              isFallbackRequest: true,
+              isFallback: true,
+              isAlchemy: true,
               isInMainThread: !isWebWorker,
               errorMessage: _viemError.message.slice(0, 150),
             },
           });
 
-          sendCounterEvent("error", true);
+          sendCounterEvent("error", {
+            isFallback: true,
+            isAlchemy: true,
+          });
 
           throw e;
         });
     };
 
-    sendCounterEvent("request");
+    sendCounterEvent("request", {
+      isFallback: false,
+      isAlchemy: isFallbackMode,
+    });
 
     const result: any = await Promise.race([
       client.multicall({ contracts: encodedPayload as any }),
@@ -326,12 +338,16 @@ export class Multicall {
           data: {
             metricType: "rpcTimeout",
             isInMainThread: !isWebWorker,
-            isFallbackRequest: isFallbackMode,
+            isFallback: false,
+            isAlchemy: isFallbackMode,
             errorMessage: _viemError.message.slice(0, 150),
           },
         });
 
-        sendCounterEvent("timeout");
+        sendCounterEvent("timeout", {
+          isFallback: false,
+          isAlchemy: isFallbackMode,
+        });
 
         return fallbackMulticall(e).then(processResponse);
       });
@@ -344,13 +360,17 @@ export class Multicall {
       event: "multicall.error",
       isError: true,
       data: {
-        isFallbackRequest: isFallbackMode,
+        isFallback: false,
+        isAlchemy: isFallbackMode,
         isInMainThread: !isWebWorker,
         errorMessage: "multicall error",
       },
     });
 
-    sendCounterEvent("error");
+    sendCounterEvent("error", {
+      isFallback: false,
+      isAlchemy: isFallbackMode,
+    });
 
     if (this.abFlags?.testRpcWindowFallback) {
       if (!isFallbackMode) {
