@@ -71,8 +71,11 @@ export type AvailableMarketsOptions = {
   minPriceImpactMarket?: MarketInfo;
   minPriceImpactBps?: bigint;
   minPriceImpactPositionFeeBps?: bigint;
-  minOpenFeesAvailableMarketAddress?: string;
-  minOpenFeesBps?: bigint;
+  minOpenFeesMarket?: {
+    marketAddress: string;
+    openFeesBps: bigint;
+    priceImpactDeltaBps: bigint;
+  };
   isNoSufficientLiquidityInAnyMarket?: boolean;
   isNoSufficientLiquidityInMarketWithPosition?: boolean;
 };
@@ -216,9 +219,13 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
       result.availableMarketsOpenFees![liquidMarket.marketTokenAddress] = openFees;
 
-      if (result.minOpenFeesBps === undefined || openFees > result.minOpenFeesBps) {
-        result.minOpenFeesBps = openFees;
-        result.minOpenFeesAvailableMarketAddress = liquidMarket.marketTokenAddress;
+      // opemFess has negative values, so the higher the value, the user pays less
+      if (result.minOpenFeesMarket === undefined || openFees > result.minOpenFeesMarket.openFeesBps) {
+        result.minOpenFeesMarket = {
+          marketAddress: liquidMarket.marketTokenAddress,
+          openFeesBps: openFees,
+          priceImpactDeltaBps: acceptablePriceDeltaBps,
+        };
       }
     }
   }
