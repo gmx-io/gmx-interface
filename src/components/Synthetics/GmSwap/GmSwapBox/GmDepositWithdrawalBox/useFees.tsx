@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 import {
   estimateExecuteDepositGasLimit,
   estimateExecuteGlvDepositGasLimit,

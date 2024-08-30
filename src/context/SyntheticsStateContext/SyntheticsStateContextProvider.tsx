@@ -21,7 +21,7 @@ import {
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
-import { useGlvMarketsInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { useGlvMarketsInfo } from "domain/synthetics/tokens/useGlvMarkets";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";

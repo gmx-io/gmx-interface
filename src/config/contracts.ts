@@ -3,7 +3,7 @@ import { DataStore__factory } from "typechain-types/factories/DataStore__factory
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
-import { GlvRouter__factory } from "@/typechain-types";
+import { GlvRouter__factory } from "typechain-types";
 
 const { ZeroAddress } = ethers;
 

@@ -1,4 +1,4 @@
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 import { plural, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -21,7 +21,7 @@ import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useFees } from "./useFees";
-import { getSellableInfoGlv } from "@/domain/synthetics/markets/glv";
+import { getSellableInfoGlv } from "domain/synthetics/markets/glv";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;

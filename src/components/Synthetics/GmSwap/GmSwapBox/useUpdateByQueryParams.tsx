@@ -116,9 +116,11 @@ export function useUpdateByQueryParams({
               setOperation(Operation.Deposit);
             }
 
-            if (pool && isGlvMarket && setFirstTokenAddress && onSelectGlvGmMarket) {
+            if (pool && isGlvMarket && setFirstTokenAddress) {
               setFirstTokenAddress(pool);
-              onSelectGlvGmMarket(pool);
+              onSelectGlvGmMarket?.(pool);
+            } else {
+              onSelectGlvGmMarket?.(undefined);
             }
           }
         }

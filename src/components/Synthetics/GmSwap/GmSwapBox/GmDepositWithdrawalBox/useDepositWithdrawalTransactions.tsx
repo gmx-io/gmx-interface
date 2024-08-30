@@ -1,21 +1,21 @@
 import { useCallback, useState } from "react";
 
-import { DEFAULT_SLIPPAGE_AMOUNT } from "@/config/factors";
-import { useSyntheticsEvents } from "@/context/SyntheticsEvents";
-import { selectChainId } from "@/context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "@/context/SyntheticsStateContext/utils";
-import { ExecutionFee } from "@/domain/synthetics/fees";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExecutionFee } from "domain/synthetics/fees";
 import {
   createDepositTxn,
   createGlvDepositTxn,
   createGlvWithdrawalTxn,
   createWithdrawalTxn,
   MarketInfo,
-} from "@/domain/synthetics/markets";
-import { TokenData, TokensData } from "@/domain/synthetics/tokens";
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
-import { usePendingTxns } from "@/lib/usePendingTxns";
-import useWallet from "@/lib/wallets/useWallet";
+} from "domain/synthetics/markets";
+import { TokenData, TokensData } from "domain/synthetics/tokens";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
 
 import { Operation } from "../types";
 
@@ -102,7 +102,6 @@ export const useDepositWithdrawalTransactions = ({
           setPendingTxns,
           setPendingDeposit,
           isMarketTokenDeposit: isMarketTokenDeposit ?? false,
-          isShift: false,
         });
       }
 

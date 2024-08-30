@@ -1,12 +1,30 @@
 import values from "lodash/values";
 
-import { getSellableMarketToken, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { GlvMarket, GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import {
+  getMintableMarketTokens,
+  getSellableMarketToken,
+  MarketInfo,
+  MarketsInfoData,
+} from "domain/synthetics/markets";
+import { GlvMarket, GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 
 import { bigMath } from "lib/bigmath";
 
 import { convertToUsd } from "../tokens/utils";
-import { TokensData } from "../tokens";
+import { TokenData, TokensData } from "../tokens";
+
+export function getMaxUsdBuyableAmountInMarketWithGm(
+  glvPriceUsd: bigint,
+  market: GlvMarket,
+  glv: GlvMarketInfo,
+  gmMarketInfo: MarketInfo,
+  gmMarketToken: TokenData
+) {
+  const mintableInGmMarket = getMintableMarketTokens(gmMarketInfo, gmMarketToken);
+  const maxUsdInGmGlv = getMaxUsdBuyableAmountInMarket(glvPriceUsd, market, glv);
+
+  return bigMath.min(mintableInGmMarket?.mintableUsd, maxUsdInGmGlv);
+}
 
 export function getMaxUsdBuyableAmountInMarket(glvPriceUsd: bigint, market: GlvMarket, glv: GlvMarketInfo) {
   const gmBalanceUsd = convertToUsd(market.gmBalance, glv.indexToken.decimals, glvPriceUsd) ?? 0n;

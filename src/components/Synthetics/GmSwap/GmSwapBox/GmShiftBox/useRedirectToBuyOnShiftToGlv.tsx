@@ -2,8 +2,8 @@ import { useEffect } from "react";
 
 import type { MarketInfo } from "domain/synthetics/markets/types";
 
-import { isGlv } from "@/domain/synthetics/markets/glv";
-import { usePrevious } from "@/lib/usePrevious";
+import { isGlv } from "domain/synthetics/markets/glv";
+import { usePrevious } from "lib/usePrevious";
 import { Operation } from "../types";
 
 /**

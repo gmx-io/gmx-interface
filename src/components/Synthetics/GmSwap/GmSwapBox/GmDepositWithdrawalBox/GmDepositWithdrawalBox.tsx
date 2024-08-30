@@ -35,10 +35,10 @@ import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 
-import { ApproveTokenButton } from "@/components/ApproveTokenButton/ApproveTokenButton";
-import { getContract } from "@/config/contracts";
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
-import { useHighExecutionFeeConsent } from "@/domain/synthetics/trade/useHighExecutionFeeConsent";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import { getContract } from "config/contracts";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
@@ -51,6 +51,7 @@ import { Swap } from "../Swap";
 import { InfoRows } from "./InfoRows";
 import { useFees } from "./useFees";
 import { useSubmitButtonState } from "./useSubmitButtonState";
+import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: GlvMarketInfo }) {
   const {
@@ -268,6 +269,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     [marketInfo, tokensData, isGlvMarket, marketTokensData, marketsInfoData, isPair]
   );
 
+  const bestGmPoolAddress = useBestGmPoolAddressForGlv(isDeposit, marketInfo, selectedGlvGmMarket);
+
+  useEffect(() => {
+    if (!selectedGlvGmMarket && bestGmPoolAddress) {
+      onSelectGlvGmMarket?.(bestGmPoolAddress);
+    }
+  }, [bestGmPoolAddress, onSelectGlvGmMarket, selectedGlvGmMarket]);
+
   /**
    * Here and following we use `underlyingGmMarket` to get the correct market info for GLV markets
    * because we need to use actual GM market data to calculate fees, errors and so on,
@@ -298,11 +307,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     isGlvMarket,
     marketInfo,
     marketsInfoData,
-    selectedGlvGmMarket,
     depositMarketTokensData,
     withdrawalMarketTokensData,
     marketTokenInputValue,
     isDeposit,
+    selectedGlvGmMarket,
   ]);
 
   const marketTokenUsd = isGlvMarket

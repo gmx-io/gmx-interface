@@ -7,7 +7,7 @@ import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numb
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export function MintableAmount({

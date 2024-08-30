@@ -1,4 +1,4 @@
-import { MarketInfo } from "@/domain/synthetics/markets";
+import { MarketInfo } from "domain/synthetics/markets";
 import { Trans } from "@lingui/macro";
 
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";

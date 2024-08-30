@@ -30,7 +30,6 @@ export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
 export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-token";
 export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
-export const SYNTHETICS_DEPOSIT_MARKET_GLV_KEY = "synthetics-market-glv-deposit-market";
 
 export const SYNTHETICS_GLV_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-glv-market-deposit-token";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
@@ -68,10 +67,6 @@ export function getSyntheticsDepositIndexTokenKey(chainId: number) {
 
 export function getSyntheticsDepositMarketKey(chainId: number) {
   return [chainId, SYNTHETICS_DEPOSIT_MARKET_KEY];
-}
-
-export function getSyntheticsDepositGlvMarketKey(chainId: number) {
-  return [chainId, SYNTHETICS_DEPOSIT_MARKET_GLV_KEY];
 }
 
 export function getSyntheticsListSectionKey(chainId: number) {

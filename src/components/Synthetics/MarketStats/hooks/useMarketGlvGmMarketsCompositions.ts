@@ -37,7 +37,9 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
 
         return {
           amount: market.gmBalance,
+          gmMarket: market,
           pool: gmMarket,
+          token: token,
           tvl: [
             (market.gmBalance * token.prices.maxPrice) / 10n ** BigInt(token.decimals),
             getMaxUsdBuyableAmountInMarket(glv.indexToken.prices.maxPrice, market, glv),

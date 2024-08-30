@@ -29,10 +29,10 @@ import { useShiftSubmitState } from "./useShiftSubmitState";
 import { useUpdateMarkets } from "./useUpdateMarkets";
 import { useUpdateTokens } from "./useUpdateTokens";
 
-import { ApproveTokenButton } from "@/components/ApproveTokenButton/ApproveTokenButton";
-import { getContract } from "@/config/contracts";
-import { getTokenData } from "@/domain/synthetics/tokens";
-import { useHighExecutionFeeConsent } from "@/domain/synthetics/trade/useHighExecutionFeeConsent";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import { getContract } from "config/contracts";
+import { getTokenData } from "domain/synthetics/tokens";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";

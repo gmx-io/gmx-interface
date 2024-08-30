@@ -1,5 +1,5 @@
-import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "@/config/localStorage";
-import { useLocalStorageSerializeKey } from "@/lib/localStorage";
+import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 

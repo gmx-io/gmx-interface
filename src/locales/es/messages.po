@@ -506,8 +506,8 @@ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before stak
 msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
-msgstr ""
+#~ msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
@@ -1165,6 +1165,10 @@ msgstr "Total de Reembolsos"
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {1} and {2} as per the composition displayed."
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+msgid "GLV token pricing is affected by the underlying GM tokens it is composed of and their prices."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2284,6 +2288,10 @@ msgstr "NETO TASA / 1 H"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Vest with GMX on Avalanche"
 msgstr "Adquiera con GMX en Avalanche"
+
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"

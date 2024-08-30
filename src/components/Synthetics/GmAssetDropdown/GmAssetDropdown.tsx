@@ -10,7 +10,7 @@ import { getIcon } from "config/icons";
 import { MarketInfo, AllMarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import useWallet, { WalletClient } from "lib/wallets/useWallet";

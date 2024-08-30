@@ -84,7 +84,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
-import { GmList } from "@/components/Synthetics/GmList/GmList";
+import { GmList } from "components/Synthetics/GmList/GmList";
 
 const { ZeroAddress } = ethers;
 

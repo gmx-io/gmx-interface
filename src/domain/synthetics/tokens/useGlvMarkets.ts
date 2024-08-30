@@ -160,10 +160,6 @@ export function useGlvMarketsInfo(
             contractAddress: glv.glvToken,
             abi: TokenAbi.abi,
             calls: {
-              totalSupply: {
-                methodName: "totalSupply",
-                params: [],
-              },
               balance: {
                 methodName: "balanceOf",
                 params: [account],
@@ -238,12 +234,15 @@ export function useGlvMarketsInfo(
         glvs.forEach(({ glv, markets }) => {
           const pricesMax = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
           const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
-          const [priceMin, totalSupply] = pricesMax;
+          const [priceMin, , totalSupply] = pricesMax;
           const [priceMax] = pricesMin;
 
           const glvName = getGlvMarketName(chainId, glv.glvToken);
 
           const tokenConfig = getTokenBySymbol(chainId, "GLV");
+
+          const balance = data[glv.glvToken + "-tokenData"].balance.returnValues[0];
+          const contractSymbol = data[glv.glvToken + "-tokenData"].symbol.returnValues[0];
 
           const indexToken: TokenData & {
             contractSymbol: string;
@@ -254,9 +253,9 @@ export function useGlvMarketsInfo(
               minPrice: priceMin,
               maxPrice: priceMax,
             },
-            totalSupply: totalSupply,
-            balance: data[glv.glvToken + "-tokenData"].balance.returnValues[0],
-            contractSymbol: data[glv.glvToken + "-tokenData"].symbol.returnValues[0],
+            totalSupply,
+            balance,
+            contractSymbol,
           };
 
           result[glv.glvToken] = {

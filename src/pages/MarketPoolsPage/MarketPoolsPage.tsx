@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
 
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
-import { getSyntheticsDepositGlvMarketKey, getSyntheticsDepositMarketKey } from "config/localStorage";
+import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
   selectAllMarketsData,
   selectDepositMarketTokensData,
@@ -16,7 +16,6 @@ import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
-import { GmList } from "@/components/Synthetics/GmList/GmList";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
@@ -26,6 +25,7 @@ import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 
 import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 import "./MarketPoolsPage.scss";
+import { GmList } from "components/Synthetics/GmList/GmList";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
@@ -47,10 +47,7 @@ export function MarketPoolsPage() {
     undefined
   );
 
-  const [selectedGlvGmMarketKey, setSelectedGlvGmMarketKey] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsDepositGlvMarketKey(chainId),
-    undefined
-  );
+  const [selectedGlvGmMarketKey, setSelectedGlvGmMarketKey] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketGmKey));
@@ -80,7 +77,7 @@ export function MarketPoolsPage() {
                 to earn fees from swaps and leverage trading.
               </Trans>
               <br />
-              <Trans>Shift GM Tokens between eligible pools without paying buy/sell fees.</Trans>
+              <Trans>GLV Vaults include multiple GM Tokens and are automatically rebalanced.</Trans>
             </>
           }
           qa="pools-page"

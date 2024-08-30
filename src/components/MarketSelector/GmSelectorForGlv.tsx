@@ -19,7 +19,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
 
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 
 import "./MarketSelector.scss";
 import { CommonPoolSelectorProps, MarketOption } from "./types";

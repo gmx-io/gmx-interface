@@ -1,4 +1,4 @@
-import { isGlv } from "@/domain/synthetics/markets/glv";
+import { isGlv } from "domain/synthetics/markets/glv";
 import type { AllMarketsInfoData, MarketInfo } from "domain/synthetics/markets/types";
 
 import { EMPTY_ARRAY } from "lib/objects";

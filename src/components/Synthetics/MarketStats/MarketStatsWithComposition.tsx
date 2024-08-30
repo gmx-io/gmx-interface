@@ -349,6 +349,16 @@ export function MarketStatsWithComposition(p: Props) {
                 }
                 position="bottom-end"
                 renderContent={() => {
+                  if (isGlvMarket) {
+                    return (
+                      <div>
+                        <Trans>
+                          GLV token pricing is affected by the underlying GM tokens it is composed of and their prices.
+                        </Trans>
+                      </div>
+                    );
+                  }
+
                   return (
                     <div>
                       <Trans>

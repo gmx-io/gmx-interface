@@ -14,7 +14,7 @@ import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlv } from "domain/synthetics/markets/glv";
 
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import "./GmSwapBox.scss";
 

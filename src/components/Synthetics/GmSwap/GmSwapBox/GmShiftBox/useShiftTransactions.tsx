@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
 
-import { DEFAULT_SLIPPAGE_AMOUNT } from "@/config/factors";
-import { useSyntheticsEvents } from "@/context/SyntheticsEvents";
-import { ExecutionFee } from "@/domain/synthetics/fees";
-import { createShiftTxn } from "@/domain/synthetics/markets/createShiftTxn";
-import { usePendingTxns } from "@/lib/usePendingTxns";
-import useWallet from "@/lib/wallets/useWallet";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { ExecutionFee } from "domain/synthetics/fees";
+import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";

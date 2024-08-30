@@ -5,7 +5,7 @@ import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade/types";
-import { GlvMarketInfo } from "@/domain/synthetics/tokens/useGlvMarkets";
+import { GlvMarketInfo } from "domain/synthetics/tokens/useGlvMarkets";
 
 export function useDepositWithdrawalAmounts({
   isDeposit,

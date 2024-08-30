@@ -3,8 +3,8 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import uniq from "lodash/uniq";
 import { useMemo } from "react";
 
-import { ExecutionFee } from "@/domain/synthetics/fees";
-import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "@/domain/synthetics/tokens";
+import { ExecutionFee } from "domain/synthetics/fees";
+import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useHasOutdatedUi } from "domain/legacy";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
