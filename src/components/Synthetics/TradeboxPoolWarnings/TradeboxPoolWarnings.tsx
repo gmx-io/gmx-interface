@@ -149,10 +149,12 @@ export const useTradeboxPoolWarnings = (
     (improvedNetRateAbsDelta !== undefined
       ? improvedNetRateAbsDelta >= SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD
       : undefined);
+
   const showHasBetterOpenFeesAndNetFeesWarning =
     canShowHasBetterExecutionFeesWarning &&
     canShowHasBetterNetFeesWarning &&
     bestNetFeeMarket.marketTokenAddress === minOpenFeesMarket?.marketTokenAddress;
+
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
   const showHasBetterNetFeesWarning = canShowHasBetterNetFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
 
@@ -291,17 +293,20 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasBetterOpenFeesWarning) {
+    const zeroPriceImpactMessage =
+      marketsOptions.minPriceImpactForMinOpenFeesMarketBps === 0n ? <Trans>and zero price impact</Trans> : null;
+
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost in the{" "}
-          {getMarketPoolName(minOpenFeesMarket)} market pool.
+          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost {zeroPriceImpactMessage} in the{" "}
+          {getMarketPoolName(minOpenFeesMarket!)} market pool.
           <WithActon>
             <span
               className="clickable muted underline"
-              onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
+              onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
             >
-              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
+              Switch to {getMarketPoolName(minOpenFeesMarket!)} market pool
             </span>
             .
           </WithActon>
@@ -331,10 +336,13 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasBetterOpenFeesAndNetFeesWarning) {
+    const zeroPriceImpactMessage =
+      marketsOptions.minPriceImpactForMinOpenFeesMarketBps === 0n ? <Trans>, zero price impact</Trans> : null;
+
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost and a{" "}
+          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost{zeroPriceImpactMessage} and a{" "}
           {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>

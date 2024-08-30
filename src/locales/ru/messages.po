@@ -377,6 +377,10 @@ msgstr ""
 msgid "View status"
 msgstr ""
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get {0} better open cost {zeroPriceImpactMessage} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr ""
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
 msgstr "Обмен {0} на {1} на 1 дюйм"
@@ -441,8 +445,8 @@ msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Создан лимитный ордер на {0} {1}: {2} USD!"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get {0} better open cost and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
-msgstr ""
+#~ msgid "You can get {0} better open cost and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -1233,6 +1237,10 @@ msgstr "Если у вас есть существующая позиция, п�
 msgid "Transfer Submitted"
 msgstr "Перевод Подтверждён"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid ", zero price impact"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Shift GM"
@@ -1666,6 +1674,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Fees"
 msgstr "Общая сумма Комиссии"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "and zero price impact"
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
@@ -7319,6 +7331,10 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "Сгенерировать Реферальный Код"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get {0} better open cost{zeroPriceImpactMessage} and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Activate Subaccount"
 msgstr ""
@@ -7582,8 +7598,8 @@ msgid "Continue"
 msgstr "Продолжить"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get {0} better open cost in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-msgstr ""
+#~ msgid "You can get {0} better open cost in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and Cumulative PnL"
