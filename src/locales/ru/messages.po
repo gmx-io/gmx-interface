@@ -771,6 +771,10 @@ msgstr ""
 msgid "Pay"
 msgstr "Оплатить"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid ", <0>zero price impact</0>"
+msgstr ""
+
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
@@ -1238,8 +1242,8 @@ msgid "Transfer Submitted"
 msgstr "Перевод Подтверждён"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid ", zero price impact"
-msgstr ""
+#~ msgid ", zero price impact"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx

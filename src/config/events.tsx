@@ -34,7 +34,7 @@ export const homeEventsData: EventData[] = [];
 export const appEventsData: EventData[] = [
   {
     id: "zero-price-impact",
-    title: "Zero price impact for BTC and ETH pools.",
+    title: "Zero price impact for BTC and ETH pools in Arbitrum..",
     isActive: true,
     startDate: "30 Aug 2024, 00:00",
     endDate: "30 Sep 2024, 00:00",
