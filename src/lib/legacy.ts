@@ -1,4 +1,4 @@
-import { getContract } from "@/config/contracts";
+import { getContract } from "config/contracts";
 import { ethers } from "ethers";
 import useSWR from "swr";
 import { useEnsName } from "wagmi";
@@ -1393,7 +1393,7 @@ export function getTradePageUrl() {
 
 // Resolves all images in the folder that match the pattern and store them as `fileName -> path` pairs
 const imageStaticMap = mapKeys(
-  import.meta.glob("@/img/*.*", {
+  import.meta.glob("img/*.*", {
     query: "?url",
     import: "default",
     eager: true,

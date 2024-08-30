@@ -27,7 +27,19 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
+      "abis": path.resolve(__dirname, "src/abis"),
+      "App": path.resolve(__dirname, "src/App"),
+      "components": path.resolve(__dirname, "src/components"),
+      "config": path.resolve(__dirname, "src/config"),
+      "context": path.resolve(__dirname, "src/context"),
+      "domain": path.resolve(__dirname, "src/domain"),
+      "fonts": path.resolve(__dirname, "src/fonts"),
+      "img": path.resolve(__dirname, "src/img"),
+      "lib": path.resolve(__dirname, "src/lib"),
+      "locales": path.resolve(__dirname, "src/locales"),
+      "pages": path.resolve(__dirname, "src/pages"),
+      "styles": path.resolve(__dirname, "src/styles"),
+      "typechain-types": path.resolve(__dirname, "src/typechain-types"),
     },
   },
   build: {

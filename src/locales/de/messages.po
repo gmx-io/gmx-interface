@@ -22,6 +22,10 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr "Wallet nicht verbunden"
 
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Not likely"
+msgstr ""
+
 #: src/pages/Home/Home.jsx
 msgid "Available on your preferred network"
 msgstr "Verfügbar in deinem bevorzugten Netzwerk"
@@ -73,6 +77,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Position Fee"
 msgstr "Position Gebühr"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What would have made your rating a 9 or 10?"
+msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Rebalance Frequency"
@@ -452,10 +460,6 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Erstellte Limit Order für {0} {1}: {2} USD!"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>{0}: {toIndexName}</4>{1}</3>"
-#~ msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Ungültiger Token von Token: \"{0}\" zu Token: \"{toTokenAddress}\""
@@ -616,10 +620,6 @@ msgstr ""
 msgid "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
 
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "GM token pricing is affected by the backing tokens, fees and price impact amounts collected, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -654,6 +654,10 @@ msgstr ""
 msgid "MARKET"
 msgstr "MARKT"
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What did you like the most about our service?"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
@@ -665,6 +669,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "Markt-Orders"
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we address your concerns and improve your experience?"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -1202,6 +1210,10 @@ msgstr "Dashboard"
 msgid "Swap Price Impact"
 msgstr ""
 
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What issues did you encounter that led to your rating?"
+msgstr ""
+
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "No PnLs found"
 msgstr "Keine PnLs gefunden"
@@ -1414,10 +1426,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "DEX Aggregator"
 msgstr "DEX Aggregator"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "<0>Buying GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>with {tokensText}</3>"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1945,10 +1953,6 @@ msgstr ""
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
-#: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
-#~ msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
-#~ msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -2441,6 +2445,10 @@ msgstr "Min. Empfangen"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Verfügbarer Auszahlungsbetrag aus GLP. Mittel, die nicht durch aktuelle offene Positionen in Anspruch genommen werden."
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Enter your feedback here"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr ""
@@ -2667,6 +2675,10 @@ msgstr ""
 msgid "Stake"
 msgstr "Stake"
 
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Help us improve"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Invalid Liquidation Price"
@@ -2743,6 +2755,10 @@ msgstr "Kaufe {swapTokenSymbol} auf 1inch"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL (%)"
+msgstr ""
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "How can we continue to meet your expectations?"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -2873,7 +2889,9 @@ msgstr ""
 msgid "Stake failed."
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr ""
 
@@ -3161,10 +3179,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "Noch keine Trades"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "<0>The APY is an estimate based on the fees collected over the past seven days, including borrowing fees and price impact amounts. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -3535,6 +3549,10 @@ msgstr "Kollateral in"
 msgid "GM Markets"
 msgstr ""
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 msgstr ""
@@ -3852,10 +3870,6 @@ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exce
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr ""
 
@@ -3996,10 +4010,6 @@ msgstr "Einstellungen"
 msgid "Amount of traders you referred."
 msgstr "Anzahl der von dir geworbenen Trader."
 
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "Long Collateral"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close submitted!"
 msgstr ""
@@ -4102,10 +4112,6 @@ msgstr "Reserviert"
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
-
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "Short Collateral"
-#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -4321,6 +4327,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total Trades"
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Enter your answer here"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -4955,10 +4965,6 @@ msgstr ""
 msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 msgstr ""
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "Select a Market"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
 msgstr "Min. erforderliches Kollateral"
@@ -4996,6 +5002,10 @@ msgstr "Übertragung beginnen"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
+msgstr ""
+
+#: src/components/RatingToast/RatingToast.tsx
+msgid "How likely are you to recommend our service to a friend or colleague?"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5555,7 +5565,9 @@ msgstr ""
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "Übermitteln"
 
@@ -5969,10 +5981,6 @@ msgstr "Gevestete GMX nicht abgehoben"
 msgid "FEES"
 msgstr "GEBÜHREN"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4><5>[{toPoolName}]</5></3>"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
 msgstr ""
@@ -6145,6 +6153,10 @@ msgstr "Restliches Kollateral ohne Auswirkung"
 msgid "Edit {0} {1}"
 msgstr ""
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "We Value Your Feedback"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
@@ -6201,6 +6213,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+msgstr ""
+
+#: src/domain/synthetics/userFeedback/utils.ts
+msgid "What areas can we improve to make your experience better?"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6564,11 +6580,6 @@ msgstr "Swap{0} übermittelt!"
 msgid "Referral Code does not exist"
 msgstr "Referral Code existiert nicht"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-#~ msgid "<0>GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX staking calculator"
 msgstr "GMX-Sataking-Rechner"
@@ -6864,6 +6875,10 @@ msgstr "Orderprüfungen deaktivieren"
 msgid "Staked"
 msgstr "Staked"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave feedback"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
@@ -7006,6 +7021,11 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Swap"
 msgstr "Markt Swap fehlgeschlagen"
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Error occurred. Please try again"
+msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "minute"
@@ -7718,6 +7738,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
+msgstr ""
+
+#: src/components/RatingToast/RatingToast.tsx
+msgid "Very likely"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx

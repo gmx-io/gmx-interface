@@ -1,4 +1,4 @@
-import { getIsFlagEnabled } from "config/ab";
+import { getAbFlags } from "config/ab";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -8,6 +8,7 @@ import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMeta
 import useWallet from "lib/wallets/useWallet";
 import { useEffect } from "react";
 import { metrics } from "./Metrics";
+import { isHomeSite } from "../legacy";
 
 export function useConfigureMetrics() {
   const { chainId } = useChainId();
@@ -37,8 +38,9 @@ export function useConfigureMetrics() {
       isMobileMetamask,
       isWindowVisible,
       isAuthorised: active,
-      testWorkersLogic: getIsFlagEnabled("testWorkerLogic"),
+      abFlags: getAbFlags(),
       isMobile: getIsMobileUserAgent(),
+      isHomeSite: isHomeSite(),
     });
   }, [active, isMobileMetamask, isWindowVisible]);
 }

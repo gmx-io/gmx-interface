@@ -1,14 +1,14 @@
-import { isDevelopment, isLocal } from "config/env";
+import { isDevelopment } from "config/env";
 import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
-import { OracleFetcher } from "domain/synthetics/tokens";
+import { OracleFetcher } from "lib/oracleKeeperFetcher";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
-import { prepareErrorMetricData } from "./errorReporting";
-import { GlobalMetricData } from "./types";
 import { METRIC_WINDOW_EVENT_NAME } from "./emitMetricEvent";
+import { prepareErrorMetricData } from "./errorReporting";
 import { getStorageItem, setStorageItem } from "./storage";
+import { ErrorEvent, GlobalMetricData } from "./types";
 
 export type MetricEventParams = {
   event: string;
@@ -139,7 +139,7 @@ export class Metrics {
     const { time, isError, data, event } = params;
     const wallets = await getWalletNames();
 
-    await this.fetcher?.fetchPostReport2(
+    await this.fetcher?.fetchPostEvent(
       {
         isDev: isDevelopment(),
         host: window.location.host,
@@ -166,41 +166,21 @@ export class Metrics {
       return;
     }
 
-    const { errorMessage, errorStack, errorStackHash, errorName, contractError, txErrorType, txErrorData } = errorData;
-
-    const body = {
-      report: {
-        errorMessage,
-        errorSource,
-        errorStack,
-        errorStackHash,
-        errorName,
-        contractError,
-        txError: {
-          type: txErrorType,
-          errorData: txErrorData,
-        },
-        env: {
-          VITE_APP_IS_HOME_SITE: import.meta.env.VITE_APP_IS_HOME_SITE ?? null,
-          VITE_APP_VERSION: import.meta.env.VITE_APP_VERSION ?? null,
-        },
-        isDev: isDevelopment(),
-        host: window.location.host,
-        url: window.location.href,
-        wallets: await getWalletNames(),
-      },
-      version: getAppVersion(),
+    const event: ErrorEvent = {
+      event: "error",
       isError: true,
+      data: {
+        ...errorData,
+        errorSource,
+      },
     };
 
     if (this.debug) {
       // eslint-disable-next-line no-console
-      console.log("sendErrorToServer", body);
+      console.log("Metrics: error event", event);
     }
 
-    if (isLocal()) return;
-
-    return this.fetcher?.fetchPostReport(body);
+    this.pushEvent(event);
   };
 
   subscribeToEvents = () => {
@@ -275,7 +255,7 @@ export class Metrics {
     return event as CachedMetricData & TData;
   };
 
-  startTimer = (label: string, fromLocalStorage = true) => {
+  startTimer = (label: string, fromLocalStorage = false) => {
     const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
     const timers = storedTimers ? JSON.parse(storedTimers) : {};
 
@@ -284,7 +264,7 @@ export class Metrics {
     setStorageItem(METRICS_TIMERS_KEY, JSON.stringify(this.clearOldTimers(timers)));
   };
 
-  getTime = (label: string, clear?: boolean, fromLocalStorage = true) => {
+  getTime = (label: string, clear?: boolean, fromLocalStorage = false) => {
     const storedTimers = getStorageItem(METRICS_TIMERS_KEY, fromLocalStorage);
 
     if (!storedTimers) {

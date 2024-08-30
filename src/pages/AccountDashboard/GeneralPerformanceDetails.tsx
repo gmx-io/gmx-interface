@@ -11,7 +11,7 @@ import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
-import { usePnlSummaryData, PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
+import { usePnlSummaryData, PnlSummaryPoint } from "domain/synthetics/accountStats";
 
 const bucketLabelMap = {
   today: msg`Today`,

@@ -1,7 +1,7 @@
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
-import { PeriodAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
+import { PeriodAccountStats, useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -36,6 +36,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { AccountStats } from "domain/synthetics/accountStats";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -73,6 +74,8 @@ export type SyntheticsState = {
     gasPrice: ReturnType<typeof useGasPrice>;
 
     lastWeekAccountStats?: PeriodAccountStats;
+    lastMonthAccountStats?: PeriodAccountStats;
+    accountStats?: AccountStats;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -174,12 +177,24 @@ export function SyntheticsStateContextProvider({
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
-  const lastWeekPeriod = useMemo(() => getTimePeriodsInSeconds().week, []);
+  const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
 
   const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
     account,
-    from: lastWeekPeriod[0],
-    to: lastWeekPeriod[1],
+    from: timePerios.week[0],
+    to: timePerios.week[1],
+    enabled: pageType === "trade",
+  });
+
+  const { data: lastMonthAccountStats } = usePeriodAccountStats(chainId, {
+    account,
+    from: timePerios.month[0],
+    to: timePerios.month[1],
+    enabled: pageType === "trade",
+  });
+
+  const { data: accountStats } = useAccountStats(chainId, {
+    account,
     enabled: pageType === "trade",
   });
 
@@ -196,7 +211,7 @@ export function SyntheticsStateContextProvider({
   useMeasureLoadTime({
     isLoaded: Boolean(positionsInfoData && !isLoading),
     error: positionsInfoError || marketsInfo.error,
-    skip: !account,
+    skip: !account || pageType !== "trade",
     metricType: "positionsListLoad",
   });
 
@@ -228,6 +243,8 @@ export function SyntheticsStateContextProvider({
         keepLeverage,
         setKeepLeverage,
         lastWeekAccountStats,
+        lastMonthAccountStats,
+        accountStats,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -259,6 +276,8 @@ export function SyntheticsStateContextProvider({
     keepLeverage,
     setKeepLeverage,
     lastWeekAccountStats,
+    lastMonthAccountStats,
+    accountStats,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

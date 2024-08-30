@@ -5,8 +5,9 @@ export type GlobalMetricData = {
   isMobileMetamask: boolean;
   isWindowVisible: boolean;
   isAuthorised: boolean;
-  testWorkersLogic: boolean | undefined;
+  abFlags: Record<string, boolean>;
   isMobile: boolean;
+  isHomeSite: boolean;
 };
 
 export enum OrderStage {
@@ -145,8 +146,26 @@ export type MulticallTimeoutEvent = {
   data: {
     metricType: "rpcTimeout" | "multicallTimeout" | "workerTimeout";
     isInMainThread: boolean;
+    isFallbackRequest?: boolean;
     errorMessage: string;
   };
+};
+
+export type MulticallErrorEvent = {
+  event: "multicall.error";
+  isError: true;
+  data: {
+    isInMainThread: boolean;
+    isFallbackRequest?: boolean;
+    errorMessage: string;
+  };
+};
+
+// Error tracking
+export type ErrorEvent = {
+  event: "error";
+  isError: true;
+  data: ErrorMetricData;
 };
 
 // Entities metric data
@@ -257,4 +276,5 @@ export type ErrorMetricData = {
   reason?: string;
   txErrorType?: TxErrorType;
   txErrorData?: unknown;
+  errorSource?: string;
 };

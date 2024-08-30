@@ -1,12 +1,12 @@
 import { ResolutionString } from "charting_library";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { DayPriceCandle, OracleFetcher, RawIncentivesStats, TickersResponse } from "lib/oracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { ethers } from "ethers";
 import noop from "lodash/noop";
+import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 import type { Bar, FromNewToOldArray, FromOldToNewArray } from "../types";
 import { subscribeBars } from "../useTVDatafeed";
-import { DayPriceCandle, OracleFetcher, RawIncentivesStats, TickersResponse } from "domain/synthetics/tokens";
-import { vi, describe, expect, it, afterEach, Mock } from "vitest";
 
 class MockOracleKeeperFetcher implements OracleFetcher {
   url: string;
@@ -69,11 +69,19 @@ class MockOracleKeeperFetcher implements OracleFetcher {
     } satisfies RawIncentivesStats);
   }
 
-  fetchPostReport(): Promise<Response> {
+  fetchPostFeedback(): Promise<Response> {
     return Promise.resolve(new Response());
   }
 
-  fetchPostReport2(): Promise<Response> {
+  fetchPostEvent(): Promise<Response> {
+    return Promise.resolve(new Response());
+  }
+
+  fetchPostCounter(): Promise<Response> {
+    return Promise.resolve(new Response());
+  }
+
+  fetchPostTiming(): Promise<Response> {
     return Promise.resolve(new Response());
   }
 }

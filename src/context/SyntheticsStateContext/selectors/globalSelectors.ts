@@ -40,6 +40,8 @@ export const selectKeepLeverage = (s: SyntheticsState) => s.globals.keepLeverage
 export const selectSetKeepLeverage = (s: SyntheticsState) => s.globals.setKeepLeverage;
 
 export const selectLastWeekAccountStats = (s: SyntheticsState) => s.globals.lastWeekAccountStats;
+export const selectLastMonthAccountStats = (s: SyntheticsState) => s.globals.lastMonthAccountStats;
+export const selectAccountStats = (s: SyntheticsState) => s.globals.accountStats;
 
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],

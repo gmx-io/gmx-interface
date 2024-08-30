@@ -8,7 +8,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 const iconsContext = mapKeys(
-  import.meta.glob("@/img/ic_*.svg", {
+  import.meta.glob("img/ic_*.svg", {
     query: "?url",
     import: "default",
     eager: true,
@@ -35,7 +35,7 @@ const icons = Object.keys(iconsContext).map((rawPath) => {
 }) as { src: string; name: string; path: string; importUrl: string; importSvg: string }[];
 
 const otherImagesContext = mapKeys(
-  import.meta.glob("@/img/**/*.{png,jpg,jpeg,gif,svg}", {
+  import.meta.glob("img/**/*.{png,jpg,jpeg,gif,svg}", {
     query: "?url",
     import: "default",
     eager: true,
