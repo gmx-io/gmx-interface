@@ -54,9 +54,9 @@ function executeChainsMulticalls() {
 }
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
-  const MAX_CALLS_PER_BATCH = getIsFlagEnabled("testRpcCallsBatching") ? 500 : 5000;
+  const maxCallsPerBatch = getIsFlagEnabled("testRpcCallsBatching") ? 500 : 5000;
 
-  const batchedRequests = splitCallsIntoBatches(calls, MAX_CALLS_PER_BATCH);
+  const batchedRequests = splitCallsIntoBatches(calls, maxCallsPerBatch);
 
   const batchPromises = batchedRequests.map(async ({ requestConfig, callCount }) => {
     let responseOrFailure: MulticallResult<any> | undefined;
@@ -316,7 +316,7 @@ function splitCallsIntoBatches(calls: MulticallFetcherConfig[number], callsPerBa
 
     currentBatchCallsCount++;
 
-    if (currentBatchCallsCount >= callsPerBatch) {
+    if (currentBatchCallsCount === callsPerBatch) {
       batchedRequests.push({
         requestConfig: currentBatch,
         callCount: currentBatchCallsCount,
