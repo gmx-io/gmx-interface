@@ -506,8 +506,8 @@ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before stak
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
-#~ msgstr "Shift GM Tokens between eligible pools without paying buy/sell fees."
+msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
+msgstr "Shift GM Tokens between eligible pools without paying buy/sell fees."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
@@ -6253,6 +6253,9 @@ msgstr "Select a collateral"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
