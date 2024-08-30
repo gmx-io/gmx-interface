@@ -95,7 +95,8 @@ export function GmStatusNotification({
 
   const pendingDepositKey = useMemo(() => {
     if (pendingDepositData) {
-      return getPendingDepositKey(pendingDepositData);
+      const key = getPendingDepositKey(pendingDepositData);
+      return key;
     }
   }, [pendingDepositData]);
 
@@ -170,7 +171,6 @@ export function GmStatusNotification({
       if (!pendingWithdrawalData) {
         return t`Unknown sell GM order`;
       }
-
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
       const isGlvMarket = marketInfo && isGlv(marketInfo);
       const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
@@ -194,7 +194,6 @@ export function GmStatusNotification({
       const fromPoolName = fromMarketInfo ? getMarketPoolName(fromMarketInfo) : "";
 
       const toMarketInfo = getByKey(marketsInfoData, pendingShiftData.toMarket);
-      const isGlvToMarket = toMarketInfo && isGlv(toMarketInfo);
       const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "";
       const toPoolName = toMarketInfo ? getMarketPoolName(toMarketInfo) : "";
 
@@ -207,9 +206,7 @@ export function GmStatusNotification({
           </span>{" "}
           to{" "}
           <span className="inline-flex items-center">
-            <span>
-              {isGlvToMarket ? "GLV" : "GM"}: {toIndexName}
-            </span>
+            <span>GM: {toIndexName}</span>
             {toPoolName && <span className="ml-2 text-12 leading-1 text-gray-300">[{toPoolName}]</span>}
           </span>
         </Trans>

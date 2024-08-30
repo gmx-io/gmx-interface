@@ -173,7 +173,7 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
   }).then(() => {
     p.setPendingWithdrawal({
       account: p.account,
-      marketAddress: p.marketTokenAddress,
+      marketAddress: p.glv,
       marketTokenAmount: p.marketTokenAmount,
       minLongTokenAmount,
       minShortTokenAmount,

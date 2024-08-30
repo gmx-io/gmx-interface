@@ -256,24 +256,24 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      debugger; // eslint-disable-line
       const depositData: DepositCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
+        marketAddress: eventData.addressItems.items.glv,
         initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
         initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
         longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
         shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
         initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
         initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
+        minMarketTokens: eventData.uintItems.items.minGlvTokens,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
         executionFee: eventData.uintItems.items.executionFee,
         callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         key: eventData.bytes32Items.items.key,
+        isGlvDeposit: true,
       };
 
       if (depositData.account !== currentAccount) {
@@ -312,6 +312,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         key: eventData.bytes32Items.items.key,
+        isGlvDeposit: false,
       };
 
       if (depositData.account !== currentAccount) {
@@ -370,7 +371,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvDepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      debugger; // eslint-disable-line
       const key = eventData.bytes32Items.items.key;
 
       if (depositStatuses[key]?.data) {
@@ -419,6 +419,43 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
     },
 
+    GlvWithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const data: WithdrawalCreatedEventData = {
+        account: eventData.addressItems.items.account,
+        receiver: eventData.addressItems.items.receiver,
+        callbackContract: eventData.addressItems.items.callbackContract,
+        marketAddress: eventData.addressItems.items.glv,
+        marketTokenAmount: eventData.uintItems.items.glvTokenAmount,
+        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
+        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
+        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+        executionFee: eventData.uintItems.items.executionFee,
+        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+        key: eventData.bytes32Items.items.key,
+      };
+
+      if (data.account !== currentAccount) {
+        return;
+      }
+
+      const metricId = getGMSwapMetricId({
+        marketAddress: data.marketAddress,
+        executionFee: data.executionFee,
+      });
+
+      sendOrderCreatedMetric(metricId);
+
+      setWithdrawalStatuses((old) =>
+        setByKey(old, data.key, {
+          key: data.key,
+          data,
+          createdTxnHash: txnParams.transactionHash,
+          createdAt: Date.now(),
+        })
+      );
+    },
+
     WithdrawalExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
@@ -433,7 +470,34 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
     },
 
+    GlvWithdrawalExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      if (withdrawalStatuses[key]?.data) {
+        const metricId = getGMSwapMetricId({
+          marketAddress: withdrawalStatuses[key].data!.marketAddress,
+          executionFee: withdrawalStatuses[key].data!.executionFee,
+        });
+        sendOrderExecutedMetric(metricId);
+
+        setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
+    },
+
     WithdrawalCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+
+      if (withdrawalStatuses[key]?.data) {
+        const metricId = getGMSwapMetricId({
+          marketAddress: withdrawalStatuses[key].data!.marketAddress,
+          executionFee: withdrawalStatuses[key].data!.executionFee,
+        });
+        sendOrderCancelledMetric(metricId, eventData);
+
+        setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      }
+    },
+
+    GlvWithdrawalCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
       if (withdrawalStatuses[key]?.data) {
@@ -726,7 +790,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingWithdrawalData={data}
-            marketsInfoData={marketsInfoData}
+            marketsInfoData={allMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,

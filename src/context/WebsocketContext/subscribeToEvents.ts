@@ -167,6 +167,16 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
   const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
   const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
   const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;
+
+  const GLV_TOPICS_FILTER = [
+    GLV_DEPOSIT_CREATED_HASH,
+    GLV_DEPOSIT_CANCELLED_HASH,
+    GLV_DEPOSIT_EXECUTED_HASH,
+    GLV_WITHDRAWAL_CREATED_HASH,
+    GLV_WITHDRAWAL_EXECUTED_HASH,
+    GLV_WITHDRAWAL_CANCELLED_HASH,
+  ];
+
   return [
     // DEPOSITS AND WITHDRAWALS AND SHIFTS
     {
@@ -226,19 +236,15 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
     // GLV DEPOSITS
     {
       address: getContract(chainId, "EventEmitter"),
-      topics: [
-        [EVENT_LOG_TOPIC, EVENT_LOG1_TOPIC, EVENT_LOG2_TOPIC],
-        [
-          GLV_DEPOSIT_CREATED_HASH,
-          GLV_DEPOSIT_CANCELLED_HASH,
-          GLV_DEPOSIT_EXECUTED_HASH,
-          GLV_WITHDRAWAL_CREATED_HASH,
-          GLV_WITHDRAWAL_EXECUTED_HASH,
-          GLV_WITHDRAWAL_CANCELLED_HASH,
-        ],
-        null,
-        addressHash,
-      ],
+      topics: [EVENT_LOG_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
+    },
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [EVENT_LOG1_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
+    },
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [EVENT_LOG2_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
     },
   ];
 }

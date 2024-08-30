@@ -15,6 +15,19 @@ export function getPendingOrderKey(data: Omit<PendingOrderData, "txnType">) {
 }
 
 export function getPendingDepositKey(data: PendingDepositData) {
+  if (data.isGlvDeposit) {
+    return [
+      data.account,
+      data.marketAddress,
+      data.initialLongTokenAddress,
+      data.initialShortTokenAddress,
+      data.longTokenSwapPath.join("-"),
+      data.shortTokenSwapPath.join("-"),
+      data.shouldUnwrapNativeToken,
+      data.initialLongTokenAmount.toString(),
+    ].join(":");
+  }
+
   if (data.initialShortTokenAddress === data.initialLongTokenAddress) {
     return [
       data.account,

@@ -253,7 +253,7 @@ export function useSubaccountSelector<Selected>(selector: (s: SubaccountContext)
 }
 
 export function useSubaccountModalOpen() {
-  return [useSubaccountSelector((s) => s.modalOpen), useSubaccountSelector((s) => s.setModalOpen)] as const;
+  return [useSubaccountSelector((s) => s?.modalOpen), useSubaccountSelector((s) => s?.setModalOpen)] as const;
 }
 
 export function useSubaccountGenerateSubaccount() {

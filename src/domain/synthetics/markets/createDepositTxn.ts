@@ -12,7 +12,7 @@ import { applySlippageToMinOut } from "../trade";
 
 import GlvRouter from "abis/GlvRouter.json";
 
-type Params = {
+type CreateDepositParams = {
   account: string;
   initialLongTokenAddress: string;
   initialShortTokenAddress: string;
@@ -31,7 +31,7 @@ type Params = {
   setPendingDeposit: SetPendingDeposit;
 };
 
-export async function createDepositTxn(chainId: number, signer: Signer, p: Params) {
+export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
@@ -127,14 +127,14 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
       initialShortTokenAmount: p.shortTokenAmount,
       minMarketTokens: minMarketTokens,
       shouldUnwrapNativeToken,
+      isGlvDeposit: false,
     });
   });
 }
 
-interface CreateGlvDepositParams extends Params {
+interface CreateGlvDepositParams extends CreateDepositParams {
   market: string;
   isMarketTokenDeposit: boolean;
-  isShift: boolean;
 }
 
 export async function createGlvDepositTxn(chainId: number, signer: Signer, p: CreateGlvDepositParams) {
@@ -221,6 +221,8 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     });
   }
 
+  debugger; // eslint-disable-line
+
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
@@ -229,17 +231,17 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({
-      isShift: p.isShift,
       account: p.account,
       marketAddress: p.marketTokenAddress,
-      initialLongTokenAddress,
-      initialShortTokenAddress,
+      initialLongTokenAddress: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
+      initialShortTokenAddress: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
       longTokenSwapPath: p.longTokenSwapPath,
       shortTokenSwapPath: p.shortTokenSwapPath,
       minMarketTokens: p.minMarketTokens,
       shouldUnwrapNativeToken,
       initialLongTokenAmount: p.longTokenAmount,
       initialShortTokenAmount: p.shortTokenAmount,
+      isGlvDeposit: true,
     });
   });
 }

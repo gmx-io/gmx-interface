@@ -453,8 +453,8 @@ msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>{0}: {toIndexName}</4>{1}</3>"
-msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>{0}: {toIndexName}</4>{1}</3>"
+#~ msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>{0}: {toIndexName}</4>{1}</3>"
+#~ msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>{0}: {toIndexName}</4>{1}</3>"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -2532,6 +2532,10 @@ msgstr "Use the \"Close\" button to reduce your Position Size."
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Limit)"
 msgstr "Increase Size (Limit)"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
+msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."

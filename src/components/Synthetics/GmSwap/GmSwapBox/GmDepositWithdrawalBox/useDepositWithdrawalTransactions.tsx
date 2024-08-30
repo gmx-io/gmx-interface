@@ -82,13 +82,14 @@ export const useDepositWithdrawalTransactions = ({
         ? initialLongTokenAddress
         : shortToken?.address || marketInfo.shortTokenAddress;
 
+      debugger; // eslint-disable-line
       if (isGlv && selectedGlvGmMarket && vaultInfo) {
         return createGlvDepositTxn(chainId, signer, {
           account,
           initialLongTokenAddress,
           initialShortTokenAddress,
           minMarketTokens: marketTokenAmount,
-          glv: vaultInfo.indexTokenAddress,
+          marketTokenAddress: vaultInfo.indexTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
           longTokenAmount: longTokenAmount ?? 0n,
