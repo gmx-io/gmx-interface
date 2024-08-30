@@ -14,7 +14,11 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
+import {
+  getAvailableUsdLiquidityForPosition,
+  getIsZeroPriceImpactMarket,
+  getMarketPoolName,
+} from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage, formatRatePercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -293,20 +297,21 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasBetterOpenFeesWarning) {
-    const zeroPriceImpactMessage =
-      marketsOptions.minOpenFeesMarket?.priceImpactDeltaBps === 0n ? <Trans>and zero price impact</Trans> : null;
+    const zeroPriceImpactMessage = getIsZeroPriceImpactMarket(minOpenFeesMarket) ? (
+      <Trans>and zero price impact</Trans>
+    ) : null;
 
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
           You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost {zeroPriceImpactMessage} in the{" "}
-          {getMarketPoolName(minOpenFeesMarket!)} market pool.
+          {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span
               className="clickable muted underline"
-              onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
+              onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
             >
-              Switch to {getMarketPoolName(minOpenFeesMarket!)} market pool
+              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
             </span>
             .
           </WithActon>
@@ -336,12 +341,11 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasBetterOpenFeesAndNetFeesWarning) {
-    const zeroPriceImpactMessage =
-      marketsOptions.minOpenFeesMarket?.priceImpactDeltaBps === 0n ? (
-        <Trans>
-          , <b>zero price impact</b>
-        </Trans>
-      ) : null;
+    const zeroPriceImpactMessage = getIsZeroPriceImpactMarket(minOpenFeesMarket) ? (
+      <Trans>
+        , <b>zero price impact</b>
+      </Trans>
+    ) : null;
 
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact textColor={textColor}>
