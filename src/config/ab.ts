@@ -1,7 +1,7 @@
 import mapValues from "lodash/mapValues";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
-type Flag = "testWorkerLogic" | "testRpcWindowFallback" | "testRpcCallsBatching";
+type Flag = "testRpcWindowFallback" | "testRpcCallsBatching";
 
 type AbFlag = {
   enabled: boolean;
@@ -12,7 +12,6 @@ type AbStorage = {
 };
 
 const abFlagsConfig: Record<Flag, number> = {
-  testWorkerLogic: 0.5,
   testRpcWindowFallback: 0.5,
   testRpcCallsBatching: 0.5,
 };
