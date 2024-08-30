@@ -215,7 +215,7 @@ export class Multicall {
       { isFallback, isAlchemy }: { isFallback: boolean; isAlchemy: boolean }
     ) => {
       getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
-        event: ["multicall", isAlchemy ? "alchemy" : "public", isFallback ? "fallback" : undefined, event]
+        event: ["multicall", isAlchemy ? "alchemy" : "public", isFallback ? "fallback" : "primary", event]
           .filter(Boolean)
           .join("."),
         abFlags: this.abFlags,
