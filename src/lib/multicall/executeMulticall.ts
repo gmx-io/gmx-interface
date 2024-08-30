@@ -2,11 +2,12 @@ import entries from "lodash/entries";
 import throttle from "lodash/throttle";
 import values from "lodash/values";
 import { stableHash } from "swr/_internal";
-import { getIsFlagEnabled } from "config/ab";
+import { getAbFlags, getIsFlagEnabled } from "config/ab";
 
 import { isDevelopment } from "config/env";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { promiseWithResolvers } from "lib/utils";
+import { getStaticOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
@@ -266,7 +267,27 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     throttledExecuteBackgroundChainsMulticalls();
   }
 
-  return promise as any;
+  const now = Date.now();
+
+  return promise.then((result) => {
+    const duration = Date.now() - now;
+    const abFlags = getAbFlags();
+
+    if (result.success) {
+      getStaticOracleKeeperFetcher(chainId).fetchPostTiming({
+        event: `multicall.${priority}.execute.timing`,
+        time: duration,
+        abFlags,
+      });
+    } else {
+      getStaticOracleKeeperFetcher(chainId).fetchPostCounter({
+        event: `multicall.${priority}.execute.error`,
+        abFlags,
+      });
+    }
+
+    return result;
+  }) as Promise<any>;
 }
 
 function splitCallsIntoBatches(calls: MulticallFetcherConfig[number], callsPerBatch: number) {
