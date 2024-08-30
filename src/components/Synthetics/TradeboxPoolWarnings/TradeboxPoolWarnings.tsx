@@ -73,8 +73,8 @@ export const useTradeboxPoolWarnings = (
   const marketWithPosition = marketsOptions?.marketWithPosition;
   const isNoSufficientLiquidityInAnyMarket = marketsOptions?.isNoSufficientLiquidityInAnyMarket;
   const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
-  const minOpenFeesMarket = (marketsOptions?.minOpenFeesAvailableMarketAddress &&
-    getByKey(marketsInfoData, marketsOptions?.minOpenFeesAvailableMarketAddress)) as MarketInfo | undefined;
+  const minOpenFeesMarket = (marketsOptions?.minOpenFeesMarket?.marketAddress &&
+    getByKey(marketsInfoData, marketsOptions?.minOpenFeesMarket.marketAddress)) as MarketInfo | undefined;
   const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
   const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
   const isOutPositionLiquidity = isLong
@@ -89,7 +89,7 @@ export const useTradeboxPoolWarnings = (
 
   const improvedOpenFeesDeltaBps =
     increaseAmounts?.acceptablePriceDeltaBps !== undefined
-      ? (marketsOptions.minOpenFeesBps ?? BN_ZERO) -
+      ? (marketsOptions.minOpenFeesMarket?.openFeesBps ?? BN_ZERO) -
         (positionFeeBeforeDiscountBps ?? BN_ZERO) -
         increaseAmounts.acceptablePriceDeltaBps
       : undefined;
@@ -257,7 +257,7 @@ export const useTradeboxPoolWarnings = (
           <WithActon>
             <span
               className="clickable muted underline"
-              onClick={() => setMarketAddress(marketsOptions.minOpenFeesAvailableMarketAddress)}
+              onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
             </span>
@@ -294,7 +294,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterOpenFeesWarning) {
     const zeroPriceImpactMessage =
-      marketsOptions.minPriceImpactForMinOpenFeesMarketBps === 0n ? <Trans>and zero price impact</Trans> : null;
+      marketsOptions.minOpenFeesMarket?.priceImpactDeltaBps === 0n ? <Trans>and zero price impact</Trans> : null;
 
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
@@ -337,7 +337,11 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasBetterOpenFeesAndNetFeesWarning) {
     const zeroPriceImpactMessage =
-      marketsOptions.minPriceImpactForMinOpenFeesMarketBps === 0n ? <Trans>, zero price impact</Trans> : null;
+      marketsOptions.minOpenFeesMarket?.priceImpactDeltaBps === 0n ? (
+        <Trans>
+          , <b>zero price impact</b>
+        </Trans>
+      ) : null;
 
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact textColor={textColor}>
