@@ -2,6 +2,7 @@ import entries from "lodash/entries";
 import throttle from "lodash/throttle";
 import values from "lodash/values";
 import { stableHash } from "swr/_internal";
+import { getIsFlagEnabled } from "config/ab";
 
 import { isDevelopment } from "config/env";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -52,30 +53,12 @@ function executeChainsMulticalls() {
 }
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
-  const request: MulticallRequestConfig<any> = {};
+  const MAX_CALLS_PER_BATCH = getIsFlagEnabled("testRpcCallsBatching") ? 500 : 5000;
 
-  let callCount = 0;
-  for (const [callId, call] of entries(calls)) {
-    callCount++;
+  const batchedRequests = splitCallsIntoBatches(calls, MAX_CALLS_PER_BATCH);
 
-    if (!request[call.callData.contractAddress]) {
-      request[call.callData.contractAddress] = {
-        abi: call.callData.abi,
-        contractAddress: call.callData.contractAddress,
-        calls: {},
-      };
-    }
-
-    request[call.callData.contractAddress].calls[callId] = {
-      methodName: call.callData.methodName,
-      params: call.callData.params,
-      shouldHashParams: call.callData.shouldHashParams,
-    };
-  }
-
-  let responseOrFailure: MulticallResult<any> | undefined;
-
-  {
+  const batchPromises = batchedRequests.map(async ({ requestConfig, callCount }) => {
+    let responseOrFailure: MulticallResult<any> | undefined;
     let startTime: number | undefined;
 
     debugLog(() => {
@@ -86,9 +69,9 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
     });
 
     if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD) {
-      responseOrFailure = await executeMulticallWorker(chainId, request);
+      responseOrFailure = await executeMulticallWorker(chainId, requestConfig);
     } else {
-      responseOrFailure = await executeMulticallMainThread(chainId, request);
+      responseOrFailure = await executeMulticallMainThread(chainId, requestConfig);
     }
 
     debugLog(() => {
@@ -98,12 +81,18 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
       return `Multicall execution for chainId: ${chainId} took ${duration}ms in ${executionIn}. Call count: ${callCount}.`;
     });
-  }
 
-  if (responseOrFailure) {
+    return responseOrFailure;
+  });
+
+  const batchedResponsesOrFailures = await Promise.all(batchPromises);
+
+  const combinedResults = combineCallResults(batchedResponsesOrFailures);
+
+  if (combinedResults) {
     for (const call of values(calls)) {
       for (const hook of call.hooks) {
-        hook(responseOrFailure);
+        hook(combinedResults);
       }
     }
   }
@@ -278,4 +267,93 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   }
 
   return promise as any;
+}
+
+function splitCallsIntoBatches(calls: MulticallFetcherConfig[number], callsPerBatch: number) {
+  const batchedRequests: Array<{
+    requestConfig: MulticallRequestConfig<any>;
+    callCount: number;
+  }> = [];
+
+  let currentBatch: MulticallRequestConfig<any> = {};
+  let currentBatchCallsCount = 0;
+
+  for (const [callId, call] of entries(calls)) {
+    if (!currentBatch[call.callData.contractAddress]) {
+      currentBatch[call.callData.contractAddress] = {
+        abi: call.callData.abi,
+        contractAddress: call.callData.contractAddress,
+        calls: {},
+      };
+    }
+
+    currentBatch[call.callData.contractAddress].calls[callId] = {
+      methodName: call.callData.methodName,
+      params: call.callData.params,
+      shouldHashParams: call.callData.shouldHashParams,
+    };
+
+    currentBatchCallsCount++;
+
+    if (currentBatchCallsCount >= callsPerBatch) {
+      batchedRequests.push({
+        requestConfig: currentBatch,
+        callCount: currentBatchCallsCount,
+      });
+      currentBatch = {};
+      currentBatchCallsCount = 0;
+    }
+  }
+
+  if (currentBatchCallsCount > 0) {
+    batchedRequests.push({
+      requestConfig: currentBatch,
+      callCount: currentBatchCallsCount,
+    });
+  }
+
+  return batchedRequests;
+}
+
+function combineCallResults(batchedResponsesOrFailures: (MulticallResult<any> | undefined)[]) {
+  if (batchedResponsesOrFailures.some((result) => !result)) {
+    return undefined;
+  }
+
+  return batchedResponsesOrFailures.reduce<MulticallResult<any>>(
+    (acc, result) => {
+      if (!result) {
+        return acc;
+      }
+
+      acc.success = acc.success && result.success;
+
+      for (const [contractAddress, contractResult] of entries(result.errors)) {
+        if (acc.errors[contractAddress]) {
+          for (const [callId, callResult] of entries(contractResult)) {
+            acc.errors[contractAddress][callId] = callResult;
+          }
+        } else {
+          acc.errors[contractAddress] = contractResult;
+        }
+      }
+
+      for (const [contractAddress, contractResult] of entries(result.data)) {
+        if (acc.data[contractAddress]) {
+          for (const [callId, callResult] of entries(contractResult)) {
+            acc.data[contractAddress][callId] = callResult;
+          }
+        } else {
+          acc.data[contractAddress] = contractResult;
+        }
+      }
+
+      return acc;
+    },
+    {
+      success: true,
+      errors: {},
+      data: {},
+    }
+  );
 }
