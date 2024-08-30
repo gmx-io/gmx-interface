@@ -221,8 +221,6 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     });
   }
 
-  debugger; // eslint-disable-line
-
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,

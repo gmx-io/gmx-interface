@@ -78,6 +78,8 @@ export function MarketPoolsPage() {
               </Trans>
               <br />
               <Trans>GLV Vaults include multiple GM Tokens and are automatically rebalanced.</Trans>
+              <br />
+              <Trans>Shift GM Tokens between eligible pools without paying buy/sell fees.</Trans>
             </>
           }
           qa="pools-page"
