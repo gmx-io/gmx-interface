@@ -49,6 +49,7 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { useMedia } from "react-use";
+import Button from "components/Button/Button";
 
 export type Props = {
   openSettings: () => void;
@@ -306,6 +307,14 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-right">
           <div className="Exchange-swap-box">
             <TradeBox setPendingTxns={setPendingTxns} />
+            <Button
+              variant="primary"
+              onClick={() => {
+                throw new Error("Broken");
+              }}
+            >
+              Make error
+            </Button>
           </div>
         </div>
 

@@ -23,4 +23,13 @@ createRoot(document.getElementById("root")!).render(
 // to log results (for example: reportWebVitals(console.info))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+// @ts-ignore
+if (typeof sourceMapSupport !== "undefined") {
+  // @ts-ignore
+  // eslint-disable-next-line no-console
+  console.log("source map enabled");
+  // @ts-ignore
+  sourceMapSupport.install();
+}
+
 export { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "./lib/numbers";
