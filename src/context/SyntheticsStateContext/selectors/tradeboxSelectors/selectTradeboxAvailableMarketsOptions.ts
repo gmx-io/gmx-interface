@@ -219,6 +219,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
       result.availableMarketsOpenFees![liquidMarket.marketTokenAddress] = openFees;
 
+      // opemFess has negative values, so the higher the value, the user pays less
       if (result.minOpenFeesMarket === undefined || openFees > result.minOpenFeesMarket.openFeesBps) {
         result.minOpenFeesMarket = {
           marketAddress: liquidMarket.marketTokenAddress,
