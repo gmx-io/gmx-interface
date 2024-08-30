@@ -102,7 +102,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   });
 
   const handleClassName = useMemo(() => {
-    if (positionPriceImpactDeltaUsd !== undefined && positionPriceImpactDeltaUsd > 0n) {
+    if (positionPriceImpactDeltaUsd !== undefined && positionPriceImpactDeltaUsd >= 0n) {
       return "text-green-500 !decoration-green-500/50";
     }
 
