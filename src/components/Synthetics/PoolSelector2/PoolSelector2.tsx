@@ -61,7 +61,7 @@ function PoolSelector2Desktop(props: Props) {
             <Trans>Net Rate</Trans>
           </th>
           <th>
-            <Trans>Open Fees</Trans>
+            <Trans>Open Cost</Trans>
           </th>
         </SelectorBaseTableHeadRow>
       </thead>
@@ -257,7 +257,7 @@ function PoolListItemMobile({
           {formattedNetRate} / 1h
         </dd>
         <dt>
-          <Trans>Open Fees</Trans>
+          <Trans>Open Cost</Trans>
         </dt>
         <dd
           className={cx({

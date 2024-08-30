@@ -294,7 +294,7 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open fees in the{" "}
+          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span
@@ -334,7 +334,7 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open fees and a{" "}
+          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost and a{" "}
           {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
