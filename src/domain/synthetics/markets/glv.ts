@@ -13,12 +13,14 @@ import { bigMath } from "lib/bigmath";
 import { convertToUsd } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens";
 
-export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, glv: GlvMarketInfo) {
-  const glvPriceUsd = glv.indexToken.prices.maxPrice;
+export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, gmToken?: TokenData) {
+  if (!gmToken) {
+    return 0n;
+  }
 
   return bigMath.min(
     market.maxMarketTokenBalanceUsd,
-    convertToUsd(market.glvMaxMarketTokenBalanceAmount, glv.indexToken.decimals, glvPriceUsd) ?? 0n
+    convertToUsd(market.glvMaxMarketTokenBalanceAmount, gmToken.decimals, gmToken.prices.minPrice) ?? 0n
   );
 }
 

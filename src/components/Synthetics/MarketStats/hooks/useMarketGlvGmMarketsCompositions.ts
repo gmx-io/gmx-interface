@@ -46,7 +46,7 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
           token: token,
           tvl: [
             convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n,
-            getMaxUsdCapUsdInGmGlvMarket(market, glv),
+            getMaxUsdCapUsdInGmGlvMarket(market, token),
           ] as const,
           comp: sum === 0n ? 0 : (bigintToNumber(market.gmBalance, 1) * 100) / bigintToNumber(sum, 1),
         };
