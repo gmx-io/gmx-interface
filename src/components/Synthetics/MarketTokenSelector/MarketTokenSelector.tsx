@@ -50,6 +50,7 @@ type Props = {
   marketsTokensAPRData?: MarketTokensAPRData;
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensLidoAprData?: MarketTokensAPRData;
+  glvMarketsTokensApyData?: MarketTokensAPRData;
   // eslint-disable-next-line react/no-unused-prop-types
   currentMarketInfo?: MarketInfo;
 };
@@ -63,6 +64,7 @@ export default function MarketTokenSelector(props: Props) {
     marketsInfoData,
     marketTokensData,
     currentMarketInfo,
+    glvMarketsTokensApyData,
   } = props;
   const indexName = currentMarketInfo && getMarketIndexName(currentMarketInfo);
   const poolName = currentMarketInfo && getMarketPoolName(currentMarketInfo);
@@ -128,6 +130,7 @@ export default function MarketTokenSelector(props: Props) {
         marketsInfoData={marketsInfoData}
         marketTokensData={marketTokensData}
         currentMarketInfo={currentMarketInfo}
+        glvMarketsTokensApyData={glvMarketsTokensApyData}
       />
     </SelectorBase>
   );
@@ -143,6 +146,7 @@ function MarketTokenSelectorInternal(props: Props) {
     marketsTokensAPRData,
     marketsInfoData,
     marketTokensData,
+    glvMarketsTokensApyData,
   } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
@@ -161,6 +165,7 @@ function MarketTokenSelectorInternal(props: Props) {
     marketsTokensAPRData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    glvMarketsTokensApyData,
     orderBy,
     direction,
     marketTokensData: marketTokensData,
@@ -326,6 +331,7 @@ function useFilterSortTokensInfo({
   marketsTokensAPRData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  glvMarketsTokensApyData,
   orderBy,
   direction,
 }: {
@@ -339,6 +345,7 @@ function useFilterSortTokensInfo({
   marketsTokensAPRData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
   orderBy: SortField;
   direction: SortDirection;
 }) {
@@ -375,7 +382,7 @@ function useFilterSortTokensInfo({
       const sellableInfo = isGlvMarket
         ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData)
         : getSellableMarketToken(marketInfo, market);
-      const apr = getByKey(marketsTokensAPRData, market?.address);
+      const apr = getByKey(isGlvMarket ? glvMarketsTokensApyData : marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
       const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
       const indexName = isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo);
@@ -402,6 +409,7 @@ function useFilterSortTokensInfo({
     marketsTokensLidoAprData,
     tab,
     marketTokensData,
+    glvMarketsTokensApyData,
   ]);
 
   const sortedTokensInfo = useMemo(() => {

@@ -304,6 +304,7 @@ export function MarketStatsWithComposition(p: Props) {
           marketsTokensAPRData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           currentMarketInfo={marketInfo}
+          glvMarketsTokensApyData={glvMarketsTokensApyData}
         />
         <div className="App-card-divider !-mx-20" />
         <div className="App-card-content">

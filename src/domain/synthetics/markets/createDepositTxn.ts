@@ -240,6 +240,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       initialLongTokenAmount: p.longTokenAmount,
       initialShortTokenAmount: p.shortTokenAmount,
       isGlvDeposit: true,
+      gmAddress: p.isMarketTokenDeposit ? p.initialLongTokenAddress : undefined,
     });
   });
 }

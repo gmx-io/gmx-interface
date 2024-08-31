@@ -102,6 +102,7 @@ export type PendingDepositData = {
   minMarketTokens: bigint;
   shouldUnwrapNativeToken: boolean;
   isGlvDeposit: boolean;
+  gmAddress?: string;
 };
 
 export type WithdrawalCreatedEventData = {

@@ -158,15 +158,24 @@ export function GmStatusNotification({
           .join(" and ");
       }
 
-      return (
-        <Trans>
-          <div className="inline-flex">
-            Buying {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
-            {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
-          </div>{" "}
-          <span>with {tokensText}</span>
-        </Trans>
-      );
+      if (isGlvMarket && pendingDepositData.gmAddress) {
+        const gmMarket = marketsInfoData?.[pendingDepositData.gmAddress];
+
+        if (gmMarket) {
+          tokensText = "GM: " + getMarketIndexName(gmMarket) + `[${getMarketPoolName(gmMarket)}]`;
+        }
+      }
+
+      if (isGlvMarket && pendingDepositData.initialLongTokenAddress)
+        return (
+          <Trans>
+            <div className="inline-flex">
+              Buying {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
+              {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
+            </div>{" "}
+            <span>with {tokensText}</span>
+          </Trans>
+        );
     } else if (operation === "withdrawal") {
       if (!pendingWithdrawalData) {
         return t`Unknown sell GM order`;
