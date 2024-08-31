@@ -10,7 +10,7 @@ import {
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
-import { TokenData, TokensRatio } from "domain/synthetics/tokens";
+import { TokenData, TokensData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
@@ -550,6 +550,7 @@ export function getGmSwapError(p: {
   priceImpactUsd: bigint | undefined;
   vaultInfo?: GlvMarketInfo;
   vaultSellableAmount?: bigint;
+  marketTokensData?: TokensData;
 }) {
   const {
     isDeposit,
@@ -571,6 +572,7 @@ export function getGmSwapError(p: {
     priceImpactUsd,
     vaultInfo,
     vaultSellableAmount,
+    marketTokensData,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -610,7 +612,7 @@ export function getGmSwapError(p: {
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
     const mintableInfo = isGlv(marketInfo)
-      ? getMintableInfoGlv(marketInfo)
+      ? getMintableInfoGlv(marketInfo, marketTokensData)
       : getMintableMarketTokens(marketInfo, marketToken);
 
     if (
@@ -754,7 +756,7 @@ export function getGmShiftError({
     return [t`Max ${fromToken?.symbol} sellable amount exceeded`];
   }
 
-  const mintableInfo = isGlvMarket ? getMintableInfoGlv(toMarketInfo) : getMintableMarketTokens(toMarketInfo, toToken);
+  const mintableInfo = getMintableMarketTokens(toMarketInfo, toToken);
 
   const longExceedCapacity =
     fromLongTokenAmount !== undefined && fromLongTokenAmount > mintableInfo.longDepositCapacityAmount;

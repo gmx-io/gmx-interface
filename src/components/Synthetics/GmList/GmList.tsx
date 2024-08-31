@@ -200,6 +200,7 @@ export function GmList({
                 <GmListItem
                   key={token.address}
                   token={token}
+                  marketTokensData={marketTokensData}
                   marketsTokensApyData={marketsTokensApyData}
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
                   marketsTokensLidoAprData={marketsTokensLidoAprData}
@@ -351,6 +352,7 @@ function GmListItem({
   glvMarketsTokensApyData,
   shouldScrollToTop,
   isShiftAvailable,
+  marketTokensData,
 }: {
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -359,6 +361,7 @@ function GmListItem({
   glvMarketsTokensApyData: MarketTokensAPRData | undefined;
   shouldScrollToTop: boolean | undefined;
   isShiftAvailable: boolean;
+  marketTokensData: TokensData | undefined;
 }) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectAllMarketsData);
@@ -488,7 +491,7 @@ function GmListItem({
       </ExchangeTd>
       <ExchangeTd>
         {isGlvMarket ? (
-          <MintableAmount mintableInfo={getMintableInfoGlv(market)} market={market} token={token} />
+          <MintableAmount mintableInfo={getMintableInfoGlv(market, marketTokensData)} market={market} token={token} />
         ) : (
           <MintableAmount
             mintableInfo={mintableInfo}

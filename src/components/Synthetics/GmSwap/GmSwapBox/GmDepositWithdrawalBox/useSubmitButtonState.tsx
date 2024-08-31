@@ -210,6 +210,7 @@ export const useSubmitButtonState = ({
     isHighPriceImpactAccepted,
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     vaultSellableAmount: vaultSellableAmount?.totalAmount,
+    marketTokensData,
   });
 
   const error = commonError || swapError;

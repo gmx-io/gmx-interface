@@ -55,8 +55,12 @@ export function sortGmTokensByField({
       const marketA = marketsInfo[a.address];
       const marketB = marketsInfo[b.address];
 
-      const mintableA = isGlv(marketA) ? getMintableInfoGlv(marketA) : getMintableMarketTokens(marketA, a);
-      const mintableB = isGlv(marketB) ? getMintableInfoGlv(marketB) : getMintableMarketTokens(marketB, b);
+      const mintableA = isGlv(marketA)
+        ? getMintableInfoGlv(marketA, marketTokensData)
+        : getMintableMarketTokens(marketA, a);
+      const mintableB = isGlv(marketB)
+        ? getMintableInfoGlv(marketB, marketTokensData)
+        : getMintableMarketTokens(marketB, b);
 
       return (mintableA?.mintableUsd ?? 0n) > (mintableB?.mintableUsd ?? 0n)
         ? directionMultiplier

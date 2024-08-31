@@ -10,7 +10,7 @@ import { GlvMarket, GlvMarketInfo } from "domain/synthetics/markets/useGlvMarket
 
 import { bigMath } from "lib/bigmath";
 
-import { convertToUsd } from "../tokens/utils";
+import { convertToTokenAmount, convertToUsd } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens";
 
 export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, gmToken?: TokenData) {
@@ -30,34 +30,36 @@ export function getMaxUsdBuyableAmountInMarketWithGm(
   gmMarketInfo: MarketInfo,
   gmMarketToken: TokenData
 ) {
-  const glvPriceUsd = glv.indexToken.prices.maxPrice;
   const mintableInGmMarket = getMintableMarketTokens(gmMarketInfo, gmMarketToken);
-  const maxUsdInGmGlv = getMaxUsdBuyableAmountInMarket(glvPriceUsd, market, glv);
+  const maxUsdInGmGlv = getMaxUsdBuyableAmountInMarket(market, glv, gmMarketToken);
 
   return bigMath.min(mintableInGmMarket?.mintableUsd, maxUsdInGmGlv);
 }
 
-export function getMaxUsdBuyableAmountInMarket(glvPriceUsd: bigint, market: GlvMarket, glv: GlvMarketInfo) {
-  const gmBalanceUsd = convertToUsd(market.gmBalance, glv.indexToken.decimals, glvPriceUsd) ?? 0n;
+export function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvMarketInfo, gmToken: TokenData) {
+  const gmBalanceUsd = convertToUsd(market.gmBalance, gmToken.decimals, gmToken.prices.maxPrice) ?? 0n;
 
   return (
     bigMath.min(
       market.maxMarketTokenBalanceUsd,
-      convertToUsd(market.glvMaxMarketTokenBalanceAmount, glv.indexToken.decimals, glvPriceUsd) ?? 0n
+      convertToUsd(market.glvMaxMarketTokenBalanceAmount, gmToken.decimals, gmToken.prices.maxPrice) ?? 0n
     ) - gmBalanceUsd
   );
 }
 
-export function getMintableInfoGlv(glv: GlvMarketInfo) {
+export function getMintableInfoGlv(glv: GlvMarketInfo, marketTokensData: TokensData | undefined) {
   const glvPriceUsd = glv.indexToken.prices.maxPrice;
 
   const amountUsd = values(glv.markets).reduce((acc, market) => {
-    return acc + getMaxUsdBuyableAmountInMarket(glvPriceUsd, market, glv);
+    return (
+      acc + (marketTokensData ? getMaxUsdBuyableAmountInMarket(market, glv, marketTokensData[market.address]) : 0n)
+    );
   }, 0n);
 
   return {
-    mintableAmount: (amountUsd / glvPriceUsd) * 10n ** BigInt(glv.indexToken.decimals),
+    mintableAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,
     mintableUsd: amountUsd,
+
     // @todo
     longDepositCapacityUsd: 0n,
     shortDepositCapacityUsd: 0n,

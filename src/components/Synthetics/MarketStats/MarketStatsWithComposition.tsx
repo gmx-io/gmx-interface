@@ -74,7 +74,7 @@ export function MarketStatsWithComposition(p: Props) {
 
   const { longToken, shortToken } = marketInfo || {};
 
-  const mintableInfo = useMarketMintableTokens(marketInfo, marketToken);
+  const mintableInfo = useMarketMintableTokens(marketInfo, marketToken, marketTokensData);
   const sellableInfo = useMarketSellableToken(marketInfo, marketToken, marketTokensData);
 
   const maxLongSellableTokenAmount = convertToTokenAmount(

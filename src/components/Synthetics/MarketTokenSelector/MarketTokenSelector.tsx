@@ -378,7 +378,9 @@ function useFilterSortTokensInfo({
 
       const isGlvMarket = isGlv(marketInfo);
 
-      const mintableInfo = isGlvMarket ? getMintableInfoGlv(marketInfo) : getMintableMarketTokens(marketInfo, market);
+      const mintableInfo = isGlvMarket
+        ? getMintableInfoGlv(marketInfo, marketTokensData)
+        : getMintableMarketTokens(marketInfo, market);
       const sellableInfo = isGlvMarket
         ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData)
         : getSellableMarketToken(marketInfo, market);
