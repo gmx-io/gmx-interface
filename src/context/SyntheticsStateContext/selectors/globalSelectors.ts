@@ -20,7 +20,6 @@ export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.is
 export const selectAllMarketsData = createSelector((q) => {
   const glvMarketInfo = q(selectGlvInfo);
   const marketsInfoData = q(selectMarketsInfoData);
-
   return {
     ...glvMarketInfo,
     ...marketsInfoData,

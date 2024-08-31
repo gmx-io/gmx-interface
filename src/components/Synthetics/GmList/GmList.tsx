@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import noop from "lodash/noop";
+import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { Address, isAddress, isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
@@ -385,7 +386,9 @@ function GmListItem({
   const shiftButton = useMemo(() => {
     const btn = (
       <Button
-        className="w-full"
+        className={cx("w-full", {
+          "!opacity-30": !isShiftAvailable,
+        })}
         variant="secondary"
         disabled={!isShiftAvailable}
         to={`/pools/?market=${market.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}

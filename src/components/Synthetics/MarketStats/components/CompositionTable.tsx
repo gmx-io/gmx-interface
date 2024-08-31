@@ -48,10 +48,10 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
 
   const [col1, col2, col3] = useMemo(() => {
     if (isGlvMarket) {
-      return [t`POOL`, t`TVL`, t`COMP`];
+      return [t`POOL`, t`TVL`, t`COMP.`];
     }
 
-    return [t`COLLATERAL`, t`AMOUNT`, t`COMP`];
+    return [t`COLLATERAL`, t`AMOUNT`, t`COMP.`];
   }, [isGlvMarket]);
 
   const table: GmTableConfig | GlvTableConfig | undefined = useMemo(() => {
@@ -120,7 +120,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               </span>
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {formatAmountHuman(tvl[0], USD_DECIMALS, true, 0)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 0)}
+              {formatAmountHuman(tvl[0], USD_DECIMALS, true, 1)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 1)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
               {comp.toFixed(2)}
@@ -152,7 +152,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               </span>
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {formatAmountHuman(amount, token.decimals)}
+              {formatAmountHuman(amount, token.decimals, false, 3)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
               {comp.toFixed(2)}

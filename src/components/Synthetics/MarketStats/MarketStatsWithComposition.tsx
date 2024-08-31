@@ -305,7 +305,7 @@ export function MarketStatsWithComposition(p: Props) {
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           currentMarketInfo={marketInfo}
         />
-        <div className="App-card-divider" />
+        <div className="App-card-divider !-mx-20" />
         <div className="App-card-content">
           <MarketDescription marketInfo={marketInfo} />
           {isGlvMarket ? (
@@ -430,8 +430,8 @@ export function MarketStatsWithComposition(p: Props) {
             }
           />
 
-          {sellableRow}
           {buyableRow}
+          {sellableRow}
 
           {isGlvMarket && (
             <>

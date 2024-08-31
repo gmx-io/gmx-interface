@@ -50,7 +50,10 @@ export function PoolSelector({
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
-      .filter((market) => !market.isDisabled && (showAllPools || getMarketIndexName(market) === selectedIndexName))
+      .filter(
+        (market) =>
+          !market.isDisabled && market.indexToken && (showAllPools || getMarketIndexName(market) === selectedIndexName)
+      )
       .map((marketInfo) => {
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
@@ -136,17 +139,15 @@ export function PoolSelector({
 
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
-    const name = showAllPools
-      ? `${marketInfo.indexToken.symbol}: ${getMarketIndexName(marketInfo)}`
-      : getMarketPoolName(marketInfo);
+    const isGlvMarket = isGlv(marketInfo);
+    const tokenPrefix = isGlvMarket ? "GLV:" : "GM:";
 
-    if (isGlv(marketInfo)) {
-      return (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          GLV: {marketInfo.name}
-          <BiChevronDown className="TokenSelector-caret" />
-        </div>
-      );
+    let name;
+
+    if (isGlvMarket) {
+      name = `${tokenPrefix} ${marketInfo.name}`;
+    } else {
+      name = showAllPools ? `${tokenPrefix} ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
     }
 
     if (marketsOptions?.length > 1) {

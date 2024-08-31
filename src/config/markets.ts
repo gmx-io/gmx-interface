@@ -148,7 +148,14 @@ export function getMarketListingDate(chainId: number, marketAddress: string): Da
   return tokenListing.listingDate;
 }
 
-export const GLV_MARKETS: {
+export const GLV_MARKETS_ENABLED = {
+  [ARBITRUM]: false,
+  [ARBITRUM_GOERLI]: false,
+  [AVALANCHE]: false,
+  [AVALANCHE_FUJI]: true,
+};
+
+export const GLV_MARKETS_TITLE: {
   [chainId: number]: Record<string, { name: string; subtitle: string }>;
   default: string;
 } = {

@@ -71,8 +71,9 @@ export function useGlvMarketsInfo(
   }
 ) {
   const { marketsInfoData, tokensData, chainId, account } = deps;
-  const dataStoreAddress = getContract(chainId, "DataStore");
-  const glvReaderAddress = getContract(chainId, "GlvReader");
+
+  const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
+  const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
 
   const { data: glvs, isLoading: isLoadingGlvs } = useMulticall<GlvsRequestConfig, GlvList>(
     chainId,
@@ -99,7 +100,7 @@ export function useGlvMarketsInfo(
     }
   );
 
-  const shouldRequest = enabled && glvs && marketsInfoData && tokensData && account;
+  const shouldRequest = enabled && glvs && marketsInfoData && tokensData;
 
   const { data: glvMarketInfo, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvMarketsData | undefined>(
     chainId,
@@ -160,16 +161,19 @@ export function useGlvMarketsInfo(
             contractAddress: glv.glvToken,
             abi: TokenAbi.abi,
             calls: {
-              balance: {
-                methodName: "balanceOf",
-                params: [account],
-              },
               symbol: {
                 methodName: "symbol",
                 params: [],
               },
             },
           };
+
+          if (account) {
+            acc[glv.glvToken + "-tokenData"].calls.balance = {
+              methodName: "balanceOf",
+              params: [account],
+            };
+          }
 
           acc[glv.glvToken + "-info"] = {
             contractAddress: dataStoreAddress,
@@ -226,7 +230,7 @@ export function useGlvMarketsInfo(
         return request;
       },
       parseResponse({ data }) {
-        if (!glvs || !marketsInfoData || !tokensData || !account) {
+        if (!glvs || !marketsInfoData || !tokensData) {
           return undefined;
         }
 
@@ -241,7 +245,7 @@ export function useGlvMarketsInfo(
 
           const tokenConfig = getTokenBySymbol(chainId, "GLV");
 
-          const balance = data[glv.glvToken + "-tokenData"].balance.returnValues[0];
+          const balance = data[glv.glvToken + "-tokenData"].balance?.returnValues[0] ?? 0n;
           const contractSymbol = data[glv.glvToken + "-tokenData"].symbol.returnValues[0];
 
           const indexToken: TokenData & {
