@@ -13,13 +13,22 @@ import { bigMath } from "lib/bigmath";
 import { convertToUsd } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens";
 
+export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, glv: GlvMarketInfo) {
+  const glvPriceUsd = glv.indexToken.prices.maxPrice;
+
+  return bigMath.min(
+    market.maxMarketTokenBalanceUsd,
+    convertToUsd(market.glvMaxMarketTokenBalanceAmount, glv.indexToken.decimals, glvPriceUsd) ?? 0n
+  );
+}
+
 export function getMaxUsdBuyableAmountInMarketWithGm(
-  glvPriceUsd: bigint,
   market: GlvMarket,
   glv: GlvMarketInfo,
   gmMarketInfo: MarketInfo,
   gmMarketToken: TokenData
 ) {
+  const glvPriceUsd = glv.indexToken.prices.maxPrice;
   const mintableInGmMarket = getMintableMarketTokens(gmMarketInfo, gmMarketToken);
   const maxUsdInGmGlv = getMaxUsdBuyableAmountInMarket(glvPriceUsd, market, glv);
 

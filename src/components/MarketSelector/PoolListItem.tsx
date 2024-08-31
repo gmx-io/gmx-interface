@@ -2,15 +2,17 @@ import cx from "classnames";
 import { useCallback } from "react";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
+
 import { MarketInfo } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
+import { isGlv } from "domain/synthetics/markets/glv";
+
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
-import { isGlv } from "domain/synthetics/markets/glv";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { MarketOption, MarketState } from "./types";
 
 export function PoolListItem(props: {

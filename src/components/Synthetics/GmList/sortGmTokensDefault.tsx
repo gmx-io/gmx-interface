@@ -47,7 +47,7 @@ export function sortGmTokensDefault(marketsInfoData: AllMarketsInfoData, marketT
     let groupKey: Address | "nonZero";
     if (marketTokenData.balance !== undefined && marketTokenData.balance !== 0n) {
       groupKey = "nonZero";
-    } else if ("isSpotOnly" in market && market.isSpotOnly) {
+    } else if (!isGlvMarket && market.isSpotOnly) {
       groupKey = market.marketTokenAddress as Address;
     } else {
       groupKey = market.indexTokenAddress as Address;
@@ -97,7 +97,7 @@ export function sortGmTokensDefault(marketsInfoData: AllMarketsInfoData, marketT
         return 1;
       }
 
-      // Glv second
+      // GLV second
       if (a.isGlv && !b.isGlv) {
         return -1;
       }

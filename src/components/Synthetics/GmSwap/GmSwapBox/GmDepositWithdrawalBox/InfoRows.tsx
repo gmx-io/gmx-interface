@@ -1,26 +1,27 @@
 import { t } from "@lingui/macro";
 import values from "lodash/values";
+import { useCallback } from "react";
+
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { GmPoolsSelectorForGlvMarket } from "components/MarketSelector/GmPoolsSelectorForGlvMarket";
+import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
 import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
+import { MarketInfo } from "domain/synthetics/markets";
+import { isGlv } from "domain/synthetics/markets/glv";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { TokensData } from "domain/synthetics/tokens";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees } from "domain/synthetics/trade";
 
-import { showMarketToast } from "../showMarketToast";
-
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { GmPoolsSelector } from "components/MarketSelector/GmSelectorForGlv";
-import { PoolSelector } from "components/MarketSelector/PoolSelector";
-import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
-import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-import { MarketInfo } from "domain/synthetics/markets";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { useCallback } from "react";
-import { isGlv } from "../../../../../domain/synthetics/markets/glv";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
+import { showMarketToast } from "../showMarketToast";
 
 export function InfoRows({
   indexName,
@@ -73,7 +74,7 @@ export function InfoRows({
           label={t`Pool`}
           value={
             marketInfo && isGlv(marketInfo) ? (
-              <GmPoolsSelector
+              <GmPoolsSelectorForGlvMarket
                 label={t`Pool`}
                 className="-mr-4"
                 isDeposit={isDeposit}

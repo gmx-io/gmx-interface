@@ -3179,7 +3179,7 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 msgid "Select a market"
 msgstr "Select a market"
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
 
@@ -4166,7 +4166,7 @@ msgstr "Shorts Net Rate / 1h"
 msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 
@@ -4384,7 +4384,7 @@ msgstr "Fulfilling buy request"
 msgid "Reason: {0}"
 msgstr "Reason: {0}"
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet total accrued Fees"
 msgstr "Wallet total accrued Fees"
 
@@ -4986,7 +4986,7 @@ msgstr "There is no liquidation price, as the position's collateral value will i
 msgid "Min. required Collateral"
 msgstr "Min. required Collateral"
 
-#: src/components/MarketSelector/GmSelectorForGlv.tsx
+#: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
 msgstr "Search Pool"
@@ -5034,7 +5034,7 @@ msgstr "Insufficient liquidity to swap collateral"
 msgid "Market Decrease"
 msgstr "Market Decrease"
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet 365d expected Fees"
 msgstr "Wallet 365d expected Fees"
 
@@ -5578,7 +5578,7 @@ msgstr "Execute Limit Swap"
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d accrued Fees"
 msgstr "{daysConsidered}d accrued Fees"
 
@@ -5608,7 +5608,7 @@ msgstr "High USDG Slippage, Long Anyway"
 msgid "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
 msgstr "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet total"
 msgstr "Wallet total"
 
@@ -7462,11 +7462,11 @@ msgstr "Claims History"
 msgid "About"
 msgstr "About"
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Total accrued Fees"
 msgstr "Total accrued Fees"
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr "Fee values do not include incentives."
 
@@ -7594,7 +7594,7 @@ msgstr "You do not have any eligible trade during the competition window."
 msgid "Last 30d"
 msgstr "Last 30d"
 
-#: src/components/Synthetics/GmList/TokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
 msgstr "The fees' USD value is calculated at the time they are accrued and does not include incentives."
 

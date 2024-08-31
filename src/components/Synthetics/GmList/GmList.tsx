@@ -48,7 +48,7 @@ import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderLis
 import { ApyTooltipContent } from "./ApyTooltipContent";
 import { MintableAmount } from "./MintableAmount";
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
-import { TokensBalanceInfo, TokensTotalBalanceInfo } from "./TokensBalanceInfo";
+import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
 
 type Props = {
   glvMarketsTokensApyData: MarketTokensAPRData | undefined;
@@ -172,7 +172,7 @@ export function GmList({
               </ExchangeTh>
               <ExchangeTh>
                 <Sorter {...getSorterProps("wallet")}>
-                  <TokensTotalBalanceInfo
+                  <GmTokensTotalBalanceInfo
                     balance={userTotalGmInfo?.balance}
                     balanceUsd={userTotalGmInfo?.balanceUsd}
                     userEarnings={userEarnings}
@@ -501,7 +501,7 @@ function GmListItem({
       </ExchangeTd>
 
       <ExchangeTd>
-        <TokensBalanceInfo
+        <GmTokensBalanceInfo
           token={token}
           daysConsidered={daysConsidered}
           earnedRecently={marketEarnings?.recent}

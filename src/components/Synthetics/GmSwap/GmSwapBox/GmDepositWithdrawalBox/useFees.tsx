@@ -20,6 +20,7 @@ import {
 } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
+
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 
 export const useFees = ({

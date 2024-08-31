@@ -1,13 +1,15 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { getMaxPoolUsd, getPoolUsdWithoutPnl, MarketInfo } from "domain/synthetics/markets";
 import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { TokenData } from "domain/synthetics/tokens";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { getMaxPoolUsd, getPoolUsdWithoutPnl, MarketInfo } from "domain/synthetics/markets";
+
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export function MintableAmount({

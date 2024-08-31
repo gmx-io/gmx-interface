@@ -1,17 +1,21 @@
+import { useCallback, useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
+
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { useCallback, useMemo } from "react";
+
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
-export const TokensBalanceInfo = ({
+export const GmTokensBalanceInfo = ({
   token,
   earnedTotal,
   earnedRecently,
@@ -79,7 +83,7 @@ export const TokensBalanceInfo = ({
   );
 };
 
-export const TokensTotalBalanceInfo = ({
+export const GmTokensTotalBalanceInfo = ({
   balance,
   balanceUsd,
   userEarnings,

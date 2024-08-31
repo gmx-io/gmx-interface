@@ -1,11 +1,17 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { getContract } from "config/contracts";
+
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
@@ -20,12 +26,25 @@ import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavori
 import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token, getMinResidualAmount } from "domain/tokens";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+import { isGlv } from "domain/synthetics/markets/glv";
+
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { useCallback, useEffect, useMemo } from "react";
+
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import type { GmSwapBoxProps } from "../GmSwapBox";
 import { showMarketToast } from "../showMarketToast";
 import { Mode, Operation } from "../types";
@@ -34,27 +53,12 @@ import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
-
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import { getContract } from "config/contracts";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { PoolSelector } from "components/MarketSelector/PoolSelector";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isGlv } from "domain/synthetics/markets/glv";
 import { Swap } from "../Swap";
 import { InfoRows } from "./InfoRows";
 import { useFees } from "./useFees";
 import { useSubmitButtonState } from "./useSubmitButtonState";
-import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: GlvMarketInfo }) {
+export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
     selectedMarketAddress: marketAddress,
     operation,
@@ -66,7 +70,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     onSelectGlvGmMarket,
   } = p;
   const isMetamaskMobile = useIsMetamaskMobile();
-
   const { shouldDisableValidationForTesting } = useSettings();
   const { chainId } = useChainId();
 
@@ -251,7 +254,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
                 };
               }
             })
-            .filter(Boolean as unknown as <T>(x: T | undefined) => x is T),
+            .filter(Boolean as unknown as FilterOutFalsy),
         ];
       }
 
@@ -385,7 +388,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     isHighPriceImpact,
     isHighPriceImpactAccepted,
     marketInfo: underlyingGmMarket,
-    vaultInfo,
+    vaultInfo: isGlvMarket ? vaultInfo : undefined,
     marketToken: marketToken!,
     operation,
     shouldDisableValidation: shouldDisableValidationForTesting,
@@ -401,7 +404,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
     marketTokensData,
-    isGlv: Boolean(isGlvMarket),
     selectedGlvGmMarket,
     isHighFeeConsentError,
     isMarketTokenDeposit: isMarketTokenDeposit,
@@ -433,7 +435,34 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
       marketToken?.balance &&
       (marketTokenAmount === undefined || marketTokenAmount !== marketToken.balance)) ||
     false;
+
+  const marketTokenFormatted = useMemo(() => {
+    const usedMarketToken = isGlvMarket ? marketInfo?.indexToken : marketToken;
+
+    return formatTokenAmount(usedMarketToken?.balance, usedMarketToken?.decimals, "", {
+      useCommas: true,
+    });
+  }, [marketToken, marketInfo, isGlvMarket]);
+
+  const { viewTokenInfo, showTokenName } = useMemo(() => {
+    const selectedToken = firstTokenAddress ? marketTokensData?.[firstTokenAddress] : undefined;
+    const isGm = selectedToken?.symbol === "GM";
+
+    return {
+      viewTokenInfo: isGm
+        ? {
+            ...marketsInfoData?.[selectedToken.address].indexToken,
+            name: getMarketIndexName({
+              indexToken: marketsInfoData?.[selectedToken.address].indexToken,
+              isSpotOnly: marketsInfoData?.[selectedToken.address].isSpotOnly,
+            }),
+          }
+        : selectedToken,
+      showTokenName: isGm,
+    };
+  }, [firstTokenAddress, marketTokensData, marketsInfoData]);
   // #endregion
+
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
     (tokenAddress: string) => {
@@ -603,6 +632,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
     [onMarketChange]
   );
   // #endregion
+
   // #region Effects
   useUpdateInputAmounts({
     marketToken: underlyingGmMarketToken,
@@ -661,32 +691,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps & { glvMarket?: Glv
   });
   // #endregion
 
-  const marketTokenFormatted = useMemo(() => {
-    const usedMarketToken = isGlvMarket ? marketInfo?.indexToken : marketToken;
-
-    return formatTokenAmount(usedMarketToken?.balance, usedMarketToken?.decimals, "", {
-      useCommas: true,
-    });
-  }, [marketToken, marketInfo, isGlvMarket]);
-
-  const { viewTokenInfo, showTokenName } = useMemo(() => {
-    const selectedToken = firstTokenAddress ? marketTokensData?.[firstTokenAddress] : undefined;
-    const isGm = selectedToken?.symbol === "GM";
-
-    return {
-      viewTokenInfo: isGm
-        ? {
-            ...marketsInfoData?.[selectedToken.address].indexToken,
-            name: getMarketIndexName({
-              indexToken: marketsInfoData?.[selectedToken.address].indexToken,
-              isSpotOnly: marketsInfoData?.[selectedToken.address].isSpotOnly,
-            }),
-          }
-        : selectedToken,
-      showTokenName: isGm,
-    };
-  }, [firstTokenAddress, marketTokensData, marketsInfoData]);
-
+  // #region Render
   const submitButton = useMemo(() => {
     const btn = (
       <Button

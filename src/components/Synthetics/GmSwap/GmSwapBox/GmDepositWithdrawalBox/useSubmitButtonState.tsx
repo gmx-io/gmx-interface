@@ -1,8 +1,11 @@
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+import uniq from "lodash/uniq";
+import { useCallback, useMemo } from "react";
 import { plural, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+
 import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
@@ -14,14 +17,15 @@ import {
   useTokensAllowanceData,
 } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
+import { getSellableInfoGlv } from "domain/synthetics/markets/glv";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+
 import useWallet from "lib/wallets/useWallet";
-import uniq from "lodash/uniq";
-import { useCallback, useMemo } from "react";
+
 import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useFees } from "./useFees";
-import { getSellableInfoGlv } from "domain/synthetics/markets/glv";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -58,7 +62,6 @@ interface Props {
   tokensData: TokensData | undefined;
   marketTokensData?: TokensData;
   executionFee: ExecutionFee | undefined;
-  isGlv: boolean;
   selectedGlvGmMarket?: string;
   isMarketTokenDeposit?: boolean;
   marketsInfoData?: MarketsInfoData;
@@ -97,7 +100,6 @@ export const useSubmitButtonState = ({
   tokensData,
   marketTokensData,
   executionFee,
-  isGlv,
   selectedGlvGmMarket,
   isHighFeeConsentError,
   vaultInfo,
@@ -121,7 +123,6 @@ export const useSubmitButtonState = ({
     shouldDisableValidation,
     tokensData,
     executionFee,
-    isGlv,
     selectedGlvGmMarket,
     vaultInfo,
     isMarketTokenDeposit,
@@ -302,7 +303,7 @@ export const useSubmitButtonState = ({
       };
     }
 
-    const operationTokenSymbol = isGlv ? "GLV" : "GM";
+    const operationTokenSymbol = vaultInfo ? "GLV" : "GM";
 
     if (isSubmitting) {
       return {
@@ -356,8 +357,8 @@ export const useSubmitButtonState = ({
     tokensData,
     marketTokensData,
     payTokenAddresses.length,
-    isGlv,
     isHighFeeConsentError,
     swapErrorDescription,
+    vaultInfo,
   ]);
 };

@@ -27,6 +27,7 @@ export type GmSwapBoxProps = {
   onSetOperation: (operation: Operation) => void;
   selectedGlvGmMarket?: string;
   onSelectGlvGmMarket?: (marketAddress?: string) => void;
+  glvMarket?: GlvMarketInfo;
 };
 
 const OPERATION_LABELS_GM = {

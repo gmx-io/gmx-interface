@@ -1,7 +1,9 @@
 import { Trans } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import { getBridgingOptionsForToken } from "config/bridging";
 import { getChainName } from "config/chains";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 type Props = {
   chainId: number;

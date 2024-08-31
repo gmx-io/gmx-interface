@@ -20,13 +20,10 @@ export const useBestGmPoolAddressForGlv = (
       return selectedGmPoolAddress;
     }
 
-    const glvPrice = glvMarket.indexToken.prices.maxPrice;
-
     for (const market of poolsWithComposition.sort((a, b) => {
       return b.comp - a.comp;
     })) {
       const vailableBuyableGmUsd = getMaxUsdBuyableAmountInMarketWithGm(
-        glvPrice,
         market.gmMarket,
         glvMarket,
         market.pool,

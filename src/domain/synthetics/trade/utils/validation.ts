@@ -16,7 +16,7 @@ import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getMaxUsdBuyableAmountInMarket, getMintableInfoGlv, isGlv } from "../../markets/glv";
+import { getMaxUsdBuyableAmountInMarketWithGm, getMintableInfoGlv, isGlv } from "../../markets/glv";
 import { GlvMarketInfo } from "../../markets/useGlvMarkets";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
@@ -662,7 +662,7 @@ export function getGmSwapError(p: {
       const glvGmMarket = vaultInfo.markets.find(({ address }) => address === marketInfo.marketTokenAddress);
 
       const maxMintableInMarketUsd = glvGmMarket
-        ? getMaxUsdBuyableAmountInMarket(vaultInfo.indexToken.prices.minPrice, glvGmMarket, vaultInfo)
+        ? getMaxUsdBuyableAmountInMarketWithGm(glvGmMarket, vaultInfo, marketInfo, marketToken)
         : 0n;
 
       if (marketTokenUsd !== undefined && (mintableGmUsd < marketTokenUsd || maxMintableInMarketUsd < marketTokenUsd)) {

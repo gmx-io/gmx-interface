@@ -35,7 +35,6 @@ interface Props {
 
   tokensData: TokensData | undefined;
   executionFee: ExecutionFee | undefined;
-  isGlv: boolean;
   selectedGlvGmMarket?: string;
   isMarketTokenDeposit?: boolean;
 }
@@ -53,7 +52,6 @@ export const useDepositWithdrawalTransactions = ({
   shouldDisableValidation,
   tokensData,
   executionFee,
-  isGlv,
   selectedGlvGmMarket,
   vaultInfo,
   isMarketTokenDeposit,
@@ -82,7 +80,7 @@ export const useDepositWithdrawalTransactions = ({
         ? initialLongTokenAddress
         : shortToken?.address || marketInfo.shortTokenAddress;
 
-      if (isGlv && selectedGlvGmMarket && vaultInfo) {
+      if (vaultInfo && selectedGlvGmMarket) {
         return createGlvDepositTxn(chainId, signer, {
           account,
           initialLongTokenAddress,
@@ -139,7 +137,6 @@ export const useDepositWithdrawalTransactions = ({
       setPendingDeposit,
       setPendingTxns,
       selectedGlvGmMarket,
-      isGlv,
       vaultInfo,
       isMarketTokenDeposit,
     ]
@@ -160,7 +157,7 @@ export const useDepositWithdrawalTransactions = ({
         return Promise.resolve();
       }
 
-      if (isGlv && selectedGlvGmMarket && vaultInfo) {
+      if (vaultInfo && selectedGlvGmMarket) {
         return createGlvWithdrawalTxn(chainId, signer, {
           account,
           initialLongTokenAddress: longToken?.address || marketInfo.longTokenAddress,
@@ -217,7 +214,6 @@ export const useDepositWithdrawalTransactions = ({
       setPendingWithdrawal,
       setPendingTxns,
       selectedGlvGmMarket,
-      isGlv,
       vaultInfo,
     ]
   );

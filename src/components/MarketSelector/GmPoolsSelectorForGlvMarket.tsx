@@ -4,35 +4,37 @@ import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
+
+import { useLocalizedMap } from "lib/i18n";
+import { getByKey } from "lib/objects";
+
+import SearchInput from "components/SearchInput/SearchInput";
+import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
+import Tab from "components/Tab/Tab";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   gmTokensFavoritesTabOptionLabels,
   gmTokensFavoritesTabOptions,
 } from "domain/synthetics/tokens/useGmTokensFavorites";
-import { useLocalizedMap } from "lib/i18n";
-import { getByKey } from "lib/objects";
 
-import SearchInput from "components/SearchInput/SearchInput";
-import Tab from "components/Tab/Tab";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
-
-import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { PoolListItem } from "./PoolListItem";
+import { CommonPoolSelectorProps, MarketOption } from "./types";
 
 import "./MarketSelector.scss";
-import { CommonPoolSelectorProps, MarketOption } from "./types";
-import { PoolListItem } from "./PoolListItem";
 
 type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   isDeposit: boolean;
-  glvMarketInfo?: GlvMarketInfo;
+  glvMarketInfo: GlvMarketInfo;
   onSelectGmMarket?: (market: MarketInfo) => void;
   disablePoolSelector?: boolean;
 };
 
-export function GmPoolsSelector({
+export function GmPoolsSelectorForGlvMarket({
   className,
   isDeposit,
   label,
@@ -88,7 +90,7 @@ export function GmPoolsSelector({
             state,
           };
         })
-        .filter(Boolean as unknown as <T>(value: T | null) => value is T) ?? [];
+        .filter(Boolean as unknown as FilterOutFalsy) ?? [];
 
     const marketsWithBalance: MarketOption[] = [];
     const marketsWithoutBalance: MarketOption[] = [];
@@ -109,11 +111,7 @@ export function GmPoolsSelector({
   }, [getMarketState, marketTokensData, markets, glvMarketInfo]);
 
   const selectedPool = useMemo(
-    // @todo pick best pool
-    () =>
-      !selectedMarketAddress
-        ? marketsOptions[0]
-        : marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress),
+    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress),
     [marketsOptions, selectedMarketAddress]
   );
 
@@ -170,32 +168,17 @@ export function GmPoolsSelector({
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
 
-    if (glvMarketInfo) {
-      return (
-        <div
-          className={cx("TokenSelector-box", {
-            "pointer-events-none": disablePoolSelector,
-          })}
-          onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}
-        >
-          {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-          {!disablePoolSelector && <BiChevronDown className="TokenSelector-caret" />}
-        </div>
-      );
-    }
-
-    const name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
-
-    if (marketsOptions?.length > 1) {
-      return (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          {name ? name : "..."}
-          <BiChevronDown className="TokenSelector-caret" />
-        </div>
-      );
-    }
-
-    return <div>{name ? name : "..."}</div>;
+    return (
+      <div
+        className={cx("TokenSelector-box", {
+          "pointer-events-none": disablePoolSelector,
+        })}
+        onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}
+      >
+        {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
+        {!disablePoolSelector && <BiChevronDown className="TokenSelector-caret" />}
+      </div>
+    );
   }
 
   return (

@@ -21,7 +21,7 @@ type TokenState = {
   message?: string;
 };
 
-type ExtendedToken = Token & { isGm?: boolean };
+export type ExtendedToken = Token & { isGm?: boolean };
 
 type Props = {
   chainId: number;

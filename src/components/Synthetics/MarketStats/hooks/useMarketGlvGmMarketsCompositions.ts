@@ -1,10 +1,14 @@
+import { useMemo } from "react";
+
 import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+
 import { useMarketTokensData } from "domain/synthetics/markets";
-import { getMaxUsdBuyableAmountInMarket, isGlv } from "domain/synthetics/markets/glv";
+import { getMaxUsdCapUsdInGmGlvMarket, isGlv } from "domain/synthetics/markets/glv";
+import { convertToUsd } from "domain/synthetics/tokens";
+
 import { useChainId } from "lib/chains";
 import { bigintToNumber } from "lib/numbers";
-import { useMemo } from "react";
 
 export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: string) => {
   const { chainId } = useChainId();
@@ -41,13 +45,13 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
           pool: gmMarket,
           token: token,
           tvl: [
-            (market.gmBalance * token.prices.maxPrice) / 10n ** BigInt(token.decimals),
-            getMaxUsdBuyableAmountInMarket(glv.indexToken.prices.maxPrice, market, glv),
+            convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n,
+            getMaxUsdCapUsdInGmGlvMarket(market, glv),
           ] as const,
           comp: sum === 0n ? 0 : (bigintToNumber(market.gmBalance, 1) * 100) / bigintToNumber(sum, 1),
         };
       })
-      .filter(Boolean as unknown as <T>(x: T | null) => x is T);
+      .filter(Boolean as unknown as FilterOutFalsy);
 
     return rows.sort((a, b) => {
       return b.comp - a.comp;
