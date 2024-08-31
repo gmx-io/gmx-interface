@@ -74,7 +74,7 @@ export function getSellableInfoGlv(
   tokensData: TokensData | undefined,
   gmMarketAddress?: string
 ) {
-  const glvPriceUsd = glv.indexToken.prices.maxPrice;
+  const glvPriceUsd = glv.indexToken.prices.minPrice;
   const amountUsd = values(glv.markets).reduce((acc, market) => {
     if (gmMarketAddress && gmMarketAddress !== market.address) {
       return acc;
@@ -96,7 +96,7 @@ export function getSellableInfoGlv(
 
     const marketSellableUsd =
       gmMarket && gmMarket.indexToken.prices ? getSellableMarketToken(gmMarket, gmMarketToken)?.totalUsd ?? 0n : 0n;
-    const gmBalanceUsd = convertToUsd(market.gmBalance, glv.indexToken.decimals, glvPriceUsd) ?? 0n;
+    const gmBalanceUsd = convertToUsd(market.gmBalance, gmMarketToken.decimals, gmMarketToken.prices.minPrice) ?? 0n;
 
     return acc + bigMath.min(marketSellableUsd, gmBalanceUsd);
   }, 0n);
@@ -105,7 +105,7 @@ export function getSellableInfoGlv(
     // @todo
     maxLongSellableUsd: 0n,
     maxShortSellableUsd: 0n,
-    totalAmount: (amountUsd / glvPriceUsd) * 10n ** BigInt(glv.indexToken.decimals),
+    totalAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,
     totalUsd: amountUsd,
   };
 }
