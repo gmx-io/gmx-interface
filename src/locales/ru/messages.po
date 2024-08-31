@@ -3223,6 +3223,11 @@ msgstr ""
 msgid "Subaccount activation failed"
 msgstr ""
 
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "COMP."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "You have no GMX tokens to claim."
 msgstr ""
@@ -3864,8 +3869,8 @@ msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-msgid "COMP"
-msgstr ""
+#~ msgid "COMP"
+#~ msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx

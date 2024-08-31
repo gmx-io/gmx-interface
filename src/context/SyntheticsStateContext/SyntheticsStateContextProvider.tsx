@@ -128,8 +128,7 @@ export function SyntheticsStateContextProvider({
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
 
-  const shouldFetchGlvMarkets =
-    GLV_MARKETS_ENABLED[chainId] && (pageType === "pools" || pageType === "dashboard" || pageType === "earn");
+  const shouldFetchGlvMarkets = GLV_MARKETS_ENABLED[chainId] && (pageType === "pools" || pageType === "earn");
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,

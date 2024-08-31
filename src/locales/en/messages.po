@@ -3223,6 +3223,11 @@ msgstr "{longShortText} {0} Open Interest"
 msgid "Subaccount activation failed"
 msgstr "Subaccount activation failed"
 
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "COMP."
+msgstr "COMP."
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "You have no GMX tokens to claim."
 msgstr "You have no GMX tokens to claim."
@@ -3867,8 +3872,8 @@ msgstr "PnL Analysis"
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-msgid "COMP"
-msgstr "COMP"
+#~ msgid "COMP"
+#~ msgstr "COMP"
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
