@@ -20,6 +20,7 @@ export type CommonPoolSelectorProps = {
 export type MarketState = {
   disabled?: boolean;
   message?: string;
+  warning?: string;
 };
 
 export type MarketOption = {

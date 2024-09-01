@@ -188,19 +188,21 @@ export function PoolSelector({
         />
 
         <div className="TokenSelector-tokens">
-          {filteredOptions.map((option, marketIndex) => (
-            <PoolListItem
-              key={option.marketInfo.marketTokenAddress}
-              {...option}
-              marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
-              isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
-              isInFirstHalf={marketIndex < filteredOptions.length / 2}
-              showAllPools={showAllPools}
-              showBalances={showBalances}
-              onFavoriteClick={handleFavoriteClick}
-              onSelectOption={onSelectOption}
-            />
-          ))}
+          {filteredOptions.map((option, marketIndex) => {
+            return (
+              <PoolListItem
+                key={option.marketInfo.marketTokenAddress}
+                {...option}
+                marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
+                isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
+                isInFirstHalf={marketIndex < filteredOptions.length / 2}
+                showAllPools={showAllPools}
+                showBalances={showBalances}
+                onFavoriteClick={handleFavoriteClick}
+                onSelectOption={onSelectOption}
+              />
+            );
+          })}
         </div>
       </Modal>
 

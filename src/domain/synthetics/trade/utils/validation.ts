@@ -3,6 +3,7 @@ import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import {
   MarketInfo,
+  getMarketIndexName,
   getMarketPoolName,
   getMaxAllowedLeverageByMinCollateralFactor,
   getMintableMarketTokens,
@@ -16,7 +17,7 @@ import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getMaxUsdBuyableAmountInMarketWithGm, getMintableInfoGlv, isGlv } from "../../markets/glv";
+import { getMaxUsdBuyableAmountInMarketWithGm, isGlv } from "../../markets/glv";
 import { GlvMarketInfo } from "../../markets/useGlvMarkets";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
@@ -611,10 +612,6 @@ export function getGmSwapError(p: {
 
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
-    const mintableInfo = isGlv(marketInfo)
-      ? getMintableInfoGlv(marketInfo, marketTokensData)
-      : getMintableMarketTokens(marketInfo, marketToken);
-
     if (
       (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0) &&
       bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd
@@ -622,12 +619,27 @@ export function getGmSwapError(p: {
       return [t`Fees exceed Pay amount`];
     }
 
-    if (longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount) {
-      return [t`Max ${longToken?.symbol} amount exceeded`];
-    }
+    if (vaultInfo) {
+      const glvMarket = vaultInfo.markets.find(({ address }) => address === marketInfo.marketTokenAddress);
+      const gmToken = marketTokensData?.[marketInfo.marketTokenAddress];
+      if (glvMarket && gmToken) {
+        const maxBuyableUsdInGm = getMaxUsdBuyableAmountInMarketWithGm(glvMarket, vaultInfo, marketInfo, gmToken);
+        if (marketTokenUsd !== undefined && maxBuyableUsdInGm < marketTokenUsd) {
+          return [
+            t`Max pool amount reached`,
+            t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`,
+          ];
+        }
+      }
+    } else {
+      const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
+      if (longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount) {
+        return [t`Max ${longToken?.symbol} amount exceeded`];
+      }
 
-    if (shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount) {
-      return [t`Max ${shortToken?.symbol} amount exceeded`];
+      if (shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount) {
+        return [t`Max ${shortToken?.symbol} amount exceeded`];
+      }
     }
   } else if (
     (fees?.totalFees?.deltaUsd ?? 0n) < 0 &&
@@ -671,8 +683,8 @@ export function getGmSwapError(p: {
         return [
           t`Max pool amount reached`,
           longToken?.symbol === "GM"
-            ? t`The buyable cap for the pool GM: ${marketInfo.name} in GLV: ${vaultInfo.name} [${getMarketPoolName({ longToken: vaultInfo.longToken, shortToken: vaultInfo.shortToken })}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
-            : t`The buyable cap for the pool GM: ${marketInfo.name} in GLV: ${vaultInfo.name} [${getMarketPoolName({ longToken: vaultInfo.longToken, shortToken: vaultInfo.shortToken })}] has been reached. Please choose a different pool or reduce the buy size.`,
+            ? t`The buyable cap for the pool GM: ${marketInfo.name} in GLV: ${vaultInfo.name} [${getMarketPoolName(vaultInfo)}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
+            : t`The buyable cap for the pool GM: ${marketInfo.name} in GLV: ${vaultInfo.name} [${getMarketPoolName(vaultInfo)}] has been reached. Please choose a different pool or reduce the buy size.`,
         ];
       }
     }
@@ -691,7 +703,10 @@ export function getGmSwapError(p: {
 
     if (vaultInfo) {
       if (marketTokenAmount > (vaultSellableAmount ?? 0n)) {
-        return [t`Insufficient GLV liquidity`];
+        return [
+          t`Insufficient GLV liquidity`,
+          t`There isn't enough GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+        ];
       }
     }
   }

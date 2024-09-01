@@ -828,13 +828,18 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           <div>
             {submitState.tokensToApprove.map((address) => {
               const token = getTokenData(allTokensData, address)!;
+              const market = getByKey(marketsInfoData, address);
               let marketTokenData = address === marketToken?.address && getByKey(marketsInfoData, marketToken?.address);
               return (
                 <div key={address}>
                   <ApproveTokenButton
                     key={address}
                     tokenAddress={address}
-                    tokenSymbol={marketTokenData ? `GM: ${marketTokenData.name}` : token.assetSymbol ?? token.symbol}
+                    tokenSymbol={
+                      marketTokenData
+                        ? `${isGlv(market) ? "GLV" : "GM"}: ${marketTokenData.name}`
+                        : token.assetSymbol ?? token.symbol
+                    }
                     spenderAddress={routerAddress}
                   />
                 </div>

@@ -14,7 +14,7 @@ import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/s
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useToastAutoClose } from "./useToastAutoClose";
 import { StatusNotification } from "./StatusNotification";
 import { isGlv } from "domain/synthetics/markets/glv";
@@ -148,7 +148,7 @@ export function GmStatusNotification({
       const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
-      let tokensText = "";
+      let tokensText: string | ReactNode = "";
       if (marketInfo?.isSameCollaterals) {
         tokensText = longToken?.symbol ?? "";
       } else {
@@ -162,7 +162,12 @@ export function GmStatusNotification({
         const gmMarket = marketsInfoData?.[pendingDepositData.gmAddress];
 
         if (gmMarket) {
-          tokensText = "GM: " + getMarketIndexName(gmMarket) + `[${getMarketPoolName(gmMarket)}]`;
+          tokensText = (
+            <>
+              GM: {getMarketIndexName(gmMarket)}{" "}
+              <span className="subtext gm-toast">[{getMarketPoolName(gmMarket)}]</span>
+            </>
+          );
         }
       }
 

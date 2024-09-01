@@ -43,6 +43,9 @@ import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useRedirectToBuyOnShiftToGlv } from "./useRedirectToBuyOnShiftToGlv";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { isGlv } from "domain/synthetics/markets/glv";
+import { MarketState } from "components/MarketSelector/types";
 
 export function GmShiftBox({
   selectedMarketAddress,
@@ -217,6 +220,17 @@ export function GmShiftBox({
     [handleClearValues]
   );
 
+  const getShiftReceiveMarketState = useCallback((marketInfo: MarketInfo | GlvMarketInfo): MarketState => {
+    if (isGlv(marketInfo)) {
+      return {
+        warning:
+          "Shifting From GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.",
+      };
+    }
+
+    return {};
+  }, []);
+
   return (
     <>
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
@@ -264,6 +278,7 @@ export function GmShiftBox({
             markets={shiftAvailableRelatedMarkets}
             onSelectMarket={handleToTokenSelectMarket}
             selectedIndexName={toIndexName}
+            getMarketState={getShiftReceiveMarketState}
             showAllPools
             isSideMenu
             showIndexIcon

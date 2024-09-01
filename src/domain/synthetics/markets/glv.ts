@@ -59,8 +59,6 @@ export function getMintableInfoGlv(glv: GlvMarketInfo, marketTokensData: TokensD
   return {
     mintableAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,
     mintableUsd: amountUsd,
-
-    // @todo
     longDepositCapacityUsd: 0n,
     shortDepositCapacityUsd: 0n,
     longDepositCapacityAmount: 0n,
@@ -95,14 +93,13 @@ export function getSellableInfoGlv(
     }
 
     const marketSellableUsd =
-      gmMarket && gmMarket.indexToken.prices ? getSellableMarketToken(gmMarket, gmMarketToken)?.totalUsd ?? 0n : 0n;
+      gmMarket && gmMarket.indexToken?.prices ? getSellableMarketToken(gmMarket, gmMarketToken)?.totalUsd ?? 0n : 0n;
     const gmBalanceUsd = convertToUsd(market.gmBalance, gmMarketToken.decimals, gmMarketToken.prices.minPrice) ?? 0n;
 
     return acc + bigMath.min(marketSellableUsd, gmBalanceUsd);
   }, 0n);
 
   return {
-    // @todo
     maxLongSellableUsd: 0n,
     maxShortSellableUsd: 0n,
     totalAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,

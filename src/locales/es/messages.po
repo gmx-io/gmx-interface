@@ -663,6 +663,7 @@ msgid "Claimable Rebates"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool amount reached"
 msgstr ""
 
@@ -1938,6 +1939,10 @@ msgstr "La posición se abrirá a un precio de referencia de {0}, sin tener en c
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
 msgstr "Falló la creación de la orden límite."
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -6087,6 +6092,7 @@ msgstr ""
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
