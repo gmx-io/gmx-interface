@@ -28,7 +28,7 @@ import { MARKET_STATS_DECIMALS } from "config/ui";
 import { getMintableInfoGlv, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
-import { formatDateTime } from "../../../lib/dates";
+import { formatDateTime, secondsToHumanReadableDuration } from "../../../lib/dates";
 import { bigintToNumber } from "../../../lib/numbers";
 
 import { CompositionBar } from "./components/CompositionBar";
@@ -485,58 +485,4 @@ export function MarketStatsWithComposition(p: Props) {
       </div>
     </div>
   );
-}
-
-/**
- *
- * @returns every N weeks, days, hours, minutes, and seconds
- */
-function secondsToHumanReadableDuration(s: bigint, roundUpTo?: "minutes" | "hours" | "days" | "weeks"): string {
-  const secs = Number(s);
-
-  const weeks = Math.floor(secs / 604800);
-  const days = Math.floor((secs % 604800) / 86400);
-  const hours = Math.floor((secs % 86400) / 3600);
-  const minutes = Math.floor((secs % 3600) / 60);
-  const seconds = secs % 60;
-
-  const parts = (() => {
-    const parts: string[] = [];
-
-    if (weeks) {
-      parts.push(weeks > 1 ? t`${weeks} weeks` : t`week`);
-    }
-    if (roundUpTo === "weeks") {
-      return parts;
-    }
-
-    if (days) {
-      parts.push(days > 1 ? t`${days} days` : t`day`);
-    }
-    if (roundUpTo === "days") {
-      return parts;
-    }
-
-    if (hours) {
-      parts.push(hours > 1 ? t`${hours} hours` : t`hour`);
-    }
-    if (roundUpTo === "hours") {
-      return parts;
-    }
-
-    if (minutes) {
-      parts.push(minutes > 1 ? t`${minutes} minutes` : t`minute`);
-    }
-    if (roundUpTo === "minutes") {
-      return parts;
-    }
-
-    if (seconds) {
-      parts.push(seconds > 1 ? t`${seconds} seconds` : t`second`);
-    }
-
-    return parts;
-  })();
-
-  return t`Every` + " " + parts.join(" ");
 }

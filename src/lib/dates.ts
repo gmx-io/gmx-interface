@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+import { formatDuration } from "date-fns";
 import { addMinutes, format as formatDateFn, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
 
@@ -121,4 +123,52 @@ export function getTimePeriodsInSeconds() {
     month: [todayStart - 30 * SECONDS_IN_DAY, todayEnd],
     year: [yearStart, todayEnd],
   };
+}
+
+/**
+ * @returns every N weeks, days, hours, minutes, and seconds
+ * date-fns duration doesn't support
+ */
+export function secondsToHumanReadableDuration(s: bigint, roundUpTo?: "minutes" | "hours" | "days" | "weeks"): string {
+  const secs = Number(s);
+
+  let weeks = Math.floor(secs / 604800);
+  let days = Math.floor((secs % 604800) / 86400);
+  let hours = Math.floor((secs % 86400) / 3600);
+  let minutes = Math.floor((secs % 3600) / 60);
+  let seconds = secs % 60;
+
+  if (roundUpTo === "minutes") {
+    seconds = 0;
+  }
+
+  if (roundUpTo === "hours") {
+    minutes = 0;
+    seconds = 0;
+  }
+
+  if (roundUpTo === "days") {
+    hours = 0;
+    minutes = 0;
+    seconds = 0;
+  }
+
+  if (roundUpTo === "weeks") {
+    days = 0;
+    hours = 0;
+    minutes = 0;
+    seconds = 0;
+  }
+
+  return (
+    t`Every` +
+    " " +
+    formatDuration({
+      weeks,
+      days,
+      hours,
+      minutes,
+      seconds,
+    })
+  );
 }

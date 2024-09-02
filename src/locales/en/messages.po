@@ -196,8 +196,8 @@ msgid "GMX transfers not yet enabled"
 msgstr "GMX transfers not yet enabled"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "day"
-msgstr "day"
+#~ msgid "day"
+#~ msgstr "day"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -445,8 +445,8 @@ msgid "Discord account: <0>@gmx_feedback</0>"
 msgstr "Discord account: <0>@gmx_feedback</0>"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "{hours} hours"
-msgstr "{hours} hours"
+#~ msgid "{hours} hours"
+#~ msgstr "{hours} hours"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
@@ -998,8 +998,8 @@ msgid "Collateral"
 msgstr "Collateral"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "week"
-msgstr "week"
+#~ msgid "week"
+#~ msgstr "week"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
@@ -1803,7 +1803,7 @@ msgstr "Affiliates"
 msgid "Max allowed actions"
 msgstr "Max allowed actions"
 
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/lib/dates.ts
 msgid "Every"
 msgstr "Every"
 
@@ -3115,8 +3115,8 @@ msgid "Edit {0}"
 msgstr "Edit {0}"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "hour"
-msgstr "hour"
+#~ msgid "hour"
+#~ msgstr "hour"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Vest with GMX on Arbitrum"
@@ -4019,8 +4019,8 @@ msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "{days} days"
-msgstr "{days} days"
+#~ msgid "{days} days"
+#~ msgstr "{days} days"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4043,8 +4043,8 @@ msgid "Insufficient {0} liquidity"
 msgstr "Insufficient {0} liquidity"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "{seconds} seconds"
-msgstr "{seconds} seconds"
+#~ msgid "{seconds} seconds"
+#~ msgstr "{seconds} seconds"
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 #: src/pages/Ecosystem/Ecosystem.jsx
@@ -4506,8 +4506,8 @@ msgid "You will be short {indexSymbol} from your short position, while being lon
 msgstr "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "{weeks} weeks"
-msgstr "{weeks} weeks"
+#~ msgid "{weeks} weeks"
+#~ msgstr "{weeks} weeks"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "The previously authorized maximum number of actions has been reached for One-Click Trading."
@@ -4678,8 +4678,8 @@ msgid "wstETH APR"
 msgstr "wstETH APR"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "second"
-msgstr "second"
+#~ msgid "second"
+#~ msgstr "second"
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Telegram Group"
@@ -6916,8 +6916,8 @@ msgid "{ordersText} cancelled"
 msgstr "{ordersText} cancelled"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "{minutes} minutes"
-msgstr "{minutes} minutes"
+#~ msgid "{minutes} minutes"
+#~ msgstr "{minutes} minutes"
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Limit price below Mark Price"
@@ -7055,8 +7055,8 @@ msgid "Error occurred. Please try again"
 msgstr "Error occurred. Please try again"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "minute"
-msgstr "minute"
+#~ msgid "minute"
+#~ msgstr "minute"
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
