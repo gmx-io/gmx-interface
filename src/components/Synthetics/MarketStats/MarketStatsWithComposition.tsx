@@ -28,7 +28,7 @@ import { MARKET_STATS_DECIMALS } from "config/ui";
 import { getMintableInfoGlv, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
-import { formatDateTime, secondsToHumanReadableDuration } from "../../../lib/dates";
+import { formatDateTime } from "../../../lib/dates";
 import { bigintToNumber } from "../../../lib/numbers";
 
 import { CompositionBar } from "./components/CompositionBar";
@@ -458,10 +458,6 @@ export function MarketStatsWithComposition(p: Props) {
                       : formatDateTime(bigintToNumber(marketInfo.shiftLastExecutedAt, 0))
                     : "..."
                 }
-              />
-              <CardRow
-                label={t`Rebalance Frequency`}
-                value={secondsToHumanReadableDuration(marketInfo?.shiftMinInterval) ?? "..."}
               />
             </>
           )}

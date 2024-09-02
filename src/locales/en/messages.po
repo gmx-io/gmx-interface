@@ -83,8 +83,8 @@ msgid "What would have made your rating a 9 or 10?"
 msgstr "What would have made your rating a 9 or 10?"
 
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-msgid "Rebalance Frequency"
-msgstr "Rebalance Frequency"
+#~ msgid "Rebalance Frequency"
+#~ msgstr "Rebalance Frequency"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount generation failed"
@@ -1804,8 +1804,8 @@ msgid "Max allowed actions"
 msgstr "Max allowed actions"
 
 #: src/lib/dates.ts
-msgid "Every"
-msgstr "Every"
+#~ msgid "Every"
+#~ msgstr "Every"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
