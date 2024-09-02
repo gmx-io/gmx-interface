@@ -721,7 +721,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
    * until useUpdateTokens switch GM to long token
    */
   const firstTokenPlaceholder = useMemo(() => {
-    if (firstToken?.symbol === "GM" && isPair) {
+    if (firstToken?.symbol === "GM") {
       return null;
     }
 
@@ -730,7 +730,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         <TokenWithIcon symbol={firstToken?.symbol} displaySize={20} />
       </div>
     );
-  }, [firstToken?.symbol, isPair]);
+  }, [firstToken?.symbol]);
 
   return (
     <>
