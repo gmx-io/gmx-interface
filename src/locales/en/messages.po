@@ -6099,8 +6099,6 @@ msgid "Consider selecting only positions where the accrued funding fee exceeds t
 msgstr "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
 msgstr "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
 
@@ -6225,6 +6223,10 @@ msgstr "Myself"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Search Address"
 msgstr "Search Address"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max GM buyable amount reached"
+msgstr "Max GM buyable amount reached"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Buy GMX"
