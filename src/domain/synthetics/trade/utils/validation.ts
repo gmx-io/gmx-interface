@@ -573,7 +573,6 @@ export function getGmSwapError(p: {
     priceImpactUsd,
     vaultInfo,
     vaultSellableAmount,
-    marketTokensData,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -584,6 +583,8 @@ export function getGmSwapError(p: {
     return [t`Price Impact not yet acknowledged`];
   }
 
+  const glvToltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
+
   if (isDeposit) {
     if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
       const { impactAmount } = applySwapImpactWithCap(marketInfo, priceImpactUsd);
@@ -593,9 +594,7 @@ export function getGmSwapError(p: {
         const error = [t`Max pool amount exceeded`];
 
         if (vaultInfo) {
-          error.push(
-            t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`
-          );
+          error.push(glvToltipMessage);
         }
       }
     }
@@ -604,9 +603,7 @@ export function getGmSwapError(p: {
       const error = [t`Max pool USD exceeded`];
 
       if (vaultInfo) {
-        error.push(
-          t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`
-        );
+        error.push(glvToltipMessage);
       }
     }
 
@@ -620,15 +617,24 @@ export function getGmSwapError(p: {
     }
 
     if (vaultInfo) {
-      const glvMarket = vaultInfo.markets.find(({ address }) => address === marketInfo.marketTokenAddress);
-      const gmToken = marketTokensData?.[marketInfo.marketTokenAddress];
-      if (glvMarket && gmToken) {
-        const maxBuyableUsdInGm = getMaxUsdBuyableAmountInMarketWithGm(glvMarket, vaultInfo, marketInfo, gmToken);
+      const glvMarket =
+        longToken?.symbol === "GM" && vaultInfo.markets.find(({ address }) => address === longToken.address);
+
+      // if buying with GMS
+      if (glvMarket) {
+        const maxBuyableUsdInGm = getMaxUsdBuyableAmountInMarketWithGm(glvMarket, vaultInfo, marketInfo, longToken);
         if (marketTokenUsd !== undefined && maxBuyableUsdInGm < marketTokenUsd) {
-          return [
-            t`Max pool amount reached`,
-            t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`,
-          ];
+          return [t`Max pool amount reached`, glvToltipMessage];
+        }
+      } else {
+        const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
+        const maxLongExceeded =
+          longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount;
+        const maxShortExceeded =
+          shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
+
+        if (maxLongExceeded || maxShortExceeded) {
+          return [t`Max GM buyable amount reached`, glvToltipMessage];
         }
       }
     } else {
