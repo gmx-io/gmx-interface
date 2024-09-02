@@ -103,11 +103,11 @@ export function GmPoolsSelectorForGlvMarket({
       }
     }
 
-    const sortedMartketsWithBalance = marketsWithBalance.sort((a, b) => {
+    const sortedMarketsWithBalance = marketsWithBalance.sort((a, b) => {
       return (b.balanceUsd ?? 0n) > (a.balanceUsd ?? 0n) ? 1 : -1;
     });
 
-    return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
+    return [...sortedMarketsWithBalance, ...marketsWithoutBalance];
   }, [getMarketState, marketTokensData, markets, glvMarketInfo]);
 
   const selectedPool = useMemo(
@@ -137,7 +137,7 @@ export function GmPoolsSelectorForGlvMarket({
     [onSelectGmMarket, setIsModalVisible]
   );
 
-  const _handleKeyDown = useCallback(
+  const handleKeyDown = useCallback(
     (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -193,7 +193,7 @@ export function GmPoolsSelectorForGlvMarket({
             value={searchKeyword}
             setValue={handleSearch}
             placeholder={t`Search Pool`}
-            onKeyDown={_handleKeyDown}
+            onKeyDown={handleKeyDown}
           />
         }
       >

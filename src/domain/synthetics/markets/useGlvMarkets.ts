@@ -13,6 +13,7 @@ import {
 import { getTokenBySymbol } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { getContractMarketPrices, getGlvMarketName, MarketInfo, MarketsInfoData } from ".";
+import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
 
 export type GlvList = {
@@ -113,10 +114,10 @@ export function useGlvMarketsInfo(
         }
 
         const request = glvs.reduce((acc, { glv, markets }) => {
-          const contractGlvPrices = getContractMarketPrices(tokensData, {
-            longTokenAddress: glv.longToken,
-            shortTokenAddress: glv.shortToken,
-          });
+          const glvLongToken = tokensData[glv.longToken];
+          const glvShortToken = tokensData[glv.shortToken];
+          const contractGlvPricesLong = convertToContractTokenPrices(glvLongToken.prices, glvLongToken.decimals);
+          const contractGlvPricesShort = convertToContractTokenPrices(glvShortToken.prices, glvShortToken.decimals);
 
           acc[glv.glvToken + "-prices"] = {
             contractAddress: glvReaderAddress,
@@ -132,8 +133,8 @@ export function useGlvMarketsInfo(
 
                     return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
                   }),
-                  [contractGlvPrices?.longTokenPrice!.max, contractGlvPrices?.longTokenPrice!.min],
-                  [contractGlvPrices?.shortTokenPrice!.max, contractGlvPrices?.shortTokenPrice!.min],
+                  [contractGlvPricesLong.max, contractGlvPricesLong.min],
+                  [contractGlvPricesShort.max, contractGlvPricesShort.min],
                   glv.glvToken,
                   false,
                 ],
@@ -148,8 +149,8 @@ export function useGlvMarketsInfo(
 
                     return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
                   }),
-                  [contractGlvPrices?.longTokenPrice!.max, contractGlvPrices?.longTokenPrice!.min],
-                  [contractGlvPrices?.shortTokenPrice!.max, contractGlvPrices?.shortTokenPrice!.min],
+                  [contractGlvPricesLong.max, contractGlvPricesLong.min],
+                  [contractGlvPricesShort.max, contractGlvPricesShort.min],
                   glv.glvToken,
                   true,
                 ],

@@ -381,16 +381,13 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         };
       });
 
-      try {
-        const total = marketData.reduce((acc, { amountUsd }) => acc + amountUsd, 0n);
-        const sumApys = marketData.reduce((acc, { amountUsd, apy }) => {
-          return acc + amountUsd * apy;
-        }, 0n);
+      const total = marketData.reduce((acc, { amountUsd }) => acc + amountUsd, 0n);
+      const sumApys = marketData.reduce((acc, { amountUsd, apy }) => {
+        return acc + amountUsd * apy;
+      }, 0n);
 
-        acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
-      } catch (e) {
-        return acc;
-      }
+      acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
+
       return acc;
     }, {});
   }, [glvMarketInfo, data?.marketsTokensApyData, marketTokensData]);

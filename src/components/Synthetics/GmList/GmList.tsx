@@ -25,6 +25,7 @@ import {
   getMintableMarketTokens,
   getTotalGmInfo,
   useMarketTokensData,
+  getGlvMarketShortening,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -42,7 +43,7 @@ import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getMintableInfoGlv, getGlvMarketBadgeName, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 import { ApyTooltipContent } from "./ApyTooltipContent";
@@ -448,7 +449,7 @@ function GmListItem({
   const tokenIconBadge = market.isSpotOnly
     ? undefined
     : isGlvMarket
-      ? getGlvMarketBadgeName(market.name)
+      ? getGlvMarketShortening(chainId, market.indexTokenAddress)
       : ([market.longToken.symbol, market.shortToken.symbol] as const);
 
   return (

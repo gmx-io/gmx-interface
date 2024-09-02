@@ -306,7 +306,7 @@ export function MarketStatsWithComposition(p: Props) {
     >
       <div
         className={cx("p-20", {
-          "max-w-[36.6rem]": canFitCompositionOnRow,
+          "min-w-[30rem] max-w-[36.6rem]": canFitCompositionOnRow,
           "w-[100%]": !canFitCompositionOnRow,
         })}
       >
@@ -469,7 +469,7 @@ export function MarketStatsWithComposition(p: Props) {
       </div>
       <div
         className={cx("flex-grow", {
-          "border-l-1 border-l-slate-700": canFitCompositionOnRow,
+          "w-[100%] border-l-1 border-l-slate-700": canFitCompositionOnRow,
           "mt-20 border-t-1 border-t-slate-700": !canFitCompositionOnRow,
         })}
       >

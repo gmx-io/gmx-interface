@@ -66,12 +66,12 @@ export function getShiftAmounts({
     });
 
     const vaultInfo = isMarketTokenDeposit ? toMarketInfo : undefined;
-    const underlyingGmMarketInfo = isMarketTokenDeposit ? fromMarketInfo : toMarketInfo;
-    const underlyingGmToken = isMarketTokenDeposit ? fromToken : toToken;
+    const targetGmMarketInfo = isMarketTokenDeposit ? fromMarketInfo : toMarketInfo;
+    const targetGmToken = isMarketTokenDeposit ? fromToken : toToken;
 
     const depositAmounts = getDepositAmounts({
-      marketInfo: underlyingGmMarketInfo,
-      marketToken: underlyingGmToken,
+      marketInfo: targetGmMarketInfo,
+      marketToken: targetGmToken,
       longToken: toMarketInfo.longToken,
       shortToken: toMarketInfo.shortToken,
       longTokenAmount: withdrawalAmounts.longTokenAmount,

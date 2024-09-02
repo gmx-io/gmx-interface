@@ -55,7 +55,7 @@ import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 import { Swap } from "../Swap";
 import { InfoRows } from "./InfoRows";
-import { useFees } from "./useFees";
+import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useSubmitButtonState } from "./useSubmitButtonState";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
@@ -359,7 +359,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const vaultInfo = isGlvMarket ? marketInfo : undefined;
 
-  const { fees, executionFee } = useFees({
+  const { fees, executionFee } = useDepositWithdrawalFees({
     amounts,
     chainId,
     gasLimits,
@@ -715,6 +715,23 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     return btn;
   }, [submitState]);
 
+  /**
+   * Placeholder eligible for the first token in the pair,
+   * additional check added to prevent try render GM token placeholder
+   * until useUpdateTokens switch GM to long token
+   */
+  const firstTokenPlaceholder = useMemo(() => {
+    if (firstToken?.symbol === "GM" && isPair) {
+      return null;
+    }
+
+    return (
+      <div className="selected-token">
+        <TokenWithIcon symbol={firstToken?.symbol} displaySize={20} />
+      </div>
+    );
+  }, [firstToken?.symbol, isPair]);
+
   return (
     <>
       <form>
@@ -748,9 +765,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                 showTokenImgInDropdown={true}
               />
             ) : (
-              <div className="selected-token">
-                <TokenWithIcon symbol={firstToken?.symbol} displaySize={20} />
-              </div>
+              firstTokenPlaceholder
             )}
           </BuyInputSection>
 

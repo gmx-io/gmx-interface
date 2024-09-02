@@ -23,7 +23,7 @@ import { GmSwapFees } from "domain/synthetics/trade";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 
-export const useFees = ({
+export const useDepositWithdrawalFees = ({
   amounts,
   chainId,
   gasLimits,

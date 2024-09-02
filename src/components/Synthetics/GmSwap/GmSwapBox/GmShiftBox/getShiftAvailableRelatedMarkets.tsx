@@ -41,7 +41,7 @@ export function getShiftAvailableRelatedMarkets({
     return !isSame && isRelated;
   });
 
-  const relatedGlvMarkets = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
+  const relatedGlvs = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
     if (isGlv(marketInfo)) {
       return marketInfo.markets.some((market) => market.address === marketTokenAddress);
     }
@@ -49,5 +49,5 @@ export function getShiftAvailableRelatedMarkets({
     return false;
   });
 
-  return [...gmToGmShiftRelatedMarkets, ...relatedGlvMarkets];
+  return [...gmToGmShiftRelatedMarkets, ...relatedGlvs];
 }

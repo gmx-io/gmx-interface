@@ -9,10 +9,10 @@ export const useBestGmPoolAddressForGlv = (
   glvMarket?: MarketInfo | GlvMarketInfo,
   selectedGmPoolAddress?: string
 ) => {
-  const poolsWithComposition = useGlvGmMarketsWithComposition(isDeposit, glvMarket?.indexTokenAddress);
+  const marketsWithComposition = useGlvGmMarketsWithComposition(isDeposit, glvMarket?.indexTokenAddress);
 
   return useMemo(() => {
-    if (!glvMarket || !isGlv(glvMarket) || poolsWithComposition.length === 0) {
+    if (!glvMarket || !isGlv(glvMarket) || marketsWithComposition.length === 0) {
       return undefined;
     }
 
@@ -20,21 +20,21 @@ export const useBestGmPoolAddressForGlv = (
       return selectedGmPoolAddress;
     }
 
-    for (const market of poolsWithComposition.sort((a, b) => {
+    for (const market of marketsWithComposition.sort((a, b) => {
       return b.comp - a.comp;
     })) {
-      const vailableBuyableGmUsd = getMaxUsdBuyableAmountInMarketWithGm(
+      const availableBuyableGmUsd = getMaxUsdBuyableAmountInMarketWithGm(
         market.gmMarket,
         glvMarket,
         market.pool,
         market.token
       );
 
-      if (vailableBuyableGmUsd > 0) {
+      if (availableBuyableGmUsd > 0) {
         return market.pool.marketTokenAddress;
       }
     }
 
-    return poolsWithComposition[0].pool.marketTokenAddress;
-  }, [glvMarket, poolsWithComposition, selectedGmPoolAddress]);
+    return marketsWithComposition[0].pool.marketTokenAddress;
+  }, [glvMarket, marketsWithComposition, selectedGmPoolAddress]);
 };

@@ -98,7 +98,12 @@ export function PoolSelector({
   const filteredOptions = useMemo(() => {
     const lowercaseSearchKeyword = searchKeyword.toLowerCase();
     return marketsOptions.filter((option) => {
-      const name = option.name.toLowerCase();
+      let name = option.name.toLowerCase();
+
+      if (isGlv(option.marketInfo)) {
+        name = "glv " + name;
+      }
+
       const textSearchMatch = name.includes(lowercaseSearchKeyword);
 
       const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.marketTokenAddress) : true;
@@ -139,15 +144,12 @@ export function PoolSelector({
 
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
-    const isGlvMarket = isGlv(marketInfo);
-    const tokenPrefix = isGlvMarket ? "GLV:" : "GM:";
-
     let name;
 
-    if (isGlvMarket) {
-      name = `${tokenPrefix} ${marketInfo.name}`;
+    if (isGlv(marketInfo)) {
+      name = `GLV: ${marketInfo.name}`;
     } else {
-      name = showAllPools ? `${tokenPrefix} ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
+      name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
     }
 
     if (marketsOptions?.length > 1) {

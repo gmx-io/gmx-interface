@@ -4,8 +4,9 @@ import { Trans } from "@lingui/macro";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { helperToast } from "lib/helperToast";
 import { isGlv } from "../../../../domain/synthetics/markets/glv";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
-export function showMarketToast(market: MarketInfo) {
+export function showMarketToast(market: MarketInfo | GlvMarketInfo) {
   if (!market) return;
 
   const isGlvMarket = isGlv(market);

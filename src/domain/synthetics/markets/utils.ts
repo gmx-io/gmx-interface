@@ -10,7 +10,7 @@ import { PositionInfo } from "../positions";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
-import { GLV_MARKETS_TITLE } from "config/markets";
+import { GLV_MARKETS_APPEARANCE } from "config/markets";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -19,11 +19,15 @@ export function getMarketFullName(p: { longToken: Token; shortToken: Token; inde
 }
 
 export function getGlvMarketName(chainId: number, address: string) {
-  return GLV_MARKETS_TITLE?.[chainId]?.[address]?.name || GLV_MARKETS_TITLE.default;
+  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.name || GLV_MARKETS_APPEARANCE.default;
 }
 
 export function getGlvMarketSubtitle(chainId: number, address: string) {
-  return GLV_MARKETS_TITLE?.[chainId]?.[address]?.subtitle || "";
+  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.subtitle || "";
+}
+
+export function getGlvMarketShortening(chainId: number, address: string) {
+  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.shortening || "";
 }
 
 export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {
@@ -448,19 +452,12 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
-export function getContractMarketPrices(
-  tokensData: TokensData,
-  market: Pick<Partial<Market>, "longTokenAddress" | "shortTokenAddress" | "indexTokenAddress">
-): ContractMarketPrices | undefined {
+export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices | undefined {
   const indexToken = getByKey(tokensData, market.indexTokenAddress);
   const longToken = getByKey(tokensData, market.longTokenAddress);
   const shortToken = getByKey(tokensData, market.shortTokenAddress);
 
-  if (
-    (market.indexTokenAddress && !indexToken) ||
-    (market.longTokenAddress && !longToken) ||
-    (market.shortTokenAddress && !shortToken)
-  ) {
+  if (!indexToken || !longToken || !shortToken) {
     return undefined;
   }
 

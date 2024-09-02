@@ -121,9 +121,9 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
 
   const tenderlyConfig = getTenderlyConfig();
+  const router = isGlv ? glvRouter : exchangeRouter;
 
   if (tenderlyConfig) {
-    const router = method === "simulateExecuteGlvDeposit" ? glvRouter : exchangeRouter;
     await simulateTxWithTenderly(chainId, router as BaseContract, p.account, "multicall", [simulationPayloadData], {
       value: p.value,
       comment: `calling ${method}`,
@@ -131,8 +131,6 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 
   try {
-    const router = isGlv ? glvRouter : exchangeRouter;
-
     await router.multicall.staticCall(simulationPayloadData, {
       value: p.value,
       blockTag: blockNumber,

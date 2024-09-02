@@ -104,12 +104,3 @@ export function getSellableInfoGlv(
 export function isGlv(pool?: GlvMarketInfo | MarketInfo): pool is GlvMarketInfo {
   return Boolean(pool && "isGlv" in pool && pool.isGlv);
 }
-
-export function getGlvMarketBadgeName(name: string) {
-  return name.split(" ").length > 1
-    ? name
-        .split(" ")
-        .map((w) => w[0].toUpperCase())
-        .join("")
-    : name.slice(0, 3).toUpperCase();
-}

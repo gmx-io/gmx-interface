@@ -25,11 +25,11 @@ import useWallet from "lib/wallets/useWallet";
 import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
-import { useFees } from "./useFees";
+import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
-  fees: ReturnType<typeof useFees>["fees"];
+  fees: ReturnType<typeof useDepositWithdrawalFees>["fees"];
   isDeposit: boolean;
   routerAddress: string;
   marketInfo?: MarketInfo;
@@ -173,29 +173,12 @@ export const useSubmitButtonState = ({
     ? getSellableInfoGlv(vaultInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
     : undefined;
 
-  const { marketTokenToCalculateError, longTokenToCalculateError } = useMemo(() => {
-    let marketTokenToCalculateError, longTokenToCalculateError;
-
-    if (vaultInfo) {
-      marketTokenToCalculateError = isDeposit ? marketToken : vaultInfo.indexToken;
-      longTokenToCalculateError = isDeposit ? longToken : vaultInfo?.indexToken;
-    }
-
-    marketTokenToCalculateError = marketToken;
-    longTokenToCalculateError = longToken;
-
-    return {
-      marketTokenToCalculateError,
-      longTokenToCalculateError,
-    };
-  }, [isDeposit, marketToken, vaultInfo, longToken]);
-
   const [swapError, swapErrorDescription] = getGmSwapError({
     isDeposit,
     marketInfo,
     vaultInfo,
-    marketToken: marketTokenToCalculateError,
-    longToken: longTokenToCalculateError,
+    marketToken,
+    longToken,
     shortToken: shortToken,
     marketTokenAmount,
     marketTokenUsd: amounts?.marketTokenUsd,

@@ -42,7 +42,6 @@ import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
-import { useRedirectToBuyOnShiftToGlv } from "./useRedirectToBuyOnShiftToGlv";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { MarketState } from "components/MarketSelector/types";
@@ -159,16 +158,6 @@ export function GmShiftBox({
 
   const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, toMarketAddress);
 
-  useRedirectToBuyOnShiftToGlv({
-    toMarketAddress,
-    toMarketInfo,
-    selectedMarketInfo,
-    onSelectMarket,
-    onSelectGlvGmMarket,
-    setFirstTokenAddressForDeposit,
-    onSetOperation,
-  });
-
   useUpdateByQueryParams({
     operation: Operation.Shift,
     onSelectMarket,
@@ -214,10 +203,24 @@ export function GmShiftBox({
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
     (marketInfo: MarketInfo): void => {
-      setToMarketAddress(marketInfo.marketTokenAddress);
-      handleClearValues();
+      if (isGlv(marketInfo) && selectedMarketInfo?.marketTokenAddress) {
+        onSelectMarket(marketInfo.marketTokenAddress);
+        setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
+        onSetOperation(Operation.Deposit);
+        onSelectGlvGmMarket?.(selectedMarketInfo.marketTokenAddress);
+      } else {
+        setToMarketAddress(marketInfo.marketTokenAddress);
+        handleClearValues();
+      }
     },
-    [handleClearValues]
+    [
+      handleClearValues,
+      onSelectGlvGmMarket,
+      onSelectMarket,
+      onSetOperation,
+      selectedMarketInfo,
+      setFirstTokenAddressForDeposit,
+    ]
   );
 
   const getShiftReceiveMarketState = useCallback((marketInfo: MarketInfo | GlvMarketInfo): MarketState => {

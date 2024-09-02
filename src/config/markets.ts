@@ -155,17 +155,18 @@ export const GLV_MARKETS_ENABLED = {
   [AVALANCHE_FUJI]: true,
 };
 
-export const GLV_MARKETS_TITLE: {
-  [chainId: number]: Record<string, { name: string; subtitle: string }>;
+export const GLV_MARKETS_APPEARANCE: {
+  [chainId: number]: Record<string, { name: string; subtitle: string; shortening: string }>;
   default: string;
 } = {
   [ARBITRUM]: {},
   [ARBITRUM_GOERLI]: {},
   [AVALANCHE]: {},
   [AVALANCHE_FUJI]: {
-    "0xDD06Cd6694FeB4222FD1a4146d118078D672d7EB": {
+    "0xc519a5b8e5e93D3ec85D62231C1681c44952689d": {
       name: "High Caps",
       subtitle: "Core ETH Markets Vault",
+      shortening: "HC",
     },
   },
   default: "GLV",

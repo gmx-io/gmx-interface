@@ -4,12 +4,14 @@ import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
+import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import {
   MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
+  getGlvMarketShortening,
   getGlvMarketSubtitle,
   getMarketIndexName,
   getMarketPoolName,
@@ -25,7 +27,6 @@ import {
 } from "domain/synthetics/tokens/useIndexTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useLocalizedMap } from "lib/i18n";
-import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -35,13 +36,13 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getMintableInfoGlv, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
   SelectorBaseMobileHeaderContent,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
-import { getGlvMarketBadgeName, getMintableInfoGlv, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 
 type Props = {
   chainId: number;
@@ -92,7 +93,7 @@ export default function MarketTokenSelector(props: Props) {
                 importSize={40}
                 badge={
                   isGlvMarket
-                    ? getGlvMarketBadgeName(currentMarketInfo.name)
+                    ? getGlvMarketShortening(chainId, currentMarketInfo.indexTokenAddress)
                     : ([currentMarketInfo.longToken.symbol, currentMarketInfo.shortToken.symbol] as const)
                 }
               />
