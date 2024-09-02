@@ -13,13 +13,13 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   selectChainId,
   selectGlvInfoLoading,
-  selectAllMarketsData,
+  selectGlvAndGmMarketsData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   MarketTokensAPRData,
-  AllMarketsInfoData,
+  GlvAndGmMarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
@@ -72,7 +72,7 @@ export function GmList({
   isDeposit,
 }: Props) {
   const chainId = useSelector(selectChainId);
-  const marketsInfo = useSelector(selectAllMarketsData);
+  const marketsInfo = useSelector(selectGlvAndGmMarketsData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const tokensData = useTokensData();
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
@@ -246,7 +246,7 @@ function useFilterSortPools({
   searchText,
   tokensData,
 }: {
-  marketsInfo: AllMarketsInfoData | undefined;
+  marketsInfo: GlvAndGmMarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
   orderBy: SortField;
   direction: SortDirection;
@@ -364,7 +364,7 @@ function GmListItem({
   marketTokensData: TokensData | undefined;
 }) {
   const chainId = useSelector(selectChainId);
-  const marketsInfoData = useSelector(selectAllMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
   const tokensData = useTokensData();
   const userEarnings = useUserEarnings(chainId);
   const daysConsidered = useDaysConsideredInMarketsApr();

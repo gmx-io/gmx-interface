@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
-import type { MarketInfo, AllMarketsInfoData } from "../markets";
+import type { MarketInfo, GlvAndGmMarketsInfoData } from "../markets";
 import { isGlv } from "../markets/glv";
 import { type TokenData, type TokensData, convertToUsd } from "../tokens";
 
@@ -13,7 +13,7 @@ const DEFAULT_VALUE = {
 };
 
 export function sortMarketsWithIndexToken(
-  marketsInfoData: AllMarketsInfoData | undefined,
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined,
   marketTokensData: TokensData | undefined
 ) {
   if (!marketsInfoData || !marketTokensData) {
@@ -83,7 +83,7 @@ export function sortMarketsWithIndexToken(
   };
 }
 
-function useSortedPoolsWithIndexToken(marketsInfoData?: AllMarketsInfoData, marketTokensData?: TokensData) {
+function useSortedPoolsWithIndexToken(marketsInfoData?: GlvAndGmMarketsInfoData, marketTokensData?: TokensData) {
   const sortedMarketsWithIndexToken = useMemo(
     () => sortMarketsWithIndexToken(marketsInfoData, marketTokensData),
     [marketsInfoData, marketTokensData]

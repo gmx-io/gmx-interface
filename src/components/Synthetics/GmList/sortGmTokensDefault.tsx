@@ -2,7 +2,7 @@ import entries from "lodash/entries";
 import values from "lodash/values";
 import type { Address } from "viem";
 
-import type { AllMarketsInfoData } from "domain/synthetics/markets";
+import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { isGlv } from "domain/synthetics/markets/glv";
 
@@ -12,7 +12,7 @@ import { isGlv } from "domain/synthetics/markets/glv";
  * 2. If non-zero balance, by balance descending
  * 3. If zero balance, by total supply USD descending
  */
-export function sortGmTokensDefault(marketsInfoData: AllMarketsInfoData, marketTokensData: TokensData) {
+export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, marketTokensData: TokensData) {
   if (marketsInfoData === undefined || marketTokensData === undefined) {
     return [];
   }

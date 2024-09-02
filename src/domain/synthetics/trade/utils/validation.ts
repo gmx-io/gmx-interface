@@ -573,6 +573,7 @@ export function getGmSwapError(p: {
     priceImpactUsd,
     vaultInfo,
     vaultSellableAmount,
+    marketTokensData,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -680,9 +681,14 @@ export function getGmSwapError(p: {
     if (vaultInfo) {
       const { mintableUsd: mintableGmUsd } = getMintableMarketTokens(marketInfo, marketToken);
       const glvGmMarket = vaultInfo.markets.find(({ address }) => address === marketInfo.marketTokenAddress);
+      const gmToken = marketTokensData?.[marketInfo.marketTokenAddress];
+
+      if (!gmToken) {
+        return [t`Loading...`];
+      }
 
       const maxMintableInMarketUsd = glvGmMarket
-        ? getMaxUsdBuyableAmountInMarketWithGm(glvGmMarket, vaultInfo, marketInfo, marketToken)
+        ? getMaxUsdBuyableAmountInMarketWithGm(glvGmMarket, vaultInfo, marketInfo, gmToken)
         : 0n;
 
       if (marketTokenUsd !== undefined && (mintableGmUsd < marketTokenUsd || maxMintableInMarketUsd < marketTokenUsd)) {

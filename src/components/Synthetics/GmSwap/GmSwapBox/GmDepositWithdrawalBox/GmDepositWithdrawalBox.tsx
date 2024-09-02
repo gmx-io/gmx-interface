@@ -9,7 +9,7 @@ import { getContract } from "config/contracts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
@@ -82,7 +82,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   // #endregion
 
   // #region Selectors
-  const marketsInfoData = useSelector(selectAllMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     marketsInfoData,
     depositMarketTokensData

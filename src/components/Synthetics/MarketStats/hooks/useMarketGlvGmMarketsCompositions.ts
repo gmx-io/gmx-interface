@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useMarketTokensData } from "domain/synthetics/markets";
@@ -16,7 +16,7 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
     isDeposit,
   });
 
-  const allMarkets = useSelector(selectAllMarketsData);
+  const allMarkets = useSelector(selectGlvAndGmMarketsData);
 
   return useMemo(() => {
     if (!glvAddress) {

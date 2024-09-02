@@ -3,7 +3,7 @@ import values from "lodash/values";
 import type { SortDirection } from "components/Sorter/Sorter";
 import { getMarketListingDate } from "config/markets";
 
-import { MarketTokensAPRData, AllMarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
+import { MarketTokensAPRData, GlvAndGmMarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
@@ -23,7 +23,7 @@ export function sortGmTokensByField({
   glvMarketsTokensApyData,
 }: {
   chainId: number;
-  marketsInfo: AllMarketsInfoData;
+  marketsInfo: GlvAndGmMarketsInfoData;
   marketTokensData: TokensData;
   orderBy: SortField;
   direction: SortDirection;

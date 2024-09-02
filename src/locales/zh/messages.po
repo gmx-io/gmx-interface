@@ -4611,6 +4611,7 @@ msgstr "交易订单送出"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "加载中..."
 

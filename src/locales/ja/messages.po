@@ -4611,6 +4611,7 @@ msgstr "スワップ注文提出済!"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "ロード中"
 

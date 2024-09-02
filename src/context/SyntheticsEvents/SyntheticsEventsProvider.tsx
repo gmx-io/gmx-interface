@@ -83,7 +83,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     account: currentAccount,
   });
 
-  const allMarketsData = useMemo(() => {
+  const GlvAndGmMarketsData = useMemo(() => {
     return {
       ...marketsInfoData,
       ...glvMarketInfo,
@@ -775,7 +775,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingDepositData={data}
-            marketsInfoData={allMarketsData}
+            marketsInfoData={GlvAndGmMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,
@@ -791,7 +791,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingWithdrawalData={data}
-            marketsInfoData={allMarketsData}
+            marketsInfoData={GlvAndGmMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,
@@ -848,7 +848,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     shiftStatuses,
     tokensData,
     withdrawalStatuses,
-    allMarketsData,
+    GlvAndGmMarketsData,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;

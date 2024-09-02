@@ -9,7 +9,7 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
-import { selectAllMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -57,7 +57,7 @@ export function InfoRows({
   disablePoolSelector?: boolean;
 }) {
   const gmTokenFavoritesContext = useGmTokensFavorites();
-  const markets = values(useSelector(selectAllMarketsData));
+  const markets = values(useSelector(selectGlvAndGmMarketsData));
 
   const onSelectGmMarket = useCallback(
     (marketInfo: MarketInfo) => {

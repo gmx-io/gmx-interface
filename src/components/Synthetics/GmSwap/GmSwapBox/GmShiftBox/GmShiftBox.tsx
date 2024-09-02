@@ -5,7 +5,7 @@ import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectAllMarketsData,
+  selectGlvAndGmMarketsData,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
@@ -71,7 +71,7 @@ export function GmShiftBox({
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
-  const marketsInfoData = useSelector(selectAllMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
   const tokensData = useTokensData();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(

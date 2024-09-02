@@ -134,7 +134,7 @@ export type MarketsInfoData = {
   [marketAddress: string]: MarketInfo;
 };
 
-export type AllMarketsInfoData = {
+export type GlvAndGmMarketsInfoData = {
   [marketAddress: string]: MarketInfo | GlvMarketInfo;
 };
 

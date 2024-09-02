@@ -7,7 +7,7 @@ import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { MarketInfo, AllMarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { MarketInfo, GlvAndGmMarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -23,7 +23,7 @@ import "./GmAssetDropdown.scss";
 
 type Props = {
   token?: TokenData;
-  marketsInfoData?: AllMarketsInfoData;
+  marketsInfoData?: GlvAndGmMarketsInfoData;
   position?: Placement;
   tokensData?: TokensData;
 };

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
-  selectAllMarketsData,
+  selectGlvAndGmMarketsData,
   selectDepositMarketTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -31,7 +31,7 @@ export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
-  const marketsInfoData = useSelector(selectAllMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });

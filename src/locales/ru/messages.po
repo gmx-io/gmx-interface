@@ -4611,6 +4611,7 @@ msgstr "Обменный Ордер подан!"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "Загрузка..."
 
