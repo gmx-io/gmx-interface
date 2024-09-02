@@ -36,7 +36,7 @@ export function useMarketTokensDataRequest(
   const isGlvTokensLoaded = GLV_MARKETS_ENABLED[chainId] ? Object.values(glvMarketsData).length > 0 : true;
   const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;
 
-  const { data } = useMulticall(chainId, "useMarketTokensData", {
+  const { data: gmMarketTokensData } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
@@ -142,21 +142,21 @@ export function useMarketTokensDataRequest(
       }, {} as TokensData),
   });
 
-  const enrichedData = useMemo(() => {
-    if (!data || !glvMarketsData || Object.values(glvMarketsData).length === 0) {
-      return data;
+  const gmAndGlvMarketTokensData = useMemo(() => {
+    if (!gmMarketTokensData || !glvMarketsData || Object.values(glvMarketsData).length === 0) {
+      return gmMarketTokensData;
     }
 
-    const result = { ...data };
+    const result = { ...gmMarketTokensData };
     Object.values(glvMarketsData).forEach((glvMarket) => {
       result[glvMarket.indexTokenAddress] = glvMarket.indexToken;
     });
 
     return result;
-  }, [data, glvMarketsData]);
+  }, [gmMarketTokensData, glvMarketsData]);
 
   return {
-    marketTokensData: enrichedData,
+    marketTokensData: gmAndGlvMarketTokensData,
   };
 }
 
