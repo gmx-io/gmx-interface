@@ -40,7 +40,7 @@ export const appEventsData: EventData[] = [
     endDate: "30 Sep 2024, 00:00",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> with zero price impact when trading on single-sided{" "}
+        <Link to="/trade">Trade</Link> with no price impact on {" "}
         <TokenSymbolWithIcon symbol="BTC" /> and <TokenSymbolWithIcon symbol="ETH" /> markets on Arbitrum.
       </>
     ),
