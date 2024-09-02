@@ -1,18 +1,15 @@
+import { useMemo } from "react";
+
 import { getMintableMarketTokens, MarketInfo } from "domain/synthetics/markets";
-import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
-import { TokenData, TokensData } from "domain/synthetics/tokens";
+import { isGlv } from "domain/synthetics/markets/glv";
+import { TokenData } from "domain/synthetics/tokens";
 
-export const useMarketMintableTokens = (
-  marketInfo?: MarketInfo,
-  marketToken?: TokenData,
-  marketTokensData?: TokensData
-) => {
-  if (!marketInfo) {
-    return undefined;
-  }
-  if (isGlv(marketInfo)) {
-    return getMintableInfoGlv(marketInfo, marketTokensData);
-  }
+export const useMarketMintableTokens = (marketInfo?: MarketInfo, marketToken?: TokenData) => {
+  return useMemo(() => {
+    if (!marketInfo || isGlv(marketInfo)) {
+      return undefined;
+    }
 
-  return marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
+    return marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
+  }, [marketInfo, marketToken]);
 };

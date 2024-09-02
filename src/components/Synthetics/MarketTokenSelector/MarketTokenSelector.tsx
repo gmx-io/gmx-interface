@@ -478,7 +478,7 @@ function MarketTokenListItem({
   onFavorite: (address: string) => void;
   handleSelectToken: (address: string) => void;
   isSmallMobile: boolean;
-  mintableInfo: ReturnType<typeof getMintableMarketTokens>;
+  mintableInfo: ReturnType<typeof getMintableMarketTokens | typeof getMintableInfoGlv>;
   sellableInfo: ReturnType<typeof getSellableMarketToken | typeof getSellableInfoGlv>;
   rowVerticalPadding: string;
   indexName?: string;

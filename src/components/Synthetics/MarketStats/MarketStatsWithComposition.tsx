@@ -25,7 +25,7 @@ import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import { MARKET_STATS_DECIMALS } from "config/ui";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
 import { formatDateTime } from "../../../lib/dates";
@@ -74,8 +74,8 @@ export function MarketStatsWithComposition(p: Props) {
 
   const { longToken, shortToken } = marketInfo || {};
 
-  const mintableInfo = useMarketMintableTokens(marketInfo, marketToken, marketTokensData);
-  const sellableInfo = useMarketSellableToken(marketInfo, marketToken, marketTokensData);
+  const mintableInfo = useMarketMintableTokens(marketInfo, marketToken);
+  const sellableInfo = useMarketSellableToken(marketInfo, marketToken);
 
   const maxLongSellableTokenAmount = convertToTokenAmount(
     sellableInfo?.maxLongSellableUsd,
@@ -138,10 +138,11 @@ export function MarketStatsWithComposition(p: Props) {
   );
 
   const buyableRow = useMemo(() => {
-    const buyableInfo = mintableInfo
+    const mintable = isGlvMarket ? getMintableInfoGlv(marketInfo, marketTokensData) : mintableInfo;
+    const buyableInfo = mintable
       ? formatTokenAmountWithUsd(
-          mintableInfo.mintableAmount,
-          mintableInfo.mintableUsd,
+          mintable.mintableAmount,
+          mintable.mintableUsd,
           isGlvMarket ? marketToken?.symbol : marketToken?.symbol,
           marketToken?.decimals,
           {
@@ -201,13 +202,23 @@ export function MarketStatsWithComposition(p: Props) {
         }
       />
     );
-  }, [isGlvMarket, marketInfo, marketToken, marketTotalSupplyUsd, mintableInfo, maxLongTokenValue, maxShortTokenValue]);
+  }, [
+    isGlvMarket,
+    marketInfo,
+    marketToken,
+    marketTotalSupplyUsd,
+    mintableInfo,
+    maxLongTokenValue,
+    maxShortTokenValue,
+    marketTokensData,
+  ]);
 
   const sellableRow = useMemo(() => {
-    const sellableValue = sellableInfo
+    const sellable = isGlvMarket ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
+    const sellableValue = sellable
       ? formatTokenAmountWithUsd(
-          sellableInfo?.totalAmount,
-          sellableInfo?.totalUsd,
+          sellable?.totalAmount,
+          sellable?.totalUsd,
           marketToken?.symbol,
           marketToken?.decimals,
           {
@@ -279,6 +290,8 @@ export function MarketStatsWithComposition(p: Props) {
     sellableInfo,
     maxLongSellableTokenAmount,
     maxShortSellableTokenAmount,
+    marketTokensData,
+    marketsInfoData,
     isGlvMarket,
   ]);
 
@@ -455,6 +468,7 @@ export function MarketStatsWithComposition(p: Props) {
 
           <div className="App-card-divider" />
           <BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />
+          <BridgingInfo chainId={chainId} tokenSymbol={shortToken?.symbol} />
         </div>
       </div>
       <div

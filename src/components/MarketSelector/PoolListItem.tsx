@@ -75,18 +75,17 @@ export function PoolListItem(props: {
   return (
     <>
       <div className={cx("TokenSelector-token-row", { disabled: state.disabled })} onClick={handleClick}>
-        {(state.disabled && state.message) ||
-          (state.warning && (
-            <TooltipWithPortal
-              className="TokenSelector-tooltip"
-              handle={<div className="TokenSelector-tooltip-backing" />}
-              position={isInFirstHalf ? "bottom" : "top"}
-              disableHandleStyle
-              closeOnDoubleClick
-              fitHandleWidth
-              content={state.message || state.warning}
-            />
-          ))}
+        {state.disabled && state.message && (
+          <TooltipWithPortal
+            className="TokenSelector-tooltip"
+            handle={<div className="TokenSelector-tooltip-backing" />}
+            position={isInFirstHalf ? "bottom" : "top"}
+            disableHandleStyle
+            closeOnDoubleClick
+            fitHandleWidth
+            content={state.message}
+          />
+        )}
         <div className="Token-info">
           <div className="collaterals-logo">
             {showAllPools ? (

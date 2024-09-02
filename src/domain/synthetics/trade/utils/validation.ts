@@ -805,11 +805,6 @@ export function getGmShiftError({
 }
 
 function getIsValidPoolUsdForDeposit(marketInfo: MarketInfo) {
-  if (isGlv(marketInfo)) {
-    // @todo
-    return true;
-  }
-
   const tokenIn = getTokenIn(marketInfo);
   const poolAmount =
     tokenIn.address === marketInfo.longToken.address ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;

@@ -59,10 +59,6 @@ export function getMintableInfoGlv(glv: GlvMarketInfo, marketTokensData: TokensD
   return {
     mintableAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,
     mintableUsd: amountUsd,
-    longDepositCapacityUsd: 0n,
-    shortDepositCapacityUsd: 0n,
-    longDepositCapacityAmount: 0n,
-    shortDepositCapacityAmount: 0n,
   };
 }
 
@@ -100,8 +96,6 @@ export function getSellableInfoGlv(
   }, 0n);
 
   return {
-    maxLongSellableUsd: 0n,
-    maxShortSellableUsd: 0n,
     totalAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,
     totalUsd: amountUsd,
   };
