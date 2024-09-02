@@ -34,14 +34,15 @@ export const homeEventsData: EventData[] = [];
 export const appEventsData: EventData[] = [
   {
     id: "zero-price-impact",
-    title: "Zero price impact for BTC and ETH pools in Arbitrum..",
+    title: "Zero price impact on BTC/USD and ETH/USD single-side pools",
     isActive: true,
     startDate: "30 Aug 2024, 00:00",
     endDate: "30 Sep 2024, 00:00",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> with zero price impact when trading on single-sided{" "}
-        <TokenSymbolWithIcon symbol="BTC" /> and <TokenSymbolWithIcon symbol="ETH" /> pools.
+        <Link to="/trade">Trade</Link> with no price impact on {" "}
+        <TokenSymbolWithIcon symbol="BTC" />/USD [BTC]
+         and <TokenSymbolWithIcon symbol="ETH" />/USD [WETH] markets on Arbitrum.
       </>
     ),
   },
