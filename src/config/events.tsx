@@ -41,7 +41,8 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> with no price impact on {" "}
-        <TokenSymbolWithIcon symbol="BTC" /> and <TokenSymbolWithIcon symbol="ETH" /> markets on Arbitrum.
+        <TokenSymbolWithIcon symbol="BTC" />/USD [BTC]
+         and <TokenSymbolWithIcon symbol="ETH" />/USD [WETH] markets on Arbitrum.
       </>
     ),
   },
