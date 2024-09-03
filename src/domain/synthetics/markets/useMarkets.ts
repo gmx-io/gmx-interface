@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { ethers } from "ethers";
 
 import { getContract } from "config/contracts";
@@ -11,6 +12,8 @@ import { getMarketFullName } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
+import { prebuildMarkets } from "prebuild";
+
 export type MarketsResult = {
   marketsData?: MarketsData;
   marketsAddresses?: string[];
@@ -20,8 +23,59 @@ export type MarketsResult = {
 const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
+  const prebuildData = useMemo(() => {
+    const prebuildData = prebuildMarkets[chainId];
+
+    if (!prebuildData) {
+      // eslint-disable-next-line no-console
+      console.warn(`Prebuild markets for chain ${chainId} not found`);
+
+      return null;
+    }
+
+    return Object.values(prebuildData).reduce(
+      (acc: MarketsResult, market) => {
+        if (!isMarketEnabled(chainId, market.marketTokenAddress)) {
+          return acc;
+        }
+
+        try {
+          const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
+          const longToken = getToken(chainId, market.longTokenAddress);
+          const shortToken = getToken(chainId, market.shortTokenAddress);
+
+          const isSameCollaterals = market.longTokenAddress === market.shortTokenAddress;
+          const isSpotOnly = market.indexTokenAddress === ethers.ZeroAddress;
+
+          const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
+
+          acc.marketsAddresses!.push(market.marketTokenAddress);
+          acc.marketsData![market.marketTokenAddress] = {
+            ...market,
+            isSameCollaterals,
+            isSpotOnly,
+            name,
+            data: "",
+          };
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn("unsupported market", e);
+        }
+
+        return acc;
+      },
+      { marketsData: {}, marketsAddresses: [], error: undefined }
+    );
+  }, [chainId]);
+
+  const freshData = useMarketsMulticall(chainId, Boolean(prebuildData));
+
+  return prebuildData ?? freshData;
+}
+
+function useMarketsMulticall(chainId: number, enabled = true): MarketsResult {
   const { data, error } = useMulticall(chainId, "useMarketsData", {
-    key: [],
+    key: enabled ? [] : null,
 
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
