@@ -119,41 +119,45 @@ export function useGlvMarketsInfo(
           const contractGlvPricesLong = convertToContractTokenPrices(glvLongToken.prices, glvLongToken.decimals);
           const contractGlvPricesShort = convertToContractTokenPrices(glvShortToken.prices, glvShortToken.decimals);
 
+          const glvPricesQuery = [
+            dataStoreAddress,
+            markets,
+            markets.map((market) => {
+              const contractPrices = getContractMarketPrices(tokensData, marketsInfoData[market]);
+
+              return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
+            }),
+            [contractGlvPricesLong.max, contractGlvPricesLong.min],
+            [contractGlvPricesShort.max, contractGlvPricesShort.min],
+            glv.glvToken,
+          ];
+
           acc[glv.glvToken + "-prices"] = {
             contractAddress: glvReaderAddress,
             abi: GlvReader.abi,
             calls: {
               glvTokenPriceMin: {
                 methodName: "getGlvTokenPrice",
-                params: [
-                  dataStoreAddress,
-                  markets,
-                  markets.map((market) => {
-                    const contractPrices = getContractMarketPrices(tokensData, marketsInfoData[market]);
-
-                    return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
-                  }),
-                  [contractGlvPricesLong.max, contractGlvPricesLong.min],
-                  [contractGlvPricesShort.max, contractGlvPricesShort.min],
-                  glv.glvToken,
-                  false,
-                ],
+                params: [...glvPricesQuery, false],
               },
               glvTokenPriceMax: {
                 methodName: "getGlvTokenPrice",
-                params: [
-                  dataStoreAddress,
-                  markets,
-                  markets.map((market) => {
-                    const contractPrices = getContractMarketPrices(tokensData, marketsInfoData[market]);
+                params: [...glvPricesQuery, true],
+              },
+            },
+          };
 
-                    return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
-                  }),
-                  [contractGlvPricesLong.max, contractGlvPricesLong.min],
-                  [contractGlvPricesShort.max, contractGlvPricesShort.min],
-                  glv.glvToken,
-                  true,
-                ],
+          acc[glv.glvToken + "-glvValue"] = {
+            contractAddress: glvReaderAddress,
+            abi: GlvReader.abi,
+            calls: {
+              glvValueMax: {
+                methodName: "getGlvValue",
+                params: [...glvPricesQuery, true],
+              },
+              glvValueMin: {
+                methodName: "getGlvValue",
+                params: [...glvPricesQuery, true],
               },
             },
           };
@@ -238,7 +242,9 @@ export function useGlvMarketsInfo(
         const result: GlvMarketsData = {};
         glvs.forEach(({ glv, markets }) => {
           const pricesMax = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
-          const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
+          const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMin.returnValues;
+          const [valueMax] = data[glv.glvToken + "-glvValue"].glvValueMax.returnValues;
+          const [valueMin] = data[glv.glvToken + "-glvValue"].glvValueMin.returnValues;
           const [priceMin, , totalSupply] = pricesMax;
           const [priceMax] = pricesMin;
 
@@ -278,6 +284,8 @@ export function useGlvMarketsInfo(
             longTokenAddress: glv.longToken,
             shortTokenAddress: glv.shortToken,
             totalSupply,
+            poolValueMax: valueMax,
+            poolValueMin: valueMin,
             name: glvName,
             isDisabled: markets.every(
               (market) => data[glv.glvToken + "-" + market + "-info"].isGlvMarketDisabled.returnValues[0]

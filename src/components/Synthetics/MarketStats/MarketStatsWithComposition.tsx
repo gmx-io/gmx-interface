@@ -409,21 +409,12 @@ export function MarketStatsWithComposition(p: Props) {
           <CardRow
             label={t`APY`}
             value={
-              isGlvMarket ? (
-                <AprInfo
-                  lidoApr={undefined}
-                  incentiveApr={undefined}
-                  apy={glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress]}
-                  tokenAddress={marketToken?.address ?? zeroAddress}
-                />
-              ) : (
-                <AprInfo
-                  apy={apy}
-                  incentiveApr={incentiveApr}
-                  lidoApr={lidoApr}
-                  tokenAddress={marketToken?.address ?? zeroAddress}
-                />
-              )
+              <AprInfo
+                apy={isGlvMarket ? glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress] : apy}
+                incentiveApr={incentiveApr}
+                lidoApr={lidoApr}
+                tokenAddress={marketToken?.address ?? zeroAddress}
+              />
             }
           />
 

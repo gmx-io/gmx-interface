@@ -13,16 +13,15 @@ import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
 import { useTokensDataRequest } from "../tokens";
-import { MarketInfo, MarketTokensAPRData, MarketsInfoData } from "./types";
+import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData, MarketsInfoData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvAndGmMarketsData, selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";
 
 type RawCollectedFee = {
@@ -48,7 +47,7 @@ type SwrResult = {
   marketsTokensLidoAprData: MarketTokensAPRData;
 };
 
-function useMarketAddresses(marketsInfoData: MarketsInfoData | undefined) {
+function useMarketAddresses(marketsInfoData: GlvAndGmMarketsInfoData | undefined) {
   return useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
@@ -134,7 +133,10 @@ function useExcludedLiquidityMarketMap(
   return excludedBalancesMulticall.data ?? {};
 }
 
-function useIncentivesBonusApr(chainId: number, marketsInfoData: MarketsInfoData | undefined): MarketTokensAPRData {
+function useIncentivesBonusApr(
+  chainId: number,
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined
+): MarketTokensAPRData {
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(marketsInfoData);
@@ -208,7 +210,7 @@ function useIncentivesBonusApr(chainId: number, marketsInfoData: MarketsInfoData
 
 export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
   const glvMarketInfo = useSelector(selectGlvInfo);
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
