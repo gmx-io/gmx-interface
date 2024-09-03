@@ -149,7 +149,7 @@ export function getMarketListingDate(chainId: number, marketAddress: string): Da
 }
 
 export const GLV_MARKETS_ENABLED = {
-  [ARBITRUM]: false,
+  [ARBITRUM]: true,
   [ARBITRUM_GOERLI]: false,
   [AVALANCHE]: false,
   [AVALANCHE_FUJI]: true,
@@ -159,7 +159,13 @@ export const GLV_MARKETS_APPEARANCE: {
   [chainId: number]: Record<string, { name: string; subtitle: string; shortening: string }>;
   default: string;
 } = {
-  [ARBITRUM]: {},
+  [ARBITRUM]: {
+    "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9": {
+      name: "GLV [WETH-USDC]",
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+    },
+  },
   [ARBITRUM_GOERLI]: {},
   [AVALANCHE]: {},
   [AVALANCHE_FUJI]: {
