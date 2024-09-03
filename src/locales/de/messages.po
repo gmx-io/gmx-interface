@@ -303,6 +303,11 @@ msgstr "NFT Adresse eingeben"
 msgid "AVAILABLE"
 msgstr "VERFÜGBAR"
 
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+msgid "GM"
+msgstr ""
+
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm Settle"
 msgstr ""
@@ -3844,6 +3849,11 @@ msgstr "Abbruch fehlgeschlagen"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
+msgstr ""
+
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+msgid "GLV"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx

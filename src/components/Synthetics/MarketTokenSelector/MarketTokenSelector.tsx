@@ -23,7 +23,7 @@ import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import {
   indexTokensFavoritesTabOptionLabels,
-  indexTokensFavoritesTabOptions,
+  marketTokensTabOptions,
 } from "domain/synthetics/tokens/useIndexTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useLocalizedMap } from "lib/i18n";
@@ -258,7 +258,7 @@ function MarketTokenSelectorInternal(props: Props) {
 
         <Tab
           className="px-15 py-4"
-          options={indexTokensFavoritesTabOptions}
+          options={marketTokensTabOptions}
           optionLabels={localizedTabOptionLabels}
           type="inline"
           option={tab}
@@ -368,9 +368,13 @@ function useFilterSortTokensInfo({
           textSearchMatch = marketInfo.name.toLowerCase().includes(searchKeyword.toLowerCase());
         }
 
-        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(market.address) : true;
+        const additionalMatch = {
+          gms: !isGlv(marketInfo),
+          glvs: isGlv(marketInfo),
+          favorites: favoriteTokens?.includes(market.address),
+        }[tab];
 
-        return textSearchMatch && favoriteMatch;
+        return textSearchMatch && additionalMatch;
       });
     }
 

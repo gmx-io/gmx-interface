@@ -68,4 +68,8 @@ export const indexTokensFavoritesTabOptionLabels = {
     comment: "Chart token selector all markets filter",
   }),
   favorites: msg`Favorites`,
+  gms: msg`GM`,
+  glvs: msg`GLV`,
 };
+
+export const marketTokensTabOptions = ["all", "favorites", "gms", "glvs"];

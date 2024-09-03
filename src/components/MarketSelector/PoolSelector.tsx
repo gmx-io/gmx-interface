@@ -100,15 +100,22 @@ export function PoolSelector({
     return marketsOptions.filter((option) => {
       let name = option.name.toLowerCase();
 
-      if (isGlv(option.marketInfo)) {
+      const isGlvMarket = isGlv(option.marketInfo);
+
+      if (isGlvMarket) {
         name = "glv " + name;
       }
 
       const textSearchMatch = name.includes(lowercaseSearchKeyword);
 
-      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.marketTokenAddress) : true;
+      const additionalMatch =
+        {
+          gms: !isGlvMarket,
+          glvs: isGlvMarket,
+          favorites: favoriteTokens?.includes(option.marketInfo.marketTokenAddress),
+        }[tab] ?? true;
 
-      return textSearchMatch && favoriteMatch;
+      return textSearchMatch && additionalMatch;
     });
   }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
 
