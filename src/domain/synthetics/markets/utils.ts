@@ -501,6 +501,10 @@ export function getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor: 
   return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
 }
 
+export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {
+  return marketInfo.positionImpactFactorNegative === 0n;
+}
+
 export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
   const allowedLeverage = Math.round(maxLeverage / 2 / BASIS_POINTS_DIVISOR);
 
