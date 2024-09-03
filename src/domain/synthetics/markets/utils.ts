@@ -11,6 +11,7 @@ import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMi
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
 import { GLV_MARKETS_APPEARANCE } from "config/markets";
+import { GlvMarketInfo } from "./useGlvMarkets";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -19,7 +20,11 @@ export function getMarketFullName(p: { longToken: Token; shortToken: Token; inde
 }
 
 export function getGlvMarketName(chainId: number, address: string) {
-  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.name || GLV_MARKETS_APPEARANCE.default;
+  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.name;
+}
+
+export function getGlvMarketDisplayName(glv: GlvMarketInfo) {
+  return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
 }
 
 export function getGlvMarketSubtitle(chainId: number, address: string) {

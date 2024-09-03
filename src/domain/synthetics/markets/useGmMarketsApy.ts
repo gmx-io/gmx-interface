@@ -23,6 +23,7 @@ import TokenAbi from "abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectGlvAndGmMarketsData, selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";
+import { isGlv } from "./glv";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -327,7 +328,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
 
       const marketsTokensLidoAprData = marketAddresses.reduce((acc, marketAddress) => {
         const marketInfo = getByKey(marketsInfoData, marketAddress);
-        if (!marketInfo || !wstEthToken || lidoApr === undefined) return acc;
+        if (!marketInfo || !wstEthToken || lidoApr === undefined || isGlv(marketInfo)) return acc;
 
         const longTokenData = {
           address: marketInfo.longTokenAddress,

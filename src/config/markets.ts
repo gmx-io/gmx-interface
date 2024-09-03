@@ -156,12 +156,11 @@ export const GLV_MARKETS_ENABLED = {
 };
 
 export const GLV_MARKETS_APPEARANCE: {
-  [chainId: number]: Record<string, { name: string; subtitle: string; shortening: string }>;
-  default: string;
+  [chainId: number]: Record<string, { name: string | undefined; subtitle: string; shortening: string }>;
 } = {
   [ARBITRUM]: {
     "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9": {
-      name: "GLV [WETH-USDC]",
+      name: undefined,
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
     },
@@ -175,5 +174,4 @@ export const GLV_MARKETS_APPEARANCE: {
       shortening: "HC",
     },
   },
-  default: "GLV",
 };
