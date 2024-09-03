@@ -3195,6 +3195,10 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 msgid "Select a market"
 msgstr "Select a market"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
@@ -3318,8 +3322,8 @@ msgid "For trades on V1, this discount will be airdropped to your account every 
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
+#~ msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
+#~ msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -4875,6 +4879,10 @@ msgstr "Approval submitted! <0>View status.</0>"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size is 0"
 msgstr "Order size is 0"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
+msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Swap Price Impact"
@@ -7803,8 +7811,8 @@ msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
-msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+#~ msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+#~ msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
