@@ -185,9 +185,17 @@ function useIncentivesBonusApr(
 
     const marketTokensAPRData: MarketTokensAPRData = {};
     for (const marketAddress of marketAddresses) {
-      const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
-      if (poolValue === undefined || poolValue === 0n) continue;
-      const excludedLiquidity = excludedLiquidityMarketMap[marketAddress] ?? 0n;
+      const market = getByKey(marketsInfoData, marketAddress);
+      const marketToken = marketTokensData?.[marketAddress];
+      const poolValue = market?.poolValueMin;
+
+      if (poolValue === undefined || poolValue === 0n || !marketToken) continue;
+      const excludedLiquidity =
+        convertToUsd(
+          excludedLiquidityMarketMap[marketAddress] ?? 0n,
+          marketToken?.decimals,
+          marketToken?.prices.maxPrice
+        ) ?? 0n;
       const poolValueWithoutExcludedLPs = poolValue - excludedLiquidity;
 
       const tokensAmount = liquidityProvidersIncentives.rewardsPerMarket[marketAddress] ?? BN_ZERO;
@@ -203,7 +211,14 @@ function useIncentivesBonusApr(
     }
 
     return marketTokensAPRData;
-  }, [excludedLiquidityMarketMap, liquidityProvidersIncentives, marketAddresses, marketsInfoData, token]);
+  }, [
+    excludedLiquidityMarketMap,
+    liquidityProvidersIncentives,
+    marketAddresses,
+    marketsInfoData,
+    token,
+    marketTokensData,
+  ]);
 
   return marketTokensAPRData;
 }

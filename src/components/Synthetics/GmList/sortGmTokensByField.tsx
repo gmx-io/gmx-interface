@@ -90,8 +90,8 @@ export function sortGmTokensByField({
         aprB += marketsTokensApyData?.[b.address] ?? 0n;
       }
 
-      aprA = glvMarketsTokensApyData?.[a.address] ?? 0n;
-      aprB = glvMarketsTokensApyData?.[b.address] ?? 0n;
+      aprA += glvMarketsTokensApyData?.[a.address] ?? 0n;
+      aprB += glvMarketsTokensApyData?.[b.address] ?? 0n;
 
       return aprA > aprB ? directionMultiplier : -directionMultiplier;
     });
