@@ -2,10 +2,13 @@ import entries from "lodash/entries";
 import throttle from "lodash/throttle";
 import values from "lodash/values";
 import { stableHash } from "swr/_internal";
+import { getAbFlags, getIsFlagEnabled } from "config/ab";
+import chunk from "lodash/chunk";
 
 import { isDevelopment } from "config/env";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { promiseWithResolvers } from "lib/utils";
+import { getStaticOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
@@ -52,30 +55,16 @@ function executeChainsMulticalls() {
 }
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
-  const request: MulticallRequestConfig<any> = {};
+  const maxCallsPerBatch = getIsFlagEnabled("testRpcCallsBatching") ? 500 : 5000;
 
-  let callCount = 0;
-  for (const [callId, call] of entries(calls)) {
-    callCount++;
+  const callChunks = chunk(entries(calls), maxCallsPerBatch);
+  const batchedRequests = callChunks.map((chunk) => ({
+    requestConfig: getRequest(chunk),
+    callCount: chunk.length,
+  }));
 
-    if (!request[call.callData.contractAddress]) {
-      request[call.callData.contractAddress] = {
-        abi: call.callData.abi,
-        contractAddress: call.callData.contractAddress,
-        calls: {},
-      };
-    }
-
-    request[call.callData.contractAddress].calls[callId] = {
-      methodName: call.callData.methodName,
-      params: call.callData.params,
-      shouldHashParams: call.callData.shouldHashParams,
-    };
-  }
-
-  let responseOrFailure: MulticallResult<any> | undefined;
-
-  {
+  const batchPromises = batchedRequests.map(async ({ requestConfig, callCount }) => {
+    let responseOrFailure: MulticallResult<any> | undefined;
     let startTime: number | undefined;
 
     debugLog(() => {
@@ -86,9 +75,9 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
     });
 
     if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD) {
-      responseOrFailure = await executeMulticallWorker(chainId, request);
+      responseOrFailure = await executeMulticallWorker(chainId, requestConfig);
     } else {
-      responseOrFailure = await executeMulticallMainThread(chainId, request);
+      responseOrFailure = await executeMulticallMainThread(chainId, requestConfig);
     }
 
     debugLog(() => {
@@ -98,12 +87,18 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
       return `Multicall execution for chainId: ${chainId} took ${duration}ms in ${executionIn}. Call count: ${callCount}.`;
     });
-  }
 
-  if (responseOrFailure) {
+    return responseOrFailure;
+  });
+
+  const batchedResponsesOrFailures = await Promise.all(batchPromises);
+
+  const combinedResults = combineCallResults(batchedResponsesOrFailures);
+
+  if (combinedResults) {
     for (const call of values(calls)) {
       for (const hook of call.hooks) {
-        hook(responseOrFailure);
+        hook(combinedResults);
       }
     }
   }
@@ -277,5 +272,90 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     throttledExecuteBackgroundChainsMulticalls();
   }
 
-  return promise as any;
+  const now = Date.now();
+
+  return promise.then((result) => {
+    const duration = Date.now() - now;
+    const abFlags = getAbFlags();
+
+    if (result.success) {
+      getStaticOracleKeeperFetcher(chainId).fetchPostTiming({
+        event: `multicall.${priority}.execute.timing`,
+        time: duration,
+        abFlags,
+      });
+    } else {
+      getStaticOracleKeeperFetcher(chainId).fetchPostCounter({
+        event: `multicall.${priority}.execute.error`,
+        abFlags,
+      });
+    }
+
+    return result;
+  }) as Promise<any>;
+}
+
+function combineCallResults(batchedResponsesOrFailures: (MulticallResult<any> | undefined)[]) {
+  if (batchedResponsesOrFailures.some((result) => !result)) {
+    return undefined;
+  }
+
+  return batchedResponsesOrFailures.reduce<MulticallResult<any>>(
+    (acc, result) => {
+      if (!result) {
+        return acc;
+      }
+
+      acc.success = acc.success && result.success;
+
+      for (const [contractAddress, contractResult] of entries(result.errors)) {
+        if (acc.errors[contractAddress]) {
+          for (const [callId, callResult] of entries(contractResult)) {
+            acc.errors[contractAddress][callId] = callResult;
+          }
+        } else {
+          acc.errors[contractAddress] = contractResult;
+        }
+      }
+
+      for (const [contractAddress, contractResult] of entries(result.data)) {
+        if (acc.data[contractAddress]) {
+          for (const [callId, callResult] of entries(contractResult)) {
+            acc.data[contractAddress][callId] = callResult;
+          }
+        } else {
+          acc.data[contractAddress] = contractResult;
+        }
+      }
+
+      return acc;
+    },
+    {
+      success: true,
+      errors: {},
+      data: {},
+    }
+  );
+}
+
+function getRequest(callEntries: [string, { callData: MulticallFetcherConfig[number][string]["callData"] }][]) {
+  const requests: MulticallRequestConfig<any> = {};
+
+  for (const [callId, { callData }] of callEntries) {
+    if (!requests[callData.contractAddress]) {
+      requests[callData.contractAddress] = {
+        abi: callData.abi,
+        contractAddress: callData.contractAddress,
+        calls: {},
+      };
+    }
+
+    requests[callData.contractAddress].calls[callId] = {
+      methodName: callData.methodName,
+      params: callData.params,
+      shouldHashParams: callData.shouldHashParams,
+    };
+  }
+
+  return requests;
 }

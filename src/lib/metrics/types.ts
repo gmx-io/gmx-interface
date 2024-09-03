@@ -146,7 +146,8 @@ export type MulticallTimeoutEvent = {
   data: {
     metricType: "rpcTimeout" | "multicallTimeout" | "workerTimeout";
     isInMainThread: boolean;
-    isFallbackRequest?: boolean;
+    isFallback?: boolean;
+    isAlchemy?: boolean;
     errorMessage: string;
   };
 };
@@ -156,7 +157,8 @@ export type MulticallErrorEvent = {
   isError: true;
   data: {
     isInMainThread: boolean;
-    isFallbackRequest?: boolean;
+    isFallback?: boolean;
+    isAlchemy?: boolean;
     errorMessage: string;
   };
 };
