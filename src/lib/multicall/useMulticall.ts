@@ -58,6 +58,10 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
             startTime = Date.now();
           });
 
+          if (name === 'useTokenBalances') {
+            console.log('start', name)
+          }
+
           // prettier-ignore
           request =
             typeof params.request === "function"
@@ -80,10 +84,15 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         let priority: "urgent" | "background" = "urgent";
 
+        const isLog = name === 'useTokenBalances';
+
         const hasData = defaultConfig.cache.get(stableHash(swrFullKey))?.isLoading === false;
 
         let isInterval = false;
         if (typeof params.refreshInterval === "number") {
+          if (isLog) {
+            console.log('logg', defaultConfig.refreshInterval, hasData, successDataByChainIdRef.current[chainId])
+          }
           isInterval = true;
         } else if (params.refreshInterval === undefined) {
           if (typeof defaultConfig.refreshInterval === "number") {
@@ -96,6 +105,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         if (hasData && isInterval) {
           priority = "background";
         }
+
+        priority = "urgent"
 
         {
           let startTime: number | undefined;
@@ -115,6 +126,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         }
 
         if (responseOrFailure?.success) {
+          if (isLog) {
+            console.log('wtf', priority, responseOrFailure)
+          }
           successDataByChainIdRef.current[chainId] = responseOrFailure;
         }
 
