@@ -40,9 +40,9 @@ export const appEventsData: EventData[] = [
     endDate: "30 Sep 2024, 00:00",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> with no price impact on {" "}
-        <TokenSymbolWithIcon symbol="BTC" />/USD [BTC]
-         and <TokenSymbolWithIcon symbol="ETH" />/USD [WETH] markets on Arbitrum.
+        <Link to="/trade">Trade</Link> with no price impact on <TokenSymbolWithIcon symbol="BTC" />
+        /USD [BTC] and <TokenSymbolWithIcon symbol="ETH" />
+        /USD [WETH] markets on Arbitrum.
       </>
     ),
   },
