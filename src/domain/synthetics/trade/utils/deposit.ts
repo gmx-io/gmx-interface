@@ -147,11 +147,9 @@ export function getDepositAmounts(p: {
       } else {
         gmUsdAmount = values.marketTokenUsd;
       }
-
-      const glvAmount = convertToTokenAmount(gmUsdAmount, marketInfo.indexToken.decimals, glvPrice);
+      const glvAmount = convertToTokenAmount(gmUsdAmount, vaultInfo.indexToken.decimals, glvPrice);
       if (glvAmount !== undefined && glvAmount > 0) {
         values.marketTokenAmount = glvAmount;
-        values.marketTokenUsd = convertToUsd(glvAmount, vaultInfo.indexToken.decimals, glvPrice)!;
       }
     }
   } else if (strategy === "byMarketToken") {

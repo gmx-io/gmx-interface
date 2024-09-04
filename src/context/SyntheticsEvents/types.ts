@@ -88,6 +88,7 @@ export type DepositCreatedEventData = {
   callbackGasLimit: bigint;
   shouldUnwrapNativeToken: boolean;
   isGlvDeposit: boolean;
+  marketTokenAmount?: bigint;
 };
 
 export type PendingDepositData = {
@@ -103,6 +104,7 @@ export type PendingDepositData = {
   shouldUnwrapNativeToken: boolean;
   isGlvDeposit: boolean;
   gmAddress?: string;
+  marketTokenAmount?: bigint;
 };
 
 export type WithdrawalCreatedEventData = {

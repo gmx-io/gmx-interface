@@ -6,6 +6,7 @@ import {
   MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
+  getGlvMarketDisplayName,
   getMarketIndexName,
   getMarketPoolName,
   getMaxPoolUsd,
@@ -326,9 +327,9 @@ export function MarketStatsWithComposition(p: Props) {
             <CardRow
               label={t`Vault`}
               value={
-                marketInfo.name && poolName ? (
+                poolName ? (
                   <div className="flex items-start">
-                    <span>{marketInfo.name}</span>
+                    <span>{getGlvMarketDisplayName(marketInfo)}</span>
                     <span className="subtext gm-market-name">[{poolName}]</span>
                   </div>
                 ) : (

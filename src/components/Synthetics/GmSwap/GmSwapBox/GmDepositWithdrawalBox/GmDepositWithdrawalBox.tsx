@@ -852,7 +852,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                     tokenAddress={address}
                     tokenSymbol={
                       marketTokenData
-                        ? `${isGlv(market) ? "GLV" : "GM"}: ${marketTokenData.name}`
+                        ? isGlv(market)
+                          ? market.indexToken.contractSymbol
+                          : `GM: ${marketTokenData.name}`
                         : token.assetSymbol ?? token.symbol
                     }
                     spenderAddress={routerAddress}
