@@ -268,7 +268,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
         shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
         initialLongTokenAmount:
-          eventData.uintItems.items.marketTokenAmount ?? eventData.uintItems.items.initialLongTokenAmount,
+          eventData.uintItems.items.marketTokenAmount === 0n
+            ? eventData.uintItems.items.initialLongTokenAmount
+            : eventData.uintItems.items.marketTokenAmount,
         initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
         minMarketTokens: eventData.uintItems.items.minGlvTokens,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
