@@ -32,7 +32,7 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
-  {
+{
     id: "zero-price-impact",
     title: "Zero price impact on BTC/USD and ETH/USD single-side pools",
     isActive: true,
