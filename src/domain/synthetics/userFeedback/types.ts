@@ -1,5 +1,15 @@
+export enum QuestionType {
+  generalFeedback = "generalFeedback",
+  likeMost = "likeMost",
+  howContinue = "howContinue",
+  areasToImprove = "areasToImprove",
+  ratingUp = "ratingUp",
+  issues = "issues",
+  concerns = "concerns",
+}
+
 export type Answer = {
-  questionType: string;
+  questionType: QuestionType;
   question: string;
   answer: string;
 };
@@ -10,10 +20,12 @@ export type UserFeedback = {
   isGeneralFeedback: boolean | undefined;
   totalVolume: number;
   monthVolume: number;
-  answers: Answer[];
+  answers: {
+    [questionType in QuestionType]?: Answer;
+  };
 };
 
 export type Question = {
-  questionType: string;
+  questionType: QuestionType;
   question: string;
 };

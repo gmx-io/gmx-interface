@@ -33,6 +33,20 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "zero-price-impact",
+    title: "Zero price impact on BTC/USD and ETH/USD single-side pools",
+    isActive: true,
+    startDate: "30 Aug 2024, 00:00",
+    endDate: "30 Sep 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> with no price impact on {" "}
+        <TokenSymbolWithIcon symbol="BTC" />/USD [BTC]
+         and <TokenSymbolWithIcon symbol="ETH" />/USD [WETH] markets on Arbitrum.
+      </>
+    ),
+  },
+  {
     id: "ordi-stx-market-arbitrum",
     title: "ORDI and STX markets added on Arbitrum",
     isActive: true,

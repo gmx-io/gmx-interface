@@ -328,8 +328,8 @@ export class Metrics {
         value = value.toString();
       }
 
-      if (typeof value === "string" && value.length > 150) {
-        value = value.slice(0, 150);
+      if (typeof value === "string" && value.length > 500) {
+        value = value.slice(0, 500);
       }
 
       acc[key] = value;

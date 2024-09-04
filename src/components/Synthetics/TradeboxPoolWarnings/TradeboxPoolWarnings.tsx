@@ -14,7 +14,11 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
+import {
+  getAvailableUsdLiquidityForPosition,
+  getIsZeroPriceImpactMarket,
+  getMarketPoolName,
+} from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage, formatRatePercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -73,8 +77,8 @@ export const useTradeboxPoolWarnings = (
   const marketWithPosition = marketsOptions?.marketWithPosition;
   const isNoSufficientLiquidityInAnyMarket = marketsOptions?.isNoSufficientLiquidityInAnyMarket;
   const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
-  const minOpenFeesMarket = (marketsOptions?.minOpenFeesAvailableMarketAddress &&
-    getByKey(marketsInfoData, marketsOptions?.minOpenFeesAvailableMarketAddress)) as MarketInfo | undefined;
+  const minOpenFeesMarket = (marketsOptions?.minOpenFeesMarket?.marketAddress &&
+    getByKey(marketsInfoData, marketsOptions?.minOpenFeesMarket.marketAddress)) as MarketInfo | undefined;
   const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
   const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
   const isOutPositionLiquidity = isLong
@@ -89,7 +93,7 @@ export const useTradeboxPoolWarnings = (
 
   const improvedOpenFeesDeltaBps =
     increaseAmounts?.acceptablePriceDeltaBps !== undefined
-      ? (marketsOptions.minOpenFeesBps ?? BN_ZERO) -
+      ? (marketsOptions.minOpenFeesMarket?.openFeesBps ?? BN_ZERO) -
         (positionFeeBeforeDiscountBps ?? BN_ZERO) -
         increaseAmounts.acceptablePriceDeltaBps
       : undefined;
@@ -149,10 +153,12 @@ export const useTradeboxPoolWarnings = (
     (improvedNetRateAbsDelta !== undefined
       ? improvedNetRateAbsDelta >= SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD
       : undefined);
+
   const showHasBetterOpenFeesAndNetFeesWarning =
     canShowHasBetterExecutionFeesWarning &&
     canShowHasBetterNetFeesWarning &&
     bestNetFeeMarket.marketTokenAddress === minOpenFeesMarket?.marketTokenAddress;
+
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
   const showHasBetterNetFeesWarning = canShowHasBetterNetFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
 
@@ -255,7 +261,7 @@ export const useTradeboxPoolWarnings = (
           <WithActon>
             <span
               className="clickable muted underline"
-              onClick={() => setMarketAddress(marketsOptions.minOpenFeesAvailableMarketAddress)}
+              onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
             >
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
             </span>
@@ -291,10 +297,14 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasBetterOpenFeesWarning) {
+    const zeroPriceImpactMessage = getIsZeroPriceImpactMarket(minOpenFeesMarket) ? (
+      <Trans>and zero price impact</Trans>
+    ) : null;
+
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open fees in the{" "}
+          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost {zeroPriceImpactMessage} in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span
@@ -331,10 +341,16 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasBetterOpenFeesAndNetFeesWarning) {
+    const zeroPriceImpactMessage = getIsZeroPriceImpactMarket(minOpenFeesMarket) ? (
+      <Trans>
+        , <b>zero price impact</b>
+      </Trans>
+    ) : null;
+
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open fees and a{" "}
+          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost{zeroPriceImpactMessage} and a{" "}
           {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>

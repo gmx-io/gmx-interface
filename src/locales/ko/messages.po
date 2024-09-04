@@ -377,6 +377,10 @@ msgstr ""
 msgid "View status"
 msgstr ""
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get {0} better open cost {zeroPriceImpactMessage} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr ""
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
 msgstr "{0}에서 {1}로 1inch에서 스왑"
@@ -417,11 +421,6 @@ msgstr ""
 msgid "Confirm Limit Order"
 msgstr ""
 
-#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
-#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
-msgid "Open Fees"
-msgstr "오픈 수수료"
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -444,6 +443,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "{0} {1}: {2} USD의 지정가 주문을 생성하였습니다!"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+#~ msgid "You can get {0} better open cost and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -767,6 +770,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "지불"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid ", <0>zero price impact</0>"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -1234,6 +1241,10 @@ msgstr "포지션이 이미 존재한다면, 해당 포지션은 {0} USD에 종�
 msgid "Transfer Submitted"
 msgstr "전송 제출 완료"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+#~ msgid ", zero price impact"
+#~ msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Shift GM"
@@ -1278,10 +1289,6 @@ msgstr "스왑 주문 생성 실패."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "차트 포지션"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time.>>>>>>> a370b6cabf22a25f334eb2d7728d48c7e68fd52c"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
@@ -1672,6 +1679,10 @@ msgstr ""
 msgid "Total Fees"
 msgstr "총 수수료"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "and zero price impact"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
 msgstr ""
@@ -1926,10 +1937,6 @@ msgstr "소개 보수는 매주 에어드랍됩니다."
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "총계:"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get {0} better open fees and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
-msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -5073,10 +5080,6 @@ msgstr "전송을 완료하려면 {receiver} 계정에 다시 연결해야 합�
 msgid "Longs Net Rate / 1h"
 msgstr "롱 포지션 순 수수료율 / 1시간"
 
-#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-#~ msgid "We Value Your Feedback======="
-#~ msgstr ""
-
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -5600,6 +5603,11 @@ msgstr "주문 체결 가격은 가격 영향을 고려합니다."
 msgid "Buy GLP or GMX"
 msgstr ""
 
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Open Cost"
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
 msgstr ""
@@ -5638,10 +5646,6 @@ msgstr ""
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
 msgstr "연동"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -7331,6 +7335,10 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "추천인 코드 생성"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get {0} better open cost{zeroPriceImpactMessage} and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Activate Subaccount"
 msgstr ""
@@ -7592,6 +7600,10 @@ msgstr "손절 주문 업데이트"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Continue"
 msgstr "계속하기"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+#~ msgid "You can get {0} better open cost in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and Cumulative PnL"
