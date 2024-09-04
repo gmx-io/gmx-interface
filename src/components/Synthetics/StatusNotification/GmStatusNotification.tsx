@@ -171,7 +171,7 @@ export function GmStatusNotification({
         }
       }
 
-      if (isGlvMarket && pendingDepositData.initialLongTokenAddress)
+      if (pendingDepositData.initialLongTokenAddress)
         return (
           <Trans>
             <div className="inline-flex">
