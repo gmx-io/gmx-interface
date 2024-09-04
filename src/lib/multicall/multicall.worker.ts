@@ -28,7 +28,13 @@ async function run(event) {
       result,
     });
   } catch (error) {
-    postMessage({ id, error: error });
+    postMessage({
+      id,
+      error: {
+        message: error.message,
+        stack: error.stack,
+      },
+    });
   }
 }
 

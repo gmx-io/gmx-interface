@@ -33,7 +33,13 @@ executorWorker.onmessage = (event) => {
   }
 
   if (error) {
-    promise.reject(error);
+    const errorObj = new Error(error.message);
+
+    if (error.stack) {
+      errorObj.stack = error.stack;
+    }
+
+    promise.reject(errorObj);
   } else {
     promise.resolve(result);
   }
@@ -64,13 +70,13 @@ export async function executeMulticallWorker(
 
   const internalMulticallTimeout = MAX_TIMEOUT;
   const bufferTimeout = 500;
-  const escapePromise = sleep(internalMulticallTimeout + bufferTimeout).then(() => "timeout");
+  const escapePromise = sleep(internalMulticallTimeout + bufferTimeout).then(() => new Error("timeout"));
   const race = Promise.race([promise, escapePromise]);
 
-  race.then(async (result) => {
-    if (result === "timeout") {
-      delete promises[id];
+  return race.catch(async (error) => {
+    delete promises[id];
 
+    if (error.message === "timeout") {
       emitMetricEvent<MulticallTimeoutEvent>({
         event: "multicall.timeout",
         isError: true,
@@ -85,15 +91,24 @@ export async function executeMulticallWorker(
         `[executeMulticallWorker] Worker did not respond in time. Falling back to main thread. Job ID: ${id}`,
         request
       );
-      try {
-        const result = await executeMulticallMainThread(chainId, request);
+    } else {
+      emitMetricEvent({
+        event: "worker.multicall.error",
+        isError: true,
+        data: {
+          isInMainThread: false,
+          errorMessage: error.message,
+        },
+      });
 
-        resolve(result);
-      } catch (error) {
-        reject(error);
-      }
+      // eslint-disable-next-line no-console
+      console.error(
+        `[executeMulticallWorker] Worker execution failed. Falling back to main thread. Job ID: ${id}`,
+        error.message,
+        error.stack
+      );
     }
-  });
 
-  return promise as any;
+    return await executeMulticallMainThread(chainId, request);
+  });
 }
