@@ -461,8 +461,8 @@ export function MarketStatsWithComposition(p: Props) {
       </div>
       <div
         className={cx("flex-grow", {
-          "w-[100%] border-l-1 border-l-slate-700": canFitCompositionOnRow,
-          "mt-20 border-t-1 border-t-slate-700": !canFitCompositionOnRow,
+          "w-[100%] border-l border-l-slate-700": canFitCompositionOnRow,
+          "mt-20 border-t border-t-slate-700": !canFitCompositionOnRow,
         })}
       >
         <div className="p-20">

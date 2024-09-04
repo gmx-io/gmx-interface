@@ -118,8 +118,6 @@ export function useUpdateByQueryParams({
             if (pool && isGlvMarket && setFirstTokenAddress) {
               setFirstTokenAddress(pool);
               onSelectGlvGmMarket?.(pool);
-            } else {
-              onSelectGlvGmMarket?.(undefined);
             }
           }
         }
