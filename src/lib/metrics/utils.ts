@@ -563,19 +563,30 @@ export function sendOrderCancelledMetric(metricId: OrderMetricId, eventData: Eve
   });
 }
 
-export function formatAmountForMetrics(amount?: bigint, decimals = USD_DECIMALS, round = true) {
+export function formatAmountForMetrics(
+  amount?: bigint,
+  decimals = USD_DECIMALS,
+  round: "toOrder" | "toInt" | false = "toOrder"
+) {
   if (amount === undefined) {
     return undefined;
   }
 
-  const value = round ? roundToOrder(amount) : amount;
+  const value = round === "toOrder" ? roundToOrder(amount) : amount;
+
   const str = formatTokenAmount(value, decimals);
 
   if (!str) {
     return undefined;
   }
 
-  return parseFloat(str);
+  let result = parseFloat(str);
+
+  if (round === "toInt") {
+    result = Math.round(result);
+  }
+
+  return result;
 }
 
 export function getRequestId() {
