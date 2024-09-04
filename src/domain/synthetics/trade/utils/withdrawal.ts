@@ -3,6 +3,7 @@ import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
 
+import { GlvMarketInfo } from "../../markets/useGlvMarkets";
 import { WithdrawalAmounts } from "../types";
 
 export function getWithdrawalAmounts(p: {
@@ -14,8 +15,18 @@ export function getWithdrawalAmounts(p: {
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
+  vaultInfo?: GlvMarketInfo;
 }) {
-  const { marketInfo, marketToken, marketTokenAmount, longTokenAmount, shortTokenAmount, uiFeeFactor, strategy } = p;
+  const {
+    marketInfo,
+    marketToken,
+    marketTokenAmount,
+    longTokenAmount,
+    shortTokenAmount,
+    uiFeeFactor,
+    strategy,
+    vaultInfo,
+  } = p;
 
   const { longToken, shortToken } = marketInfo;
 
@@ -45,7 +56,13 @@ export function getWithdrawalAmounts(p: {
 
   if (strategy === "byMarketToken") {
     values.marketTokenAmount = marketTokenAmount;
-    values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount)!;
+
+    if (vaultInfo) {
+      const glvPrice = vaultInfo.indexToken.prices.minPrice;
+      values.marketTokenUsd = convertToUsd(marketTokenAmount, vaultInfo.indexToken.decimals, glvPrice)!;
+    } else {
+      values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
+    }
 
     values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, longPoolUsd, totalPoolUsd);
     values.shortTokenUsd = bigMath.mulDiv(values.marketTokenUsd, shortPoolUsd, totalPoolUsd);

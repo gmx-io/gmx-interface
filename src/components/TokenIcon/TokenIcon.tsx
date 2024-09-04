@@ -12,13 +12,17 @@ type Props = {
   displaySize: number;
   importSize?: 24 | 40;
   className?: string;
+  badge?: string | readonly [topSymbol: string, bottomSymbol: string];
 };
 
-function TokenIcon({ className, symbol, displaySize, importSize = 24 }: Props) {
+function TokenIcon({ className, symbol, displaySize, importSize = 24, badge }: Props) {
   const iconPath = getIconUrlPath(symbol, importSize);
   const classNames = cx("Token-icon inline", className);
+
   if (!iconPath) return <></>;
-  return (
+
+  let sub;
+  const img = (
     <img
       data-qa="token-icon"
       className={classNames}
@@ -27,6 +31,46 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24 }: Props) {
       width={displaySize}
       height={displaySize}
     />
+  );
+
+  if (badge) {
+    if (typeof badge === "string") {
+      sub = (
+        <span className="absolute -bottom-8 -right-8 z-10 rounded-20 border border-slate-800 bg-slate-500 px-4 py-2 text-12 !text-white">
+          {badge}
+        </span>
+      );
+    } else {
+      sub = (
+        <span className="absolute -bottom-8 -right-8 flex flex-row items-center justify-center !text-white">
+          <img
+            className="z-20 -mr-10 rounded-[100%] border border-slate-800"
+            src={importImage(getIconUrlPath(badge[0], 24))}
+            alt={badge[0]}
+            width={20}
+            height={20}
+          />
+          <img
+            className="z-10 rounded-[100%] border border-slate-800"
+            src={importImage(getIconUrlPath(badge[1], 24))}
+            alt={badge[0]}
+            width={20}
+            height={20}
+          />
+        </span>
+      );
+    }
+  }
+
+  if (!sub) {
+    return img;
+  }
+
+  return (
+    <span className="relative">
+      {img}
+      {sub}
+    </span>
   );
 }
 

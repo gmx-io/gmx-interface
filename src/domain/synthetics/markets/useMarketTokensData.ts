@@ -16,6 +16,10 @@ import { getContractMarketPrices } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
+import { GlvMarketsData } from "./useGlvMarkets";
+import { useMemo } from "react";
+import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { GLV_ENABLED } from "config/markets";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -23,15 +27,23 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: number,
-  p: { isDeposit: boolean; account?: string }
+  p: { isDeposit: boolean; account?: string; glvMarketsData?: GlvMarketsData; withGlv?: boolean }
 ): MarketTokensDataResult {
-  const { isDeposit, account } = p;
+  const { isDeposit, account, glvMarketsData = {} } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
-  const isDataLoaded = tokensData && marketsAddresses?.length;
+  let isGlvTokensLoaded;
 
-  const { data } = useMulticall(chainId, "useMarketTokensData", {
+  if (p.withGlv === false) {
+    isGlvTokensLoaded = true;
+  } else {
+    isGlvTokensLoaded = GLV_ENABLED[chainId] ? Object.values(glvMarketsData).length > 0 : true;
+  }
+
+  const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;
+
+  const { data: gmMarketTokensData } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
@@ -137,14 +149,36 @@ export function useMarketTokensDataRequest(
       }, {} as TokensData),
   });
 
+  const gmAndGlvMarketTokensData = useMemo(() => {
+    if (!gmMarketTokensData || !glvMarketsData || Object.values(glvMarketsData).length === 0) {
+      return gmMarketTokensData;
+    }
+
+    const result = { ...gmMarketTokensData };
+    Object.values(glvMarketsData).forEach((glvMarket) => {
+      result[glvMarket.indexTokenAddress] = glvMarket.indexToken;
+    });
+
+    return result;
+  }, [gmMarketTokensData, glvMarketsData]);
+
   return {
-    marketTokensData: data,
+    marketTokensData: gmAndGlvMarketTokensData,
   };
 }
 
-export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
+export function useMarketTokensData(
+  chainId: number,
+  p: { isDeposit: boolean; withGlv?: boolean }
+): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
+  const glvMarketsData = useSelector(selectGlvInfo);
 
-  return useMarketTokensDataRequest(chainId, { isDeposit, account });
+  return useMarketTokensDataRequest(chainId, {
+    isDeposit,
+    account,
+    glvMarketsData: glvMarketsData,
+    withGlv: p.withGlv,
+  });
 }

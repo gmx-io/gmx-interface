@@ -30,4 +30,7 @@ export type GasLimitsConfig = {
   estimatedGasFeeBaseAmount: bigint;
   estimatedGasFeePerOraclePrice: bigint;
   estimatedFeeMultiplierFactor: bigint;
+  glvDepositGasLimit: bigint;
+  glvWithdrawalGasLimit: bigint;
+  glvPerMarketGasLimit: bigint;
 };

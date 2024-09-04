@@ -10,6 +10,7 @@ import {
   indexTokensFavoritesTabOptions,
   useIndexTokensFavorites,
 } from "domain/synthetics/tokens/useIndexTokensFavorites";
+
 import { useLocalizedMap } from "lib/i18n";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -18,6 +19,7 @@ import { getByKey } from "lib/objects";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
+
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 

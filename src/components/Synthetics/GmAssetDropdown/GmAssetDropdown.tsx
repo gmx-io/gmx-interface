@@ -7,8 +7,10 @@ import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { MarketInfo, GlvAndGmMarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import useWallet, { WalletClient } from "lib/wallets/useWallet";
@@ -21,22 +23,24 @@ import "./GmAssetDropdown.scss";
 
 type Props = {
   token?: TokenData;
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData?: GlvAndGmMarketsInfoData;
   position?: Placement;
   tokensData?: TokensData;
 };
 
-function renderMarketName(market?: MarketInfo) {
+function renderMarketName(market?: MarketInfo | GlvMarketInfo) {
   if (!market) {
     return null;
   }
 
-  const marketName = market.isSpotOnly ? "SWAP" : getMarketIndexName(market);
+  const isGlvMarket = isGlv(market);
+
+  const marketName = market.isSpotOnly ? "SWAP" : isGlvMarket ? market.name : getMarketIndexName(market);
   const poolName = getMarketPoolName(market);
 
   return (
     <>
-      GM: {marketName}
+      {isGlvMarket ? "GLV" : "GM"}: {marketName}
       <span className="inline-flex items-start">
         <span className="subtext">[{poolName}]</span>
       </span>
@@ -65,6 +69,8 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
     whileElementsMounted: autoUpdate,
   });
 
+  const contractSymbol = market && isGlv(market) ? `${market.indexToken.contractSymbol}` : undefined;
+
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">
       <Menu>
@@ -75,7 +81,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-10 rounded-4 border border-gray-800 bg-slate-800 outline-none"
+          className="z-30 rounded-4 border border-gray-800 bg-slate-800 outline-none"
         >
           {market && (
             <Menu.Item as="div">
@@ -87,7 +93,13 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
               </ExternalLink>
             </Menu.Item>
           )}
-          <AddToWalletButton active={active} walletClient={walletClient} token={token} marketName={marketName} />
+          <AddToWalletButton
+            contractSymbol={contractSymbol}
+            active={active}
+            walletClient={walletClient}
+            token={token}
+            marketName={marketName}
+          />
           {active && shortToken && walletClient && (
             <AddToWalletButton
               active={active}
@@ -115,11 +127,13 @@ function AddToWalletButton({
   walletClient,
   token,
   marketName,
+  contractSymbol,
 }: {
   active?: boolean;
   walletClient: WalletClient;
   token?: TokenData;
   marketName: ReactNode;
+  contractSymbol?: string;
 }) {
   if (!active || !walletClient?.watchAsset || !token) {
     return null;
@@ -135,7 +149,7 @@ function AddToWalletButton({
             type: "ERC20",
             options: {
               address,
-              symbol: explorerSymbol ?? assetSymbol ?? metamaskSymbol ?? symbol,
+              symbol: contractSymbol ?? explorerSymbol ?? assetSymbol ?? metamaskSymbol ?? symbol,
               decimals,
               image: imageUrl,
             },

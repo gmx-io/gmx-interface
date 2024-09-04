@@ -33,6 +33,24 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "glv-market-arbitrum",
+    title: "GMX Liquidity Vaults (GLV) are Live",
+    isActive: true,
+    startDate: "03 Sep 2024, 00:00",
+    endDate: "18 Sep 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/pools/?market=0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9&operation=buy&scroll=1">Buy</Link> the first
+        automatically rebalanced vault combining multiple GM tokens with ETH, USDC, or eligible GM tokens on Arbitrum.
+      </>
+    ),
+    link: {
+      text: "Read more",
+      href: "https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools",
+      newTab: true,
+    },
+  },
+  {
     id: "zero-price-impact",
     title: "Zero price impact on BTC/USD and ETH/USD single-side pools",
     isActive: true,
@@ -40,9 +58,9 @@ export const appEventsData: EventData[] = [
     endDate: "30 Sep 2024, 00:00",
     bodyText: (
       <>
-        <Link to="/trade">Trade</Link> with no price impact on {" "}
-        <TokenSymbolWithIcon symbol="BTC" />/USD [BTC]
-         and <TokenSymbolWithIcon symbol="ETH" />/USD [WETH] markets on Arbitrum.
+        <Link to="/trade">Trade</Link> with no price impact on <TokenSymbolWithIcon symbol="BTC" />
+        /USD [BTC] and <TokenSymbolWithIcon symbol="ETH" />
+        /USD [WETH] markets on Arbitrum.
       </>
     ),
   },

@@ -5,13 +5,14 @@ import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
-import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { helperToast } from "lib/helperToast";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
+import { isGlv } from "../../../../domain/synthetics/markets/glv";
 import { Mode, Operation } from "./types";
 
 type SearchParams = {
@@ -29,19 +30,21 @@ export function useUpdateByQueryParams({
   setMode,
   setFirstTokenAddress,
   onSelectMarket,
+  onSelectGlvGmMarket,
 }: {
   operation: Operation;
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
   setFirstTokenAddress?: (address: string | undefined) => void;
   onSelectMarket: (marketAddress: string) => void;
+  onSelectGlvGmMarket?: (marketAddress?: string) => void;
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
 
   const chainId = useSelector(selectChainId);
-  const marketsInfo = useSelector(selectMarketsInfoData);
+  const marketsInfo = useSelector(selectGlvAndGmMarketsData);
   const markets = useMemo(() => values(marketsInfo), [marketsInfo]);
 
   useEffect(
@@ -90,12 +93,13 @@ export function useUpdateByQueryParams({
           const marketInfo = markets.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
           if (marketInfo) {
             onSelectMarket(marketInfo.marketTokenAddress);
-            const indexName = getMarketIndexName(marketInfo);
+            const isGlvMarket = isGlv(marketInfo);
+            const indexName = isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo);
             const poolName = getMarketPoolName(marketInfo);
             helperToast.success(
               <Trans>
                 <div className="inline-flex">
-                  GM:&nbsp;<span>{indexName}</span>
+                  {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
                   <span className="subtext gm-toast leading-1">[{poolName}]</span>
                 </div>{" "}
                 <span>selected in order form</span>
@@ -109,6 +113,11 @@ export function useUpdateByQueryParams({
 
             if (isCurrentlyShift && !isNewMarketShiftAvailable) {
               setOperation(Operation.Deposit);
+            }
+
+            if (pool && isGlvMarket && setFirstTokenAddress) {
+              setFirstTokenAddress(pool);
+              onSelectGlvGmMarket?.(pool);
             }
           }
         }
@@ -136,6 +145,7 @@ export function useUpdateByQueryParams({
       marketsInfo,
       currentOperation,
       shiftAvailableMarkets,
+      onSelectGlvGmMarket,
     ]
   );
 }

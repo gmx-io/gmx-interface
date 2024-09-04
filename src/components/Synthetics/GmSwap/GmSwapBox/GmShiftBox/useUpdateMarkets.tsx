@@ -4,6 +4,7 @@ import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/type
 import { getByKey } from "lib/objects";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
+import { isGlv } from "domain/synthetics/markets/glv";
 
 export function useUpdateMarkets({
   marketsInfoData,
@@ -55,6 +56,10 @@ export function useUpdateMarkets({
       const isToMarketSameAsSelected = toMarketAddress === newSelectedMarketAddress;
       const isToMarketValid = isToMarketAvailable && isToMarketRelated && !isToMarketSameAsSelected;
 
+      if (toMarketInfo && isGlv(toMarketInfo)) {
+        return;
+      }
+
       if (!isToMarketValid) {
         const someAvailableMarket = getShiftAvailableRelatedMarkets({
           marketsInfoData,
@@ -78,8 +83,7 @@ export function useUpdateMarkets({
       setToMarketAddress,
       shiftAvailableMarkets,
       toMarketAddress,
-      toMarketInfo?.longTokenAddress,
-      toMarketInfo?.shortTokenAddress,
+      toMarketInfo,
     ]
   );
 }

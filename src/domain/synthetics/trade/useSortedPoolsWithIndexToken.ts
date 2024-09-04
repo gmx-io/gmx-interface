@@ -3,7 +3,8 @@ import { useMemo } from "react";
 
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
-import type { MarketInfo, MarketsInfoData } from "../markets";
+import type { MarketInfo, GlvAndGmMarketsInfoData } from "../markets";
+import { isGlv } from "../markets/glv";
 import { type TokenData, type TokensData, convertToUsd } from "../tokens";
 
 const DEFAULT_VALUE = {
@@ -12,7 +13,7 @@ const DEFAULT_VALUE = {
 };
 
 export function sortMarketsWithIndexToken(
-  marketsInfoData: MarketsInfoData | undefined,
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined,
   marketTokensData: TokensData | undefined
 ) {
   if (!marketsInfoData || !marketTokensData) {
@@ -31,18 +32,29 @@ export function sortMarketsWithIndexToken(
           const marketInfoData = getByKey(marketsInfoData, market.marketTokenAddress)!;
           return !marketInfoData.isDisabled;
         })
-        .map((market) => getByKey(marketTokensData, market.marketTokenAddress)!);
+        .map((market) => ({
+          isGlv: isGlv(market),
+          token: getByKey(marketTokensData, market.marketTokenAddress)!,
+        }));
     })
     .filter((markets) => markets.length > 0);
 
   const sortedGroups = allMarkets!.sort((a, b) => {
-    const totalMarketSupplyA = a.reduce((acc, market) => {
+    if (a[0].isGlv && !b[0].isGlv) {
+      return -1;
+    }
+
+    if (!a[0].isGlv && b[0].isGlv) {
+      return 1;
+    }
+
+    const totalMarketSupplyA = a.reduce((acc, { token: market }) => {
       const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
       acc = acc + (totalSupplyUsd ?? 0n);
       return acc;
     }, 0n);
 
-    const totalMarketSupplyB = b.reduce((acc, market) => {
+    const totalMarketSupplyB = b.reduce((acc, { token: market }) => {
       const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
       acc = acc + (totalSupplyUsd ?? 0n);
       return acc;
@@ -53,11 +65,14 @@ export function sortMarketsWithIndexToken(
 
   // Sort markets within each group by total supply
   const sortedMarkets = sortedGroups.map((markets) => {
-    return markets.sort((a, b) => {
-      const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
-      const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
-      return totalSupplyUsdA > totalSupplyUsdB ? -1 : 1;
-    });
+    return markets
+      .sort(({ token: a }, { token: b }) => {
+        const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
+        const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
+
+        return totalSupplyUsdA > totalSupplyUsdB ? -1 : 1;
+      })
+      .map((e) => e.token);
   });
 
   // Flatten the sorted markets array
@@ -68,11 +83,12 @@ export function sortMarketsWithIndexToken(
   };
 }
 
-function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketTokensData?: TokensData) {
+function useSortedPoolsWithIndexToken(marketsInfoData?: GlvAndGmMarketsInfoData, marketTokensData?: TokensData) {
   const sortedMarketsWithIndexToken = useMemo(
     () => sortMarketsWithIndexToken(marketsInfoData, marketTokensData),
     [marketsInfoData, marketTokensData]
   );
+
   return sortedMarketsWithIndexToken;
 }
 

@@ -45,7 +45,6 @@ import PageTitle from "components/PageTitle/PageTitle";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { GmList } from "components/Synthetics/GmList/GmList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getServerUrl } from "config/backend";
@@ -85,6 +84,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
+import { GmList } from "components/Synthetics/GmList/GmList";
 
 const { ZeroAddress } = ethers;
 
@@ -1345,7 +1345,8 @@ export default function StakeV2() {
   ];
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData } = useGmMarketsApy(chainId);
+  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData, glvApyInfoData } =
+    useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
@@ -2401,6 +2402,7 @@ export default function StakeV2() {
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
+            glvMarketsTokensApyData={glvApyInfoData}
             isDeposit={false}
             shouldScrollToTop
           />

@@ -2,7 +2,7 @@ import { parse } from "date-fns";
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
-import { ARBITRUM, AVALANCHE, BSС_MAINNET } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET } from "./chains";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
@@ -147,3 +147,31 @@ export function getMarketListingDate(chainId: number, marketAddress: string): Da
 
   return tokenListing.listingDate;
 }
+
+export const GLV_ENABLED = {
+  [ARBITRUM]: true,
+  [ARBITRUM_GOERLI]: false,
+  [AVALANCHE]: false,
+  [AVALANCHE_FUJI]: true,
+};
+
+export const GLV_MARKETS_APPEARANCE: {
+  [chainId: number]: Record<string, { name: string | undefined; subtitle: string; shortening: string }>;
+} = {
+  [ARBITRUM]: {
+    "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9": {
+      name: undefined,
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+    },
+  },
+  [ARBITRUM_GOERLI]: {},
+  [AVALANCHE]: {},
+  [AVALANCHE_FUJI]: {
+    "0xc519a5b8e5e93D3ec85D62231C1681c44952689d": {
+      name: "High Caps",
+      subtitle: "Core ETH Markets Vault",
+      shortening: "HC",
+    },
+  },
+};

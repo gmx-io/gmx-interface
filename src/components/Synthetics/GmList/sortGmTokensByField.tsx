@@ -2,32 +2,38 @@ import values from "lodash/values";
 
 import type { SortDirection } from "components/Sorter/Sorter";
 import { getMarketListingDate } from "config/markets";
-import { MarketTokensAPRData, MarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
+
+import { MarketTokensAPRData, GlvAndGmMarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
+import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
+
 import type { SortField } from "./GmList";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 export function sortGmTokensByField({
   chainId,
-  marketsInfoData,
+  marketsInfo,
   marketTokensData,
   orderBy,
   direction,
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  glvMarketsTokensApyData,
 }: {
   chainId: number;
-  marketsInfoData: MarketsInfoData;
+  marketsInfo: GlvAndGmMarketsInfoData;
   marketTokensData: TokensData;
   orderBy: SortField;
   direction: SortDirection;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
 }) {
   const gmTokens = values(marketTokensData);
+
   const directionMultiplier = direction === "asc" ? 1 : -1;
   if (orderBy === "price") {
     return gmTokens.sort((a, b) => {
@@ -43,8 +49,16 @@ export function sortGmTokensByField({
 
   if (orderBy === "buyable") {
     return gmTokens.sort((a, b) => {
-      const mintableA = getMintableMarketTokens(marketsInfoData[a.address], a);
-      const mintableB = getMintableMarketTokens(marketsInfoData[b.address], b);
+      const marketA = marketsInfo[a.address];
+      const marketB = marketsInfo[b.address];
+
+      const mintableA = isGlv(marketA)
+        ? getMintableInfoGlv(marketA, marketTokensData)
+        : getMintableMarketTokens(marketA, a);
+      const mintableB = isGlv(marketB)
+        ? getMintableInfoGlv(marketB, marketTokensData)
+        : getMintableMarketTokens(marketB, b);
+
       return (mintableA?.mintableUsd ?? 0n) > (mintableB?.mintableUsd ?? 0n)
         ? directionMultiplier
         : -directionMultiplier;
@@ -76,9 +90,12 @@ export function sortGmTokensByField({
         aprB += marketsTokensApyData?.[b.address] ?? 0n;
       }
 
+      aprA += glvMarketsTokensApyData?.[a.address] ?? 0n;
+      aprB += glvMarketsTokensApyData?.[b.address] ?? 0n;
+
       return aprA > aprB ? directionMultiplier : -directionMultiplier;
     });
   }
 
-  return sortGmTokensDefault(marketsInfoData, marketTokensData);
+  return sortGmTokensDefault(marketsInfo, marketTokensData);
 }

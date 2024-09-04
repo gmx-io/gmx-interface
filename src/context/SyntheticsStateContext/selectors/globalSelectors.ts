@@ -1,5 +1,5 @@
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelectorDeprecated, createSelector } from "../utils";
+import { createSelector, createSelectorDeprecated } from "../utils";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
@@ -14,6 +14,17 @@ export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
+
+export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvMarketInfo;
+export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;
+export const selectGlvAndGmMarketsData = createSelector((q) => {
+  const glvMarketInfo = q(selectGlvInfo);
+  const marketsInfoData = q(selectMarketsInfoData);
+  return {
+    ...glvMarketInfo,
+    ...marketsInfoData,
+  };
+});
 
 export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants.minCollateralUsd;
 export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants.minPositionSizeUsd;

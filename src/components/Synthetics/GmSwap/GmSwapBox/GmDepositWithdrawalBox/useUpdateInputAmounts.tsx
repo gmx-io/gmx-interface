@@ -29,6 +29,7 @@ export function useUpdateInputAmounts({
         usd?: bigint | undefined;
         token?: TokenData | undefined;
         setValue: (val: string) => void;
+        isGm?: boolean;
       }
     | undefined;
   shortTokenInputState:
@@ -80,10 +81,13 @@ export function useUpdateInputAmounts({
 
           if (amounts) {
             if (longToken) {
+              let longTokenAmountToSet = amounts.longTokenAmount;
+
               longTokenInputState?.setValue(
-                amounts.longTokenAmount > 0 ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+                longTokenAmountToSet > 0 ? formatAmountFree(longTokenAmountToSet, longToken.decimals) : ""
               );
             }
+
             if (shortToken) {
               shortTokenInputState?.setValue(
                 amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""

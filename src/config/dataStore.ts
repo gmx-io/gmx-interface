@@ -82,6 +82,34 @@ export const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBAC
 export const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ORDER_ACTION = hashString("SUBACCOUNT_ORDER_ACTION");
 export const SUBACCOUNT_AUTO_TOP_UP_AMOUNT = hashString("SUBACCOUNT_AUTO_TOP_UP_AMOUNT");
+export const GLV_MAX_MARKET_TOKEN_BALANCE_USD = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_USD");
+export const GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT");
+export const IS_GLV_MARKET_DISABLED = hashString("IS_GLV_MARKET_DISABLED");
+export const GLV_SHIFT_LAST_EXECUTED_AT = hashString("GLV_SHIFT_LAST_EXECUTED_AT");
+export const GLV_SHIFT_MIN_INTERVAL = hashString("GLV_SHIFT_MIN_INTERVAL");
+export const GLV_DEPOSIT_GAS_LIMIT = hashString("GLV_DEPOSIT_GAS_LIMIT");
+export const GLV_WITHDRAWAL_GAS_LIMIT = hashString("GLV_WITHDRAWAL_GAS_LIMIT");
+export const GLV_PER_MARKET_GAS_LIMIT = hashString("GLV_PER_MARKET_GAS_LIMIT");
+
+export function glvShiftLastExecutedAtKey(glvAddress: string) {
+  return hashData(["bytes32", "address"], [GLV_SHIFT_LAST_EXECUTED_AT, glvAddress]);
+}
+
+export function glvShiftMinIntervalKey(glvAddress: string) {
+  return hashData(["bytes32", "address"], [GLV_SHIFT_MIN_INTERVAL, glvAddress]);
+}
+
+export function glvMaxMarketTokenBalanceUsdKey(glvAddress: string, market: string) {
+  return hashData(["bytes32", "address", "address"], [GLV_MAX_MARKET_TOKEN_BALANCE_USD, glvAddress, market]);
+}
+
+export function glvMaxMarketTokenBalanceAmountKey(glvAddress: string, market: string) {
+  return hashData(["bytes32", "address", "address"], [GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT, glvAddress, market]);
+}
+
+export function isGlvMarketDisabledKey(glvAddress: string, market: string) {
+  return hashData(["bytes32", "address", "address"], [IS_GLV_MARKET_DISABLED, glvAddress, market]);
+}
 
 export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
