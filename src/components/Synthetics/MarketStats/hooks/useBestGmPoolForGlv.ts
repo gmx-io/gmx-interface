@@ -20,9 +20,11 @@ export const useBestGmPoolAddressForGlv = (
       return selectedGmPoolAddress;
     }
 
-    for (const market of marketsWithComposition.sort((a, b) => {
+    const sortedMarketsWithComposition = marketsWithComposition.sort((a, b) => {
       return b.comp - a.comp;
-    })) {
+    });
+
+    for (const market of sortedMarketsWithComposition) {
       const availableBuyableGmUsd = getMaxUsdBuyableAmountInMarketWithGm(
         market.gmMarket,
         glvMarket,

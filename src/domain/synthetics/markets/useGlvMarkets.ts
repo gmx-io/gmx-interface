@@ -110,7 +110,7 @@ export function useGlvMarketsInfo(
       key: shouldRequest ? ["glvMarketsInfos", chainId, glvs, account] : shouldRequest,
       request: () => {
         if (!shouldRequest) {
-          return {};
+          throw new Error("Not all required data is loaded");
         }
 
         const request = glvs.reduce((acc, { glv, markets }) => {
