@@ -21,9 +21,11 @@ import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectGlvAndGmMarketsData, selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";
 import { isGlv } from "./glv";
+import { GLV_MARKETS_ENABLED } from "config/markets";
+import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -226,8 +228,15 @@ function useIncentivesBonusApr(
 
 export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
-  const glvMarketInfo = useSelector(selectGlvInfo);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const glvInfo = useSelector(selectGlvInfo);
+  const glvMarketInfo = GLV_MARKETS_ENABLED[chainId] ? glvInfo : undefined;
+
+  const marketsInfoData = {
+    ...onlyGmMarketsInfoData,
+    ...glvMarketInfo,
+  };
+
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
   const client = getSubsquidGraphClient(chainId);
