@@ -1,38 +1,54 @@
-import { t } from "@lingui/macro";
+import { plural, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useMemo, type Dispatch, type SetStateAction } from "react";
+import uniq from "lodash/uniq";
+import { useMemo } from "react";
 
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExecutionFee } from "domain/synthetics/fees";
+import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useHasOutdatedUi } from "domain/legacy";
 import type { MarketInfo } from "domain/synthetics/markets/types";
-import type { TokenData } from "domain/synthetics/tokens/types";
+import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { GmSwapFees } from "domain/synthetics/trade/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
 
+import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+
+import { useShiftTransactions } from "./useShiftTransactions";
+
 export function useShiftSubmitState({
-  selectedMarketInfo,
-  selectedToken,
   amounts,
-  toMarketInfo,
-  toToken,
+  executionFee,
   fees,
+  isHighFeeConsentError,
   isHighPriceImpact,
   isHighPriceImpactAccepted,
-  setIsConfirmationBoxVisible,
+  marketTokenUsd,
+  payTokenAddresses,
+  routerAddress,
+  selectedMarketInfo,
+  selectedToken,
   shouldDisableValidationForTesting,
+  tokensData,
+  toMarketInfo,
+  toToken,
 }: {
-  selectedMarketInfo: MarketInfo | undefined;
-  selectedToken: TokenData | undefined;
   amounts: ShiftAmounts | undefined;
-  toMarketInfo: MarketInfo | undefined;
-  toToken: TokenData | undefined;
+  executionFee: ExecutionFee | undefined;
   fees: GmSwapFees | undefined;
+  isHighFeeConsentError: boolean | undefined;
   isHighPriceImpact: boolean;
   isHighPriceImpactAccepted: boolean;
-  setIsConfirmationBoxVisible: Dispatch<SetStateAction<boolean>>;
+  marketTokenUsd: bigint | undefined;
+  payTokenAddresses: string[];
+  routerAddress: string;
+  selectedMarketInfo: MarketInfo | undefined;
+  selectedToken: TokenData | undefined;
   shouldDisableValidationForTesting: boolean;
+  tokensData: TokensData | undefined;
+  toMarketInfo: MarketInfo | undefined;
+  toToken: TokenData | undefined;
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -40,11 +56,85 @@ export function useShiftSubmitState({
 
   const { openConnectModal } = useConnectModal();
 
+  const { isSubmitting, onSubmit } = useShiftTransactions({
+    fromMarketToken: selectedToken,
+    fromMarketTokenAmount: amounts?.fromTokenAmount,
+    fromMarketTokenUsd: amounts?.fromTokenUsd,
+    marketToken: toToken,
+    marketTokenAmount: amounts?.toTokenAmount,
+    shouldDisableValidation: shouldDisableValidationForTesting,
+    tokensData,
+    executionFee,
+    marketTokenUsd,
+  });
+
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: routerAddress,
+    tokenAddresses: payTokenAddresses,
+  });
+
+  const tokensToApprove = useMemo(
+    function getTokensToApprove() {
+      const addresses: string[] = [];
+
+      if (!tokensAllowanceData) {
+        return addresses;
+      }
+
+      if (
+        amounts?.fromTokenAmount !== undefined &&
+        amounts?.fromTokenAmount > 0 &&
+        selectedToken &&
+        getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)
+      ) {
+        addresses.push(selectedToken.address);
+      }
+
+      return uniq(addresses);
+    },
+    [selectedToken, amounts?.fromTokenAmount, tokensAllowanceData]
+  );
+
   return useMemo(() => {
+    if (isSubmitting) {
+      return {
+        text: t`Submitting...`,
+        disabled: true,
+        tokensToApprove,
+      };
+    }
+
     if (!account) {
       return {
         text: t`Connect Wallet`,
         onSubmit: () => openConnectModal?.(),
+        tokensToApprove,
+      };
+    }
+
+    if (isHighFeeConsentError) {
+      return {
+        text: t`High Network Fee not yet acknowledged`,
+        disabled: true,
+        tokensToApprove,
+      };
+    }
+
+    if (tokensToApprove.length > 0 && selectedToken) {
+      const symbols = tokensToApprove.map((address) => {
+        const token = getTokenData(tokensData, address);
+        return token?.symbol;
+      });
+
+      const symbolsText = symbols.join(", ");
+
+      return {
+        text: plural(symbols.length, {
+          one: `Pending ${symbolsText} approval`,
+          other: `Pending ${symbolsText} approvals`,
+        }),
+        disabled: true,
+        tokensToApprove,
       };
     }
 
@@ -72,15 +162,12 @@ export function useShiftSubmitState({
 
     const error = commonError || shiftError;
 
-    const onSubmit = () => {
-      setIsConfirmationBoxVisible(true);
-    };
-
     if (error) {
       return {
         text: error,
         error,
-        isDisabled: !shouldDisableValidationForTesting,
+        disabled: !shouldDisableValidationForTesting,
+        tokensToApprove,
         onSubmit,
       };
     }
@@ -88,6 +175,7 @@ export function useShiftSubmitState({
     return {
       text: t`Shift GM`,
       onSubmit,
+      tokensToApprove,
     };
   }, [
     account,
@@ -107,7 +195,11 @@ export function useShiftSubmitState({
     isHighPriceImpact,
     isHighPriceImpactAccepted,
     openConnectModal,
-    setIsConfirmationBoxVisible,
     shouldDisableValidationForTesting,
+    onSubmit,
+    isSubmitting,
+    tokensToApprove,
+    tokensData,
+    isHighFeeConsentError,
   ]);
 }

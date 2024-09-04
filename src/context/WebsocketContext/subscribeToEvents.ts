@@ -62,6 +62,14 @@ const ORDER_UPDATED_HASH = ethers.id("OrderUpdated");
 const POSITION_INCREASE_HASH = ethers.id("PositionIncrease");
 const POSITION_DECREASE_HASH = ethers.id("PositionDecrease");
 
+const GLV_DEPOSIT_CREATED_HASH = ethers.id("GlvDepositCreated");
+const GLV_DEPOSIT_EXECUTED_HASH = ethers.id("GlvDepositExecuted");
+const GLV_DEPOSIT_CANCELLED_HASH = ethers.id("GlvDepositCancelled");
+
+const GLV_WITHDRAWAL_CREATED_HASH = ethers.id("GlvWithdrawalCreated");
+const GLV_WITHDRAWAL_EXECUTED_HASH = ethers.id("GlvWithdrawalExecuted");
+const GLV_WITHDRAWAL_CANCELLED_HASH = ethers.id("GlvWithdrawalCancelled");
+
 export function subscribeToV2Events(
   chainId: number,
   provider: Provider,
@@ -159,6 +167,16 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
   const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
   const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
   const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;
+
+  const GLV_TOPICS_FILTER = [
+    GLV_DEPOSIT_CREATED_HASH,
+    GLV_DEPOSIT_CANCELLED_HASH,
+    GLV_DEPOSIT_EXECUTED_HASH,
+    GLV_WITHDRAWAL_CREATED_HASH,
+    GLV_WITHDRAWAL_EXECUTED_HASH,
+    GLV_WITHDRAWAL_CANCELLED_HASH,
+  ];
+
   return [
     // DEPOSITS AND WITHDRAWALS AND SHIFTS
     {
@@ -214,6 +232,19 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
     {
       address: getContract(chainId, "EventEmitter"),
       topics: [EVENT_LOG1_TOPIC, [POSITION_INCREASE_HASH, POSITION_DECREASE_HASH], addressHash],
+    },
+    // GLV DEPOSITS
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [EVENT_LOG_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
+    },
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [EVENT_LOG1_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
+    },
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [EVENT_LOG2_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
     },
   ];
 }

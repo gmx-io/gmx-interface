@@ -80,6 +80,52 @@ export function estimateExecuteDepositGasLimit(
   return gasLimits.depositMultiToken + (deposit.callbackGasLimit ?? 0n) + gasForSwaps;
 }
 
+export function estimateExecuteGlvDepositGasLimit(
+  gasLimits: GasLimitsConfig,
+  {
+    marketsCount,
+    isMarketTokenDeposit,
+    initialLongTokenAmount,
+    initialShortTokenAmount,
+  }: {
+    isMarketTokenDeposit;
+    marketsCount: bigint;
+    initialLongTokenAmount: bigint;
+    initialShortTokenAmount: bigint;
+  }
+) {
+  const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
+  const gasForGlvMarkets = gasPerGlvPerMarket * marketsCount;
+  const glvDepositGasLimit = gasLimits.glvDepositGasLimit;
+  const gasLimit = glvDepositGasLimit + gasForGlvMarkets;
+
+  if (isMarketTokenDeposit) {
+    return gasLimit;
+  }
+
+  if (initialLongTokenAmount == 0n || initialShortTokenAmount === 0n) {
+    return gasLimit + gasLimits.depositSingleToken;
+  }
+
+  return gasLimit + gasLimits.depositMultiToken;
+}
+
+export function estimateExecuteGlvWithdrawalGasLimit(
+  gasLimits: GasLimitsConfig,
+  {
+    marketsCount,
+  }: {
+    marketsCount: bigint;
+  }
+) {
+  const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
+  const gasForGlvMarkets = gasPerGlvPerMarket * marketsCount;
+  const glvWithdrawalGasLimit = gasLimits.glvWithdrawalGasLimit;
+  const gasLimit = glvWithdrawalGasLimit + gasForGlvMarkets;
+
+  return gasLimit + gasLimits.withdrawalMultiToken;
+}
+
 /**
  * Only GM withdrawals. Do not confuse with decrease with zero delta size.
  *

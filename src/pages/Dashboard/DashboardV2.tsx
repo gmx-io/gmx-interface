@@ -1237,7 +1237,7 @@ export default function DashboardV2() {
 function GMCard() {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true, withGlv: false });
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const totalGMSupply = useMemo(

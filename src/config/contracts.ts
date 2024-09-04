@@ -1,8 +1,9 @@
-import { ethers, ContractRunner, Contract, InterfaceAbi } from "ethers";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import { Contract, ContractRunner, ethers, InterfaceAbi } from "ethers";
 import { DataStore__factory } from "typechain-types/factories/DataStore__factory";
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import { GlvRouter__factory } from "typechain-types";
 
 const { ZeroAddress } = ethers;
 
@@ -190,6 +191,10 @@ const CONTRACTS = {
     SyntheticsReader: "0x5Ca84c34a381434786738735265b9f3FD814b824",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
 
+    GlvReader: "0xd4f522c4339Ae0A90a156bd716715547e44Bed65",
+    GlvRouter: "0x75eAFD2B4e306Dad8dd6334456F8018218Bc9882",
+    GlvVault: "0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9",
+
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
   },
   [AVALANCHE]: {
@@ -305,6 +310,10 @@ const CONTRACTS = {
     SyntheticsRouter: "0x5e7d61e4C52123ADF651961e4833aCc349b61491",
     Timelock: ZeroAddress,
 
+    GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
+    GlvRouter: "0x3fC060Ae116264fFF7b997B783aD866cA34d1F60",
+    GlvVault: "0x76f93b5240DF811a3fc32bEDd58daA5784e46C96",
+
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
   },
 };
@@ -332,3 +341,4 @@ function makeGetContract<T extends { abi: InterfaceAbi; connect: (address: strin
 export const getDataStoreContract = makeGetContract("DataStore", DataStore__factory);
 export const getMulticallContract = makeGetContract("Multicall", Multicall__factory);
 export const getExchangeRouterContract = makeGetContract("ExchangeRouter", ExchangeRouter__factory);
+export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__factory);

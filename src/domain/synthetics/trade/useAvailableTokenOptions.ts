@@ -4,6 +4,7 @@ import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
+import { isGlv } from "../markets/glv";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -20,16 +21,18 @@ export function useAvailableTokenOptions(
   p: {
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
+    marketTokens?: TokensData;
   }
 ): AvailableTokenOptions {
-  const { marketsInfoData, tokensData } = p;
+  const { marketsInfoData, tokensData, marketTokens } = p;
 
   return useMemo(() => {
     const marketsInfo = Object.values(marketsInfoData || {})
       .filter((market) => !market.isDisabled)
       .sort((a, b) => {
-        return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
+        return a.indexToken?.symbol.localeCompare(b.indexToken?.symbol);
       });
+
     const allMarkets = new Set<MarketInfo>();
     const tokensMap = getTokensMap(chainId);
     const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -43,6 +46,28 @@ export function useAvailableTokenOptions(
     const shortTokensWithPoolValue: { [address: string]: bigint } = {};
 
     for (const marketInfo of marketsInfo) {
+      if (isGlv(marketInfo)) {
+        if (marketInfo.isDisabled) {
+          continue;
+        }
+
+        marketInfo.markets.forEach((market) => {
+          const gmMarket = marketsInfoData?.[market.address];
+
+          if (!gmMarket) {
+            return;
+          }
+
+          const gmToken = tokensData?.[gmMarket.marketTokenAddress];
+
+          if (gmToken) {
+            indexTokens.add(gmToken);
+          }
+        });
+
+        continue;
+      }
+
       const longToken = marketInfo.longToken;
       const shortToken = marketInfo.shortToken;
       const indexToken = marketInfo.indexToken;
@@ -109,10 +134,13 @@ export function useAvailableTokenOptions(
       tokensMap,
       swapTokens: Array.from(collaterals),
       indexTokens: Array.from(indexTokens),
-      infoTokens: adaptToV1InfoTokens(tokensData || {}),
+      infoTokens: {
+        ...adaptToV1InfoTokens(tokensData || {}),
+        ...adaptToV1InfoTokens(marketTokens || {}),
+      },
       sortedIndexTokensWithPoolValue,
       sortedLongAndShortTokens: Array.from(new Set(sortedLongAndShortTokens)),
       sortedAllMarkets,
     };
-  }, [chainId, marketsInfoData, tokensData]);
+  }, [chainId, marketsInfoData, tokensData, marketTokens]);
 }

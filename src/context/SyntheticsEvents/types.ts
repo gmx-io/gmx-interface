@@ -1,4 +1,4 @@
-import { OrderType, OrderTxnType } from "../../domain/synthetics/orders";
+import { OrderTxnType, OrderType } from "../../domain/synthetics/orders";
 
 export type SyntheticsEventsContextType = {
   orderStatuses: OrderStatuses;
@@ -87,6 +87,9 @@ export type DepositCreatedEventData = {
   executionFee: bigint;
   callbackGasLimit: bigint;
   shouldUnwrapNativeToken: boolean;
+  isGlvDeposit: boolean;
+  marketTokenAmount?: bigint;
+  isMarketDeposit?: boolean;
 };
 
 export type PendingDepositData = {
@@ -100,6 +103,10 @@ export type PendingDepositData = {
   initialShortTokenAmount: bigint;
   minMarketTokens: bigint;
   shouldUnwrapNativeToken: boolean;
+  isGlvDeposit: boolean;
+  gmAddress?: string;
+  isMarketDeposit?: boolean;
+  marketTokenAmount?: bigint;
 };
 
 export type WithdrawalCreatedEventData = {

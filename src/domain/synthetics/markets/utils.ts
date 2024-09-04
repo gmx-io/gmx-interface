@@ -7,14 +7,32 @@ import { applyFactor, expandDecimals, PRECISION } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
-import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
+import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
+import { GLV_MARKETS_APPEARANCE } from "config/markets";
+import { GlvMarketInfo } from "./useGlvMarkets";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
 
   return `${getMarketIndexName({ indexToken, isSpotOnly })} [${getMarketPoolName({ longToken, shortToken })}]`;
+}
+
+export function getGlvMarketName(chainId: number, address: string) {
+  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.name;
+}
+
+export function getGlvMarketDisplayName(glv: GlvMarketInfo) {
+  return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
+}
+
+export function getGlvMarketSubtitle(chainId: number, address: string) {
+  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.subtitle || "";
+}
+
+export function getGlvMarketShortening(chainId: number, address: string) {
+  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.shortening || "";
 }
 
 export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {
@@ -449,9 +467,9 @@ export function getContractMarketPrices(tokensData: TokensData, market: Market):
   }
 
   return {
-    indexTokenPrice: convertToContractTokenPrices(indexToken.prices, indexToken.decimals),
-    longTokenPrice: convertToContractTokenPrices(longToken.prices, longToken.decimals),
-    shortTokenPrice: convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
+    indexTokenPrice: indexToken && convertToContractTokenPrices(indexToken.prices, indexToken.decimals),
+    longTokenPrice: longToken && convertToContractTokenPrices(longToken.prices, longToken.decimals),
+    shortTokenPrice: shortToken && convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
   };
 }
 

@@ -14,9 +14,10 @@ import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/s
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useToastAutoClose } from "./useToastAutoClose";
 import { StatusNotification } from "./StatusNotification";
+import { isGlv } from "domain/synthetics/markets/glv";
 
 export type Props = {
   toastTimestamp: number;
@@ -94,7 +95,8 @@ export function GmStatusNotification({
 
   const pendingDepositKey = useMemo(() => {
     if (pendingDepositData) {
-      return getPendingDepositKey(pendingDepositData);
+      const key = getPendingDepositKey(pendingDepositData);
+      return key;
     }
   }, [pendingDepositData]);
 
@@ -142,10 +144,11 @@ export function GmStatusNotification({
       }
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
-      const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
+      const isGlvMarket = marketInfo && isGlv(marketInfo);
+      const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
-      let tokensText = "";
+      let tokensText: string | ReactNode = "";
       if (marketInfo?.isSameCollaterals) {
         tokensText = longToken?.symbol ?? "";
       } else {
@@ -155,29 +158,43 @@ export function GmStatusNotification({
           .join(" and ");
       }
 
-      return (
-        <Trans>
-          <div className="inline-flex">
-            Buying GM:&nbsp;<span>{indexName}</span>
-            <span className="subtext gm-toast">[{poolName}]</span>
-          </div>{" "}
-          <span>with {tokensText}</span>
-        </Trans>
-      );
+      if (isGlvMarket && pendingDepositData.gmAddress) {
+        const gmMarket = marketsInfoData?.[pendingDepositData.gmAddress];
+
+        if (gmMarket) {
+          tokensText = (
+            <>
+              GM: {getMarketIndexName(gmMarket)}
+              <span className="subtext gm-toast">[{getMarketPoolName(gmMarket)}]</span>
+            </>
+          );
+        }
+      }
+
+      if (isGlvMarket && pendingDepositData.initialLongTokenAddress)
+        return (
+          <Trans>
+            <div className="inline-flex">
+              Buying {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
+              {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
+            </div>{" "}
+            <span>with {tokensText}</span>
+          </Trans>
+        );
     } else if (operation === "withdrawal") {
       if (!pendingWithdrawalData) {
         return t`Unknown sell GM order`;
       }
-
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
-      const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
+      const isGlvMarket = marketInfo && isGlv(marketInfo);
+      const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
       return (
         <Trans>
           <div className="inline-flex">
-            Selling GM:&nbsp;<span>{indexName}</span>
-            <span className="subtext gm-toast">[{poolName}]</span>
+            Selling {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
+            {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
           </div>
         </Trans>
       );
@@ -204,7 +221,7 @@ export function GmStatusNotification({
           to{" "}
           <span className="inline-flex items-center">
             <span>GM: {toIndexName}</span>
-            <span className="ml-2 text-12 leading-1 text-gray-300">[{toPoolName}]</span>
+            {toPoolName && <span className="ml-2 text-12 leading-1 text-gray-300">[{toPoolName}]</span>}
           </span>
         </Trans>
       );

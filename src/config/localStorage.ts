@@ -31,6 +31,7 @@ export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-accepta
 export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-token";
 export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 
+export const SYNTHETICS_GLV_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-glv-market-deposit-token";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";

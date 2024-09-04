@@ -1,4 +1,4 @@
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 
 export type TokenPrices = {
   minPrice: bigint;

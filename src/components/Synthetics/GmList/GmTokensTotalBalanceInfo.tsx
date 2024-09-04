@@ -1,41 +1,44 @@
+import { useCallback, useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
+
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { useCallback, useMemo } from "react";
+
+import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export const GmTokensBalanceInfo = ({
   token,
   earnedTotal,
   earnedRecently,
   daysConsidered,
-  oneLine = false,
+  isGlv = false,
 }: {
   token: TokenData;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
   daysConsidered: number;
-  oneLine?: boolean;
+  isGlv?: boolean;
 }) => {
   const content = (
-    <>
-      {formatTokenAmount(token.balance, token.decimals, "GM", {
+    <TokenValuesInfoCell
+      token={formatTokenAmount(token.balance, token.decimals, token.symbol, {
         useCommas: true,
         displayDecimals: 2,
         fallbackToZero: true,
       })}
-      {oneLine ? " " : <br />}(
-      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+      usd={formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
         fallbackToZero: true,
       })}
-      )
-    </>
+    />
   );
 
   const renderTooltipContent = useCallback(() => {
@@ -65,11 +68,19 @@ export const GmTokensBalanceInfo = ({
       </>
     );
   }, [daysConsidered, earnedRecently, earnedTotal]);
-  if (earnedTotal === undefined && earnedRecently === undefined) {
+
+  if ((earnedTotal === undefined && earnedRecently === undefined) || isGlv) {
     return content;
   }
 
-  return <TooltipWithPortal renderContent={renderTooltipContent} handle={content} position="bottom-end" />;
+  return (
+    <TooltipWithPortal
+      renderContent={renderTooltipContent}
+      handle={content}
+      handleClassName="!block"
+      position="bottom-end"
+    />
+  );
 };
 
 export const GmTokensTotalBalanceInfo = ({
@@ -148,6 +159,7 @@ export const GmTokensTotalBalanceInfo = ({
     <TooltipWithPortal
       handle={label}
       className="normal-case"
+      handleClassName="!block"
       maxAllowedWidth={340}
       position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}

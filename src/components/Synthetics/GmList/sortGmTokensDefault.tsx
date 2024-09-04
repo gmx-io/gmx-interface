@@ -2,8 +2,9 @@ import entries from "lodash/entries";
 import values from "lodash/values";
 import type { Address } from "viem";
 
-import type { MarketsInfoData } from "domain/synthetics/markets";
+import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
+import { isGlv } from "domain/synthetics/markets/glv";
 
 /**
  * Sorts GM tokens by:
@@ -11,7 +12,7 @@ import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
  * 2. If non-zero balance, by balance descending
  * 3. If zero balance, by total supply USD descending
  */
-export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketTokensData: TokensData) {
+export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, marketTokensData: TokensData) {
   if (marketsInfoData === undefined || marketTokensData === undefined) {
     return [];
   }
@@ -20,6 +21,7 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
     [group in Address | "nonZero"]: {
       tokens: { tokenData: TokenData; totalSupplyUsd: bigint }[];
       totalSupplyUsd: bigint;
+      isGlv: boolean;
     };
   } = {} as any;
 
@@ -28,7 +30,7 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
       continue;
     }
 
-    const marketTokenData = marketTokensData[market.marketTokenAddress];
+    const marketTokenData = isGlv(market) ? market.indexToken : marketTokensData[market.marketTokenAddress];
 
     if (!marketTokenData) {
       continue;
@@ -40,10 +42,12 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
       marketTokenData.prices.minPrice
     )!;
 
+    const isGlvMarket = isGlv(market);
+
     let groupKey: Address | "nonZero";
     if (marketTokenData.balance !== undefined && marketTokenData.balance !== 0n) {
       groupKey = "nonZero";
-    } else if (market.isSpotOnly) {
+    } else if (!isGlvMarket && market.isSpotOnly) {
       groupKey = market.marketTokenAddress as Address;
     } else {
       groupKey = market.indexTokenAddress as Address;
@@ -53,6 +57,7 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
       groupedTokens[groupKey] = {
         tokens: [],
         totalSupplyUsd: 0n,
+        isGlv: isGlvMarket,
       };
     }
 
@@ -91,6 +96,15 @@ export function sortGmTokensDefault(marketsInfoData: MarketsInfoData, marketToke
       if (bKey === "nonZero") {
         return 1;
       }
+
+      // GLV second
+      if (a.isGlv && !b.isGlv) {
+        return -1;
+      }
+      if (!a.isGlv && b.isGlv) {
+        return 1;
+      }
+
       // by total supply descending
       return a.totalSupplyUsd > b.totalSupplyUsd ? -1 : 1;
     })

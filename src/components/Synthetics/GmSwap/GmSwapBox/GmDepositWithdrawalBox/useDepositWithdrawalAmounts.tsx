@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 
 import { MarketInfo } from "domain/synthetics/markets/types";
-import { TokenData } from "domain/synthetics/tokens";
+import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade/types";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 export function useDepositWithdrawalAmounts({
   isDeposit,
@@ -16,6 +17,9 @@ export function useDepositWithdrawalAmounts({
   marketTokenAmount,
   uiFeeFactor,
   focusedInput,
+  marketTokensData,
+  isMarketTokenDeposit,
+  vaultInfo,
 }: {
   isDeposit: boolean;
   isWithdrawal: boolean;
@@ -25,6 +29,7 @@ export function useDepositWithdrawalAmounts({
     | {
         address: string;
         amount?: bigint | undefined;
+        isGm?: boolean;
       }
     | undefined;
   shortTokenInputState:
@@ -36,12 +41,15 @@ export function useDepositWithdrawalAmounts({
   marketTokenAmount: bigint;
   uiFeeFactor: bigint;
   focusedInput: string;
+  marketTokensData?: TokensData;
+  isMarketTokenDeposit: boolean;
+  vaultInfo?: GlvMarketInfo;
 }): DepositAmounts | WithdrawalAmounts | undefined {
   const halfOfLong = longTokenInputState?.amount !== undefined ? longTokenInputState.amount / 2n : undefined;
 
   const amounts = useMemo(() => {
     if (isDeposit) {
-      if (!marketInfo || !marketToken) {
+      if (!marketInfo || !marketToken || !marketTokensData) {
         return undefined;
       }
 
@@ -56,7 +64,7 @@ export function useDepositWithdrawalAmounts({
       return getDepositAmounts({
         marketInfo,
         marketToken,
-        longToken: marketInfo.longToken,
+        longToken: longTokenInputState?.isGm ? marketTokensData[longTokenInputState?.address] : marketInfo.longToken,
         shortToken: marketInfo.shortToken,
         longTokenAmount,
         shortTokenAmount,
@@ -65,6 +73,8 @@ export function useDepositWithdrawalAmounts({
         includeShortToken: Boolean(shortTokenInputState?.address),
         uiFeeFactor,
         strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
+        isMarketTokenDeposit,
+        vaultInfo,
       });
     } else if (isWithdrawal) {
       if (!marketInfo || !marketToken) {
@@ -95,14 +105,18 @@ export function useDepositWithdrawalAmounts({
         shortTokenAmount,
         strategy,
         uiFeeFactor,
+        vaultInfo,
       });
     }
   }, [
     focusedInput,
     halfOfLong,
     isDeposit,
+    isMarketTokenDeposit,
     isWithdrawal,
+    marketTokensData,
     longTokenInputState?.address,
+    longTokenInputState?.isGm,
     longTokenInputState?.amount,
     marketInfo,
     marketToken,
@@ -110,6 +124,7 @@ export function useDepositWithdrawalAmounts({
     shortTokenInputState?.address,
     shortTokenInputState?.amount,
     uiFeeFactor,
+    vaultInfo,
   ]);
 
   return amounts;

@@ -21,13 +21,16 @@ type TokenState = {
   message?: string;
 };
 
+export type ExtendedToken = Token & { isGm?: boolean };
+
 type Props = {
   chainId: number;
   label?: string;
   className?: string;
   tokenAddress: string;
-  tokens: Token[];
+  tokens: ExtendedToken[];
   infoTokens?: InfoTokens;
+  tokenInfo?: TokenInfo;
   showMintingCap?: boolean;
   mintingCap?: bigint;
   disabled?: boolean;
@@ -39,18 +42,21 @@ type Props = {
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
+  showTokenName?: boolean;
   qa?: string;
 };
 
 export default function TokenSelector(props: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  let tokenInfo: TokenInfo | undefined;
+  let tokenInfo: TokenInfo | undefined = props.tokenInfo;
 
-  try {
-    tokenInfo = getToken(props.chainId, props.tokenAddress);
-  } catch (e) {
-    // ...ignore unsupported tokens
+  if (!tokenInfo) {
+    try {
+      tokenInfo = getToken(props.chainId, props.tokenAddress);
+    } catch (e) {
+      // ...ignore unsupported tokens
+    }
   }
 
   const {
@@ -66,6 +72,7 @@ export default function TokenSelector(props: Props) {
     showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
+    showTokenName,
     qa,
   } = props;
 
@@ -94,8 +101,8 @@ export default function TokenSelector(props: Props) {
   });
 
   const sortedFilteredTokens = useMemo(() => {
-    const tokensWithBalance: Token[] = [];
-    const tokensWithoutBalance: Token[] = showBalances ? [] : filteredTokens;
+    const tokensWithBalance: ExtendedToken[] = [];
+    const tokensWithoutBalance: ExtendedToken[] = showBalances ? [] : filteredTokens;
 
     for (const token of filteredTokens) {
       const info = infoTokens?.[token.address];
@@ -224,7 +231,7 @@ export default function TokenSelector(props: Props) {
                     <TokenIcon symbol={token.symbol} className="token-logo" displaySize={40} importSize={40} />
                   )}
                   <div className="Token-symbol">
-                    <div className="Token-text">{token.symbol}</div>
+                    <div className="Token-text">{token.isGm ? "GM" : token.symbol}</div>
                     <span className="text-accent">{token.name}</span>
                   </div>
                 </div>
@@ -260,7 +267,7 @@ export default function TokenSelector(props: Props) {
             {showSymbolImage && (
               <TokenIcon className="mr-5" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
             )}
-            <span className="Token-symbol-text">{tokenInfo.symbol}</span>
+            <span className="Token-symbol-text">{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
           </span>
           {showNewCaret && <img src={dropDownIcon} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
           {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}

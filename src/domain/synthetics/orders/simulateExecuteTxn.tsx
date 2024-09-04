@@ -1,7 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import CustomErrors from "abis/CustomErrors.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { getContract, getDataStoreContract, getMulticallContract, getExchangeRouterContract } from "config/contracts";
+import {
+  getContract,
+  getDataStoreContract,
+  getMulticallContract,
+  getExchangeRouterContract,
+  getGlvRouterContract,
+} from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
@@ -23,7 +29,13 @@ type SimulateExecuteParams = {
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
   value: bigint;
-  method?: "simulateExecuteDeposit" | "simulateExecuteWithdrawal" | "simulateExecuteOrder" | "simulateExecuteShift";
+  method?:
+    | "simulateExecuteDeposit"
+    | "simulateExecuteWithdrawal"
+    | "simulateExecuteOrder"
+    | "simulateExecuteShift"
+    | "simulateExecuteGlvDeposit"
+    | "simulateExecuteGlvWithdrawal";
   errorTitle?: string;
   swapPricingType?: SwapPricingType;
 };
@@ -37,6 +49,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const dataStore = getDataStoreContract(chainId, provider);
   const multicall = getMulticallContract(chainId, provider);
   const exchangeRouter = getExchangeRouterContract(chainId, provider);
+  const glvRouter = getGlvRouterContract(chainId, provider);
 
   const result = await multicall.blockAndAggregate.staticCall([
     { target: dataStoreAddress, callData: dataStore.interface.encodeFunctionData("getUint", [NONCE_KEY]) },
@@ -57,6 +70,8 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
   const priceTimestamp = blockTimestamp + 5n;
   const method = p.method || "simulateExecuteOrder";
+
+  const isGlv = method === "simulateExecuteGlvDeposit" || method === "simulateExecuteGlvWithdrawal";
 
   const simulationPriceParams = {
     primaryTokens: primaryTokens,
@@ -91,6 +106,14 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
     simulationPayloadData.push(
       exchangeRouter.interface.encodeFunctionData("simulateExecuteShift", [nextKey, simulationPriceParams])
     );
+  } else if (method === "simulateExecuteGlvDeposit") {
+    simulationPayloadData.push(
+      glvRouter.interface.encodeFunctionData("simulateExecuteGlvDeposit", [nextKey, simulationPriceParams])
+    );
+  } else if (method === "simulateExecuteGlvWithdrawal") {
+    simulationPayloadData.push(
+      glvRouter.interface.encodeFunctionData("simulateExecuteGlvWithdrawal", [nextKey, simulationPriceParams])
+    );
   } else {
     throw new Error(`Unknown method: ${method}`);
   }
@@ -98,35 +121,27 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
 
   const tenderlyConfig = getTenderlyConfig();
+  const router = isGlv ? glvRouter : exchangeRouter;
 
   if (tenderlyConfig) {
-    await simulateTxWithTenderly(
-      chainId,
-      exchangeRouter as BaseContract,
-      p.account,
-      "multicall",
-      [simulationPayloadData],
-      {
-        value: p.value,
-        comment: `calling ${method}`,
-      }
-    );
+    await simulateTxWithTenderly(chainId, router as BaseContract, p.account, "multicall", [simulationPayloadData], {
+      value: p.value,
+      comment: `calling ${method}`,
+    });
   }
 
   try {
-    await exchangeRouter.multicall.staticCall(simulationPayloadData, {
+    await router.multicall.staticCall(simulationPayloadData, {
       value: p.value,
       blockTag: blockNumber,
       from: p.account,
     });
   } catch (txnError) {
     const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
-
     let msg: React.ReactNode = undefined;
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-
       if (!errorData) throw new Error("No data found in error.");
 
       const parsedError = customErrors.interface.parseError(errorData);
