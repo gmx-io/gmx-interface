@@ -31,6 +31,7 @@ async function run(event) {
     postMessage({
       id,
       error: {
+        name: error.name,
         message: error.message,
         stack: error.stack,
       },

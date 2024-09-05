@@ -35,9 +35,8 @@ executorWorker.onmessage = (event) => {
   if (error) {
     const errorObj = new Error(error.message);
 
-    if (error.stack) {
-      errorObj.stack = error.stack;
-    }
+    errorObj.stack = error.stack;
+    errorObj.name = error.name;
 
     promise.reject(errorObj);
   } else {
@@ -97,7 +96,9 @@ export async function executeMulticallWorker(
         isError: true,
         data: {
           isInMainThread: false,
+          errorName: error.name,
           errorMessage: error.message,
+          errorStack: error.stack,
         },
       });
 
