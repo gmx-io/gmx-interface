@@ -57,7 +57,7 @@ type MarketValues = Pick<
 /**
  * Updates seldom
  */
-type MarketConfig = Pick<
+export type MarketConfig = Pick<
   MarketInfo,
   | "isDisabled"
   | "maxLongPoolUsdForDeposit"
@@ -297,7 +297,7 @@ function useMarketsValuesRequest({
     keepPreviousData: true,
 
     request: () =>
-      buildMarketsValuesRequest({
+      buildMarketsValuesRequest(chainId, {
         marketsAddresses,
         marketsData,
         tokensData,
@@ -439,7 +439,7 @@ function useMarketsConfigsRequest({
     keepPreviousData: true,
 
     request: () =>
-      buildMarketsConfigsRequest({
+      buildMarketsConfigsRequest(chainId, {
         marketsAddresses,
         marketsData,
         dataStoreAddress,

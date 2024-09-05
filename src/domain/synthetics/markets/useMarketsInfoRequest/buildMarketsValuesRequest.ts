@@ -8,30 +8,36 @@ import {
   SWAP_IMPACT_POOL_AMOUNT_KEY,
 } from "config/dataStore";
 import { getByKey } from "lib/objects";
+import { hashDataMap } from "lib/multicall/hashDataMap";
 
 import { MarketsData } from "domain/synthetics/markets/types";
 import { MarketValuesMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
 
+import { HASHED_MARKET_VALUES_KEYS } from "prebuilt";
+
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
-export async function buildMarketsValuesRequest({
-  marketsAddresses,
-  marketsData,
-  tokensData,
-  account,
-  dataStoreAddress,
-  syntheticsReaderAddress,
-}: {
-  marketsAddresses: string[] | undefined;
-  marketsData: MarketsData | undefined;
-  tokensData: TokensData | undefined;
-  account?: string;
-  dataStoreAddress: string;
-  syntheticsReaderAddress: string;
-}) {
+export async function buildMarketsValuesRequest(
+  chainId: number,
+  {
+    marketsAddresses,
+    marketsData,
+    tokensData,
+    account,
+    dataStoreAddress,
+    syntheticsReaderAddress,
+  }: {
+    marketsAddresses: string[] | undefined;
+    marketsData: MarketsData | undefined;
+    tokensData: TokensData | undefined;
+    account?: string;
+    dataStoreAddress: string;
+    syntheticsReaderAddress: string;
+  }
+) {
   const request: MarketValuesMulticallRequestConfig = {};
 
   for (const marketAddress of marketsAddresses || []) {
@@ -153,74 +159,100 @@ export async function buildMarketsValuesRequest({
       ],
     };
 
+    const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
+
+    if (!prebuiltHashedKeys) {
+      // eslint-disable-next-line no-console
+      console.warn(`No prebuilt hashed market keys found for market ${marketAddress}`);
+    }
+
+    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined;
+    const keys = shouldUsePrebuiltHashedKeys
+      ? {
+          ...prebuiltHashedKeys,
+          ...(account
+            ? hashDataMap({
+                claimableFundingAmountLong: [
+                  ["bytes32", "address", "address", "address"],
+                  [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
+                ],
+                claimableFundingAmountShort: [
+                  ["bytes32", "address", "address", "address"],
+                  [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
+                ],
+              })
+            : {}),
+        }
+      : unhashedKeys;
+
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
       abi: DataStore.abi,
-      shouldHashParams: true,
+      shouldHashParams: !shouldUsePrebuiltHashedKeys,
       calls: {
         longPoolAmount: {
           methodName: "getUint",
-          params: [unhashedKeys.longPoolAmount],
+          params: [keys.longPoolAmount],
         },
         shortPoolAmount: {
           methodName: "getUint",
-          params: [unhashedKeys.shortPoolAmount],
+          params: [keys.shortPoolAmount],
         },
         positionImpactPoolAmount: {
           methodName: "getUint",
-          params: [unhashedKeys.positionImpactPoolAmount],
+          params: [keys.positionImpactPoolAmount],
         },
         swapImpactPoolAmountLong: {
           methodName: "getUint",
-          params: [unhashedKeys.swapImpactPoolAmountLong],
+          params: [keys.swapImpactPoolAmountLong],
         },
         swapImpactPoolAmountShort: {
           methodName: "getUint",
-          params: [unhashedKeys.swapImpactPoolAmountShort],
+          params: [keys.swapImpactPoolAmountShort],
         },
         claimableFundingAmountLong: account
           ? {
               methodName: "getUint",
-              params: [unhashedKeys.claimableFundingAmountLong],
+              params: [keys.claimableFundingAmountLong],
             }
           : undefined,
         claimableFundingAmountShort: account
           ? {
               methodName: "getUint",
-              params: [unhashedKeys.claimableFundingAmountShort],
+              params: [keys.claimableFundingAmountShort],
             }
           : undefined,
         longInterestUsingLongToken: {
           methodName: "getUint",
-          params: [unhashedKeys.longInterestUsingLongToken],
+          params: [keys.longInterestUsingLongToken],
         },
         longInterestUsingShortToken: {
           methodName: "getUint",
-          params: [unhashedKeys.longInterestUsingShortToken],
+          params: [keys.longInterestUsingShortToken],
         },
         shortInterestUsingLongToken: {
           methodName: "getUint",
-          params: [unhashedKeys.shortInterestUsingLongToken],
+          params: [keys.shortInterestUsingLongToken],
         },
         shortInterestUsingShortToken: {
           methodName: "getUint",
-          params: [unhashedKeys.shortInterestUsingShortToken],
+          params: [keys.shortInterestUsingShortToken],
         },
         longInterestInTokensUsingLongToken: {
           methodName: "getUint",
-          params: [unhashedKeys.longInterestInTokensUsingLongToken],
+          params: [keys.longInterestInTokensUsingLongToken],
         },
         longInterestInTokensUsingShortToken: {
           methodName: "getUint",
-          params: [unhashedKeys.longInterestInTokensUsingShortToken],
+          params: [keys.longInterestInTokensUsingShortToken],
         },
         shortInterestInTokensUsingLongToken: {
           methodName: "getUint",
-          params: [unhashedKeys.shortInterestInTokensUsingLongToken],
+          params: [keys.shortInterestInTokensUsingLongToken],
         },
         shortInterestInTokensUsingShortToken: {
           methodName: "getUint",
-          params: [unhashedKeys.shortInterestInTokensUsingShortToken],
+          params: [keys.shortInterestInTokensUsingShortToken],
         },
       },
     };

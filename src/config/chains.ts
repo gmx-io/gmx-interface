@@ -2,21 +2,22 @@ import { ethers } from "ethers";
 import sample from "lodash/sample";
 import type { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BSС_MAINNET,
+  BSС_TESTNET,
+  ETH_MAINNET,
+  ARBITRUM_GOERLI,
+} from "./static/chains";
+
+export * from "./static/chains";
 
 const { parseEther } = ethers;
 
 export const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS;
-
-export const BSС_MAINNET = 56;
-export const BSС_TESTNET = 97;
-export const ETH_MAINNET = 1;
-export const AVALANCHE = 43114;
-export const AVALANCHE_FUJI = 43113;
-export const ARBITRUM = 42161;
-export const ARBITRUM_GOERLI = 421613;
-export const FEES_HIGH_BPS = 50;
-export const DEFAULT_ALLOWED_SLIPPAGE_BPS = 30;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;

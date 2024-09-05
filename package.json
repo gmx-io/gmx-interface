@@ -14,7 +14,7 @@
     "test:ci": "vitest run",
     "lint": "node node_modules/.bin/eslint src",
     "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
-    "pre-commit": "vitest run && yarn run lint",
+    "pre-commit": "yarn run prebuild && vitest run && yarn run lint",
     "prepare": "husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",

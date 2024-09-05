@@ -12,7 +12,7 @@ import { getMarketFullName } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
-import { prebuildMarkets } from "prebuild";
+import { ENABLED_MARKETS } from "config/markets";
 
 export type MarketsResult = {
   marketsData?: MarketsData;
@@ -23,18 +23,20 @@ export type MarketsResult = {
 const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
-  const prebuildData = useMemo(() => {
-    const prebuildData = prebuildMarkets[chainId];
+  const staticMarketData = useMemo(() => {
+    const enabledMarkets = ENABLED_MARKETS[chainId];
 
-    if (!prebuildData) {
+    if (!enabledMarkets) {
       // eslint-disable-next-line no-console
-      console.warn(`Prebuild markets for chain ${chainId} not found`);
+      console.warn(`Static markets data for chain ${chainId} not found`);
 
       return null;
     }
 
-    return Object.values(prebuildData).reduce(
-      (acc: MarketsResult, market) => {
+    return Object.values(enabledMarkets).reduce(
+      (acc: MarketsResult, enabledMarketConfig) => {
+        const { tokens: market } = enabledMarketConfig;
+
         if (!isMarketEnabled(chainId, market.marketTokenAddress)) {
           return acc;
         }
@@ -68,12 +70,12 @@ export function useMarkets(chainId: number): MarketsResult {
     );
   }, [chainId]);
 
-  const freshData = useMarketsMulticall(chainId, Boolean(prebuildData));
+  const freshData = useMarketsMulticall(chainId, { enabled: !staticMarketData });
 
-  return prebuildData ?? freshData;
+  return staticMarketData ?? freshData;
 }
 
-function useMarketsMulticall(chainId: number, enabled = true): MarketsResult {
+function useMarketsMulticall(chainId: number, { enabled = true } = {}): MarketsResult {
   const { data, error } = useMulticall(chainId, "useMarketsData", {
     key: enabled ? [] : null,
 
