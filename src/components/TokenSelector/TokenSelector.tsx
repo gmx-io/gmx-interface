@@ -15,13 +15,14 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { bigMath } from "lib/bigmath";
+import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 
 type TokenState = {
   disabled?: boolean;
   message?: string;
 };
 
-export type ExtendedToken = Token & { isGm?: boolean };
+type ExtendedToken = Token & { isGm?: boolean };
 
 type Props = {
   chainId: number;
@@ -43,6 +44,7 @@ type Props = {
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
   showTokenName?: boolean;
+  marketsInfoData?: MarketsInfoData;
   qa?: string;
 };
 
@@ -73,6 +75,8 @@ export default function TokenSelector(props: Props) {
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
     showTokenName,
+    marketsInfoData,
+    chainId,
     qa,
   } = props;
 
@@ -207,6 +211,10 @@ export default function TokenSelector(props: Props) {
             }
 
             const tokenState = getTokenState(info) || {};
+            const tokenMarket = Object.values(marketsInfoData ?? {}).find(
+              (market) => market.marketTokenAddress === token.address
+            );
+            const tokkenBadge = token.isGm && tokenMarket ? getMarketBadge(chainId, tokenMarket) : undefined;
 
             return (
               <div
@@ -228,7 +236,13 @@ export default function TokenSelector(props: Props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <TokenIcon symbol={token.symbol} className="token-logo" displaySize={40} importSize={40} />
+                    <TokenIcon
+                      symbol={token.symbol}
+                      className="token-logo"
+                      displaySize={40}
+                      importSize={40}
+                      badge={tokkenBadge}
+                    />
                   )}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.isGm ? "GM" : token.symbol}</div>

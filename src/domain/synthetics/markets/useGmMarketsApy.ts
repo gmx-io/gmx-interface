@@ -24,8 +24,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";
 import { isGlv } from "./glv";
-import { GLV_ENABLED } from "config/markets";
+import { getMarketListingDate, GLV_ENABLED } from "config/markets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -396,7 +397,8 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
 
     return Object.values(glvMarketInfo).reduce((acc, { markets, indexTokenAddress }) => {
       const marketData = markets.map((market) => {
-        const apy = data.marketsTokensApyData[market.address];
+        const isBaseApyEligible = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, market.address));
+        const apy = isBaseApyEligible ? data.marketsTokensApyData[market.address] : 0n;
         const marketBalance = market.gmBalance;
         const price = marketTokensData?.[market.address].prices.minPrice ?? 0n;
         const decimals = marketTokensData?.[market.address].decimals ?? 0;
@@ -417,7 +419,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
 
       return acc;
     }, {});
-  }, [glvMarketInfo, data?.marketsTokensApyData, marketTokensData]);
+  }, [glvMarketInfo, data?.marketsTokensApyData, marketTokensData, chainId]);
 
   return {
     glvApyInfoData,

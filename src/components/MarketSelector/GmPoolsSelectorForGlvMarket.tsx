@@ -48,6 +48,7 @@ export function GmPoolsSelectorForGlvMarket({
   showIndexIcon = false,
   favoriteTokens,
   glvMarketInfo,
+  chainId,
   setFavoriteTokens,
   tab,
   setTab,
@@ -64,19 +65,15 @@ export function GmPoolsSelectorForGlvMarket({
     const allMarkets =
       markets
         .map((market) => {
-          const gmMarketInfo = market.pool;
+          const gmMarketInfo = market.market;
 
           if (!gmMarketInfo) {
             return null;
           }
 
-          const gmMarketInfoInGlv = glvMarketInfo?.markets.find((m) => {
-            return m.address === gmMarketInfo.marketTokenAddress;
-          });
-
           const indexName = getMarketIndexName(gmMarketInfo);
           const marketToken = getByKey(marketTokensData, gmMarketInfo.marketTokenAddress);
-          const gmBalance = gmMarketInfoInGlv?.gmBalance;
+          const gmBalance = marketToken?.balance;
           const gmBalanceUsd = convertToUsd(marketToken?.balance, marketToken?.decimals, marketToken?.prices.minPrice);
           const state = getMarketState?.(gmMarketInfo);
 
@@ -108,7 +105,7 @@ export function GmPoolsSelectorForGlvMarket({
     });
 
     return [...sortedMarketsWithBalance, ...marketsWithoutBalance];
-  }, [getMarketState, marketTokensData, markets, glvMarketInfo]);
+  }, [getMarketState, marketTokensData, markets]);
 
   const selectedPool = useMemo(
     () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress),
@@ -211,6 +208,7 @@ export function GmPoolsSelectorForGlvMarket({
             <PoolListItem
               key={option.marketInfo.marketTokenAddress}
               {...option}
+              chainId={chainId}
               marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
               isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
               isInFirstHalf={marketIndex < filteredOptions.length / 2}

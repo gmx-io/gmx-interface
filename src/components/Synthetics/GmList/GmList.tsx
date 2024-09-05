@@ -27,6 +27,7 @@ import {
   useMarketTokensData,
   getGlvMarketShortening,
   getGlvMarketDisplayName,
+  getMarketBadge,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -447,11 +448,7 @@ function GmListItem({
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
     : getNormalizedTokenSymbol(indexToken.symbol);
 
-  const tokenIconBadge = market.isSpotOnly
-    ? undefined
-    : isGlvMarket
-      ? getGlvMarketShortening(chainId, market.indexTokenAddress)
-      : ([market.longToken.symbol, market.shortToken.symbol] as const);
+  const tokenIconBadge = getMarketBadge(chainId, market);
 
   return (
     <ExchangeTr key={token.address} hoverable={false} bordered={false}>

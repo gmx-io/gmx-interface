@@ -461,13 +461,17 @@ export function MarketStatsWithComposition(p: Props) {
       </div>
       <div
         className={cx("flex-grow", {
-          "w-[100%] border-l border-l-slate-700": canFitCompositionOnRow,
-          "mt-20 border-t border-t-slate-700": !canFitCompositionOnRow,
+          "border-l w-[100%] border-l-slate-700": canFitCompositionOnRow,
+          "border-t mt-20 border-t-slate-700": !canFitCompositionOnRow,
         })}
       >
         <div className="p-20">
           <p>Composition</p>
-          <CompositionBar marketInfo={marketInfo} marketsInfoData={marketsInfoData} />
+          <CompositionBar
+            marketInfo={marketInfo}
+            marketsInfoData={marketsInfoData}
+            marketTokensData={marketTokensData}
+          />
           <CompositionTableGm marketInfo={marketInfo} />
         </div>
       </div>

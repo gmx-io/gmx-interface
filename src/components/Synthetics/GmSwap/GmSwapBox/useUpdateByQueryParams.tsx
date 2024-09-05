@@ -22,6 +22,7 @@ type SearchParams = {
   from?: string;
   pool?: string;
   scroll?: string;
+  pickBestGlv?: string;
 };
 
 export function useUpdateByQueryParams({
@@ -49,8 +50,8 @@ export function useUpdateByQueryParams({
 
   useEffect(
     function updateByQueryParams() {
-      const { market: marketRaw, operation, mode, from: fromToken, pool, scroll } = searchParams;
-      const marketAddress = marketRaw?.toLowerCase();
+      const { market: marketRaw, operation, mode, from: fromToken, pool, scroll, pickBestGlv } = searchParams;
+      let marketAddress = marketRaw?.toLowerCase();
 
       if (operation) {
         let finalOperation;
@@ -65,6 +66,18 @@ export function useUpdateByQueryParams({
 
         if (finalOperation) {
           setOperation(finalOperation as Operation);
+        }
+      }
+
+      if (pickBestGlv) {
+        setOperation(Operation.Deposit);
+
+        const glvs = Object.values(marketsInfo).filter((m) => isGlv(m));
+        if (glvs.length) {
+          const bestGlv = glvs.reduce((best, glv) => {
+            return (best.indexToken.totalSupply ?? 0n) > (glv.indexToken.totalSupply ?? 0n) ? best : glv;
+          });
+          marketAddress = bestGlv.indexTokenAddress.toLocaleLowerCase();
         }
       }
 
@@ -127,7 +140,7 @@ export function useUpdateByQueryParams({
         }
       }
 
-      if (!marketAddress && !pool) {
+      if (!marketAddress && !pool && !pickBestGlv) {
         if (history.location.search) {
           history.replace({ search: "" });
         }

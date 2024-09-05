@@ -259,7 +259,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const depositData: DepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
+        account: "sosi" ?? eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
         marketAddress: eventData.addressItems.items.glv,
@@ -301,7 +301,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const depositData: DepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
+        account: "sosi" ?? eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
         marketAddress: eventData.addressItems.items.market,

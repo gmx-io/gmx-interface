@@ -236,9 +236,15 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       const result = [longToken];
 
       if (isGlvMarket && !isPair) {
-        return [
-          longToken,
-          shortToken,
+        const options = [longToken, shortToken];
+
+        const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!;
+
+        if (options.some((token) => token.isWrapped) && nativeToken) {
+          options.unshift(nativeToken);
+        }
+
+        options.push(
           ...marketInfo.markets
             .map((m) => {
               const token = marketTokensData?.[m.address];
@@ -257,8 +263,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                 };
               }
             })
-            .filter(Boolean as unknown as FilterOutFalsy),
-        ];
+            .filter(Boolean as unknown as FilterOutFalsy)
+        );
+
+        return options;
       }
 
       if (longToken.address !== shortToken.address) {
@@ -455,10 +463,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       viewTokenInfo: isGm
         ? {
             ...marketsInfoData?.[selectedToken.address].indexToken,
-            name: getMarketIndexName({
-              indexToken: marketsInfoData?.[selectedToken.address].indexToken,
-              isSpotOnly: marketsInfoData?.[selectedToken.address].isSpotOnly,
-            }),
+            name: getMarketIndexName(marketsInfoData?.[selectedToken.address]),
           }
         : selectedToken,
       showTokenName: isGm,
@@ -766,6 +771,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                 className="GlpSwap-from-token"
                 showSymbolImage={true}
                 showTokenImgInDropdown={true}
+                marketsInfoData={marketsInfoData}
               />
             ) : (
               firstTokenPlaceholder
@@ -810,6 +816,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             <PoolSelector
               label={t`Pool`}
               className="-mr-4"
+              chainId={chainId}
               selectedIndexName={indexName}
               selectedMarketAddress={marketAddress}
               markets={sortedMarketsInfoByIndexToken}
@@ -842,6 +849,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           onMarketChange={onMarketChange}
         />
 
+        {((submitState.tokensToApprove && submitState.tokensToApprove.length > 0) ||
+          highExecutionFeeAcknowledgement) && <div className="App-card-divider " />}
+
         {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
@@ -857,7 +867,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                       marketTokenData
                         ? isGlv(market)
                           ? market.indexToken.contractSymbol
-                          : `GM: ${marketTokenData.name}`
+                          : token.assetSymbol ?? token.symbol
                         : token.assetSymbol ?? token.symbol
                     }
                     spenderAddress={routerAddress}

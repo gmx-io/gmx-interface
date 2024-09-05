@@ -3,9 +3,9 @@ import { useCallback } from "react";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
 
-import { getGlvMarketDisplayName, MarketInfo } from "domain/synthetics/markets";
-import { TokenData } from "domain/synthetics/tokens";
+import { getGlvMarketDisplayName, getMarketBadge, MarketInfo } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
+import { TokenData } from "domain/synthetics/tokens";
 
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
@@ -16,6 +16,7 @@ import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { MarketOption, MarketState } from "./types";
 
 export function PoolListItem(props: {
+  chainId: number;
   marketInfo: MarketInfo;
   marketToken?: TokenData;
   poolName: string;
@@ -44,6 +45,7 @@ export function PoolListItem(props: {
     showBalances,
     onFavoriteClick,
     onSelectOption,
+    chainId,
   } = props;
   const { longToken, shortToken, indexToken } = marketInfo;
 
@@ -72,6 +74,8 @@ export function PoolListItem(props: {
     });
   }, [balance, balanceUsd, indexName, marketInfo, onSelectOption, poolName, state]);
 
+  const tokenBadge = getMarketBadge(chainId, marketInfo);
+
   return (
     <>
       <div className={cx("TokenSelector-token-row", { disabled: state.disabled })} onClick={handleClick}>
@@ -89,7 +93,7 @@ export function PoolListItem(props: {
         <div className="Token-info">
           <div className="collaterals-logo">
             {showAllPools ? (
-              <TokenIcon symbol={indexTokenImage} displaySize={40} importSize={40} />
+              <TokenIcon symbol={indexTokenImage} displaySize={40} importSize={40} badge={tokenBadge} />
             ) : (
               <>
                 <TokenIcon

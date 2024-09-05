@@ -39,22 +39,22 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
     }, 0n);
 
     const rows = glv.markets
-      .map((market) => {
-        const gmMarket = allMarkets[market.address];
+      .map((glvMarket) => {
+        const gmMarket = allMarkets[glvMarket.address];
         const token = marketTokensData?.[gmMarket?.marketTokenAddress];
 
         if (!token) {
           return null;
         }
 
-        const balanceUsd = convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+        const balanceUsd = convertToUsd(glvMarket.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n;
 
         return {
-          amount: market.gmBalance,
-          gmMarket: market,
-          pool: gmMarket,
+          amount: glvMarket.gmBalance,
+          glvMarket: glvMarket,
+          market: gmMarket,
           token: token,
-          tvl: [balanceUsd, getMaxUsdCapUsdInGmGlvMarket(market, token)] as const,
+          tvl: [balanceUsd, getMaxUsdCapUsdInGmGlvMarket(glvMarket, token)] as const,
           comp: sum === 0n ? 0 : (bigintToNumber(balanceUsd, 30) * 100) / bigintToNumber(sum, 30),
         };
       })

@@ -44,7 +44,9 @@ export type TooltipProps<T extends PropsWithChildren = PropsWithChildren> = {
   position?: TooltipPosition;
   disableHandleStyle?: boolean;
   className?: string;
+  style?: React.CSSProperties;
   handleClassName?: string;
+  handleStyle?: React.CSSProperties;
   tooltipClassName?: string;
   /**
    * Disables interactions with the handle. Does not prevent the tooltip content from showing.
@@ -76,8 +78,10 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
   content,
   position = DEFAULT_TOOLTIP_POSITION,
   className,
+  style,
   disableHandleStyle,
   handleClassName,
+  handleStyle,
   tooltipClassName,
   isHandlerDisabled,
   disabled,
@@ -186,12 +190,13 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
   }
 
   return (
-    <span {...containerProps} className={cx("Tooltip", className)}>
+    <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
         {...getReferenceProps()}
         onClick={preventClick}
         className={cx({ "Tooltip-handle": !disableHandleStyle }, handleClassName)}
+        style={handleStyle}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {isHandlerDisabled ? (

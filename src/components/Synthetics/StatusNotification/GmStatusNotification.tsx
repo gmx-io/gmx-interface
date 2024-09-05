@@ -10,7 +10,12 @@ import {
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  MarketsInfoData,
+  getGlvMarketDisplayName,
+  getMarketIndexName,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -145,7 +150,7 @@ export function GmStatusNotification({
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
       const isGlvMarket = marketInfo && isGlv(marketInfo);
-      const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
+      const indexName = isGlvMarket ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
       let tokensText: string | ReactNode = "";
@@ -164,8 +169,12 @@ export function GmStatusNotification({
         if (gmMarket) {
           tokensText = (
             <>
-              GM: {getMarketIndexName(gmMarket)}
-              <span className="subtext gm-toast">[{getMarketPoolName(gmMarket)}]</span>
+              GM:
+              <span className="inline-flex whitespace-nowrap">
+                {" "}
+                {getMarketIndexName(gmMarket)}
+                <PoolName>{getMarketPoolName(gmMarket)}</PoolName>
+              </span>
             </>
           );
         }
@@ -175,8 +184,9 @@ export function GmStatusNotification({
         return (
           <Trans>
             <div className="inline-flex">
-              Buying {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
-              {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
+              Buying {isGlvMarket ? getGlvMarketDisplayName(marketInfo) : "GM:"}
+              {indexName ? <span>&nbsp;{indexName}</span> : null}
+              <PoolName>{poolName}</PoolName>
             </div>{" "}
             <span>with {tokensText}</span>
           </Trans>
@@ -187,14 +197,15 @@ export function GmStatusNotification({
       }
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
       const isGlvMarket = marketInfo && isGlv(marketInfo);
-      const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
+      const indexName = isGlvMarket ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
       return (
         <Trans>
           <div className="inline-flex">
-            Selling {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
-            {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
+            Selling {isGlvMarket ? getGlvMarketDisplayName(marketInfo) : "GM:"}
+            {indexName && <span>:&nbsp;{indexName}</span>}
+            <PoolName>{poolName}</PoolName>
           </div>
         </Trans>
       );
@@ -216,12 +227,12 @@ export function GmStatusNotification({
           Shifting from{" "}
           <span className="inline-flex items-center">
             <span>GM: {fromIndexName}</span>
-            <span className="ml-2 text-12 leading-1 text-gray-300">[{fromPoolName}]</span>
+            <PoolName>{fromPoolName}</PoolName>
           </span>{" "}
           to{" "}
           <span className="inline-flex items-center">
             <span>GM: {toIndexName}</span>
-            {toPoolName && <span className="ml-2 text-12 leading-1 text-gray-300">[{toPoolName}]</span>}
+            <PoolName>{toPoolName}</PoolName>
           </span>
         </Trans>
       );
@@ -406,4 +417,8 @@ export function GmStatusNotification({
       {executionStatus}
     </StatusNotification>
   );
+}
+
+function PoolName({ children }: { children: ReactNode }) {
+  return children ? <span className="relative -top-4 ml-2 text-12 font-normal text-gray-300">[{children}]</span> : null;
 }

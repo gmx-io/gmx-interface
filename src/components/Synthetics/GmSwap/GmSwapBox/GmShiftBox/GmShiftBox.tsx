@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -156,7 +156,8 @@ export function GmShiftBox({
 
   useUpdateTokens({ amounts, selectedToken, toToken, focusedInput, setToMarketText, setSelectedMarketText });
 
-  const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, toMarketAddress);
+  const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
+  const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
 
   useUpdateByQueryParams({
     operation: Operation.Shift,
@@ -203,25 +204,37 @@ export function GmShiftBox({
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
     (marketInfo: MarketInfo): void => {
-      if (isGlv(marketInfo) && selectedMarketInfo?.marketTokenAddress) {
-        onSelectMarket(marketInfo.marketTokenAddress);
-        setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
-        onSetOperation(Operation.Deposit);
-        onSelectGlvGmMarket?.(selectedMarketInfo.marketTokenAddress);
+      if (isGlv(marketInfo)) {
+        setGlvForShiftAddress(marketInfo.indexTokenAddress);
       } else {
         setToMarketAddress(marketInfo.marketTokenAddress);
         handleClearValues();
       }
     },
-    [
-      handleClearValues,
-      onSelectGlvGmMarket,
-      onSelectMarket,
-      onSetOperation,
-      selectedMarketInfo,
-      setFirstTokenAddressForDeposit,
-    ]
+    [handleClearValues, setToMarketAddress]
   );
+
+  useEffect(() => {
+    if (glvForShiftAddress && selectedMarketInfo) {
+      onSelectMarket(glvForShiftAddress);
+      setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
+      onSetOperation(Operation.Deposit);
+      onSelectGlvGmMarket?.(selectedMarketInfo.marketTokenAddress);
+    }
+
+    return () => {
+      if (glvForShiftAddress) {
+        setGlvForShiftAddress(undefined);
+      }
+    };
+  }, [
+    glvForShiftAddress,
+    onSelectGlvGmMarket,
+    onSelectMarket,
+    onSetOperation,
+    selectedMarketInfo,
+    setFirstTokenAddressForDeposit,
+  ]);
 
   const getShiftReceiveMarketState = useCallback((marketInfo: MarketInfo | GlvMarketInfo): MarketState => {
     if (isGlv(marketInfo)) {
@@ -260,6 +273,7 @@ export function GmShiftBox({
             isSideMenu
             showIndexIcon
             showBalances
+            chainId={chainId}
             marketTokensData={depositMarketTokensData}
             {...gmTokenFavoritesContext}
           />
@@ -277,6 +291,7 @@ export function GmShiftBox({
           onFocus={handleToTokenFocus}
         >
           <PoolSelector
+            chainId={chainId}
             selectedMarketAddress={toMarketAddress}
             markets={shiftAvailableRelatedMarkets}
             onSelectMarket={handleToTokenSelectMarket}

@@ -34,6 +34,7 @@ export function PoolSelector({
   isSideMenu,
   marketTokensData,
   showBalances,
+  chainId,
   onSelectMarket,
   getMarketState,
   showAllPools = false,
@@ -202,6 +203,7 @@ export function PoolSelector({
               <PoolListItem
                 key={option.marketInfo.marketTokenAddress}
                 {...option}
+                chainId={chainId}
                 marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
                 isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
                 isInFirstHalf={marketIndex < filteredOptions.length / 2}

@@ -24,19 +24,19 @@ export const useBestGmPoolAddressForGlv = (
       return b.comp - a.comp;
     });
 
-    for (const market of sortedMarketsWithComposition) {
+    for (const marketConfig of sortedMarketsWithComposition) {
       const availableBuyableGmUsd = getMaxUsdBuyableAmountInMarketWithGm(
-        market.gmMarket,
+        marketConfig.glvMarket,
         glvMarket,
-        market.pool,
-        market.token
+        marketConfig.market,
+        marketConfig.token
       );
 
       if (availableBuyableGmUsd > 0) {
-        return market.pool.marketTokenAddress;
+        return marketConfig.market.marketTokenAddress;
       }
     }
 
-    return marketsWithComposition[0].pool.marketTokenAddress;
+    return marketsWithComposition[0].market.marketTokenAddress;
   }, [glvMarket, marketsWithComposition, selectedGmPoolAddress]);
 };

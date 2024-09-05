@@ -7,7 +7,13 @@ import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { MarketInfo, GlvAndGmMarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  GlvAndGmMarketsInfoData,
+  getMarketIndexName,
+  getMarketPoolName,
+  getGlvMarketDisplayName,
+} from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -40,7 +46,8 @@ function renderMarketName(market?: MarketInfo | GlvMarketInfo) {
 
   return (
     <>
-      {isGlvMarket ? "GLV" : "GM"}: {marketName}
+      {isGlvMarket ? getGlvMarketDisplayName(market) : "GM"}
+      {marketName ? <>: {marketName}</> : null}
       <span className="inline-flex items-start">
         <span className="subtext">[{poolName}]</span>
       </span>
@@ -81,7 +88,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-30 rounded-4 border border-gray-800 bg-slate-800 outline-none"
+          className="border z-30 rounded-4 border-gray-800 bg-slate-800 outline-none"
         >
           {market && (
             <Menu.Item as="div">

@@ -2,32 +2,42 @@ import { useMemo } from "react";
 
 import { TOKEN_COLOR_MAP } from "config/tokens";
 
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { getPoolUsdWithoutPnl, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { getMarketIndexName, getPoolUsdWithoutPnl, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
+import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { TokensData } from "domain/synthetics/tokens";
 import { bigintToNumber } from "lib/numbers";
+import { convertToUsd } from "../../../../domain/synthetics/tokens/utils";
 
 interface CompositionBarProps {
-  marketInfo?: MarketInfo | GlvMarketInfo;
-  marketsInfoData?: MarketsInfoData;
+  marketInfo: MarketInfo | GlvMarketInfo | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
+  marketTokensData: TokensData | undefined;
 }
 
-export function CompositionBar({ marketInfo, marketsInfoData }: CompositionBarProps) {
+export function CompositionBar({ marketInfo, marketsInfoData, marketTokensData }: CompositionBarProps) {
   const data = useMemo(() => {
     if (!marketInfo) {
       return [];
     }
 
     if (isGlv(marketInfo)) {
-      return marketInfo.markets.map((market) => {
-        const token = marketsInfoData?.[market.address]?.indexToken?.symbol;
+      return marketInfo.markets
+        .map((market) => {
+          const token = marketsInfoData?.[market.address]?.indexToken?.symbol;
+          const gmMarket = marketsInfoData?.[market.address];
+          const gmToken = gmMarket ? marketTokensData?.[gmMarket.marketTokenAddress] : undefined;
 
-        return {
-          value: market.gmBalance,
-          color: token ? TOKEN_COLOR_MAP[token] ?? TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
-        };
-      });
+          return {
+            tooltipContent: gmMarket ? getMarketIndexName(gmMarket) : "",
+            market: gmMarket,
+            value: convertToUsd(market.gmBalance, gmToken?.decimals, gmToken?.prices.maxPrice) ?? 0n,
+            color: token ? TOKEN_COLOR_MAP[token] ?? TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
+          };
+        })
+        .sort((a, b) => (b.value > a.value ? 1 : -1));
     }
 
     const { longToken, shortToken } = marketInfo;
@@ -36,27 +46,26 @@ export function CompositionBar({ marketInfo, marketsInfoData }: CompositionBarPr
 
     return [
       {
+        tooltipContent: longToken.symbol,
         value: longPoolAmountUsd,
         color: longToken ? TOKEN_COLOR_MAP[longToken?.symbol] || TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
       },
       {
+        tooltipContent: shortToken.symbol,
         value: shortPoolAmountUsd,
         color: shortToken ? TOKEN_COLOR_MAP[shortToken?.symbol] || TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
       },
     ];
-  }, [marketInfo, marketsInfoData]);
+  }, [marketInfo, marketsInfoData, marketTokensData]);
 
-  const sum = bigintToNumber(
-    data.reduce((acc, { value }) => acc + (value ?? 0n), 0n),
-    0
-  );
+  const sum = data.reduce((acc, { value }) => acc + (value ?? 0n), 0n);
   const percents = data.map(({ value }) =>
-    value === undefined || sum === 0 ? 0 : (bigintToNumber(value, 0) * 100) / sum
+    sum === 0n ? 0 : (bigintToNumber(value, 30) * 100) / bigintToNumber(sum, 30)
   );
 
   const bars = useMemo(() => {
     let previousWidthPc = 0;
-    return data.map(({ color, value }, index) => {
+    return data.map(({ color, value, tooltipContent }, index) => {
       if (value === undefined) {
         return null;
       }
@@ -64,12 +73,28 @@ export function CompositionBar({ marketInfo, marketsInfoData }: CompositionBarPr
 
       previousWidthPc += index ? percents[index - 1] : 0;
 
+      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+      const positionStyles = { width: `${widthPc}%`, left: previousWidthPc.toFixed(2) + "%" };
+
       return (
-        <div
+        <TooltipWithPortal
+          className="[&:not(:last-child)]:border-r !absolute h-8 border-slate-800"
+          style={positionStyles}
+          handleClassName="!absolute h-8 w-[100%]"
           key={`comp-pc-${index}`}
-          className="absolute left-0 top-0 h-8 border-slate-800 [&:not(:last-child)]:border-r-1"
-          // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-          style={{ width: `${widthPc}%`, backgroundColor: color, left: previousWidthPc.toFixed(2) + "%" }}
+          handle={
+            <div
+              className="absolute left-0 top-0 h-8 w-[100%] cursor-pointer"
+              // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+              style={{ backgroundColor: color }}
+            />
+          }
+          disableHandleStyle
+          content={
+            <>
+              {widthPc}% {tooltipContent}
+            </>
+          }
         />
       );
     });

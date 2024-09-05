@@ -51,9 +51,10 @@ export function getMintableInfoGlv(glv: GlvMarketInfo, marketTokensData: TokensD
   const glvPriceUsd = glv.indexToken.prices.maxPrice;
 
   const amountUsd = values(glv.markets).reduce((acc, market) => {
-    return (
-      acc + (marketTokensData ? getMaxUsdBuyableAmountInMarket(market, glv, marketTokensData[market.address]) : 0n)
-    );
+    const result =
+      acc + (marketTokensData ? getMaxUsdBuyableAmountInMarket(market, glv, marketTokensData[market.address]) : 0n);
+
+    return bigMath.max(result, 0n);
   }, 0n);
 
   return {

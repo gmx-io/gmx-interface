@@ -31,13 +31,13 @@ const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 const glvIcon = getIcon("common", "glv");
 
-function calculateMaxApr(chainId: number, apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
+function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData, chainId?: number) {
   const allKeys = uniq(keys(apr).concat(keys(incentiveApr)));
 
   let maxApr = 0n;
 
   for (const key of allKeys) {
-    const isBaseApyReadyToBeShown = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, key));
+    const isBaseApyReadyToBeShown = chainId ? getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, key)) : true;
 
     let aprValue = 0n;
     if (isBaseApyReadyToBeShown) {
@@ -64,8 +64,16 @@ export default function TokenCard({ showRedirectModal }: Props) {
   const { active } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
   const avalancheIncentiveState = useIncentiveStats(AVALANCHE);
-  const { marketsTokensApyData: arbApy, marketsTokensIncentiveAprData: arbIncentiveApr } = useGmMarketsApy(ARBITRUM);
-  const { marketsTokensApyData: avaxApy, marketsTokensIncentiveAprData: avaxIncentiveApr } = useGmMarketsApy(AVALANCHE);
+  const {
+    marketsTokensApyData: arbApy,
+    marketsTokensIncentiveAprData: arbIncentiveApr,
+    glvApyInfoData: arbGlvApy,
+  } = useGmMarketsApy(ARBITRUM);
+  const {
+    marketsTokensApyData: avaxApy,
+    marketsTokensIncentiveAprData: avaxIncentiveApr,
+    glvApyInfoData: avaxGlvApy,
+  } = useGmMarketsApy(AVALANCHE);
 
   const maxApyText = useMemo(() => {
     if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)
@@ -74,14 +82,30 @@ export default function TokenCard({ showRedirectModal }: Props) {
         [AVALANCHE]: "...%",
       };
 
-    const maxArbApy = calculateMaxApr(ARBITRUM, arbApy, arbIncentiveApr);
-    const maxAvaxApy = calculateMaxApr(AVALANCHE, avaxApy, avaxIncentiveApr);
+    const maxArbApy = calculateMaxApr(arbApy, arbIncentiveApr, ARBITRUM);
+    const maxAvaxApy = calculateMaxApr(avaxApy, avaxIncentiveApr, AVALANCHE);
 
     return {
       [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
       [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
     };
   }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
+
+  const maxGlvApyText = useMemo(() => {
+    if (!arbGlvApy || !avaxGlvApy)
+      return {
+        [ARBITRUM]: "...%",
+        [AVALANCHE]: "...%",
+      };
+
+    const maxArbApy = calculateMaxApr(arbGlvApy, {});
+    const maxAvaxApy = calculateMaxApr(avaxGlvApy, {});
+
+    return {
+      [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
+      [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
+    };
+  }, [arbGlvApy, avaxGlvApy]);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -120,6 +144,35 @@ export default function TokenCard({ showRedirectModal }: Props) {
     const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
     const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
     const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
+    if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
+      return (
+        <Trans>
+          {arbitrumLink} and {avalancheLink} GM Pools are{" "}
+          <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else if (arbitrumIncentiveState?.lp?.isActive) {
+      return (
+        <Trans>
+          {arbitrumLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else if (avalancheIncentiveState?.lp?.isActive) {
+      return (
+        <Trans>
+          {avalancheLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else {
+      return null;
+    }
+  }, [arbitrumIncentiveState?.lp?.isActive, avalancheIncentiveState?.lp?.isActive]);
+
+  const glvsIncentivizedLabel = useMemo(() => {
+    const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
+    const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
+    const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
+
     if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
       return (
         <Trans>
@@ -196,27 +249,27 @@ export default function TokenCard({ showRedirectModal }: Props) {
               </Trans>
             </div>
           </div>
-          {poolsIncentivizedLabel && (
-            <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{poolsIncentivizedLabel}</div>
+          {glvsIncentivizedLabel && (
+            <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{glvsIncentivizedLabel}</div>
           )}
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum Max. APY:</Trans> {maxApyText?.[ARBITRUM]},{" "}
-            <Trans>Avalanche Max. APY: {maxApyText?.[AVALANCHE]}</Trans>{" "}
+            <Trans>Arbitrum Max. APY:</Trans> {maxGlvApyText?.[ARBITRUM]},{" "}
+            <Trans>Avalanche Max. APY: {maxGlvApyText?.[AVALANCHE]}</Trans>{" "}
           </div>
         </div>
 
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
-            <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
+            <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={ARBITRUM}>
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
 
-            <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
+            <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={AVALANCHE}>
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
           <a
-            href="https://docs.gmx.io/docs/providing-liquidity/v2"
+            href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
             target="_blank"
             rel="noreferrer"
             className="default-btn read-more"

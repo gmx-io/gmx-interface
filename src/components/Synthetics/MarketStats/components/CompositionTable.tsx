@@ -12,7 +12,7 @@ import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
-import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
+import { getMarketIndexName, getMarketPoolName } from "../../../../domain/synthetics/markets/utils";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
 import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
 import { USD_DECIMALS } from "config/factors";
@@ -33,7 +33,7 @@ interface GmTableConfig {
 interface GlvTableConfig {
   type: "glv";
   data: {
-    pool: MarketInfo;
+    market: MarketInfo;
     tvl: readonly [used: bigint, available: bigint];
     comp: number;
   }[];
@@ -101,22 +101,25 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
     }
 
     if (table.type === "glv") {
-      return table.data.map(({ comp, pool, tvl }, index) => {
-        if (comp === undefined || comp === undefined || !pool) {
+      return table.data.map(({ comp, market, tvl }, index) => {
+        if (comp === undefined || comp === undefined || !market) {
           return null;
         }
 
         return (
-          <ExchangeTr key={`comp-data-${pool.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
+          <ExchangeTr key={`comp-data-${market.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
             <ExchangeTd className="py-6" padding="none">
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
                   // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  style={{ backgroundColor: TOKEN_COLOR_MAP[pool.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
+                  style={{ backgroundColor: TOKEN_COLOR_MAP[market.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
                 />
-                <TokenIcon symbol={pool.indexToken.symbol} displaySize={24} />
-                <span>{getMarketIndexName({ indexToken: pool.indexToken, isSpotOnly: false })}</span>
+                <TokenIcon symbol={market.indexToken.symbol} displaySize={24} />
+                <span className="flex flex-col">
+                  <span>{getMarketIndexName(market)}</span>
+                  <span className="subtext !ml-0 text-12 opacity-70">[{getMarketPoolName(market)}]</span>
+                </span>
               </span>
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
@@ -147,7 +150,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                 />
                 <TokenIcon symbol={token.symbol} displaySize={24} />
                 <span>
-                  {prefix}: {token.symbol}
+                  <span className="opacity-70">{prefix}:</span> {token.symbol}
                 </span>
               </span>
             </ExchangeTd>
