@@ -13,7 +13,7 @@ const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
 export const DEFAULT_LISTING = p("01 Jan 1970");
 
-type EnabledMarketConfig = {
+type MarketUiConfig = {
   listingDate: Date;
   tokens: {
     marketTokenAddress: string;
@@ -23,7 +23,7 @@ type EnabledMarketConfig = {
   };
 };
 
-export const ENABLED_MARKETS: Record<string, Record<string, EnabledMarketConfig>> = {
+export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {

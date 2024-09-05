@@ -261,7 +261,7 @@ export async function buildMarketsConfigsRequest(
       console.warn(`No prebuilt hashed config keys found for market ${marketAddress}`);
     }
 
-    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuildMarkets");
+    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuiltMarkets");
     const keys = shouldUsePrebuiltHashedKeys ? prebuiltHashedKeys : unhashedKeys;
 
     request[`${marketAddress}-dataStore`] = {

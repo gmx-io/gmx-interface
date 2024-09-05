@@ -40,10 +40,10 @@ import {
   VIRTUAL_TOKEN_ID_KEY,
 } from "config/dataStore";
 
-import { ENABLED_MARKETS } from "config/static/markets";
+import { MARKETS } from "config/static/markets";
 
 export function prebuildMarketConfigKeys(outputDir: string) {
-  const chainMarketKeys = entries(ENABLED_MARKETS).reduce((chainsAcc, [chainId, markets]) => {
+  const chainMarketKeys = entries(MARKETS).reduce((chainsAcc, [chainId, markets]) => {
     const chainMarkets = entries(markets).reduce((marketsAcc, [marketAddress, { tokens: market }]) => {
       const marketKeys = hashDataMap({
         isDisabled: [

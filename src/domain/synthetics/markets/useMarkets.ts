@@ -13,7 +13,7 @@ import { getMarketFullName } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
-import { ENABLED_MARKETS } from "config/markets";
+import { MARKETS } from "config/markets";
 
 export type MarketsResult = {
   marketsData?: MarketsData;
@@ -25,7 +25,7 @@ const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
   const staticMarketData = useMemo(() => {
-    const enabledMarkets = ENABLED_MARKETS[chainId];
+    const enabledMarkets = MARKETS[chainId];
 
     if (!enabledMarkets) {
       // eslint-disable-next-line no-console
@@ -71,7 +71,7 @@ export function useMarkets(chainId: number): MarketsResult {
     );
   }, [chainId]);
 
-  const shouldUseStaticMarketKeys = staticMarketData && getIsFlagEnabled("testPrebuildMarkets");
+  const shouldUseStaticMarketKeys = staticMarketData && getIsFlagEnabled("testPrebuiltMarkets");
 
   const freshData = useMarketsMulticall(chainId, { enabled: !shouldUseStaticMarketKeys });
 

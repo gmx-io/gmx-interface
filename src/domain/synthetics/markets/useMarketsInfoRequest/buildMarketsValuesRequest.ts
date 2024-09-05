@@ -167,7 +167,7 @@ export async function buildMarketsValuesRequest(
       console.warn(`No prebuilt hashed market keys found for market ${marketAddress}`);
     }
 
-    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuildMarkets");
+    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuiltMarkets");
     const keys = shouldUsePrebuiltHashedKeys
       ? {
           ...prebuiltHashedKeys,
