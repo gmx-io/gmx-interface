@@ -6,6 +6,7 @@ import {
   MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
+  getGlvMarketDisplayName,
   getMarketIndexName,
   getMarketPoolName,
   getMaxPoolUsd,
@@ -326,9 +327,9 @@ export function MarketStatsWithComposition(p: Props) {
             <CardRow
               label={t`Vault`}
               value={
-                marketInfo.name && poolName ? (
+                poolName ? (
                   <div className="flex items-start">
-                    <span>{marketInfo.name}</span>
+                    <span>{getGlvMarketDisplayName(marketInfo)}</span>
                     <span className="subtext gm-market-name">[{poolName}]</span>
                   </div>
                 ) : (
@@ -409,21 +410,12 @@ export function MarketStatsWithComposition(p: Props) {
           <CardRow
             label={t`APY`}
             value={
-              isGlvMarket ? (
-                <AprInfo
-                  lidoApr={undefined}
-                  incentiveApr={undefined}
-                  apy={glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress]}
-                  tokenAddress={marketToken?.address ?? zeroAddress}
-                />
-              ) : (
-                <AprInfo
-                  apy={apy}
-                  incentiveApr={incentiveApr}
-                  lidoApr={lidoApr}
-                  tokenAddress={marketToken?.address ?? zeroAddress}
-                />
-              )
+              <AprInfo
+                apy={isGlvMarket ? glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress] : apy}
+                incentiveApr={incentiveApr}
+                lidoApr={lidoApr}
+                tokenAddress={marketToken?.address ?? zeroAddress}
+              />
             }
           />
 
@@ -469,8 +461,8 @@ export function MarketStatsWithComposition(p: Props) {
       </div>
       <div
         className={cx("flex-grow", {
-          "w-[100%] border-l-1 border-l-slate-700": canFitCompositionOnRow,
-          "mt-20 border-t-1 border-t-slate-700": !canFitCompositionOnRow,
+          "w-[100%] border-l border-l-slate-700": canFitCompositionOnRow,
+          "mt-20 border-t border-t-slate-700": !canFitCompositionOnRow,
         })}
       >
         <div className="p-20">

@@ -393,6 +393,10 @@ msgstr "Treasury"
 msgid "View status"
 msgstr "View status"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get {0} better open cost {zeroPriceImpactMessage} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+msgstr "You can get {0} better open cost {zeroPriceImpactMessage} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
 msgstr "Swap {0} to {1} on 1inch"
@@ -433,11 +437,6 @@ msgstr "Insufficient liquidity in the {0} market pool. Select a different pool f
 msgid "Confirm Limit Order"
 msgstr "Confirm Limit Order"
 
-#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
-#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
-msgid "Open Fees"
-msgstr "Open Fees"
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -464,6 +463,10 @@ msgstr "Subaccount deactivated"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+#~ msgid "You can get {0} better open cost and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+#~ msgstr "You can get {0} better open cost and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
@@ -793,6 +796,10 @@ msgstr "Liq. {0} {longOrShortText}"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "Pay"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid ", <0>zero price impact</0>"
+msgstr ", <0>zero price impact</0>"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -1288,6 +1295,10 @@ msgstr "If you have an existing position, the position will be closed at {0} USD
 msgid "Transfer Submitted"
 msgstr "Transfer Submitted"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+#~ msgid ", zero price impact"
+#~ msgstr ", zero price impact"
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -1719,6 +1730,10 @@ msgstr "USD Value may not be accurate since the data does not contain prices for
 msgid "Total Fees"
 msgstr "Total Fees"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "and zero price impact"
+msgstr "and zero price impact"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
 msgstr "Cumulative PnL"
@@ -1981,10 +1996,6 @@ msgstr "Rebates are airdropped weekly."
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Total:"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get {0} better open fees and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
-msgstr "You can get {0} better open fees and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3191,6 +3202,10 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 msgid "Select a market"
 msgstr "Select a market"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
@@ -3318,8 +3333,8 @@ msgid "For trades on V1, this discount will be airdropped to your account every 
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
+#~ msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
+#~ msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -4883,6 +4898,10 @@ msgstr "Approval submitted! <0>View status.</0>"
 msgid "Order size is 0"
 msgstr "Order size is 0"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
+msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
+
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Swap Price Impact"
 msgstr "Acknowledge high Swap Price Impact"
@@ -5727,6 +5746,11 @@ msgstr "Order execution price takes into account price impact."
 msgid "Buy GLP or GMX"
 msgstr "Buy GLP or GMX"
 
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+msgid "Open Cost"
+msgstr "Open Cost"
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
 msgstr "Max Out"
@@ -5765,10 +5789,6 @@ msgstr "{longOrShortText} {0} market selected"
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
 msgstr "Connect"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You can get {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-msgstr "You can get {0} better open fees in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -7506,6 +7526,10 @@ msgstr "Limit price above Mark Price"
 msgid "Generate Referral Code"
 msgstr "Generate Referral Code"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You can get {0} better open cost{zeroPriceImpactMessage} and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+msgstr "You can get {0} better open cost{zeroPriceImpactMessage} and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
+
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Activate Subaccount"
 msgstr "Activate Subaccount"
@@ -7768,6 +7792,10 @@ msgstr "Update Stop-Loss Order"
 msgid "Continue"
 msgstr "Continue"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+#~ msgid "You can get {0} better open cost in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+#~ msgstr "You can get {0} better open cost in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and Cumulative PnL"
 msgstr "Daily and Cumulative PnL"
@@ -7802,8 +7830,8 @@ msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
-msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+#~ msgid "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+#~ msgstr "The buyable cap for the pool GM: {0} in GLV: {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"

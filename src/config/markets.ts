@@ -148,18 +148,23 @@ export function getMarketListingDate(chainId: number, marketAddress: string): Da
   return tokenListing.listingDate;
 }
 
-export const GLV_MARKETS_ENABLED = {
-  [ARBITRUM]: false,
+export const GLV_ENABLED = {
+  [ARBITRUM]: true,
   [ARBITRUM_GOERLI]: false,
   [AVALANCHE]: false,
   [AVALANCHE_FUJI]: true,
 };
 
 export const GLV_MARKETS_APPEARANCE: {
-  [chainId: number]: Record<string, { name: string; subtitle: string; shortening: string }>;
-  default: string;
+  [chainId: number]: Record<string, { name: string | undefined; subtitle: string; shortening: string }>;
 } = {
-  [ARBITRUM]: {},
+  [ARBITRUM]: {
+    "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9": {
+      name: undefined,
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+    },
+  },
   [ARBITRUM_GOERLI]: {},
   [AVALANCHE]: {},
   [AVALANCHE_FUJI]: {
@@ -169,5 +174,4 @@ export const GLV_MARKETS_APPEARANCE: {
       shortening: "HC",
     },
   },
-  default: "GLV",
 };

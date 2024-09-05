@@ -49,7 +49,13 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const dataStore = getDataStoreContract(chainId, provider);
   const multicall = getMulticallContract(chainId, provider);
   const exchangeRouter = getExchangeRouterContract(chainId, provider);
-  const glvRouter = getGlvRouterContract(chainId, provider);
+  let glvRouter;
+
+  try {
+    glvRouter = getGlvRouterContract(chainId, provider);
+  } catch (e) {
+    // no glv router in networks without glv
+  }
 
   const result = await multicall.blockAndAggregate.staticCall([
     { target: dataStoreAddress, callData: dataStore.interface.encodeFunctionData("getUint", [NONCE_KEY]) },

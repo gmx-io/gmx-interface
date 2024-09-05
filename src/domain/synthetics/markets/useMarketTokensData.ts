@@ -19,7 +19,7 @@ import TokenAbi from "abis/Token.json";
 import { GlvMarketsData } from "./useGlvMarkets";
 import { useMemo } from "react";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { GLV_MARKETS_ENABLED } from "config/markets";
+import { GLV_ENABLED } from "config/markets";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -27,13 +27,20 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: number,
-  p: { isDeposit: boolean; account?: string; glvMarketsData?: GlvMarketsData }
+  p: { isDeposit: boolean; account?: string; glvMarketsData?: GlvMarketsData; withGlv?: boolean }
 ): MarketTokensDataResult {
   const { isDeposit, account, glvMarketsData = {} } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
-  const isGlvTokensLoaded = GLV_MARKETS_ENABLED[chainId] ? Object.values(glvMarketsData).length > 0 : true;
+  let isGlvTokensLoaded;
+
+  if (p.withGlv === false) {
+    isGlvTokensLoaded = true;
+  } else {
+    isGlvTokensLoaded = GLV_ENABLED[chainId] ? Object.values(glvMarketsData).length > 0 : true;
+  }
+
   const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;
 
   const { data: gmMarketTokensData } = useMulticall(chainId, "useMarketTokensData", {
@@ -160,10 +167,18 @@ export function useMarketTokensDataRequest(
   };
 }
 
-export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
+export function useMarketTokensData(
+  chainId: number,
+  p: { isDeposit: boolean; withGlv?: boolean }
+): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
   const glvMarketsData = useSelector(selectGlvInfo);
 
-  return useMarketTokensDataRequest(chainId, { isDeposit, account, glvMarketsData: glvMarketsData });
+  return useMarketTokensDataRequest(chainId, {
+    isDeposit,
+    account,
+    glvMarketsData: glvMarketsData,
+    withGlv: p.withGlv,
+  });
 }

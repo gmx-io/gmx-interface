@@ -32,10 +32,7 @@ export function sortGmTokensByField({
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvMarketsTokensApyData: MarketTokensAPRData | undefined;
 }) {
-  const glvTokens = values(marketsInfo)
-    .filter(isGlv)
-    .map((pool) => pool.indexToken);
-  const gmTokens = values(marketTokensData).concat(glvTokens);
+  const gmTokens = values(marketTokensData);
 
   const directionMultiplier = direction === "asc" ? 1 : -1;
   if (orderBy === "price") {
@@ -79,9 +76,6 @@ export function sortGmTokensByField({
 
   if (orderBy === "apy") {
     return gmTokens.sort((a, b) => {
-      const marketA = marketsInfo[a.address];
-      const marketB = marketsInfo[b.address];
-
       const bonusAprA = marketsTokensIncentiveAprData?.[a.address] ?? 0n;
       const lidoAprA = marketsTokensLidoAprData?.[a.address] ?? 0n;
       let aprA = bonusAprA + lidoAprA;
@@ -96,13 +90,8 @@ export function sortGmTokensByField({
         aprB += marketsTokensApyData?.[b.address] ?? 0n;
       }
 
-      if (isGlv(marketA)) {
-        aprA = glvMarketsTokensApyData?.[a.address] ?? 0n;
-      }
-
-      if (isGlv(marketB)) {
-        aprB = glvMarketsTokensApyData?.[b.address] ?? 0n;
-      }
+      aprA += glvMarketsTokensApyData?.[a.address] ?? 0n;
+      aprB += glvMarketsTokensApyData?.[b.address] ?? 0n;
 
       return aprA > aprB ? directionMultiplier : -directionMultiplier;
     });

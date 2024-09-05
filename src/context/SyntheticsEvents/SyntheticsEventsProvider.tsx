@@ -58,7 +58,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { GLV_MARKETS_ENABLED } from "config/markets";
+import { GLV_ENABLED } from "config/markets";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -76,7 +76,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const { glvMarketInfo } = useGlvMarketsInfo(GLV_MARKETS_ENABLED[chainId], {
+  const { glvMarketInfo } = useGlvMarketsInfo(GLV_ENABLED[chainId], {
     marketsInfoData,
     tokensData,
     chainId,
@@ -267,7 +267,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
         longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
         shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
+        initialLongTokenAmount:
+          eventData.uintItems.items.marketTokenAmount === 0n
+            ? eventData.uintItems.items.initialLongTokenAmount
+            : eventData.uintItems.items.marketTokenAmount,
         initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
         minMarketTokens: eventData.uintItems.items.minGlvTokens,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,

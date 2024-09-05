@@ -164,14 +164,14 @@ export function GmStatusNotification({
         if (gmMarket) {
           tokensText = (
             <>
-              GM: {getMarketIndexName(gmMarket)}{" "}
+              GM: {getMarketIndexName(gmMarket)}
               <span className="subtext gm-toast">[{getMarketPoolName(gmMarket)}]</span>
             </>
           );
         }
       }
 
-      if (isGlvMarket && pendingDepositData.initialLongTokenAddress)
+      if (pendingDepositData.initialLongTokenAddress)
         return (
           <Trans>
             <div className="inline-flex">

@@ -1,5 +1,15 @@
 import { t } from "@lingui/macro";
-import { Question } from "./types";
+import { Answer, Question, QuestionType } from "./types";
+
+export function formatAnswersByQuestionType(answers: Answer[]) {
+  return answers.reduce(
+    (acc, answer) => {
+      acc[answer.questionType] = answer;
+      return acc;
+    },
+    {} as { [questionType in QuestionType]?: Answer }
+  );
+}
 
 export function getQuestionsByRating(rating: number): Question[] {
   const questionsByRating: { minRating: number; questions: Question[] }[] = [
@@ -7,11 +17,11 @@ export function getQuestionsByRating(rating: number): Question[] {
       minRating: 9,
       questions: [
         {
-          questionType: "likeMost",
+          questionType: QuestionType.likeMost,
           question: t`What did you like the most about our service?`,
         },
         {
-          questionType: "howContinue",
+          questionType: QuestionType.howContinue,
           question: t`How can we continue to meet your expectations?`,
         },
       ],
@@ -20,11 +30,11 @@ export function getQuestionsByRating(rating: number): Question[] {
       minRating: 7,
       questions: [
         {
-          questionType: "areasToImprove",
+          questionType: QuestionType.areasToImprove,
           question: t`What areas can we improve to make your experience better?`,
         },
         {
-          questionType: "ratingUp",
+          questionType: QuestionType.ratingUp,
           question: t`What would have made your rating a 9 or 10?`,
         },
       ],
@@ -33,11 +43,11 @@ export function getQuestionsByRating(rating: number): Question[] {
       minRating: 0,
       questions: [
         {
-          questionType: "issues",
+          questionType: QuestionType.issues,
           question: t`What issues did you encounter that led to your rating?`,
         },
         {
-          questionType: "concerns",
+          questionType: QuestionType.concerns,
           question: t`How can we address your concerns and improve your experience?`,
         },
       ],

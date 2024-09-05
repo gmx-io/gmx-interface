@@ -123,7 +123,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               {formatAmountHuman(tvl[0], USD_DECIMALS, true, 1)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 1)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {comp.toFixed(2)}
+              {comp.toFixed(2)}%
             </ExchangeTd>
           </ExchangeTr>
         );
@@ -155,7 +155,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               {formatAmountHuman(amount, token.decimals, false, 3)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {comp.toFixed(2)}
+              {comp.toFixed(2)}%
             </ExchangeTd>
           </ExchangeTr>
         );

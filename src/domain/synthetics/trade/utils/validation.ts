@@ -3,6 +3,7 @@ import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import {
   MarketInfo,
+  getGlvMarketDisplayName,
   getMarketIndexName,
   getMarketPoolName,
   getMaxAllowedLeverageByMinCollateralFactor,
@@ -695,8 +696,8 @@ export function getGmSwapError(p: {
         return [
           t`Max pool amount reached`,
           longToken?.symbol === "GM"
-            ? t`The buyable cap for the pool GM: ${marketInfo.name} in GLV: ${vaultInfo.name} [${getMarketPoolName(vaultInfo)}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
-            : t`The buyable cap for the pool GM: ${marketInfo.name} in GLV: ${vaultInfo.name} [${getMarketPoolName(vaultInfo)}] has been reached. Please choose a different pool or reduce the buy size.`,
+            ? t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvMarketDisplayName(vaultInfo)} [${getMarketPoolName(vaultInfo)}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
+            : t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvMarketDisplayName(vaultInfo)} [${getMarketPoolName(vaultInfo)}] has been reached. Please choose a different pool or reduce the buy size.`,
         ];
       }
     }

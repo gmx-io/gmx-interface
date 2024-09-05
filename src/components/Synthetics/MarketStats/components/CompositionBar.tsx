@@ -22,9 +22,10 @@ export function CompositionBar({ marketInfo, marketsInfoData }: CompositionBarPr
     if (isGlv(marketInfo)) {
       return marketInfo.markets.map((market) => {
         const token = marketsInfoData?.[market.address]?.indexToken?.symbol;
+
         return {
           value: market.gmBalance,
-          color: token ? TOKEN_COLOR_MAP[token] : TOKEN_COLOR_MAP.default,
+          color: token ? TOKEN_COLOR_MAP[token] ?? TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
         };
       });
     }

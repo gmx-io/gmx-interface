@@ -156,9 +156,12 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
 
   const {
+    // Undefined when paying with GM
     longTokenInputState,
-    // Undefined when isSameCollaterals is true
+    // Undefined when isSameCollaterals is true, or when paying with GM
     shortTokenInputState,
+    // undefined when not paying with GM
+    marketTokenInputState,
   } = useMemo(() => {
     if (!marketInfo) {
       return {};
@@ -852,7 +855,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                     tokenAddress={address}
                     tokenSymbol={
                       marketTokenData
-                        ? `${isGlv(market) ? "GLV" : "GM"}: ${marketTokenData.name}`
+                        ? isGlv(market)
+                          ? market.indexToken.contractSymbol
+                          : `GM: ${marketTokenData.name}`
                         : token.assetSymbol ?? token.symbol
                     }
                     spenderAddress={routerAddress}

@@ -19,12 +19,8 @@ import { differenceInDays } from "date-fns";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { OrderType } from "domain/synthetics/orders";
 import { useUnmount } from "react-use";
-
-type Answer = {
-  questionType: string;
-  question: string;
-  answer: string;
-};
+import { formatAnswersByQuestionType } from "./utils";
+import { Answer } from "./types";
 
 const ACTION_TRIGGERED_DELAY = 5000;
 
@@ -68,9 +64,9 @@ export function useNpsSurvey() {
               account: "",
               rating,
               isGeneralFeedback: false,
-              monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume || 0n, USD_DECIMALS, false)!,
-              totalVolume: formatAmountForMetrics(accountStats?.volume || 0n, USD_DECIMALS, false)!,
-              answers,
+              monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume || 0n, USD_DECIMALS, "toInt")!,
+              totalVolume: formatAmountForMetrics(accountStats?.volume || 0n, USD_DECIMALS, "toInt")!,
+              answers: formatAnswersByQuestionType(answers),
             },
           },
           showDebugValues

@@ -26,6 +26,7 @@ import {
   getTotalGmInfo,
   useMarketTokensData,
   getGlvMarketShortening,
+  getGlvMarketDisplayName,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -309,7 +310,7 @@ function useFilterSortPools({
         return false;
       }
 
-      const poolName = market.name;
+      const poolName = isGlv(market) ? market.name ?? "GLV" : market.name;
 
       const indexSymbol = indexToken.symbol;
       const indexName = indexToken.name;
@@ -467,7 +468,9 @@ function GmListItem({
           </div>
           <div>
             <div className="flex text-16">
-              {isGlvMarket ? `GLV: ${market.name}` : getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+              {isGlvMarket
+                ? getGlvMarketDisplayName(market)
+                : getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />

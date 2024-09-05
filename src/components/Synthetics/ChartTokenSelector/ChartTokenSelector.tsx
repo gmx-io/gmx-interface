@@ -52,7 +52,7 @@ export default function ChartTokenSelector(props: Props) {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
-  const chevronClassName = oneRowLabels === undefined ? undefined : oneRowLabels ? "mt-4" : "mt-4 self-start";
+  const chevronClassName = oneRowLabels === undefined ? undefined : oneRowLabels ? "mt-4" : "mt-2 self-start";
 
   return (
     <SelectorBase

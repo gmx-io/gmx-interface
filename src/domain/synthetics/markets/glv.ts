@@ -101,6 +101,6 @@ export function getSellableInfoGlv(
   };
 }
 
-export function isGlv(pool?: GlvMarketInfo | MarketInfo): pool is GlvMarketInfo {
-  return Boolean(pool && "isGlv" in pool && pool.isGlv);
+export function isGlv(market?: GlvMarketInfo | MarketInfo): market is GlvMarketInfo {
+  return Boolean(market && "isGlv" in market && market.isGlv);
 }

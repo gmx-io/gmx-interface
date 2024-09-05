@@ -140,18 +140,16 @@ export function getDepositAmounts(p: {
 
     if (vaultInfo) {
       const glvPrice = vaultInfo.indexToken.prices.maxPrice;
-      let gmUsdAmount: undefined | bigint = 0n;
+      let marketTokenUsd: undefined | bigint = 0n;
 
       if (isMarketTokenDeposit) {
-        gmUsdAmount = convertToUsd(values.longTokenAmount, longToken?.decimals, longToken?.prices.minPrice);
+        marketTokenUsd = convertToUsd(values.longTokenAmount, longToken?.decimals, longToken?.prices.minPrice);
       } else {
-        gmUsdAmount = values.marketTokenUsd;
+        marketTokenUsd = values.marketTokenUsd;
       }
-
-      const glvAmount = convertToTokenAmount(gmUsdAmount, marketInfo.indexToken.decimals, glvPrice);
+      const glvAmount = convertToTokenAmount(marketTokenUsd, vaultInfo.indexToken.decimals, glvPrice);
       if (glvAmount !== undefined && glvAmount > 0) {
         values.marketTokenAmount = glvAmount;
-        values.marketTokenUsd = convertToUsd(glvAmount, vaultInfo.indexToken.decimals, glvPrice)!;
       }
     }
   } else if (strategy === "byMarketToken") {

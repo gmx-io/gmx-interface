@@ -191,10 +191,9 @@ const CONTRACTS = {
     SyntheticsReader: "0x5Ca84c34a381434786738735265b9f3FD814b824",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
 
-    // @todo don't forget to update this address when glvs will be deployed on arbitrum
-    GlvReader: "0x8B44C7771CAa8AaA3Fe64C8BdAB29ee392122D13",
-    GlvRouter: "0x7db700C1D73E2eBF94904cE07D1702Ca4d50d3d0",
-    GlvVault: "0x76f93b5240DF811a3fc32bEDd58daA5784e46C96",
+    GlvReader: "0xd4f522c4339Ae0A90a156bd716715547e44Bed65",
+    GlvRouter: "0x75eAFD2B4e306Dad8dd6334456F8018218Bc9882",
+    GlvVault: "0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9",
 
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
   },
