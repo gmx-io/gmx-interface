@@ -232,7 +232,7 @@ function MarketTokenSelectorInternal(props: Props) {
           value={searchKeyword}
           setValue={handleSearch}
           onKeyDown={handleKeyDown}
-          placeholder="Search Market"
+          placeholder="Search Pool"
         />
       </SelectorBaseMobileHeaderContent>
       <div
@@ -251,7 +251,7 @@ function MarketTokenSelectorInternal(props: Props) {
                   handleSelectToken(sortedTokensInfo[0].market.address);
                 }
               }}
-              placeholder="Search Market"
+              placeholder="Search Pool"
             />
             <div className="divider" />
           </>
