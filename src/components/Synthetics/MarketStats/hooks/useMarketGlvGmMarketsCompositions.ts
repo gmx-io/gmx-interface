@@ -29,7 +29,15 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
       return [];
     }
 
-    const sum = glv.markets.reduce((acc, market) => acc + market.gmBalance, 0n);
+    const sum = glv.markets.reduce((acc, market) => {
+      const token = marketTokensData?.[market.address];
+      if (!token) {
+        return acc;
+      }
+
+      return acc + (convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n);
+    }, 0n);
+
     const rows = glv.markets
       .map((market) => {
         const gmMarket = allMarkets[market.address];
@@ -39,16 +47,15 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
           return null;
         }
 
+        const balanceUsd = convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+
         return {
           amount: market.gmBalance,
           gmMarket: market,
           pool: gmMarket,
           token: token,
-          tvl: [
-            convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n,
-            getMaxUsdCapUsdInGmGlvMarket(market, token),
-          ] as const,
-          comp: sum === 0n ? 0 : (bigintToNumber(market.gmBalance, 1) * 100) / bigintToNumber(sum, 1),
+          tvl: [balanceUsd, getMaxUsdCapUsdInGmGlvMarket(market, token)] as const,
+          comp: sum === 0n ? 0 : (bigintToNumber(balanceUsd, 30) * 100) / bigintToNumber(sum, 30),
         };
       })
       .filter(Boolean as unknown as FilterOutFalsy);
