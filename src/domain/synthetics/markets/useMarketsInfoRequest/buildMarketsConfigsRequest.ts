@@ -34,6 +34,7 @@ import {
   VIRTUAL_TOKEN_ID_KEY,
 } from "config/dataStore";
 import { getByKey } from "lib/objects";
+import { getIsFlagEnabled } from "config/ab";
 
 import { HASHED_MARKET_CONFIG_KEYS } from "prebuilt";
 
@@ -260,7 +261,7 @@ export async function buildMarketsConfigsRequest(
       console.warn(`No prebuilt hashed config keys found for market ${marketAddress}`);
     }
 
-    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined;
+    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuildMarkets");
     const keys = shouldUsePrebuiltHashedKeys ? prebuiltHashedKeys : unhashedKeys;
 
     request[`${marketAddress}-dataStore`] = {

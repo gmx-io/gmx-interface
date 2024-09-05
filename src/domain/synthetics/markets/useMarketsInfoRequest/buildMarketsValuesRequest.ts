@@ -9,6 +9,7 @@ import {
 } from "config/dataStore";
 import { getByKey } from "lib/objects";
 import { hashDataMap } from "lib/multicall/hashDataMap";
+import { getIsFlagEnabled } from "config/ab";
 
 import { MarketsData } from "domain/synthetics/markets/types";
 import { MarketValuesMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
@@ -166,7 +167,7 @@ export async function buildMarketsValuesRequest(
       console.warn(`No prebuilt hashed market keys found for market ${marketAddress}`);
     }
 
-    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined;
+    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuildMarkets");
     const keys = shouldUsePrebuiltHashedKeys
       ? {
           ...prebuiltHashedKeys,

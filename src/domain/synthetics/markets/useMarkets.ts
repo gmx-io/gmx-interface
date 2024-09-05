@@ -6,6 +6,7 @@ import { isMarketEnabled } from "config/markets";
 import { convertTokenAddress, getToken } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { getIsFlagEnabled } from "config/ab";
 
 import { MarketsData } from "./types";
 import { getMarketFullName } from "./utils";
@@ -70,9 +71,11 @@ export function useMarkets(chainId: number): MarketsResult {
     );
   }, [chainId]);
 
-  const freshData = useMarketsMulticall(chainId, { enabled: !staticMarketData });
+  const shouldUseStaticMarketKeys = staticMarketData && getIsFlagEnabled("testPrebuildMarkets");
 
-  return staticMarketData ?? freshData;
+  const freshData = useMarketsMulticall(chainId, { enabled: !shouldUseStaticMarketKeys });
+
+  return shouldUseStaticMarketKeys ? staticMarketData : freshData;
 }
 
 function useMarketsMulticall(chainId: number, { enabled = true } = {}): MarketsResult {

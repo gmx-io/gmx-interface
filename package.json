@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "VITE_APP_VERSION=$(git rev-parse HEAD) vite --port 3010 --host --force",
+    "start": "VITE_APP_VERSION=$(git rev-parse HEAD) vite --port 3010 --host",
     "start-home": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-home vite --port 3010",
     "start-app": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-app vite --port 3011",
     "build": "VITE_APP_VERSION=$(git rev-parse HEAD) vite build",
