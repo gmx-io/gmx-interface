@@ -408,12 +408,16 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         };
       });
 
-      const total = marketData.reduce((acc, { amountUsd }) => (amountUsd !== undefined ? acc + amountUsd : acc), 0n);
-      const sumApys = marketData.reduce((acc, { amountUsd, apy }) => {
-        return apy !== undefined ? acc + amountUsd * apy : acc;
+      const total = marketData.reduce((acc, { amountUsd }) => acc + amountUsd, 0n);
+      const sumApys = marketData.reduce((acc: undefined | bigint, { amountUsd, apy }) => {
+        return apy === undefined || acc === undefined ? undefined : acc + amountUsd * apy;
       }, 0n);
 
-      acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
+      if (sumApys === undefined) {
+        acc[indexTokenAddress] = undefined;
+      } else {
+        acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
+      }
 
       return acc;
     }, {});
