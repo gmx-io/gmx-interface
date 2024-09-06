@@ -165,6 +165,15 @@ export function getDepositAmounts(p: {
       values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
     }
 
+    if (isMarketTokenDeposit && vaultInfo) {
+      values.longTokenAmount = convertToTokenAmount(
+        values.marketTokenUsd,
+        marketToken.decimals,
+        marketToken.prices.minPrice
+      )!;
+      return values;
+    }
+
     const prevLongTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
     const prevShortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
     const prevSumUsd = prevLongTokenUsd + prevShortTokenUsd;
