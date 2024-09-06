@@ -34,21 +34,27 @@ import {
   VIRTUAL_TOKEN_ID_KEY,
 } from "config/dataStore";
 import { getByKey } from "lib/objects";
+import { getIsFlagEnabled } from "config/ab";
+
+import { HASHED_MARKET_CONFIG_KEYS } from "prebuilt";
 
 import { MarketsData } from "domain/synthetics/markets/types";
 import { MarketConfigMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
 
 import DataStore from "abis/DataStore.json";
 
-export async function buildMarketsConfigsRequest({
-  marketsAddresses,
-  marketsData,
-  dataStoreAddress,
-}: {
-  marketsAddresses: string[] | undefined;
-  marketsData: MarketsData | undefined;
-  dataStoreAddress: string;
-}) {
+export async function buildMarketsConfigsRequest(
+  chainId: number,
+  {
+    marketsAddresses,
+    marketsData,
+    dataStoreAddress,
+  }: {
+    marketsAddresses: string[] | undefined;
+    marketsData: MarketsData | undefined;
+    dataStoreAddress: string;
+  }
+) {
   const request: MarketConfigMulticallRequestConfig = {};
   for (const marketAddress of marketsAddresses || []) {
     const market = getByKey(marketsData, marketAddress)!;
@@ -248,202 +254,213 @@ export async function buildMarketsConfigsRequest({
       ],
     };
 
+    const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
+
+    if (!prebuiltHashedKeys) {
+      throw new Error(
+        `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
+      );
+    }
+
+    const shouldUsePrebuiltHashedKeys = getIsFlagEnabled("testPrebuiltMarkets");
+    const keys = shouldUsePrebuiltHashedKeys ? prebuiltHashedKeys : unhashedKeys;
+
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
       abi: DataStore.abi,
-      shouldHashParams: true,
+      shouldHashParams: !shouldUsePrebuiltHashedKeys,
       calls: {
         isDisabled: {
           methodName: "getBool",
-          params: [unhashedKeys.isDisabled],
+          params: [keys.isDisabled],
         },
         maxLongPoolAmount: {
           methodName: "getUint",
-          params: [unhashedKeys.maxLongPoolAmount],
+          params: [keys.maxLongPoolAmount],
         },
         maxShortPoolAmount: {
           methodName: "getUint",
-          params: [unhashedKeys.maxShortPoolAmount],
+          params: [keys.maxShortPoolAmount],
         },
         maxLongPoolUsdForDeposit: {
           methodName: "getUint",
-          params: [unhashedKeys.maxLongPoolUsdForDeposit],
+          params: [keys.maxLongPoolUsdForDeposit],
         },
         maxShortPoolUsdForDeposit: {
           methodName: "getUint",
-          params: [unhashedKeys.maxShortPoolUsdForDeposit],
+          params: [keys.maxShortPoolUsdForDeposit],
         },
         longPoolAmountAdjustment: {
           methodName: "getUint",
-          params: [unhashedKeys.longPoolAmountAdjustment],
+          params: [keys.longPoolAmountAdjustment],
         },
         shortPoolAmountAdjustment: {
           methodName: "getUint",
-          params: [unhashedKeys.shortPoolAmountAdjustment],
+          params: [keys.shortPoolAmountAdjustment],
         },
         reserveFactorLong: {
           methodName: "getUint",
-          params: [unhashedKeys.reserveFactorLong],
+          params: [keys.reserveFactorLong],
         },
         reserveFactorShort: {
           methodName: "getUint",
-          params: [unhashedKeys.reserveFactorShort],
+          params: [keys.reserveFactorShort],
         },
         openInterestReserveFactorLong: {
           methodName: "getUint",
-          params: [unhashedKeys.openInterestReserveFactorLong],
+          params: [keys.openInterestReserveFactorLong],
         },
         openInterestReserveFactorShort: {
           methodName: "getUint",
-          params: [unhashedKeys.openInterestReserveFactorShort],
+          params: [keys.openInterestReserveFactorShort],
         },
         maxOpenInterestLong: {
           methodName: "getUint",
-          params: [unhashedKeys.maxOpenInterestLong],
+          params: [keys.maxOpenInterestLong],
         },
         maxOpenInterestShort: {
           methodName: "getUint",
-          params: [unhashedKeys.maxOpenInterestShort],
+          params: [keys.maxOpenInterestShort],
         },
         minPositionImpactPoolAmount: {
           methodName: "getUint",
-          params: [unhashedKeys.minPositionImpactPoolAmount],
+          params: [keys.minPositionImpactPoolAmount],
         },
         positionImpactPoolDistributionRate: {
           methodName: "getUint",
-          params: [unhashedKeys.positionImpactPoolDistributionRate],
+          params: [keys.positionImpactPoolDistributionRate],
         },
         borrowingFactorLong: {
           methodName: "getUint",
-          params: [unhashedKeys.borrowingFactorLong],
+          params: [keys.borrowingFactorLong],
         },
         borrowingFactorShort: {
           methodName: "getUint",
-          params: [unhashedKeys.borrowingFactorShort],
+          params: [keys.borrowingFactorShort],
         },
         borrowingExponentFactorLong: {
           methodName: "getUint",
-          params: [unhashedKeys.borrowingExponentFactorLong],
+          params: [keys.borrowingExponentFactorLong],
         },
         borrowingExponentFactorShort: {
           methodName: "getUint",
-          params: [unhashedKeys.borrowingExponentFactorShort],
+          params: [keys.borrowingExponentFactorShort],
         },
         fundingFactor: {
           methodName: "getUint",
-          params: [unhashedKeys.fundingFactor],
+          params: [keys.fundingFactor],
         },
         fundingExponentFactor: {
           methodName: "getUint",
-          params: [unhashedKeys.fundingExponentFactor],
+          params: [keys.fundingExponentFactor],
         },
         fundingIncreaseFactorPerSecond: {
           methodName: "getUint",
-          params: [unhashedKeys.fundingIncreaseFactorPerSecond],
+          params: [keys.fundingIncreaseFactorPerSecond],
         },
         fundingDecreaseFactorPerSecond: {
           methodName: "getUint",
-          params: [unhashedKeys.fundingDecreaseFactorPerSecond],
+          params: [keys.fundingDecreaseFactorPerSecond],
         },
         thresholdForStableFunding: {
           methodName: "getUint",
-          params: [unhashedKeys.thresholdForStableFunding],
+          params: [keys.thresholdForStableFunding],
         },
         thresholdForDecreaseFunding: {
           methodName: "getUint",
-          params: [unhashedKeys.thresholdForDecreaseFunding],
+          params: [keys.thresholdForDecreaseFunding],
         },
         minFundingFactorPerSecond: {
           methodName: "getUint",
-          params: [unhashedKeys.minFundingFactorPerSecond],
+          params: [keys.minFundingFactorPerSecond],
         },
         maxFundingFactorPerSecond: {
           methodName: "getUint",
-          params: [unhashedKeys.maxFundingFactorPerSecond],
+          params: [keys.maxFundingFactorPerSecond],
         },
         maxPnlFactorForTradersLong: {
           methodName: "getUint",
-          params: [unhashedKeys.maxPnlFactorForTradersLong],
+          params: [keys.maxPnlFactorForTradersLong],
         },
         maxPnlFactorForTradersShort: {
           methodName: "getUint",
-          params: [unhashedKeys.maxPnlFactorForTradersShort],
+          params: [keys.maxPnlFactorForTradersShort],
         },
         positionFeeFactorForPositiveImpact: {
           methodName: "getUint",
-          params: [unhashedKeys.positionFeeFactorForPositiveImpact],
+          params: [keys.positionFeeFactorForPositiveImpact],
         },
         positionFeeFactorForNegativeImpact: {
           methodName: "getUint",
-          params: [unhashedKeys.positionFeeFactorForNegativeImpact],
+          params: [keys.positionFeeFactorForNegativeImpact],
         },
         positionImpactFactorPositive: {
           methodName: "getUint",
-          params: [unhashedKeys.positionImpactFactorPositive],
+          params: [keys.positionImpactFactorPositive],
         },
         positionImpactFactorNegative: {
           methodName: "getUint",
-          params: [unhashedKeys.positionImpactFactorNegative],
+          params: [keys.positionImpactFactorNegative],
         },
         maxPositionImpactFactorPositive: {
           methodName: "getUint",
-          params: [unhashedKeys.maxPositionImpactFactorPositive],
+          params: [keys.maxPositionImpactFactorPositive],
         },
         maxPositionImpactFactorNegative: {
           methodName: "getUint",
-          params: [unhashedKeys.maxPositionImpactFactorNegative],
+          params: [keys.maxPositionImpactFactorNegative],
         },
         maxPositionImpactFactorForLiquidations: {
           methodName: "getUint",
-          params: [unhashedKeys.maxPositionImpactFactorForLiquidations],
+          params: [keys.maxPositionImpactFactorForLiquidations],
         },
         minCollateralFactor: {
           methodName: "getUint",
-          params: [unhashedKeys.minCollateralFactor],
+          params: [keys.minCollateralFactor],
         },
         minCollateralFactorForOpenInterestLong: {
           methodName: "getUint",
-          params: [unhashedKeys.minCollateralFactorForOpenInterestLong],
+          params: [keys.minCollateralFactorForOpenInterestLong],
         },
         minCollateralFactorForOpenInterestShort: {
           methodName: "getUint",
-          params: [unhashedKeys.minCollateralFactorForOpenInterestShort],
+          params: [keys.minCollateralFactorForOpenInterestShort],
         },
         positionImpactExponentFactor: {
           methodName: "getUint",
-          params: [unhashedKeys.positionImpactExponentFactor],
+          params: [keys.positionImpactExponentFactor],
         },
         swapFeeFactorForPositiveImpact: {
           methodName: "getUint",
-          params: [unhashedKeys.swapFeeFactorForPositiveImpact],
+          params: [keys.swapFeeFactorForPositiveImpact],
         },
         swapFeeFactorForNegativeImpact: {
           methodName: "getUint",
-          params: [unhashedKeys.swapFeeFactorForNegativeImpact],
+          params: [keys.swapFeeFactorForNegativeImpact],
         },
         swapImpactFactorPositive: {
           methodName: "getUint",
-          params: [unhashedKeys.swapImpactFactorPositive],
+          params: [keys.swapImpactFactorPositive],
         },
         swapImpactFactorNegative: {
           methodName: "getUint",
-          params: [unhashedKeys.swapImpactFactorNegative],
+          params: [keys.swapImpactFactorNegative],
         },
         swapImpactExponentFactor: {
           methodName: "getUint",
-          params: [unhashedKeys.swapImpactExponentFactor],
+          params: [keys.swapImpactExponentFactor],
         },
         virtualMarketId: {
           methodName: "getBytes32",
-          params: [unhashedKeys.virtualMarketId],
+          params: [keys.virtualMarketId],
         },
         virtualShortTokenId: {
           methodName: "getBytes32",
-          params: [unhashedKeys.virtualShortTokenId],
+          params: [keys.virtualShortTokenId],
         },
         virtualLongTokenId: {
           methodName: "getBytes32",
-          params: [unhashedKeys.virtualLongTokenId],
+          params: [keys.virtualLongTokenId],
         },
       },
     };
