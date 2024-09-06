@@ -23,7 +23,8 @@
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
     "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './src/abis/*.json'",
-    "postinstall": "yarn typechain"
+    "postinstall": "yarn typechain",
+    "prebuild": "yarn tsx scripts/prebuild"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
@@ -151,6 +152,7 @@
     "prettier-plugin-tailwindcss": "0.6.5",
     "rollup-plugin-visualizer": "5.12.0",
     "tailwindcss": "3.4.4",
+    "tsx": "4.19.0",
     "typechain": "8.3.2",
     "vite": "5.4.0",
     "vite-plugin-svgr": "4.2.0",

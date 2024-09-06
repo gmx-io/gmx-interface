@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { ethers } from "ethers";
 
 import { getContract } from "config/contracts";
@@ -5,11 +6,14 @@ import { isMarketEnabled } from "config/markets";
 import { convertTokenAddress, getToken } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { getIsFlagEnabled } from "config/ab";
 
 import { MarketsData } from "./types";
 import { getMarketFullName } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
+
+import { MARKETS } from "config/markets";
 
 export type MarketsResult = {
   marketsData?: MarketsData;
@@ -20,8 +24,63 @@ export type MarketsResult = {
 const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
+  const staticMarketData = useMemo(() => {
+    const enabledMarkets = MARKETS[chainId];
+
+    if (!enabledMarkets) {
+      // eslint-disable-next-line no-console
+      console.warn(`Static markets data for chain ${chainId} not found`);
+
+      return null;
+    }
+
+    return Object.values(enabledMarkets).reduce(
+      (acc: MarketsResult, enabledMarketConfig) => {
+        const market = enabledMarketConfig;
+
+        if (!isMarketEnabled(chainId, market.marketTokenAddress)) {
+          return acc;
+        }
+
+        try {
+          const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
+          const longToken = getToken(chainId, market.longTokenAddress);
+          const shortToken = getToken(chainId, market.shortTokenAddress);
+
+          const isSameCollaterals = market.longTokenAddress === market.shortTokenAddress;
+          const isSpotOnly = market.indexTokenAddress === ethers.ZeroAddress;
+
+          const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
+
+          acc.marketsAddresses!.push(market.marketTokenAddress);
+          acc.marketsData![market.marketTokenAddress] = {
+            ...market,
+            isSameCollaterals,
+            isSpotOnly,
+            name,
+            data: "",
+          };
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn("unsupported market", e);
+        }
+
+        return acc;
+      },
+      { marketsData: {}, marketsAddresses: [], error: undefined }
+    );
+  }, [chainId]);
+
+  const shouldUseStaticMarketKeys = staticMarketData && getIsFlagEnabled("testPrebuiltMarkets");
+
+  const freshData = useMarketsMulticall(chainId, { enabled: !shouldUseStaticMarketKeys });
+
+  return shouldUseStaticMarketKeys ? staticMarketData : freshData;
+}
+
+function useMarketsMulticall(chainId: number, { enabled = true } = {}): MarketsResult {
   const { data, error } = useMulticall(chainId, "useMarketsData", {
-    key: [],
+    key: enabled ? [] : null,
 
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 

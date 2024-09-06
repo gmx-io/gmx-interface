@@ -40,6 +40,7 @@ export default defineConfig({
       "pages": path.resolve(__dirname, "src/pages"),
       "styles": path.resolve(__dirname, "src/styles"),
       "typechain-types": path.resolve(__dirname, "src/typechain-types"),
+      "prebuilt": path.resolve(__dirname, "src/prebuilt"),
     },
   },
   build: {
