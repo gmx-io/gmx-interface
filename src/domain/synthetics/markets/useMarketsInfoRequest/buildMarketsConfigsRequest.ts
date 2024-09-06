@@ -257,11 +257,12 @@ export async function buildMarketsConfigsRequest(
     const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
-      // eslint-disable-next-line no-console
-      console.warn(`No prebuilt hashed config keys found for market ${marketAddress}`);
+      throw new Error(
+        `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
+      );
     }
 
-    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuiltMarkets");
+    const shouldUsePrebuiltHashedKeys = getIsFlagEnabled("testPrebuiltMarkets");
     const keys = shouldUsePrebuiltHashedKeys ? prebuiltHashedKeys : unhashedKeys;
 
     request[`${marketAddress}-dataStore`] = {

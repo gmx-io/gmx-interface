@@ -163,11 +163,12 @@ export async function buildMarketsValuesRequest(
     const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
-      // eslint-disable-next-line no-console
-      console.warn(`No prebuilt hashed market keys found for market ${marketAddress}`);
+      throw new Error(
+        `No pre-built hashed market keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
+      );
     }
 
-    const shouldUsePrebuiltHashedKeys = prebuiltHashedKeys !== undefined && getIsFlagEnabled("testPrebuiltMarkets");
+    const shouldUsePrebuiltHashedKeys = getIsFlagEnabled("testPrebuiltMarkets");
     const keys = shouldUsePrebuiltHashedKeys
       ? {
           ...prebuiltHashedKeys,

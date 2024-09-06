@@ -44,7 +44,7 @@ import { MARKETS } from "config/static/markets";
 
 export function prebuildMarketConfigKeys(outputDir: string) {
   const chainMarketKeys = entries(MARKETS).reduce((chainsAcc, [chainId, markets]) => {
-    const chainMarkets = entries(markets).reduce((marketsAcc, [marketAddress, { tokens: market }]) => {
+    const chainMarkets = entries(markets).reduce((marketsAcc, [marketAddress, market]) => {
       const marketKeys = hashDataMap({
         isDisabled: [
           ["bytes32", "address"],

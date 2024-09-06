@@ -9,7 +9,7 @@ export * from "./static/markets";
 export const ENOUGH_DAYS_SINCE_LISTING_FOR_APY = 8;
 
 export const MARKETS_INDEX: Record<number, Record<string, boolean>> = mapValues(MARKETS, (markets) =>
-  mapValues(markets, (market) => Boolean(market.listingDate))
+  mapValues(markets, (market) => Boolean(market.enabled))
 );
 
 export function isMarketEnabled(chainId: number, marketAddress: string) {

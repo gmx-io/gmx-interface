@@ -36,7 +36,7 @@ export function useMarkets(chainId: number): MarketsResult {
 
     return Object.values(enabledMarkets).reduce(
       (acc: MarketsResult, enabledMarketConfig) => {
-        const { tokens: market } = enabledMarketConfig;
+        const market = enabledMarketConfig;
 
         if (!isMarketEnabled(chainId, market.marketTokenAddress)) {
           return acc;

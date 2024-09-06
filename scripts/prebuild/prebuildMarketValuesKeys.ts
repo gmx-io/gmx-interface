@@ -16,7 +16,7 @@ import { MARKETS } from "config/static/markets";
 
 export function prebuildMarketValuesKeys(outputDir: string) {
   const chainMarketKeys = entries(MARKETS).reduce((chainsAcc, [chainId, markets]) => {
-    const chainMarkets = entries(markets).reduce((marketsAcc, [marketAddress, { tokens: market }]) => {
+    const chainMarkets = entries(markets).reduce((marketsAcc, [marketAddress, market]) => {
       const marketKeys = hashDataMap({
         longPoolAmount: [
           ["bytes32", "address", "address"],
