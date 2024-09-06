@@ -52,10 +52,14 @@ function App() {
 
   useEffect(() => {
     const checkPendingTxns = async () => {
+      if (!signer) {
+        return;
+      }
+
       const updatedPendingTxns: any[] = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await signer!.provider!.getTransactionReceipt(pendingTxn.hash);
+        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
