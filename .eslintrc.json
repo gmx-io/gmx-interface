@@ -83,6 +83,12 @@
         "parserOptions": {
           "project": ["./tsconfig.json"]
         }
+      },
+      {
+        "files": ["scripts/**"],
+        "rules": {
+          "no-restricted-globals": "off"
+        }
       }
     ]
   }
