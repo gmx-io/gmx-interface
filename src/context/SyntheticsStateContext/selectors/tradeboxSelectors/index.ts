@@ -191,7 +191,10 @@ export const selectTradeboxDecreasePositionAmounts = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  if (triggerPrice === 0n) {
+    triggerPrice = undefined;
+  }
 
   if (typeof keepLeverage === "undefined")
     throw new Error("selectTradeboxDecreasePositionAmounts: keepLeverage is undefined");

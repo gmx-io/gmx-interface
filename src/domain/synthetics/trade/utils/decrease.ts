@@ -125,13 +125,7 @@ export function getDecreasePositionAmounts(p: {
       ? triggerPrice ?? markPrice
       : collateralToken.prices.minPrice;
 
-    values.triggerOrderType ||= getTriggerDecreaseOrderType({
-      markPrice: isLimit ? limitPrice ?? 0n : markPrice,
-      triggerPrice: triggerPrice ?? markPrice,
-      isLong,
-    });
-
-    values.triggerThresholdType = getTriggerThresholdType(values.triggerOrderType, isLong);
+    values.triggerThresholdType = getTriggerThresholdType(orderType, isLong);
   } else {
     values.indexPrice = markPrice;
     values.collateralPrice = collateralToken.prices.minPrice;
