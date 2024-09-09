@@ -42,15 +42,16 @@ export function LeverageSlider(p: Props) {
     return { marksLabel, keyValueMap, valueKeyMap };
   }, [finalMarks]);
 
-  const sliderValue =
-    value === undefined ? valueKeyMap[finalMarks[0]] : valueKeyMap[value] ?? sliderValueToSliderKey(keyValueMap, value);
+  const firstValue = finalMarks[0];
+  const firstKey = valueKeyMap[firstValue];
+  const sliderKey = value === undefined ? firstKey : valueKeyMap[value] ?? sliderValueToSliderKey(keyValueMap, value);
 
   const max = (finalMarks.length - 1) * 10;
 
   const handleChange = useCallback(
-    (value: number) => {
-      const truncatedValue = Math.trunc(value ?? DEFAULT_LEVERAGE_KEY);
-      onChange(keyValueMap[truncatedValue] ?? DEFAULT_LEVERAGE_KEY);
+    (newKey: number) => {
+      const truncatedKey = Math.trunc(newKey ?? DEFAULT_LEVERAGE_KEY);
+      onChange(keyValueMap[truncatedKey] ?? keyValueMap[DEFAULT_LEVERAGE_KEY]);
     },
     [onChange, keyValueMap]
   );
@@ -74,7 +75,7 @@ export function LeverageSlider(p: Props) {
         marks={marksLabel}
         handle={customHandle}
         onChange={handleChange}
-        value={sliderValue}
+        value={sliderKey}
       />
     </div>
   );
