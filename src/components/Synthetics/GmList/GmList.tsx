@@ -299,7 +299,7 @@ function useFilterSortPools({
     }
 
     return sortedTokens.filter((token) => {
-      const market = getByKey(marketsInfo, token?.address)!;
+      const market = getByKey(marketsInfo, token?.address);
       const indexToken = isGlv(market)
         ? market.indexToken
         : getTokenData(tokensData, market?.indexTokenAddress, "native");
