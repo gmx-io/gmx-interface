@@ -102,7 +102,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
 
     if (table.type === "glv") {
       return table.data.map(({ comp, pool, tvl }, index) => {
-        if (comp === undefined || comp === undefined || !pool) {
+        if (comp === undefined || comp === undefined || !pool?.indexToken) {
           return null;
         }
 
