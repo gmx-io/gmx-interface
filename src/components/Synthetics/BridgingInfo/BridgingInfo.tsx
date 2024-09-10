@@ -8,10 +8,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 type Props = {
   chainId: number;
   tokenSymbol?: string;
+  textOpaque?: boolean;
 };
 
 export function BridgingInfo(props: Props) {
-  const { chainId, tokenSymbol } = props;
+  const { chainId, tokenSymbol, textOpaque } = props;
   const chainName = getChainName(chainId);
   const bridgingOptions = getBridgingOptionsForToken(tokenSymbol);
 
@@ -20,7 +21,7 @@ export function BridgingInfo(props: Props) {
   return bridgingOptions.map((option, i) => {
     if (option.render) {
       return (
-        <p key={i} className="text-gray-300">
+        <p key={i} className={textOpaque ? undefined : "text-gray-300"}>
           {option.render()}
         </p>
       );
@@ -32,7 +33,7 @@ export function BridgingInfo(props: Props) {
 
     const bridgeLink = option.generateLink(chainId);
     return (
-      <p key={i} className="text-gray-300">
+      <p key={i} className={textOpaque ? undefined : "text-gray-300"}>
         <Trans>
           Bridge {tokenSymbol} to {chainName} with
         </Trans>{" "}

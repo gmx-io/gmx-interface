@@ -1,6 +1,13 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
-import { MarketEdge, SwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "domain/synthetics/trade";
+import {
+  MarketEdge,
+  SwapEstimator,
+  findAllPaths,
+  findAllReachableTokens,
+  getBestSwapPath,
+  getMarketsGraph,
+} from "domain/synthetics/trade";
 import { describe, expect, it } from "vitest";
 
 const marketsKeys = [
@@ -13,9 +20,55 @@ const marketsKeys = [
   "SPOT-DAI-USDC",
   // same collaterals, should be disabled for swaps
   "ETH-USDC-USDC",
+  // Unreachable market
+  "TBTC-TBTC-TBTC",
+  // Partially unreachable markets
+  "TEST_B-TEST_B-TEST_A",
+  "TEST_C-TEST_C-TEST_A",
 ];
 
-const tokensData = mockTokensData();
+const tokensData = mockTokensData({
+  TBTC: {
+    address: "TBTC",
+    decimals: 18,
+    name: "tBTC",
+    symbol: "TBTC",
+    prices: {
+      minPrice: BigInt(1),
+      maxPrice: BigInt(1),
+    },
+  },
+  TEST_A: {
+    address: "TEST_A",
+    decimals: 18,
+    name: "Test A",
+    symbol: "TEST_A",
+    prices: {
+      minPrice: BigInt(1),
+      maxPrice: BigInt(1),
+    },
+  },
+  TEST_B: {
+    address: "TEST_B",
+    decimals: 18,
+    name: "Test B",
+    symbol: "TEST_B",
+    prices: {
+      minPrice: BigInt(1),
+      maxPrice: BigInt(1),
+    },
+  },
+  TEST_C: {
+    address: "TEST_C",
+    decimals: 18,
+    name: "Test C",
+    symbol: "TEST_C",
+    prices: {
+      minPrice: BigInt(1),
+      maxPrice: BigInt(1),
+    },
+  },
+});
 const marketsInfoData = mockMarketsInfoData(tokensData, marketsKeys);
 
 const graph = getMarketsGraph(Object.values(marketsInfoData) as MarketInfo[]);
@@ -187,5 +240,31 @@ describe("swapPath", () => {
         expect(allPathsResult).toEqual(expectedPaths);
       });
     }
+  });
+});
+
+describe("findAllReachableTokens", () => {
+  it("should work for common token ETH", () => {
+    const fromTokenAddress = "ETH";
+
+    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
+
+    expect(reachableTokens).toStrictEqual(["ETH", "USDC", "AVAX", "DAI", "BTC"]);
+  });
+
+  it("should work for unreachable token TBTC", () => {
+    const fromTokenAddress = "TBTC";
+
+    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
+
+    expect(reachableTokens).toStrictEqual(["TBTC"]);
+  });
+
+  it("should work for partially reachable token TEST_B", () => {
+    const fromTokenAddress = "TEST_B";
+
+    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
+
+    expect(reachableTokens).toStrictEqual(["TEST_B", "TEST_A", "TEST_C"]);
   });
 });

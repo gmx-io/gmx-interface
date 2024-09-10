@@ -5,23 +5,13 @@ import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 import { useKey, useLatest, usePrevious } from "react-use";
 
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
-import { MarketSelector } from "components/MarketSelector/MarketSelector";
-import Tab from "components/Tab/Tab";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tooltip from "components/Tooltip/Tooltip";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { getBridgingOptionsForToken } from "config/bridging";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { get1InchSwapUrlFromAddresses } from "config/links";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
   useMarketsInfoData,
   usePositionsConstants,
@@ -31,6 +21,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -85,7 +76,8 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { Token, getMinResidualAmount } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
-import { USD_DECIMALS } from "config/factors";
+import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import {
   formatAmount,
   formatAmountFree,
@@ -97,7 +89,9 @@ import {
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { sleep } from "lib/sleep";
 import { mustNeverExist } from "lib/types";
+import { useCursorInside } from "lib/useCursorInside";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
@@ -109,20 +103,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { helperToast } from "lib/helperToast";
-import { useLocalizedMap } from "lib/i18n";
-import { useCursorInside } from "lib/useCursorInside";
-
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
-import SwapIcon from "img/swap.svg?react";
-import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
-import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
-import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
-import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
-import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
-
 import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
@@ -132,11 +112,33 @@ import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import { MarketSelector } from "components/MarketSelector/MarketSelector";
+import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
+import Tab from "components/Tab/Tab";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
+import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
+import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
+import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
+import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
+
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
+import SwapIcon from "img/swap.svg?react";
 
 import "./TradeBox.scss";
-import { sleep } from "lib/sleep";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -516,6 +518,34 @@ export function TradeBox(p: Props) {
         case "liqPrice > markPrice":
           tooltipContent = (
             <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
+          );
+          break;
+
+        case "noSwapPath":
+          tooltipContent = (
+            <>
+              <Trans>
+                {collateralToken?.assetSymbol ?? collateralToken?.symbol} is required for collateral.
+                <br />
+                <br />
+                There is no swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
+                {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
+                <br />
+                <br />
+                <ExternalLink
+                  href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}
+                >
+                  You can buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch.
+                </ExternalLink>
+              </Trans>
+              {getBridgingOptionsForToken(collateralToken?.symbol) && (
+                <>
+                  <br />
+                  <br />
+                  <BridgingInfo chainId={chainId} tokenSymbol={collateralToken?.symbol} textOpaque />
+                </>
+              )}
+            </>
           );
           break;
 
@@ -1222,7 +1252,7 @@ export function TradeBox(p: Props) {
     <Button
       qa="confirm-trade-button"
       variant="primary-action"
-      className="mt-4 w-full"
+      className="mt-4 w-full [text-decoration:inherit]"
       onClick={onSubmit}
       disabled={submitButtonState.disabled && !shouldDisableValidationForTesting}
     >
