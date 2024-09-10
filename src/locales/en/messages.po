@@ -2471,10 +2471,6 @@ msgstr "Funding Fee Rate"
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 
-#: src/config/bridging.tsx
-msgid "Mint tBTC using BTC with <0>Threshold</0>"
-msgstr "Mint tBTC using BTC with <0>Threshold</0>"
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -7073,6 +7069,10 @@ msgstr "Open {0} {longOrShortText}"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Give us your feedback on GMX."
 msgstr "Give us your feedback on GMX."
+
+#: src/config/bridging.tsx
+msgid "Mint TBTC using BTC with <0>Threshold</0>"
+msgstr "Mint TBTC using BTC with <0>Threshold</0>"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"

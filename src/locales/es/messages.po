@@ -2471,10 +2471,6 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
-#: src/config/bridging.tsx
-msgid "Mint tBTC using BTC with <0>Threshold</0>"
-msgstr ""
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "Tienes que seleccionar {swapTokenSymbol} como el token de \"Pagar\" para usar como garantía para iniciar esta operación."
@@ -7066,6 +7062,10 @@ msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Give us your feedback on GMX."
+msgstr ""
+
+#: src/config/bridging.tsx
+msgid "Mint TBTC using BTC with <0>Threshold</0>"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
