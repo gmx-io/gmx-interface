@@ -47,6 +47,11 @@ export const GLV_MARKETS_APPEARANCE: {
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
     },
+    "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96": {
+      name: undefined,
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+    },
   },
   [ARBITRUM_GOERLI]: {},
   [AVALANCHE]: {},
