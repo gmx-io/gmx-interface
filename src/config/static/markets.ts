@@ -1,4 +1,4 @@
-/* 
+/*
   This files is used to pre-build data during the build process.
   Avoid adding client-side code here, as it can break the build process.
 
@@ -293,6 +293,15 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       indexTokenAddress: "0x1E15d08f3CA46853B692EE28AE9C7a0b88a9c994",
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // BTC/USD [TBTC]
+    "0xd62068697bCc92AF253225676D618B0C9f17C663": {
+      enabled: true,
+      listingDate: p("11 Sep 2024"),
+      marketTokenAddress: "0xd62068697bCc92AF253225676D618B0C9f17C663",
+      indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      longTokenAddress: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
+      shortTokenAddress: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
     },
   },
   [AVALANCHE]: {

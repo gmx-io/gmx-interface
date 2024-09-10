@@ -17,19 +17,29 @@ export function BridgingInfo(props: Props) {
 
   if (!tokenSymbol || !bridgingOptions) return null;
 
-  return (
-    <p className="opacity-70">
-      <Trans>
-        Bridge {tokenSymbol} to {chainName} with
-      </Trans>{" "}
-      {bridgingOptions.map((option, i) => {
-        const bridgeLink = option.generateLink(chainId);
-        return (
-          <ExternalLink key={i} href={bridgeLink}>
-            {option?.name}
-          </ExternalLink>
-        );
-      })}
-    </p>
-  );
+  return bridgingOptions.map((option, i) => {
+    if (option.render) {
+      return (
+        <p key={i} className="text-gray-300">
+          {option.render()}
+        </p>
+      );
+    }
+
+    if (!option.generateLink) {
+      return null;
+    }
+
+    const bridgeLink = option.generateLink(chainId);
+    return (
+      <p key={i} className="text-gray-300">
+        <Trans>
+          Bridge {tokenSymbol} to {chainName} with
+        </Trans>{" "}
+        <ExternalLink key={i} href={bridgeLink}>
+          {option?.name}
+        </ExternalLink>
+      </p>
+    );
+  });
 }
