@@ -36,7 +36,7 @@ export const appEventsData: EventData[] = [
     id: "tbtc-market-arbitrum",
     title: "BTC/USD [TBTC] market added on Arbitrum",
     isActive: true,
-    startDate: "11 Sep 2024, 00:00",
+    startDate: "10 Sep 2024, 00:00",
     endDate: "25 Sep 2024, 00:00",
     bodyText: (
       <>
