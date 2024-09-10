@@ -45,6 +45,8 @@ export function getWithdrawalAmounts(p: {
     longTokenUsd: 0n,
     shortTokenAmount: 0n,
     shortTokenUsd: 0n,
+    gmTokenAmount: 0n,
+    gmTokenUsd: 0n,
     swapFeeUsd: 0n,
     uiFeeUsd: 0n,
     swapPriceImpactDeltaUsd: 0n,

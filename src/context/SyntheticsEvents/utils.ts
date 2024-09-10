@@ -25,6 +25,8 @@ export function getPendingDepositKey(data: PendingDepositData) {
       data.shortTokenSwapPath.join("-"),
       data.shouldUnwrapNativeToken,
       data.initialLongTokenAmount.toString(),
+      data.initialShortTokenAmount.toString(),
+      (data.initialGmTokenAmount ?? 0n).toString(),
     ].join(":");
   }
 

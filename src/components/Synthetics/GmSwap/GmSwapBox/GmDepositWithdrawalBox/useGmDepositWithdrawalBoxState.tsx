@@ -17,11 +17,7 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  console.log("-----------> marketAddress", marketAddress);
   const [firstTokenAddress, setFirstTokenAddress] = useDepositWithdrawalSetFirstTokenAddress(isDeposit, marketAddress);
-
-  console.log("-----------> FIRST", firstTokenAddress);
-
   const [secondTokenAddress, setSecondTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "second"],
     undefined

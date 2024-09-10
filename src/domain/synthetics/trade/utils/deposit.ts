@@ -11,8 +11,10 @@ export function getDepositAmounts(p: {
   marketToken: TokenData;
   longToken: TokenData;
   shortToken: TokenData;
+  gmToken?: TokenData | undefined;
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
+  gmTokenAmount?: bigint;
   marketTokenAmount: bigint;
   strategy: "byCollaterals" | "byMarketToken";
   includeLongToken: boolean;
@@ -27,8 +29,10 @@ export function getDepositAmounts(p: {
     marketToken,
     longToken,
     shortToken,
+    gmToken,
     longTokenAmount,
     shortTokenAmount,
+    gmTokenAmount,
     marketTokenAmount,
     strategy,
     includeLongToken,
@@ -38,8 +42,9 @@ export function getDepositAmounts(p: {
     vaultInfo,
   } = p;
 
-  const longTokenPrice = getMidPrice(longToken.prices);
-  const shortTokenPrice = getMidPrice(shortToken.prices);
+  const longTokenPrice = longToken && getMidPrice(longToken.prices);
+  const shortTokenPrice = shortToken && getMidPrice(shortToken.prices);
+  const gmTokenPrice = gmToken && getMidPrice(gmToken.prices);
 
   const values: DepositAmounts = {
     longTokenAmount: 0n,
@@ -48,24 +53,29 @@ export function getDepositAmounts(p: {
     shortTokenUsd: 0n,
     marketTokenAmount: 0n,
     marketTokenUsd: 0n,
+    gmTokenAmount: 0n,
+    gmTokenUsd: 0n,
     swapFeeUsd: 0n,
     uiFeeUsd: 0n,
     swapPriceImpactDeltaUsd: 0n,
   };
 
   if (strategy === "byCollaterals") {
-    if (longTokenAmount == 0n && shortTokenAmount == 0n) {
+    if (longTokenAmount == 0n && shortTokenAmount == 0n && gmTokenAmount == 0n) {
       return values;
     }
 
     values.longTokenAmount = longTokenAmount;
     values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
 
+    values.shortTokenAmount = shortTokenAmount;
+    values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
+
     /**
      * If it's GM -> GLV deposit, then don't apply any fees or price impact, just convert GM to GLV
      */
-    if (isMarketTokenDeposit && vaultInfo) {
-      const gmTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
+    if (isMarketTokenDeposit && vaultInfo && gmToken) {
+      const gmTokenUsd = convertToUsd(gmTokenAmount, gmToken.decimals, gmTokenPrice)!;
       const glvTokenAmount =
         convertToTokenAmount(gmTokenUsd, vaultInfo.indexToken.decimals, vaultInfo.indexToken.prices.minPrice) ?? 0n;
       const glvTokenUsd =
@@ -74,11 +84,11 @@ export function getDepositAmounts(p: {
       values.marketTokenAmount = glvTokenAmount;
       values.marketTokenUsd = glvTokenUsd;
 
+      values.gmTokenAmount = gmTokenAmount ?? 0n;
+      values.gmTokenUsd = gmTokenUsd;
+
       return values;
     }
-
-    values.shortTokenAmount = shortTokenAmount;
-    values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
 
     values.swapPriceImpactDeltaUsd = getPriceImpactForSwap(
       marketInfo,
@@ -90,6 +100,8 @@ export function getDepositAmounts(p: {
 
     const totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
 
+    let gmMarketTokenAmount = 0n;
+
     if (values.longTokenUsd > 0) {
       const swapFeeUsd = p.forShift
         ? 0n
@@ -99,18 +111,16 @@ export function getDepositAmounts(p: {
       const uiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
       values.uiFeeUsd = values.uiFeeUsd + uiFeeUsd;
 
-      values.marketTokenAmount =
-        values.marketTokenAmount +
-        getMarketTokenAmountByCollateral({
-          marketInfo,
-          marketToken,
-          tokenIn: longToken,
-          tokenOut: shortToken,
-          amount: values.longTokenAmount,
-          priceImpactDeltaUsd: bigMath.mulDiv(values.swapPriceImpactDeltaUsd, values.longTokenUsd, totalDepositUsd),
-          swapFeeUsd,
-          uiFeeUsd,
-        });
+      gmMarketTokenAmount = getMarketTokenAmountByCollateral({
+        marketInfo,
+        marketToken,
+        tokenIn: longToken,
+        tokenOut: shortToken,
+        amount: values.longTokenAmount,
+        priceImpactDeltaUsd: bigMath.mulDiv(values.swapPriceImpactDeltaUsd, values.longTokenUsd, totalDepositUsd),
+        swapFeeUsd,
+        uiFeeUsd,
+      });
     }
 
     if (values.shortTokenUsd > 0) {
@@ -122,35 +132,32 @@ export function getDepositAmounts(p: {
       const uiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
       values.uiFeeUsd = values.uiFeeUsd + uiFeeUsd;
 
-      values.marketTokenAmount =
-        values.marketTokenAmount +
-        getMarketTokenAmountByCollateral({
-          marketInfo,
-          marketToken,
-          tokenIn: shortToken,
-          tokenOut: longToken,
-          amount: values.shortTokenAmount,
-          priceImpactDeltaUsd: bigMath.mulDiv(values.swapPriceImpactDeltaUsd, values.shortTokenUsd, totalDepositUsd),
-          swapFeeUsd,
-          uiFeeUsd,
-        });
+      gmMarketTokenAmount = getMarketTokenAmountByCollateral({
+        marketInfo,
+        marketToken,
+        tokenIn: shortToken,
+        tokenOut: longToken,
+        amount: values.shortTokenAmount,
+        priceImpactDeltaUsd: bigMath.mulDiv(values.swapPriceImpactDeltaUsd, values.shortTokenUsd, totalDepositUsd),
+        swapFeeUsd,
+        uiFeeUsd,
+      });
     }
 
-    values.marketTokenUsd = convertToUsd(values.marketTokenAmount, marketToken.decimals, marketToken.prices.minPrice)!;
+    const gmMarketUsd = convertToUsd(gmMarketTokenAmount, marketToken.decimals, marketToken.prices.minPrice)!;
 
     if (vaultInfo) {
-      const glvPrice = vaultInfo.indexToken.prices.maxPrice;
-      let marketTokenUsd: undefined | bigint = 0n;
+      const glvToken = vaultInfo.indexToken;
 
-      if (isMarketTokenDeposit) {
-        marketTokenUsd = convertToUsd(values.longTokenAmount, longToken?.decimals, longToken?.prices.minPrice);
-      } else {
-        marketTokenUsd = values.marketTokenUsd;
-      }
-      const glvAmount = convertToTokenAmount(marketTokenUsd, vaultInfo.indexToken.decimals, glvPrice);
-      if (glvAmount !== undefined && glvAmount > 0) {
-        values.marketTokenAmount = glvAmount;
-      }
+      values.marketTokenUsd = gmMarketUsd;
+      values.marketTokenAmount = convertToTokenAmount(
+        values.marketTokenUsd,
+        glvToken.decimals,
+        glvToken.prices.minPrice
+      )!;
+    } else {
+      values.marketTokenUsd = gmMarketUsd;
+      values.marketTokenAmount = gmMarketTokenAmount;
     }
   } else if (strategy === "byMarketToken") {
     if (marketTokenAmount == 0n) {
@@ -158,6 +165,7 @@ export function getDepositAmounts(p: {
     }
 
     values.marketTokenAmount = marketTokenAmount;
+
     if (vaultInfo) {
       const glvPrice = vaultInfo.indexToken.prices.minPrice;
       values.marketTokenUsd = convertToUsd(marketTokenAmount, vaultInfo.indexToken.decimals, glvPrice)!;

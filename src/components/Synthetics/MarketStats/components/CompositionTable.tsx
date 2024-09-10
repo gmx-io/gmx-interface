@@ -12,7 +12,7 @@ import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
-import { getMarketIndexName, getMarketPoolName } from "../../../../domain/synthetics/markets/utils";
+import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
 import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
 import { USD_DECIMALS } from "config/factors";
@@ -48,7 +48,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
 
   const [col1, col2, col3] = useMemo(() => {
     if (isGlvMarket) {
-      return [t`POOL`, t`TVL`, t`COMP.`];
+      return [t`MARKET`, t`TVL`, t`COMP.`];
     }
 
     return [t`COLLATERAL`, t`AMOUNT`, t`COMP.`];
@@ -116,10 +116,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                   style={{ backgroundColor: TOKEN_COLOR_MAP[market.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
                 />
                 <TokenIcon symbol={market.indexToken.symbol} displaySize={24} />
-                <span className="flex flex-col">
-                  <span>{getMarketIndexName(market)}</span>
-                  <span className="subtext !ml-0 text-12 opacity-70">[{getMarketPoolName(market)}]</span>
-                </span>
+                <span>{getMarketIndexName(market)}</span>
               </span>
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">

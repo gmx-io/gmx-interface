@@ -38,6 +38,7 @@ interface Props {
   operation: Operation;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
+  gmToken: TokenData | undefined;
 
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
@@ -45,6 +46,7 @@ interface Props {
   longTokenUsd: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   shortTokenUsd: bigint | undefined;
+  gmTokenAmount: bigint | undefined;
 
   fromMarketTokenAmount?: bigint;
   fromMarketToken?: TokenData;
@@ -85,6 +87,8 @@ export const useSubmitButtonState = ({
   longTokenAmount,
   shortToken,
   shortTokenAmount,
+  gmToken,
+  gmTokenAmount,
 
   marketTokenAmount,
   longTokenLiquidityUsd,
@@ -126,6 +130,8 @@ export const useSubmitButtonState = ({
     selectedGlvGmMarket,
     vaultInfo,
     isMarketTokenDeposit,
+    gmToken,
+    gmTokenAmount,
   });
 
   const onConnectAccount = useCallback(() => {

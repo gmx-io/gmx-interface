@@ -25,7 +25,6 @@ import {
   getMintableMarketTokens,
   getTotalGmInfo,
   useMarketTokensData,
-  getGlvMarketShortening,
   getGlvMarketDisplayName,
   getMarketBadge,
 } from "domain/synthetics/markets";

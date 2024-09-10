@@ -259,7 +259,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const depositData: DepositCreatedEventData = {
-        account: "sosi" ?? eventData.addressItems.items.account,
+        account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
         marketAddress: eventData.addressItems.items.glv,
@@ -267,11 +267,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
         longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
         shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount:
-          eventData.uintItems.items.marketTokenAmount === 0n
-            ? eventData.uintItems.items.initialLongTokenAmount
-            : eventData.uintItems.items.marketTokenAmount,
+        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
         initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
+        initialGmTokenAmount: eventData.uintItems.items.marketTokenAmount,
         minMarketTokens: eventData.uintItems.items.minGlvTokens,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
         executionFee: eventData.uintItems.items.executionFee,
@@ -301,7 +299,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const depositData: DepositCreatedEventData = {
-        account: "sosi" ?? eventData.addressItems.items.account,
+        account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
         marketAddress: eventData.addressItems.items.market,

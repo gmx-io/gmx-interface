@@ -126,6 +126,8 @@ export type DepositAmounts = {
   marketTokenUsd: bigint;
   longTokenAmount: bigint;
   longTokenUsd: bigint;
+  gmTokenAmount: bigint;
+  gmTokenUsd: bigint;
   shortTokenAmount: bigint;
   shortTokenUsd: bigint;
   swapFeeUsd: bigint;
@@ -140,6 +142,8 @@ export type WithdrawalAmounts = {
   shortTokenAmount: bigint;
   longTokenUsd: bigint;
   shortTokenUsd: bigint;
+  gmTokenAmount: bigint;
+  gmTokenUsd: bigint;
   swapFeeUsd: bigint;
   uiFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;

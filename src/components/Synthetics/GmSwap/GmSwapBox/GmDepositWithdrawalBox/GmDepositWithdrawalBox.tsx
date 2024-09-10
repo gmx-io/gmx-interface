@@ -161,7 +161,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     // Undefined when isSameCollaterals is true, or when paying with GM
     shortTokenInputState,
     // undefined when not paying with GM
-    marketTokenInputState,
+    gmTokenInputState,
   } = useMemo(() => {
     if (!marketInfo) {
       return {};
@@ -201,14 +201,18 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       });
     }
 
-    const longTokenInputState = inputs.find((input) => {
-      return input.token?.symbol === "GM" || getTokenPoolType(marketInfo, input.address) === "long";
-    });
-    const shortTokenInputState = inputs.find((input) => getTokenPoolType(marketInfo, input.address) === "short");
+    const longTokenInputState = inputs.find(
+      (input) => input.isGm === false && getTokenPoolType(marketInfo, input.address) === "long"
+    );
+    const shortTokenInputState = inputs.find(
+      (input) => input.isGm === false && getTokenPoolType(marketInfo, input.address) === "short"
+    );
+    const gmTokenInputState = inputs.find((input) => input.isGm);
 
     return {
       longTokenInputState,
       shortTokenInputState,
+      gmTokenInputState,
     };
   }, [
     firstToken,
@@ -293,28 +297,27 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   }, [bestGmPoolAddress, onSelectGlvGmMarket, selectedGlvGmMarket]);
 
   /**
-   * Here and following we use `underlyingGmMarket` to get the correct market info for GLV markets
+   * Here and following we use `targetGmMarket` to get the correct market info for GLV markets
    * because we need to use actual GM market data to calculate fees, errors and so on,
    * but here marketInfo may be a Vault market
    */
-  const { underlyingGmMarket, underlyingGmMarketToken, marketTokenAmount, marketToken } = useMemo(() => {
-    const realGmMarket = isGlvMarket
+  const { targetGmMarket, targetGmMarketToken, marketTokenAmount, marketToken } = useMemo(() => {
+    const targetGmMarket = isGlvMarket
       ? selectedGlvGmMarket
         ? marketsInfoData[selectedGlvGmMarket]
         : marketsInfoData[(marketInfo as GlvMarketInfo).markets[0].address]
       : marketInfo;
 
-    const marketToken = getTokenData(
+    const targetGmMarketToken = getTokenData(
       isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
-      realGmMarket?.marketTokenAddress
+      targetGmMarket?.marketTokenAddress
     );
-    const marketTokenAmount = parseValue(marketTokenInputValue || "0", marketToken?.decimals || 0)!;
-
-    const usedMarketToken = isGlvMarket ? marketInfo?.indexToken : marketToken;
+    const marketTokenAmount = parseValue(marketTokenInputValue || "0", targetGmMarketToken?.decimals || 0)!;
+    const usedMarketToken = isGlvMarket ? marketInfo?.indexToken : targetGmMarketToken;
 
     return {
-      underlyingGmMarket: realGmMarket,
-      underlyingGmMarketToken: marketToken,
+      targetGmMarket: targetGmMarket,
+      targetGmMarketToken: targetGmMarketToken,
       marketToken: usedMarketToken,
       marketTokenAmount,
     };
@@ -329,46 +332,51 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     selectedGlvGmMarket,
   ]);
 
-  const marketTokenUsd = isGlvMarket
-    ? convertToUsd(
-        marketTokenAmount,
-        marketInfo.indexToken?.decimals,
-        isDeposit ? marketInfo?.indexToken.prices.maxPrice : marketInfo?.indexToken.prices.minPrice
-      )!
-    : convertToUsd(
-        marketTokenAmount,
-        underlyingGmMarketToken?.decimals,
-        isDeposit ? underlyingGmMarketToken?.prices?.maxPrice : underlyingGmMarketToken?.prices?.minPrice
-      )!;
+  const vaultInfo = isGlvMarket ? marketInfo : undefined;
+
+  const marketTokenUsd =
+    isGlvMarket && vaultInfo
+      ? convertToUsd(
+          marketTokenAmount,
+          vaultInfo.indexToken?.decimals,
+          isDeposit ? vaultInfo?.indexToken.prices.maxPrice : vaultInfo?.indexToken.prices.minPrice
+        )!
+      : convertToUsd(
+          marketTokenAmount,
+          targetGmMarketToken?.decimals,
+          isDeposit ? targetGmMarketToken?.prices?.maxPrice : targetGmMarketToken?.prices?.minPrice
+        )!;
 
   const { longCollateralLiquidityUsd, shortCollateralLiquidityUsd } = useMemo(() => {
-    if (!underlyingGmMarket) {
+    if (!targetGmMarket) {
       return {};
     }
 
     return {
-      longCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(underlyingGmMarket, true),
-      shortCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(underlyingGmMarket, false),
+      longCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(targetGmMarket, true),
+      shortCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(targetGmMarket, false),
     };
-  }, [underlyingGmMarket]);
+  }, [targetGmMarket]);
 
-  const isMarketTokenDeposit = Boolean(longTokenInputState?.isGm);
+  const isMarketTokenDeposit = Boolean(gmTokenInputState);
+
   const amounts = useDepositWithdrawalAmounts({
     isDeposit,
-    marketInfo: underlyingGmMarket,
-    vaultInfo: isGlvMarket ? marketInfo : undefined,
-    marketToken: underlyingGmMarketToken,
+    marketInfo,
+    marketToken,
     longTokenInputState,
     shortTokenInputState,
+    gmTokenInputState,
     marketTokenAmount,
     uiFeeFactor,
     focusedInput,
     isWithdrawal,
     marketTokensData,
     isMarketTokenDeposit,
+    vaultInfo,
+    targetGmMarket,
+    targetGmMarketToken,
   });
-
-  const vaultInfo = isGlvMarket ? marketInfo : undefined;
 
   const { fees, executionFee } = useDepositWithdrawalFees({
     amounts,
@@ -378,7 +386,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isDeposit,
     tokensData,
     isGlv: isGlvMarket,
-    glvMarket: marketInfo as GlvMarketInfo,
+    glvMarket: vaultInfo,
     isMarketTokenDeposit,
   });
 
@@ -398,7 +406,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isDeposit,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
-    marketInfo: underlyingGmMarket,
+    marketInfo: targetGmMarket,
     vaultInfo: isGlvMarket ? vaultInfo : undefined,
     marketToken: marketToken!,
     operation,
@@ -406,12 +414,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     tokensData,
     longToken: longTokenInputState?.token,
     shortToken: shortTokenInputState?.token,
+    gmToken: gmTokenInputState?.token,
     marketTokenAmount,
     marketTokenUsd: amounts?.marketTokenUsd,
     longTokenAmount: amounts?.longTokenAmount,
     shortTokenAmount: amounts?.shortTokenAmount,
     longTokenUsd: amounts?.longTokenUsd,
     shortTokenUsd: amounts?.shortTokenUsd,
+    gmTokenAmount: amounts?.gmTokenAmount,
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
     marketTokensData,
@@ -643,8 +653,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   // #region Effects
   useUpdateInputAmounts({
-    marketToken: underlyingGmMarketToken,
+    marketToken: targetGmMarketToken,
     marketInfo,
+    gmTokenInputState,
     longTokenInputState,
     shortTokenInputState,
     isDeposit,
@@ -667,12 +678,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
 
   useEffect(() => {
-    const isGmAsLongSelected = longTokenInputState?.isGm;
-
-    if (isGmAsLongSelected) {
-      onSelectGlvGmMarket?.(longTokenInputState?.address);
+    if (gmTokenInputState) {
+      onSelectGlvGmMarket?.(gmTokenInputState.address);
     }
-  }, [longTokenInputState, onSelectGlvGmMarket]);
+  }, [onSelectGlvGmMarket, gmTokenInputState]);
 
   useUpdateByQueryParams({
     operation,
@@ -840,7 +849,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           marketInfo={marketInfo}
           executionFee={executionFee}
           isHighPriceImpact={isHighPriceImpact}
-          disablePoolSelector={longTokenInputState?.isGm}
+          disablePoolSelector={gmTokenInputState !== undefined}
           selectedGlvGmMarket={selectedGlvGmMarket}
           isHighPriceImpactAccepted={isHighPriceImpactAccepted}
           setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}

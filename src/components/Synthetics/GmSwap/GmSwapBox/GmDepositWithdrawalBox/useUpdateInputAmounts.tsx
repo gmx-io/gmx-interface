@@ -4,12 +4,14 @@ import { MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData } from "domain/synthetics/tokens";
 import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
+import { TokenInputState } from "./types";
 
 export function useUpdateInputAmounts({
   marketToken,
   marketInfo,
   longTokenInputState,
   shortTokenInputState,
+  gmTokenInputState,
   isDeposit,
   focusedInput,
   amounts,
@@ -21,27 +23,9 @@ export function useUpdateInputAmounts({
 }: {
   marketToken: TokenData | undefined;
   marketInfo: MarketInfo | undefined;
-  longTokenInputState:
-    | {
-        address: string;
-        value: string;
-        amount?: bigint | undefined;
-        usd?: bigint | undefined;
-        token?: TokenData | undefined;
-        setValue: (val: string) => void;
-        isGm?: boolean;
-      }
-    | undefined;
-  shortTokenInputState:
-    | {
-        address: string;
-        value: string;
-        amount?: bigint | undefined;
-        usd?: bigint | undefined;
-        token?: TokenData | undefined;
-        setValue: (val: string) => void;
-      }
-    | undefined;
+  longTokenInputState: TokenInputState | undefined;
+  shortTokenInputState: TokenInputState | undefined;
+  gmTokenInputState: TokenInputState | undefined;
   isDeposit: boolean;
   focusedInput: string;
   amounts: DepositAmounts | WithdrawalAmounts | undefined;
@@ -62,7 +46,11 @@ export function useUpdateInputAmounts({
 
       if (isDeposit) {
         if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
-          if ((amounts?.longTokenUsd ?? 0) <= 0 && (amounts?.shortTokenUsd ?? 0) <= 0) {
+          if (
+            (amounts?.longTokenUsd ?? 0) <= 0 &&
+            (amounts?.shortTokenUsd ?? 0) <= 0 &&
+            (amounts?.gmTokenUsd ?? 0) <= 0
+          ) {
             setMarketTokenInputValue("");
             return;
           }
@@ -178,6 +166,7 @@ export function useUpdateInputAmounts({
       setMarketTokenInputValue,
       setSecondTokenInputValue,
       shortTokenInputState,
+      gmTokenInputState,
     ]
   );
 }

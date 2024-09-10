@@ -133,7 +133,9 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
 }
 
 interface CreateGlvDepositParams extends CreateDepositParams {
-  market: string;
+  initialGmTokenAddress: string | undefined;
+  gmTokenAmount: bigint | undefined;
+  glvMarket: string;
   isMarketTokenDeposit: boolean;
 }
 
@@ -166,7 +168,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
   const minGlvTokens = applySlippageToMinOut(p.allowedSlippage, p.minMarketTokens);
-
+  debugger; // eslint-disable-line
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
     !isNativeLongDeposit && p.longTokenAmount > 0 && !p.isMarketTokenDeposit
@@ -179,7 +181,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     p.isMarketTokenDeposit
       ? {
           method: "sendTokens",
-          params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount],
+          params: [p.initialGmTokenAddress, depositVaultAddress, p.gmTokenAmount],
         }
       : undefined,
     {
@@ -187,7 +189,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       params: [
         {
           glv: p.marketTokenAddress,
-          market: p.market,
+          market: p.glvMarket,
           receiver: p.account,
           callbackContract: ethers.ZeroAddress,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
@@ -239,8 +241,9 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       shouldUnwrapNativeToken,
       initialLongTokenAmount: p.longTokenAmount,
       initialShortTokenAmount: p.shortTokenAmount,
+      initialGmTokenAmount: p.gmTokenAmount,
       isGlvDeposit: true,
-      gmAddress: p.isMarketTokenDeposit ? p.initialLongTokenAddress : undefined,
+      gmAddress: p.initialGmTokenAddress,
     });
   });
 }

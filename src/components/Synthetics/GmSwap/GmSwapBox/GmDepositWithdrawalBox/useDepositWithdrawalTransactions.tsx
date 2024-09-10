@@ -26,10 +26,12 @@ interface Props {
   operation: Operation;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
+  gmToken: TokenData | undefined;
 
   marketTokenAmount: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
+  gmTokenAmount: bigint | undefined;
 
   shouldDisableValidation?: boolean;
 
@@ -47,6 +49,8 @@ export const useDepositWithdrawalTransactions = ({
   longTokenAmount,
   shortToken,
   shortTokenAmount,
+  gmToken,
+  gmTokenAmount,
 
   marketTokenAmount,
   shouldDisableValidation,
@@ -80,18 +84,22 @@ export const useDepositWithdrawalTransactions = ({
         ? initialLongTokenAddress
         : shortToken?.address || marketInfo.shortTokenAddress;
 
+      const initialGmTokenAddress = gmToken?.address;
+
       if (vaultInfo && selectedGlvGmMarket) {
         return createGlvDepositTxn(chainId, signer, {
           account,
           initialLongTokenAddress,
           initialShortTokenAddress,
+          initialGmTokenAddress,
           minMarketTokens: marketTokenAmount,
           marketTokenAddress: vaultInfo.indexTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
           longTokenAmount: longTokenAmount ?? 0n,
           shortTokenAmount: shortTokenAmount ?? 0n,
-          market: selectedGlvGmMarket,
+          gmTokenAmount: gmTokenAmount ?? 0n,
+          glvMarket: selectedGlvGmMarket,
           allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           executionFee: executionFee.feeTokenAmount,
           skipSimulation: shouldDisableValidation,
@@ -139,6 +147,8 @@ export const useDepositWithdrawalTransactions = ({
       selectedGlvGmMarket,
       vaultInfo,
       isMarketTokenDeposit,
+      gmToken,
+      gmTokenAmount,
     ]
   );
 

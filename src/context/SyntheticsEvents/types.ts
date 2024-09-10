@@ -90,6 +90,7 @@ export type DepositCreatedEventData = {
   isGlvDeposit: boolean;
   marketTokenAmount?: bigint;
   isMarketDeposit?: boolean;
+  initialGmTokenAmount?: bigint;
 };
 
 export type PendingDepositData = {
@@ -104,9 +105,12 @@ export type PendingDepositData = {
   minMarketTokens: bigint;
   shouldUnwrapNativeToken: boolean;
   isGlvDeposit: boolean;
+
+  /** For GM deposits in GLV */
   gmAddress?: string;
   isMarketDeposit?: boolean;
   marketTokenAmount?: bigint;
+  initialGmTokenAmount?: bigint;
 };
 
 export type WithdrawalCreatedEventData = {

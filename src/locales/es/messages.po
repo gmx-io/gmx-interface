@@ -623,7 +623,6 @@ msgstr "Buscar Token"
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
 msgid "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
@@ -658,6 +657,7 @@ msgstr ""
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "MARKET"
 msgstr "MERCADO"
@@ -2573,8 +2573,8 @@ msgid "Increase Size (Limit)"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
-msgstr ""
+#~ msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
@@ -2734,6 +2734,10 @@ msgstr "Actualizar orden"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
 msgstr "Precio de referencia para la liquidación."
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3056,6 +3060,10 @@ msgstr "Precio Aceptable de la Orden"
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Capacity for {0} Reached"
 msgstr "Capacidad Máxima para {0} Alcanzada"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
+msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.jsx
@@ -4256,7 +4264,6 @@ msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "POOL"
 msgstr "RESERVA"
@@ -4388,6 +4395,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake GMX"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.jsx
@@ -4600,6 +4611,7 @@ msgstr ""
 msgid "Sell order executed"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
@@ -5031,6 +5043,7 @@ msgstr "Garantía mínima requerida"
 msgid "Search Pool"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
@@ -6772,8 +6785,8 @@ msgid "Pool"
 msgstr "Reserva"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
-msgstr ""
+#~ msgid "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
+#~ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
@@ -7000,6 +7013,7 @@ msgstr "Prueba a incrementar el \"Deslizamiento Permitido\", debajo del menú de
 msgid "GMX ecosystem pages."
 msgstr "Páginas del ecosistema GMX."
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
@@ -7760,6 +7774,10 @@ msgstr ""
 msgid "Compound"
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
+msgid "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Sell for {0}"
@@ -7853,8 +7871,8 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
-msgstr ""
+#~ msgid "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
