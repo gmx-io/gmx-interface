@@ -97,7 +97,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     return null;
   }, [isMarket, isLimit, isTrigger, triggerOrderType, isLong]);
 
-  const acceptablePriceFormated = formatAcceptablePrice(acceptablePrice, {
+  const acceptablePriceFormatted = formatAcceptablePrice(acceptablePrice, {
     displayDecimals,
   });
 
@@ -163,14 +163,14 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                   showDollar={false}
                 />
               )}
-              {acceptablePriceFormated !== undefined && (
+              {acceptablePriceFormatted !== undefined && (
                 <StatsTooltipRow
                   labelClassName="text-white"
                   label={t`Order Acceptable Price`}
                   value={
                     <>
-                      {acceptablePriceFormated !== "NA" && <>{triggerThresholdType} </>}
-                      {acceptablePriceFormated}
+                      {acceptablePriceFormatted !== "NA" && <>{triggerThresholdType} </>}
+                      {acceptablePriceFormatted}
                     </>
                   }
                   showDollar={false}
@@ -189,10 +189,10 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                   <br />
                 </>
               )}
-              {acceptablePriceFormated !== undefined && (
+              {acceptablePriceClarification && (
                 <>
                   <br />
-                  {acceptablePriceClarification && <>{acceptablePriceClarification} </>}
+                  {acceptablePriceClarification}
                   <br />
                 </>
               )}

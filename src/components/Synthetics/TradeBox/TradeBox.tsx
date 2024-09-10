@@ -1158,16 +1158,17 @@ export function TradeBox(p: Props) {
   }
 
   function renderTriggerOrderInfo() {
+    let formattedTriggerPrice = "-";
+
+    if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
+      formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
+        displayDecimals: marketDecimals,
+      })}`;
+    }
+
     return (
       <>
-        <ExchangeInfoRow
-          label={t`Trigger Price`}
-          value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-            formatUsd(decreaseAmounts?.triggerPrice, {
-              displayDecimals: marketDecimals,
-            }) || "-"
-          }`}
-        />
+        <ExchangeInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />
 
         <ExecutionPriceRow
           tradeFlags={tradeFlags}
