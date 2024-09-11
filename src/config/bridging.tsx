@@ -1,7 +1,12 @@
+import { Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 type BridgingOption = {
   name: string;
-  generateLink: (chainId: number) => string;
+  render?: () => JSX.Element;
+  generateLink?: (chainId: number) => string;
 };
+
 const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   SOL: [
     {
@@ -56,6 +61,21 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
     {
       name: "Arbitrum",
       generateLink: () => "https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum",
+    },
+  ],
+  TBTC: [
+    {
+      name: "Portalbridge",
+      generateLink: () => "https://portalbridge.com/",
+    },
+    {
+      name: "Threshold",
+      render: () => (
+        <Trans>
+          Mint TBTC using BTC with{" "}
+          <ExternalLink href="https://arbitrum.threshold.network/minting">Threshold</ExternalLink>
+        </Trans>
+      ),
     },
   ],
 };

@@ -33,15 +33,33 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "glv-market-arbitrum",
-    title: "GMX Liquidity Vaults (GLV) are Live",
+    id: "tbtc-market-arbitrum",
+    title: "BTC/USD [TBTC] market added on Arbitrum",
     isActive: true,
-    startDate: "03 Sep 2024, 00:00",
-    endDate: "18 Sep 2024, 00:00",
+    startDate: "10 Sep 2024, 00:00",
+    endDate: "25 Sep 2024, 00:00",
     bodyText: (
       <>
-        <Link to="/pools/?market=0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9&operation=buy&scroll=1">Buy</Link> the first
-        automatically rebalanced vault combining multiple GM tokens with ETH, USDC, or eligible GM tokens on Arbitrum.
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="BTC" />
+        /USD, or{" "}
+        <Link to="/pools/?market=0xd62068697bCc92AF253225676D618B0C9f17C663&operation=buy&scroll=1">
+          provide liquidity
+        </Link>{" "}
+        to this pool by using <TokenSymbolWithIcon symbol="TBTC" />.
+      </>
+    ),
+  },
+  {
+    id: "btc-glv-market",
+    title: "GLV [BTC-USDC] is live",
+    isActive: true,
+    startDate: "10 Sep 2024, 00:00",
+    endDate: "24 Sep 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/pools/?market=0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96&operation=buy&scroll=1">Buy</Link> the
+        second automatically rebalanced vault combining multiple GM tokens with BTC, USDC, or eligible GM tokens on
+        Arbitrum.
       </>
     ),
     link: {

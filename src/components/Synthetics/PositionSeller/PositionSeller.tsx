@@ -12,6 +12,7 @@ import Modal from "components/Modal/Modal";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { USD_DECIMALS } from "config/factors";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -32,15 +33,14 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "config/factors";
 import { formatAmount, formatAmountFree, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
+  selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
   selectPositionSellerExecutionPrice,
   selectPositionSellerFees,
@@ -67,14 +67,15 @@ import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows"
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { helperToast } from "lib/helperToast";
 import {
+  initDecreaseOrderMetricData,
   makeTxnErrorMetricsHandler,
   makeTxnSentMetricsHandler,
-  initDecreaseOrderMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -94,6 +95,7 @@ export function PositionSeller(p: Props) {
     setClosingPositionKey(undefined);
   }, [setClosingPositionKey]);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
@@ -508,7 +510,7 @@ export function PositionSeller(p: Props) {
             infoTokens={availableTokensOptions?.infoTokens}
             tokenAddress={receiveToken.address}
             onSelectToken={setReceiveTokenManually}
-            tokens={availableTokensOptions?.swapTokens || EMPTY_ARRAY}
+            tokens={availableReceiveTokens}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
               <span className="PositionSelector-selected-receive-token">

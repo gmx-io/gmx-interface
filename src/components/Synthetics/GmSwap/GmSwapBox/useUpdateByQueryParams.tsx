@@ -119,6 +119,10 @@ export function useUpdateByQueryParams({
               setFirstTokenAddress(pool);
               onSelectGlvGmMarket?.(pool);
             }
+
+            if (!pool && isGlvMarket) {
+              onSelectGlvGmMarket?.(undefined);
+            }
           }
         }
 
