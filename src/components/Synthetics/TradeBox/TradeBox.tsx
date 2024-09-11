@@ -1,7 +1,7 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -885,6 +885,24 @@ export function TradeBox(p: Props) {
     }
   }, [leverageInputValue, leverageOption, leverageSliderMarks, setLeverageInputValue, setLeverageOption]);
 
+  const handleLeverageInputKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+
+        const isAlt = e.altKey;
+        const direction = e.key === "ArrowUp" ? 1 : -1;
+        const increment = isAlt ? 0.1 : 1;
+        const diff = direction * increment;
+        const newValue = Math.round(((leverageOption ?? leverageSliderMarks[0]) + diff) * 10) / 10;
+        const clampedValue = Math.min(Math.max(newValue, leverageSliderMarks[0]), leverageSliderMarks.at(-1)!);
+
+        setLeverageOption(clampedValue);
+      }
+    },
+    [leverageOption, leverageSliderMarks, setLeverageOption]
+  );
+
   function renderTokenInputs() {
     return (
       <>
@@ -1085,6 +1103,7 @@ export function TradeBox(p: Props) {
                     value={leverageInputValue}
                     setValue={setLeverageInputValue}
                     onBlur={handleLeverageInputBlur}
+                    onKeyDown={handleLeverageInputKeyDown}
                     symbol="x"
                   />
                 </div>

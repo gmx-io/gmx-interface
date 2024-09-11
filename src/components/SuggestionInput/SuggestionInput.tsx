@@ -1,5 +1,5 @@
 import "./SuggestionInput.scss";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from "react";
 import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
 
@@ -12,6 +12,7 @@ type Props = {
   isError?: boolean;
   inputClassName?: string;
   onBlur?: () => void;
+  onKeyDown?: (e: KeyboardEvent) => void;
 };
 
 export default function SuggestionInput({
@@ -23,25 +24,50 @@ export default function SuggestionInput({
   isError,
   inputClassName,
   onBlur,
+  onKeyDown,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
 
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    if (setValue) {
-      setValue(event.target.value);
-    }
-  }
-  function handleSuggestionClick(suggestion: number) {
-    if (setValue) {
-      setValue(suggestion.toString());
-      setIsPanelVisible(false);
-    }
-  }
-  function handleBlur() {
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (setValue) {
+        setValue(event.target.value);
+      }
+    },
+    [setValue]
+  );
+
+  const handleSuggestionClick = useCallback(
+    (suggestion: number) => {
+      if (setValue) {
+        setValue(suggestion.toString());
+        setIsPanelVisible(false);
+      }
+    },
+    [setValue]
+  );
+
+  const handleBlur = useCallback(() => {
     setIsPanelVisible(false);
     onBlur?.();
-  }
+  }, [onBlur]);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      const target = e.target as HTMLInputElement;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        target.blur();
+      } else if (e.key === "Escape") {
+        target.blur();
+      } else {
+        onKeyDown?.(e);
+      }
+    },
+    [onKeyDown]
+  );
 
   return (
     <div className="Suggestion-input-wrapper">
@@ -54,6 +80,7 @@ export default function SuggestionInput({
           value={value ?? ""}
           placeholder={placeholder}
           onValueChange={handleChange}
+          onKeyDown={handleKeyDown}
         />
         <label>
           <span>{symbol}</span>
