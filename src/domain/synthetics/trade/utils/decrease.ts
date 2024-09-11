@@ -21,7 +21,6 @@ import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
-  getTriggerDecreaseOrderType,
   getTriggerThresholdType,
 } from "./prices";
 import { getSwapStats } from "./swapStats";
@@ -60,8 +59,6 @@ export function getDecreasePositionAmounts(p: {
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
-    isLimit,
-    limitPrice,
     triggerOrderType: orderType,
     receiveToken: receiveTokenArg,
   } = p;

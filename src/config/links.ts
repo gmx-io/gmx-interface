@@ -24,6 +24,11 @@ export function get1InchSwapUrl(chainId: number, from?: string, to?: string) {
   return `${rootUrl}/${fromToken}/${toToken}`;
 }
 
+export function get1InchSwapUrlFromAddresses(chainId: number, fromAddress?: string, toAddress?: string) {
+  const addressesStr = [fromAddress, toAddress].filter(Boolean).join("/");
+  return `https://app.1inch.io/#/${chainId}/simple/swap/${addressesStr}`;
+}
+
 export function getLeaderboardLink(chainId) {
   if (chainId === ARBITRUM) {
     return "https://www.gmx.house/arbitrum/leaderboard";
