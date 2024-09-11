@@ -195,7 +195,7 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {isHandlerDisabled ? (
-          <div className="pointer-events-none w-full flex-none">{handle ?? children}</div>
+          <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
         ) : (
           <>{handle ?? children}</>
         )}

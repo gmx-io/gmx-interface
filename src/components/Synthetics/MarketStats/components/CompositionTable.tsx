@@ -76,19 +76,22 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
 
     const sum = bigintToNumber((longPoolAmountUsd ?? 0n) + (shortPoolAmountUsd ?? 0n), USD_DECIMALS);
 
+    const compLong = sum > 0 ? (bigintToNumber(longPoolAmountUsd ?? 0n, USD_DECIMALS) * 100) / sum : 0;
+    const compShort = sum > 0 ? (bigintToNumber(shortPoolAmountUsd ?? 0n, USD_DECIMALS) * 100) / sum : 0;
+
     return {
       type: "gm",
       data: [
         {
           token: longToken,
           amount: longPoolAmount,
-          comp: longPoolAmountUsd !== undefined ? (bigintToNumber(longPoolAmountUsd, USD_DECIMALS) * 100) / sum : 0,
+          comp: compLong,
           prefix: "Long",
         },
         {
           token: shortToken,
           amount: shortPoolAmount,
-          comp: shortPoolAmountUsd !== undefined ? (bigintToNumber(shortPoolAmountUsd, USD_DECIMALS) * 100) / sum : 0,
+          comp: compShort,
           prefix: "Short",
         },
       ],
