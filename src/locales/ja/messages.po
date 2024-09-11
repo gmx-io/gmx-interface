@@ -4005,6 +4005,10 @@ msgstr ""
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
+msgid "This pool currently has a 1% sell fee. <0><1>Read more</1></0>."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.jsx
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Creator"
