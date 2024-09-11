@@ -28,7 +28,11 @@ export function getGlvMarketDisplayName(glv: GlvMarketInfo) {
   return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
 }
 
-export function getMarketBadge(chainId: number, market: GlvMarketInfo | MarketInfo) {
+export function getMarketBadge(chainId: number, market: GlvMarketInfo | MarketInfo | undefined) {
+  if (!market) {
+    return undefined;
+  }
+
   if (isGlv(market)) {
     return GLV_MARKETS[chainId]?.[market.indexTokenAddress]?.shortening || "GLV";
   }

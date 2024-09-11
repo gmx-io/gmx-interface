@@ -1,7 +1,8 @@
 import { Placement, autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
+
 import { Trans } from "@lingui/macro";
-import type { ReactNode } from "react";
+import React, { useCallback, type ReactNode } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { createBreakpoint } from "react-use";
 
@@ -15,9 +16,10 @@ import {
   getGlvMarketDisplayName,
 } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
-import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import { getByKey } from "lib/objects";
 import useWallet, { WalletClient } from "lib/wallets/useWallet";
 
@@ -76,19 +78,36 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
     whileElementsMounted: autoUpdate,
   });
 
+  const handleMenuButtonClick = useCallback((e: React.MouseEvent) => {
+    // Somehow headless ui prevents the touchend event before it can trigger the closure of already opened dropdowns
+    if (headlessUiIsMobile()) {
+      const parent = e.currentTarget.parentElement;
+
+      if (parent) {
+        const event = new TouchEvent("touchend");
+        parent.dispatchEvent(event);
+      }
+    }
+  }, []);
+
   const contractSymbol = market && isGlv(market) ? `${market.indexToken.contractSymbol}` : undefined;
 
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">
       <Menu>
-        <Menu.Button as="div" ref={refs.setReference} className="dropdown-arrow center-both">
+        <Menu.Button
+          as="div"
+          onClick={handleMenuButtonClick}
+          ref={refs.setReference}
+          className="dropdown-arrow center-both"
+        >
           <FiChevronDown size={20} />
         </Menu.Button>
         <Menu.Items
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="border z-30 rounded-4 border-gray-800 bg-slate-800 outline-none"
+          className="z-30 rounded-4 border border-gray-800 bg-slate-800 outline-none"
         >
           {market && (
             <Menu.Item as="div">

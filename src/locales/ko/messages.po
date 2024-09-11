@@ -6243,6 +6243,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "{0} 잔고 부족"
 

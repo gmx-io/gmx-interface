@@ -299,7 +299,7 @@ function useFilterSortPools({
     }
 
     return sortedTokens.filter((token) => {
-      const market = getByKey(marketsInfo, token?.address)!;
+      const market = getByKey(marketsInfo, token?.address);
       const indexToken = isGlv(market)
         ? market.indexToken
         : getTokenData(tokensData, market?.indexTokenAddress, "native");
@@ -372,7 +372,7 @@ function GmListItem({
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
 
-  const market = getByKey(marketsInfoData, token?.address)!;
+  const market = getByKey(marketsInfoData, token?.address);
 
   const isGlvMarket = isGlv(market);
 
@@ -396,7 +396,7 @@ function GmListItem({
         })}
         variant="secondary"
         disabled={!isShiftAvailable}
-        to={`/pools/?market=${market.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
+        to={`/pools/?market=${market?.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
       >
         <Trans>Shift</Trans>
       </Button>
@@ -428,7 +428,7 @@ function GmListItem({
         {btn}
       </TooltipWithPortal>
     );
-  }, [isShiftAvailable, market.marketTokenAddress, shouldScrollToTop, isGlvMarket]);
+  }, [isShiftAvailable, market?.marketTokenAddress, shouldScrollToTop, isGlvMarket]);
 
   const apy = isGlvMarket
     ? getByKey(glvMarketsTokensApyData, market.indexToken.address)
@@ -443,7 +443,7 @@ function GmListItem({
 
   const totalSupply = token?.totalSupply;
   const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
-  const tokenIconName = market.isSpotOnly
+  const tokenIconName = market?.isSpotOnly
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
     : getNormalizedTokenSymbol(indexToken.symbol);
 
@@ -466,7 +466,7 @@ function GmListItem({
             <div className="flex text-16">
               {isGlvMarket
                 ? getGlvMarketDisplayName(market)
-                : getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+                : getMarketIndexName({ indexToken, isSpotOnly: Boolean(market?.isSpotOnly) })}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -477,7 +477,7 @@ function GmListItem({
             </div>
           </div>
         </div>
-        {showDebugValues && <span style={tokenAddressStyle}>{market.marketTokenAddress}</span>}
+        {showDebugValues && <span style={tokenAddressStyle}>{market?.marketTokenAddress}</span>}
       </ExchangeTd>
       <ExchangeTd>{formatUsdPrice(token.prices?.minPrice)}</ExchangeTd>
       <ExchangeTd>
@@ -493,13 +493,15 @@ function GmListItem({
         {isGlvMarket ? (
           <MintableAmount mintableInfo={getMintableInfoGlv(market, marketTokensData)} market={market} token={token} />
         ) : (
-          <MintableAmount
-            mintableInfo={mintableInfo}
-            market={market}
-            token={token}
-            longToken={longToken}
-            shortToken={shortToken}
-          />
+          market && (
+            <MintableAmount
+              mintableInfo={mintableInfo}
+              market={market}
+              token={token}
+              longToken={longToken}
+              shortToken={shortToken}
+            />
+          )
         )}
       </ExchangeTd>
 
@@ -522,14 +524,14 @@ function GmListItem({
           <Button
             className="flex-grow"
             variant="secondary"
-            to={`/pools/?market=${market.marketTokenAddress}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
+            to={`/pools/?market=${market?.marketTokenAddress}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
           >
             <Trans>Buy</Trans>
           </Button>
           <Button
             className="flex-grow"
             variant="secondary"
-            to={`/pools/?market=${market.marketTokenAddress}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
+            to={`/pools/?market=${market?.marketTokenAddress}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
           >
             <Trans>Sell</Trans>
           </Button>

@@ -238,13 +238,15 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
       const marketValues = marketsValues.data[marketAddress];
       const marketConfig = marketsConfigs.data[marketAddress];
 
-      if (!market || !marketValues || !marketConfig) {
+      const longToken = getByKey(tokensData!, market?.longTokenAddress);
+      const shortToken = getByKey(tokensData!, market?.shortTokenAddress);
+      const indexToken = market
+        ? getByKey(tokensData!, convertTokenAddress(chainId, market.indexTokenAddress, "native"))
+        : undefined;
+
+      if (!market || !marketValues || !marketConfig || !longToken || !shortToken || !indexToken) {
         continue;
       }
-
-      const longToken = getByKey(tokensData!, market.longTokenAddress)!;
-      const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
-      const indexToken = getByKey(tokensData!, convertTokenAddress(chainId, market.indexTokenAddress, "native"))!;
 
       const fullMarketInfo: MarketInfo = {
         ...marketValues,
