@@ -2313,8 +2313,8 @@ msgid "Vest with GMX on Avalanche"
 msgstr "在Avalanche上授权GMX"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
-msgstr ""
+#~ msgid "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
@@ -4587,6 +4587,10 @@ msgstr ""
 msgid "Referrals"
 msgstr "推荐人"
 
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "<0>GLV Vaults</0> include multiple GM Tokens and are automatically rebalanced."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Max Leverage without PnL: 100x"
 msgstr ""
@@ -6302,9 +6306,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

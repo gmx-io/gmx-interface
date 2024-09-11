@@ -47,7 +47,7 @@ export function MarketPoolsPage() {
     undefined
   );
 
-  const [selectedGlvGmMarketKey, setSelectedGlvGmMarketKey] = useState<string | undefined>(undefined);
+  const [selectedGlvGmMarket, setSelectedGlvGmMarket] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketGmKey));
@@ -77,7 +77,12 @@ export function MarketPoolsPage() {
                 to earn fees from swaps and leverage trading.
               </Trans>
               <br />
-              <Trans>GLV Vaults include multiple GM Tokens and are automatically rebalanced.</Trans>
+              <Trans>
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools">
+                  GLV Vaults
+                </ExternalLink>{" "}
+                include multiple GM Tokens and are automatically rebalanced.
+              </Trans>
               <br />
               <Trans>Shift GM Tokens between eligible pools without paying buy/sell fees.</Trans>
             </>
@@ -101,8 +106,8 @@ export function MarketPoolsPage() {
             <GmSwapBox
               selectedMarketAddress={selectedMarketGmKey}
               onSelectMarket={setSelectedMarketGmKey}
-              selectedGlvGmMarket={selectedGlvGmMarketKey}
-              onSelectGlvGmMarket={setSelectedGlvGmMarketKey}
+              selectedGlvGmMarket={selectedGlvGmMarket}
+              onSelectGlvGmMarket={setSelectedGlvGmMarket}
               operation={operation}
               mode={mode}
               onSetMode={setMode}

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
@@ -72,6 +72,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const { shouldDisableValidationForTesting } = useSettings();
   const { chainId } = useChainId();
+  const [isGmPoolSelectedManually, setIsGmPoolSelectedManually] = useState(false);
 
   // #region Requests
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
@@ -288,13 +289,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     [marketInfo, tokensData, isGlvMarket, marketTokensData, marketsInfoData, isPair]
   );
 
-  const bestGmPoolAddress = useBestGmPoolAddressForGlv(isDeposit, marketInfo, selectedGlvGmMarket);
-
-  useEffect(() => {
-    if (!selectedGlvGmMarket && bestGmPoolAddress) {
-      onSelectGlvGmMarket?.(bestGmPoolAddress);
-    }
-  }, [bestGmPoolAddress, onSelectGlvGmMarket, selectedGlvGmMarket]);
+  const vaultInfo = isGlvMarket ? marketInfo : undefined;
 
   /**
    * Here and following we use `targetGmMarket` to get the correct market info for GLV markets
@@ -331,8 +326,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isDeposit,
     selectedGlvGmMarket,
   ]);
-
-  const vaultInfo = isGlvMarket ? marketInfo : undefined;
 
   const marketTokenUsd =
     isGlvMarket && vaultInfo
@@ -518,6 +511,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const onGmPoolChange = useCallback(
     (marketAddress: string) => {
+      setIsGmPoolSelectedManually(true);
       onSelectGlvGmMarket?.(marketAddress);
     },
     [onSelectGlvGmMarket]
@@ -705,6 +699,30 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     setSecondTokenInputValue,
     isPair,
     chainId,
+  });
+
+  useBestGmPoolAddressForGlv({
+    isDeposit,
+    vaultInfo,
+    selectedGlvGmMarket,
+
+    uiFeeFactor,
+    focusedInput,
+
+    longTokenInputState,
+    shortTokenInputState,
+
+    marketTokenAmount,
+    isMarketTokenDeposit,
+
+    isGmPoolSelectedManually,
+    onSelectGlvGmMarket,
+
+    longTokenLiquidityUsd: longCollateralLiquidityUsd,
+    shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
+
+    marketsInfoData,
+    marketTokensData,
   });
   // #endregion
 

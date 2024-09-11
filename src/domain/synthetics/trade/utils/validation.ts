@@ -538,12 +538,14 @@ export function getGmSwapError(p: {
   marketToken: TokenData | undefined;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
+  gmToken: TokenData | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   longTokenUsd: bigint | undefined;
   shortTokenUsd: bigint | undefined;
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
+  gmTokenAmount: bigint | undefined;
   longTokenLiquidityUsd: bigint | undefined;
   shortTokenLiquidityUsd: bigint | undefined;
   fees: GmSwapFees | undefined;
@@ -560,12 +562,14 @@ export function getGmSwapError(p: {
     marketToken,
     longToken,
     shortToken,
+    gmToken,
     longTokenAmount,
     shortTokenAmount,
     longTokenUsd,
     shortTokenUsd,
     marketTokenAmount,
     marketTokenUsd,
+    gmTokenAmount,
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,
     fees,
@@ -585,7 +589,7 @@ export function getGmSwapError(p: {
     return [t`Price Impact not yet acknowledged`];
   }
 
-  const glvToltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
+  const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
 
   if (isDeposit) {
     if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
@@ -596,7 +600,7 @@ export function getGmSwapError(p: {
         const error = [t`Max pool amount exceeded`];
 
         if (vaultInfo) {
-          error.push(glvToltipMessage);
+          error.push(glvTooltipMessage);
         }
       }
     }
@@ -605,7 +609,7 @@ export function getGmSwapError(p: {
       const error = [t`Max pool USD exceeded`];
 
       if (vaultInfo) {
-        error.push(glvToltipMessage);
+        error.push(glvTooltipMessage);
       }
     }
 
@@ -619,14 +623,13 @@ export function getGmSwapError(p: {
     }
 
     if (vaultInfo) {
-      const glvMarket =
-        longToken?.symbol === "GM" && vaultInfo.markets.find(({ address }) => address === longToken.address);
+      const glvMarket = gmToken && vaultInfo.markets.find(({ address }) => address === gmToken.address);
 
-      // if buying with GMS
+      // if buying with GMs
       if (glvMarket) {
-        const maxBuyableUsdInGm = getMaxUsdBuyableAmountInMarketWithGm(glvMarket, vaultInfo, marketInfo, longToken);
+        const maxBuyableUsdInGm = getMaxUsdBuyableAmountInMarketWithGm(glvMarket, vaultInfo, marketInfo, gmToken);
         if (marketTokenUsd !== undefined && maxBuyableUsdInGm < marketTokenUsd) {
-          return [t`Max pool amount reached`, glvToltipMessage];
+          return [t`Max pool amount reached`, glvTooltipMessage];
         }
       } else {
         const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
@@ -636,7 +639,7 @@ export function getGmSwapError(p: {
           shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
 
         if (maxLongExceeded || maxShortExceeded) {
-          return [t`Max GM buyable amount reached`, glvToltipMessage];
+          return [t`Max GM buyable amount reached`, glvTooltipMessage];
         }
       }
     } else {
@@ -665,19 +668,23 @@ export function getGmSwapError(p: {
   }
 
   if (isDeposit) {
-    if (marketInfo.isSameCollaterals) {
-      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
-        return [t`Insufficient ${longToken?.symbol} balance`];
-      }
-    } else {
-      if ((longTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
-        return [t`Insufficient ${longToken?.symbol} balance`];
-      }
+    // if (marketInfo.isSameCollaterals) {
+    //   if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
+    //     return [t`Insufficient ${longToken?.symbol} balance`];
+    //   }
+    // } else {
+    //   if ((longTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
+    //     return [t`Insufficient ${longToken?.symbol} balance`];
+    //   }
 
-      if ((shortTokenAmount ?? 0n) > (shortToken?.balance ?? 0n)) {
-        return [t`Insufficient ${shortToken?.symbol} balance`];
-      }
-    }
+    //   if ((shortTokenAmount ?? 0n) > (shortToken?.balance ?? 0n)) {
+    //     return [t`Insufficient ${shortToken?.symbol} balance`];
+    //   }
+
+    //   if (gmToken && (gmTokenAmount ?? 0n > (gmToken?.balance ?? 0n))) {
+    //     return [t`Insufficient GM balance`];
+    //   }
+    // }
 
     if (vaultInfo) {
       const { mintableUsd: mintableGmUsd } = getMintableMarketTokens(marketInfo, marketToken);
