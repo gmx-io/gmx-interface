@@ -7,7 +7,7 @@ import { CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY, CHART_TOKEN_SELECTOR_FILTER_T
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId } from "lib/localStorage";
 
-export type GmTokenFavoritesTabOption = "all" | "favorites" | "gms" | "glvs";
+export type GmTokenFavoritesTabOption = "all" | "favorites";
 
 export type GmTokensFavoritesContextType = {
   tab: GmTokenFavoritesTabOption;
@@ -58,13 +58,11 @@ export function useGmTokensFavorites() {
   return useContext(context);
 }
 
-export const gmTokensFavoritesTabOptions = ["all", "favorites", "gms", "glvs"];
+export const gmTokensFavoritesTabOptions = ["all", "favorites"];
 export const gmTokensFavoritesTabOptionLabels = {
   all: msg({
     message: "All",
     comment: "GM market token selector all markets filter",
   }),
   favorites: msg`Favorites`,
-  gms: msg`GM`,
-  glvs: msg`GLV`,
 };

@@ -370,13 +370,8 @@ function useFilterSortTokensInfo({
           textSearchMatch = marketName.toLowerCase().includes(searchKeyword.toLowerCase());
         }
 
-        const additionalMatch = {
-          gms: !isGlv(marketInfo),
-          glvs: isGlv(marketInfo),
-          favorites: favoriteTokens?.includes(market.address),
-        }[tab];
-
-        return textSearchMatch && additionalMatch;
+        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(market.address) : true;
+        return textSearchMatch && favoriteMatch;
       });
     }
 

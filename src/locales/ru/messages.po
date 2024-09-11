@@ -297,8 +297,8 @@ msgstr "ДОСТУПНО"
 
 #: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
 #: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
-msgid "GM"
-msgstr ""
+#~ msgid "GM"
+#~ msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm Settle"
@@ -3839,8 +3839,8 @@ msgstr ""
 
 #: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
 #: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
-msgid "GLV"
-msgstr ""
+#~ msgid "GLV"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
