@@ -343,6 +343,10 @@ msgstr "您可更改\"Collateral In\"上述的代币来找寻较低的费用 "
 msgid "Max {0} short exceeded"
 msgstr "超过了最大{0}做空范围"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GM balance"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
 msgstr "取消止损订单"
@@ -3402,7 +3406,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Avalanche"
 msgstr ""
 
@@ -6311,6 +6314,9 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr " {0}余额不足"
 
@@ -6707,6 +6713,7 @@ msgstr "GMX社区讨论"
 msgid "Sell GM"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx

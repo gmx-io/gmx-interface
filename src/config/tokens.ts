@@ -1043,6 +1043,9 @@ export const TOKEN_COLOR_MAP = {
   OP: "#ff0421",
   DOT: "#e6007a",
   TEST: "#2d3ed7",
+  SHIB: "#f00601",
+  STX: "#eb6230",
+  ORDI: "#000000",
   default: "#6062a6",
 };
 

@@ -37,7 +37,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { AccountStats } from "domain/synthetics/accountStats";
-import { GLV_ENABLED } from "config/markets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -129,7 +129,7 @@ export function SyntheticsStateContextProvider({
   const marketsInfo = useMarketsInfoRequest(chainId);
 
   const shouldFetchGlvMarkets =
-    GLV_ENABLED[chainId] && (pageType === "pools" || pageType === "earn" || pageType === "buy");
+    isGlvEnabled(chainId) && (pageType === "pools" || pageType === "earn" || pageType === "buy");
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,

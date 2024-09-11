@@ -343,6 +343,10 @@ msgstr "より低い手数料を見つけるために上の\"担保資産\"ト�
 msgid "Max {0} short exceeded"
 msgstr "{0}の最大ショート値を超過しています"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GM balance"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
 msgstr "ストップロス注文のキャンセル"
@@ -3402,7 +3406,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Avalanche"
 msgstr ""
 
@@ -6311,6 +6314,9 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "{0} 残高の不足"
 
@@ -6707,6 +6713,7 @@ msgstr "GMXのコミュニティ対話"
 msgid "Sell GM"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx

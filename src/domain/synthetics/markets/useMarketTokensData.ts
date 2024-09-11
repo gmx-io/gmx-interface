@@ -19,7 +19,7 @@ import TokenAbi from "abis/Token.json";
 import { GlvMarketsData } from "./useGlvMarkets";
 import { useMemo } from "react";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { GLV_ENABLED } from "config/markets";
+import { isGlvEnabled } from "./glv";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -38,7 +38,7 @@ export function useMarketTokensDataRequest(
   if (p.withGlv === false) {
     isGlvTokensLoaded = true;
   } else {
-    isGlvTokensLoaded = GLV_ENABLED[chainId] ? Object.values(glvMarketsData).length > 0 : true;
+    isGlvTokensLoaded = isGlvEnabled(chainId) ? Object.values(glvMarketsData).length > 0 : true;
   }
 
   const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;

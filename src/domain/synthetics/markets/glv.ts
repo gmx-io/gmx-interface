@@ -12,6 +12,7 @@ import { bigMath } from "lib/bigmath";
 
 import { convertToTokenAmount, convertToUsd } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens";
+import { GLV_MARKETS } from "config/markets";
 
 export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, gmToken?: TokenData) {
   if (!gmToken) {
@@ -104,4 +105,8 @@ export function getSellableInfoGlv(
 
 export function isGlv(market?: GlvMarketInfo | MarketInfo): market is GlvMarketInfo {
   return Boolean(market && "isGlv" in market && market.isGlv);
+}
+
+export function isGlvEnabled(chainId: number) {
+  return Object.keys(GLV_MARKETS[chainId] ?? {}).length > 0;
 }

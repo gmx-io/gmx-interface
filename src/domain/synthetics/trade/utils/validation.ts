@@ -668,23 +668,23 @@ export function getGmSwapError(p: {
   }
 
   if (isDeposit) {
-    // if (marketInfo.isSameCollaterals) {
-    //   if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
-    //     return [t`Insufficient ${longToken?.symbol} balance`];
-    //   }
-    // } else {
-    //   if ((longTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
-    //     return [t`Insufficient ${longToken?.symbol} balance`];
-    //   }
+    if (marketInfo.isSameCollaterals) {
+      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
+        return [t`Insufficient ${longToken?.symbol} balance`];
+      }
+    } else {
+      if ((longTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
+        return [t`Insufficient ${longToken?.symbol} balance`];
+      }
 
-    //   if ((shortTokenAmount ?? 0n) > (shortToken?.balance ?? 0n)) {
-    //     return [t`Insufficient ${shortToken?.symbol} balance`];
-    //   }
+      if ((shortTokenAmount ?? 0n) > (shortToken?.balance ?? 0n)) {
+        return [t`Insufficient ${shortToken?.symbol} balance`];
+      }
 
-    //   if (gmToken && (gmTokenAmount ?? 0n > (gmToken?.balance ?? 0n))) {
-    //     return [t`Insufficient GM balance`];
-    //   }
-    // }
+      if (gmToken && (gmTokenAmount ?? 0n > (gmToken?.balance ?? 0n))) {
+        return [t`Insufficient GM balance`];
+      }
+    }
 
     if (vaultInfo) {
       const { mintableUsd: mintableGmUsd } = getMintableMarketTokens(marketInfo, marketToken);

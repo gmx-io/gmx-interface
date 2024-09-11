@@ -717,6 +717,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     onSelectGlvGmMarket,
     longTokenInputState,
     shortTokenInputState,
+    gmTokenInputState,
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
     marketsInfoData,

@@ -10,7 +10,7 @@ import { PositionInfo } from "../positions";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
-import { GLV_MARKETS_APPEARANCE } from "config/markets";
+import { GLV_MARKETS } from "config/markets";
 import { GlvMarketInfo } from "./useGlvMarkets";
 import { isGlv } from "./glv";
 
@@ -21,7 +21,7 @@ export function getMarketFullName(p: { longToken: Token; shortToken: Token; inde
 }
 
 export function getGlvMarketName(chainId: number, address: string) {
-  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.name;
+  return GLV_MARKETS[chainId]?.[address]?.name;
 }
 
 export function getGlvMarketDisplayName(glv: GlvMarketInfo) {
@@ -30,18 +30,18 @@ export function getGlvMarketDisplayName(glv: GlvMarketInfo) {
 
 export function getMarketBadge(chainId: number, market: GlvMarketInfo | MarketInfo) {
   if (isGlv(market)) {
-    return GLV_MARKETS_APPEARANCE[chainId]?.[market.indexTokenAddress]?.shortening || "GLV";
+    return GLV_MARKETS[chainId]?.[market.indexTokenAddress]?.shortening || "GLV";
   }
 
   return market.isSpotOnly ? undefined : ([market.longToken.symbol, market.shortToken.symbol] as const);
 }
 
 export function getGlvMarketSubtitle(chainId: number, address: string) {
-  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.subtitle || "";
+  return GLV_MARKETS[chainId]?.[address]?.subtitle || "";
 }
 
 export function getGlvMarketShortening(chainId: number, address: string) {
-  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.shortening || "";
+  return GLV_MARKETS[chainId]?.[address]?.shortening || "";
 }
 
 export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {

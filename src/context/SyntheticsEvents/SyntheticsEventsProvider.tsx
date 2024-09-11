@@ -58,7 +58,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { GLV_ENABLED } from "config/markets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -76,7 +76,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const { glvMarketInfo } = useGlvMarketsInfo(GLV_ENABLED[chainId], {
+  const { glvMarketInfo } = useGlvMarketsInfo(isGlvEnabled(chainId), {
     marketsInfoData,
     tokensData,
     chainId,

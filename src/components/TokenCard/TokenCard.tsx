@@ -25,6 +25,8 @@ import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 
 import sparkleIcon from "img/sparkle.svg";
+import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -61,9 +63,24 @@ type Props = {
 
 export default function TokenCard({ showRedirectModal }: Props) {
   const { chainId } = useChainId();
-  const { active } = useWallet();
+  const { active, account } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
   const avalancheIncentiveState = useIncentiveStats(AVALANCHE);
+
+  const { glvs: glvArb } = useGlvMarketsInfo(isGlvEnabled(ARBITRUM), {
+    chainId: ARBITRUM,
+    account,
+    marketsInfoData: undefined,
+    tokensData: undefined,
+  });
+
+  const { glvs: glvAvax } = useGlvMarketsInfo(isGlvEnabled(AVALANCHE), {
+    chainId: AVALANCHE,
+    marketsInfoData: undefined,
+    tokensData: undefined,
+    account,
+  });
+
   const {
     marketsTokensApyData: arbApy,
     marketsTokensIncentiveAprData: arbIncentiveApr,
@@ -87,7 +104,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
 
     return {
       [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
-      [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
+      [AVALANCHE]: isGlvEnabled(AVALANCHE) ? `${formatAmount(maxAvaxApy, 28, 2)}%` : undefined,
     };
   }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
 
@@ -95,15 +112,12 @@ export default function TokenCard({ showRedirectModal }: Props) {
     if (!arbGlvApy || !avaxGlvApy)
       return {
         [ARBITRUM]: "...%",
-        [AVALANCHE]: "...%",
       };
 
     const maxArbApy = calculateMaxApr(arbGlvApy, {});
-    const maxAvaxApy = calculateMaxApr(avaxGlvApy, {});
 
     return {
       [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
-      [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
     };
   }, [arbGlvApy, avaxGlvApy]);
 
@@ -173,20 +187,32 @@ export default function TokenCard({ showRedirectModal }: Props) {
     const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
     const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
 
-    if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
+    const hasArbitrumGlvIncentives =
+      arbitrumIncentiveState?.lp?.isActive &&
+      Object.entries(arbitrumIncentiveState?.lp.rewardsPerMarket ?? {}).some(([market, reward]) => {
+        return Object.values(glvArb ?? {}).some(({ glv }) => glv.glvToken === market && BigInt(reward) > 0n);
+      });
+
+    const hasAvaxGlvIncentives =
+      avalancheIncentiveState?.lp?.isActive &&
+      Object.keys(avalancheIncentiveState?.lp.rewardsPerMarket ?? {}).some(([market, reward]) => {
+        return Object.values(glvAvax ?? {}).some(({ glv }) => glv.glvToken === market && BigInt(reward) > 0n);
+      });
+
+    if (hasArbitrumGlvIncentives && hasAvaxGlvIncentives) {
       return (
         <Trans>
           {arbitrumLink} and {avalancheLink} GM Pools are{" "}
           <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
-    } else if (arbitrumIncentiveState?.lp?.isActive) {
+    } else if (hasArbitrumGlvIncentives) {
       return (
         <Trans>
           {arbitrumLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
-    } else if (avalancheIncentiveState?.lp?.isActive) {
+    } else if (hasAvaxGlvIncentives) {
       return (
         <Trans>
           {avalancheLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
@@ -195,7 +221,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
     } else {
       return null;
     }
-  }, [arbitrumIncentiveState?.lp?.isActive, avalancheIncentiveState?.lp?.isActive]);
+  }, [glvArb, glvAvax, arbitrumIncentiveState?.lp, avalancheIncentiveState?.lp]);
 
   return (
     <div className="Home-token-card-options">
@@ -253,8 +279,12 @@ export default function TokenCard({ showRedirectModal }: Props) {
             <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{glvsIncentivizedLabel}</div>
           )}
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum Max. APY:</Trans> {maxGlvApyText?.[ARBITRUM]},{" "}
-            <Trans>Avalanche Max. APY: {maxGlvApyText?.[AVALANCHE]}</Trans>{" "}
+            <Trans>Arbitrum Max. APY:</Trans> {maxGlvApyText?.[ARBITRUM]}
+            {maxGlvApyText?.[AVALANCHE] && (
+              <>
+                , <Trans>Avalanche Max. APY: {maxGlvApyText?.[AVALANCHE]}</Trans>
+              </>
+            )}
           </div>
         </div>
 
@@ -263,10 +293,11 @@ export default function TokenCard({ showRedirectModal }: Props) {
             <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={ARBITRUM}>
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
-
-            <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={AVALANCHE}>
-              <Trans>View on Avalanche</Trans>
-            </BuyLink>
+            {isGlvEnabled(AVALANCHE) && (
+              <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={AVALANCHE}>
+                <Trans>View on Arbitrum</Trans>
+              </BuyLink>
+            )}
           </div>
           <a
             href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"

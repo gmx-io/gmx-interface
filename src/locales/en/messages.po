@@ -343,6 +343,10 @@ msgstr "You can change the \"Collateral In\" token above to find lower fees"
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GM balance"
+msgstr "Insufficient GM balance"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
 msgstr "Cancel Stop-Loss Order"
@@ -3402,7 +3406,6 @@ msgstr "Buy {nativeTokenSymbol}"
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Avalanche"
 msgstr "View on Avalanche"
 
@@ -6317,6 +6320,9 @@ msgstr "Select a collateral"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
@@ -6713,6 +6719,7 @@ msgstr "GMX community discussion"
 msgid "Sell GM"
 msgstr "Sell GM"
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx

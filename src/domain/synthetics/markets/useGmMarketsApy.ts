@@ -23,8 +23,8 @@ import TokenAbi from "abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";
-import { isGlv } from "./glv";
-import { getMarketListingDate, GLV_ENABLED } from "config/markets";
+import { isGlv, isGlvEnabled } from "./glv";
+import { getMarketListingDate } from "config/markets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 
@@ -231,7 +231,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
   const glvInfo = useSelector(selectGlvInfo);
-  const glvMarketInfo = GLV_ENABLED[chainId] ? glvInfo : undefined;
+  const glvMarketInfo = isGlvEnabled(chainId) ? glvInfo : undefined;
 
   const marketsInfoData = {
     ...onlyGmMarketsInfoData,
