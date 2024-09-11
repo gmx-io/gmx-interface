@@ -20,8 +20,9 @@ const marketsKeys = [
   "SPOT-DAI-USDC",
   // same collaterals, should be disabled for swaps
   "ETH-USDC-USDC",
-  // Unreachable market
+  // Unreachable markets
   "TBTC-TBTC-TBTC",
+  "TETH_A-TETH_A-TETH_B",
   // Partially unreachable markets
   "TEST_B-TEST_B-TEST_A",
   "TEST_C-TEST_C-TEST_A",
@@ -63,6 +64,26 @@ const tokensData = mockTokensData({
     decimals: 18,
     name: "Test C",
     symbol: "TEST_C",
+    prices: {
+      minPrice: BigInt(1),
+      maxPrice: BigInt(1),
+    },
+  },
+  TETH_A: {
+    address: "TETH_A",
+    decimals: 18,
+    name: "tETH A",
+    symbol: "TETH_A",
+    prices: {
+      minPrice: BigInt(1),
+      maxPrice: BigInt(1),
+    },
+  },
+  TETH_B: {
+    address: "TETH_B",
+    decimals: 18,
+    name: "tETH B",
+    symbol: "TETH_B",
     prices: {
       minPrice: BigInt(1),
       maxPrice: BigInt(1),
@@ -258,6 +279,14 @@ describe("findAllReachableTokens", () => {
     const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
 
     expect(reachableTokens).toStrictEqual(["TBTC"]);
+  });
+
+  it("should work for partially unreachable token TETH_A", () => {
+    const fromTokenAddress = "TETH_A";
+
+    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
+
+    expect(reachableTokens).toStrictEqual(["TETH_A", "TETH_B"]);
   });
 
   it("should work for partially reachable token TEST_B", () => {
