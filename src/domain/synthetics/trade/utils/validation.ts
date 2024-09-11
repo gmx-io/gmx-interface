@@ -27,7 +27,7 @@ export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
   | [errorMessage: undefined]
   | [errorMessage: string]
-  | [errorMessage: string, tooltipName: "maxLeverage" | "liqPrice > markPrice"];
+  | [errorMessage: string, tooltipName: "maxLeverage" | "liqPrice > markPrice" | "noSwapPath"];
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -224,7 +224,7 @@ export function getIncreaseError(p: {
 
   if (isNeedSwap) {
     if (!swapPathStats?.swapPath?.length) {
-      return [t`Couldn't find a swap route with enough liquidity`];
+      return [t`No swap path found`, "noSwapPath"];
     }
 
     if (!isLimit) {

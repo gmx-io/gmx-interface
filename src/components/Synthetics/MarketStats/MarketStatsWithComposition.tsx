@@ -456,7 +456,7 @@ export function MarketStatsWithComposition(p: Props) {
 
           <div className="App-card-divider" />
           <BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />
-          <BridgingInfo chainId={chainId} tokenSymbol={shortToken?.symbol} />
+          {!marketInfo?.isSameCollaterals && <BridgingInfo chainId={chainId} tokenSymbol={shortToken?.symbol} />}
         </div>
       </div>
       <div

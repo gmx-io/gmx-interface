@@ -30,7 +30,7 @@ import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
-const selectSwapGraph = createSelector((q) => {
+export const selectSwapGraph = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
   if (!marketsInfoData) return undefined;
   return getMarketsGraph(Object.values(marketsInfoData));

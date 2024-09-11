@@ -19,6 +19,7 @@ import {
   makeSelectFindSwapPath,
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
+  selectSwapGraph,
 } from "./tradeSelectors";
 import {
   getMinCollateralFactorForPosition,
@@ -29,14 +30,16 @@ import {
   applySlippageToPrice,
   getSwapAmountsByFromValue,
   getNextPositionExecutionPrice,
+  findAllReachableTokens,
 } from "domain/synthetics/trade";
 import { mustNeverExist } from "lib/types";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
@@ -305,6 +308,34 @@ export const selectPositionSellerFindSwapPath = createSelector((q) => {
   const selectFindSwapPath = makeSelectFindSwapPath(position?.collateralTokenAddress, receiveTokenAddress);
 
   return q(selectFindSwapPath);
+});
+
+export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => {
+  const position = q(selectPositionSellerPosition);
+  const graph = q(selectSwapGraph);
+  const tokensData = q(selectTokensData);
+
+  if (!graph || !position?.collateralTokenAddress || !tokensData) {
+    return EMPTY_ARRAY;
+  }
+
+  let wasNativeTokenInserted = false;
+
+  const reachableAddresses = findAllReachableTokens(graph, position.collateralTokenAddress);
+  const reachableTokens = reachableAddresses
+    .flatMap((address) => {
+      const token = getByKey(tokensData, address)!;
+
+      if (token.isWrapped && !wasNativeTokenInserted) {
+        wasNativeTokenInserted = true;
+        return [getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!, token];
+      }
+
+      return [token];
+    })
+    .sort((a, b) => a.symbol.localeCompare(b.symbol));
+
+  return reachableTokens;
 });
 
 export const selectPositionSellerSwapAmounts = createSelector((q) => {
