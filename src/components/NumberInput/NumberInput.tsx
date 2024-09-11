@@ -1,4 +1,4 @@
-import { ChangeEvent, RefObject } from "react";
+import { ChangeEvent, KeyboardEvent, RefObject } from "react";
 
 function escapeSpecialRegExpChars(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -12,12 +12,23 @@ type Props = {
   onValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onBlur?: () => void;
+  onKeyDown?: (e: KeyboardEvent) => void;
   className?: string;
   placeholder?: string;
   qa?: string;
 };
 
-function NumberInput({ value = "", inputRef, onValueChange, onFocus, onBlur, className, placeholder, qa }: Props) {
+function NumberInput({
+  value = "",
+  inputRef,
+  onValueChange,
+  onFocus,
+  onBlur,
+  onKeyDown,
+  className,
+  placeholder,
+  qa,
+}: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
     // Replace comma with dot
@@ -48,6 +59,7 @@ function NumberInput({ value = "", inputRef, onValueChange, onFocus, onBlur, cla
       spellCheck="false"
       onFocus={onFocus}
       onBlur={onBlur}
+      onKeyDown={onKeyDown}
     />
   );
 }

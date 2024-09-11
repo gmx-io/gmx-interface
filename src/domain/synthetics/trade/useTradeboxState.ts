@@ -261,6 +261,7 @@ export function useTradeboxState(
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
   const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey(getLeverageEnabledKey(chainId), true);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+  const [leverageInputValue, setLeverageInputValue] = useState<string>(() => leverageOption?.toString() ?? "");
 
   const avaialbleTradeModes = useMemo(() => {
     if (!tradeType) {
@@ -561,6 +562,41 @@ export function useTradeboxState(
     [setStoredOptions]
   );
 
+  const handleLeverageInputChange = useCallback(
+    (value: string) => {
+      const sanitizedValue = value.replace(",", ".");
+
+      const endsInDot = sanitizedValue.endsWith(".");
+
+      const numberValue = parseFloat(sanitizedValue);
+
+      if (isNaN(numberValue)) {
+        setLeverageInputValue(value);
+        return;
+      }
+
+      const truncatedValue = Math.trunc(numberValue * 10) / 10;
+
+      let stringValue = truncatedValue.toString();
+
+      if (endsInDot) {
+        stringValue += ".";
+      }
+
+      setLeverageInputValue(stringValue);
+      setLeverageOption(truncatedValue);
+    },
+    [setLeverageOption]
+  );
+
+  const handleLeverageSliderChange = useCallback(
+    (value: number) => {
+      setLeverageOption(value);
+      setLeverageInputValue(value.toString());
+    },
+    [setLeverageOption]
+  );
+
   const sidecarOrders = useSidecarOrdersState();
 
   useEffect(
@@ -682,8 +718,10 @@ export function useTradeboxState(
     setTriggerPriceInputValue,
     triggerRatioInputValue,
     setTriggerRatioInputValue,
+    leverageInputValue,
+    setLeverageInputValue: handleLeverageInputChange,
     leverageOption,
-    setLeverageOption,
+    setLeverageOption: handleLeverageSliderChange,
     isLeverageEnabled,
     setIsLeverageEnabled,
     keepLeverage,
