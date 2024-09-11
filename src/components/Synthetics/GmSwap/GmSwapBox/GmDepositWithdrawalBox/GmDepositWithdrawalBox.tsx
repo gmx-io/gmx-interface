@@ -632,16 +632,25 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
 
   const firstTokenSelectToken = useCallback(
-    (token: Token): void => setFirstTokenAddress(token.address),
-    [setFirstTokenAddress]
+    (token: Token): void => {
+      setFirstTokenAddress(token.address);
+
+      const isGmMarketSelected = vaultInfo && vaultInfo.markets.find((m) => m.address === token.address);
+
+      if (isGmMarketSelected) {
+        onSelectGlvGmMarket?.(token.address);
+      }
+    },
+    [setFirstTokenAddress, vaultInfo, onSelectGlvGmMarket]
   );
 
   const marketTokenSelectMarket = useCallback(
     (marketInfo: MarketInfo): void => {
       onMarketChange(marketInfo.marketTokenAddress);
       showMarketToast(marketInfo);
+      onSelectGlvGmMarket?.(undefined);
     },
-    [onMarketChange]
+    [onMarketChange, onSelectGlvGmMarket]
   );
   // #endregion
 
@@ -671,12 +680,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     [marketAddress, onMarketChange, sortedMarketsInfoByIndexToken]
   );
 
-  useEffect(() => {
-    if (gmTokenInputState) {
-      onSelectGlvGmMarket?.(gmTokenInputState.address);
-    }
-  }, [onSelectGlvGmMarket, gmTokenInputState]);
-
   useUpdateByQueryParams({
     operation,
     setOperation: onSetOperation,
@@ -705,22 +708,17 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isDeposit,
     vaultInfo,
     selectedGlvGmMarket,
-
+    fees,
     uiFeeFactor,
     focusedInput,
-
-    longTokenInputState,
-    shortTokenInputState,
-
     marketTokenAmount,
     isMarketTokenDeposit,
-
     isGmPoolSelectedManually,
     onSelectGlvGmMarket,
-
+    longTokenInputState,
+    shortTokenInputState,
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
-
     marketsInfoData,
     marketTokensData,
   });

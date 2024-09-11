@@ -411,11 +411,16 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
       });
 
       const total = marketData.reduce((acc, { amountUsd }) => acc + amountUsd, 0n);
-      const sumApys = marketData.reduce((acc, { amountUsd, apy }) => {
-        return acc + amountUsd * apy;
-      }, 0n);
+      const hasEmptyApy = marketData.some(({ apy }) => apy === undefined);
+      const sumApys = hasEmptyApy
+        ? undefined
+        : marketData.reduce((acc: bigint, { amountUsd, apy }) => acc + amountUsd * apy, 0n);
 
-      acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
+      if (sumApys === undefined) {
+        acc[indexTokenAddress] = undefined;
+      } else {
+        acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
+      }
 
       return acc;
     }, {});

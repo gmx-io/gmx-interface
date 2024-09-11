@@ -74,7 +74,9 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
       return `Executing multicall for chainId: ${chainId}. Call count: ${callCount}. Execution in ${executionIn}.`;
     });
 
-    if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD) {
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isIOS) {
       responseOrFailure = await executeMulticallWorker(chainId, requestConfig);
     } else {
       responseOrFailure = await executeMulticallMainThread(chainId, requestConfig);
