@@ -168,7 +168,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
   const minGlvTokens = applySlippageToMinOut(p.allowedSlippage, p.minMarketTokens);
-  debugger; // eslint-disable-line
+
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
     !isNativeLongDeposit && p.longTokenAmount > 0 && !p.isMarketTokenDeposit

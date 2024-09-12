@@ -646,7 +646,6 @@ msgstr ""
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "MARKET"
 msgstr "マーケット"
 
@@ -1095,8 +1094,8 @@ msgid "Generating and activating Subaccount"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
-msgstr ""
+#~ msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
+#~ msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
@@ -1228,6 +1227,10 @@ msgstr "{0}の更新が未完了のためレバレッジが無効化されてい
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT Address"
 msgstr "NFTアドレス"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3897,6 +3900,10 @@ msgstr ""
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4214,6 +4221,7 @@ msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "POOL"
 msgstr "プール"
@@ -4561,7 +4569,6 @@ msgstr ""
 msgid "Sell order executed"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
@@ -4981,7 +4988,6 @@ msgstr "最低必要担保"
 msgid "Search Pool"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
@@ -6636,6 +6642,10 @@ msgstr ""
 msgid "GMX community discussion"
 msgstr "GMXのコミュニティ対話"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
@@ -6941,7 +6951,6 @@ msgid "GMX ecosystem pages."
 msgstr "GMXエコシステムのページ"
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
@@ -7000,6 +7009,10 @@ msgstr "紹介の規約"
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

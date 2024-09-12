@@ -21,12 +21,13 @@ import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";
 import { isGlv, isGlvEnabled } from "./glv";
 import { getMarketListingDate } from "config/markets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
+import { useGlvMarketsInfo } from "./useGlvMarkets";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -228,10 +229,18 @@ function useIncentivesBonusApr(
 }
 
 export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
+  const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
-  const glvInfo = useSelector(selectGlvInfo);
-  const glvMarketInfo = isGlvEnabled(chainId) ? glvInfo : undefined;
+  const enabledGlv = isGlvEnabled(chainId);
+  const account = useSelector(selectAccount);
+
+  const { glvMarketInfo } = useGlvMarketsInfo(enabledGlv, {
+    marketsInfoData: onlyGmMarketsInfoData,
+    tokensData,
+    chainId,
+    account,
+  });
 
   const marketsInfoData = {
     ...onlyGmMarketsInfoData,

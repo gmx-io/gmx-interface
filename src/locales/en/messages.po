@@ -646,7 +646,6 @@ msgstr "Claim {totalUsd}"
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "MARKET"
 msgstr "MARKET"
 
@@ -1095,8 +1094,8 @@ msgid "Generating and activating Subaccount"
 msgstr "Generating and activating Subaccount"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
-msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
+#~ msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
+#~ msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
@@ -1228,6 +1227,10 @@ msgstr "Leverage disabled, pending {0} upgrade"
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT Address"
 msgstr "NFT Address"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3900,6 +3903,10 @@ msgstr "Unknown sell GM order"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4217,6 +4224,7 @@ msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr "{0}: {1}, Price: {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "POOL"
 msgstr "POOL"
@@ -4564,7 +4572,6 @@ msgstr "Order Type"
 msgid "Sell order executed"
 msgstr "Sell order executed"
 
-#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
@@ -4984,7 +4991,6 @@ msgstr "Min. required Collateral"
 msgid "Search Pool"
 msgstr "Search Pool"
 
-#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
@@ -6642,6 +6648,10 @@ msgstr "Confirm Claim"
 msgid "GMX community discussion"
 msgstr "GMX community discussion"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr "Sell GM"
@@ -6947,7 +6957,6 @@ msgid "GMX ecosystem pages."
 msgstr "GMX ecosystem pages."
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 
@@ -7007,6 +7016,10 @@ msgstr "Referral Terms"
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
 msgstr "No markets matched."
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
+msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake esGMX"

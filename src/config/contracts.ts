@@ -342,3 +342,5 @@ export const getDataStoreContract = makeGetContract("DataStore", DataStore__fact
 export const getMulticallContract = makeGetContract("Multicall", Multicall__factory);
 export const getExchangeRouterContract = makeGetContract("ExchangeRouter", ExchangeRouter__factory);
 export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__factory);
+
+export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, "", provider);

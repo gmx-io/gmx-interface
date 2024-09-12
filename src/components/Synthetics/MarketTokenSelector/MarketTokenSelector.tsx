@@ -276,7 +276,7 @@ function MarketTokenSelectorInternal(props: Props) {
               <thead>
                 <tr>
                   <th className={thClassName} colSpan={2}>
-                    <Trans>MARKET</Trans>
+                    <Trans>POOL</Trans>
                   </th>
                   <th className={thClassName}>
                     <Sorter {...getSorterProps("buyable")}>

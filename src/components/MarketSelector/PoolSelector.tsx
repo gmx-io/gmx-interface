@@ -108,15 +108,9 @@ export function PoolSelector({
       }
 
       const textSearchMatch = name.includes(lowercaseSearchKeyword);
+      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.marketTokenAddress) : true;
 
-      const additionalMatch =
-        {
-          gms: !isGlvMarket,
-          glvs: isGlvMarket,
-          favorites: favoriteTokens?.includes(option.marketInfo.marketTokenAddress),
-        }[tab] ?? true;
-
-      return textSearchMatch && additionalMatch;
+      return textSearchMatch && favoriteMatch;
     });
   }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
 

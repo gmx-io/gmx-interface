@@ -407,7 +407,7 @@ function GmListItem({
         <TooltipWithPortal
           content={
             <Trans>
-              Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens.
+              Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens.
               However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens.
             </Trans>
           }

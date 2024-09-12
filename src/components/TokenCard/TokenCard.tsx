@@ -104,20 +104,16 @@ export default function TokenCard({ showRedirectModal }: Props) {
 
     return {
       [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
-      [AVALANCHE]: isGlvEnabled(AVALANCHE) ? `${formatAmount(maxAvaxApy, 28, 2)}%` : undefined,
+      [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
     };
   }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
 
   const maxGlvApyText = useMemo(() => {
-    if (!arbGlvApy || !avaxGlvApy)
-      return {
-        [ARBITRUM]: "...%",
-      };
-
-    const maxArbApy = calculateMaxApr(arbGlvApy, {});
-
+    const arb = !arbGlvApy ? "...%" : `${formatAmount(calculateMaxApr(arbGlvApy, {}, ARBITRUM), 28, 2)}%`;
+    const avax = !avaxGlvApy ? "...%" : `${formatAmount(calculateMaxApr(avaxGlvApy, {}, AVALANCHE), 28, 2)}%`;
     return {
-      [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
+      [ARBITRUM]: isGlvEnabled(ARBITRUM) ? arb : undefined,
+      [AVALANCHE]: isGlvEnabled(AVALANCHE) ? avax : undefined,
     };
   }, [arbGlvApy, avaxGlvApy]);
 
@@ -202,20 +198,20 @@ export default function TokenCard({ showRedirectModal }: Props) {
     if (hasArbitrumGlvIncentives && hasAvaxGlvIncentives) {
       return (
         <Trans>
-          {arbitrumLink} and {avalancheLink} GM Pools are{" "}
+          {arbitrumLink} and {avalancheLink} GLV Pools are{" "}
           <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
     } else if (hasArbitrumGlvIncentives) {
       return (
         <Trans>
-          {arbitrumLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+          {arbitrumLink} GLV Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
     } else if (hasAvaxGlvIncentives) {
       return (
         <Trans>
-          {avalancheLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+          {avalancheLink} GLV Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
         </Trans>
       );
     } else {

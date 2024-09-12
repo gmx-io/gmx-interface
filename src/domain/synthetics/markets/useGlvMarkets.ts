@@ -122,6 +122,11 @@ export function useGlvMarketsInfo(
         const request = glvs.reduce((acc, { glv, markets }) => {
           const glvLongToken = tokensData[glv.longToken];
           const glvShortToken = tokensData[glv.shortToken];
+
+          if (!glvLongToken || !glvShortToken) {
+            return acc;
+          }
+
           const contractGlvPricesLong = convertToContractTokenPrices(glvLongToken.prices, glvLongToken.decimals);
           const contractGlvPricesShort = convertToContractTokenPrices(glvShortToken.prices, glvShortToken.decimals);
 
