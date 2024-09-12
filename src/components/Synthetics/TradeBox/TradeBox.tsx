@@ -6,26 +6,14 @@ import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 import { useKey, useLatest, usePrevious } from "react-use";
 
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
-import { MarketSelector } from "components/MarketSelector/MarketSelector";
-import Tab from "components/Tab/Tab";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tooltip from "components/Tooltip/Tooltip";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { getBridgingOptionsForToken } from "config/bridging";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
   useMarketsInfoData,
   usePositionsConstants,
@@ -90,6 +78,8 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { Token, getMinResidualAmount } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
+import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import {
   formatAmount,
   formatAmountFree,
@@ -115,19 +105,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { helperToast } from "lib/helperToast";
-import { useLocalizedMap } from "lib/i18n";
-
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
-import SwapIcon from "img/swap.svg?react";
-import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
-import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
-import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
-import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
-import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
-
 import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
@@ -138,8 +115,31 @@ import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import { MarketSelector } from "components/MarketSelector/MarketSelector";
+import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
+import Tab from "components/Tab/Tab";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
+
+import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
+import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
+import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
+import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
+import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
+
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
+import SwapIcon from "img/swap.svg?react";
 
 import "./TradeBox.scss";
 
