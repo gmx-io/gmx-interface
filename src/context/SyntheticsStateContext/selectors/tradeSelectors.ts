@@ -10,6 +10,7 @@ import {
   getBestSwapPath,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
+  getMarkPrice,
   getMarketsGraph,
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
@@ -330,13 +331,26 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
 
+        let markPrice = position?.markPrice;
+        if (markPrice === undefined) {
+          const market = getByKey(marketsInfoData, marketAddress);
+          if (market) {
+            markPrice = getMarkPrice({
+              prices: market.indexToken.prices,
+              isIncrease: false,
+              isLong: tradeFlags.isLong,
+            });
+          }
+        }
+
         let triggerOrderType: OrderType | undefined =
-          position &&
-          getTriggerDecreaseOrderType({
-            isLong: tradeFlags.isLong,
-            markPrice: position.markPrice,
-            triggerPrice: triggerPrice ?? 0n,
-          });
+          markPrice === undefined
+            ? undefined
+            : getTriggerDecreaseOrderType({
+                isLong: tradeFlags.isLong,
+                markPrice: markPrice,
+                triggerPrice: triggerPrice ?? 0n,
+              });
 
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
