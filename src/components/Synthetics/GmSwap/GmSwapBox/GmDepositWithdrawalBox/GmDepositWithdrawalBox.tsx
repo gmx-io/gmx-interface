@@ -275,12 +275,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const bestGmPoolAddress = useBestGmPoolAddressForGlv(isDeposit, marketInfo, selectedGlvGmMarket);
 
-  useEffect(() => {
-    if (!selectedGlvGmMarket && bestGmPoolAddress) {
-      onSelectGlvGmMarket?.(bestGmPoolAddress);
-    }
-  }, [bestGmPoolAddress, onSelectGlvGmMarket, selectedGlvGmMarket]);
-
   /**
    * Here and following we use `underlyingGmMarket` to get the correct market info for GLV markets
    * because we need to use actual GM market data to calculate fees, errors and so on,
@@ -667,12 +661,23 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     [marketAddress, onMarketChange, sortedMarketsInfoByIndexToken]
   );
 
+  useEffect(() => {
+    if (!selectedGlvGmMarket && bestGmPoolAddress) {
+      onSelectGlvGmMarket?.(bestGmPoolAddress);
+    }
+
+    if (selectedGlvGmMarket && !vaultInfo?.markets.find((m) => m.address === selectedGlvGmMarket)) {
+      onSelectGlvGmMarket?.(undefined);
+    }
+  }, [bestGmPoolAddress, onSelectGlvGmMarket, selectedGlvGmMarket, vaultInfo]);
+
   useUpdateByQueryParams({
     operation,
     setOperation: onSetOperation,
     setMode: onSetMode,
     onSelectMarket,
     onSelectGlvGmMarket,
+    selectedGlvGmMarket,
     setFirstTokenAddress,
   });
 
