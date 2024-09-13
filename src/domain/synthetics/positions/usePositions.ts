@@ -60,7 +60,7 @@ export function usePositions(
             methodName: "getAccountPositionInfoList",
             params: [
               getContract(chainId, "DataStore"),
-              // getContract(chainId, "ReferralStorage"),
+              getContract(chainId, "ReferralStorage"),
               account,
               keysAndPrices.marketsKeys,
               keysAndPrices.marketsPrices,
