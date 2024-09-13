@@ -1,14 +1,16 @@
 import { useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
+import cryptoJs from "crypto-js";
 import { stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
-import { metrics } from "lib/metrics";
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { serializeMulticallErrors } from "./utils";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { ErrorEvent } from "lib/metrics";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -139,7 +141,18 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         console.error(`Multicall request failed: ${name}`, e);
         e.message = `Multicall request failed: ${name} ${e.message}`;
 
-        metrics.pushError(e, "useMulticall");
+        emitMetricEvent<ErrorEvent>({
+          event: "error",
+          isError: true,
+          data: {
+            errorName: e.name,
+            errorMessage: e.message,
+            errorStack: e.stack,
+            errorStackHash: cryptoJs.SHA256(e.stack).toString(cryptoJs.enc.Hex),
+            isUserError: false,
+            isUserRejectedError: false,
+          },
+        });
 
         throw e;
       } finally {
