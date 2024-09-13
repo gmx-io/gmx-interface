@@ -6,8 +6,6 @@ import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps,
-  selectTradeboxSetFixedTriggerOrderType,
-  selectTradeboxSetFixedTriggerThresholdType,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -30,8 +28,6 @@ export function useTradeboxAvailablePriceImpactValues() {
     selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps
   );
   const setSelectedAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
-  const setFixedTriggerOrderType = useSelector(selectTradeboxSetFixedTriggerOrderType);
-  const setFixedTriggerThresholdType = useSelector(selectTradeboxSetFixedTriggerThresholdType);
 
   const tradeboxChanges = useTradeboxChanges();
 
@@ -76,28 +72,20 @@ export function useTradeboxAvailablePriceImpactValues() {
   useEffect(() => {
     if (
       isTrigger &&
-      decreaseAmounts?.triggerThresholdType &&
-      decreaseAmounts?.triggerOrderType &&
-      decreaseAmounts.acceptablePrice !== undefined &&
+      decreaseAmounts?.acceptablePrice !== undefined &&
       defaultTriggerAcceptablePriceImpactBps === undefined &&
       selectedTriggerAcceptablePriceImpactBps === undefined
     ) {
-      setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
-      setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
       setSelectedAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
       setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
     }
   }, [
     decreaseAmounts?.acceptablePrice,
     decreaseAmounts?.recommendedAcceptablePriceDeltaBps,
-    decreaseAmounts?.triggerOrderType,
-    decreaseAmounts?.triggerThresholdType,
     defaultTriggerAcceptablePriceImpactBps,
     isTrigger,
     selectedTriggerAcceptablePriceImpactBps,
     setDefaultTriggerAcceptablePriceImpactBps,
-    setFixedTriggerOrderType,
-    setFixedTriggerThresholdType,
     setSelectedAcceptablePriceImpactBps,
   ]);
 }
