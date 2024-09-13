@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
-import { accountPositionListKey, hashedPositionKey } from "config/dataStore";
+import { hashedPositionKey } from "config/dataStore";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
@@ -18,7 +18,6 @@ import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
 import { getPositionKey, parsePositionKey } from "./utils";
 
-import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
@@ -39,39 +38,10 @@ export function usePositions(
 ): PositionsResult {
   const { marketsInfoData, tokensData, account } = p;
 
-  const { data: existingPositionsKeysSet, error: existingPositionsKeysError } = useMulticall(
-    chainId,
-    "usePositions-keys",
-    {
-      key: account ? [account] : null,
-
-      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
-      clearUnusedKeys: true,
-      keepPreviousData: true,
-
-      request: () => ({
-        dataStore: {
-          contractAddress: getContract(chainId, "DataStore"),
-          abi: DataStore.abi,
-          calls: {
-            keys: {
-              methodName: "getBytes32ValuesAt",
-              params: [accountPositionListKey(account!), 0, 1000],
-            },
-          },
-        },
-      }),
-      parseResponse: (res) => {
-        return new Set(res.data.dataStore.keys.returnValues as string[]);
-      },
-    }
-  );
-
   const keysAndPrices = useKeysAndPricesParams({
     marketsInfoData,
     tokensData,
     account,
-    existingPositionsKeysSet,
   });
 
   const { data: positionsData, error: positionsError } = useMulticall(chainId, "usePositionsData", {
@@ -150,7 +120,7 @@ export function usePositions(
 
   return {
     positionsData: optimisticPositionsData,
-    error: positionsError || existingPositionsKeysError,
+    error: positionsError,
   };
 }
 
@@ -158,7 +128,6 @@ function useKeysAndPricesParams(p: {
   account: string | null | undefined;
   marketsInfoData: MarketsData | undefined;
   tokensData: TokensData | undefined;
-  existingPositionsKeysSet: Set<string> | undefined;
 }) {
   const { account, marketsInfoData, tokensData } = p;
 
