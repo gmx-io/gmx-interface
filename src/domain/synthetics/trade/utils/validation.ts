@@ -681,7 +681,7 @@ export function getGmSwapError(p: {
         return [t`Insufficient ${shortToken?.symbol} balance`];
       }
 
-      if (gmToken && (gmTokenAmount ?? 0n > (gmToken?.balance ?? 0n))) {
+      if (gmToken && (gmTokenAmount ?? 0n) > (gmToken?.balance ?? 0n)) {
         return [t`Insufficient GM balance`];
       }
     }

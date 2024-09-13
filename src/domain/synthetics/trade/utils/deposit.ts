@@ -111,7 +111,7 @@ export function getDepositAmounts(p: {
       const uiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
       values.uiFeeUsd = values.uiFeeUsd + uiFeeUsd;
 
-      gmMarketTokenAmount = getMarketTokenAmountByCollateral({
+      gmMarketTokenAmount += getMarketTokenAmountByCollateral({
         marketInfo,
         marketToken,
         tokenIn: longToken,
@@ -132,7 +132,7 @@ export function getDepositAmounts(p: {
       const uiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
       values.uiFeeUsd = values.uiFeeUsd + uiFeeUsd;
 
-      gmMarketTokenAmount = getMarketTokenAmountByCollateral({
+      gmMarketTokenAmount += getMarketTokenAmountByCollateral({
         marketInfo,
         marketToken,
         tokenIn: shortToken,
