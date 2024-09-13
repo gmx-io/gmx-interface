@@ -10,6 +10,7 @@ import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { getAbFlags } from "config/ab";
+import { getBestRpc } from "lib/rpc/bestRpcTracker";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
 
@@ -54,6 +55,7 @@ export async function executeMulticallWorker(
   executorWorker.postMessage({
     id,
     chainId,
+    providerUrls: getBestRpc(chainId),
     request,
     abFlags: getAbFlags(),
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),

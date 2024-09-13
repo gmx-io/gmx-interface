@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import sample from "lodash/sample";
 import type { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 import {
@@ -225,13 +224,28 @@ export const RPC_PROVIDERS = {
     "https://bsc-dataseed4.binance.org",
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-  [ARBITRUM]: ["https://arb1.arbitrum.io/rpc"],
+  [ARBITRUM]: [
+    "https://arb1.arbitrum.io/rpc",
+    "https://arbitrum.llamarpc.com",
+    "https://arb-pokt.nodies.app",
+    "https://arbitrum.meowrpc.com",
+    "https://arbitrum.drpc.org",
+    "https://1rpc.io/arb",
+    "https://arbitrum-one-rpc.publicnode.com",
+  ],
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     // "https://arbitrum-goerli.public.blastapi.io",
   ],
-  [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
+  [AVALANCHE]: [
+    "https://api.avax.network/ext/bc/C/rpc",
+    "https://avalanche-c-chain-rpc.publicnode.com",
+    "https://1rpc.io/avax/c",
+    "https://avax-pokt.nodies.app/ext/bc/C/rpc",
+    "https://avax.meowrpc.com",
+    "https://avalanche.drpc.org",
+  ],
   [AVALANCHE_FUJI]: [
     "https://avalanche-fuji-c-chain.publicnode.com",
     "https://api.avax-test.network/ext/bc/C/rpc",
@@ -334,14 +348,6 @@ export const getConstant = (chainId: number, key: string) => {
 
 export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
-}
-
-export function getRpcUrl(chainId: number): string | undefined {
-  return sample(RPC_PROVIDERS[chainId]);
-}
-
-export function getFallbackRpcUrl(chainId: number): string | undefined {
-  return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
 function getAlchemyKey() {

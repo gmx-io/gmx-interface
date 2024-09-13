@@ -2,7 +2,7 @@ import { ClientConfig, createPublicClient, http } from "viem";
 import type { BatchOptions } from "viem/_types/clients/transports/http";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { isWebWorker } from "config/env";
 import { hashData } from "lib/hash";
 import { sleep } from "lib/sleep";
@@ -22,6 +22,11 @@ const CHAIN_BY_CHAIN_ID = {
   [ARBITRUM_GOERLI]: arbitrumGoerli,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
+};
+
+export type MulticallProviderUrls = {
+  default: string;
+  fallback: string;
 };
 
 const BATCH_CONFIGS: Record<
@@ -90,14 +95,7 @@ export class Multicall {
     let instance = Multicall.instances[chainId];
 
     if (!instance || instance.chainId !== chainId) {
-      const rpcUrl = getRpcUrl(chainId);
-      const fallbackRpcUrl = getFallbackRpcUrl(chainId);
-
-      if (!rpcUrl || !fallbackRpcUrl) {
-        return undefined;
-      }
-
-      instance = new Multicall(chainId, rpcUrl, fallbackRpcUrl, abFlags);
+      instance = new Multicall(chainId, abFlags);
 
       Multicall.instances[chainId] = instance;
     }
@@ -142,23 +140,10 @@ export class Multicall {
 
   constructor(
     public chainId: number,
-    public rpcUrl: string,
-    public fallbackRpcUrl: string,
     private abFlags: Record<string, boolean>
-  ) {
-    const client = Multicall.getViemClient(chainId, rpcUrl);
-    const fallbackClient = Multicall.getViemClient(chainId, fallbackRpcUrl);
+  ) {}
 
-    this.getClient = function getViemClient({ forceFallback = false } = {}) {
-      if (forceFallback || this.fallbackRpcSwitcher?.isFallbackMode) {
-        return fallbackClient;
-      }
-
-      return client;
-    };
-  }
-
-  async call(request: MulticallRequestConfig<any>, maxTimeout: number) {
+  async call(providerUrls: MulticallProviderUrls, request: MulticallRequestConfig<any>, maxTimeout: number) {
     const originalKeys: {
       contractKey: string;
       callKey: string;
@@ -208,8 +193,10 @@ export class Multicall {
       });
     });
 
-    const client = this.getClient();
-    const isFallbackMode = this.fallbackRpcSwitcher?.isFallbackMode;
+    const client = this.fallbackRpcSwitcher?.isFallbackMode
+      ? Multicall.getViemClient(this.chainId, providerUrls.fallback)
+      : Multicall.getViemClient(this.chainId, providerUrls.default);
+    const isFallbackMode = providerUrls.default === providerUrls.fallback || this.fallbackRpcSwitcher?.isFallbackMode;
 
     const sendCounterEvent = (
       event: string,
@@ -289,35 +276,35 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.debug(`using multicall fallback for chain ${this.chainId}`);
 
-      return this.getClient({ forceFallback: true })
-        .multicall({ contracts: encodedPayload as any })
-        .catch((_viemError) => {
-          const e = new Error(_viemError.message.slice(0, 150));
-          // eslint-disable-next-line no-console
-          console.groupCollapsed("multicall fallback error:");
-          // eslint-disable-next-line no-console
-          console.error(e);
-          // eslint-disable-next-line no-console
-          console.groupEnd();
+      const fallbackClient = Multicall.getViemClient(this.chainId, providerUrls.fallback);
 
-          emitMetricEvent<MulticallErrorEvent>({
-            event: "multicall.error",
-            isError: true,
-            data: {
-              isFallback: true,
-              isAlchemy: true,
-              isInMainThread: !isWebWorker,
-              errorMessage: _viemError.message,
-            },
-          });
+      return fallbackClient.multicall({ contracts: encodedPayload as any }).catch((_viemError) => {
+        const e = new Error(_viemError.message.slice(0, 150));
+        // eslint-disable-next-line no-console
+        console.groupCollapsed("multicall fallback error:");
+        // eslint-disable-next-line no-console
+        console.error(e);
+        // eslint-disable-next-line no-console
+        console.groupEnd();
 
-          sendCounterEvent("error", {
+        emitMetricEvent<MulticallErrorEvent>({
+          event: "multicall.error",
+          isError: true,
+          data: {
             isFallback: true,
             isAlchemy: true,
-          });
-
-          throw e;
+            isInMainThread: !isWebWorker,
+            errorMessage: _viemError.message,
+          },
         });
+
+        sendCounterEvent("error", {
+          isFallback: true,
+          isAlchemy: true,
+        });
+
+        throw e;
+      });
     };
 
     sendCounterEvent("request", {

@@ -1,13 +1,6 @@
 import { Trans } from "@lingui/macro";
 import DataStore from "abis/DataStore.json";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
-  getRpcUrl,
-  getFallbackRpcUrl,
-} from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -40,6 +33,7 @@ import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState }
 import { createContext, useContextSelector } from "use-context-selector";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { getBestRpc } from "lib/rpc/bestRpcTracker";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
@@ -303,8 +297,7 @@ function useSubaccountCustomSigners() {
   const privateKey = useSubaccountPrivateKey();
 
   return useMemo(() => {
-    const publicRpc = getRpcUrl(chainId);
-    const fallbackRpc = getFallbackRpcUrl(chainId);
+    const { default: publicRpc, fallback: fallbackRpc } = getBestRpc(chainId);
 
     const rpcUrls: string[] = [];
 
