@@ -4,9 +4,11 @@ import { stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
+import { metrics } from "lib/metrics";
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
+import { serializeMulticallErrors } from "./utils";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -116,6 +118,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         if (responseOrFailure?.success) {
           successDataByChainIdRef.current[chainId] = responseOrFailure;
+        } else if (Object.keys(responseOrFailure.errors).length > 0) {
+          throw new Error(`Response error ${serializeMulticallErrors(responseOrFailure.errors)}`);
         }
 
         const response = successDataByChainIdRef.current[chainId];
@@ -134,6 +138,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         // eslint-disable-next-line no-console
         console.error(`Multicall request failed: ${name}`, e);
         e.message = `Multicall request failed: ${name} ${e.message}`;
+
+        metrics.pushError(e, "useMulticall");
 
         throw e;
       } finally {

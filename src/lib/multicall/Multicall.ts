@@ -9,10 +9,11 @@ import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 import CustomErrors from "abis/CustomErrors.json";
-import { MulticallTimeoutEvent, MulticallErrorEvent } from "lib/metrics";
+import { MulticallErrorEvent, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { getStaticOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { serializeMulticallErrors } from "./utils";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -306,7 +307,7 @@ export class Multicall {
               isFallback: true,
               isAlchemy: true,
               isInMainThread: !isWebWorker,
-              errorMessage: _viemError.message.slice(0, 150),
+              errorMessage: _viemError.message,
             },
           });
 
@@ -324,7 +325,7 @@ export class Multicall {
       isAlchemy: isFallbackMode,
     });
 
-    const result: any = await Promise.race([
+    const result = await Promise.race([
       client.multicall({ contracts: encodedPayload as any }),
       sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
     ])
@@ -363,7 +364,7 @@ export class Multicall {
         isFallback: false,
         isAlchemy: isFallbackMode,
         isInMainThread: !isWebWorker,
-        errorMessage: "multicall error",
+        errorMessage: serializeMulticallErrors(result.errors),
       },
     });
 

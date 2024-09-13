@@ -159,7 +159,7 @@ export class Metrics {
     );
   };
 
-  _sendError = async (error: unknown, errorSource: string) => {
+  pushError = async (error: unknown, errorSource: string) => {
     const errorData = prepareErrorMetricData(error);
 
     if (!errorData) {
@@ -204,7 +204,7 @@ export class Metrics {
     const error = event.error;
 
     if (error) {
-      this._sendError(error, "globalError");
+      this.pushError(error, "globalError");
     }
   };
 
@@ -212,7 +212,7 @@ export class Metrics {
     const error = event.reason;
 
     if (error) {
-      this._sendError(error, "unhandledRejection");
+      this.pushError(error, "unhandledRejection");
     }
   };
 
