@@ -6,11 +6,12 @@ import {
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
   getAlchemyArbitrumWsUrl,
+  getFallbackRpcUrl,
 } from "config/chains";
 import { Signer, ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { isDevelopment } from "config/env";
-import { getBestRpc } from "lib/rpc/bestRpcTracker";
+import { getBestRpcUrl } from "lib/rpc/bestRpcTracker";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
@@ -22,7 +23,7 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
     return signer;
   }
 
-  url = getBestRpc(chainId).default;
+  url = getBestRpcUrl(chainId);
 
   const network = Network.from(chainId);
 
@@ -47,7 +48,7 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   }
 
   if (chainId === AVALANCHE_FUJI) {
-    const provider = new ethers.JsonRpcProvider(getBestRpc(AVALANCHE_FUJI).default, network, {
+    const provider = new ethers.JsonRpcProvider(getBestRpcUrl(AVALANCHE_FUJI), network, {
       staticNetwork: network,
     });
     provider.pollingInterval = 2000;
@@ -60,7 +61,7 @@ export function getFallbackProvider(chainId: number) {
     return;
   }
 
-  const providerUrl = getBestRpc(chainId).fallback;
+  const providerUrl = getFallbackRpcUrl(chainId);
 
   return new ethers.JsonRpcProvider(providerUrl, chainId, {
     staticNetwork: Network.from(chainId),
@@ -70,10 +71,10 @@ export function getFallbackProvider(chainId: number) {
 export function useJsonRpcProvider(chainId: number) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
+  const rpcUrl = getBestRpcUrl(chainId);
+
   useEffect(() => {
     async function initializeProvider() {
-      const rpcUrl = getBestRpc(chainId).default;
-
       if (!rpcUrl) return;
 
       const provider = new ethers.JsonRpcProvider(rpcUrl, chainId);
@@ -85,7 +86,7 @@ export function useJsonRpcProvider(chainId: number) {
     }
 
     initializeProvider();
-  }, [chainId]);
+  }, [chainId, rpcUrl]);
 
   return { provider };
 }

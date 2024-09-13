@@ -25,7 +25,7 @@ const CHAIN_BY_CHAIN_ID = {
 };
 
 export type MulticallProviderUrls = {
-  default: string;
+  primary: string;
   fallback: string;
 };
 
@@ -193,10 +193,11 @@ export class Multicall {
       });
     });
 
-    const client = this.fallbackRpcSwitcher?.isFallbackMode
-      ? Multicall.getViemClient(this.chainId, providerUrls.fallback)
-      : Multicall.getViemClient(this.chainId, providerUrls.default);
-    const isFallbackMode = providerUrls.default === providerUrls.fallback || this.fallbackRpcSwitcher?.isFallbackMode;
+    const client = Multicall.getViemClient(
+      this.chainId,
+      this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.fallback : providerUrls.primary
+    );
+    const isAlchemy = providerUrls.primary === providerUrls.fallback || this.fallbackRpcSwitcher?.isFallbackMode;
 
     const sendCounterEvent = (
       event: string,
@@ -269,7 +270,7 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.groupEnd();
 
-      if (!isFallbackMode) {
+      if (!isAlchemy) {
         this.fallbackRpcSwitcher?.trigger();
       }
 
@@ -309,7 +310,7 @@ export class Multicall {
 
     sendCounterEvent("request", {
       isFallback: false,
-      isAlchemy: isFallbackMode,
+      isAlchemy,
     });
 
     const result = await Promise.race([
@@ -327,14 +328,14 @@ export class Multicall {
             metricType: "rpcTimeout",
             isInMainThread: !isWebWorker,
             isFallback: false,
-            isAlchemy: isFallbackMode,
+            isAlchemy,
             errorMessage: _viemError.message.slice(0, 150),
           },
         });
 
         sendCounterEvent("timeout", {
           isFallback: false,
-          isAlchemy: isFallbackMode,
+          isAlchemy,
         });
 
         return fallbackMulticall(e).then(processResponse);
@@ -349,7 +350,7 @@ export class Multicall {
       isError: true,
       data: {
         isFallback: false,
-        isAlchemy: isFallbackMode,
+        isAlchemy,
         isInMainThread: !isWebWorker,
         errorMessage: serializeMulticallErrors(result.errors),
       },
@@ -357,10 +358,10 @@ export class Multicall {
 
     sendCounterEvent("error", {
       isFallback: false,
-      isAlchemy: isFallbackMode,
+      isAlchemy,
     });
 
-    if (!isFallbackMode) {
+    if (!isAlchemy) {
       this.fallbackRpcSwitcher?.trigger();
     }
 

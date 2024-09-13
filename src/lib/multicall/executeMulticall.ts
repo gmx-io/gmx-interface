@@ -274,16 +274,16 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     throttledExecuteBackgroundChainsMulticalls();
   }
 
-  const now = Date.now();
+  const durationStart = performance.now();
 
   return promise.then((result) => {
-    const duration = Date.now() - now;
+    const duration = performance.now() - durationStart;
     const abFlags = getAbFlags();
 
     if (result.success) {
       getStaticOracleKeeperFetcher(chainId).fetchPostTiming({
         event: `multicall.${priority}.execute.timing`,
-        time: duration,
+        time: Math.round(duration),
         abFlags,
       });
     } else {

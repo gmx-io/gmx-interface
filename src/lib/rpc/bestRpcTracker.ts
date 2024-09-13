@@ -5,14 +5,12 @@ import {
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
-  FALLBACK_PROVIDERS,
+  getFallbackRpcUrl,
 } from "config/chains";
 import { getRpcProviderKey, SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import entries from "lodash/entries";
 import orderBy from "lodash/orderBy";
-import meanBy from "lodash/meanBy";
 import minBy from "lodash/minBy";
-import sample from "lodash/sample";
 import { differenceInMilliseconds } from "date-fns";
 import { getMulticallContract, getDataStoreContract } from "config/contracts";
 import { getContract } from "config/contracts";
@@ -22,7 +20,6 @@ import { sleep } from "lib/sleep";
 
 const PROBE_INTERVAL = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
-const PROBE_SLIDING_WINDOW = 60 * 1000; // 60 seconds / Size of the sliding window for RPC average response time calculation
 const STORAGE_EXPIRE_TIMEOUT = 5 * 60 * 1000; // 5 minutes / Time after which provider saved in the localStorage is considered stale
 const DISABLE_UNUSED_TRACKING_TIMEOUT = 2 * 60 * 1000; // 2 minutes / Pause probing if no requests for the best RPC for this time
 
@@ -38,7 +35,8 @@ const PROBE_SAMPLE_MARKET = {
   [AVALANCHE_FUJI]: "0xbf338a6C595f06B7Cfff2FA8c958d49201466374", // ETH/USD
 };
 
-type RpcProbe = {
+type ProbeData = {
+  url: string;
   isSuccess: boolean;
   responseTime: number;
   blockNumber: number | null;
@@ -48,7 +46,6 @@ type RpcProbe = {
 type ProviderData = {
   url: string;
   provider: Provider;
-  probeData: RpcProbe[];
 };
 
 type RpcTrackerState = {
@@ -61,7 +58,7 @@ type RpcTrackerState = {
   };
 };
 
-let trackingIntervalId: NodeJS.Timeout | null = null;
+let trackingIntervalId: number | null = null;
 let trackerState: RpcTrackerState | null = null;
 
 function initRpcTracking() {
@@ -71,7 +68,7 @@ function initRpcTracking() {
     clearInterval(trackingIntervalId);
   }
   measureRpcData();
-  trackingIntervalId = setInterval(measureRpcData, PROBE_INTERVAL);
+  trackingIntervalId = window.setInterval(measureRpcData, PROBE_INTERVAL);
 }
 
 function measureRpcData() {
@@ -90,27 +87,15 @@ function measureRpcData() {
       return;
     }
 
-    const probes = providers.map(async (providerInfo) => {
-      providerInfo.probeData = providerInfo.probeData.filter((probe) => {
-        return Date.now() - probe.timestamp.getTime() < PROBE_SLIDING_WINDOW;
-      });
-
-      return probeRpc(chainId, providerInfo.provider, providerInfo.url).then((probeResult) => {
-        providerInfo.probeData.push(probeResult);
-
-        return probeResult;
-      });
+    const probePromises = providers.map((providerInfo) => {
+      return probeRpc(chainId, providerInfo.provider, providerInfo.url);
     });
 
-    const probeResults = await Promise.all(probes);
+    const probeResults = await Promise.all(probePromises);
     const successProbeResults = probeResults.filter((probe) => probe.isSuccess);
 
     if (!successProbeResults.length) {
-      const fallbackUrl = getBestRpc(chainId).fallback;
-
-      if (fallbackUrl) {
-        setCurrentProvider(chainId, fallbackUrl);
-      }
+      setCurrentProvider(chainId, getFallbackRpcUrl(chainId));
 
       return;
     }
@@ -121,7 +106,7 @@ function measureRpcData() {
     const probeStats = probeResultsByBlockNumber.map((probe, i, arr) => {
       let isValid = probe.isSuccess;
 
-      const bestBlockNumber = bestBlockNumberProbe?.blockNumber;
+      const bestBlockNumber = bestBlockNumberProbe.blockNumber;
       const currProbeBlockNumber = probe.blockNumber;
       const nextProbeBlockNumber = arr[i + 1]?.blockNumber;
 
@@ -132,7 +117,7 @@ function measureRpcData() {
         nextProbeBlockNumber &&
         currProbeBlockNumber - nextProbeBlockNumber > BLOCK_FROM_FUTURE_THRESHOLD
       ) {
-        bestBlockNumberProbe = probe;
+        bestBlockNumberProbe = arr[i + 1];
         isValid = false;
       }
 
@@ -144,17 +129,16 @@ function measureRpcData() {
       return {
         ...probe,
         isValid,
-        avgResponseTime: meanBy(chainTracker.providers[probe.url].probeData, "responseTime"),
       };
     });
 
-    const bestAvgTimeValidProbe = minBy(
+    const bestResponseTimeValidProbe = minBy(
       probeStats.filter((probe) => probe.isValid),
-      "avgResponseTime"
+      "responseTime"
     );
 
-    if (bestAvgTimeValidProbe) {
-      setCurrentProvider(chainId, bestAvgTimeValidProbe.url);
+    if (bestResponseTimeValidProbe) {
+      setCurrentProvider(chainId, bestResponseTimeValidProbe.url);
     }
 
     if (isDebugMode()) {
@@ -163,13 +147,12 @@ function measureRpcData() {
         orderBy(
           probeStats.map((probe) => ({
             url: probe.url,
-            isSelected: probe.url === bestAvgTimeValidProbe?.url ? "✅" : "",
+            isSelected: probe.url === bestResponseTimeValidProbe?.url ? "✅" : "",
             isValid: probe.isValid ? "✅" : "❌",
-            avgResponseTime: probe.avgResponseTime,
             responseTime: probe.responseTime,
             blockNumber: probe.blockNumber,
           })),
-          ["avgResponseTime"],
+          ["responseTime"],
           ["asc"]
         )
       );
@@ -199,7 +182,7 @@ function isDebugMode() {
   return localStorage.getItem(JSON.stringify(SHOW_DEBUG_VALUES_KEY)) === "true";
 }
 
-async function probeRpc(chainId: number, provider: Provider, providerUrl: string) {
+async function probeRpc(chainId: number, provider: Provider, providerUrl: string): Promise<ProbeData> {
   const controller = new AbortController();
 
   return await Promise.race([
@@ -298,11 +281,11 @@ function initTrackerState() {
   const now = Date.now();
 
   return SUPPORTED_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
-    const providers = RPC_PROVIDERS[chainId].reduce((acc, rpcUrl) => {
+    const providersList = RPC_PROVIDERS[chainId] as string[];
+    const providers = providersList.reduce<Record<string, ProviderData>>((acc, rpcUrl) => {
       acc[rpcUrl] = {
         url: rpcUrl,
         provider: new ethers.JsonRpcProvider(rpcUrl),
-        probeData: [],
       };
 
       return acc;
@@ -314,7 +297,8 @@ function initTrackerState() {
     const storedProviderData = localStorage.getItem(storageKey);
 
     if (storedProviderData) {
-      let rpcUrl, timestamp;
+      let rpcUrl: string | undefined;
+      let timestamp: number | undefined;
 
       try {
         const storedProvider = JSON.parse(storedProviderData);
@@ -341,14 +325,9 @@ function initTrackerState() {
   }, {});
 }
 
-export function getBestRpc(chainId: keyof RpcTrackerState) {
-  const fallbackRpcUrl: string = sample(FALLBACK_PROVIDERS[chainId]);
-
+export function getBestRpcUrl(chainId: number) {
   if (!getIsFlagEnabled("testSmartRpcSwitching")) {
-    return {
-      default: RPC_PROVIDERS[chainId][0],
-      fallback: fallbackRpcUrl,
-    };
+    return RPC_PROVIDERS[chainId][0] as string;
   }
 
   if (!trackerState) {
@@ -361,8 +340,5 @@ export function getBestRpc(chainId: keyof RpcTrackerState) {
 
   trackerState[chainId].lastUsage = new Date();
 
-  return {
-    default: trackerState[chainId].currentBestProviderUrl,
-    fallback: fallbackRpcUrl,
-  };
+  return trackerState[chainId].currentBestProviderUrl;
 }

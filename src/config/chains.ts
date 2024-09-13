@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import sample from "lodash/sample";
 import type { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
 import {
@@ -348,6 +349,10 @@ export const getConstant = (chainId: number, key: string) => {
 
 export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
+}
+
+export function getFallbackRpcUrl(chainId: number): string {
+  return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
 function getAlchemyKey() {
