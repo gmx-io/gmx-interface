@@ -10,12 +10,7 @@ import {
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import {
-  MarketsInfoData,
-  getGlvMarketDisplayName,
-  getMarketIndexName,
-  getMarketPoolName,
-} from "domain/synthetics/markets";
+import { MarketsInfoData, getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -184,7 +179,7 @@ export function GmStatusNotification({
         return (
           <Trans>
             <div className="inline-flex">
-              Buying {isGlvMarket ? getGlvMarketDisplayName(marketInfo) : "GM:"}
+              Buying {isGlvMarket ? getGlvDisplayName(marketInfo) : "GM:"}
               {indexName ? <span>&nbsp;{indexName}</span> : null}
               <PoolName>{poolName}</PoolName>
             </div>{" "}
@@ -203,7 +198,7 @@ export function GmStatusNotification({
       return (
         <Trans>
           <div className="inline-flex">
-            Selling {isGlvMarket ? getGlvMarketDisplayName(marketInfo) : "GM:"}
+            Selling {isGlvMarket ? getGlvDisplayName(marketInfo) : "GM:"}
             {indexName && <span>:&nbsp;{indexName}</span>}
             <PoolName>{poolName}</PoolName>
           </div>

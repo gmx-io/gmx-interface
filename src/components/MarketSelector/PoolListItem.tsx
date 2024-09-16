@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
 
-import { getGlvMarketDisplayName, getMarketBadge, MarketInfo } from "domain/synthetics/markets";
+import { getGlvDisplayName, getMarketBadge, MarketInfo } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 
@@ -117,7 +117,7 @@ export function PoolListItem(props: {
             <div className="Token-text">
               {isGlv(marketInfo) ? (
                 <div className="flex items-center leading-1">
-                  <span>{getGlvMarketDisplayName(marketInfo)}</span>
+                  <span>{getGlvDisplayName(marketInfo)}</span>
                   <span className="subtext">[{poolName}]</span>
                 </div>
               ) : showAllPools ? (

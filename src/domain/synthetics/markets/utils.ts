@@ -24,7 +24,7 @@ export function getGlvMarketName(chainId: number, address: string) {
   return GLV_MARKETS[chainId]?.[address]?.name;
 }
 
-export function getGlvMarketDisplayName(glv: GlvMarketInfo) {
+export function getGlvDisplayName(glv: GlvMarketInfo) {
   return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
 }
 

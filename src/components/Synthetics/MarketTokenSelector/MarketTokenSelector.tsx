@@ -11,7 +11,7 @@ import {
   MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
-  getGlvMarketDisplayName,
+  getGlvDisplayName,
   getGlvMarketShortening,
   getGlvMarketSubtitle,
   getMarketIndexName,
@@ -101,7 +101,7 @@ export default function MarketTokenSelector(props: Props) {
               <div className="ml-16">
                 <div className="flex items-center text-16">
                   {isGlvMarket ? (
-                    <span>{getGlvMarketDisplayName(currentMarketInfo)}</span>
+                    <span>{getGlvDisplayName(currentMarketInfo)}</span>
                   ) : (
                     <span>GM{indexName && `: ${indexName}`}</span>
                   )}
@@ -366,7 +366,7 @@ function useFilterSortTokensInfo({
         if (!searchKeyword.trim()) {
           textSearchMatch = true;
         } else {
-          const marketName = isGlv(marketInfo) ? getGlvMarketDisplayName(marketInfo) : marketInfo.name;
+          const marketName = isGlv(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name;
           textSearchMatch = marketName.toLowerCase().includes(searchKeyword.toLowerCase());
         }
 
@@ -389,7 +389,7 @@ function useFilterSortTokensInfo({
       const apr = getByKey(isGlvMarket ? glvMarketsTokensApyData : marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
       const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
-      const indexName = isGlvMarket ? getGlvMarketDisplayName(marketInfo) : getMarketIndexName(marketInfo);
+      const indexName = isGlvMarket ? getGlvDisplayName(marketInfo) : getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
         market,

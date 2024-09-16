@@ -6,7 +6,7 @@ import {
   MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
-  getGlvMarketDisplayName,
+  getGlvDisplayName,
   getMarketIndexName,
   getMarketPoolName,
   getMaxPoolUsd,
@@ -329,7 +329,7 @@ export function MarketStatsWithComposition(p: Props) {
               value={
                 poolName ? (
                   <div className="flex items-start">
-                    <span>{getGlvMarketDisplayName(marketInfo)}</span>
+                    <span>{getGlvDisplayName(marketInfo)}</span>
                     <span className="subtext gm-market-name">[{poolName}]</span>
                   </div>
                 ) : (
@@ -461,8 +461,8 @@ export function MarketStatsWithComposition(p: Props) {
       </div>
       <div
         className={cx("flex-grow", {
-          "border-l w-[100%] border-l-slate-700": canFitCompositionOnRow,
-          "border-t mt-20 border-t-slate-700": !canFitCompositionOnRow,
+          "w-[100%] border-l border-l-slate-700": canFitCompositionOnRow,
+          "mt-20 border-t border-t-slate-700": !canFitCompositionOnRow,
         })}
       >
         <div className="p-20">

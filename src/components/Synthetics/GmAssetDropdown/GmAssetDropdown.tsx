@@ -13,7 +13,7 @@ import {
   GlvAndGmMarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
-  getGlvMarketDisplayName,
+  getGlvDisplayName,
 } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -48,7 +48,7 @@ function renderMarketName(market?: MarketInfo | GlvMarketInfo) {
 
   return (
     <>
-      {isGlvMarket ? getGlvMarketDisplayName(market) : "GM"}
+      {isGlvMarket ? getGlvDisplayName(market) : "GM"}
       {marketName ? <>: {marketName}</> : null}
       <span className="inline-flex items-start">
         <span className="subtext">[{poolName}]</span>

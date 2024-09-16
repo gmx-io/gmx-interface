@@ -1,7 +1,7 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { Trans } from "@lingui/macro";
 
-import { getGlvMarketDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { helperToast } from "lib/helperToast";
 import { isGlv } from "../../../../domain/synthetics/markets/glv";
 import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -12,7 +12,7 @@ export function showMarketToast(market: MarketInfo | GlvMarketInfo) {
   const isGlvMarket = isGlv(market);
   const indexName = isGlvMarket ? undefined : getMarketIndexName(market);
   const poolName = getMarketPoolName(market);
-  const titlePrefix = isGlvMarket ? getGlvMarketDisplayName(market) : "GM: ";
+  const titlePrefix = isGlvMarket ? getGlvDisplayName(market) : "GM: ";
 
   helperToast.success(
     <Trans>

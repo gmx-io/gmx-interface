@@ -25,7 +25,7 @@ import {
   getMintableMarketTokens,
   getTotalGmInfo,
   useMarketTokensData,
-  getGlvMarketDisplayName,
+  getGlvDisplayName,
   getMarketBadge,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -465,7 +465,7 @@ function GmListItem({
           <div>
             <div className="flex text-16">
               {isGlvMarket
-                ? getGlvMarketDisplayName(market)
+                ? getGlvDisplayName(market)
                 : getMarketIndexName({ indexToken, isSpotOnly: Boolean(market?.isSpotOnly) })}
 
               <div className="inline-block">
