@@ -65,7 +65,6 @@ export const ESTIMATED_GAS_FEE_PER_ORACLE_PRICE = hashString("ESTIMATED_GAS_FEE_
 export const ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR = hashString("ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR");
 export const MARKET_LIST_KEY = hashString("MARKET_LIST");
 export const POSITION_LIST_KEY = hashString("POSITION_LIST");
-export const ACCOUNT_POSITION_LIST_KEY = hashString("ACCOUNT_POSITION_LIST");
 export const ORDER_LIST_KEY = hashString("ORDER_LIST");
 export const ACCOUNT_ORDER_LIST_KEY = hashString("ACCOUNT_ORDER_LIST");
 export const CLAIMABLE_FUNDING_AMOUNT = hashString("CLAIMABLE_FUNDING_AMOUNT");
@@ -272,10 +271,6 @@ export function swapOrderGasLimitKey() {
 
 export function accountOrderListKey(account: string) {
   return hashData(["bytes32", "address"], [ACCOUNT_ORDER_LIST_KEY, account]);
-}
-
-export function accountPositionListKey(account: string) {
-  return hashData(["bytes32", "address"], [ACCOUNT_POSITION_LIST_KEY, account]);
 }
 
 export function minCollateralFactorKey(market: string) {

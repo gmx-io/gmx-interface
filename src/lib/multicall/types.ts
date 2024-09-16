@@ -40,17 +40,24 @@ export type ContractCallResult = {
   error?: string;
 };
 
+export type MulticallErrors<T extends MulticallRequestConfig<any>> = {
+  [contractKey in keyof T]: {
+    [callKey in keyof T[contractKey]["calls"]]: {
+      message: string;
+      shortMessage: string;
+      functionName: string;
+      contractAddress: string;
+    };
+  };
+};
+
 export type ContractCallsResult<T extends ContractCallsConfig<any>> = {
   [callKey in keyof T["calls"]]: ContractCallResult;
 };
 
 export type MulticallResult<T extends MulticallRequestConfig<any>> = {
   success: boolean;
-  errors: {
-    [contractKey in keyof T]: {
-      [callKey in keyof T[contractKey]["calls"]]: string;
-    };
-  };
+  errors: MulticallErrors<T>;
   data: {
     [contractKey in keyof T]: ContractCallsResult<T[contractKey]>;
   };
