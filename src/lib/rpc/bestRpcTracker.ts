@@ -21,7 +21,7 @@ import { sleep } from "lib/sleep";
 const PROBE_INTERVAL = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
 const STORAGE_EXPIRE_TIMEOUT = 5 * 60 * 1000; // 5 minutes / Time after which provider saved in the localStorage is considered stale
-const DISABLE_UNUSED_TRACKING_TIMEOUT = 2 * 60 * 1000; // 2 minutes / Pause probing if no requests for the best RPC for this time
+const DISABLE_UNUSED_TRACKING_TIMEOUT = 1 * 60 * 1000; // 1 minute / Pause probing if no requests for the best RPC for this time
 
 const BLOCK_FROM_FUTURE_THRESHOLD = 1000; // Omit RPC if block number is higher than average on this value
 const BLOCK_LAGGING_THRESHOLD = 50; // Omit RPC if block number is lower than highest valid on this value
@@ -50,7 +50,7 @@ type ProviderData = {
 
 type RpcTrackerState = {
   [chainId: number]: {
-    lastUsage: Date;
+    lastUsage: Date | null;
     currentBestProviderUrl: string;
     providers: {
       [providerUrl: string]: ProviderData;
@@ -67,11 +67,11 @@ function initRpcTracking() {
   if (trackingIntervalId) {
     clearInterval(trackingIntervalId);
   }
-  measureRpcData();
-  trackingIntervalId = window.setInterval(measureRpcData, PROBE_INTERVAL);
+  measureRpcData({ warmUp: true });
+  trackingIntervalId = window.setInterval(() => measureRpcData(), PROBE_INTERVAL);
 }
 
-function measureRpcData() {
+function measureRpcData({ warmUp = false } = {}) {
   if (!trackerState) {
     throw new Error("RPC tracker state is not initialized");
   }
@@ -80,10 +80,12 @@ function measureRpcData() {
     const chainId = Number(chainIdRaw);
     const providers = Object.values(chainTracker.providers);
 
-    if (
-      differenceInMilliseconds(Date.now(), chainTracker.lastUsage) > DISABLE_UNUSED_TRACKING_TIMEOUT ||
-      providers.length < 2
-    ) {
+    const isUnusedChain =
+      !chainTracker.lastUsage ||
+      differenceInMilliseconds(Date.now(), chainTracker.lastUsage) > DISABLE_UNUSED_TRACKING_TIMEOUT;
+    const isTrackingEnabled = (warmUp || !isUnusedChain) && providers.length > 1;
+
+    if (!isTrackingEnabled) {
       return;
     }
 
@@ -316,7 +318,7 @@ function initTrackerState() {
     }
 
     acc[chainId] = {
-      lastUsage: new Date(),
+      lastUsage: null,
       currentBestProviderUrl,
       providers,
     };
