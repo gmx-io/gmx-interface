@@ -230,31 +230,6 @@
   margin-left: 0.775rem;
 }
 
-.referral-table {
-  border-collapse: collapse;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  table-layout: fixed;
-  font-size: var(--font-base);
-}
-.referral-table th {
-  font-weight: normal;
-  letter-spacing: 0.25px;
-  color: var(--color-gray-400);
-  text-transform: uppercase;
-}
-.referral-table th,
-.referral-table td {
-  padding: 0.625em;
-  text-align: left;
-  white-space: nowrap;
-}
-.referral-table th:last-of-type,
-.referral-table td:last-of-type {
-  text-align: right;
-}
-
 .table-referral-code p {
   margin: 0;
   margin-left: 0.775rem;
@@ -297,21 +272,10 @@
 }
 
 @media (max-width: 800px) {
-  .referral-table {
-    width: auto;
-    margin-bottom: 1.5rem;
-  }
   .table-wrapper {
     overflow-x: auto;
   }
   .table-head {
     white-space: nowrap;
-  }
-}
-@media (max-width: 500px) {
-  .referral-table-header .sub-title {
-    display: block;
-    margin-left: 0;
-    margin-top: 2px;
   }
 }

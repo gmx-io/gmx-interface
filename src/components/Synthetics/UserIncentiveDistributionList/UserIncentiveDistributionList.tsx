@@ -1,14 +1,9 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import Button from "components/Button/Button";
-import Card from "components/Common/Card";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Pagination from "components/Pagination/Pagination";
-import EmptyMessage from "components/Referrals/EmptyMessage";
-import usePagination from "components/Referrals/usePagination";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
+
 import { getExplorerUrl } from "config/chains";
 import { getTokens } from "config/tokens";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -25,8 +20,16 @@ import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
+
+import Button from "components/Button/Button";
+import Card from "components/Common/Card";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import EmptyMessage from "components/Referrals/EmptyMessage";
+import usePagination from "components/Referrals/usePagination";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
@@ -113,32 +116,36 @@ export default function UserIncentiveDistributionList() {
 
   return (
     <div>
-      <Card title={t`Incentives Distribution History`} tooltipText={t`Incentives are airdropped weekly.`}>
-        <div className="table-wrapper">
-          <table className="referral-table">
+      <Card
+        title={t`Incentives Distribution History`}
+        tooltipText={t`Incentives are airdropped weekly.`}
+        bodyPadding={false}
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-max">
             <thead>
-              <tr>
-                <th className="table-head" scope="col">
+              <ExchangeTheadTr>
+                <ExchangeTh>
                   <Trans>Date</Trans>
-                </th>
-                <th className="table-head" scope="col">
+                </ExchangeTh>
+                <ExchangeTh>
                   <Trans>Type</Trans>
-                </th>
-                <th className="table-head" scope="col">
+                </ExchangeTh>
+                <ExchangeTh>
                   <Trans>Amount</Trans>
-                </th>
-                <th className="table-head" scope="col">
+                </ExchangeTh>
+                <ExchangeTh>
                   <Trans>Transaction</Trans>
-                </th>
-              </tr>
+                </ExchangeTh>
+              </ExchangeTheadTr>
             </thead>
             <tbody>
               {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
             </tbody>
           </table>
         </div>
+        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </Card>
-      <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
     </div>
   );
 }
@@ -177,17 +184,17 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
-    <tr>
-      <td data-label="Date">{formatDate(timestamp)}</td>
-      <td data-label="Type">{type}</td>
-      <td data-label="Amount">
+    <ExchangeTr bordered={false} hoverable={false}>
+      <ExchangeTd data-label="Date">{formatDate(timestamp)}</ExchangeTd>
+      <ExchangeTd data-label="Type">{type}</ExchangeTd>
+      <ExchangeTd data-label="Amount">
         <Tooltip handle={formatUsd(totalUsd)} className="whitespace-nowrap" renderContent={renderTotalTooltipContent} />
-      </td>
-      <td data-label="Transaction">
+      </ExchangeTd>
+      <ExchangeTd data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>
           {shortenAddressOrEns(transactionHash, 13)}
         </ExternalLink>
-      </td>
-    </tr>
+      </ExchangeTd>
+    </ExchangeTr>
   );
 }
