@@ -21,7 +21,7 @@ export function getDepositAmounts(p: {
   uiFeeFactor: bigint;
   forShift?: boolean;
   isMarketTokenDeposit: boolean;
-  vaultInfo?: GlvInfo;
+  glvInfo?: GlvInfo;
 }): DepositAmounts {
   const {
     marketInfo,
@@ -38,7 +38,7 @@ export function getDepositAmounts(p: {
     includeShortToken,
     uiFeeFactor,
     isMarketTokenDeposit,
-    vaultInfo,
+    glvInfo,
   } = p;
 
   const longTokenPrice = longToken && getMidPrice(longToken.prices);
@@ -73,12 +73,12 @@ export function getDepositAmounts(p: {
     /**
      * If it's GM -> GLV deposit, then don't apply any fees or price impact, just convert GM to GLV
      */
-    if (isMarketTokenDeposit && vaultInfo && gmToken) {
+    if (isMarketTokenDeposit && glvInfo && gmToken) {
       const gmTokenUsd = convertToUsd(gmTokenAmount, gmToken.decimals, gmTokenPrice)!;
       const glvTokenAmount =
-        convertToTokenAmount(gmTokenUsd, vaultInfo.indexToken.decimals, vaultInfo.indexToken.prices.minPrice) ?? 0n;
+        convertToTokenAmount(gmTokenUsd, glvInfo.indexToken.decimals, glvInfo.indexToken.prices.minPrice) ?? 0n;
       const glvTokenUsd =
-        convertToUsd(glvTokenAmount, vaultInfo.indexToken.decimals, vaultInfo.indexToken.prices.minPrice) ?? 0n;
+        convertToUsd(glvTokenAmount, glvInfo.indexToken.decimals, glvInfo.indexToken.prices.minPrice) ?? 0n;
 
       values.marketTokenAmount = glvTokenAmount;
       values.marketTokenUsd = glvTokenUsd;
@@ -145,8 +145,8 @@ export function getDepositAmounts(p: {
 
     const gmMarketUsd = convertToUsd(gmMarketTokenAmount, marketToken.decimals, marketToken.prices.minPrice)!;
 
-    if (vaultInfo) {
-      const glvToken = vaultInfo.indexToken;
+    if (glvInfo) {
+      const glvToken = glvInfo.indexToken;
 
       values.marketTokenUsd = gmMarketUsd;
       values.marketTokenAmount = convertToTokenAmount(
@@ -165,14 +165,14 @@ export function getDepositAmounts(p: {
 
     values.marketTokenAmount = marketTokenAmount;
 
-    if (vaultInfo) {
-      const glvPrice = vaultInfo.indexToken.prices.minPrice;
-      values.marketTokenUsd = convertToUsd(marketTokenAmount, vaultInfo.indexToken.decimals, glvPrice)!;
+    if (glvInfo) {
+      const glvPrice = glvInfo.indexToken.prices.minPrice;
+      values.marketTokenUsd = convertToUsd(marketTokenAmount, glvInfo.indexToken.decimals, glvPrice)!;
     } else {
       values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
     }
 
-    if (isMarketTokenDeposit && vaultInfo) {
+    if (isMarketTokenDeposit && glvInfo) {
       values.longTokenAmount = convertToTokenAmount(
         values.marketTokenUsd,
         marketToken.decimals,

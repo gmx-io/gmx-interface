@@ -32,12 +32,13 @@ interface Props {
   isDeposit: boolean;
   routerAddress: string;
   marketInfo?: MarketInfo;
-  vaultInfo?: GlvInfo;
+  glvInfo?: GlvInfo;
   marketToken: TokenData;
   operation: Operation;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
-  gmToken: TokenData | undefined;
+  fromMarketToken: TokenData | undefined;
+  fromMarketTokenAmount: bigint | undefined;
 
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
@@ -45,11 +46,6 @@ interface Props {
   longTokenUsd: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   shortTokenUsd: bigint | undefined;
-  gmTokenAmount: bigint | undefined;
-
-  fromMarketTokenAmount?: bigint;
-  fromMarketToken?: TokenData;
-  fromMarketTokenUsd?: bigint;
 
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
@@ -86,8 +82,8 @@ export const useSubmitButtonState = ({
   longTokenAmount,
   shortToken,
   shortTokenAmount,
-  gmToken,
-  gmTokenAmount,
+  fromMarketToken,
+  fromMarketTokenAmount,
 
   marketTokenAmount,
   longTokenLiquidityUsd,
@@ -98,14 +94,12 @@ export const useSubmitButtonState = ({
 
   shouldDisableValidation,
 
-  fromMarketTokenAmount,
-  fromMarketToken,
   tokensData,
   marketTokensData,
   executionFee,
   selectedGlvGmMarket,
   isHighFeeConsentError,
-  vaultInfo,
+  glvInfo,
   isMarketTokenDeposit,
   marketsInfoData,
 }: Props) => {
@@ -127,10 +121,10 @@ export const useSubmitButtonState = ({
     tokensData,
     executionFee,
     selectedGlvGmMarket,
-    vaultInfo,
+    glvInfo,
     isMarketTokenDeposit,
-    gmToken,
-    gmTokenAmount,
+    gmToken: fromMarketToken,
+    gmTokenAmount: fromMarketTokenAmount,
   });
 
   const onConnectAccount = useCallback(() => {
@@ -174,18 +168,18 @@ export const useSubmitButtonState = ({
     hasOutdatedUi,
   })[0];
 
-  const vaultSellableAmount = vaultInfo
-    ? getSellableInfoGlv(vaultInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
+  const vaultSellableAmount = glvInfo
+    ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
     : undefined;
 
   const [swapError, swapErrorDescription] = getGmSwapError({
     isDeposit,
     marketInfo,
-    vaultInfo,
+    glvInfo,
     marketToken,
     longToken,
     shortToken,
-    gmToken,
+    gmToken: fromMarketToken,
     marketTokenAmount,
     marketTokenUsd: amounts?.marketTokenUsd,
     longTokenAmount: amounts?.longTokenAmount,
@@ -240,22 +234,11 @@ export const useSubmitButtonState = ({
         ) {
           addresses.push(marketToken.address);
         }
-      } else if (operation === Operation.Shift) {
-        if (
-          fromMarketTokenAmount !== undefined &&
-          fromMarketTokenAmount > 0 &&
-          fromMarketToken &&
-          getNeedTokenApprove(tokensAllowanceData, fromMarketToken.address, fromMarketTokenAmount)
-        ) {
-          addresses.push(fromMarketToken.address);
-        }
       }
 
       return uniq(addresses);
     },
     [
-      fromMarketToken,
-      fromMarketTokenAmount,
       longToken,
       longTokenAmount,
       marketToken,
@@ -294,7 +277,7 @@ export const useSubmitButtonState = ({
       };
     }
 
-    const operationTokenSymbol = vaultInfo ? "GLV" : "GM";
+    const operationTokenSymbol = glvInfo ? "GLV" : "GM";
 
     if (isSubmitting) {
       return {
@@ -350,6 +333,6 @@ export const useSubmitButtonState = ({
     payTokenAddresses.length,
     isHighFeeConsentError,
     swapErrorDescription,
-    vaultInfo,
+    glvInfo,
   ]);
 };

@@ -30,7 +30,7 @@ export const useDepositWithdrawalFees = ({
   gasPrice,
   isDeposit,
   tokensData,
-  glvMarket,
+  glvInfo,
   isGlv,
   isMarketTokenDeposit,
 }: {
@@ -40,7 +40,7 @@ export const useDepositWithdrawalFees = ({
   gasPrice: bigint | undefined;
   isDeposit: boolean;
   tokensData: TokensData | undefined;
-  glvMarket: GlvInfo | undefined;
+  glvInfo: GlvInfo | undefined;
   isGlv;
   isMarketTokenDeposit: boolean;
 }) => {
@@ -70,7 +70,7 @@ export const useDepositWithdrawalFees = ({
     let gasLimit;
     let oraclePriceCount;
 
-    const glvMarketsCount = BigInt(glvMarket?.markets?.length ?? 0);
+    const glvMarketsCount = BigInt(glvInfo?.markets?.length ?? 0);
 
     if (isGlv) {
       gasLimit = isDeposit
@@ -106,5 +106,5 @@ export const useDepositWithdrawalFees = ({
       fees,
       executionFee,
     };
-  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData, glvMarket, isGlv, isMarketTokenDeposit]);
+  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData, glvInfo, isGlv, isMarketTokenDeposit]);
 };

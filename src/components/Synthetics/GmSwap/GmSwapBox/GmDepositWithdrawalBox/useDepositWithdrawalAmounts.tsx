@@ -21,7 +21,7 @@ export function useDepositWithdrawalAmounts({
   focusedInput,
   marketTokensData,
   isMarketTokenDeposit,
-  vaultInfo,
+  glvInfo,
   targetGmMarket,
   targetGmMarketToken,
 }: {
@@ -37,7 +37,7 @@ export function useDepositWithdrawalAmounts({
   focusedInput: string;
   marketTokensData: TokensData | undefined;
   isMarketTokenDeposit: boolean;
-  vaultInfo: GlvInfo | undefined;
+  glvInfo: GlvInfo | undefined;
   targetGmMarket: MarketInfo | undefined;
   targetGmMarketToken: TokenData | undefined;
 }): DepositAmounts | WithdrawalAmounts | undefined {
@@ -73,7 +73,7 @@ export function useDepositWithdrawalAmounts({
         uiFeeFactor,
         strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
         isMarketTokenDeposit,
-        vaultInfo,
+        glvInfo,
       });
     } else if (isWithdrawal) {
       if (!marketInfo || !marketToken || !marketTokensData || !targetGmMarket || !targetGmMarketToken) {
@@ -104,7 +104,7 @@ export function useDepositWithdrawalAmounts({
         shortTokenAmount,
         strategy,
         uiFeeFactor,
-        vaultInfo,
+        glvInfo,
       });
     }
   }, [
@@ -122,7 +122,7 @@ export function useDepositWithdrawalAmounts({
     shortTokenInputState?.address,
     shortTokenInputState?.amount,
     uiFeeFactor,
-    vaultInfo,
+    glvInfo,
     fromMarketTokenInputState,
     targetGmMarket,
     targetGmMarketToken,

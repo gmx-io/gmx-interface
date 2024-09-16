@@ -16,7 +16,7 @@ import { useGlvGmMarketsWithComposition } from "./useMarketGlvGmMarketsCompositi
 
 export const useBestGmPoolAddressForGlv = ({
   isDeposit,
-  vaultInfo,
+  glvInfo,
   selectedGlvGmMarket,
 
   uiFeeFactor,
@@ -40,7 +40,7 @@ export const useBestGmPoolAddressForGlv = ({
   fees,
 }: {
   isDeposit: boolean;
-  vaultInfo: GlvInfo | undefined;
+  glvInfo: GlvInfo | undefined;
   selectedGlvGmMarket?: string;
 
   uiFeeFactor: bigint;
@@ -63,11 +63,11 @@ export const useBestGmPoolAddressForGlv = ({
   isGmPoolSelectedManually: boolean;
   onSelectGlvGmMarket?: (marketAddress?: string) => void;
 }) => {
-  const marketsWithComposition = useGlvGmMarketsWithComposition(isDeposit, vaultInfo?.indexTokenAddress);
+  const marketsWithComposition = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.indexTokenAddress);
 
   const isEligible = useMemo(() => {
-    return vaultInfo && isGlv(vaultInfo) && marketsWithComposition.length > 0 && !isMarketTokenDeposit;
-  }, [vaultInfo, marketsWithComposition, isMarketTokenDeposit]);
+    return glvInfo && isGlv(glvInfo) && marketsWithComposition.length > 0 && !isMarketTokenDeposit;
+  }, [glvInfo, marketsWithComposition, isMarketTokenDeposit]);
 
   const byComposition = useMemo(() => {
     if (!isEligible) {
@@ -81,7 +81,7 @@ export const useBestGmPoolAddressForGlv = ({
       .filter((marketConfig) => {
         const availableBuyableGmUsd = getMaxUsdBuyableAmountInMarketWithGm(
           marketConfig.glvMarket,
-          vaultInfo!,
+          glvInfo!,
           marketConfig.market,
           marketConfig.token
         );
@@ -90,7 +90,7 @@ export const useBestGmPoolAddressForGlv = ({
       });
 
     return sortedMarketsWithComposition;
-  }, [vaultInfo, marketsWithComposition, isEligible]);
+  }, [glvInfo, marketsWithComposition, isEligible]);
 
   const byGlv = useMemo(() => {
     if (!isEligible) {
@@ -98,8 +98,8 @@ export const useBestGmPoolAddressForGlv = ({
     }
 
     const halfOfLong = longTokenInputState?.amount !== undefined ? longTokenInputState.amount / 2n : undefined;
-    const vaultSellableAmount = vaultInfo
-      ? getSellableInfoGlv(vaultInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
+    const vaultSellableAmount = glvInfo
+      ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
       : undefined;
 
     return [...marketsWithComposition]
@@ -129,13 +129,13 @@ export const useBestGmPoolAddressForGlv = ({
           uiFeeFactor,
           strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
           isMarketTokenDeposit: false,
-          vaultInfo,
+          glvInfo,
         });
 
         const [error] = getGmSwapError({
           isDeposit,
           marketInfo,
-          vaultInfo,
+          glvInfo,
           marketToken: marketConfig.token,
           longToken: marketInfo.longToken,
           shortToken: marketInfo.shortToken,
@@ -181,7 +181,7 @@ export const useBestGmPoolAddressForGlv = ({
     shortTokenInputState,
     uiFeeFactor,
     focusedInput,
-    vaultInfo,
+    glvInfo,
     isEligible,
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,

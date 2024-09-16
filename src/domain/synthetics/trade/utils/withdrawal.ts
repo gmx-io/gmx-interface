@@ -14,7 +14,7 @@ export function getWithdrawalAmounts(p: {
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
-  vaultInfo?: GlvInfo;
+  glvInfo?: GlvInfo;
 }) {
   const {
     marketInfo,
@@ -24,7 +24,7 @@ export function getWithdrawalAmounts(p: {
     shortTokenAmount,
     uiFeeFactor,
     strategy,
-    vaultInfo,
+    glvInfo,
   } = p;
 
   const { longToken, shortToken } = marketInfo;
@@ -58,9 +58,9 @@ export function getWithdrawalAmounts(p: {
   if (strategy === "byMarketToken") {
     values.marketTokenAmount = marketTokenAmount;
 
-    if (vaultInfo) {
-      const glvPrice = vaultInfo.indexToken.prices.minPrice;
-      values.marketTokenUsd = convertToUsd(marketTokenAmount, vaultInfo.indexToken.decimals, glvPrice)!;
+    if (glvInfo) {
+      const glvPrice = glvInfo.indexToken.prices.minPrice;
+      values.marketTokenUsd = convertToUsd(marketTokenAmount, glvInfo.indexToken.decimals, glvPrice)!;
     } else {
       values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
     }

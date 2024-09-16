@@ -7,5 +7,5 @@ export type TokenInputState = {
   usd?: bigint | undefined;
   token?: TokenData | undefined;
   setValue: (val: string) => void;
-  isGm?: boolean;
+  isMarketToken?: boolean;
 };

@@ -65,7 +65,7 @@ export function getShiftAmounts({
       forShift: true,
     });
 
-    const vaultInfo = isMarketTokenDeposit ? toMarketInfo : undefined;
+    const glvInfo = isMarketTokenDeposit ? toMarketInfo : undefined;
     const targetGmMarketInfo = isMarketTokenDeposit ? fromMarketInfo : toMarketInfo;
     const targetGmToken = isMarketTokenDeposit ? fromToken : toToken;
 
@@ -83,7 +83,7 @@ export function getShiftAmounts({
       uiFeeFactor: 0n,
       forShift: true,
       isMarketTokenDeposit,
-      vaultInfo,
+      glvInfo,
     });
 
     values.fromLongTokenAmount = withdrawalAmounts.longTokenAmount;

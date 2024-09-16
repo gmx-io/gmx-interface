@@ -77,7 +77,7 @@ export function useUpdateByQueryParams({
           const bestGlv = glvs.reduce((best, glv) => {
             return (best.indexToken.totalSupply ?? 0n) > (glv.indexToken.totalSupply ?? 0n) ? best : glv;
           });
-          marketAddress = bestGlv.indexTokenAddress.toLocaleLowerCase();
+          marketAddress = bestGlv.indexTokenAddress.toLowerCase();
         }
       }
 
