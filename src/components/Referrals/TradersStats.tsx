@@ -1,8 +1,8 @@
 import { Trans, t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Pagination from "components/Pagination/Pagination";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
+import { useRef, useState } from "react";
+import { BiEditAlt } from "react-icons/bi";
+import { IoWarningOutline } from "react-icons/io5";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken } from "config/tokens";
@@ -11,18 +11,21 @@ import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { useRef, useState } from "react";
-import { BiEditAlt } from "react-icons/bi";
-import { IoWarningOutline } from "react-icons/io5";
+import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import usePagination from "./usePagination";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
+
 import "./TradersStats.scss";
-import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
-import usePagination from "./usePagination";
 
 type Props = {
   referralsData?: TotalReferralsStats;
@@ -192,7 +195,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </Modal>
       </div>
-      {currentDiscountDistributions.length > 0 ? (
+      {currentDiscountDistributions.length > -1 ? (
         <div className="reward-history">
           <Card
             title={t`Rebates Distribution History`}
@@ -309,8 +312,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                 </tbody>
               </table>
             </div>
+            <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
           </Card>
-          <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
         </div>
       ) : (
         <EmptyMessage

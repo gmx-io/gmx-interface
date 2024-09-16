@@ -1,10 +1,10 @@
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Pagination from "components/Pagination/Pagination";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
-import Tooltip from "components/Tooltip/Tooltip";
+import { useMemo, useRef, useState } from "react";
+import { BiCopy } from "react-icons/bi";
+import { FiPlus, FiTwitter } from "react-icons/fi";
+import { IoWarningOutline } from "react-icons/io5";
+import { useCopyToClipboard } from "react-use";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
@@ -17,19 +17,6 @@ import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo, useRef, useState } from "react";
-import { BiCopy } from "react-icons/bi";
-import { FiPlus, FiTwitter } from "react-icons/fi";
-import { IoWarningOutline } from "react-icons/io5";
-import { useCopyToClipboard } from "react-use";
-import Card from "../Common/Card";
-import Modal from "../Modal/Modal";
-import { AffiliateCodeForm } from "./AddAffiliateCode";
-import "./AffiliatesStats.scss";
-import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
-import EmptyMessage from "./EmptyMessage";
-import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
-import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
   getSharePercentage,
@@ -39,6 +26,22 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination from "./usePagination";
+
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
+import Tooltip from "components/Tooltip/Tooltip";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+import { AffiliateCodeForm } from "./AddAffiliateCode";
+import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
+import EmptyMessage from "./EmptyMessage";
+import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
+import ReferralInfoCard from "./ReferralInfoCard";
+
+import "./AffiliatesStats.scss";
 
 type Props = {
   chainId: number;
@@ -365,12 +368,12 @@ function AffiliatesStats({
               </tbody>
             </table>
           </div>
+          <BottomTablePagination
+            page={currentAffiliatesPage}
+            pageCount={affiliatesPageCount}
+            onPageChange={setCurrentAffiliatesPage}
+          />
         </Card>
-        <Pagination
-          page={currentAffiliatesPage}
-          pageCount={affiliatesPageCount}
-          onPageChange={(page) => setCurrentAffiliatesPage(page)}
-        />
       </div>
       {currentRebateData.length > 0 ? (
         <div className="reward-history">
@@ -503,12 +506,12 @@ function AffiliatesStats({
                 </tbody>
               </table>
             </div>
+            <BottomTablePagination
+              page={currentRebatePage}
+              pageCount={rebatePageCount}
+              onPageChange={setCurrentRebatePage}
+            />
           </Card>
-          <Pagination
-            page={currentRebatePage}
-            pageCount={rebatePageCount}
-            onPageChange={(page) => setCurrentRebatePage(page)}
-          />
         </div>
       ) : (
         <EmptyMessage
