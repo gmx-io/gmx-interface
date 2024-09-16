@@ -7,7 +7,8 @@ import {
   AVALANCHE_FUJI,
   getFallbackRpcUrl,
 } from "config/chains";
-import { getRpcProviderKey, SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { getRpcProviderKey } from "config/localStorage";
+import { isDebugMode } from "lib/localStorage";
 import entries from "lodash/entries";
 import orderBy from "lodash/orderBy";
 import minBy from "lodash/minBy";
@@ -106,7 +107,7 @@ function measureRpcData({ warmUp = false } = {}) {
     let bestBlockNumberProbe = probeResultsByBlockNumber[0];
 
     const probeStats = probeResultsByBlockNumber.map((probe, i, arr) => {
-      let isValid = probe.isSuccess;
+      let isValid = true;
 
       const bestBlockNumber = bestBlockNumberProbe.blockNumber;
       const currProbeBlockNumber = probe.blockNumber;
@@ -180,12 +181,10 @@ function setCurrentProvider(chainId: number, newProviderUrl: string) {
   );
 }
 
-function isDebugMode() {
-  return localStorage.getItem(JSON.stringify(SHOW_DEBUG_VALUES_KEY)) === "true";
-}
-
 async function probeRpc(chainId: number, provider: Provider, providerUrl: string): Promise<ProbeData> {
   const controller = new AbortController();
+
+  const startTime = Date.now();
 
   return await Promise.race([
     sleep(PROBE_FAIL_TIMEOUT).then(() => {
@@ -200,8 +199,6 @@ async function probeRpc(chainId: number, provider: Provider, providerUrl: string
 
       const probeMarketAddress = PROBE_SAMPLE_MARKET[chainId];
       const probeFieldKey = HASHED_MARKET_CONFIG_KEYS[chainId]?.[probeMarketAddress]?.[PROBE_SAMPLE_FIELD];
-
-      const startTime = Date.now();
 
       let blockNumber: number | null = null;
       let isSuccess = false;
@@ -271,7 +268,7 @@ async function probeRpc(chainId: number, provider: Provider, providerUrl: string
   ]).catch(() => {
     return {
       url: providerUrl,
-      responseTime: PROBE_FAIL_TIMEOUT,
+      responseTime: Date.now() - startTime,
       blockNumber: null,
       timestamp: new Date(),
       isSuccess: false,

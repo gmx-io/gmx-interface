@@ -8,7 +8,7 @@ export async function executeMulticallMainThread(chainId: number, request: Multi
   const multicall = await Multicall.getInstance(chainId, getAbFlags());
   const providerUrls = {
     primary: getBestRpcUrl(chainId),
-    fallback: getFallbackRpcUrl(chainId),
+    secondary: getFallbackRpcUrl(chainId),
   };
 
   return multicall?.call(providerUrls, request, MAX_TIMEOUT);

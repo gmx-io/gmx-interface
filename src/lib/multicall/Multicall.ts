@@ -26,7 +26,7 @@ const CHAIN_BY_CHAIN_ID = {
 
 export type MulticallProviderUrls = {
   primary: string;
-  fallback: string;
+  secondary: string;
 };
 
 const BATCH_CONFIGS: Record<
@@ -195,9 +195,9 @@ export class Multicall {
 
     const client = Multicall.getViemClient(
       this.chainId,
-      this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.fallback : providerUrls.primary
+      this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.secondary : providerUrls.primary
     );
-    const isAlchemy = providerUrls.primary === providerUrls.fallback || this.fallbackRpcSwitcher?.isFallbackMode;
+    const isAlchemy = providerUrls.primary === providerUrls.secondary || this.fallbackRpcSwitcher?.isFallbackMode;
 
     const sendCounterEvent = (
       event: string,
@@ -277,7 +277,7 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.debug(`using multicall fallback for chain ${this.chainId}`);
 
-      const fallbackClient = Multicall.getViemClient(this.chainId, providerUrls.fallback);
+      const fallbackClient = Multicall.getViemClient(this.chainId, providerUrls.secondary);
 
       return fallbackClient.multicall({ contracts: encodedPayload as any }).catch((_viemError) => {
         const e = new Error(_viemError.message.slice(0, 150));

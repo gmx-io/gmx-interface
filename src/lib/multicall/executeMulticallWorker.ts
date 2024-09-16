@@ -5,7 +5,7 @@ import { sleep } from "lib/sleep";
 import { promiseWithResolvers } from "lib/utils";
 
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { MAX_TIMEOUT } from "./Multicall";
+import { MAX_TIMEOUT, MulticallProviderUrls } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
@@ -53,9 +53,9 @@ export async function executeMulticallWorker(
 ): Promise<MulticallResult<any> | undefined> {
   const id = uniqueId("multicall-");
 
-  const providerUrls = {
+  const providerUrls: MulticallProviderUrls = {
     primary: getBestRpcUrl(chainId),
-    fallback: getFallbackRpcUrl(chainId),
+    secondary: getFallbackRpcUrl(chainId),
   };
 
   executorWorker.postMessage({
