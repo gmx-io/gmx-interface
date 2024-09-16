@@ -7,10 +7,9 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TOKEN_COLOR_MAP } from "config/tokens";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getPoolUsdWithoutPnl, MarketInfo } from "domain/synthetics/markets";
+import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
@@ -18,7 +17,7 @@ import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCo
 import { USD_DECIMALS } from "config/factors";
 
 interface CompositionTableGmProps {
-  marketInfo?: MarketInfo | GlvMarketInfo;
+  marketInfo?: GlvOrMarketInfo;
 }
 
 interface GmTableConfig {

@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 
-import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
+import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
 
 export function useShiftAvailableRelatedMarkets(
-  marketsInfoData: MarketsInfoData | undefined,
-  sortedMarketsInfoByIndexToken: MarketInfo[],
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined,
+  sortedMarketsInfoByIndexToken: GlvOrMarketInfo[],
   marketTokenAddress?: string
 ) {
-  const shiftAvailableRelatedMarkets: MarketInfo[] = useMemo(
+  const shiftAvailableRelatedMarkets: GlvOrMarketInfo[] = useMemo(
     () =>
       getShiftAvailableRelatedMarkets({
         marketsInfoData,

@@ -3,8 +3,9 @@ import { useMemo } from "react";
 
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
-import type { MarketInfo, GlvAndGmMarketsInfoData } from "../markets";
+import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "../markets";
 import { isGlv } from "../markets/glv";
+
 import { type TokenData, type TokensData, convertToUsd } from "../tokens";
 
 const DEFAULT_VALUE = {
@@ -20,7 +21,7 @@ export function sortMarketsWithIndexToken(
     return DEFAULT_VALUE;
   }
   // Group markets by index token address
-  const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
+  const groupedMarketList: { [marketAddress: string]: GlvOrMarketInfo[] } = groupBy(
     Object.values(marketsInfoData),
     (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
   );

@@ -9,9 +9,8 @@ import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
-import { ContractMarketPrices, Market, MarketInfo } from "./types";
+import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
 import { GLV_MARKETS } from "config/markets";
-import { GlvMarketInfo } from "./useGlvMarkets";
 import { isGlv } from "./glv";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
@@ -24,17 +23,17 @@ export function getGlvMarketName(chainId: number, address: string) {
   return GLV_MARKETS[chainId]?.[address]?.name;
 }
 
-export function getGlvDisplayName(glv: GlvMarketInfo) {
+export function getGlvDisplayName(glv: GlvInfo) {
   return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
 }
 
-export function getMarketBadge(chainId: number, market: GlvMarketInfo | MarketInfo | undefined) {
+export function getMarketBadge(chainId: number, market: GlvOrMarketInfo | undefined) {
   if (!market) {
     return undefined;
   }
 
   if (isGlv(market)) {
-    return GLV_MARKETS[chainId]?.[market.indexTokenAddress]?.shortening || "GLV";
+    return GLV_MARKETS[chainId]?.[market.marketTokenAddress]?.shortening || "GLV";
   }
 
   return market.isSpotOnly ? undefined : ([market.longToken.symbol, market.shortToken.symbol] as const);
@@ -71,7 +70,13 @@ export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
 /**
  * Apart from usual cases, returns `long` for single token backed markets.
  */
-export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress: string): "long" | "short" | undefined {
+export function getTokenPoolType(
+  marketInfo: {
+    longToken: Token;
+    shortToken: Token;
+  },
+  tokenAddress: string
+): "long" | "short" | undefined {
   const { longToken, shortToken } = marketInfo;
 
   if (longToken.address === shortToken.address && tokenAddress === longToken.address) {
@@ -552,3 +557,5 @@ export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
     return [0.1, 1, 2, 5, 10];
   }
 }
+
+export const isMarket = (market: GlvInfo | MarketInfo): market is MarketInfo => !isGlv(market);

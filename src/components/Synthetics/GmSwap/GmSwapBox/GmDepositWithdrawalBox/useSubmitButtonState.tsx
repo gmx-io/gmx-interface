@@ -8,7 +8,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import {
   getNeedTokenApprove,
   getTokenData,
@@ -18,7 +18,6 @@ import {
 } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { getSellableInfoGlv } from "domain/synthetics/markets/glv";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 import useWallet from "lib/wallets/useWallet";
 
@@ -33,7 +32,7 @@ interface Props {
   isDeposit: boolean;
   routerAddress: string;
   marketInfo?: MarketInfo;
-  vaultInfo?: GlvMarketInfo;
+  vaultInfo?: GlvInfo;
   marketToken: TokenData;
   operation: Operation;
   longToken: TokenData | undefined;
@@ -117,13 +116,13 @@ export const useSubmitButtonState = ({
 
   const { isSubmitting, onSubmit } = useDepositWithdrawalTransactions({
     marketInfo,
-    marketToken,
+    toMarketToken: marketToken,
     operation,
     longToken,
     longTokenAmount,
     shortToken,
     shortTokenAmount,
-    marketTokenAmount,
+    toMarketTokenAmount: marketTokenAmount,
     shouldDisableValidation,
     tokensData,
     executionFee,

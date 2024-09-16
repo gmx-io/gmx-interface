@@ -9,14 +9,13 @@ import { createBreakpoint } from "react-use";
 import { getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
-  MarketInfo,
   GlvAndGmMarketsInfoData,
+  GlvOrMarketInfo,
+  getGlvDisplayName,
   getMarketIndexName,
   getMarketPoolName,
-  getGlvDisplayName,
 } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
@@ -36,7 +35,7 @@ type Props = {
   tokensData?: TokensData;
 };
 
-function renderMarketName(market?: MarketInfo | GlvMarketInfo) {
+function renderMarketName(market?: GlvOrMarketInfo) {
   if (!market) {
     return null;
   }
@@ -90,7 +89,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
     }
   }, []);
 
-  const contractSymbol = market && isGlv(market) ? `${market.indexToken.contractSymbol}` : undefined;
+  const contractSymbol = market && isGlv(market) ? `${market.glvToken.contractSymbol}` : undefined;
 
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">

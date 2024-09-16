@@ -2,9 +2,13 @@ import { useMemo } from "react";
 
 import { TOKEN_COLOR_MAP } from "config/tokens";
 
-import { getMarketIndexName, getPoolUsdWithoutPnl, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import {
+  getMarketIndexName,
+  getPoolUsdWithoutPnl,
+  GlvAndGmMarketsInfoData,
+  GlvOrMarketInfo,
+} from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TokensData } from "domain/synthetics/tokens";
@@ -12,8 +16,8 @@ import { bigintToNumber } from "lib/numbers";
 import { convertToUsd } from "../../../../domain/synthetics/tokens/utils";
 
 interface CompositionBarProps {
-  marketInfo: MarketInfo | GlvMarketInfo | undefined;
-  marketsInfoData: MarketsInfoData | undefined;
+  marketInfo: GlvOrMarketInfo | undefined;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
 }
 
@@ -78,7 +82,7 @@ export function CompositionBar({ marketInfo, marketsInfoData, marketTokensData }
 
       return (
         <TooltipWithPortal
-          className="[&:not(:last-child)]:border-r !absolute h-8 border-slate-800"
+          className="!absolute h-8 border-slate-800 [&:not(:last-child)]:border-r"
           style={positionStyles}
           handleClassName="!absolute h-8 w-[100%]"
           key={`comp-pc-${index}`}

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
-import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
+import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { getByKey } from "lib/objects";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
@@ -16,9 +16,9 @@ export function useUpdateMarkets({
   selectedMarketInfo,
   setToMarketAddress,
 }: {
-  marketsInfoData: MarketsInfoData | undefined;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   selectedMarketAddress: string | undefined;
-  shiftAvailableMarkets: MarketInfo[];
+  shiftAvailableMarkets: GlvOrMarketInfo[];
   onSelectMarket: (marketAddress: string) => void;
   toMarketAddress: string | undefined;
   toMarketInfo: MarketInfo | undefined;

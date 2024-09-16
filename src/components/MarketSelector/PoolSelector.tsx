@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { MarketInfo, getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   gmTokensFavoritesTabOptionLabels,
@@ -144,7 +144,7 @@ export function PoolSelector({
     setSearchKeyword(e.target.value);
   }, []);
 
-  function displayPoolLabel(marketInfo: MarketInfo | undefined) {
+  function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined) {
     if (!marketInfo) return "...";
     let name;
 

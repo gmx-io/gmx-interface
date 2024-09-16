@@ -140,7 +140,7 @@ export function SyntheticsStateContextProvider({
   const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, {
     isDeposit: true,
     account,
-    glvMarketsData: glvInfo.glvMarketInfo,
+    glvData: glvInfo.glvData,
   });
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);

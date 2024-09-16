@@ -431,7 +431,7 @@ function GmListItem({
   }, [isShiftAvailable, market?.marketTokenAddress, shouldScrollToTop, isGlvMarket]);
 
   const apy = isGlvMarket
-    ? getByKey(glvMarketsTokensApyData, market.indexToken.address)
+    ? getByKey(glvMarketsTokensApyData, market.marketTokenAddress)
     : getByKey(marketsTokensApyData, token?.address);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);

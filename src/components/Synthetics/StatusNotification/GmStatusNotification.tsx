@@ -10,21 +10,26 @@ import {
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { MarketsInfoData, getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  GlvAndGmMarketsInfoData,
+  getGlvDisplayName,
+  getMarketIndexName,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
+import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { useToastAutoClose } from "./useToastAutoClose";
 import { StatusNotification } from "./StatusNotification";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { useToastAutoClose } from "./useToastAutoClose";
 
 export type Props = {
   toastTimestamp: number;
   pendingDepositData?: PendingDepositData;
   pendingWithdrawalData?: PendingWithdrawalData;
   pendingShiftData?: PendingShiftData;
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData?: GlvAndGmMarketsInfoData;
   tokensData?: TokensData;
 };
 

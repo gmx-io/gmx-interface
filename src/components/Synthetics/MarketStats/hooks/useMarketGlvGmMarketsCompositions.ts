@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 
-import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectGlvAndGmMarketsData,
+  selectMarketsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useMarketTokensData } from "domain/synthetics/markets";
@@ -17,6 +20,7 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
   });
 
   const allMarkets = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
 
   return useMemo(() => {
     if (!glvAddress) {
@@ -40,9 +44,13 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
 
     const rows = glv.markets
       .map((glvMarket) => {
-        const gmMarket = allMarkets[glvMarket.address];
-        const token = marketTokensData?.[gmMarket?.marketTokenAddress];
+        const market = marketsInfoData?.[glvMarket.address];
 
+        if (!market) {
+          return null;
+        }
+
+        const token = marketTokensData?.[market?.marketTokenAddress];
         if (!token) {
           return null;
         }
@@ -52,7 +60,7 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
         return {
           amount: glvMarket.gmBalance,
           glvMarket: glvMarket,
-          market: gmMarket,
+          market,
           token: token,
           tvl: [balanceUsd, getMaxUsdCapUsdInGmGlvMarket(glvMarket, token)] as const,
           comp: sum === 0n ? 0 : (bigintToNumber(balanceUsd, 30) * 100) / bigintToNumber(sum, 30),
@@ -63,5 +71,5 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
     return rows.sort((a, b) => {
       return b.comp - a.comp;
     });
-  }, [allMarkets, glvAddress, marketTokensData]);
+  }, [allMarkets, glvAddress, marketTokensData, marketsInfoData]);
 };

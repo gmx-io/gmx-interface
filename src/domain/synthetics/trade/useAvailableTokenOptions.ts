@@ -1,5 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { GlvAndGmMarketsInfoData, MarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
@@ -19,7 +19,7 @@ export type AvailableTokenOptions = {
 export function useAvailableTokenOptions(
   chainId: number,
   p: {
-    marketsInfoData?: MarketsInfoData;
+    marketsInfoData?: GlvAndGmMarketsInfoData;
     tokensData?: TokensData;
     marketTokens?: TokensData;
   }

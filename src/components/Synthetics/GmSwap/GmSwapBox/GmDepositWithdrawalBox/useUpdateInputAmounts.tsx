@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
-import { MarketInfo } from "domain/synthetics/markets/types";
+import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { TokenData } from "domain/synthetics/tokens";
 import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
@@ -11,7 +11,7 @@ export function useUpdateInputAmounts({
   marketInfo,
   longTokenInputState,
   shortTokenInputState,
-  gmTokenInputState,
+  fromMarketTokenInputState,
   isDeposit,
   focusedInput,
   amounts,
@@ -22,10 +22,10 @@ export function useUpdateInputAmounts({
   setSecondTokenInputValue,
 }: {
   marketToken: TokenData | undefined;
-  marketInfo: MarketInfo | undefined;
+  marketInfo: GlvOrMarketInfo | undefined;
   longTokenInputState: TokenInputState | undefined;
   shortTokenInputState: TokenInputState | undefined;
-  gmTokenInputState: TokenInputState | undefined;
+  fromMarketTokenInputState: TokenInputState | undefined;
   isDeposit: boolean;
   focusedInput: string;
   amounts: DepositAmounts | WithdrawalAmounts | undefined;
@@ -166,7 +166,7 @@ export function useUpdateInputAmounts({
       setMarketTokenInputValue,
       setSecondTokenInputValue,
       shortTokenInputState,
-      gmTokenInputState,
+      fromMarketTokenInputState,
     ]
   );
 }

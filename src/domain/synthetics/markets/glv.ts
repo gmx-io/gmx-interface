@@ -3,16 +3,18 @@ import values from "lodash/values";
 import {
   getMintableMarketTokens,
   getSellableMarketToken,
+  GlvAndGmMarketsInfoData,
+  GlvInfo,
+  GlvMarket,
+  GlvOrMarketInfo,
   MarketInfo,
-  MarketsInfoData,
 } from "domain/synthetics/markets";
-import { GlvMarket, GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 import { bigMath } from "lib/bigmath";
 
-import { convertToTokenAmount, convertToUsd } from "../tokens/utils";
-import { TokenData, TokensData } from "../tokens";
 import { GLV_MARKETS } from "config/markets";
+import { TokenData, TokensData } from "../tokens";
+import { convertToTokenAmount, convertToUsd } from "../tokens/utils";
 
 export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, gmToken?: TokenData) {
   if (!gmToken) {
@@ -27,7 +29,7 @@ export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, gmToken?: TokenD
 
 export function getMaxUsdBuyableAmountInMarketWithGm(
   market: GlvMarket,
-  glv: GlvMarketInfo,
+  glv: GlvInfo,
   gmMarketInfo: MarketInfo,
   gmMarketToken: TokenData
 ) {
@@ -37,7 +39,7 @@ export function getMaxUsdBuyableAmountInMarketWithGm(
   return bigMath.min(mintableInGmMarket?.mintableUsd, maxUsdInGmGlv);
 }
 
-export function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvMarketInfo, gmToken: TokenData) {
+export function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvInfo, gmToken: TokenData) {
   const gmBalanceUsd = convertToUsd(market.gmBalance, gmToken.decimals, gmToken.prices.maxPrice) ?? 0n;
 
   return (
@@ -48,7 +50,7 @@ export function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvMarket
   );
 }
 
-export function getMintableInfoGlv(glv: GlvMarketInfo, marketTokensData: TokensData | undefined) {
+export function getMintableInfoGlv(glv: GlvInfo, marketTokensData: TokensData | undefined) {
   const glvPriceUsd = glv.indexToken.prices.maxPrice;
 
   const amountUsd = values(glv.markets).reduce((acc, market) => {
@@ -65,8 +67,8 @@ export function getMintableInfoGlv(glv: GlvMarketInfo, marketTokensData: TokensD
 }
 
 export function getSellableInfoGlv(
-  glv: GlvMarketInfo,
-  marketsData: MarketsInfoData | undefined,
+  glv: GlvInfo,
+  marketsData: GlvAndGmMarketsInfoData | undefined,
   tokensData: TokensData | undefined,
   gmMarketAddress?: string
 ) {
@@ -76,7 +78,7 @@ export function getSellableInfoGlv(
       return acc;
     }
 
-    const gmMarket = marketsData?.[market.address];
+    const gmMarket = marketsData?.[market.address] as MarketInfo;
 
     if (!gmMarket) {
       // eslint-disable-next-line no-console
@@ -103,7 +105,7 @@ export function getSellableInfoGlv(
   };
 }
 
-export function isGlv(market?: GlvMarketInfo | MarketInfo): market is GlvMarketInfo {
+export function isGlv(market?: GlvOrMarketInfo): market is GlvInfo {
   return Boolean(market && "isGlv" in market && market.isGlv);
 }
 

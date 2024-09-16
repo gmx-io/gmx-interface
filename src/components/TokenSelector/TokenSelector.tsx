@@ -22,7 +22,7 @@ type TokenState = {
   message?: string;
 };
 
-type ExtendedToken = Token & { isGm?: boolean };
+type ExtendedToken = Token & { isMarketToken?: boolean };
 
 type Props = {
   chainId: number;
@@ -214,7 +214,7 @@ export default function TokenSelector(props: Props) {
             const tokenMarket = Object.values(marketsInfoData ?? {}).find(
               (market) => market.marketTokenAddress === token.address
             );
-            const tokkenBadge = token.isGm && tokenMarket ? getMarketBadge(chainId, tokenMarket) : undefined;
+            const tokkenBadge = token.isMarketToken && tokenMarket ? getMarketBadge(chainId, tokenMarket) : undefined;
 
             return (
               <div
@@ -245,7 +245,7 @@ export default function TokenSelector(props: Props) {
                     />
                   )}
                   <div className="Token-symbol">
-                    <div className="Token-text">{token.isGm ? "GM" : token.symbol}</div>
+                    <div className="Token-text">{token.isMarketToken ? "GM" : token.symbol}</div>
                     <span className="text-accent">{token.name}</span>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,7 +12,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getMarketIndexName, isMarket } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -42,7 +42,7 @@ import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+
 import { isGlv } from "domain/synthetics/markets/glv";
 import { MarketState } from "components/MarketSelector/types";
 
@@ -86,10 +86,25 @@ export function GmShiftBox({
   );
   const { shouldDisableValidationForTesting } = useSettings();
 
-  const selectedMarketInfo = getByKey(marketsInfoData, selectedMarketAddress);
+  const selectedMarketInfo = useMemo(() => {
+    const market = getByKey(marketsInfoData, selectedMarketAddress);
+    if (isGlv(market)) {
+      return undefined;
+    }
+
+    return market;
+  }, [selectedMarketAddress, marketsInfoData]);
   const selectedIndexName = selectedMarketInfo ? getMarketIndexName(selectedMarketInfo) : "...";
   const selectedToken = getByKey(depositMarketTokensData, selectedMarketAddress);
-  const toMarketInfo = getByKey(marketsInfoData, toMarketAddress);
+  const toMarketInfo = useMemo(() => {
+    const market = getByKey(marketsInfoData, toMarketAddress);
+
+    if (isGlv(market)) {
+      return undefined;
+    }
+
+    return market;
+  }, [toMarketAddress, marketsInfoData]);
   const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "...";
   const toToken = getByKey(depositMarketTokensData, toMarketAddress);
 
@@ -190,8 +205,10 @@ export function GmShiftBox({
   );
   const handleSelectedTokenFocus = useCallback(() => setFocusedInput("selectedMarket"), []);
   const handleSelectedTokenSelectMarket = useCallback(
-    (marketInfo: MarketInfo): void => {
-      onSelectMarket(marketInfo.marketTokenAddress);
+    (marketInfo: GlvOrMarketInfo): void => {
+      if (isMarket(marketInfo)) {
+        onSelectMarket(marketInfo.marketTokenAddress);
+      }
       handleClearValues();
     },
     [handleClearValues, onSelectMarket]
@@ -203,7 +220,7 @@ export function GmShiftBox({
   );
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
-    (marketInfo: MarketInfo): void => {
+    (marketInfo: GlvOrMarketInfo): void => {
       if (isGlv(marketInfo)) {
         setGlvForShiftAddress(marketInfo.indexTokenAddress);
       } else {
@@ -236,7 +253,7 @@ export function GmShiftBox({
     setFirstTokenAddressForDeposit,
   ]);
 
-  const getShiftReceiveMarketState = useCallback((marketInfo: MarketInfo | GlvMarketInfo): MarketState => {
+  const getShiftReceiveMarketState = useCallback((marketInfo: GlvOrMarketInfo): MarketState => {
     if (isGlv(marketInfo)) {
       return {
         warning:

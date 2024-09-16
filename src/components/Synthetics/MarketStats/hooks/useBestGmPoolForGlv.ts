@@ -3,9 +3,9 @@ import { useEffect, useMemo } from "react";
 import { TokenInputState } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import type { useDepositWithdrawalFees } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalFees";
 
-import { MarketsInfoData } from "domain/synthetics/markets";
+import { GlvInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+
 import { TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getGmSwapError } from "domain/synthetics/trade/utils/validation";
@@ -24,7 +24,7 @@ export const useBestGmPoolAddressForGlv = ({
 
   longTokenInputState,
   shortTokenInputState,
-  gmTokenInputState,
+  fromMarketTokenInputState,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
 
@@ -40,7 +40,7 @@ export const useBestGmPoolAddressForGlv = ({
   fees,
 }: {
   isDeposit: boolean;
-  vaultInfo: GlvMarketInfo | undefined;
+  vaultInfo: GlvInfo | undefined;
   selectedGlvGmMarket?: string;
 
   uiFeeFactor: bigint;
@@ -48,7 +48,7 @@ export const useBestGmPoolAddressForGlv = ({
 
   longTokenInputState: TokenInputState | undefined;
   shortTokenInputState: TokenInputState | undefined;
-  gmTokenInputState: TokenInputState | undefined;
+  fromMarketTokenInputState: TokenInputState | undefined;
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
 
@@ -233,7 +233,7 @@ export const useBestGmPoolAddressForGlv = ({
   useEffect(() => {
     if (!isEligible) {
       if (!selectedGlvGmMarket) {
-        onSelectGlvGmMarket?.(gmTokenInputState?.address);
+        onSelectGlvGmMarket?.(fromMarketTokenInputState?.address);
       }
 
       return;
@@ -267,6 +267,6 @@ export const useBestGmPoolAddressForGlv = ({
     previousLongTokenAddress,
     previousShortTokenAddress,
     isEligible,
-    gmTokenInputState,
+    fromMarketTokenInputState,
   ]);
 };

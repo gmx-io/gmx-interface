@@ -13,8 +13,8 @@ import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 
 import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlv } from "domain/synthetics/markets/glv";
+import { GlvInfo } from "domain/synthetics/markets";
 
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import "./GmSwapBox.scss";
 
@@ -27,7 +27,7 @@ export type GmSwapBoxProps = {
   onSetOperation: (operation: Operation) => void;
   selectedGlvGmMarket?: string;
   onSelectGlvGmMarket?: (marketAddress?: string) => void;
-  glvMarket?: GlvMarketInfo;
+  glvMarket?: GlvInfo;
 };
 
 const OPERATION_LABELS_GM = {
@@ -116,7 +116,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (
         <GmSwapBoxDepositWithdrawal
           selectedMarketAddress={selectedMarketAddress}
-          glvMarket={marketInfo as GlvMarketInfo}
+          glvMarket={marketInfo as GlvInfo}
           onSelectMarket={onSelectMarket}
           selectedGlvGmMarket={selectedGlvGmMarket}
           onSelectGlvGmMarket={onSelectGlvGmMarket}

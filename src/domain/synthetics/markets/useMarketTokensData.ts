@@ -16,10 +16,10 @@ import { getContractMarketPrices } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
-import { GlvMarketsData } from "./useGlvMarkets";
 import { useMemo } from "react";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlvEnabled } from "./glv";
+import { GlvData } from "./types";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -27,9 +27,9 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: number,
-  p: { isDeposit: boolean; account?: string; glvMarketsData?: GlvMarketsData; withGlv?: boolean }
+  p: { isDeposit: boolean; account?: string; glvData?: GlvData; withGlv?: boolean }
 ): MarketTokensDataResult {
-  const { isDeposit, account, glvMarketsData = {} } = p;
+  const { isDeposit, account, glvData = {} } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
@@ -38,7 +38,7 @@ export function useMarketTokensDataRequest(
   if (p.withGlv === false) {
     isGlvTokensLoaded = true;
   } else {
-    isGlvTokensLoaded = isGlvEnabled(chainId) ? Object.values(glvMarketsData).length > 0 : true;
+    isGlvTokensLoaded = isGlvEnabled(chainId) ? Object.values(glvData).length > 0 : true;
   }
 
   const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;
@@ -150,17 +150,17 @@ export function useMarketTokensDataRequest(
   });
 
   const gmAndGlvMarketTokensData = useMemo(() => {
-    if (!gmMarketTokensData || !glvMarketsData || Object.values(glvMarketsData).length === 0) {
+    if (!gmMarketTokensData || !glvData || Object.values(glvData).length === 0) {
       return gmMarketTokensData;
     }
 
     const result = { ...gmMarketTokensData };
-    Object.values(glvMarketsData).forEach((glvMarket) => {
+    Object.values(glvData).forEach((glvMarket) => {
       result[glvMarket.indexTokenAddress] = glvMarket.indexToken;
     });
 
     return result;
-  }, [gmMarketTokensData, glvMarketsData]);
+  }, [gmMarketTokensData, glvData]);
 
   return {
     marketTokensData: gmAndGlvMarketTokensData,
@@ -173,12 +173,12 @@ export function useMarketTokensData(
 ): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
-  const glvMarketsData = useSelector(selectGlvInfo);
+  const glvData = useSelector(selectGlvInfo);
 
   return useMarketTokensDataRequest(chainId, {
     isDeposit,
     account,
-    glvMarketsData: glvMarketsData,
+    glvData: glvData,
     withGlv: p.withGlv,
   });
 }

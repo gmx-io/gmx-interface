@@ -10,10 +10,10 @@ import {
   createGlvDepositTxn,
   createGlvWithdrawalTxn,
   createWithdrawalTxn,
+  GlvInfo,
   MarketInfo,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
@@ -21,14 +21,14 @@ import { Operation } from "../types";
 
 interface Props {
   marketInfo?: MarketInfo;
-  vaultInfo?: GlvMarketInfo;
-  marketToken: TokenData;
+  vaultInfo?: GlvInfo;
+  toMarketToken: TokenData;
   operation: Operation;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
   gmToken: TokenData | undefined;
 
-  marketTokenAmount: bigint | undefined;
+  toMarketTokenAmount: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   gmTokenAmount: bigint | undefined;
@@ -43,7 +43,7 @@ interface Props {
 
 export const useDepositWithdrawalTransactions = ({
   marketInfo,
-  marketToken,
+  toMarketToken,
   operation,
   longToken,
   longTokenAmount,
@@ -52,7 +52,7 @@ export const useDepositWithdrawalTransactions = ({
   gmToken,
   gmTokenAmount,
 
-  marketTokenAmount,
+  toMarketTokenAmount,
   shouldDisableValidation,
   tokensData,
   executionFee,
@@ -71,9 +71,9 @@ export const useDepositWithdrawalTransactions = ({
       if (
         !account ||
         !executionFee ||
-        !marketToken ||
+        !toMarketToken ||
         !marketInfo ||
-        marketTokenAmount === undefined ||
+        toMarketTokenAmount === undefined ||
         !tokensData ||
         !signer
       ) {
@@ -92,7 +92,7 @@ export const useDepositWithdrawalTransactions = ({
           initialLongTokenAddress,
           initialShortTokenAddress,
           initialGmTokenAddress,
-          minMarketTokens: marketTokenAmount,
+          minMarketTokens: toMarketTokenAmount,
           marketTokenAddress: vaultInfo.indexTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
@@ -118,8 +118,8 @@ export const useDepositWithdrawalTransactions = ({
         shortTokenSwapPath: [],
         longTokenAmount: longTokenAmount ?? 0n,
         shortTokenAmount: shortTokenAmount ?? 0n,
-        marketTokenAddress: marketToken.address,
-        minMarketTokens: marketTokenAmount,
+        marketTokenAddress: toMarketToken.address,
+        minMarketTokens: toMarketTokenAmount,
         executionFee: executionFee.feeTokenAmount,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
@@ -134,8 +134,8 @@ export const useDepositWithdrawalTransactions = ({
       longToken,
       longTokenAmount,
       marketInfo,
-      marketToken,
-      marketTokenAmount,
+      toMarketToken,
+      toMarketTokenAmount,
       shortToken,
       shortTokenAmount,
       signer,
@@ -157,7 +157,7 @@ export const useDepositWithdrawalTransactions = ({
       if (
         !account ||
         !marketInfo ||
-        !marketToken ||
+        !toMarketToken ||
         !executionFee ||
         longTokenAmount === undefined ||
         shortTokenAmount === undefined ||
@@ -175,7 +175,7 @@ export const useDepositWithdrawalTransactions = ({
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
           marketTokenAddress: vaultInfo.indexToken.address,
-          marketTokenAmount: marketTokenAmount!,
+          marketTokenAmount: toMarketTokenAmount!,
           minLongTokenAmount: longTokenAmount,
           minShortTokenAmount: shortTokenAmount,
           executionFee: executionFee.feeTokenAmount,
@@ -195,10 +195,10 @@ export const useDepositWithdrawalTransactions = ({
         initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
-        marketTokenAmount: marketTokenAmount!,
+        marketTokenAmount: toMarketTokenAmount!,
         minLongTokenAmount: longTokenAmount,
         minShortTokenAmount: shortTokenAmount,
-        marketTokenAddress: marketToken.address,
+        marketTokenAddress: toMarketToken.address,
         executionFee: executionFee.feeTokenAmount,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         tokensData,
@@ -213,8 +213,8 @@ export const useDepositWithdrawalTransactions = ({
       longToken,
       longTokenAmount,
       marketInfo,
-      marketToken,
-      marketTokenAmount,
+      toMarketToken,
+      toMarketTokenAmount,
       shortToken,
       shortTokenAmount,
       signer,

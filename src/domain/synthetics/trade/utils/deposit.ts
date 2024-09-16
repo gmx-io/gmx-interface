@@ -1,10 +1,9 @@
 import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
-import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
+import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
 import { DepositAmounts } from "../types";
-import { GlvMarketInfo } from "../../markets/useGlvMarkets";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;
@@ -22,7 +21,7 @@ export function getDepositAmounts(p: {
   uiFeeFactor: bigint;
   forShift?: boolean;
   isMarketTokenDeposit: boolean;
-  vaultInfo?: GlvMarketInfo;
+  vaultInfo?: GlvInfo;
 }): DepositAmounts {
   const {
     marketInfo,

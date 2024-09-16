@@ -13,8 +13,7 @@ import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStat
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { GlvInfo, MarketInfo, getMarketIndexName, getMarketPoolName, isMarket } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   gmTokensFavoritesTabOptionLabels,
@@ -29,7 +28,7 @@ import "./MarketSelector.scss";
 
 type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   isDeposit: boolean;
-  glvMarketInfo: GlvMarketInfo;
+  glvInfo: GlvInfo;
   onSelectGmMarket?: (market: MarketInfo) => void;
   disablePoolSelector?: boolean;
 };
@@ -47,7 +46,7 @@ export function GmPoolsSelectorForGlvMarket({
   showAllPools = false,
   showIndexIcon = false,
   favoriteTokens,
-  glvMarketInfo,
+  glvInfo,
   chainId,
   setFavoriteTokens,
   tab,
@@ -57,7 +56,7 @@ export function GmPoolsSelectorForGlvMarket({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const markets = useGlvGmMarketsWithComposition(isDeposit, glvMarketInfo?.marketTokenAddress);
+  const markets = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.marketTokenAddress);
 
   const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
 
@@ -128,8 +127,10 @@ export function GmPoolsSelectorForGlvMarket({
 
   const onSelectGmPool = useCallback(
     function onSelectOption(option: MarketOption) {
-      onSelectGmMarket?.(option.marketInfo);
-      setIsModalVisible(false);
+      if (isMarket(option.marketInfo)) {
+        onSelectGmMarket?.(option.marketInfo);
+        setIsModalVisible(false);
+      }
     },
     [onSelectGmMarket, setIsModalVisible]
   );
@@ -162,7 +163,7 @@ export function GmPoolsSelectorForGlvMarket({
     setSearchKeyword(e.target.value);
   }, []);
 
-  function displayPoolLabel(marketInfo: MarketInfo | undefined) {
+  function displayPoolLabel(marketInfo: MarketInfo | GlvInfo | undefined) {
     if (!marketInfo) return "...";
 
     return (

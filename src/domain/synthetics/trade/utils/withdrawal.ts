@@ -1,9 +1,8 @@
-import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
+import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
 
-import { GlvMarketInfo } from "../../markets/useGlvMarkets";
 import { WithdrawalAmounts } from "../types";
 
 export function getWithdrawalAmounts(p: {
@@ -15,7 +14,7 @@ export function getWithdrawalAmounts(p: {
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
-  vaultInfo?: GlvMarketInfo;
+  vaultInfo?: GlvInfo;
 }) {
   const {
     marketInfo,

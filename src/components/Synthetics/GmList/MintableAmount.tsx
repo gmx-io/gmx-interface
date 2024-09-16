@@ -6,10 +6,10 @@ import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numb
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { getMaxPoolUsd, getPoolUsdWithoutPnl, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { getMaxPoolUsd, getPoolUsdWithoutPnl, MarketInfo } from "domain/synthetics/markets";
 
+import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export function MintableAmount({
@@ -29,38 +29,45 @@ export function MintableAmount({
         shortDepositCapacityAmount?: bigint;
       }
     | undefined;
-  market: MarketInfo | GlvMarketInfo;
+  market: GlvOrMarketInfo;
   token: TokenData;
   longToken?: TokenData;
   shortToken?: TokenData;
 }) {
+  const isGlvMarket = isGlv(market);
   const longTokenMaxValue = useMemo(
-    () => [
-      mintableInfo && longToken
-        ? formatTokenAmountWithUsd(
-            mintableInfo.longDepositCapacityAmount,
-            mintableInfo.longDepositCapacityUsd,
-            longToken.symbol,
-            longToken.decimals
-          )
-        : "-",
-      `(${formatUsd(getPoolUsdWithoutPnl(market, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, true))})`,
-    ],
-    [longToken, market, mintableInfo]
+    () =>
+      isGlvMarket
+        ? []
+        : [
+            mintableInfo && longToken
+              ? formatTokenAmountWithUsd(
+                  mintableInfo.longDepositCapacityAmount,
+                  mintableInfo.longDepositCapacityUsd,
+                  longToken.symbol,
+                  longToken.decimals
+                )
+              : "-",
+            `(${formatUsd(getPoolUsdWithoutPnl(market, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, true))})`,
+          ],
+    [isGlvMarket, longToken, market, mintableInfo]
   );
   const shortTokenMaxValue = useMemo(
-    () => [
-      mintableInfo && shortToken
-        ? formatTokenAmountWithUsd(
-            mintableInfo.shortDepositCapacityAmount,
-            mintableInfo.shortDepositCapacityUsd,
-            shortToken.symbol,
-            shortToken.decimals
-          )
-        : "-",
-      `(${formatUsd(getPoolUsdWithoutPnl(market, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, false))})`,
-    ],
-    [market, mintableInfo, shortToken]
+    () =>
+      isGlvMarket
+        ? []
+        : [
+            mintableInfo && shortToken
+              ? formatTokenAmountWithUsd(
+                  mintableInfo.shortDepositCapacityAmount,
+                  mintableInfo.shortDepositCapacityUsd,
+                  shortToken.symbol,
+                  shortToken.decimals
+                )
+              : "-",
+            `(${formatUsd(getPoolUsdWithoutPnl(market, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, false))})`,
+          ],
+    [isGlvMarket, market, mintableInfo, shortToken]
   );
 
   const content = (

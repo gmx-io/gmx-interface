@@ -76,7 +76,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const { glvMarketInfo } = useGlvMarketsInfo(isGlvEnabled(chainId), {
+  const { glvData } = useGlvMarketsInfo(isGlvEnabled(chainId), {
     marketsInfoData,
     tokensData,
     chainId,
@@ -86,9 +86,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const GlvAndGmMarketsData = useMemo(() => {
     return {
       ...marketsInfoData,
-      ...glvMarketInfo,
+      ...glvData,
     };
-  }, [marketsInfoData, glvMarketInfo]);
+  }, [marketsInfoData, glvData]);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});

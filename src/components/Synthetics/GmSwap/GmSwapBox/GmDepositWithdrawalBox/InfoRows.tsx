@@ -13,9 +13,8 @@ import { selectChainId, selectGlvAndGmMarketsData } from "context/SyntheticsStat
 
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { MarketInfo } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { TokensData } from "domain/synthetics/tokens";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -46,7 +45,7 @@ export function InfoRows({
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
   executionFee: ExecutionFee | undefined;
-  marketInfo: MarketInfo | GlvMarketInfo | undefined;
+  marketInfo: GlvOrMarketInfo | undefined;
   isHighPriceImpact: boolean;
   isHighPriceImpactAccepted: boolean;
   setIsHighPriceImpactAccepted: (val: boolean) => void;
@@ -83,7 +82,7 @@ export function InfoRows({
                 selectedIndexName={indexName}
                 selectedMarketAddress={selectedGlvGmMarket}
                 markets={markets}
-                glvMarketInfo={marketInfo}
+                glvInfo={marketInfo}
                 marketTokensData={marketTokensData}
                 isSideMenu
                 showAllPools

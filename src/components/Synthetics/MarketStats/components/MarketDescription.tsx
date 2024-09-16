@@ -1,10 +1,10 @@
 import { Trans } from "@lingui/macro";
 
-import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
+import { getMarketIndexName, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 
 type Props = {
-  marketInfo?: MarketInfo;
+  marketInfo?: GlvOrMarketInfo;
 };
 
 export function MarketDescription({ marketInfo }: Props) {

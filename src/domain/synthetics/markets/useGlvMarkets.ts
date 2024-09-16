@@ -10,15 +10,15 @@ import {
   glvShiftMinIntervalKey,
   isGlvMarketDisabledKey,
 } from "config/dataStore";
+import { USD_DECIMALS } from "config/factors";
+import { GLV_MARKETS } from "config/markets";
 import { getTokenBySymbol } from "config/tokens";
+import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { getContractMarketPrices, getGlvMarketName, MarketInfo, MarketsInfoData } from ".";
+import { expandDecimals } from "lib/numbers";
+import { getContractMarketPrices, getGlvMarketName, GlvData, MarketsInfoData } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
-import { GLV_MARKETS } from "config/markets";
-import { expandDecimals } from "lib/numbers";
-import { USD_DECIMALS } from "config/factors";
-import { GM_DECIMALS } from "lib/legacy";
 
 export type GlvList = {
   glv: {
@@ -28,32 +28,6 @@ export type GlvList = {
   };
   markets: string[];
 }[];
-
-export type GlvMarketsData = {
-  [key in string]: GlvMarketInfo;
-};
-
-export interface GlvMarketInfo extends MarketInfo {
-  isGlv: true;
-  indexToken: TokenData & {
-    contractSymbol: string;
-  };
-  marketTokenAddress: string;
-  indexTokenAddress: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-  markets: GlvMarket[];
-  shiftLastExecutedAt: bigint;
-  shiftMinInterval: bigint;
-}
-
-export interface GlvMarket {
-  address: string;
-  isDisabled: boolean;
-  maxMarketTokenBalanceUsd: bigint;
-  glvMaxMarketTokenBalanceAmount: bigint;
-  gmBalance: bigint;
-}
 
 type GlvsRequestConfig = MulticallRequestConfig<{
   glvs: {
@@ -109,7 +83,7 @@ export function useGlvMarketsInfo(
 
   const shouldRequest = enabled && marketsInfoData && tokensData && glvs && glvs.length > 0;
 
-  const { data: glvMarketInfo, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvMarketsData | undefined>(
+  const { data: glvData, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvData | undefined>(
     chainId,
     "useGlvMarketsInfos",
     {
@@ -250,7 +224,7 @@ export function useGlvMarketsInfo(
           return undefined;
         }
 
-        const result: GlvMarketsData = {};
+        const result: GlvData = {};
         glvs.forEach(({ glv, markets }) => {
           const pricesMax = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
           const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMin.returnValues;
@@ -266,7 +240,7 @@ export function useGlvMarketsInfo(
           const balance = data[glv.glvToken + "-tokenData"].balance?.returnValues[0] ?? 0n;
           const contractSymbol = data[glv.glvToken + "-tokenData"].symbol.returnValues[0];
 
-          const indexToken: TokenData & {
+          const glvToken: TokenData & {
             contractSymbol: string;
           } = {
             ...tokenConfig,
@@ -286,11 +260,12 @@ export function useGlvMarketsInfo(
             shiftLastExecutedAt: data[glv.glvToken + "-info"].glvShiftLastExecutedAt.returnValues[0],
             shiftMinInterval: data[glv.glvToken + "-info"].glvShiftMinInterval.returnValues[0],
             isGlv: true,
-            indexToken: indexToken,
+            glvToken: glvToken,
+            indexToken: glvToken,
+            indexTokenAddress: glv.glvToken,
             longToken: tokensData[glv.longToken],
             shortToken: tokensData[glv.shortToken],
             isSpotOnly: false,
-            indexTokenAddress: glv.glvToken,
             marketTokenAddress: glv.glvToken,
             longTokenAddress: glv.longToken,
             shortTokenAddress: glv.shortToken,
@@ -337,7 +312,7 @@ export function useGlvMarketsInfo(
 
   return {
     glvs,
-    glvMarketInfo,
+    glvData,
     isLoading: isLoadingGlvs || isLoadingGlvsInfo,
   };
 }

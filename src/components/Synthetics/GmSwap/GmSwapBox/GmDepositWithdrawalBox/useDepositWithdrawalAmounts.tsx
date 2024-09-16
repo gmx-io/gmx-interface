@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
-import { MarketInfo } from "domain/synthetics/markets/types";
+import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade/types";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
+
 import { TokenInputState } from "./types";
 
 export function useDepositWithdrawalAmounts({
@@ -15,7 +15,7 @@ export function useDepositWithdrawalAmounts({
   marketToken,
   longTokenInputState,
   shortTokenInputState,
-  gmTokenInputState,
+  fromMarketTokenInputState,
   marketTokenAmount,
   uiFeeFactor,
   focusedInput,
@@ -27,17 +27,17 @@ export function useDepositWithdrawalAmounts({
 }: {
   isDeposit: boolean;
   isWithdrawal: boolean;
-  marketInfo: MarketInfo | undefined;
+  marketInfo: GlvOrMarketInfo | undefined;
   marketToken: TokenData | undefined;
   longTokenInputState: TokenInputState | undefined;
   shortTokenInputState: TokenInputState | undefined;
-  gmTokenInputState: TokenInputState | undefined;
+  fromMarketTokenInputState: TokenInputState | undefined;
   marketTokenAmount: bigint;
   uiFeeFactor: bigint;
   focusedInput: string;
   marketTokensData: TokensData | undefined;
   isMarketTokenDeposit: boolean;
-  vaultInfo: GlvMarketInfo | undefined;
+  vaultInfo: GlvInfo | undefined;
   targetGmMarket: MarketInfo | undefined;
   targetGmMarketToken: TokenData | undefined;
 }): DepositAmounts | WithdrawalAmounts | undefined {
@@ -56,14 +56,14 @@ export function useDepositWithdrawalAmounts({
             ? longTokenInputState.amount - longTokenAmount
             : undefined
           : shortTokenInputState?.amount) || 0n;
-      const gmTokenAmount = gmTokenInputState?.amount || 0n;
+      const gmTokenAmount = fromMarketTokenInputState?.amount || 0n;
 
       return getDepositAmounts({
         marketInfo: targetGmMarket,
         marketToken: targetGmMarketToken,
         longToken: marketInfo.longToken,
         shortToken: marketInfo.shortToken,
-        gmToken: gmTokenInputState?.isGm ? marketTokensData[gmTokenInputState?.address] : undefined,
+        gmToken: fromMarketTokenInputState ? marketTokensData[fromMarketTokenInputState?.address] : undefined,
         longTokenAmount,
         shortTokenAmount,
         gmTokenAmount,
@@ -123,9 +123,7 @@ export function useDepositWithdrawalAmounts({
     shortTokenInputState?.amount,
     uiFeeFactor,
     vaultInfo,
-    gmTokenInputState?.address,
-    gmTokenInputState?.amount,
-    gmTokenInputState?.isGm,
+    fromMarketTokenInputState,
     targetGmMarket,
     targetGmMarketToken,
   ]);

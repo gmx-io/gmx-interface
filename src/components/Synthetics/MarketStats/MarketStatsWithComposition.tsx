@@ -3,9 +3,9 @@ import cx from "classnames";
 import { useMemo } from "react";
 
 import {
-  MarketInfo,
+  GlvAndGmMarketsInfoData,
+  GlvOrMarketInfo,
   MarketTokensAPRData,
-  MarketsInfoData,
   getGlvDisplayName,
   getMarketIndexName,
   getMarketPoolName,
@@ -41,9 +41,9 @@ import { useMarketSellableToken } from "./hooks/useMarketSellableToken";
 import "./MarketStats.scss";
 
 type Props = {
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData?: GlvAndGmMarketsInfoData;
   marketTokensData?: TokensData;
-  marketInfo?: MarketInfo;
+  marketInfo?: GlvOrMarketInfo;
   marketToken?: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
@@ -98,18 +98,22 @@ export function MarketStatsWithComposition(p: Props) {
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
   const maxLongTokenValue = useMemo(
-    () => [
-      formatTokenAmountWithUsd(
-        mintableInfo?.longDepositCapacityAmount,
-        mintableInfo?.longDepositCapacityUsd,
-        longToken?.symbol,
-        longToken?.decimals
-      ),
-      marketInfo
-        ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, true))})`
-        : "",
-    ],
+    () =>
+      isGlvMarket
+        ? []
+        : [
+            formatTokenAmountWithUsd(
+              mintableInfo?.longDepositCapacityAmount,
+              mintableInfo?.longDepositCapacityUsd,
+              longToken?.symbol,
+              longToken?.decimals
+            ),
+            marketInfo
+              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, true))})`
+              : "",
+          ],
     [
+      isGlvMarket,
       longToken?.decimals,
       longToken?.symbol,
       marketInfo,
@@ -118,18 +122,22 @@ export function MarketStatsWithComposition(p: Props) {
     ]
   );
   const maxShortTokenValue = useMemo(
-    () => [
-      formatTokenAmountWithUsd(
-        mintableInfo?.shortDepositCapacityAmount,
-        mintableInfo?.shortDepositCapacityUsd,
-        shortToken?.symbol,
-        shortToken?.decimals
-      ),
-      marketInfo
-        ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, false))})`
-        : "",
-    ],
+    () =>
+      isGlvMarket
+        ? []
+        : [
+            formatTokenAmountWithUsd(
+              mintableInfo?.shortDepositCapacityAmount,
+              mintableInfo?.shortDepositCapacityUsd,
+              shortToken?.symbol,
+              shortToken?.decimals
+            ),
+            marketInfo
+              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, false))})`
+              : "",
+          ],
     [
+      isGlvMarket,
       marketInfo,
       mintableInfo?.shortDepositCapacityAmount,
       mintableInfo?.shortDepositCapacityUsd,

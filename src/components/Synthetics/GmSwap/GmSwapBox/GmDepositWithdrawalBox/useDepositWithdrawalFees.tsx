@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
   estimateExecuteDepositGasLimit,
   estimateExecuteGlvDepositGasLimit,
@@ -22,6 +21,7 @@ import { TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
+import { GlvInfo } from "domain/synthetics/markets";
 
 export const useDepositWithdrawalFees = ({
   amounts,
@@ -40,7 +40,7 @@ export const useDepositWithdrawalFees = ({
   gasPrice: bigint | undefined;
   isDeposit: boolean;
   tokensData: TokensData | undefined;
-  glvMarket: GlvMarketInfo | undefined;
+  glvMarket: GlvInfo | undefined;
   isGlv;
   isMarketTokenDeposit: boolean;
 }) => {

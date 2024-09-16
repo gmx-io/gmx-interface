@@ -8,9 +8,9 @@ import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import {
-  MarketInfo,
+  GlvAndGmMarketsInfoData,
+  GlvOrMarketInfo,
   MarketTokensAPRData,
-  MarketsInfoData,
   getGlvDisplayName,
   getGlvMarketShortening,
   getGlvMarketSubtitle,
@@ -47,14 +47,13 @@ import {
 
 type Props = {
   chainId: number;
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData?: GlvAndGmMarketsInfoData;
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensLidoAprData?: MarketTokensAPRData;
   glvMarketsTokensApyData?: MarketTokensAPRData;
-  // eslint-disable-next-line react/no-unused-prop-types
-  currentMarketInfo?: MarketInfo;
+  currentMarketInfo?: GlvOrMarketInfo;
 };
 
 export default function MarketTokenSelector(props: Props) {
@@ -342,7 +341,7 @@ function useFilterSortTokensInfo({
   searchKeyword: string;
   tab: GmTokenFavoritesTabOption;
   marketTokensData: TokensData | undefined;
-  marketsInfoData: MarketsInfoData | undefined;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   favoriteTokens: string[];
   marketsTokensAPRData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
@@ -474,7 +473,7 @@ function MarketTokenListItem({
   incentiveApr,
   lidoApr,
 }: {
-  marketInfo: MarketInfo;
+  marketInfo: GlvOrMarketInfo;
   market: TokenData;
   isFavorite: boolean;
   onFavorite: (address: string) => void;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TokenData } from "../tokens";
 import { getMaxUsdCapUsdInGmGlvMarket } from "./glv";
-import { GlvMarket } from "./useGlvMarkets";
+import { GlvMarket } from "./types";
 
 describe("glv utils", () => {
   it("getMaxUsdCapUsdInGmGlvMarket", () => {
