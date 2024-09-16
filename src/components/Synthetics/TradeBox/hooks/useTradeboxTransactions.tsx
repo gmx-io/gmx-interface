@@ -8,8 +8,6 @@ import {
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
-  selectTradeboxFixedTriggerOrderType,
-  selectTradeboxFixedTriggerThresholdType,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarketInfo,
@@ -69,8 +67,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
-  const fixedTriggerThresholdType = useSelector(selectTradeboxFixedTriggerThresholdType);
-  const fixedTriggerOrderType = useSelector(selectTradeboxFixedTriggerOrderType);
   const { account, signer } = useWallet();
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
@@ -309,7 +305,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         decreaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
         executionFee,
-        orderType: fixedTriggerOrderType,
+        orderType: decreaseAmounts?.triggerOrderType,
         hasReferralCode: Boolean(referralCodeForTxn),
         subaccount,
         triggerPrice,
@@ -325,8 +321,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         !account ||
         !marketInfo ||
         !collateralToken ||
-        fixedTriggerOrderType === undefined ||
-        fixedTriggerThresholdType === undefined ||
+        decreaseAmounts?.triggerOrderType === undefined ||
+        decreaseAmounts?.triggerThresholdType === undefined ||
         decreaseAmounts?.acceptablePrice === undefined ||
         decreaseAmounts?.triggerPrice === undefined ||
         !executionFee ||
@@ -357,7 +353,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           minOutputUsd: BigInt(0),
           isLong,
           decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-          orderType: fixedTriggerOrderType,
+          orderType: decreaseAmounts?.triggerOrderType,
           executionFee: executionFee.feeTokenAmount,
           allowedSlippage,
           referralCode: referralCodeForTxn,
@@ -384,8 +380,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       collateralToken,
       decreaseAmounts,
       executionFee,
-      fixedTriggerOrderType,
-      fixedTriggerThresholdType,
       isLong,
       marketInfo,
       referralCodeForTxn,

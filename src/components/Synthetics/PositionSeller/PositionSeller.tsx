@@ -233,7 +233,7 @@ export function PositionSeller(p: Props) {
       receiveToken,
       isTrigger,
       triggerPrice,
-      fixedTriggerThresholdType: undefined,
+      triggerThresholdType: undefined,
       existingPosition: position,
       markPrice,
       nextPositionValues,

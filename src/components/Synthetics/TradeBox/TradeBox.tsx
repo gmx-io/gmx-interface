@@ -214,8 +214,6 @@ export function TradeBox(p: Props) {
     setStage,
     focusedInput,
     setFocusedInput,
-    fixedTriggerOrderType,
-    fixedTriggerThresholdType,
     selectedTriggerAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
@@ -489,7 +487,7 @@ export function TradeBox(p: Props) {
         minCollateralUsd,
         priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
-        fixedTriggerThresholdType: stage !== "trade" ? fixedTriggerThresholdType : undefined,
+        triggerThresholdType: stage !== "trade" ? decreaseAmounts?.triggerThresholdType : undefined,
       });
     }
 
@@ -597,8 +595,8 @@ export function TradeBox(p: Props) {
     nextLeverageWithoutPnl,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
+    decreaseAmounts?.triggerThresholdType,
     stage,
-    fixedTriggerThresholdType,
     isLeverageEnabled,
     detectAndSetAvailableMaxLeverage,
   ]);
@@ -1215,7 +1213,6 @@ export function TradeBox(p: Props) {
           fees={fees}
           acceptablePrice={acceptablePrice}
           executionPrice={executionPrice ?? undefined}
-          triggerOrderType={fixedTriggerOrderType}
         />
         <ExchangeInfoRow
           label={t`Liq. Price`}
@@ -1262,7 +1259,7 @@ export function TradeBox(p: Props) {
           displayDecimals={marketDecimals}
           fees={fees}
           executionPrice={executionPrice ?? undefined}
-          triggerOrderType={fixedTriggerOrderType}
+          triggerOrderType={decreaseAmounts?.triggerOrderType}
           acceptablePrice={decreaseAmounts?.acceptablePrice}
         />
 
