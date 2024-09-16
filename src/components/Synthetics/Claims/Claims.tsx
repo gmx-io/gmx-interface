@@ -23,13 +23,11 @@ const MARGIN_RIGHT = { marginRight: 4 };
 const MARGIN_LEFT = { marginLeft: 4 };
 
 export function Claims({
-  shouldShowPaginationButtons,
   isSettling,
   setIsSettling,
   setPendingTxns,
   allowedSlippage,
 }: {
-  shouldShowPaginationButtons: boolean;
   isSettling: boolean;
   setIsSettling: (v: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -123,7 +121,7 @@ export function Claims({
           )}
         </div>
 
-        <ClaimsHistory shouldShowPaginationButtons={shouldShowPaginationButtons} />
+        <ClaimsHistory />
       </div>
     </>
   );

@@ -174,8 +174,8 @@ export function HistoricalLists({ chainId, account }: Props) {
           setOrderTypesFilter={setOrderTypesFilter}
         />
       )}
-      {tabKey === TabKey.Trades && <TradeHistory account={account} shouldShowPaginationButtons hideDashboardLink />}
-      {tabKey === TabKey.Claims && <ClaimsHistory shouldShowPaginationButtons />}
+      {tabKey === TabKey.Trades && <TradeHistory account={account} hideDashboardLink />}
+      {tabKey === TabKey.Claims && <ClaimsHistory />}
     </div>
   );
 }

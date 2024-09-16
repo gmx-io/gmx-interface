@@ -15,7 +15,7 @@ import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 
 import Button from "components/Button/Button";
-import Pagination from "components/Pagination/Pagination";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
 import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
@@ -33,7 +33,7 @@ import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
-export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPaginationButtons: boolean }) {
+export function ClaimsHistory() {
   const chainId = useSelector(selectChainId);
   const account = useAccount();
 
@@ -138,11 +138,9 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
             <Trans>No claims match the selected filters</Trans>
           </div>
         )}
-      </div>
 
-      {shouldShowPaginationButtons && (
-        <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
-      )}
+        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+      </div>
     </>
   );
 }

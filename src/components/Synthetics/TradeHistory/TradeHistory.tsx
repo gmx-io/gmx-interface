@@ -13,16 +13,16 @@ import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 
 import Button from "components/Button/Button";
-import Pagination from "components/Pagination/Pagination";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
@@ -35,14 +35,13 @@ const TRADE_HISTORY_PREFETCH_SIZE = 100;
 const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
 
 type Props = {
-  shouldShowPaginationButtons: boolean;
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
 };
 
 export function TradeHistory(p: Props) {
-  const { shouldShowPaginationButtons, forAllAccounts, account, hideDashboardLink = false } = p;
+  const { forAllAccounts, account, hideDashboardLink = false } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
@@ -208,11 +207,8 @@ export function TradeHistory(p: Props) {
             <Trans>No trades yet</Trans>
           </div>
         )}
+        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </div>
-
-      {shouldShowPaginationButtons && (
-        <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
-      )}
     </div>
   );
 }
