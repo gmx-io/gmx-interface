@@ -184,7 +184,7 @@ function setCurrentProvider(chainId: number, newProviderUrl: string) {
 async function probeRpc(chainId: number, provider: Provider, providerUrl: string): Promise<ProbeData> {
   const controller = new AbortController();
 
-  const startTime = Date.now();
+  let responseTime = 0;
 
   return await Promise.race([
     sleep(PROBE_FAIL_TIMEOUT).then(() => {
@@ -225,6 +225,7 @@ async function probeRpc(chainId: number, provider: Provider, providerUrl: string
         };
 
         try {
+          const now = Date.now();
           const response = await fetch(providerUrl, {
             method: "POST",
             headers: {
@@ -233,6 +234,7 @@ async function probeRpc(chainId: number, provider: Provider, providerUrl: string
             body: JSON.stringify(body),
             signal: controller.signal,
           });
+          responseTime = Date.now() - now;
 
           if (!response.ok) {
             throw new Error(`Network response was not ok: ${response.statusText}`);
@@ -259,7 +261,7 @@ async function probeRpc(chainId: number, provider: Provider, providerUrl: string
 
       return {
         url: providerUrl,
-        responseTime: Date.now() - startTime,
+        responseTime,
         blockNumber,
         timestamp: new Date(),
         isSuccess,
@@ -268,7 +270,7 @@ async function probeRpc(chainId: number, provider: Provider, providerUrl: string
   ]).catch(() => {
     return {
       url: providerUrl,
-      responseTime: Date.now() - startTime,
+      responseTime,
       blockNumber: null,
       timestamp: new Date(),
       isSuccess: false,
