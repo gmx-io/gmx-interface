@@ -412,7 +412,7 @@ export function sendOrderSubmittedMetric(metricId: OrderMetricId) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
-    metrics._sendError("Order metric data not found", "sendOrderSubmittedMetric");
+    metrics.pushError("Order metric data not found", "sendOrderSubmittedMetric");
     return;
   }
 
@@ -427,7 +427,7 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
-    metrics._sendError("Order metric data not found", "sendTxnValidationErrorMetric");
+    metrics.pushError("Order metric data not found", "sendTxnValidationErrorMetric");
     return;
   }
 
@@ -447,7 +447,7 @@ export function makeTxnSentMetricsHandler(metricId: OrderMetricId) {
     const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
     if (!metricData) {
-      metrics._sendError("Order metric data not found", "makeTxnSentMetricsHandler");
+      metrics.pushError("Order metric data not found", "makeTxnSentMetricsHandler");
       return;
     }
 
@@ -469,7 +469,7 @@ export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {
     const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
     if (!metricData) {
-      metrics._sendError("Order metric data not found", "makeTxnErrorMetricsHandler");
+      metrics.pushError("Order metric data not found", "makeTxnErrorMetricsHandler");
       return;
     }
 
@@ -494,7 +494,7 @@ export function sendPendingOrderTxnErrorMetric(metricId: OrderMetricId) {
   const metricType = (metricData as OrderMetricData)?.metricType || "unknownOrder";
 
   if (!metricData) {
-    metrics._sendError("Order metric data not found", "sendPendingOrderTxnErrorMetric");
+    metrics.pushError("Order metric data not found", "sendPendingOrderTxnErrorMetric");
     return;
   }
 
@@ -514,7 +514,7 @@ export function sendOrderCreatedMetric(metricId: OrderMetricId) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
-    metrics._sendError("Order metric data not found", "sendOrderCreatedMetric");
+    metrics.pushError("Order metric data not found", "sendOrderCreatedMetric");
     return;
   }
 
@@ -530,7 +530,7 @@ export function sendOrderExecutedMetric(metricId: OrderMetricId) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
-    metrics._sendError("Order metric data not found", "sendOrderExecutedMetric");
+    metrics.pushError("Order metric data not found", "sendOrderExecutedMetric");
     return;
   }
 
@@ -546,7 +546,7 @@ export function sendOrderCancelledMetric(metricId: OrderMetricId, eventData: Eve
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
-    metrics._sendError("Order metric data not found", "sendOrderCancelledMetric");
+    metrics.pushError("Order metric data not found", "sendOrderCancelledMetric");
     return;
   }
 

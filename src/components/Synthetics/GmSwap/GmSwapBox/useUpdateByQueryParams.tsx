@@ -30,6 +30,7 @@ export function useUpdateByQueryParams({
   setMode,
   setFirstTokenAddress,
   onSelectMarket,
+  selectedGlvGmMarket,
   onSelectGlvGmMarket,
 }: {
   operation: Operation;
@@ -38,6 +39,7 @@ export function useUpdateByQueryParams({
   setFirstTokenAddress?: (address: string | undefined) => void;
   onSelectMarket: (marketAddress: string) => void;
   onSelectGlvGmMarket?: (marketAddress?: string) => void;
+  selectedGlvGmMarket?: string;
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
@@ -120,7 +122,7 @@ export function useUpdateByQueryParams({
               onSelectGlvGmMarket?.(pool);
             }
 
-            if (!pool && isGlvMarket) {
+            if (!pool && isGlvMarket && selectedGlvGmMarket) {
               onSelectGlvGmMarket?.(undefined);
             }
           }
@@ -150,6 +152,7 @@ export function useUpdateByQueryParams({
       currentOperation,
       shiftAvailableMarkets,
       onSelectGlvGmMarket,
+      selectedGlvGmMarket,
     ]
   );
 }
