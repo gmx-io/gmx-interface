@@ -69,7 +69,9 @@ export async function executeMulticallWorker(
 
   const internalMulticallTimeout = MAX_TIMEOUT;
   const bufferTimeout = 500;
-  const escapePromise = sleep(internalMulticallTimeout + bufferTimeout).then(() => new Error("timeout"));
+  const escapePromise = sleep(internalMulticallTimeout + bufferTimeout).then(() => {
+    throw new Error("timeout");
+  });
   const race = Promise.race([promise, escapePromise]);
 
   return race.catch(async (error) => {
