@@ -1,29 +1,31 @@
 import Skeleton from "react-loading-skeleton";
 
+import { TableTd, TableTr } from "components/Table/Table";
+
 export function LeaderboardTopAccountsStructure() {
   return (
-    <tr>
-      <td>
+    <TableTr bordered={false} hoverable={false}>
+      <TableTd>
         <Skeleton className="my-5" width={40} />
-      </td>
-      <td>
+      </TableTd>
+      <TableTd>
         <Skeleton width={250} />
-      </td>
-      <td>
+      </TableTd>
+      <TableTd>
         <Skeleton />
-      </td>
-      <td>
+      </TableTd>
+      <TableTd>
         <Skeleton />
-      </td>
-      <td>
+      </TableTd>
+      <TableTd>
         <Skeleton />
-      </td>
-      <td>
+      </TableTd>
+      <TableTd>
         <Skeleton width={100} />
-      </td>
-      <td>
+      </TableTd>
+      <TableTd>
         <Skeleton width={110} />
-      </td>
-    </tr>
+      </TableTd>
+    </TableTr>
   );
 }

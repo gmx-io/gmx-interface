@@ -1,30 +1,31 @@
-import { ExchangeTd, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
 import Skeleton from "react-loading-skeleton";
+
+import { TableTd, TableTr } from "components/Table/Table";
 
 export default function MarketListSkeletonStructure() {
   return (
-    <ExchangeTr bordered={false} hoverable={false}>
-      <ExchangeTd>
+    <TableTr bordered={false} hoverable={false}>
+      <TableTd>
         <div className="flex items-center">
           <Skeleton className="mr-10" height={40} width={40} circle />
           <Skeleton width={60} height={12} />
         </div>
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <Skeleton width={60} count={1} />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <Skeleton width={150} height={12} />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <Skeleton width={150} height={12} />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <Skeleton width={150} height={12} />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <Skeleton width={60} height={12} />
-      </ExchangeTd>
-    </ExchangeTr>
+      </TableTd>
+    </TableTr>
   );
 }

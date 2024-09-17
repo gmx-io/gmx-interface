@@ -27,7 +27,7 @@ export function Sorter(
 
   return (
     <button
-      className={cx("inline-flex items-center", {
+      className={cx("inline-flex items-center [text-transform:inherit]", {
         "text-blue-300": props.direction !== "unspecified",
       })}
       onClick={handleClick}
@@ -38,9 +38,12 @@ export function Sorter(
   );
 }
 
-export function useSorterHandlers<SortField extends string | "unspecified">() {
-  const [orderBy, setOrderBy] = useState<SortField | "unspecified">("unspecified");
-  const [direction, setDirection] = useState<SortDirection>("unspecified");
+export function useSorterHandlers<SortField extends string | "unspecified">(
+  initialOrderBy?: SortField,
+  initialDirection?: SortDirection
+) {
+  const [orderBy, setOrderBy] = useState<SortField | "unspecified">(initialOrderBy ?? "unspecified");
+  const [direction, setDirection] = useState<SortDirection>(initialDirection ?? "unspecified");
   const onChangeCache = useRef<Partial<Record<SortField, (direction: SortDirection) => void>>>({});
 
   const getSorterProps = useCallback(
@@ -63,5 +66,5 @@ export function useSorterHandlers<SortField extends string | "unspecified">() {
     [direction, orderBy]
   );
 
-  return { getSorterProps, orderBy, direction };
+  return { getSorterProps, orderBy, direction, setOrderBy, setDirection };
 }

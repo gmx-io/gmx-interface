@@ -163,9 +163,11 @@ function MarketsList(props: { options: Token[] | undefined }) {
   );
 
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
-  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
+  const rowHorizontalPadding = isSmallMobile
+    ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15")
+    : "px-8 first-of-type:pl-16 last-of-type:pr-16";
   const thClassName = cx(
-    "sticky top-0 bg-slate-800 text-left font-normal uppercase text-gray-400 first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
+    "sticky top-0 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -237,7 +239,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
             "max-h-[444px] overflow-x-auto": !isMobile,
           })}
         >
-          <table className={cx("text-sm w-full")}>
+          <table className="text-sm w-full border-separate border-spacing-0">
             <thead className="bg-slate-800">
               <tr>
                 <th className={thClassName} colSpan={isSwap ? 1 : 2}>
@@ -434,16 +436,16 @@ function MarketListItem({
   return (
     <tr key={token.symbol} className="group/row">
       <td
-        className={cx("cursor-pointer rounded-4 pl-15 pr-4 text-center hover:bg-cold-blue-900", rowVerticalPadding)}
+        className={cx("cursor-pointer rounded-4 pl-16 pr-4 text-center hover:bg-cold-blue-900", rowVerticalPadding)}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
       </td>
       <td
         className={cx(
-          "cursor-pointer rounded-4 pl-6 hover:bg-cold-blue-900",
+          "cursor-pointer rounded-4 pl-4 hover:bg-cold-blue-900",
           rowVerticalPadding,
-          isSmallMobile ? "pr-6" : "pr-15"
+          isSmallMobile ? "pr-6" : "pr-8"
         )}
         onClick={handleSelectLargePosition}
       >

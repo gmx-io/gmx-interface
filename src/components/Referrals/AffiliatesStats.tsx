@@ -31,7 +31,7 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
@@ -282,31 +282,32 @@ function AffiliatesStats({
               </Button>
             </div>
           }
+          divider={false}
           bodyPadding={false}
         >
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <ExchangeTheadTr>
-                  <ExchangeTh scope="col">
+                <TableTheadTr bordered>
+                  <TableTh scope="col">
                     <Trans>Referral Code</Trans>
-                  </ExchangeTh>
-                  <ExchangeTh scope="col">
+                  </TableTh>
+                  <TableTh scope="col">
                     <Trans>Total Volume</Trans>
-                  </ExchangeTh>
-                  <ExchangeTh scope="col">
+                  </TableTh>
+                  <TableTh scope="col">
                     <Trans>Traders Referred</Trans>
-                  </ExchangeTh>
-                  <ExchangeTh scope="col">
+                  </TableTh>
+                  <TableTh scope="col">
                     <Trans>Total Rebates</Trans>
-                  </ExchangeTh>
-                </ExchangeTheadTr>
+                  </TableTh>
+                </TableTheadTr>
               </thead>
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   return (
-                    <ExchangeTr key={index} hoverable={false} bordered={false}>
-                      <ExchangeTd data-label="Referral Code">
+                    <TableTr key={index} hoverable={false} bordered={false}>
+                      <TableTd data-label="Referral Code">
                         <div className="table-referral-code">
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
@@ -328,8 +329,8 @@ function AffiliatesStats({
                           </a>
                           <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
-                      </ExchangeTd>
-                      <ExchangeTd data-label="Total Volume">
+                      </TableTd>
+                      <TableTd data-label="Total Volume">
                         <Tooltip
                           handle={`$${getUSDValue(stat.volume)}`}
                           position="bottom-start"
@@ -341,9 +342,9 @@ function AffiliatesStats({
                             </>
                           )}
                         />
-                      </ExchangeTd>
-                      <ExchangeTd data-label="Traders Referred">{stat.registeredReferralsCount}</ExchangeTd>
-                      <ExchangeTd data-label="Total Rebates">
+                      </TableTd>
+                      <TableTd data-label="Traders Referred">{stat.registeredReferralsCount}</TableTd>
+                      <TableTd data-label="Total Rebates">
                         <Tooltip
                           handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
                           position="bottom-start"
@@ -361,8 +362,8 @@ function AffiliatesStats({
                             </>
                           )}
                         />
-                      </ExchangeTd>
-                    </ExchangeTr>
+                      </TableTd>
+                    </TableTr>
                   );
                 })}
               </tbody>
@@ -381,24 +382,25 @@ function AffiliatesStats({
             title={t`Rebates Distribution History`}
             tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
             bodyPadding={false}
+            divider={false}
           >
             <div className="overflow-x-auto">
               <table className="w-full min-w-max">
                 <thead>
-                  <ExchangeTheadTr>
-                    <ExchangeTh scope="col">
+                  <TableTheadTr bordered>
+                    <TableTh scope="col">
                       <Trans>Date</Trans>
-                    </ExchangeTh>
-                    <ExchangeTh scope="col">
+                    </TableTh>
+                    <TableTh scope="col">
                       <Trans>Type</Trans>
-                    </ExchangeTh>
-                    <ExchangeTh scope="col">
+                    </TableTh>
+                    <TableTh scope="col">
                       <Trans>Amount</Trans>
-                    </ExchangeTh>
-                    <ExchangeTh scope="col">
+                    </TableTh>
+                    <TableTh scope="col">
                       <Trans>Transaction</Trans>
-                    </ExchangeTh>
-                  </ExchangeTheadTr>
+                    </TableTh>
+                  </TableTheadTr>
                 </thead>
                 <tbody>
                   {currentRebateData.map((rebate, index) => {
@@ -441,10 +443,10 @@ function AffiliatesStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <ExchangeTr key={index} hoverable={false} bordered={false}>
-                        <ExchangeTd data-label="Date">{formatDate(rebate.timestamp)}</ExchangeTd>
-                        <ExchangeTd data-label="Type">{rebateType}</ExchangeTd>
-                        <ExchangeTd data-label="Amount">
+                      <TableTr key={index} hoverable={false} bordered={false}>
+                        <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
+                        <TableTd data-label="Type">{rebateType}</TableTd>
+                        <TableTd data-label="Amount">
                           <Tooltip
                             className="whitespace-nowrap"
                             handle={
@@ -494,13 +496,13 @@ function AffiliatesStats({
                               </>
                             )}
                           />
-                        </ExchangeTd>
-                        <ExchangeTd data-label="Transaction">
+                        </TableTd>
+                        <TableTd data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
                             {shortenAddress(rebate.transactionHash, 13)}
                           </ExternalLink>
-                        </ExchangeTd>
-                      </ExchangeTr>
+                        </TableTd>
+                      </TableTr>
                     );
                   })}
                 </tbody>

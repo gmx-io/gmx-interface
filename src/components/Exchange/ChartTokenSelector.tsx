@@ -1,19 +1,22 @@
-import React, { useState } from "react";
 import { Popover } from "@headlessui/react";
+import { t } from "@lingui/macro";
 import cx from "classnames";
+import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import "./ChartTokenSelector.scss";
-import { LONG, SHORT, SWAP, USDG_DECIMALS } from "lib/legacy";
-import { getTokens, getWhitelistedV1Tokens } from "config/tokens";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import { USD_DECIMALS } from "config/factors";
-import { InfoTokens, Token } from "domain/tokens/types";
-import { getUsd } from "domain/tokens";
 import { BigNumberish } from "ethers";
+
+import { USD_DECIMALS } from "config/factors";
+import { getTokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getUsd } from "domain/tokens";
+import { InfoTokens, Token } from "domain/tokens/types";
+import { bigMath } from "lib/bigmath";
+import { LONG, SHORT, SWAP, USDG_DECIMALS } from "lib/legacy";
+import { expandDecimals, formatAmount } from "lib/numbers";
+
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { t } from "@lingui/macro";
-import { bigMath } from "lib/bigmath";
+
+import "./ChartTokenSelector.scss";
 
 type ChartToken = Token & {
   maxInUsd?: BigNumberish;

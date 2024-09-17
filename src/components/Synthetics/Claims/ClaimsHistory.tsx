@@ -20,6 +20,7 @@ import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
 import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 import { MarketFilter } from "components/Synthetics/TableMarketFilter/MarketFilter";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { ClaimHistoryRow } from "./ClaimHistoryRow/ClaimHistoryRow";
 import { ActionFilter } from "./filters/ActionFilter";
 
@@ -98,24 +99,24 @@ export function ClaimsHistory() {
           </div>
         </div>
         <div className="ClaimsHistory-horizontal-scroll-container">
-          <table className="Exchange-list ClaimsHistory-table">
+          <table className="ClaimsHistory-table">
             <colgroup>
               <col className="ClaimsHistory-action-column" />
               <col className="ClaimsHistory-market-column" />
               <col className="ClaimsHistory-size-column" />
             </colgroup>
-            <thead className="ClaimsHistory-header">
-              <tr>
-                <th>
+            <thead>
+              <TableTheadTr bordered>
+                <TableTh>
                   <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
-                </th>
-                <th>
+                </TableTh>
+                <TableTh>
                   <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
-                </th>
-                <th className="ClaimsHistory-price-header">
+                </TableTh>
+                <TableTh className="ClaimsHistory-price-header">
                   <Trans>Size</Trans>
-                </th>
-              </tr>
+                </TableTh>
+              </TableTheadTr>
             </thead>
             <tbody>
               {isLoading ? (
@@ -123,21 +124,24 @@ export function ClaimsHistory() {
               ) : (
                 currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
               )}
+              {isEmpty && !hasFilters && (
+                <TableTr hoverable={false} bordered={false}>
+                  <TableTd colSpan={3} className="text-gray-300">
+                    <Trans>No claims yet</Trans>
+                  </TableTd>
+                </TableTr>
+              )}
+
+              {isEmpty && hasFilters && (
+                <TableTr hoverable={false} bordered={false}>
+                  <TableTd colSpan={3} className="text-gray-300">
+                    <Trans>No claims match the selected filters</Trans>
+                  </TableTd>
+                </TableTr>
+              )}
             </tbody>
           </table>
         </div>
-
-        {isEmpty && !hasFilters && (
-          <div className="ClaimsHistory-fake-row">
-            <Trans>No claims yet</Trans>
-          </div>
-        )}
-
-        {isEmpty && hasFilters && (
-          <div className="ClaimsHistory-fake-row">
-            <Trans>No claims match the selected filters</Trans>
-          </div>
-        )}
 
         <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </div>

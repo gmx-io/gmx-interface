@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem;
+  padding: 16px;
 }
 
 .card-divider {

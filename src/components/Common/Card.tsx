@@ -11,21 +11,21 @@ type Props = {
    * @default true
    */
   bodyPadding?: boolean;
+  /**
+   * @default true
+   */
+  divider?: boolean;
 };
 
-function Card({ title, children, className, tooltipText, bodyPadding = true }: Props) {
+function Card({ title, children, className, tooltipText, bodyPadding = true, divider = true }: Props) {
   return (
     <div className={`card ${className ? className : ""}`}>
       {tooltipText ? (
-        <Tooltip
-          handle={<div className="card-header">{title}</div>}
-          position="bottom-start"
-          renderContent={() => tooltipText}
-        />
+        <Tooltip handle={<div className="card-header">{title}</div>} position="bottom-start" content={tooltipText} />
       ) : (
         <div className="card-header">{title}</div>
       )}
-      <div className="card-divider"></div>
+      {divider && <div className="card-divider" />}
       <div className={bodyPadding ? "card-body" : ""}>{children}</div>
     </div>
   );
