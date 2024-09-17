@@ -344,7 +344,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         }
 
         let triggerOrderType: OrderType | undefined =
-          markPrice === undefined
+          markPrice === undefined || tradeMode !== TradeMode.Trigger
             ? undefined
             : getTriggerDecreaseOrderType({
                 isLong: tradeFlags.isLong,
