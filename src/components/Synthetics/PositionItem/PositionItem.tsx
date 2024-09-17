@@ -100,7 +100,7 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
-              value={formatUsd(p.position.pendingBorrowingFeesUsd) || "..."}
+              value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
               showDollar={false}
               textClassName={cx({
                 "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,

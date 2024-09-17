@@ -362,7 +362,7 @@ export function getDecreaseError(p: {
   minCollateralUsd: bigint | undefined;
   priceImpactWarning: PriceImpactWarningState;
   isNotEnoughReceiveTokenLiquidity: boolean;
-  fixedTriggerThresholdType: TriggerThresholdType | undefined;
+  triggerThresholdType: TriggerThresholdType | undefined;
 }): ValidationResult {
   const {
     marketInfo,
@@ -379,7 +379,7 @@ export function getDecreaseError(p: {
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
     priceImpactWarning,
-    fixedTriggerThresholdType,
+    triggerThresholdType,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -409,11 +409,11 @@ export function getDecreaseError(p: {
       }
     }
 
-    if (fixedTriggerThresholdType === TriggerThresholdType.Above && triggerPrice < (markPrice ?? 0n)) {
+    if (triggerThresholdType === TriggerThresholdType.Above && triggerPrice < (markPrice ?? 0n)) {
       return [t`Price below Mark Price`];
     }
 
-    if (fixedTriggerThresholdType === TriggerThresholdType.Below && triggerPrice > (markPrice ?? 0n)) {
+    if (triggerThresholdType === TriggerThresholdType.Below && triggerPrice > (markPrice ?? 0n)) {
       return [t`Price above Mark Price`];
     }
   }

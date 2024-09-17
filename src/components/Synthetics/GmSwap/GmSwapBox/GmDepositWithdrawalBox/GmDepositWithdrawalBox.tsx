@@ -705,6 +705,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     setMode: onSetMode,
     onSelectMarket,
     onSelectGlvGmMarket,
+    selectedGlvGmMarket,
     setFirstTokenAddress,
   });
 

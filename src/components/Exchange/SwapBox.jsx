@@ -583,7 +583,7 @@ export default function SwapBox(props) {
 
         const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
         if (toTokenInfo && toTokenInfo.maxPrice !== undefined && fromUsdMin !== undefined && fromUsdMin > 0) {
-          const leverageMultiplier = parseInt(leverageOption * BASIS_POINTS_DIVISOR);
+          const leverageMultiplier = parseInt(Number(leverageOption) * BASIS_POINTS_DIVISOR);
           const toTokenPriceUsd =
             !isMarketOrder && triggerPriceUsd && triggerPriceUsd > 0 ? triggerPriceUsd : toTokenInfo.maxPrice;
 
@@ -629,7 +629,7 @@ export default function SwapBox(props) {
 
       const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
       if (fromTokenInfo && fromTokenInfo.minPrice !== undefined && toUsdMax !== undefined && toUsdMax > 0) {
-        const leverageMultiplier = parseInt(BigInt(leverageOption) * BASIS_POINTS_DIVISOR_BIGINT);
+        const leverageMultiplier = parseInt(Number(leverageOption) * BASIS_POINTS_DIVISOR);
 
         const baseFromAmountUsd = bigMath.mulDiv(toUsdMax, BASIS_POINTS_DIVISOR_BIGINT, BigInt(leverageMultiplier));
 

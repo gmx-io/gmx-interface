@@ -2,7 +2,7 @@ import entries from "lodash/entries";
 import throttle from "lodash/throttle";
 import values from "lodash/values";
 import { stableHash } from "swr/_internal";
-import { getAbFlags, getIsFlagEnabled } from "config/ab";
+import { getAbFlags } from "config/ab";
 import chunk from "lodash/chunk";
 
 import { isDevelopment } from "config/env";
@@ -55,9 +55,9 @@ function executeChainsMulticalls() {
 }
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
-  const maxCallsPerBatch = getIsFlagEnabled("testRpcCallsBatching") ? 500 : 5000;
+  const MAX_CALLS_PER_BATCH = 500;
 
-  const callChunks = chunk(entries(calls), maxCallsPerBatch);
+  const callChunks = chunk(entries(calls), MAX_CALLS_PER_BATCH);
   const batchedRequests = callChunks.map((chunk) => ({
     requestConfig: getRequest(chunk),
     callCount: chunk.length,

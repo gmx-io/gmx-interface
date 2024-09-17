@@ -25,10 +25,9 @@ import { useSafeState } from "lib/useSafeState";
 
 import { MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
-import { OrderType } from "../orders/types";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
-import { TradeMode, TradeType, TriggerThresholdType } from "./types";
+import { TradeMode, TradeType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -239,10 +238,6 @@ export function useTradeboxState(
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const [stage, setStage] = useState<TradeStage>("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
-  const [fixedTriggerThresholdType, setFixedTriggerThresholdType] = useState<TriggerThresholdType>();
-  const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
-    OrderType.LimitDecrease | OrderType.StopLossDecrease
-  >();
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
@@ -704,10 +699,6 @@ export function useTradeboxState(
     setStage,
     focusedInput,
     setFocusedInput,
-    fixedTriggerThresholdType,
-    setFixedTriggerThresholdType,
-    fixedTriggerOrderType,
-    setFixedTriggerOrderType,
     defaultTriggerAcceptablePriceImpactBps,
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,

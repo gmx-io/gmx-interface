@@ -1,7 +1,7 @@
 import mapValues from "lodash/mapValues";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
-type Flag = "testRpcCallsBatching" | "testPrebuiltMarkets";
+type Flag = "testPrebuiltMarkets";
 
 type AbFlag = {
   enabled: boolean;
@@ -12,7 +12,6 @@ type AbStorage = {
 };
 
 const abFlagsConfig: Record<Flag, number> = {
-  testRpcCallsBatching: 0.5,
   testPrebuiltMarkets: 0.5,
 };
 

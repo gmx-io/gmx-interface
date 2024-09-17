@@ -215,8 +215,6 @@ export function TradeBox(p: Props) {
     setStage,
     focusedInput,
     setFocusedInput,
-    fixedTriggerOrderType,
-    fixedTriggerThresholdType,
     selectedTriggerAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
@@ -490,7 +488,7 @@ export function TradeBox(p: Props) {
         minCollateralUsd,
         priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
-        fixedTriggerThresholdType: stage !== "trade" ? fixedTriggerThresholdType : undefined,
+        triggerThresholdType: stage !== "trade" ? decreaseAmounts?.triggerThresholdType : undefined,
       });
     }
 
@@ -598,8 +596,8 @@ export function TradeBox(p: Props) {
     nextLeverageWithoutPnl,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
+    decreaseAmounts?.triggerThresholdType,
     stage,
-    fixedTriggerThresholdType,
     isLeverageEnabled,
     detectAndSetAvailableMaxLeverage,
   ]);
@@ -754,7 +752,7 @@ export function TradeBox(p: Props) {
     }
   }
 
-  const tradeboxTransactions = useTradeboxTransactions({
+  const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder } = useTradeboxTransactions({
     setPendingTxns,
   });
 
@@ -769,13 +767,13 @@ export function TradeBox(p: Props) {
     let txnPromise: Promise<any>;
 
     if (isWrapOrUnwrap) {
-      txnPromise = tradeboxTransactions.onSubmitWrapOrUnwrap();
+      txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
-      txnPromise = tradeboxTransactions.onSubmitSwap();
+      txnPromise = onSubmitSwap();
     } else if (isIncrease) {
-      txnPromise = tradeboxTransactions.onSubmitIncreaseOrder();
+      txnPromise = onSubmitIncreaseOrder();
     } else {
-      txnPromise = tradeboxTransactions.onSubmitDecreaseOrder();
+      txnPromise = onSubmitDecreaseOrder();
     }
 
     if (subaccount) {
@@ -792,7 +790,19 @@ export function TradeBox(p: Props) {
     txnPromise.finally(() => {
       setStage("trade");
     });
-  }, [account, isIncrease, isSwap, isWrapOrUnwrap, openConnectModal, setStage, tradeboxTransactions, subaccount]);
+  }, [
+    account,
+    setStage,
+    isWrapOrUnwrap,
+    isSwap,
+    isIncrease,
+    subaccount,
+    openConnectModal,
+    onSubmitWrapOrUnwrap,
+    onSubmitSwap,
+    onSubmitIncreaseOrder,
+    onSubmitDecreaseOrder,
+  ]);
 
   const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);
 
@@ -1204,7 +1214,6 @@ export function TradeBox(p: Props) {
           fees={fees}
           acceptablePrice={acceptablePrice}
           executionPrice={executionPrice ?? undefined}
-          triggerOrderType={fixedTriggerOrderType}
         />
         <ExchangeInfoRow
           label={t`Liq. Price`}
@@ -1251,7 +1260,7 @@ export function TradeBox(p: Props) {
           displayDecimals={marketDecimals}
           fees={fees}
           executionPrice={executionPrice ?? undefined}
-          triggerOrderType={fixedTriggerOrderType}
+          triggerOrderType={decreaseAmounts?.triggerOrderType}
           acceptablePrice={decreaseAmounts?.acceptablePrice}
         />
 
@@ -1292,7 +1301,7 @@ export function TradeBox(p: Props) {
       }
     },
     {},
-    [submitButtonState.disabled, shouldDisableValidation, isCursorInside]
+    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, onSubmit]
   );
 
   const buttonContent = (

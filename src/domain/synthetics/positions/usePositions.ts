@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
-import { accountPositionListKey, hashedPositionKey } from "config/dataStore";
+import { hashedPositionKey } from "config/dataStore";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
@@ -18,7 +18,6 @@ import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
 import { getPositionKey, parsePositionKey } from "./utils";
 
-import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
@@ -39,43 +38,14 @@ export function usePositions(
 ): PositionsResult {
   const { marketsInfoData, tokensData, account } = p;
 
-  const { data: existingPositionsKeysSet, error: existingPositionsKeysError } = useMulticall(
-    chainId,
-    "usePositions-keys",
-    {
-      key: account ? [account] : null,
-
-      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
-      clearUnusedKeys: true,
-      keepPreviousData: true,
-
-      request: () => ({
-        dataStore: {
-          contractAddress: getContract(chainId, "DataStore"),
-          abi: DataStore.abi,
-          calls: {
-            keys: {
-              methodName: "getBytes32ValuesAt",
-              params: [accountPositionListKey(account!), 0, 1000],
-            },
-          },
-        },
-      }),
-      parseResponse: (res) => {
-        return new Set(res.data.dataStore.keys.returnValues as string[]);
-      },
-    }
-  );
-
   const keysAndPrices = useKeysAndPricesParams({
     marketsInfoData,
     tokensData,
     account,
-    existingPositionsKeysSet,
   });
 
   const { data: positionsData, error: positionsError } = useMulticall(chainId, "usePositionsData", {
-    key: keysAndPrices.contractPositionsKeys.length ? [keysAndPrices.contractPositionsKeys] : null,
+    key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
@@ -91,10 +61,13 @@ export function usePositions(
             params: [
               getContract(chainId, "DataStore"),
               getContract(chainId, "ReferralStorage"),
-              keysAndPrices!.contractPositionsKeys,
-              keysAndPrices!.marketsPrices,
+              account,
+              keysAndPrices.marketsKeys,
+              keysAndPrices.marketsPrices,
               // uiFeeReceiver
               ethers.ZeroAddress,
+              0,
+              1000,
             ],
           },
         },
@@ -103,7 +76,7 @@ export function usePositions(
     parseResponse: (res) => {
       const positions = res.data.reader.positions.returnValues;
 
-      return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
+      return positions.reduce((positionsMap: PositionsData, positionInfo) => {
         const { position, fees } = positionInfo;
         const { addresses, numbers, flags, data } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
@@ -114,7 +87,7 @@ export function usePositions(
         }
 
         const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-        const contractPositionKey = keysAndPrices!.contractPositionsKeys[i];
+        const contractPositionKey = hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
 
         positionsMap[positionKey] = {
           key: positionKey,
@@ -147,7 +120,7 @@ export function usePositions(
 
   return {
     positionsData: optimisticPositionsData,
-    error: positionsError || existingPositionsKeysError,
+    error: positionsError,
   };
 }
 
@@ -155,15 +128,14 @@ function useKeysAndPricesParams(p: {
   account: string | null | undefined;
   marketsInfoData: MarketsData | undefined;
   tokensData: TokensData | undefined;
-  existingPositionsKeysSet: Set<string> | undefined;
 }) {
-  const { account, marketsInfoData, tokensData, existingPositionsKeysSet } = p;
+  const { account, marketsInfoData, tokensData } = p;
 
   return useMemo(() => {
     const values = {
       allPositionsKeys: [] as string[],
-      contractPositionsKeys: [] as string[],
       marketsPrices: [] as ContractMarketPrices[],
+      marketsKeys: [] as string[],
     };
 
     if (!account || !marketsInfoData || !tokensData) {
@@ -175,9 +147,12 @@ function useKeysAndPricesParams(p: {
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(tokensData, market);
 
-      if (!marketPrices) {
+      if (!marketPrices || market.isSpotOnly) {
         continue;
       }
+
+      values.marketsKeys.push(market.marketTokenAddress);
+      values.marketsPrices.push(marketPrices);
 
       const collaterals = market.isSameCollaterals
         ? [market.longTokenAddress]
@@ -187,19 +162,12 @@ function useKeysAndPricesParams(p: {
         for (const isLong of [true, false]) {
           const positionKey = getPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
           values.allPositionsKeys.push(positionKey);
-
-          const contractPositionKey = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
-
-          if (existingPositionsKeysSet?.has(contractPositionKey)) {
-            values.contractPositionsKeys.push(contractPositionKey);
-            values.marketsPrices.push(marketPrices);
-          }
         }
       }
     }
 
     return values;
-  }, [account, existingPositionsKeysSet, marketsInfoData, tokensData]);
+  }, [account, marketsInfoData, tokensData]);
 }
 
 export function useOptimisticPositions(p: {
