@@ -9,6 +9,7 @@ import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
 import Modal from "components/Modal/Modal";
+import { TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./SelectorBase.scss";
@@ -81,36 +82,50 @@ export function SelectorBaseMobileButton(
 }
 
 export function SelectorBaseDesktopRow(
-  props: React.HTMLAttributes<HTMLTableRowElement> & {
+  props: PropsWithChildren<{
     disabled?: boolean;
     disabledMessage?: ReactNode;
     message?: ReactNode;
-  }
+    className?: string;
+    onClick?: (e: React.MouseEvent) => void;
+  }>
 ) {
-  const body = useMemo(() => {
-    if (props.message) {
-      return <TooltipWithPortal content={props.message}>{props.children}</TooltipWithPortal>;
-    }
-
-    return props.children;
-  }, [props.children, props.message]);
-
   if (props.disabled && props.disabledMessage) {
     return (
       <TooltipWithPortal
-        as="tr"
-        className={cx("SelectorBaseUtils-row", props.className)}
+        as={TableTr}
+        className={cx("SelectorBaseUtils-row ", props.className)}
         content={props.disabledMessage}
         position="bottom-end"
+        bordered={false}
+        hoverable={false}
       >
         <div className="SelectorBaseUtils-row-disabled">{props.children}</div>
       </TooltipWithPortal>
     );
   }
 
+  if (props.message) {
+    return (
+      <TooltipWithPortal
+        as={TableTr}
+        className={cx(
+          "SelectorBaseUtils-row underline decoration-dashed decoration-1 underline-offset-2",
+          props.className
+        )}
+        content={props.message}
+        position="bottom-end"
+        bordered={false}
+        hoverable={!!props.onClick}
+        onClick={props.disabled ? undefined : props.onClick}
+      >
+        {props.children}
+      </TooltipWithPortal>
+    );
+  }
+
   return (
-    <tr
-      {...props}
+    <TableTr
       className={cx(
         "SelectorBaseUtils-row",
         {
@@ -118,14 +133,13 @@ export function SelectorBaseDesktopRow(
         },
         props.className
       )}
+      bordered={false}
+      hoverable={!!props.onClick}
+      onClick={props.disabled ? undefined : props.onClick}
     >
-      {body}
-    </tr>
+      {props.children}
+    </TableTr>
   );
-}
-
-export function SelectorBaseTableHeadRow(props: PropsWithChildren) {
-  return <tr className="SelectorBaseUtils-table-head-row">{props.children}</tr>;
 }
 
 export function SelectorBaseMobileHeaderContent(props: PropsWithChildren) {

@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import noop from "lodash/noop";
 import cx from "classnames";
+import noop from "lodash/noop";
 import { useCallback, useMemo, useState } from "react";
 import { Address, isAddress, isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
@@ -12,22 +12,22 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectChainId,
-  selectGlvInfoLoading,
   selectGlvAndMarketsInfoData,
+  selectGlvInfoLoading,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
-  MarketTokensAPRData,
   GlvAndGmMarketsInfoData,
+  MarketTokensAPRData,
+  getGlvDisplayName,
+  getGlvOrMarketAddress,
+  getMarketBadge,
   getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
   getTotalGmInfo,
   useMarketTokensData,
-  getGlvDisplayName,
-  getMarketBadge,
-  getGlvOrMarketAddress,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -39,19 +39,19 @@ import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
-import Pagination from "components/Pagination/Pagination";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 import { ApyTooltipContent } from "./ApyTooltipContent";
+import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { MintableAmount } from "./MintableAmount";
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
-import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
 
 type Props = {
   glvTokensApyData: MarketTokensAPRData | undefined;
@@ -126,7 +126,7 @@ export function GmList({
                    max-[1164px]:!-mr-[--default-container-padding] max-[1164px]:!rounded-r-0
                    max-[600px]:!-mr-[--default-container-padding-mobile]"
     >
-      <div className="flex items-center px-14 py-10">
+      <div className="flex items-center px-16 py-8">
         <span className="text-16">
           <Trans>Pools</Trans>
         </span>
@@ -141,25 +141,24 @@ export function GmList({
           autoFocus={false}
         />
       </div>
-      <div className="h-1 bg-slate-700"></div>
       <div className="overflow-x-auto">
         <table className="w-[max(100%,1100px)]">
           <thead>
-            <ExchangeTheadTr bordered={false}>
-              <ExchangeTh>
+            <TableTheadTr bordered>
+              <TableTh>
                 <Trans>POOL</Trans>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("price")}>
                   <Trans>PRICE</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("totalSupply")}>
                   <Trans>TOTAL SUPPLY</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("buyable")}>
                   <TooltipWithPortal
                     handle={<Trans>BUYABLE</Trans>}
@@ -172,8 +171,8 @@ export function GmList({
                     )}
                   />
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("wallet")}>
                   <GmTokensTotalBalanceInfo
                     balance={userTotalGmInfo?.balance}
@@ -182,8 +181,8 @@ export function GmList({
                     label={t`WALLET`}
                   />
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("apy")}>
                   <TooltipWithPortal
                     handle={t`APY`}
@@ -192,10 +191,10 @@ export function GmList({
                     renderContent={ApyTooltipContent}
                   />
                 </Sorter>
-              </ExchangeTh>
+              </TableTh>
 
-              <ExchangeTh />
-            </ExchangeTheadTr>
+              <TableTh />
+            </TableTheadTr>
           </thead>
           <tbody>
             {currentData.length > 0 &&
@@ -213,26 +212,19 @@ export function GmList({
                 />
               ))}
             {!currentData.length && !isLoading && (
-              <ExchangeTr hoverable={false} bordered={false}>
-                <ExchangeTd colSpan={7}>
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={7}>
                   <div className="text-center text-gray-400">
                     <Trans>No GM pools found.</Trans>
                   </div>
-                </ExchangeTd>
-              </ExchangeTr>
+                </TableTd>
+              </TableTr>
             )}
             {isLoading && <GMListSkeleton />}
           </tbody>
         </table>
       </div>
-      {pageCount > 1 && (
-        <>
-          <div className="h-1 bg-slate-700"></div>
-          <div className="py-10">
-            <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-          </div>
-        </>
-      )}
+      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
     </div>
   );
 }
@@ -452,8 +444,8 @@ function GmListItem({
   const tokenIconBadge = getMarketBadge(chainId, marketOrGlv);
 
   return (
-    <ExchangeTr key={token.address} hoverable={false} bordered={false}>
-      <ExchangeTd>
+    <TableTr key={token.address} hoverable={false} bordered={false}>
+      <TableTd>
         <div className="flex">
           <div className="mr-12 flex shrink-0 items-center">
             <TokenIcon
@@ -480,9 +472,9 @@ function GmListItem({
           </div>
         </div>
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
-      </ExchangeTd>
-      <ExchangeTd>{formatUsdPrice(token.prices?.minPrice)}</ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>{formatUsdPrice(token.prices?.minPrice)}</TableTd>
+      <TableTd>
         <TokenValuesInfoCell
           token={formatTokenAmount(totalSupply, token.decimals, token.symbol, {
             useCommas: true,
@@ -490,8 +482,8 @@ function GmListItem({
           })}
           usd={formatUsd(totalSupplyUsd)}
         />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         {isGlv ? (
           <MintableAmount
             mintableInfo={getMintableInfoGlv(marketOrGlv, marketTokensData)}
@@ -509,9 +501,9 @@ function GmListItem({
             />
           )
         )}
-      </ExchangeTd>
+      </TableTd>
 
-      <ExchangeTd>
+      <TableTd>
         <GmTokensBalanceInfo
           token={token}
           daysConsidered={daysConsidered}
@@ -519,13 +511,13 @@ function GmListItem({
           earnedTotal={marketEarnings?.total}
           isGlv={isGlv}
         />
-      </ExchangeTd>
+      </TableTd>
 
-      <ExchangeTd>
+      <TableTd>
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
-      </ExchangeTd>
+      </TableTd>
 
-      <ExchangeTd className="w-[350px]">
+      <TableTd className="w-[350px]">
         <div className="grid grid-cols-3 gap-10">
           <Button
             className="flex-grow"
@@ -543,7 +535,7 @@ function GmListItem({
           </Button>
           <div className="flex-grow">{shiftButton}</div>
         </div>
-      </ExchangeTd>
-    </ExchangeTr>
+      </TableTd>
+    </TableTr>
   );
 }

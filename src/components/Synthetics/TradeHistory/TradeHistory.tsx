@@ -18,11 +18,12 @@ import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
-import { ActionFilter } from "./filters/ActionFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
+import { ActionFilter } from "./filters/ActionFilter";
 
 import { useDownloadAsCsv } from "./useDownloadAsCsv";
 
@@ -79,12 +80,13 @@ export function TradeHistory(p: Props) {
   const isLoading = (forAllAccounts || isConnected) && (minCollateralUsd === undefined || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
-  const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
-    [account, forAllAccounts].toString(),
-    tradeActions,
-    ENTITIES_PER_PAGE
-  );
-  const currentPageData = getCurrentData();
+  const {
+    currentPage,
+    setCurrentPage,
+    currentData: currentPageData,
+    pageCount,
+  } = usePagination([account, forAllAccounts].toString(), tradeActions, ENTITIES_PER_PAGE);
+
   const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 
   const pnlAnalysisButton = useMemo(() => {
@@ -126,7 +128,7 @@ export function TradeHistory(p: Props) {
   return (
     <div className="TradeHistorySynthetics">
       <div className="App-box max-[962px]:!-mr-[--default-container-padding] max-[962px]:!rounded-r-0 max-[800px]:!-mr-[--default-container-padding-mobile]">
-        <div className="flex flex-wrap items-center justify-between gap-y-8 border-b border-b-slate-700 px-10 py-16">
+        <div className="flex flex-wrap items-center justify-between gap-y-8 px-16 py-8">
           <div>
             <Trans>Trade History</Trans>
           </div>
@@ -147,7 +149,7 @@ export function TradeHistory(p: Props) {
           </div>
         </div>
         <div className="TradeHistorySynthetics-horizontal-scroll-container">
-          <table className="Exchange-list TradeHistorySynthetics-table">
+          <table className="TradeHistorySynthetics-table">
             <colgroup>
               <col className="TradeHistorySynthetics-action-column" />
               <col className="TradeHistorySynthetics-market-column" />
@@ -156,29 +158,29 @@ export function TradeHistory(p: Props) {
               <col className="TradeHistorySynthetics-pnl-fees-column" />
             </colgroup>
             <thead className="TradeHistorySynthetics-header">
-              <tr>
-                <th>
+              <TableTheadTr bordered>
+                <TableTh>
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
-                </th>
-                <th>
+                </TableTh>
+                <TableTh>
                   <MarketFilterLongShort
                     withPositions="all"
                     value={marketsDirectionsFilter}
                     onChange={setMarketsDirectionsFilter}
                   />
-                </th>
-                <th>
+                </TableTh>
+                <TableTh>
                   <Trans>Size</Trans>
-                </th>
-                <th>
+                </TableTh>
+                <TableTh>
                   <Trans>Price</Trans>
-                </th>
-                <th className="TradeHistorySynthetics-pnl-fees-header">
+                </TableTh>
+                <TableTh className="TradeHistorySynthetics-pnl-fees-header">
                   <TooltipWithPortal content={<Trans>Realized PnL after fees and price impact.</Trans>}>
                     <Trans>RPnL ($)</Trans>
                   </TooltipWithPortal>
-                </th>
-              </tr>
+                </TableTh>
+              </TableTheadTr>
             </thead>
             <tbody>
               {isLoading ? (
@@ -195,18 +197,23 @@ export function TradeHistory(p: Props) {
                 ))
               )}
             </tbody>
+            {isEmpty && hasFilters && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd className="text-gray-300">
+                  <Trans>No trades match the selected filters</Trans>
+                </TableTd>
+              </TableTr>
+            )}
+            {isEmpty && !hasFilters && !isLoading && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd className="text-gray-300" colSpan={5}>
+                  <Trans>No trades yet</Trans>
+                </TableTd>
+              </TableTr>
+            )}
           </table>
         </div>
-        {isEmpty && hasFilters && (
-          <div className="TradeHistorySynthetics-padded-cell">
-            <Trans>No trades match the selected filters</Trans>
-          </div>
-        )}
-        {isEmpty && !hasFilters && !isLoading && (
-          <div className="TradeHistorySynthetics-padded-cell">
-            <Trans>No trades yet</Trans>
-          </div>
-        )}
+
         <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </div>
     </div>

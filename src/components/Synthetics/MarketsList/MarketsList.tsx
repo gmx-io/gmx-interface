@@ -19,7 +19,7 @@ import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
@@ -61,7 +61,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
                  max-[964px]:!-mr-[--default-container-padding] max-[964px]:!rounded-r-0
                  max-[600px]:!-mr-[--default-container-padding-mobile]"
     >
-      <div className="flex items-center px-14 py-10 text-16">
+      <div className="flex items-center px-16 py-8 text-16">
         <Trans>GM Pools</Trans>
         <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
         <SearchInput
@@ -74,41 +74,40 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
           autoFocus={false}
         />
       </div>
-      <div className="h-1 bg-slate-700"></div>
       <div className="overflow-x-auto">
         <table className="w-[max(100%,900px)]">
           <thead>
-            <ExchangeTheadTr bordered={false}>
-              <ExchangeTh>
+            <TableTheadTr bordered>
+              <TableTh>
                 <Trans>MARKETS</Trans>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("price")}>
                   <Trans>PRICE</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("tvl")}>
                   <Trans comment="Total Value Locked">TVL</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("liquidity")}>
                   <Trans>LIQUIDITY</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <TooltipWithPortal
                   handle={<Trans>NET RATE / 1 H</Trans>}
                   renderContent={renderNetFeeHeaderTooltipContent}
                 />
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("utilization")}>
                   <Trans>UTILIZATION</Trans>
                 </Sorter>
-              </ExchangeTh>
-            </ExchangeTheadTr>
+              </TableTh>
+            </TableTheadTr>
           </thead>
           <tbody>
             {indexTokensStats.length > 0 &&
@@ -207,8 +206,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
   const marketIndexName = getMarketIndexName(anyPool.marketInfo);
 
   return (
-    <ExchangeTr key={stats.token.symbol} bordered={false} hoverable={false}>
-      <ExchangeTd>
+    <TableTr key={stats.token.symbol} bordered={false} hoverable={false}>
+      <TableTd>
         <div className="token-symbol-wrapper">
           <div className="flex items-center">
             <div className="App-card-title-info-icon min-h-40">
@@ -226,9 +225,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </div>
           </div>
         </div>
-      </ExchangeTd>
-      <ExchangeTd>{formatUsdPrice(stats.token.prices?.minPrice)}</ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>{formatUsdPrice(stats.token.prices?.minPrice)}</TableTd>
+      <TableTd>
         <TooltipWithPortal
           className="nowrap"
           handle={formatUsd(stats.totalPoolValue)}
@@ -251,8 +250,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </>
           )}
         />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <TooltipWithPortal
           className="nowrap"
           handle={formatUsd(stats.totalMaxLiquidity)}
@@ -275,8 +274,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </>
           )}
         />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
@@ -284,8 +283,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
-      </ExchangeTd>
-      <ExchangeTd>{formatAmount(stats.totalUtilization, 2, 2)}%</ExchangeTd>
-    </ExchangeTr>
+      </TableTd>
+      <TableTd>{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
+    </TableTr>
   );
 }

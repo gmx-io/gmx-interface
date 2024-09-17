@@ -9,9 +9,10 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTh, TableTheadTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { PnlSummaryPoint, usePnlSummaryData } from "domain/synthetics/accountStats";
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
-import { usePnlSummaryData, PnlSummaryPoint } from "domain/synthetics/accountStats";
 
 const bucketLabelMap = {
   today: msg`Today`,
@@ -27,29 +28,29 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
 
   return (
     <div className="overflow-hidden rounded-4 bg-slate-800">
-      <div className="border-b border-b-gray-950 p-16">
+      <div className=" p-16">
         <Trans>General Performance Details</Trans>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-max">
           <thead>
-            <tr className="*:text-left *:font-normal *:uppercase">
-              <th className="py-13 pl-16 pr-5 opacity-70">
+            <TableTheadTr bordered>
+              <TableTh>
                 <Trans>Date</Trans>
-              </th>
-              <th className="px-5 py-13 opacity-70">
+              </TableTh>
+              <TableTh>
                 <Trans>Volume</Trans>
-              </th>
-              <th className="px-5 py-13 opacity-70">
+              </TableTh>
+              <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
                   content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
                 >
                   <Trans>PnL ($)</Trans>
                 </TooltipWithPortal>
-              </th>
-              <th className="px-5 py-13 opacity-70">
+              </TableTh>
+              <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
                   content={
@@ -64,11 +65,11 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                 >
                   <Trans>PnL (%)</Trans>
                 </TooltipWithPortal>
-              </th>
-              <th className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right opacity-70">
+              </TableTh>
+              <TableTh className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right opacity-70">
                 <Trans>Win / Loss</Trans>
-              </th>
-            </tr>
+              </TableTh>
+            </TableTheadTr>
           </thead>
           <tbody>
             {loading && <AccountPnlSummarySkeleton count={6} />}

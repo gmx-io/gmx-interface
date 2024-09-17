@@ -17,24 +17,6 @@
     }
   }
 
-  &-header tr {
-    cursor: default !important;
-    border-bottom: none !important;
-  }
-
-  &-header tr:hover {
-    background: unset !important;
-    box-shadow: none !important;
-  }
-
-  &-header th {
-    text-transform: uppercase;
-  }
-
-  &-padded-cell {
-    padding: 1em 1.5rem;
-  }
-
   &-controls-right {
     display: flex;
     gap: 0.5em;

@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
+import { useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
@@ -14,6 +15,7 @@ import { getByKey } from "lib/objects";
 import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
+import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -39,85 +41,96 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
+  const isMobile = useMedia("(max-width: 1300px)");
+
+  const isAnyPositionOpening = useMemo(() => positions.some((position) => position.isOpening), [positions]);
 
   return (
     <div>
-      {positions.length === 0 && (
-        <div className="Exchange-empty-positions-list-note App-card small">
-          {isLoading ? t`Loading...` : t`No open positions`}
-        </div>
+      {isMobile && (
+        <>
+          {positions.length === 0 && <div className="App-card">{isLoading ? t`Loading...` : t`No open positions`}</div>}
+          <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
+            {!isLoading &&
+              positions.map((position) => (
+                <PositionItemWrapper
+                  key={position.key}
+                  position={position}
+                  onEditCollateralClick={setEditingPositionKey}
+                  onClosePositionClick={onClosePositionClick}
+                  onOrdersClick={onOrdersClick}
+                  onSelectPositionClick={onSelectPositionClick}
+                  isLarge={false}
+                  onShareClick={handleSharePositionClick}
+                  openSettings={openSettings}
+                  hideActions={hideActions}
+                  onCancelOrder={onCancelOrder}
+                />
+              ))}
+          </div>
+        </>
       )}
-      <div className="Exchange-list small">
-        {!isLoading &&
-          positions.map((position) => (
-            <PositionItemWrapper
-              key={position.key}
-              position={position}
-              onEditCollateralClick={setEditingPositionKey}
-              onClosePositionClick={onClosePositionClick}
-              onOrdersClick={onOrdersClick}
-              onSelectPositionClick={onSelectPositionClick}
-              isLarge={false}
-              onShareClick={handleSharePositionClick}
-              openSettings={openSettings}
-              hideActions={hideActions}
-              onCancelOrder={onCancelOrder}
-            />
-          ))}
-      </div>
 
-      <table className="Exchange-list Position-list large App-box">
-        <tbody>
-          <tr className="Exchange-list-header">
-            <th>
-              <Trans>Position</Trans>
-            </th>
-            <th>
-              <Trans>Size</Trans>
-            </th>
-            <th>
-              <Trans>Net Value</Trans>
-            </th>
-            <th>
-              <Trans>Collateral</Trans>
-            </th>
-            <th>
-              <Trans>Entry Price</Trans>
-            </th>
-            <th>
-              <Trans>Mark Price</Trans>
-            </th>
-            <th>
-              <Trans>Liq. Price</Trans>
-            </th>
-          </tr>
-          {positions.length === 0 && (
-            <tr>
-              <td colSpan={15}>
-                <div className="Exchange-empty-positions-list-note">
-                  {isLoading ? t`Loading...` : t`No open positions`}
-                </div>
-              </td>
-            </tr>
-          )}
-          {!isLoading &&
-            positions.map((position) => (
-              <PositionItemWrapper
-                key={position.key}
-                position={position}
-                onEditCollateralClick={setEditingPositionKey}
-                onClosePositionClick={onClosePositionClick}
-                onOrdersClick={onOrdersClick}
-                onSelectPositionClick={onSelectPositionClick}
-                isLarge
-                onShareClick={handleSharePositionClick}
-                openSettings={openSettings}
-                hideActions={hideActions}
-                onCancelOrder={onCancelOrder}
-              />
-            ))}
-        </tbody>
-      </table>
+      {!isMobile && (
+        <Table>
+          <thead>
+            <TableTheadTr bordered>
+              <TableTh>
+                <Trans>Position</Trans>
+              </TableTh>
+              <TableTh>
+                <Trans>Size</Trans>
+              </TableTh>
+              <TableTh>
+                <Trans>Net Value</Trans>
+              </TableTh>
+              <TableTh>
+                <Trans>Collateral</Trans>
+              </TableTh>
+              <TableTh>
+                <Trans>Entry Price</Trans>
+              </TableTh>
+              <TableTh>
+                <Trans>Mark Price</Trans>
+              </TableTh>
+              <TableTh>
+                <Trans>Liq. Price</Trans>
+              </TableTh>
+              {!isLoading && !isAnyPositionOpening && !p.hideActions && (
+                <>
+                  <TableTh></TableTh>
+                  <TableTh></TableTh>
+                </>
+              )}
+            </TableTheadTr>
+          </thead>
+          <tbody>
+            {positions.length === 0 && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={15}>
+                  <div className="text-gray-300">{isLoading ? t`Loading...` : t`No open positions`}</div>
+                </TableTd>
+              </TableTr>
+            )}
+            {!isLoading &&
+              positions.map((position) => (
+                <PositionItemWrapper
+                  key={position.key}
+                  position={position}
+                  onEditCollateralClick={setEditingPositionKey}
+                  onClosePositionClick={onClosePositionClick}
+                  onOrdersClick={onOrdersClick}
+                  onSelectPositionClick={onSelectPositionClick}
+                  isLarge
+                  onShareClick={handleSharePositionClick}
+                  openSettings={openSettings}
+                  hideActions={hideActions}
+                  onCancelOrder={onCancelOrder}
+                />
+              ))}
+          </tbody>
+        </Table>
+      )}
       {positionToShare && (
         <PositionShare
           key={positionToShare.key}

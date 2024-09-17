@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+
 import { getIsSyntheticsSupported } from "config/features";
 import { getWhitelistedV1Tokens } from "config/tokens";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -24,9 +25,9 @@ import { DashboardPageTitle } from "./DashboardPageTitle";
 import { GlpCard } from "./GlpCard";
 import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";
+import { MarketsListV1 } from "./MarketsListV1";
 import { OverviewCard } from "./OverviewCard";
 import { StatsCard } from "./StatsCard";
-import { MarketsListV1 } from "./MarketsListV1";
 
 import "./DashboardV2.css";
 

@@ -192,9 +192,9 @@ function MarketTokenSelectorInternal(props: Props) {
   const isSmallMobile = useMedia("(max-width: 560px)");
 
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
-  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
+  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-16 last-of-type:pr-16") : "px-16";
   const thClassName = cx(
-    "sticky top-0 z-10 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -230,7 +230,7 @@ function MarketTokenSelectorInternal(props: Props) {
     <>
       <SelectorBaseMobileHeaderContent>
         <SearchInput
-          className="mt-15"
+          className="mt-16"
           value={searchKeyword}
           setValue={handleSearch}
           onKeyDown={handleKeyDown}
@@ -245,7 +245,7 @@ function MarketTokenSelectorInternal(props: Props) {
         {!isMobile && (
           <>
             <SearchInput
-              className="m-15"
+              className="m-16"
               value={searchKeyword}
               setValue={({ target }) => setSearchKeyword(target.value)}
               onKeyDown={(e) => {
@@ -260,7 +260,7 @@ function MarketTokenSelectorInternal(props: Props) {
         )}
 
         <Tab
-          className="px-15 py-4"
+          className="px-16 py-4"
           options={marketTokensTabOptions}
           optionLabels={localizedTabOptionLabels}
           type="inline"
@@ -273,7 +273,7 @@ function MarketTokenSelectorInternal(props: Props) {
             "max-h-[444px] overflow-y-auto": !isMobile,
           })}
         >
-          <table className="w-full">
+          <table className="w-full border-separate border-spacing-0">
             {sortedMarketsByIndexToken.length > 0 && (
               <thead>
                 <tr>
@@ -315,7 +315,7 @@ function MarketTokenSelectorInternal(props: Props) {
           </table>
         </div>
         {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-          <div className="py-15 text-center text-gray-400">
+          <div className="py-16 text-center text-gray-400">
             <Trans>No markets matched.</Trans>
           </div>
         )}
@@ -518,12 +518,12 @@ function MarketTokenListItem({
   return (
     <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
       <td
-        className={cx("rounded-4 pl-15 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
+        className={cx("rounded-4 pl-16 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
       </td>
-      <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-15")} onClick={handleSelect}>
+      <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>
         {marketInfo && !isSmallMobile && (
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />

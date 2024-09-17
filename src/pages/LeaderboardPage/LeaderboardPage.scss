@@ -131,10 +131,10 @@ $tabs-threshold: 990px;
   display: inline-flex;
 }
 
-.LeaderboardRankRow-Pinned td:first-child::before {
+.LeaderboardRankCell-Pinned::after {
   content: "";
   display: inline-block;
-  width: 0.2rem;
+  width: 2px;
   height: 100%;
   position: absolute;
   left: 0;
@@ -476,9 +476,8 @@ $tabs-threshold: 990px;
 
 .TableBox__head {
   background-color: var(--color-slate-800);
-  padding: 1rem 1.6rem;
+  padding: 16px;
   border-radius: 0.4rem 0.4rem 0 0;
-  border-bottom: 1px solid var(--color-gray-900);
 }
 
 .TableBox__footer {
@@ -515,52 +514,6 @@ $tabs-threshold: 990px;
 
 table.Table.Exchange-list th {
   opacity: unset;
-}
-
-.TableHeader .TableHeaderTitle {
-  opacity: 0.7;
-  display: flex;
-  height: 100%;
-  white-space: nowrap;
-  text-transform: uppercase;
-  font-size: var(--font-base);
-}
-.TableHeader.text-right .TableHeaderTitle {
-  justify-content: flex-end;
-}
-
-.TableHeader.sortable .TableHeaderTitle,
-.TableHeader.sorted-asc .TableHeaderTitle,
-.TableHeader.sorted-desc .TableHeaderTitle {
-  cursor: pointer;
-}
-
-.TableHeader.sortable .TableHeaderTitle::after,
-.TableHeader.sorted-asc .TableHeaderTitle::after,
-.TableHeader.sorted-desc .TableHeaderTitle::after {
-  content: "";
-  display: inline-block;
-  width: 1.5rem;
-  margin-left: 0.5rem;
-  background-repeat: no-repeat;
-}
-
-.TableHeader.sortable .TableHeaderTitle::after {
-  background-color: var(--color-gray-300);
-  mask-image: url(../../img/ic_sortable.svg);
-  mask-position: center 0.2rem;
-}
-
-.TableHeader.sorted-asc .TableHeaderTitle::after {
-  background-color: var(--color-gray-300);
-  mask-image: url(../../img/ic_sorted_asc.svg);
-  mask-position: center 0.2rem;
-}
-
-.TableHeader.sorted-desc .TableHeaderTitle::after {
-  background-color: var(--color-gray-300);
-  mask-image: url(../../img/ic_sorted_desc.svg);
-  mask-position: center 0.2rem;
 }
 
 .Table_tr {

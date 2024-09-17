@@ -241,7 +241,7 @@ function Table({ activeCompetition }: { activeCompetition: CompetitionType | und
       <AccountsTable activeCompetition={activeCompetition} />
     );
 
-  return <div className="default-container !pr-0">{table}</div>;
+  return <div className="default-container">{table}</div>;
 }
 
 function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {

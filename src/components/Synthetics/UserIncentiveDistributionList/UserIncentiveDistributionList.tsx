@@ -28,8 +28,8 @@ import { BottomTablePagination } from "components/Pagination/BottomTablePaginati
 import EmptyMessage from "components/Referrals/EmptyMessage";
 import usePagination from "components/Referrals/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
@@ -120,24 +120,25 @@ export default function UserIncentiveDistributionList() {
         title={t`Incentives Distribution History`}
         tooltipText={t`Incentives are airdropped weekly.`}
         bodyPadding={false}
+        divider={false}
       >
         <div className="overflow-x-auto">
           <table className="w-full min-w-max">
             <thead>
-              <ExchangeTheadTr>
-                <ExchangeTh>
+              <TableTheadTr bordered>
+                <TableTh>
                   <Trans>Date</Trans>
-                </ExchangeTh>
-                <ExchangeTh>
+                </TableTh>
+                <TableTh>
                   <Trans>Type</Trans>
-                </ExchangeTh>
-                <ExchangeTh>
+                </TableTh>
+                <TableTh>
                   <Trans>Amount</Trans>
-                </ExchangeTh>
-                <ExchangeTh>
+                </TableTh>
+                <TableTh>
                   <Trans>Transaction</Trans>
-                </ExchangeTh>
-              </ExchangeTheadTr>
+                </TableTh>
+              </TableTheadTr>
             </thead>
             <tbody>
               {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
@@ -184,17 +185,17 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
-    <ExchangeTr bordered={false} hoverable={false}>
-      <ExchangeTd data-label="Date">{formatDate(timestamp)}</ExchangeTd>
-      <ExchangeTd data-label="Type">{type}</ExchangeTd>
-      <ExchangeTd data-label="Amount">
+    <TableTr bordered={false} hoverable={false}>
+      <TableTd data-label="Date">{formatDate(timestamp)}</TableTd>
+      <TableTd data-label="Type">{type}</TableTd>
+      <TableTd data-label="Amount">
         <Tooltip handle={formatUsd(totalUsd)} className="whitespace-nowrap" renderContent={renderTotalTooltipContent} />
-      </ExchangeTd>
-      <ExchangeTd data-label="Transaction">
+      </TableTd>
+      <TableTd data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>
           {shortenAddressOrEns(transactionHash, 13)}
         </ExternalLink>
-      </ExchangeTd>
-    </ExchangeTr>
+      </TableTd>
+    </TableTr>
   );
 }

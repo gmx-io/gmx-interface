@@ -10,6 +10,7 @@ import { formatAmount, formatKeyAmount, formatUsdPrice } from "lib/numbers";
 
 import PageTitle from "components/PageTitle/PageTitle";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipComponent from "components/Tooltip/Tooltip";
 import AssetDropdown from "./AssetDropdown";
@@ -38,30 +39,30 @@ export function MarketsListV1({
 
   return (
     <>
-      <div className="token-table-wrapper App-card">
-        <div className="App-card-title">
-          <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16" alt="Network Icon" />
+      <div className="token-table-wrapper App-box">
+        <div className="flex items-center p-16">
+          <Trans>GLP Index Composition</Trans>{" "}
+          <img src={currentIcons.network} className="ml-5" width="16" alt="Network Icon" />
         </div>
-        <div className="App-card-divider" />
-        <table className="token-table">
+        <table className="w-full">
           <thead>
-            <tr>
-              <th>
+            <TableTheadTr bordered>
+              <TableTh>
                 <Trans>TOKEN</Trans>
-              </th>
-              <th>
+              </TableTh>
+              <TableTh>
                 <Trans>PRICE</Trans>
-              </th>
-              <th>
+              </TableTh>
+              <TableTh>
                 <Trans>POOL</Trans>
-              </th>
-              <th>
+              </TableTh>
+              <TableTh>
                 <Trans>WEIGHT</Trans>
-              </th>
-              <th>
+              </TableTh>
+              <TableTh>
                 <Trans>UTILIZATION</Trans>
-              </th>
-            </tr>
+              </TableTh>
+            </TableTheadTr>
           </thead>
           <tbody>
             {visibleTokens.map((token) => {
@@ -85,8 +86,8 @@ export function MarketsListV1({
               }
 
               return (
-                <tr key={token.address}>
-                  <td>
+                <TableTr key={token.address} bordered={false} hoverable={false}>
+                  <TableTd>
                     <div className="token-symbol-wrapper">
                       <div className="App-card-title-info">
                         <div className="App-card-title-info-icon">
@@ -101,55 +102,57 @@ export function MarketsListV1({
                         </div>
                       </div>
                     </div>
-                  </td>
-                  <td>{formatUsdPrice(tokenInfo?.minPrice)}</td>
-                  <td>
+                  </TableTd>
+                  <TableTd>{formatUsdPrice(tokenInfo?.minPrice)}</TableTd>
+                  <TableTd>
                     <TooltipComponent
                       handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                       position="bottom-end"
                       className="whitespace-nowrap"
-                      content={
-                        <>
-                          <StatsTooltipRow
-                            label={t`Pool Amount`}
-                            value={`${formatKeyAmount(
-                              tokenInfo,
-                              "managedAmount",
-                              token.decimals,
-                              0,
-                              true
-                            )} ${token.symbol}`}
-                            showDollar={false}
-                          />
-                          <StatsTooltipRow
-                            label={t`Target Min Amount`}
-                            value={`${formatKeyAmount(
-                              tokenInfo,
-                              "bufferAmount",
-                              token.decimals,
-                              0,
-                              true
-                            )} ${token.symbol}`}
-                            showDollar={false}
-                          />
-                          <StatsTooltipRow
-                            label={t`Max ${tokenInfo.symbol} Capacity`}
-                            value={formatAmount(maxUsdgAmount, 18, 0, true)}
-                            showDollar={true}
-                          />
-                        </>
-                      }
+                      renderContent={() => {
+                        return (
+                          <>
+                            <StatsTooltipRow
+                              label={t`Pool Amount`}
+                              value={`${formatKeyAmount(
+                                tokenInfo,
+                                "managedAmount",
+                                token.decimals,
+                                0,
+                                true
+                              )} ${token.symbol}`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label={t`Target Min Amount`}
+                              value={`${formatKeyAmount(
+                                tokenInfo,
+                                "bufferAmount",
+                                token.decimals,
+                                0,
+                                true
+                              )} ${token.symbol}`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label={t`Max ${tokenInfo.symbol} Capacity`}
+                              value={formatAmount(maxUsdgAmount, 18, 0, true)}
+                              showDollar={true}
+                            />
+                          </>
+                        );
+                      }}
                     />
-                  </td>
-                  <td>
+                  </TableTd>
+                  <TableTd>
                     <WeightText
                       tokenInfo={tokenInfo}
                       adjustedUsdgSupply={adjustedUsdgSupply}
                       totalTokenWeights={totalTokenWeights}
                     />
-                  </td>
-                  <td>{formatAmount(utilization, 2, 2, false)}%</td>
-                </tr>
+                  </TableTd>
+                  <TableTd>{formatAmount(utilization, 2, 2, false)}%</TableTd>
+                </TableTr>
               );
             })}
           </tbody>
@@ -204,36 +207,38 @@ export function MarketsListV1({
                     <TooltipComponent
                       handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                       position="bottom-end"
-                      content={
-                        <>
-                          <StatsTooltipRow
-                            label={t`Pool Amount`}
-                            value={`${formatKeyAmount(
-                              tokenInfo,
-                              "managedAmount",
-                              token.decimals,
-                              0,
-                              true
-                            )} ${token.symbol}`}
-                            showDollar={false}
-                          />
-                          <StatsTooltipRow
-                            label={t`Target Min Amount`}
-                            value={`${formatKeyAmount(
-                              tokenInfo,
-                              "bufferAmount",
-                              token.decimals,
-                              0,
-                              true
-                            )} ${token.symbol}`}
-                            showDollar={false}
-                          />
-                          <StatsTooltipRow
-                            label={t`Max ${tokenInfo.symbol} Capacity`}
-                            value={formatAmount(maxUsdgAmount, 18, 0, true)}
-                          />
-                        </>
-                      }
+                      renderContent={() => {
+                        return (
+                          <>
+                            <StatsTooltipRow
+                              label={t`Pool Amount`}
+                              value={`${formatKeyAmount(
+                                tokenInfo,
+                                "managedAmount",
+                                token.decimals,
+                                0,
+                                true
+                              )} ${token.symbol}`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label={t`Target Min Amount`}
+                              value={`${formatKeyAmount(
+                                tokenInfo,
+                                "bufferAmount",
+                                token.decimals,
+                                0,
+                                true
+                              )} ${token.symbol}`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label={t`Max ${tokenInfo.symbol} Capacity`}
+                              value={formatAmount(maxUsdgAmount, 18, 0, true)}
+                            />
+                          </>
+                        );
+                      }}
                     />
                   </div>
                 </div>
