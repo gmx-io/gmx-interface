@@ -163,7 +163,7 @@ export function TradeBoxOneClickTrading() {
         className="!items-center"
         value={
           <span className="flex flex-row justify-center gap-4 whitespace-nowrap align-middle">
-            <Button variant="link" disabled={!clickable} onClick={jumpToSubaccount}>
+            <Button variant="link" type="button" disabled={!clickable} onClick={jumpToSubaccount}>
               {buttonText}
             </Button>
             {onCloseClick && (

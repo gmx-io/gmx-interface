@@ -74,9 +74,7 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
       return `Executing multicall for chainId: ${chainId}. Call count: ${callCount}. Execution in ${executionIn}.`;
     });
 
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isIOS) {
+    if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isOldIOS()) {
       responseOrFailure = await executeMulticallWorker(chainId, requestConfig);
     } else {
       responseOrFailure = await executeMulticallMainThread(chainId, requestConfig);
@@ -360,4 +358,22 @@ function getRequest(callEntries: [string, { callData: MulticallFetcherConfig[num
   }
 
   return requests;
+}
+
+function isOldIOS() {
+  // An issue was identified with sending messages from the worker to the main thread on iOS 16 and earlier versions.
+  // Therefore, it was decided not to use workers for these versions.
+  const THRESHOLD = 16;
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator?.userAgent);
+
+  if (!isIOS) {
+    return false;
+  }
+
+  const versionMatch = navigator.userAgent.match(/OS (\d+)?/);
+  if (versionMatch?.[1]) {
+    return parseInt(versionMatch[1], 10) <= THRESHOLD;
+  }
+
+  return false;
 }

@@ -1,4 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
+import { OrderType } from "domain/synthetics/orders";
 import {
   FindSwapPath,
   TradeFlags,
@@ -9,11 +10,13 @@ import {
   getBestSwapPath,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
+  getMarkPrice,
   getMarketsGraph,
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
   getSwapPathStats,
+  getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
@@ -327,6 +330,28 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
       ) => {
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
+
+        let markPrice = position?.markPrice;
+        if (markPrice === undefined) {
+          const market = getByKey(marketsInfoData, marketAddress);
+          if (market) {
+            markPrice = getMarkPrice({
+              prices: market.indexToken.prices,
+              isIncrease: false,
+              isLong: tradeFlags.isLong,
+            });
+          }
+        }
+
+        let triggerOrderType: OrderType | undefined =
+          markPrice === undefined
+            ? undefined
+            : getTriggerDecreaseOrderType({
+                isLong: tradeFlags.isLong,
+                markPrice: markPrice,
+                triggerPrice: triggerPrice ?? 0n,
+              });
+
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
         const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
         const receiveToken = collateralTokenAddress ? getByKey(tokensData, receiveTokenAddress) : undefined;
@@ -356,6 +381,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           minPositionSizeUsd,
           uiFeeFactor,
           receiveToken,
+          triggerOrderType,
         });
       }
     )

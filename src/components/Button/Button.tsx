@@ -87,7 +87,15 @@ export default function Button({
 
   if (onClick) {
     return (
-      <button data-qa={qa} ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
+      <button
+        data-qa={qa}
+        ref={buttonRef}
+        type={type}
+        className={classNames}
+        onClick={handleClick}
+        disabled={disabled}
+        {...rest}
+      >
         {img}
         {children}
       </button>

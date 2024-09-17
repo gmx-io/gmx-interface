@@ -31,11 +31,21 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
 
+  let displayDecimals = executionFee?.feeToken.priceDecimals;
+  if (displayDecimals !== undefined) {
+    displayDecimals += 1;
+  } else {
+    displayDecimals = 5;
+  }
+
   const executionFeeText = formatTokenAmountWithUsd(
     executionFee?.feeTokenAmount === undefined ? undefined : -executionFee.feeTokenAmount,
     executionFee?.feeUsd === undefined ? undefined : -executionFee.feeUsd,
     executionFee?.feeToken.symbol,
-    executionFee?.feeToken.decimals
+    executionFee?.feeToken.decimals,
+    {
+      displayDecimals,
+    }
   );
 
   const additionalOrdersMsg = useMemo(
@@ -84,11 +94,12 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
       executionFee?.feeToken.decimals,
       {
         displayPlus: true,
+        displayDecimals,
       }
     );
 
     return estimatedRefundText;
-  }, [executionFee, executionFeeBufferBps, tokenData]);
+  }, [displayDecimals, executionFee, executionFeeBufferBps, tokenData]);
 
   const value: ReactNode = useMemo(() => {
     if (executionFee?.feeUsd === undefined) {

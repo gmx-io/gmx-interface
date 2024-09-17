@@ -233,7 +233,7 @@ export function PositionSeller(p: Props) {
       receiveToken,
       isTrigger,
       triggerPrice,
-      fixedTriggerThresholdType: undefined,
+      triggerThresholdType: undefined,
       existingPosition: position,
       markPrice,
       nextPositionValues,
@@ -446,16 +446,16 @@ export function PositionSeller(p: Props) {
     />
   );
 
+  let formattedTriggerPrice = "-";
+
+  if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
+    formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
+      displayDecimals: marketDecimals ?? toToken?.priceDecimals,
+    })}`;
+  }
+
   const triggerPriceRow = (
-    <ExchangeInfoRow
-      className="SwapBox-info-row"
-      label={t`Trigger Price`}
-      value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-        formatUsd(decreaseAmounts?.triggerPrice, {
-          displayDecimals: marketDecimals ?? toToken?.priceDecimals,
-        }) || "-"
-      }`}
-    />
+    <ExchangeInfoRow className="SwapBox-info-row" label={t`Trigger Price`} value={formattedTriggerPrice} />
   );
 
   const liqPriceRow = position && (

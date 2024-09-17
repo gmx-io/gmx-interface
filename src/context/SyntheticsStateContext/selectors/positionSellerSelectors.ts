@@ -92,7 +92,10 @@ const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  if (triggerPrice === 0n) {
+    triggerPrice = undefined;
+  }
   const isPnlInLeverage = q(selectIsPnlInLeverage);
 
   return {

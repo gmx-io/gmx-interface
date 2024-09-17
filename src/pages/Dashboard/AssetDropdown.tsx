@@ -2,6 +2,7 @@ import { autoUpdate, flip, FloatingPortal, shift, useFloating } from "@floating-
 import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import { ethers, isAddress } from "ethers";
+import { useCallback } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
@@ -10,6 +11,7 @@ import { getIcon } from "config/icons";
 import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import useWallet from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -45,6 +47,18 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
     whileElementsMounted: autoUpdate,
   });
 
+  const handleMenuButtonClick = useCallback((e: React.MouseEvent) => {
+    // Somehow headless ui prevents the touchend event before it can trigger the closure of already opened dropdowns
+    if (headlessUiIsMobile()) {
+      const parent = e.currentTarget.parentElement;
+
+      if (parent) {
+        const event = new TouchEvent("touchend");
+        parent.dispatchEvent(event);
+      }
+    }
+  }, []);
+
   if (!token) {
     return null;
   }
@@ -52,7 +66,12 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
   return (
     <div className="AssetDropdown-wrapper">
       <Menu>
-        <Menu.Button as="div" ref={refs.setReference} className="dropdown-arrow center-both">
+        <Menu.Button
+          as="div"
+          onClick={handleMenuButtonClick}
+          ref={refs.setReference}
+          className="dropdown-arrow center-both"
+        >
           <FiChevronDown size={20} />
         </Menu.Button>
         <FloatingPortal>

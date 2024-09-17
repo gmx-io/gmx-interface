@@ -1,6 +1,7 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
+import cx from "classnames";
+import { ChangeEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -127,6 +128,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
@@ -212,8 +214,6 @@ export function TradeBox(p: Props) {
     setStage,
     focusedInput,
     setFocusedInput,
-    fixedTriggerOrderType,
-    fixedTriggerThresholdType,
     selectedTriggerAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
@@ -221,6 +221,8 @@ export function TradeBox(p: Props) {
     setTriggerPriceInputValue,
     triggerRatioInputValue,
     setTriggerRatioInputValue,
+    leverageInputValue,
+    setLeverageInputValue,
     leverageOption,
     setLeverageOption,
     isLeverageEnabled,
@@ -485,7 +487,7 @@ export function TradeBox(p: Props) {
         minCollateralUsd,
         priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
-        fixedTriggerThresholdType: stage !== "trade" ? fixedTriggerThresholdType : undefined,
+        triggerThresholdType: stage !== "trade" ? decreaseAmounts?.triggerThresholdType : undefined,
       });
     }
 
@@ -593,8 +595,8 @@ export function TradeBox(p: Props) {
     nextLeverageWithoutPnl,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
+    decreaseAmounts?.triggerThresholdType,
     stage,
-    fixedTriggerThresholdType,
     isLeverageEnabled,
     detectAndSetAvailableMaxLeverage,
   ]);
@@ -749,7 +751,7 @@ export function TradeBox(p: Props) {
     }
   }
 
-  const tradeboxTransactions = useTradeboxTransactions({
+  const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder } = useTradeboxTransactions({
     setPendingTxns,
   });
 
@@ -764,13 +766,13 @@ export function TradeBox(p: Props) {
     let txnPromise: Promise<any>;
 
     if (isWrapOrUnwrap) {
-      txnPromise = tradeboxTransactions.onSubmitWrapOrUnwrap();
+      txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
-      txnPromise = tradeboxTransactions.onSubmitSwap();
+      txnPromise = onSubmitSwap();
     } else if (isIncrease) {
-      txnPromise = tradeboxTransactions.onSubmitIncreaseOrder();
+      txnPromise = onSubmitIncreaseOrder();
     } else {
-      txnPromise = tradeboxTransactions.onSubmitDecreaseOrder();
+      txnPromise = onSubmitDecreaseOrder();
     }
 
     if (subaccount) {
@@ -787,7 +789,19 @@ export function TradeBox(p: Props) {
     txnPromise.finally(() => {
       setStage("trade");
     });
-  }, [account, isIncrease, isSwap, isWrapOrUnwrap, openConnectModal, setStage, tradeboxTransactions, subaccount]);
+  }, [
+    account,
+    setStage,
+    isWrapOrUnwrap,
+    isSwap,
+    isIncrease,
+    subaccount,
+    openConnectModal,
+    onSubmitWrapOrUnwrap,
+    onSubmitSwap,
+    onSubmitIncreaseOrder,
+    onSubmitDecreaseOrder,
+  ]);
 
   const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);
 
@@ -899,6 +913,35 @@ export function TradeBox(p: Props) {
       }
     },
     [isCursorInside, submitButtonState.disabled, onSubmit, shouldDisableValidation]
+  );
+
+  const handleLeverageInputBlur = useCallback(() => {
+    if (leverageOption === 0) {
+      setLeverageOption(leverageSliderMarks[0]);
+      return;
+    }
+
+    if (leverageInputValue === "" && leverageOption !== undefined) {
+      setLeverageInputValue(leverageOption.toString());
+    }
+  }, [leverageInputValue, leverageOption, leverageSliderMarks, setLeverageInputValue, setLeverageOption]);
+
+  const handleLeverageInputKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+
+        const isAlt = e.altKey;
+        const direction = e.key === "ArrowUp" ? 1 : -1;
+        const increment = isAlt ? 0.1 : 1;
+        const diff = direction * increment;
+        const newValue = Math.round(((leverageOption ?? leverageSliderMarks[0]) + diff) * 10) / 10;
+        const clampedValue = Math.min(Math.max(newValue, leverageSliderMarks[0]), leverageSliderMarks.at(-1)!);
+
+        setLeverageOption(clampedValue);
+      }
+    },
+    [leverageOption, leverageSliderMarks, setLeverageOption]
   );
 
   function renderTokenInputs() {
@@ -1094,6 +1137,18 @@ export function TradeBox(p: Props) {
               className="Exchange-leverage-slider-settings"
               isChecked={isLeverageEnabled ?? false}
               setIsChecked={setIsLeverageEnabled}
+              beforeSwitchContent={
+                <div className={cx({ invisible: !isLeverageEnabled })}>
+                  <SuggestionInput
+                    inputClassName="w-40 text-right"
+                    value={leverageInputValue}
+                    setValue={setLeverageInputValue}
+                    onBlur={handleLeverageInputBlur}
+                    onKeyDown={handleLeverageInputKeyDown}
+                    symbol="x"
+                  />
+                </div>
+              }
             >
               <span className="muted">
                 <Trans>Leverage slider</Trans>
@@ -1158,7 +1213,6 @@ export function TradeBox(p: Props) {
           fees={fees}
           acceptablePrice={acceptablePrice}
           executionPrice={executionPrice ?? undefined}
-          triggerOrderType={fixedTriggerOrderType}
         />
         <ExchangeInfoRow
           label={t`Liq. Price`}
@@ -1188,23 +1242,24 @@ export function TradeBox(p: Props) {
   }
 
   function renderTriggerOrderInfo() {
+    let formattedTriggerPrice = "-";
+
+    if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
+      formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
+        displayDecimals: marketDecimals,
+      })}`;
+    }
+
     return (
       <>
-        <ExchangeInfoRow
-          label={t`Trigger Price`}
-          value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-            formatUsd(decreaseAmounts?.triggerPrice, {
-              displayDecimals: marketDecimals,
-            }) || "-"
-          }`}
-        />
+        <ExchangeInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />
 
         <ExecutionPriceRow
           tradeFlags={tradeFlags}
           displayDecimals={marketDecimals}
           fees={fees}
           executionPrice={executionPrice ?? undefined}
-          triggerOrderType={fixedTriggerOrderType}
+          triggerOrderType={decreaseAmounts?.triggerOrderType}
           acceptablePrice={decreaseAmounts?.acceptablePrice}
         />
 
@@ -1245,7 +1300,7 @@ export function TradeBox(p: Props) {
       }
     },
     {},
-    [submitButtonState.disabled, shouldDisableValidation, isCursorInside]
+    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, onSubmit]
   );
 
   const buttonContent = (
