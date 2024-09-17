@@ -15,6 +15,8 @@ export function getWithdrawalAmounts(p: {
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
   glvInfo?: GlvInfo;
+  glvTokenAmount?: bigint;
+  glvToken?: TokenData;
 }) {
   const {
     marketInfo,
@@ -25,6 +27,8 @@ export function getWithdrawalAmounts(p: {
     uiFeeFactor,
     strategy,
     glvInfo,
+    glvToken,
+    glvTokenAmount,
   } = p;
 
   const { longToken, shortToken } = marketInfo;
@@ -44,8 +48,8 @@ export function getWithdrawalAmounts(p: {
     longTokenUsd: 0n,
     shortTokenAmount: 0n,
     shortTokenUsd: 0n,
-    gmTokenAmount: 0n,
-    gmTokenUsd: 0n,
+    glvTokenAmount: 0n,
+    glvTokenUsd: 0n,
     swapFeeUsd: 0n,
     uiFeeUsd: 0n,
     swapPriceImpactDeltaUsd: 0n,
@@ -56,12 +60,17 @@ export function getWithdrawalAmounts(p: {
   }
 
   if (strategy === "byMarketToken") {
-    values.marketTokenAmount = marketTokenAmount;
-
     if (glvInfo) {
-      const glvPrice = glvInfo.indexToken.prices.minPrice;
-      values.marketTokenUsd = convertToUsd(marketTokenAmount, glvInfo.indexToken.decimals, glvPrice)!;
+      values.glvTokenAmount = glvTokenAmount!;
+      values.glvTokenUsd = convertToUsd(glvTokenAmount, glvToken?.decimals, glvToken?.prices.minPrice)!;
+      values.marketTokenAmount = convertToTokenAmount(
+        values.glvTokenUsd,
+        marketToken.decimals,
+        marketToken.prices.maxPrice
+      )!;
+      values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, values.marketTokenAmount)!;
     } else {
+      values.marketTokenAmount = marketTokenAmount;
       values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
     }
 
@@ -129,6 +138,11 @@ export function getWithdrawalAmounts(p: {
 
     values.marketTokenUsd = values.marketTokenUsd + values.swapFeeUsd;
     values.marketTokenAmount = usdToMarketTokenAmount(marketInfo, marketToken, values.marketTokenUsd)!;
+
+    if (glvInfo) {
+      values.glvTokenUsd = convertToUsd(values.marketTokenAmount, marketToken?.decimals, marketToken?.prices.minPrice)!;
+      values.glvTokenAmount = convertToTokenAmount(values.glvTokenUsd, glvToken?.decimals, glvToken?.prices.minPrice)!;
+    }
   }
 
   return values;

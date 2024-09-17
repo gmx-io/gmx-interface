@@ -5,13 +5,18 @@ import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
+
 import { selectChainId, selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+
+import { GlvInfo } from "domain/synthetics/markets";
+import { getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+
 import { helperToast } from "lib/helperToast";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
+
 import { isGlv } from "../../../../domain/synthetics/markets/glv";
 import { Mode, Operation } from "./types";
 
@@ -72,10 +77,11 @@ export function useUpdateByQueryParams({
       if (pickBestGlv) {
         setOperation(Operation.Deposit);
 
-        const glvs = Object.values(marketsInfo).filter((m) => isGlv(m));
+        const glvs = Object.values(marketsInfo).filter((m) => isGlv(m)) as GlvInfo[];
+
         if (glvs.length) {
           const bestGlv = glvs.reduce((best, glv) => {
-            return (best.indexToken.totalSupply ?? 0n) > (glv.indexToken.totalSupply ?? 0n) ? best : glv;
+            return (best.glvToken.totalSupply ?? 0n) > (glv.glvToken.totalSupply ?? 0n) ? best : glv;
           });
           marketAddress = bestGlv.indexTokenAddress.toLowerCase();
         }
@@ -109,11 +115,13 @@ export function useUpdateByQueryParams({
             const isGlvMarket = isGlv(marketInfo);
             const indexName = isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo);
             const poolName = getMarketPoolName(marketInfo);
+            const titlePrefix = isGlvMarket ? getGlvDisplayName(marketInfo) : "GM: ";
             helperToast.success(
               <Trans>
                 <div className="inline-flex">
-                  {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
-                  <span className="subtext gm-toast leading-1">[{poolName}]</span>
+                  {titlePrefix}
+                  {indexName ? <span>&nbsp;{indexName}</span> : null}
+                  <span className="subtext gm-toast">[{poolName}]</span>
                 </div>{" "}
                 <span>selected in order form</span>
               </Trans>

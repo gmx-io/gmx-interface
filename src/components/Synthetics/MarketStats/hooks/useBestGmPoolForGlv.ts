@@ -15,29 +15,30 @@ import { usePrevious } from "lib/usePrevious";
 import { useGlvGmMarketsWithComposition } from "./useMarketGlvGmMarketsCompositions";
 
 export const useBestGmPoolAddressForGlv = ({
-  isDeposit,
-  glvInfo,
-  selectedGlvGmMarket,
-
+  fees,
   uiFeeFactor,
   focusedInput,
+  isDeposit,
 
+  fromMarketTokenInputState,
   longTokenInputState,
   shortTokenInputState,
-  fromMarketTokenInputState,
+
+  isGmPoolSelectedManually,
+  isMarketTokenDeposit,
+  selectedGlvGmMarket,
+
+  glvInfo,
+  glvTokenAmount,
+
+  marketsInfoData,
+  marketTokenAmount,
+  marketTokensData,
+
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
 
-  marketTokenAmount,
-  isMarketTokenDeposit,
-
-  isGmPoolSelectedManually,
   onSelectGlvGmMarket,
-
-  marketsInfoData,
-  marketTokensData,
-
-  fees,
 }: {
   isDeposit: boolean;
   glvInfo: GlvInfo | undefined;
@@ -54,6 +55,7 @@ export const useBestGmPoolAddressForGlv = ({
 
   marketTokenAmount: bigint;
   isMarketTokenDeposit: boolean;
+  glvTokenAmount: bigint | undefined;
 
   marketsInfoData: MarketsInfoData;
   marketTokensData: TokensData | undefined;
@@ -93,7 +95,7 @@ export const useBestGmPoolAddressForGlv = ({
   }, [glvInfo, marketsWithComposition, isEligible]);
 
   const byGlv = useMemo(() => {
-    if (!isEligible) {
+    if (!isEligible || !glvInfo) {
       return [];
     }
 
@@ -119,17 +121,17 @@ export const useBestGmPoolAddressForGlv = ({
           marketToken: marketConfig.token,
           longToken: marketInfo.longToken,
           shortToken: marketInfo.shortToken,
-          gmToken: undefined,
           longTokenAmount,
           shortTokenAmount,
-          gmTokenAmount: undefined,
           marketTokenAmount,
           includeLongToken: Boolean(longTokenInputState?.address),
           includeShortToken: Boolean(shortTokenInputState?.address),
           uiFeeFactor,
+          glvTokenAmount: glvTokenAmount ?? 0n,
           strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
           isMarketTokenDeposit: false,
           glvInfo,
+          glvToken: glvInfo.glvToken,
         });
 
         const [error] = getGmSwapError({
@@ -139,14 +141,15 @@ export const useBestGmPoolAddressForGlv = ({
           marketToken: marketConfig.token,
           longToken: marketInfo.longToken,
           shortToken: marketInfo.shortToken,
-          gmToken: undefined,
           marketTokenAmount,
+          glvTokenAmount: glvTokenAmount ?? 0n,
+          glvToken: glvInfo.glvToken,
+          glvTokenUsd: amounts?.glvTokenUsd,
           marketTokenUsd: amounts?.marketTokenUsd,
           longTokenAmount: amounts?.longTokenAmount,
           shortTokenAmount: amounts?.shortTokenAmount,
           longTokenUsd: amounts?.longTokenUsd,
           shortTokenUsd: amounts?.shortTokenUsd,
-          gmTokenAmount: amounts?.gmTokenAmount,
           longTokenLiquidityUsd: longTokenLiquidityUsd,
           shortTokenLiquidityUsd: shortTokenLiquidityUsd,
           fees,
@@ -160,7 +163,7 @@ export const useBestGmPoolAddressForGlv = ({
         return {
           isValid: error === undefined,
           market: marketConfig.market,
-          amount: amounts.marketTokenUsd,
+          amount: amounts.glvTokenUsd,
         };
       })
       .sort((a, b) => {
@@ -190,6 +193,7 @@ export const useBestGmPoolAddressForGlv = ({
     fees,
     marketsInfoData,
     marketTokensData,
+    glvTokenAmount,
   ]);
 
   const bestGmMarketAddress = useMemo(() => {
@@ -232,7 +236,7 @@ export const useBestGmPoolAddressForGlv = ({
 
   useEffect(() => {
     if (!isEligible) {
-      if (!selectedGlvGmMarket) {
+      if (selectedGlvGmMarket !== fromMarketTokenInputState?.address) {
         onSelectGlvGmMarket?.(fromMarketTokenInputState?.address);
       }
 

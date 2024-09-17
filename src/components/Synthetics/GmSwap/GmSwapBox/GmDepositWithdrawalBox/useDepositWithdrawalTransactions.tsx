@@ -22,16 +22,16 @@ import { Operation } from "../types";
 interface Props {
   marketInfo?: MarketInfo;
   glvInfo?: GlvInfo;
-  toMarketToken: TokenData;
+  marketToken: TokenData;
   operation: Operation;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
-  gmToken: TokenData | undefined;
 
-  toMarketTokenAmount: bigint | undefined;
+  marketTokenAmount: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
-  gmTokenAmount: bigint | undefined;
+
+  glvTokenAmount: bigint | undefined;
 
   shouldDisableValidation?: boolean;
 
@@ -43,16 +43,15 @@ interface Props {
 
 export const useDepositWithdrawalTransactions = ({
   marketInfo,
-  toMarketToken,
+  marketToken,
   operation,
   longToken,
   longTokenAmount,
   shortToken,
   shortTokenAmount,
-  gmToken,
-  gmTokenAmount,
+  glvTokenAmount,
 
-  toMarketTokenAmount,
+  marketTokenAmount,
   shouldDisableValidation,
   tokensData,
   executionFee,
@@ -71,9 +70,9 @@ export const useDepositWithdrawalTransactions = ({
       if (
         !account ||
         !executionFee ||
-        !toMarketToken ||
+        !marketToken ||
         !marketInfo ||
-        toMarketTokenAmount === undefined ||
+        marketTokenAmount === undefined ||
         !tokensData ||
         !signer
       ) {
@@ -84,22 +83,19 @@ export const useDepositWithdrawalTransactions = ({
         ? initialLongTokenAddress
         : shortToken?.address || marketInfo.shortTokenAddress;
 
-      const initialGmTokenAddress = gmToken?.address;
-
       if (glvInfo && selectedGlvGmMarket) {
         return createGlvDepositTxn(chainId, signer, {
           account,
           initialLongTokenAddress,
           initialShortTokenAddress,
-          initialGmTokenAddress,
-          minMarketTokens: toMarketTokenAmount,
-          marketTokenAddress: glvInfo.indexTokenAddress,
+          minMarketTokens: glvTokenAmount ?? 0n,
+          glvAddress: glvInfo.marketTokenAddress,
+          marketTokenAddress: selectedGlvGmMarket,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
           longTokenAmount: longTokenAmount ?? 0n,
           shortTokenAmount: shortTokenAmount ?? 0n,
-          gmTokenAmount: gmTokenAmount ?? 0n,
-          glvMarket: selectedGlvGmMarket,
+          marketTokenAmount: marketTokenAmount ?? 0n,
           allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           executionFee: executionFee.feeTokenAmount,
           skipSimulation: shouldDisableValidation,
@@ -118,8 +114,8 @@ export const useDepositWithdrawalTransactions = ({
         shortTokenSwapPath: [],
         longTokenAmount: longTokenAmount ?? 0n,
         shortTokenAmount: shortTokenAmount ?? 0n,
-        marketTokenAddress: toMarketToken.address,
-        minMarketTokens: toMarketTokenAmount,
+        marketTokenAddress: marketToken.address,
+        minMarketTokens: marketTokenAmount,
         executionFee: executionFee.feeTokenAmount,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
@@ -134,8 +130,8 @@ export const useDepositWithdrawalTransactions = ({
       longToken,
       longTokenAmount,
       marketInfo,
-      toMarketToken,
-      toMarketTokenAmount,
+      marketToken,
+      marketTokenAmount,
       shortToken,
       shortTokenAmount,
       signer,
@@ -147,8 +143,7 @@ export const useDepositWithdrawalTransactions = ({
       selectedGlvGmMarket,
       glvInfo,
       isMarketTokenDeposit,
-      gmToken,
-      gmTokenAmount,
+      glvTokenAmount,
     ]
   );
 
@@ -157,7 +152,7 @@ export const useDepositWithdrawalTransactions = ({
       if (
         !account ||
         !marketInfo ||
-        !toMarketToken ||
+        !marketToken ||
         !executionFee ||
         longTokenAmount === undefined ||
         shortTokenAmount === undefined ||
@@ -174,8 +169,8 @@ export const useDepositWithdrawalTransactions = ({
           initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
-          marketTokenAddress: glvInfo.indexToken.address,
-          marketTokenAmount: toMarketTokenAmount!,
+          glvTokenAddress: glvInfo.marketTokenAddress,
+          glvTokenAmount: glvTokenAmount!,
           minLongTokenAmount: longTokenAmount,
           minShortTokenAmount: shortTokenAmount,
           executionFee: executionFee.feeTokenAmount,
@@ -195,10 +190,10 @@ export const useDepositWithdrawalTransactions = ({
         initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
-        marketTokenAmount: toMarketTokenAmount!,
+        marketTokenAmount: marketTokenAmount!,
         minLongTokenAmount: longTokenAmount,
         minShortTokenAmount: shortTokenAmount,
-        marketTokenAddress: toMarketToken.address,
+        marketTokenAddress: marketToken.address,
         executionFee: executionFee.feeTokenAmount,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         tokensData,
@@ -213,8 +208,8 @@ export const useDepositWithdrawalTransactions = ({
       longToken,
       longTokenAmount,
       marketInfo,
-      toMarketToken,
-      toMarketTokenAmount,
+      marketToken,
+      marketTokenAmount,
       shortToken,
       shortTokenAmount,
       signer,
@@ -225,6 +220,7 @@ export const useDepositWithdrawalTransactions = ({
       setPendingTxns,
       selectedGlvGmMarket,
       glvInfo,
+      glvTokenAmount,
     ]
   );
 

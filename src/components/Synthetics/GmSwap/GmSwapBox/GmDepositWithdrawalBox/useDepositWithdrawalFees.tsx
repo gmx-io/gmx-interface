@@ -31,7 +31,6 @@ export const useDepositWithdrawalFees = ({
   isDeposit,
   tokensData,
   glvInfo,
-  isGlv,
   isMarketTokenDeposit,
 }: {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -41,7 +40,6 @@ export const useDepositWithdrawalFees = ({
   isDeposit: boolean;
   tokensData: TokensData | undefined;
   glvInfo: GlvInfo | undefined;
-  isGlv;
   isMarketTokenDeposit: boolean;
 }) => {
   return useMemo(() => {
@@ -72,7 +70,7 @@ export const useDepositWithdrawalFees = ({
 
     const glvMarketsCount = BigInt(glvInfo?.markets?.length ?? 0);
 
-    if (isGlv) {
+    if (glvInfo) {
       gasLimit = isDeposit
         ? estimateExecuteGlvDepositGasLimit(gasLimits, {
             marketsCount: glvMarketsCount,
@@ -92,7 +90,7 @@ export const useDepositWithdrawalFees = ({
         : estimateExecuteWithdrawalGasLimit(gasLimits, {});
     }
 
-    if (isGlv) {
+    if (glvInfo) {
       oraclePriceCount = isDeposit
         ? estimateGlvDepositOraclePriceCount(glvMarketsCount)
         : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
@@ -106,5 +104,5 @@ export const useDepositWithdrawalFees = ({
       fees,
       executionFee,
     };
-  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData, glvInfo, isGlv, isMarketTokenDeposit]);
+  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData, glvInfo, isMarketTokenDeposit]);
 };

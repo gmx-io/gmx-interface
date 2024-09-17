@@ -82,7 +82,7 @@ export function CompositionBar({ marketInfo, marketsInfoData, marketTokensData }
 
       return (
         <TooltipWithPortal
-          className="!absolute h-8 border-slate-800 [&:not(:last-child)]:border-r"
+          className="!absolute h-8 !min-w-[16rem] whitespace-nowrap border-slate-800 [&:not(:last-child)]:border-r"
           style={positionStyles}
           handleClassName="!absolute h-8 w-[100%]"
           key={`comp-pc-${index}`}

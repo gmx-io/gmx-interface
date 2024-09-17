@@ -262,14 +262,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.glv,
+        glvAddress: eventData.addressItems.items.glv,
+        marketAddress: eventData.addressItems.items.market,
         initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
         initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
         longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
         shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
         initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
         initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        initialGmTokenAmount: eventData.uintItems.items.marketTokenAmount,
+        initialMarketTokenAmount: eventData.uintItems.items.marketTokenAmount,
         minMarketTokens: eventData.uintItems.items.minGlvTokens,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
         executionFee: eventData.uintItems.items.executionFee,
@@ -338,7 +339,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     GlvDepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-
       if (depositStatuses[key]?.data) {
         const metricId = getGMSwapMetricId(depositStatuses[key].data!);
 

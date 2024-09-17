@@ -9,12 +9,11 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
-import { selectChainId, selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { GlvInfo, MarketInfo } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -29,7 +28,7 @@ export function InfoRows({
   isDeposit,
   fees,
   executionFee,
-  marketInfo,
+  glvInfo,
   isHighPriceImpact,
   isHighPriceImpactAccepted,
   setIsHighPriceImpactAccepted,
@@ -45,7 +44,7 @@ export function InfoRows({
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
   executionFee: ExecutionFee | undefined;
-  marketInfo: GlvOrMarketInfo | undefined;
+  glvInfo: GlvInfo | undefined;
   isHighPriceImpact: boolean;
   isHighPriceImpactAccepted: boolean;
   setIsHighPriceImpactAccepted: (val: boolean) => void;
@@ -57,7 +56,6 @@ export function InfoRows({
 }) {
   const gmTokenFavoritesContext = useGmTokensFavorites();
   const markets = values(useSelector(selectGlvAndGmMarketsData));
-  const chainId = useSelector(selectChainId);
 
   const onSelectGmMarket = useCallback(
     (marketInfo: MarketInfo) => {
@@ -73,16 +71,15 @@ export function InfoRows({
           className="SwapBox-info-row"
           label={t`Pool`}
           value={
-            marketInfo && isGlv(marketInfo) ? (
+            glvInfo ? (
               <GmPoolsSelectorForGlvMarket
                 label={t`Pool`}
-                chainId={chainId}
                 className="-mr-4"
                 isDeposit={isDeposit}
                 selectedIndexName={indexName}
                 selectedMarketAddress={selectedGlvGmMarket}
                 markets={markets}
-                glvInfo={marketInfo}
+                glvInfo={glvInfo}
                 marketTokensData={marketTokensData}
                 isSideMenu
                 showAllPools
@@ -94,7 +91,6 @@ export function InfoRows({
             ) : (
               <PoolSelector
                 label={t`Pool`}
-                chainId={chainId}
                 className="-mr-4"
                 selectedIndexName={indexName}
                 selectedMarketAddress={marketAddress}

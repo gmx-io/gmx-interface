@@ -47,7 +47,6 @@ export function GmPoolsSelectorForGlvMarket({
   showIndexIcon = false,
   favoriteTokens,
   glvInfo,
-  chainId,
   setFavoriteTokens,
   tab,
   setTab,
@@ -209,7 +208,6 @@ export function GmPoolsSelectorForGlvMarket({
             <PoolListItem
               key={option.marketInfo.marketTokenAddress}
               {...option}
-              chainId={chainId}
               marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
               isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
               isInFirstHalf={marketIndex < filteredOptions.length / 2}

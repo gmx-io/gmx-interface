@@ -24,7 +24,7 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
   );
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
-  const [marketTokenInputValue, setMarketTokenInputValue] = useSafeState<string>("");
+  const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
 
   return {
     focusedInput,
@@ -45,7 +45,7 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
     secondTokenInputValue,
     setSecondTokenInputValue,
 
-    marketTokenInputValue,
-    setMarketTokenInputValue,
+    marketOrGlvTokenInputValue,
+    setMarketOrGlvTokenInputValue,
   };
 }

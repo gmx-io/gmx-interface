@@ -538,14 +538,15 @@ export function getGmSwapError(p: {
   marketToken: TokenData | undefined;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
-  gmToken: TokenData | undefined;
+  glvToken: TokenData | undefined;
+  glvTokenAmount: bigint | undefined;
+  glvTokenUsd: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   longTokenUsd: bigint | undefined;
   shortTokenUsd: bigint | undefined;
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
-  gmTokenAmount: bigint | undefined;
   longTokenLiquidityUsd: bigint | undefined;
   shortTokenLiquidityUsd: bigint | undefined;
   fees: GmSwapFees | undefined;
@@ -555,6 +556,7 @@ export function getGmSwapError(p: {
   glvInfo?: GlvInfo;
   vaultSellableAmount?: bigint;
   marketTokensData?: TokensData;
+  isMarketTokenDeposit?: boolean;
 }) {
   const {
     isDeposit,
@@ -562,14 +564,14 @@ export function getGmSwapError(p: {
     marketToken,
     longToken,
     shortToken,
-    gmToken,
+    glvToken,
+    glvTokenAmount,
     longTokenAmount,
     shortTokenAmount,
     longTokenUsd,
     shortTokenUsd,
     marketTokenAmount,
     marketTokenUsd,
-    gmTokenAmount,
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,
     fees,
@@ -579,6 +581,7 @@ export function getGmSwapError(p: {
     glvInfo,
     vaultSellableAmount,
     marketTokensData,
+    isMarketTokenDeposit,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -623,24 +626,22 @@ export function getGmSwapError(p: {
     }
 
     if (glvInfo) {
-      const glvMarket = gmToken && glvInfo.markets.find(({ address }) => address === gmToken.address);
+      const glvMarket = marketToken && glvInfo.markets.find(({ address }) => address === marketToken.address);
 
-      // if buying with GMs
       if (glvMarket) {
-        const maxBuyableUsdInGm = getMaxUsdBuyableAmountInMarketWithGm(glvMarket, glvInfo, marketInfo, gmToken);
+        const maxBuyableUsdInGm = getMaxUsdBuyableAmountInMarketWithGm(glvMarket, glvInfo, marketInfo, marketToken);
         if (marketTokenUsd !== undefined && maxBuyableUsdInGm < marketTokenUsd) {
           return [t`Max pool amount reached`, glvTooltipMessage];
         }
-      } else {
-        const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
-        const maxLongExceeded =
-          longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount;
-        const maxShortExceeded =
-          shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
+      }
 
-        if (maxLongExceeded || maxShortExceeded) {
-          return [t`Max GM buyable amount reached`, glvTooltipMessage];
-        }
+      const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
+      const maxLongExceeded = longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount;
+      const maxShortExceeded =
+        shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
+
+      if (maxLongExceeded || maxShortExceeded) {
+        return [t`Max GM buyable amount reached`, glvTooltipMessage];
       }
     } else {
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
@@ -680,13 +681,13 @@ export function getGmSwapError(p: {
       if ((shortTokenAmount ?? 0n) > (shortToken?.balance ?? 0n)) {
         return [t`Insufficient ${shortToken?.symbol} balance`];
       }
-
-      if (gmToken && (gmTokenAmount ?? 0n) > (gmToken?.balance ?? 0n)) {
-        return [t`Insufficient GM balance`];
-      }
     }
 
     if (glvInfo) {
+      if (isMarketTokenDeposit && marketToken && (marketTokenAmount ?? 0n) > (marketToken?.balance ?? 0n)) {
+        return [t`Insufficient GM balance`];
+      }
+
       const { mintableUsd: mintableGmUsd } = getMintableMarketTokens(marketInfo, marketToken);
       const glvGmMarket = glvInfo.markets.find(({ address }) => address === marketInfo.marketTokenAddress);
       const gmToken = marketTokensData?.[marketInfo.marketTokenAddress];
@@ -709,8 +710,14 @@ export function getGmSwapError(p: {
       }
     }
   } else {
-    if (marketTokenAmount > (marketToken?.balance ?? 0n)) {
-      return [t`Insufficient ${marketToken?.symbol} balance`];
+    if (glvInfo) {
+      if ((glvTokenAmount ?? 0n) > (glvToken?.balance ?? 0n)) {
+        return [t`Insufficient ${glvToken?.symbol} balance`];
+      }
+    } else {
+      if (marketTokenAmount > (marketToken?.balance ?? 0n)) {
+        return [t`Insufficient ${marketToken?.symbol} balance`];
+      }
     }
 
     if ((longTokenUsd ?? 0n) > (longTokenLiquidityUsd ?? 0n)) {

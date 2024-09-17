@@ -107,9 +107,11 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
   });
 }
 
-interface GlvParams extends Params {
+interface GlvParams extends Omit<Params, "marketTokenAmount" | "marketTokenAddress"> {
   glv: string;
   selectedGmMarket: string;
+  glvTokenAmount: bigint;
+  glvTokenAddress: string;
 }
 
 export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p: GlvParams) {
@@ -125,7 +127,7 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
 
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },
-    { method: "sendTokens", params: [p.marketTokenAddress, withdrawalVaultAddress, p.marketTokenAmount] },
+    { method: "sendTokens", params: [p.glvTokenAddress, withdrawalVaultAddress, p.glvTokenAmount] },
     {
       method: "createGlvWithdrawal",
       params: [
@@ -174,7 +176,7 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     p.setPendingWithdrawal({
       account: p.account,
       marketAddress: p.glv,
-      marketTokenAmount: p.marketTokenAmount,
+      marketTokenAmount: p.glvTokenAmount,
       minLongTokenAmount,
       minShortTokenAmount,
       shouldUnwrapNativeToken: isNativeWithdrawal,

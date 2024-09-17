@@ -3,6 +3,9 @@ import { useCallback } from "react";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
 
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+
 import { getGlvDisplayName, getMarketBadge, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlv } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
@@ -16,7 +19,6 @@ import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { MarketOption, MarketState } from "./types";
 
 export function PoolListItem(props: {
-  chainId: number;
   marketInfo: GlvOrMarketInfo;
   marketToken?: TokenData;
   poolName: string;
@@ -45,9 +47,9 @@ export function PoolListItem(props: {
     showBalances,
     onFavoriteClick,
     onSelectOption,
-    chainId,
   } = props;
   const { longToken, shortToken, indexToken } = marketInfo;
+  const chainId = useSelector(selectChainId);
 
   const indexTokenImage = marketInfo.isSpotOnly
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)

@@ -290,7 +290,6 @@ export function GmShiftBox({
             isSideMenu
             showIndexIcon
             showBalances
-            chainId={chainId}
             marketTokensData={depositMarketTokensData}
             {...gmTokenFavoritesContext}
           />
@@ -308,7 +307,6 @@ export function GmShiftBox({
           onFocus={handleToTokenFocus}
         >
           <PoolSelector
-            chainId={chainId}
             selectedMarketAddress={toMarketAddress}
             markets={shiftAvailableRelatedMarkets}
             onSelectMarket={handleToTokenSelectMarket}

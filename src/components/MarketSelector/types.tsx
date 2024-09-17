@@ -12,7 +12,6 @@ export type CommonPoolSelectorProps = {
   marketTokensData?: TokensData;
   showBalances?: boolean;
   isSideMenu?: boolean;
-  chainId: number;
   getMarketState?: (market: GlvOrMarketInfo) => MarketState | undefined;
   onSelectMarket: (market: GlvOrMarketInfo) => void;
   showAllPools?: boolean;

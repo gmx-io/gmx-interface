@@ -149,8 +149,9 @@ export function GmStatusNotification({
       }
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
-      const isGlvMarket = marketInfo && isGlv(marketInfo);
-      const indexName = isGlvMarket ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
+      const glv = pendingDepositData.isGlvDeposit ? getByKey(marketsInfoData, pendingDepositData.glvAddress) : null;
+      const glvInfo = glv && isGlv(glv) ? glv : null;
+      const indexName = glvInfo ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
       let tokensText: string | ReactNode = "";
@@ -163,8 +164,8 @@ export function GmStatusNotification({
           .join(" and ");
       }
 
-      if (isGlvMarket && pendingDepositData.gmAddress) {
-        const gmMarket = marketsInfoData?.[pendingDepositData.gmAddress];
+      if (glvInfo && pendingDepositData.isMarketDeposit) {
+        const gmMarket = marketsInfoData?.[pendingDepositData.marketAddress];
 
         if (gmMarket) {
           tokensText = (
@@ -184,7 +185,7 @@ export function GmStatusNotification({
         return (
           <Trans>
             <div className="inline-flex">
-              Buying {isGlvMarket ? getGlvDisplayName(marketInfo) : "GM:"}
+              Buying {glvInfo ? getGlvDisplayName(glvInfo) : "GM:"}
               {indexName ? <span>&nbsp;{indexName}</span> : null}
               <PoolName>{poolName}</PoolName>
             </div>{" "}
@@ -203,7 +204,7 @@ export function GmStatusNotification({
       return (
         <Trans>
           <div className="inline-flex">
-            Selling {isGlvMarket ? getGlvDisplayName(marketInfo) : "GM:"}
+            Selling {isGlvMarket ? getGlvDisplayName(marketInfo) : "GM"}
             {indexName && <span>:&nbsp;{indexName}</span>}
             <PoolName>{poolName}</PoolName>
           </div>
@@ -420,5 +421,5 @@ export function GmStatusNotification({
 }
 
 function PoolName({ children }: { children: ReactNode }) {
-  return children ? <span className="relative -top-4 ml-2 text-12 font-normal text-gray-300">[{children}]</span> : null;
+  return children ? <span className="ml-2 text-12 font-normal text-gray-300">[{children}]</span> : null;
 }

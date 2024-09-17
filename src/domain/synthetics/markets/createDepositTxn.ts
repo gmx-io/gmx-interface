@@ -133,9 +133,8 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
 }
 
 interface CreateGlvDepositParams extends CreateDepositParams {
-  initialGmTokenAddress: string | undefined;
-  gmTokenAmount: bigint | undefined;
-  glvMarket: string;
+  glvAddress: string;
+  marketTokenAmount: bigint;
   isMarketTokenDeposit: boolean;
 }
 
@@ -181,15 +180,15 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     p.isMarketTokenDeposit
       ? {
           method: "sendTokens",
-          params: [p.initialGmTokenAddress, depositVaultAddress, p.gmTokenAmount],
+          params: [p.marketTokenAddress, depositVaultAddress, p.marketTokenAmount],
         }
       : undefined,
     {
       method: "createGlvDeposit",
       params: [
         {
-          glv: p.marketTokenAddress,
-          market: p.glvMarket,
+          glv: p.glvAddress,
+          market: p.marketTokenAddress,
           receiver: p.account,
           callbackContract: ethers.ZeroAddress,
           uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
@@ -233,6 +232,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     p.setPendingDeposit({
       account: p.account,
       marketAddress: p.marketTokenAddress,
+      glvAddress: p.glvAddress,
       initialLongTokenAddress: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
       initialShortTokenAddress: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
       longTokenSwapPath: p.longTokenSwapPath,
@@ -241,9 +241,9 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       shouldUnwrapNativeToken,
       initialLongTokenAmount: p.longTokenAmount,
       initialShortTokenAmount: p.shortTokenAmount,
-      initialGmTokenAmount: p.gmTokenAmount,
+      initialMarketTokenAmount: p.isMarketTokenDeposit ? p.marketTokenAmount : 0n,
       isGlvDeposit: true,
-      gmAddress: p.initialGmTokenAddress,
+      isMarketDeposit: p.isMarketTokenDeposit,
     });
   });
 }
