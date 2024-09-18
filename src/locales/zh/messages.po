@@ -330,6 +330,10 @@ msgstr "解除质押中..."
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "您可更改\"Collateral In\"上述的代币来找寻较低的费用 "
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
@@ -3860,6 +3864,10 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "资金费用"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient liquidity in GM Pool"
+msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

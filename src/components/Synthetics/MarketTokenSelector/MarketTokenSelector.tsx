@@ -37,7 +37,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { getMintableInfoGlv, getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
@@ -383,7 +383,7 @@ function useFilterSortTokensInfo({
         ? getMintableInfoGlv(marketInfo, marketTokensData)
         : getMintableMarketTokens(marketInfo, market);
       const sellableInfo = isGlv
-        ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData)
+        ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData)
         : getSellableMarketToken(marketInfo, market);
       const apr = getByKey(isGlv ? glvTokensApyData : marketsTokensAPRData, market?.address);
       const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
@@ -480,7 +480,7 @@ function MarketTokenListItem({
   handleSelectToken: (address: string) => void;
   isSmallMobile: boolean;
   mintableInfo: ReturnType<typeof getMintableMarketTokens | typeof getMintableInfoGlv>;
-  sellableInfo: ReturnType<typeof getSellableMarketToken | typeof getSellableInfoGlv>;
+  sellableInfo: ReturnType<typeof getSellableMarketToken | typeof getTotalSellableInfoGlv>;
   rowVerticalPadding: string;
   indexName?: string;
   poolName?: string;

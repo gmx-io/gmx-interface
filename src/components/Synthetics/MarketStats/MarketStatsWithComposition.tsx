@@ -26,7 +26,7 @@ import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import { MARKET_STATS_DECIMALS } from "config/ui";
-import { getMintableInfoGlv, getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
 import { formatDateTime } from "../../../lib/dates";
@@ -223,7 +223,7 @@ export function MarketStatsWithComposition(p: Props) {
   ]);
 
   const sellableRow = useMemo(() => {
-    const sellable = isGlv ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
+    const sellable = isGlv ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
     const sellableValue = sellable
       ? formatTokenAmountWithUsd(
           sellable?.totalAmount,

@@ -53,8 +53,8 @@ export function useUpdateByQueryParams({
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
 
   const chainId = useSelector(selectChainId);
-  const marketsInfo = useSelector(selectGlvAndMarketsInfoData);
-  const markets = useMemo(() => values(marketsInfo), [marketsInfo]);
+  const marketsOrGlvInfo = useSelector(selectGlvAndMarketsInfoData);
+  const marketsOrGlvs = useMemo(() => values(marketsOrGlvInfo), [marketsOrGlvInfo]);
 
   useEffect(
     function updateByQueryParams() {
@@ -80,7 +80,7 @@ export function useUpdateByQueryParams({
       if (pickBestGlv) {
         setOperation(Operation.Deposit);
 
-        const glvs = Object.values(marketsInfo).filter(isGlvInfo);
+        const glvs = Object.values(marketsOrGlvInfo).filter(isGlvInfo);
 
         if (glvs.length) {
           const bestGlv = glvs.reduce((best, glv) => {
@@ -110,9 +110,9 @@ export function useUpdateByQueryParams({
         window.scrollTo({ top: 0, left: 0 });
       }
 
-      if ((marketAddress || pool) && markets.length > 0) {
+      if ((marketAddress || pool) && marketsOrGlvs.length > 0) {
         if (marketAddress && isAddress(marketAddress)) {
-          const marketInfo = markets.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
+          const marketInfo = marketsOrGlvs.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
           if (marketInfo) {
             onSelectMarket(marketInfo.marketTokenAddress);
             setIsMarketForGlvSelectedManually?.(false);
@@ -171,8 +171,8 @@ export function useUpdateByQueryParams({
       setFirstTokenAddress,
       setIsMarketForGlvSelectedManually,
       chainId,
-      markets,
-      marketsInfo,
+      marketsOrGlvs,
+      marketsOrGlvInfo,
       currentOperation,
       shiftAvailableMarkets,
       onSelectedMarketForGlv,

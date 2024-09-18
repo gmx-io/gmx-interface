@@ -66,18 +66,33 @@ export function getMintableInfoGlv(glv: GlvInfo, marketTokensData: TokensData | 
   };
 }
 
-export function getSellableInfoGlv(
+export function getSellableInfoGlvInMarket(glvInfo: GlvInfo, marketToken: TokenData) {
+  const market = glvInfo.markets.find((market) => market.address === marketToken.address);
+
+  if (!market) {
+    return {
+      sellableUsd: 0n,
+      sellableAmount: 0n,
+    };
+  }
+
+  const sellableUsd = convertToUsd(market.gmBalance, marketToken.decimals, marketToken.prices.minPrice) ?? 0n;
+  const sellableAmount =
+    convertToTokenAmount(sellableUsd, glvInfo.glvToken.decimals, glvInfo.glvToken.prices.minPrice) ?? 0n;
+
+  return {
+    sellableUsd,
+    sellableAmount,
+  };
+}
+
+export function getTotalSellableInfoGlv(
   glv: GlvInfo,
   marketsData: GlvAndGmMarketsInfoData | undefined,
-  tokensData: TokensData | undefined,
-  marketAddress?: string
+  tokensData: TokensData | undefined
 ) {
   const glvPriceUsd = glv.glvToken.prices.minPrice;
   const amountUsd = values(glv.markets).reduce((acc, market) => {
-    if (marketAddress && marketAddress !== market.address) {
-      return acc;
-    }
-
     const marketInfo = marketsData?.[market.address] as MarketInfo;
 
     if (!marketInfo) {

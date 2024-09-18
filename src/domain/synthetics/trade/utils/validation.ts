@@ -19,7 +19,7 @@ import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getMaxUsdBuyableAmountInMarketWithGm, isGlvInfo } from "../../markets/glv";
+import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
@@ -554,7 +554,6 @@ export function getGmSwapError(p: {
   isHighPriceImpactAccepted: boolean;
   priceImpactUsd: bigint | undefined;
   glvInfo?: GlvInfo;
-  vaultSellableAmount?: bigint;
   marketTokensData?: TokensData;
   isMarketTokenDeposit?: boolean;
 }) {
@@ -579,7 +578,6 @@ export function getGmSwapError(p: {
     isHighPriceImpactAccepted,
     priceImpactUsd,
     glvInfo,
-    vaultSellableAmount,
     marketTokensData,
     isMarketTokenDeposit,
   } = p;
@@ -721,10 +719,21 @@ export function getGmSwapError(p: {
     }
 
     if (glvInfo) {
-      if ((glvTokenAmount ?? 0n) > (vaultSellableAmount ?? 0n)) {
+      const sellableGlvInMarket = getSellableInfoGlvInMarket(glvInfo, marketToken);
+
+      if ((glvTokenAmount ?? 0n) > (sellableGlvInMarket.sellableAmount ?? 0n)) {
         return [
           t`Insufficient GLV liquidity`,
           t`There isn't enough GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+        ];
+      }
+
+      const sellableWithinMarket = getSellableMarketToken(marketInfo, marketToken);
+
+      if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
+        return [
+          t`Insufficient liquidity in GM Pool`,
+          t`The sellable cap for the pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
         ];
       }
     }

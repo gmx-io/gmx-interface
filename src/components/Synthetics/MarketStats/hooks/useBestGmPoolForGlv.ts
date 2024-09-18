@@ -3,8 +3,8 @@ import { useEffect, useMemo } from "react";
 import { TokenInputState } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import type { useDepositWithdrawalFees } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalFees";
 
-import { getAvailableUsdLiquidityForCollateral, GlvInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { getAvailableUsdLiquidityForCollateral, GlvInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
@@ -31,7 +31,6 @@ export const useBestGmPoolAddressForGlv = ({
   glvInfo,
   glvTokenAmount,
 
-  marketsInfoData,
   marketTokenAmount,
   marketTokensData,
 
@@ -52,7 +51,6 @@ export const useBestGmPoolAddressForGlv = ({
   isMarketTokenDeposit: boolean;
   glvTokenAmount: bigint | undefined;
 
-  marketsInfoData: MarketsInfoData;
   marketTokensData: TokensData | undefined;
 
   fees: ReturnType<typeof useDepositWithdrawalFees>["fees"];
@@ -105,10 +103,6 @@ export const useBestGmPoolAddressForGlv = ({
       const longTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, true);
       const shortTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, false);
 
-      const vaultSellableAmount = glvInfo
-        ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, marketInfo.marketTokenAddress)
-        : undefined;
-
       const [error] = getGmSwapError({
         isDeposit,
         marketInfo,
@@ -131,7 +125,6 @@ export const useBestGmPoolAddressForGlv = ({
         isHighPriceImpact: false,
         isHighPriceImpactAccepted: true,
         priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
-        vaultSellableAmount: vaultSellableAmount?.totalAmount,
         marketTokensData,
       });
 
@@ -153,7 +146,6 @@ export const useBestGmPoolAddressForGlv = ({
     isEligible,
     isDeposit,
     fees,
-    marketsInfoData,
     marketTokensData,
     glvTokenAmount,
   ]);

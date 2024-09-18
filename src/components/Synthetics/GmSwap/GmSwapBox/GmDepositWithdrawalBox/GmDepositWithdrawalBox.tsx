@@ -741,9 +741,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     longTokenInputState,
     shortTokenInputState,
     fromMarketTokenInputState,
-    longTokenLiquidityUsd: longCollateralLiquidityUsd,
-    shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
-    marketsInfoData: marketsInfoData ?? {},
     marketTokensData,
   });
   // #endregion
