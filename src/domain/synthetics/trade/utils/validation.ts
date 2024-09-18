@@ -720,21 +720,21 @@ export function getGmSwapError(p: {
       }
     }
 
+    if (glvInfo) {
+      if ((glvTokenAmount ?? 0n) > (vaultSellableAmount ?? 0n)) {
+        return [
+          t`Insufficient GLV liquidity`,
+          t`There isn't enough GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+        ];
+      }
+    }
+
     if ((longTokenUsd ?? 0n) > (longTokenLiquidityUsd ?? 0n)) {
       return [t`Insufficient ${longToken?.symbol} liquidity`];
     }
 
     if ((shortTokenUsd ?? 0n) > (shortTokenLiquidityUsd ?? 0n)) {
       return [t`Insufficient ${shortToken?.symbol} liquidity`];
-    }
-
-    if (glvInfo) {
-      if (marketTokenAmount > (vaultSellableAmount ?? 0n)) {
-        return [
-          t`Insufficient GLV liquidity`,
-          t`There isn't enough GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
-        ];
-      }
     }
   }
 

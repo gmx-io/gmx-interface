@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react";
 import { TokenInputState } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import type { useDepositWithdrawalFees } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalFees";
 
-import { GlvInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForCollateral, GlvInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { TokensData } from "domain/synthetics/tokens";
@@ -35,9 +35,6 @@ export const useBestGmPoolAddressForGlv = ({
   marketTokenAmount,
   marketTokensData,
 
-  longTokenLiquidityUsd,
-  shortTokenLiquidityUsd,
-
   onSelectedMarketForGlv,
 }: {
   isDeposit: boolean;
@@ -50,8 +47,6 @@ export const useBestGmPoolAddressForGlv = ({
   longTokenInputState: TokenInputState | undefined;
   shortTokenInputState: TokenInputState | undefined;
   fromMarketTokenInputState: TokenInputState | undefined;
-  longTokenLiquidityUsd?: bigint | undefined;
-  shortTokenLiquidityUsd?: bigint | undefined;
 
   marketTokenAmount: bigint;
   isMarketTokenDeposit: boolean;
@@ -77,9 +72,6 @@ export const useBestGmPoolAddressForGlv = ({
     }
 
     const halfOfLong = longTokenInputState?.amount !== undefined ? longTokenInputState.amount / 2n : undefined;
-    const vaultSellableAmount = glvInfo
-      ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, selectedMarketForGlv)
-      : undefined;
 
     return [...marketsWithComposition].map((marketConfig) => {
       const marketInfo = marketConfig.market;
@@ -110,6 +102,13 @@ export const useBestGmPoolAddressForGlv = ({
         glvToken: glvInfo.glvToken,
       });
 
+      const longTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, true);
+      const shortTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, false);
+
+      const vaultSellableAmount = glvInfo
+        ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, marketInfo.marketTokenAddress)
+        : undefined;
+
       const [error] = getGmSwapError({
         isDeposit,
         marketInfo,
@@ -126,8 +125,8 @@ export const useBestGmPoolAddressForGlv = ({
         shortTokenAmount: amounts?.shortTokenAmount,
         longTokenUsd: amounts?.longTokenUsd,
         shortTokenUsd: amounts?.shortTokenUsd,
-        longTokenLiquidityUsd: longTokenLiquidityUsd,
-        shortTokenLiquidityUsd: shortTokenLiquidityUsd,
+        longTokenLiquidityUsd,
+        shortTokenLiquidityUsd,
         fees,
         isHighPriceImpact: false,
         isHighPriceImpactAccepted: true,
@@ -152,9 +151,6 @@ export const useBestGmPoolAddressForGlv = ({
     focusedInput,
     glvInfo,
     isEligible,
-    longTokenLiquidityUsd,
-    shortTokenLiquidityUsd,
-    selectedMarketForGlv,
     isDeposit,
     fees,
     marketsInfoData,
