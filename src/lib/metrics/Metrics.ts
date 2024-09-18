@@ -328,8 +328,9 @@ export class Metrics {
         value = value.toString();
       }
 
-      if (typeof value === "string" && value.length > 500) {
-        value = value.slice(0, 500);
+      const charLimit = key === "errorStack" ? 2000 : 500;
+      if (typeof value === "string" && value.length > charLimit) {
+        value = value.slice(0, charLimit);
       }
 
       acc[key] = value;
