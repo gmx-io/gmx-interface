@@ -157,7 +157,7 @@ export function TradeHistory(p: Props) {
               <col className="TradeHistorySynthetics-price-column" />
               <col className="TradeHistorySynthetics-pnl-fees-column" />
             </colgroup>
-            <thead className="TradeHistorySynthetics-header">
+            <thead>
               <TableTheadTr bordered>
                 <TableTh>
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
@@ -196,21 +196,21 @@ export function TradeHistory(p: Props) {
                   />
                 ))
               )}
+              {isEmpty && hasFilters && (
+                <TableTr hoverable={false} bordered={false}>
+                  <TableTd className="text-gray-300">
+                    <Trans>No trades match the selected filters</Trans>
+                  </TableTd>
+                </TableTr>
+              )}
+              {isEmpty && !hasFilters && !isLoading && (
+                <TableTr hoverable={false} bordered={false}>
+                  <TableTd className="text-gray-300" colSpan={5}>
+                    <Trans>No trades yet</Trans>
+                  </TableTd>
+                </TableTr>
+              )}
             </tbody>
-            {isEmpty && hasFilters && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd className="text-gray-300">
-                  <Trans>No trades match the selected filters</Trans>
-                </TableTd>
-              </TableTr>
-            )}
-            {isEmpty && !hasFilters && !isLoading && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd className="text-gray-300" colSpan={5}>
-                  <Trans>No trades yet</Trans>
-                </TableTd>
-              </TableTr>
-            )}
           </table>
         </div>
 
