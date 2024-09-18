@@ -49,7 +49,7 @@ import { MarketState } from "components/MarketSelector/types";
 export function GmShiftBox({
   selectedMarketAddress,
   onSelectMarket,
-  onSelectGlvGmMarket,
+  onSelectedMarketForGlv,
   onSetMode,
   onSetOperation,
 }: {
@@ -57,7 +57,7 @@ export function GmShiftBox({
   onSelectMarket: (marketAddress: string) => void;
   onSetMode: (mode: Mode) => void;
   onSetOperation: (operation: Operation) => void;
-  onSelectGlvGmMarket?: (marketAddress: string) => void;
+  onSelectedMarketForGlv?: (marketAddress: string) => void;
 }) {
   const [toMarketAddress, setToMarketAddress] = useState<string | undefined>(undefined);
   const [selectedMarketText, setSelectedMarketText] = useState("");
@@ -236,7 +236,7 @@ export function GmShiftBox({
       onSelectMarket(glvForShiftAddress);
       setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
       onSetOperation(Operation.Deposit);
-      onSelectGlvGmMarket?.(selectedMarketInfo.marketTokenAddress);
+      onSelectedMarketForGlv?.(selectedMarketInfo.marketTokenAddress);
     }
 
     return () => {
@@ -246,7 +246,7 @@ export function GmShiftBox({
     };
   }, [
     glvForShiftAddress,
-    onSelectGlvGmMarket,
+    onSelectedMarketForGlv,
     onSelectMarket,
     onSetOperation,
     selectedMarketInfo,

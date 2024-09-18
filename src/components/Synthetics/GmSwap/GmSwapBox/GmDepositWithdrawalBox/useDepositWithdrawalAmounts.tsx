@@ -47,10 +47,6 @@ export function useDepositWithdrawalAmounts({
         return undefined;
       }
 
-      if (glvInfo && !glvToken) {
-        return undefined;
-      }
-
       let longTokenAmount;
       let shortTokenAmount;
 

@@ -158,7 +158,7 @@ msgstr ""
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
 
-#: src/domain/synthetics/markets/createWithdrawalTxn.ts
+#: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
 msgstr ""
@@ -305,7 +305,7 @@ msgid "Confirm Settle"
 msgstr ""
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
-#: src/domain/synthetics/markets/createDepositTxn.ts
+#: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error."
 msgstr ""
 

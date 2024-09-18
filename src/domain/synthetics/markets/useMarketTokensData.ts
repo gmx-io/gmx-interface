@@ -19,7 +19,7 @@ import TokenAbi from "abis/Token.json";
 import { useMemo } from "react";
 import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlvEnabled } from "./glv";
-import { GlvData } from "./types";
+import { GlvInfoData } from "./types";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -27,7 +27,7 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: number,
-  p: { isDeposit: boolean; account?: string; glvData?: GlvData; withGlv?: boolean }
+  p: { isDeposit: boolean; account?: string; glvData?: GlvInfoData; withGlv?: boolean }
 ): MarketTokensDataResult {
   const { isDeposit, account, glvData = {} } = p;
   const { tokensData } = useTokensDataRequest(chainId);

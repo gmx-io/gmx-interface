@@ -16,7 +16,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
-import { getContractMarketPrices, getGlvMarketName, GlvData, MarketsInfoData } from ".";
+import { getContractMarketPrices, getGlvMarketName, GlvInfoData, MarketsInfoData } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
 
@@ -83,7 +83,7 @@ export function useGlvMarketsInfo(
 
   const shouldRequest = enabled && marketsInfoData && tokensData && glvs && glvs.length > 0;
 
-  const { data: glvData, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvData | undefined>(
+  const { data: glvData, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvInfoData | undefined>(
     chainId,
     "useGlvMarketsInfos",
     {
@@ -224,7 +224,7 @@ export function useGlvMarketsInfo(
           return undefined;
         }
 
-        const result: GlvData = {};
+        const result: GlvInfoData = {};
         glvs.forEach(({ glv, markets }) => {
           const pricesMax = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
           const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMin.returnValues;

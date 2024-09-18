@@ -42,26 +42,26 @@ export function MarketPoolsPage() {
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
 
-  const [selectedMarketGmKey, setSelectedMarketGmKey] = useLocalStorageSerializeKey<string | undefined>(
+  const [selectedMarketOrGlvKey, setSelectedMarketOrGlvKey] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositMarketKey(chainId),
     undefined
   );
 
-  const [selectedGlvGmMarket, setSelectedGlvGmMarket] = useState<string | undefined>(undefined);
+  const [selectedMarketForGlv, setSelectedMarketForGlv] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketGmKey));
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketOrGlvKey));
 
     if (!newAvailableModes.includes(mode)) {
       setMode(newAvailableModes[0]);
     }
-  }, [marketsInfoData, mode, operation, selectedMarketGmKey]);
+  }, [marketsInfoData, mode, operation, selectedMarketOrGlvKey]);
 
-  const marketInfo = getByKey(marketsInfoData, selectedMarketGmKey);
+  const marketInfo = getByKey(marketsInfoData, selectedMarketOrGlvKey);
 
   const marketToken = getTokenData(
     operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
-    selectedMarketGmKey
+    selectedMarketOrGlvKey
   );
 
   return (
@@ -104,10 +104,10 @@ export function MarketPoolsPage() {
 
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
-              selectedMarketAddress={selectedMarketGmKey}
-              onSelectMarket={setSelectedMarketGmKey}
-              selectedGlvGmMarket={selectedGlvGmMarket}
-              onSelectGlvGmMarket={setSelectedGlvGmMarket}
+              selectedMarketAddress={selectedMarketOrGlvKey}
+              onSelectMarket={setSelectedMarketOrGlvKey}
+              selectedMarketForGlv={selectedMarketForGlv}
+              onSelectedMarketForGlv={setSelectedMarketForGlv}
               operation={operation}
               mode={mode}
               onSetMode={setMode}

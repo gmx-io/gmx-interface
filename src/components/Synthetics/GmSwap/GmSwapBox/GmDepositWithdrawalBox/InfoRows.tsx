@@ -43,7 +43,7 @@ export function InfoRows({
   setIsHighPriceImpactAccepted,
   isSingle,
   onMarketChange,
-  selectedGlvGmMarket,
+  selectedMarketForGlv,
   disablePoolSelector,
 }: {
   indexName: string | undefined;
@@ -58,7 +58,7 @@ export function InfoRows({
   setIsHighPriceImpactAccepted: (val: boolean) => void;
   isSingle: boolean;
   onMarketChange: (marketAddress: string) => void;
-  selectedGlvGmMarket?: string;
+  selectedMarketForGlv?: string;
   disablePoolSelector?: boolean;
 }) {
   const chainId = useSelector(selectChainId);
@@ -95,7 +95,7 @@ export function InfoRows({
                 className="-mr-4"
                 isDeposit={isDeposit}
                 selectedIndexName={indexName}
-                selectedMarketAddress={selectedGlvGmMarket}
+                selectedMarketAddress={selectedMarketForGlv}
                 markets={markets}
                 glvInfo={glvInfo}
                 marketTokensData={marketTokensData}

@@ -45,7 +45,7 @@ interface Props {
   tokensData: TokensData | undefined;
   marketTokensData?: TokensData;
   executionFee: ExecutionFee | undefined;
-  selectedGlvGmMarket?: string;
+  selectedMarketForGlv?: string;
   isMarketTokenDeposit?: boolean;
   marketsInfoData?: MarketsInfoData;
 }
@@ -78,7 +78,7 @@ export const useSubmitButtonState = ({
   tokensData,
   marketTokensData,
   executionFee,
-  selectedGlvGmMarket,
+  selectedMarketForGlv,
   isHighFeeConsentError,
   glvInfo,
   isMarketTokenDeposit,
@@ -113,7 +113,7 @@ export const useSubmitButtonState = ({
     shouldDisableValidation,
     tokensData,
     executionFee,
-    selectedGlvGmMarket,
+    selectedMarketForGlv,
     glvInfo,
     isMarketTokenDeposit,
   });
@@ -129,7 +129,7 @@ export const useSubmitButtonState = ({
   })[0];
 
   const vaultSellableAmount = glvInfo
-    ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
+    ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, selectedMarketForGlv)
     : undefined;
 
   const [swapError, swapErrorDescription] = getGmSwapError({

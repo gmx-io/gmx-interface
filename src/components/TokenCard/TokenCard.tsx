@@ -25,8 +25,9 @@ import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 
 import sparkleIcon from "img/sparkle.svg";
-import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { GlvList, useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { RawIncentivesStats } from "lib/oracleKeeperFetcher";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -56,6 +57,12 @@ function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPR
 
   return maxApr;
 }
+
+const hasGlvRewards = (stats: RawIncentivesStats | null, glvs: GlvList | undefined) =>
+  stats?.lp?.isActive &&
+  Object.entries(stats?.lp.rewardsPerMarket ?? {}).some(([market, reward]) => {
+    return Object.values(glvs ?? {}).some(({ glv }) => glv.glvToken === market && BigInt(reward) > 0n);
+  });
 
 type Props = {
   showRedirectModal?: (to: string) => void;
@@ -183,17 +190,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
     const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
     const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
 
-    const hasArbitrumGlvIncentives =
-      arbitrumIncentiveState?.lp?.isActive &&
-      Object.entries(arbitrumIncentiveState?.lp.rewardsPerMarket ?? {}).some(([market, reward]) => {
-        return Object.values(glvArb ?? {}).some(({ glv }) => glv.glvToken === market && BigInt(reward) > 0n);
-      });
-
-    const hasAvaxGlvIncentives =
-      avalancheIncentiveState?.lp?.isActive &&
-      Object.keys(avalancheIncentiveState?.lp.rewardsPerMarket ?? {}).some(([market, reward]) => {
-        return Object.values(glvAvax ?? {}).some(({ glv }) => glv.glvToken === market && BigInt(reward) > 0n);
-      });
+    const hasArbitrumGlvIncentives = hasGlvRewards(arbitrumIncentiveState, glvArb);
+    const hasAvaxGlvIncentives = hasGlvRewards(avalancheIncentiveState, glvAvax);
 
     if (hasArbitrumGlvIncentives && hasAvaxGlvIncentives) {
       return (
@@ -217,7 +215,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
     } else {
       return null;
     }
-  }, [glvArb, glvAvax, arbitrumIncentiveState?.lp, avalancheIncentiveState?.lp]);
+  }, [glvArb, glvAvax, arbitrumIncentiveState, avalancheIncentiveState]);
 
   return (
     <div className="Home-token-card-options">

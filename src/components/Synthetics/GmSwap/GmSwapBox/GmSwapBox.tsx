@@ -13,7 +13,6 @@ import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvInfo } from "domain/synthetics/markets";
 
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import "./GmSwapBox.scss";
@@ -25,9 +24,8 @@ export type GmSwapBoxProps = {
   mode: Mode;
   onSetMode: (mode: Mode) => void;
   onSetOperation: (operation: Operation) => void;
-  selectedGlvGmMarket?: string;
-  onSelectGlvGmMarket?: (marketAddress?: string) => void;
-  glvMarket?: GlvInfo;
+  selectedMarketForGlv?: string;
+  onSelectedMarketForGlv?: (marketAddress?: string) => void;
 };
 
 const OPERATION_LABELS_GM = {
@@ -57,8 +55,8 @@ export function GmSwapBox(p: GmSwapBoxProps) {
     onSetMode,
     onSetOperation,
     onSelectMarket,
-    selectedGlvGmMarket,
-    onSelectGlvGmMarket,
+    selectedMarketForGlv,
+    onSelectedMarketForGlv,
   } = p;
 
   const marketAddress = selectedMarketAddress;
@@ -116,10 +114,9 @@ export function GmSwapBox(p: GmSwapBoxProps) {
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (
         <GmSwapBoxDepositWithdrawal
           selectedMarketAddress={selectedMarketAddress}
-          glvMarket={marketInfo as GlvInfo}
           onSelectMarket={onSelectMarket}
-          selectedGlvGmMarket={selectedGlvGmMarket}
-          onSelectGlvGmMarket={onSelectGlvGmMarket}
+          selectedMarketForGlv={selectedMarketForGlv}
+          onSelectedMarketForGlv={onSelectedMarketForGlv}
           operation={operation}
           mode={mode}
           onSetMode={onSetMode}
@@ -128,7 +125,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
       ) : (
         <GmShiftBox
           selectedMarketAddress={selectedMarketAddress}
-          onSelectGlvGmMarket={onSelectGlvGmMarket}
+          onSelectedMarketForGlv={onSelectedMarketForGlv}
           onSelectMarket={onSelectMarket}
           onSetMode={onSetMode}
           onSetOperation={onSetOperation}

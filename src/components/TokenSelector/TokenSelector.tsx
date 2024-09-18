@@ -211,10 +211,10 @@ export default function TokenSelector(props: Props) {
             }
 
             const tokenState = getTokenState(info) || {};
-            const tokenMarket = Object.values(marketsInfoData ?? {}).find(
+            const marketToken = Object.values(marketsInfoData ?? {}).find(
               (market) => market.marketTokenAddress === token.address
             );
-            const tokkenBadge = token.isMarketToken && tokenMarket ? getMarketBadge(chainId, tokenMarket) : undefined;
+            const tokenBadge = token.isMarketToken && marketToken ? getMarketBadge(chainId, marketToken) : undefined;
 
             return (
               <div
@@ -241,7 +241,7 @@ export default function TokenSelector(props: Props) {
                       className="token-logo"
                       displaySize={40}
                       importSize={40}
-                      badge={tokkenBadge}
+                      badge={tokenBadge}
                     />
                   )}
                   <div className="Token-symbol">

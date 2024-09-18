@@ -47,10 +47,6 @@ export function useUpdateInputAmounts({
         return;
       }
 
-      if (glvInfo && !glvToken) {
-        return;
-      }
-
       const longToken = longTokenInputState?.token;
       const shortToken = shortTokenInputState?.token;
       const fromMarketToken = fromMarketTokenInputState?.token;

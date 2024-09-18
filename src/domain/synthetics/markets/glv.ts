@@ -70,31 +70,33 @@ export function getSellableInfoGlv(
   glv: GlvInfo,
   marketsData: GlvAndGmMarketsInfoData | undefined,
   tokensData: TokensData | undefined,
-  gmMarketAddress?: string
+  marketAddress?: string
 ) {
   const glvPriceUsd = glv.glvToken.prices.minPrice;
   const amountUsd = values(glv.markets).reduce((acc, market) => {
-    if (gmMarketAddress && gmMarketAddress !== market.address) {
+    if (marketAddress && marketAddress !== market.address) {
       return acc;
     }
 
-    const gmMarket = marketsData?.[market.address] as MarketInfo;
+    const marketInfo = marketsData?.[market.address] as MarketInfo;
 
-    if (!gmMarket) {
+    if (!marketInfo) {
       // eslint-disable-next-line no-console
       console.warn(`Market ${market.address} presented in GLV Vault doesn't exist in the markets data`);
       return acc;
     }
 
-    const gmMarketToken = tokensData?.[gmMarket.marketTokenAddress];
+    const marketToken = tokensData?.[marketInfo.marketTokenAddress];
 
-    if (!gmMarketToken) {
+    if (!marketToken) {
       return acc;
     }
 
     const marketSellableUsd =
-      gmMarket && gmMarket.indexToken?.prices ? getSellableMarketToken(gmMarket, gmMarketToken)?.totalUsd ?? 0n : 0n;
-    const gmBalanceUsd = convertToUsd(market.gmBalance, gmMarketToken.decimals, gmMarketToken.prices.minPrice) ?? 0n;
+      marketInfo && marketInfo.indexToken?.prices
+        ? getSellableMarketToken(marketInfo, marketToken)?.totalUsd ?? 0n
+        : 0n;
+    const gmBalanceUsd = convertToUsd(market.gmBalance, marketToken.decimals, marketToken.prices.minPrice) ?? 0n;
 
     return acc + bigMath.min(marketSellableUsd, gmBalanceUsd);
   }, 0n);

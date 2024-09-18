@@ -35,12 +35,12 @@ export function CompositionBar({ marketInfo, marketsInfoData, marketTokensData }
 
           if (marketInfo && isMarketInfo(marketInfo)) {
             const token = marketInfo.indexToken?.symbol;
-            const gmToken = marketTokensData?.[marketInfo.marketTokenAddress];
+            const marketToken = marketTokensData?.[marketInfo.marketTokenAddress];
 
             return {
               tooltipContent: marketInfo ? getMarketIndexName(marketInfo) : "",
               market: marketInfo,
-              value: convertToUsd(market.gmBalance, gmToken?.decimals, gmToken?.prices.maxPrice) ?? 0n,
+              value: convertToUsd(market.gmBalance, marketToken?.decimals, marketToken?.prices.maxPrice) ?? 0n,
               color: token ? TOKEN_COLOR_MAP[token] ?? TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
             };
           }
@@ -78,16 +78,17 @@ export function CompositionBar({ marketInfo, marketsInfoData, marketTokensData }
       if (value === undefined) {
         return null;
       }
-      const widthPc = percents[index].toFixed(2);
+      const percentage = percents[index].toFixed(2);
 
       previousWidthPc += index ? percents[index - 1] : 0;
 
       // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-      const positionStyles = { width: `${widthPc}%`, left: previousWidthPc.toFixed(2) + "%" };
+      const positionStyles = { width: `${percentage}%`, left: previousWidthPc.toFixed(2) + "%" };
 
       return (
         <TooltipWithPortal
-          className="!absolute h-8 !min-w-[16rem] whitespace-nowrap border-slate-800 [&:not(:last-child)]:border-r"
+          tooltipClassName="!min-w-[16rem]"
+          className="!absolute h-8 whitespace-nowrap border-slate-800 [&:not(:last-child)]:border-r"
           style={positionStyles}
           handleClassName="!absolute h-8 w-[100%]"
           key={`comp-pc-${index}`}
@@ -101,7 +102,7 @@ export function CompositionBar({ marketInfo, marketsInfoData, marketTokensData }
           disableHandleStyle
           content={
             <>
-              {widthPc}% {tooltipContent}
+              {percentage}% {tooltipContent}
             </>
           }
         />

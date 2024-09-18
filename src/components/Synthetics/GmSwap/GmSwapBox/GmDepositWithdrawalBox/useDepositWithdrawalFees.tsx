@@ -81,6 +81,10 @@ export const useDepositWithdrawalFees = ({
         : estimateExecuteGlvWithdrawalGasLimit(gasLimits, {
             marketsCount: glvMarketsCount,
           });
+
+      oraclePriceCount = isDeposit
+        ? estimateGlvDepositOraclePriceCount(glvMarketsCount)
+        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
     } else {
       gasLimit = isDeposit
         ? estimateExecuteDepositGasLimit(gasLimits, {
@@ -88,13 +92,6 @@ export const useDepositWithdrawalFees = ({
             initialShortTokenAmount: amounts.shortTokenAmount,
           })
         : estimateExecuteWithdrawalGasLimit(gasLimits, {});
-    }
-
-    if (glvInfo) {
-      oraclePriceCount = isDeposit
-        ? estimateGlvDepositOraclePriceCount(glvMarketsCount)
-        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
-    } else {
       oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
     }
 

@@ -5,14 +5,9 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
-import {
-  createDepositTxn,
-  createGlvDepositTxn,
-  createGlvWithdrawalTxn,
-  createWithdrawalTxn,
-  GlvInfo,
-  MarketInfo,
-} from "domain/synthetics/markets";
+import { createDepositTxn, createWithdrawalTxn, GlvInfo, MarketInfo } from "domain/synthetics/markets";
+import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
+import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
@@ -37,7 +32,7 @@ interface Props {
 
   tokensData: TokensData | undefined;
   executionFee: ExecutionFee | undefined;
-  selectedGlvGmMarket?: string;
+  selectedMarketForGlv?: string;
   isMarketTokenDeposit?: boolean;
 }
 
@@ -55,7 +50,7 @@ export const useDepositWithdrawalTransactions = ({
   shouldDisableValidation,
   tokensData,
   executionFee,
-  selectedGlvGmMarket,
+  selectedMarketForGlv,
   glvInfo,
   isMarketTokenDeposit,
 }: Props) => {
@@ -83,14 +78,14 @@ export const useDepositWithdrawalTransactions = ({
         ? initialLongTokenAddress
         : shortToken?.address || marketInfo.shortTokenAddress;
 
-      if (glvInfo && selectedGlvGmMarket) {
+      if (glvInfo && selectedMarketForGlv) {
         return createGlvDepositTxn(chainId, signer, {
           account,
           initialLongTokenAddress,
           initialShortTokenAddress,
           minMarketTokens: glvTokenAmount ?? 0n,
           glvAddress: glvInfo.marketTokenAddress,
-          marketTokenAddress: selectedGlvGmMarket,
+          marketTokenAddress: selectedMarketForGlv,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
           longTokenAmount: longTokenAmount ?? 0n,
@@ -140,7 +135,7 @@ export const useDepositWithdrawalTransactions = ({
       chainId,
       setPendingDeposit,
       setPendingTxns,
-      selectedGlvGmMarket,
+      selectedMarketForGlv,
       glvInfo,
       isMarketTokenDeposit,
       glvTokenAmount,
@@ -162,7 +157,7 @@ export const useDepositWithdrawalTransactions = ({
         return Promise.resolve();
       }
 
-      if (glvInfo && selectedGlvGmMarket) {
+      if (glvInfo && selectedMarketForGlv) {
         return createGlvWithdrawalTxn(chainId, signer, {
           account,
           initialLongTokenAddress: longToken?.address || marketInfo.longTokenAddress,
@@ -179,7 +174,7 @@ export const useDepositWithdrawalTransactions = ({
           tokensData,
           setPendingTxns,
           setPendingWithdrawal,
-          selectedGmMarket: selectedGlvGmMarket,
+          selectedGmMarket: selectedMarketForGlv,
           glv: glvInfo.marketTokenAddress,
         });
       }
@@ -218,7 +213,7 @@ export const useDepositWithdrawalTransactions = ({
       chainId,
       setPendingWithdrawal,
       setPendingTxns,
-      selectedGlvGmMarket,
+      selectedMarketForGlv,
       glvInfo,
       glvTokenAmount,
     ]

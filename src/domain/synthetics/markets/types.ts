@@ -173,7 +173,7 @@ export type ContractMarketPrices = {
 
 export type GlvOrMarketInfo = MarketInfo | GlvInfo;
 
-export type GlvData = {
+export type GlvInfoData = {
   [key in string]: GlvInfo;
 };
 

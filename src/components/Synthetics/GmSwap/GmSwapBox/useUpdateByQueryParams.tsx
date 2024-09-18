@@ -10,7 +10,6 @@ import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsSt
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { GlvInfo } from "domain/synthetics/markets";
 import { getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 
 import { helperToast } from "lib/helperToast";
@@ -36,16 +35,16 @@ export function useUpdateByQueryParams({
   setMode,
   setFirstTokenAddress,
   onSelectMarket,
-  selectedGlvGmMarket,
-  onSelectGlvGmMarket,
+  selectedMarketForGlv,
+  onSelectedMarketForGlv,
 }: {
   operation: Operation;
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
   setFirstTokenAddress?: (address: string | undefined) => void;
   onSelectMarket: (marketAddress: string) => void;
-  onSelectGlvGmMarket?: (marketAddress?: string) => void;
-  selectedGlvGmMarket?: string;
+  onSelectedMarketForGlv?: (marketAddress?: string) => void;
+  selectedMarketForGlv?: string;
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
@@ -79,7 +78,7 @@ export function useUpdateByQueryParams({
       if (pickBestGlv) {
         setOperation(Operation.Deposit);
 
-        const glvs = Object.values(marketsInfo).filter((m) => isGlvInfo(m)) as GlvInfo[];
+        const glvs = Object.values(marketsInfo).filter(isGlvInfo);
 
         if (glvs.length) {
           const bestGlv = glvs.reduce((best, glv) => {
@@ -115,7 +114,7 @@ export function useUpdateByQueryParams({
           if (marketInfo) {
             onSelectMarket(marketInfo.marketTokenAddress);
             const isGlv = isGlvInfo(marketInfo);
-            const indexName = isGlv ? marketInfo.name : getMarketIndexName(marketInfo);
+            const indexName = isGlv ? undefined : getMarketIndexName(marketInfo);
             const poolName = getMarketPoolName(marketInfo);
             const titlePrefix = isGlv ? getGlvDisplayName(marketInfo) : "GM: ";
             helperToast.success(
@@ -123,7 +122,7 @@ export function useUpdateByQueryParams({
                 <div className="inline-flex">
                   {titlePrefix}
                   {indexName ? <span>&nbsp;{indexName}</span> : null}
-                  <span className="subtext gm-toast">[{poolName}]</span>
+                  <span className="ml-2 text-12 font-normal text-gray-300">[{poolName}]</span>
                 </div>{" "}
                 <span>selected in order form</span>
               </Trans>
@@ -140,11 +139,11 @@ export function useUpdateByQueryParams({
 
             if (pool && isGlv && setFirstTokenAddress) {
               setFirstTokenAddress(pool);
-              onSelectGlvGmMarket?.(pool);
+              onSelectedMarketForGlv?.(pool);
             }
 
-            if (!pool && isGlv && selectedGlvGmMarket) {
-              onSelectGlvGmMarket?.(undefined);
+            if (!pool && isGlv && selectedMarketForGlv) {
+              onSelectedMarketForGlv?.(undefined);
             }
           }
         }
@@ -172,8 +171,8 @@ export function useUpdateByQueryParams({
       marketsInfo,
       currentOperation,
       shiftAvailableMarkets,
-      onSelectGlvGmMarket,
-      selectedGlvGmMarket,
+      onSelectedMarketForGlv,
+      selectedMarketForGlv,
     ]
   );
 }
