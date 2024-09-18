@@ -15,7 +15,7 @@ import {
   getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
@@ -40,14 +40,14 @@ function renderMarketName(market?: GlvOrMarketInfo) {
     return null;
   }
 
-  const isGlvMarket = isGlv(market);
+  const isGlv = isGlvInfo(market);
 
-  const marketName = market.isSpotOnly ? "SWAP" : isGlvMarket ? market.name : getMarketIndexName(market);
+  const marketName = market.isSpotOnly ? "SWAP" : isGlv ? market.name : getMarketIndexName(market);
   const poolName = getMarketPoolName(market);
 
   return (
     <>
-      {isGlvMarket ? getGlvDisplayName(market) : "GM"}
+      {isGlv ? getGlvDisplayName(market) : "GM"}
       {marketName ? <>: {marketName}</> : null}
       <span className="inline-flex items-start">
         <span className="subtext">[{poolName}]</span>
@@ -89,7 +89,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
     }
   }, []);
 
-  const contractSymbol = market && isGlv(market) ? `${market.glvToken.contractSymbol}` : undefined;
+  const contractSymbol = market && isGlvInfo(market) ? `${market.glvToken.contractSymbol}` : undefined;
 
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">

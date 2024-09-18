@@ -18,7 +18,7 @@ import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
 
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
@@ -52,7 +52,9 @@ export function PoolSelector({
     const allMarkets = markets
       .filter(
         (market) =>
-          !market.isDisabled && market.indexToken && (showAllPools || getMarketIndexName(market) === selectedIndexName)
+          !market.isDisabled &&
+          (isGlvInfo(market) ? true : market.indexToken) &&
+          (showAllPools || getMarketIndexName(market) === selectedIndexName)
       )
       .map((marketInfo) => {
         const indexName = getMarketIndexName(marketInfo);
@@ -65,7 +67,7 @@ export function PoolSelector({
         return {
           indexName,
           poolName,
-          name: isGlv(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
+          name: isGlvInfo(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
           marketInfo,
           balance: gmBalance ?? 0n,
           balanceUsd: gmBalanceUsd ?? 0n,
@@ -100,9 +102,9 @@ export function PoolSelector({
     return marketsOptions.filter((option) => {
       let name = option.name.toLowerCase();
 
-      const isGlvMarket = isGlv(option.marketInfo);
+      const isGlv = isGlvInfo(option.marketInfo);
 
-      if (isGlvMarket) {
+      if (isGlv) {
         name = "glv " + name;
       }
 
@@ -147,7 +149,7 @@ export function PoolSelector({
     if (!marketInfo) return "...";
     let name;
 
-    if (isGlv(marketInfo)) {
+    if (isGlvInfo(marketInfo)) {
       name = getGlvDisplayName(marketInfo);
     } else {
       name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
@@ -218,7 +220,9 @@ export function PoolSelector({
                 marketInfo.isSpotOnly
                   ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
                     getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
-                  : marketInfo?.indexToken.symbol
+                  : isGlvInfo(marketInfo)
+                    ? marketInfo.glvToken.symbol
+                    : marketInfo?.indexToken.symbol
               }
               importSize={40}
               displaySize={20}

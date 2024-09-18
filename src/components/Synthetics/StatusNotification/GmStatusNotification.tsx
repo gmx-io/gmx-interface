@@ -16,7 +16,7 @@ import {
   getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -150,7 +150,7 @@ export function GmStatusNotification({
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
       const glv = pendingDepositData.isGlvDeposit ? getByKey(marketsInfoData, pendingDepositData.glvAddress) : null;
-      const glvInfo = glv && isGlv(glv) ? glv : null;
+      const glvInfo = glv && isGlvInfo(glv) ? glv : null;
       const indexName = glvInfo ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
@@ -197,14 +197,14 @@ export function GmStatusNotification({
         return t`Unknown sell GM order`;
       }
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
-      const isGlvMarket = marketInfo && isGlv(marketInfo);
-      const indexName = isGlvMarket ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
+      const isGlv = marketInfo && isGlvInfo(marketInfo);
+      const indexName = isGlv ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
       return (
         <Trans>
           <div className="inline-flex">
-            Selling {isGlvMarket ? getGlvDisplayName(marketInfo) : "GM"}
+            Selling {isGlv ? getGlvDisplayName(marketInfo) : "GM"}
             {indexName && <span>:&nbsp;{indexName}</span>}
             <PoolName>{poolName}</PoolName>
           </div>

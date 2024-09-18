@@ -9,7 +9,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getMaxPoolUsd, getPoolUsdWithoutPnl, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
 
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export function MintableAmount({
@@ -34,10 +34,11 @@ export function MintableAmount({
   longToken?: TokenData;
   shortToken?: TokenData;
 }) {
-  const isGlvMarket = isGlv(market);
+  const isGlv = isGlvInfo(market);
+
   const longTokenMaxValue = useMemo(
     () =>
-      isGlvMarket
+      isGlv
         ? []
         : [
             mintableInfo && longToken
@@ -50,11 +51,11 @@ export function MintableAmount({
               : "-",
             `(${formatUsd(getPoolUsdWithoutPnl(market, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, true))})`,
           ],
-    [isGlvMarket, longToken, market, mintableInfo]
+    [isGlv, longToken, market, mintableInfo]
   );
   const shortTokenMaxValue = useMemo(
     () =>
-      isGlvMarket
+      isGlv
         ? []
         : [
             mintableInfo && shortToken
@@ -67,7 +68,7 @@ export function MintableAmount({
               : "-",
             `(${formatUsd(getPoolUsdWithoutPnl(market, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, false))})`,
           ],
-    [isGlvMarket, market, mintableInfo, shortToken]
+    [isGlv, market, mintableInfo, shortToken]
   );
 
   const content = (

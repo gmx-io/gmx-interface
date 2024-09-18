@@ -51,7 +51,7 @@ export function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvInfo, 
 }
 
 export function getMintableInfoGlv(glv: GlvInfo, marketTokensData: TokensData | undefined) {
-  const glvPriceUsd = glv.indexToken.prices.maxPrice;
+  const glvPriceUsd = glv.glvToken.prices.maxPrice;
 
   const amountUsd = values(glv.markets).reduce((acc, market) => {
     const result =
@@ -61,7 +61,7 @@ export function getMintableInfoGlv(glv: GlvInfo, marketTokensData: TokensData | 
   }, 0n);
 
   return {
-    mintableAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,
+    mintableAmount: convertToTokenAmount(amountUsd, glv.glvToken.decimals, glvPriceUsd) ?? 0n,
     mintableUsd: amountUsd,
   };
 }
@@ -72,7 +72,7 @@ export function getSellableInfoGlv(
   tokensData: TokensData | undefined,
   gmMarketAddress?: string
 ) {
-  const glvPriceUsd = glv.indexToken.prices.minPrice;
+  const glvPriceUsd = glv.glvToken.prices.minPrice;
   const amountUsd = values(glv.markets).reduce((acc, market) => {
     if (gmMarketAddress && gmMarketAddress !== market.address) {
       return acc;
@@ -100,12 +100,12 @@ export function getSellableInfoGlv(
   }, 0n);
 
   return {
-    totalAmount: convertToTokenAmount(amountUsd, glv.indexToken.decimals, glvPriceUsd) ?? 0n,
+    totalAmount: convertToTokenAmount(amountUsd, glv.glvToken.decimals, glvPriceUsd) ?? 0n,
     totalUsd: amountUsd,
   };
 }
 
-export function isGlv(market?: GlvOrMarketInfo): market is GlvInfo {
+export function isGlvInfo(market?: GlvOrMarketInfo): market is GlvInfo {
   return Boolean(market && "isGlv" in market && market.isGlv);
 }
 

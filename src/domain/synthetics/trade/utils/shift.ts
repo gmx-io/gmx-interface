@@ -2,8 +2,6 @@ import { marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetic
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData } from "domain/synthetics/tokens/types";
 
-import { isGlv } from "../../markets/glv";
-import { convertToTokenAmount, convertToUsd } from "../../tokens";
 import { getDepositAmounts } from "./deposit";
 import { getWithdrawalAmounts } from "./withdrawal";
 
@@ -48,8 +46,6 @@ export function getShiftAmounts({
     swapPriceImpactDeltaUsd: 0n,
   };
 
-  const isMarketTokenDeposit = isGlv(toMarketInfo);
-
   if (strategy === "byFromToken") {
     values.fromTokenAmount = fromTokenAmount;
     values.fromTokenUsd = marketTokenAmountToUsd(fromMarketInfo, fromToken, fromTokenAmount);
@@ -65,13 +61,9 @@ export function getShiftAmounts({
       forShift: true,
     });
 
-    const glvInfo = isMarketTokenDeposit ? toMarketInfo : undefined;
-    const targetGmMarketInfo = isMarketTokenDeposit ? fromMarketInfo : toMarketInfo;
-    const targetGmToken = isMarketTokenDeposit ? fromToken : toToken;
-
     const depositAmounts = getDepositAmounts({
-      marketInfo: targetGmMarketInfo,
-      marketToken: targetGmToken,
+      marketInfo: toMarketInfo,
+      marketToken: toToken,
       longToken: toMarketInfo.longToken,
       shortToken: toMarketInfo.shortToken,
       longTokenAmount: withdrawalAmounts.longTokenAmount,
@@ -82,8 +74,7 @@ export function getShiftAmounts({
       includeShortToken: false,
       uiFeeFactor: 0n,
       forShift: true,
-      isMarketTokenDeposit,
-      glvInfo,
+      isMarketTokenDeposit: false,
     });
 
     values.fromLongTokenAmount = withdrawalAmounts.longTokenAmount;
@@ -93,18 +84,10 @@ export function getShiftAmounts({
     values.swapPriceImpactDeltaUsd = depositAmounts.swapPriceImpactDeltaUsd;
 
     values.toTokenAmount = depositAmounts.marketTokenAmount;
-    values.toTokenUsd = isMarketTokenDeposit
-      ? convertToUsd(values.fromTokenAmount, fromToken.decimals, fromToken.prices.minPrice) ?? 0n
-      : marketTokenAmountToUsd(toMarketInfo, toToken, depositAmounts.marketTokenAmount);
-
-    if (isMarketTokenDeposit) {
-      values.toTokenAmount = convertToTokenAmount(values.toTokenUsd, toToken.decimals, toToken.prices.minPrice) ?? 0n;
-    }
+    values.toTokenUsd = marketTokenAmountToUsd(toMarketInfo, toToken, depositAmounts.marketTokenAmount);
   } else {
     values.toTokenAmount = toTokenAmount;
-    values.toTokenUsd = isMarketTokenDeposit
-      ? convertToUsd(toTokenAmount, toToken.decimals, toToken.prices.minPrice) ?? 0n
-      : marketTokenAmountToUsd(toMarketInfo, toToken, toTokenAmount);
+    values.toTokenUsd = marketTokenAmountToUsd(toMarketInfo, toToken, toTokenAmount);
 
     const withdrawalAmounts = getWithdrawalAmounts({
       marketInfo: fromMarketInfo,
@@ -130,7 +113,7 @@ export function getShiftAmounts({
       includeShortToken: true,
       uiFeeFactor: 0n,
       forShift: true,
-      isMarketTokenDeposit,
+      isMarketTokenDeposit: false,
     });
 
     values.fromLongTokenAmount = depositAmounts.longTokenAmount;

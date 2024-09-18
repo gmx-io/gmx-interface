@@ -7,8 +7,9 @@ import {
   getPoolUsdWithoutPnl,
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,
+  isMarketInfo,
 } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TokensData } from "domain/synthetics/tokens";
@@ -27,20 +28,24 @@ export function CompositionBar({ marketInfo, marketsInfoData, marketTokensData }
       return [];
     }
 
-    if (isGlv(marketInfo)) {
+    if (isGlvInfo(marketInfo)) {
       return marketInfo.markets
         .map((market) => {
-          const token = marketsInfoData?.[market.address]?.indexToken?.symbol;
-          const gmMarket = marketsInfoData?.[market.address];
-          const gmToken = gmMarket ? marketTokensData?.[gmMarket.marketTokenAddress] : undefined;
+          const marketInfo = marketsInfoData?.[market.address];
 
-          return {
-            tooltipContent: gmMarket ? getMarketIndexName(gmMarket) : "",
-            market: gmMarket,
-            value: convertToUsd(market.gmBalance, gmToken?.decimals, gmToken?.prices.maxPrice) ?? 0n,
-            color: token ? TOKEN_COLOR_MAP[token] ?? TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
-          };
+          if (marketInfo && isMarketInfo(marketInfo)) {
+            const token = marketInfo.indexToken?.symbol;
+            const gmToken = marketTokensData?.[marketInfo.marketTokenAddress];
+
+            return {
+              tooltipContent: marketInfo ? getMarketIndexName(marketInfo) : "",
+              market: marketInfo,
+              value: convertToUsd(market.gmBalance, gmToken?.decimals, gmToken?.prices.maxPrice) ?? 0n,
+              color: token ? TOKEN_COLOR_MAP[token] ?? TOKEN_COLOR_MAP.default : TOKEN_COLOR_MAP.default,
+            };
+          }
         })
+        .filter(Boolean as unknown as FilterOutFalsy)
         .sort((a, b) => (b.value > a.value ? 1 : -1));
     }
 

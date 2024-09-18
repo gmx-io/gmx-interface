@@ -8,7 +8,7 @@ import {
   glvMaxMarketTokenBalanceUsdKey,
   glvShiftLastExecutedAtKey,
   glvShiftMinIntervalKey,
-  isGlvMarketDisabledKey,
+  isGlvDisabledKey,
 } from "config/dataStore";
 import { USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
@@ -193,9 +193,9 @@ export function useGlvMarketsInfo(
                   methodName: "getUint",
                   params: [glvMaxMarketTokenBalanceAmountKey(glv.glvToken, market)],
                 },
-                isGlvMarketDisabled: {
+                isGlvDisabled: {
                   methodName: "getBool",
-                  params: [isGlvMarketDisabledKey(glv.glvToken, market)],
+                  params: [isGlvDisabledKey(glv.glvToken, market)],
                 },
               },
             };
@@ -261,8 +261,6 @@ export function useGlvMarketsInfo(
             shiftMinInterval: data[glv.glvToken + "-info"].glvShiftMinInterval.returnValues[0],
             isGlv: true,
             glvToken: glvToken,
-            indexToken: glvToken,
-            indexTokenAddress: glv.glvToken,
             longToken: tokensData[glv.longToken],
             shortToken: tokensData[glv.shortToken],
             isSpotOnly: false,
@@ -274,7 +272,7 @@ export function useGlvMarketsInfo(
             poolValueMin: valueMin,
             name: glvName,
             isDisabled: markets.every(
-              (market) => data[glv.glvToken + "-" + market + "-info"].isGlvMarketDisabled.returnValues[0]
+              (market) => data[glv.glvToken + "-" + market + "-info"].isGlvDisabled.returnValues[0]
             ),
             markets: markets
               .map((market) => {
@@ -294,7 +292,7 @@ export function useGlvMarketsInfo(
 
                 return {
                   address: market,
-                  isDisabled: marketData.isGlvMarketDisabled.returnValues[0],
+                  isDisabled: marketData.isGlvDisabled.returnValues[0],
                   maxMarketTokenBalanceUsd,
                   glvMaxMarketTokenBalanceAmount,
                   gmBalance: marketBalance,

@@ -5,14 +5,14 @@ import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvOrMarketInfo, getMarketIndexName, isMarket } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getMarketIndexName, isMarketInfo } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -43,7 +43,7 @@ import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { MarketState } from "components/MarketSelector/types";
 
 export function GmShiftBox({
@@ -70,7 +70,7 @@ export function GmShiftBox({
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
@@ -88,7 +88,7 @@ export function GmShiftBox({
 
   const selectedMarketInfo = useMemo(() => {
     const market = getByKey(marketsInfoData, selectedMarketAddress);
-    if (isGlv(market)) {
+    if (isGlvInfo(market)) {
       return undefined;
     }
 
@@ -99,7 +99,7 @@ export function GmShiftBox({
   const toMarketInfo = useMemo(() => {
     const market = getByKey(marketsInfoData, toMarketAddress);
 
-    if (isGlv(market)) {
+    if (isGlvInfo(market)) {
       return undefined;
     }
 
@@ -206,7 +206,7 @@ export function GmShiftBox({
   const handleSelectedTokenFocus = useCallback(() => setFocusedInput("selectedMarket"), []);
   const handleSelectedTokenSelectMarket = useCallback(
     (marketInfo: GlvOrMarketInfo): void => {
-      if (isMarket(marketInfo)) {
+      if (isMarketInfo(marketInfo)) {
         onSelectMarket(marketInfo.marketTokenAddress);
       }
       handleClearValues();
@@ -221,8 +221,8 @@ export function GmShiftBox({
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
     (marketInfo: GlvOrMarketInfo): void => {
-      if (isGlv(marketInfo)) {
-        setGlvForShiftAddress(marketInfo.indexTokenAddress);
+      if (isGlvInfo(marketInfo)) {
+        setGlvForShiftAddress(marketInfo.marketTokenAddress);
       } else {
         setToMarketAddress(marketInfo.marketTokenAddress);
         handleClearValues();
@@ -254,7 +254,7 @@ export function GmShiftBox({
   ]);
 
   const getShiftReceiveMarketState = useCallback((marketInfo: GlvOrMarketInfo): MarketState => {
-    if (isGlv(marketInfo)) {
+    if (isGlvInfo(marketInfo)) {
       return {
         warning:
           "Shifting From GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.",

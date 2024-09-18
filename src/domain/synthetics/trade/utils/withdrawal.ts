@@ -68,7 +68,7 @@ export function getWithdrawalAmounts(p: {
         marketToken.decimals,
         marketToken.prices.maxPrice
       )!;
-      values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, values.marketTokenAmount)!;
+      values.marketTokenUsd = values.glvTokenUsd;
     } else {
       values.marketTokenAmount = marketTokenAmount;
       values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);

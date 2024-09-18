@@ -5,7 +5,7 @@ import { getMarketListingDate } from "config/markets";
 
 import { MarketTokensAPRData, GlvAndGmMarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
-import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
 
 import type { SortField } from "./GmList";
@@ -20,7 +20,7 @@ export function sortGmTokensByField({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
 }: {
   chainId: number;
   marketsInfo: GlvAndGmMarketsInfoData;
@@ -30,7 +30,7 @@ export function sortGmTokensByField({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
 }) {
   const gmTokens = values(marketTokensData);
 
@@ -52,10 +52,10 @@ export function sortGmTokensByField({
       const marketA = marketsInfo[a.address];
       const marketB = marketsInfo[b.address];
 
-      const mintableA = isGlv(marketA)
+      const mintableA = isGlvInfo(marketA)
         ? getMintableInfoGlv(marketA, marketTokensData)
         : getMintableMarketTokens(marketA, a);
-      const mintableB = isGlv(marketB)
+      const mintableB = isGlvInfo(marketB)
         ? getMintableInfoGlv(marketB, marketTokensData)
         : getMintableMarketTokens(marketB, b);
 
@@ -90,8 +90,8 @@ export function sortGmTokensByField({
         aprB += marketsTokensApyData?.[b.address] ?? 0n;
       }
 
-      aprA += glvMarketsTokensApyData?.[a.address] ?? 0n;
-      aprB += glvMarketsTokensApyData?.[b.address] ?? 0n;
+      aprA += glvTokensApyData?.[a.address] ?? 0n;
+      aprB += glvTokensApyData?.[b.address] ?? 0n;
 
       return aprA > aprB ? directionMultiplier : -directionMultiplier;
     });

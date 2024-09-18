@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
 import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "../markets";
-import { isGlv } from "../markets/glv";
+import { isGlvInfo } from "../markets/glv";
 
 import { type TokenData, type TokensData, convertToUsd } from "../tokens";
 
@@ -34,7 +34,7 @@ export function sortMarketsWithIndexToken(
           return !marketInfoData.isDisabled;
         })
         .map((market) => ({
-          isGlv: isGlv(market),
+          isGlv: isGlvInfo(market),
           token: getByKey(marketTokensData, market.marketTokenAddress)!,
         }));
     })

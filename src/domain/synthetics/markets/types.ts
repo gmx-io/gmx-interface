@@ -187,8 +187,6 @@ export type GlvInfo = {
   isSameCollaterals: boolean;
   isSpotOnly: boolean;
   name: string;
-  indexTokenAddress: string;
-  indexToken: TokenData;
   longToken: TokenData;
   shortToken: TokenData;
   markets: GlvMarket[];

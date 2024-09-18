@@ -11,12 +11,12 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
-import { selectChainId, selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { ARBITRUM } from "config/chains";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { GlvInfo, MarketInfo } from "domain/synthetics/markets";
+import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -43,7 +43,6 @@ export function InfoRows({
   setIsHighPriceImpactAccepted,
   isSingle,
   onMarketChange,
-  onGmPoolChange,
   selectedGlvGmMarket,
   disablePoolSelector,
 }: {
@@ -59,19 +58,26 @@ export function InfoRows({
   setIsHighPriceImpactAccepted: (val: boolean) => void;
   isSingle: boolean;
   onMarketChange: (marketAddress: string) => void;
-  onGmPoolChange?: (marketAddress: string) => void;
   selectedGlvGmMarket?: string;
   disablePoolSelector?: boolean;
 }) {
   const chainId = useSelector(selectChainId);
   const gmTokenFavoritesContext = useGmTokensFavorites();
-  const markets = values(useSelector(selectGlvAndGmMarketsData));
+  const markets = values(useSelector(selectGlvAndMarketsInfoData));
 
-  const onSelectGmMarket = useCallback(
+  const onSelectMarket = useCallback(
     (marketInfo: MarketInfo) => {
-      onGmPoolChange?.(marketInfo.marketTokenAddress);
+      onMarketChange?.(marketInfo.marketTokenAddress);
     },
-    [onGmPoolChange]
+    [onMarketChange]
+  );
+
+  const onSelectMarketOrGlv = useCallback(
+    (glvOrMarketInfo: GlvOrMarketInfo) => {
+      onMarketChange(glvOrMarketInfo.marketTokenAddress);
+      showMarketToast(glvOrMarketInfo);
+    },
+    [onMarketChange]
   );
 
   const isEndangeredPool = ENDANGERED_POOLS[chainId]?.includes(marketAddress);
@@ -97,7 +103,7 @@ export function InfoRows({
                 showAllPools
                 showBalances
                 disablePoolSelector={disablePoolSelector}
-                onSelectGmMarket={onSelectGmMarket}
+                onSelectMarket={onSelectMarket}
                 {...gmTokenFavoritesContext}
               />
             ) : (
@@ -110,10 +116,7 @@ export function InfoRows({
                 marketTokensData={marketTokensData}
                 isSideMenu
                 showBalances
-                onSelectMarket={(marketInfo) => {
-                  onMarketChange(marketInfo.marketTokenAddress);
-                  showMarketToast(marketInfo);
-                }}
+                onSelectMarket={onSelectMarketOrGlv}
                 {...gmTokenFavoritesContext}
               />
             )

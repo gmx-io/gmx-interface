@@ -19,7 +19,7 @@ import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getMaxUsdBuyableAmountInMarketWithGm, isGlv } from "../../markets/glv";
+import { getMaxUsdBuyableAmountInMarketWithGm, isGlvInfo } from "../../markets/glv";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
@@ -769,7 +769,7 @@ export function getGmShiftError({
   isHighPriceImpactAccepted: boolean;
   priceImpactUsd: bigint | undefined;
 }) {
-  const isGlvMarket = isGlv(toMarketInfo);
+  const isGlv = isGlvInfo(toMarketInfo);
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return [t`Loading...`];
@@ -805,7 +805,7 @@ export function getGmShiftError({
   const shortExceedCapacity =
     fromShortTokenAmount !== undefined && fromShortTokenAmount > mintableInfo.shortDepositCapacityAmount;
 
-  if (!isGlvMarket && (longExceedCapacity || shortExceedCapacity)) {
+  if (!isGlv && (longExceedCapacity || shortExceedCapacity)) {
     return [t`Max ${fromToken?.symbol} buyable amount exceeded`];
   }
 

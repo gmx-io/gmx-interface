@@ -13,7 +13,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   selectChainId,
   selectGlvInfoLoading,
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -44,7 +44,7 @@ import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 import { ApyTooltipContent } from "./ApyTooltipContent";
@@ -53,7 +53,7 @@ import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
 
 type Props = {
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
@@ -67,14 +67,14 @@ export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" |
 
 export function GmList({
   marketsTokensApyData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
   shouldScrollToTop,
   isDeposit,
 }: Props) {
   const chainId = useSelector(selectChainId);
-  const marketsInfo = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfo = useSelector(selectGlvAndMarketsInfoData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const tokensData = useTokensData();
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
@@ -96,7 +96,7 @@ export function GmList({
     marketTokensData,
     orderBy,
     direction,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
@@ -206,7 +206,7 @@ export function GmList({
                   marketsTokensApyData={marketsTokensApyData}
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
                   marketsTokensLidoAprData={marketsTokensLidoAprData}
-                  glvMarketsTokensApyData={glvMarketsTokensApyData}
+                  glvTokensApyData={glvTokensApyData}
                   shouldScrollToTop={shouldScrollToTop}
                   isShiftAvailable={token.symbol === "GLV" ? false : shiftAvailableMarketAddressSet.has(token.address)}
                 />
@@ -244,7 +244,7 @@ function useFilterSortPools({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
   searchText,
   tokensData,
 }: {
@@ -255,7 +255,7 @@ function useFilterSortPools({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
   searchText: string;
   tokensData: TokensData | undefined;
 }) {
@@ -279,7 +279,7 @@ function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
-      glvMarketsTokensApyData,
+      glvTokensApyData,
     });
   }, [
     chainId,
@@ -288,7 +288,7 @@ function useFilterSortPools({
     marketsInfo,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
     marketsTokensLidoAprData,
     orderBy,
   ]);
@@ -300,9 +300,8 @@ function useFilterSortPools({
 
     return sortedTokens.filter((token) => {
       const market = getByKey(marketsInfo, token?.address);
-      const indexToken = isGlv(market)
-        ? market.indexToken
-        : getTokenData(tokensData, market?.indexTokenAddress, "native");
+      const isGlv = isGlvInfo(market);
+      const indexToken = isGlv ? market.glvToken : getTokenData(tokensData, market?.indexTokenAddress, "native");
       const longToken = getTokenData(tokensData, market?.longTokenAddress);
       const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
@@ -310,7 +309,7 @@ function useFilterSortPools({
         return false;
       }
 
-      const poolName = isGlv(market) ? market.name ?? "GLV" : market.name;
+      const poolName = isGlvInfo(market) ? market.name ?? "GLV" : market.name;
 
       const indexSymbol = indexToken.symbol;
       const indexName = indexToken.name;
@@ -322,7 +321,7 @@ function useFilterSortPools({
       const shortName = shortToken.name;
 
       const marketTokenAddress = market.marketTokenAddress;
-      const indexTokenAddress = market.indexTokenAddress;
+      const indexTokenAddress = isGlv ? undefined : market.indexTokenAddress;
       const longTokenAddress = market.longTokenAddress;
       const shortTokenAddress = market.shortTokenAddress;
 
@@ -351,7 +350,7 @@ function GmListItem({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
   shouldScrollToTop,
   isShiftAvailable,
   marketTokensData,
@@ -360,13 +359,13 @@ function GmListItem({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
   shouldScrollToTop: boolean | undefined;
   isShiftAvailable: boolean;
   marketTokensData: TokensData | undefined;
 }) {
   const chainId = useSelector(selectChainId);
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const userEarnings = useUserEarnings(chainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
@@ -374,19 +373,19 @@ function GmListItem({
 
   const market = getByKey(marketsInfoData, token?.address);
 
-  const isGlvMarket = isGlv(market);
+  const isGlv = isGlvInfo(market);
 
-  const indexToken = isGlvMarket ? market.indexToken : getTokenData(tokensData, market?.indexTokenAddress, "native");
+  const indexToken = isGlv ? market.glvToken : getTokenData(tokensData, market?.indexTokenAddress, "native");
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
   const mintableInfo = useMemo(() => {
-    if (!market || !token || isGlvMarket) {
+    if (!market || !token || isGlv) {
       return undefined;
     }
 
     return getMintableMarketTokens(market, token);
-  }, [market, token, isGlvMarket]);
+  }, [market, token, isGlv]);
 
   const shiftButton = useMemo(() => {
     const btn = (
@@ -402,7 +401,7 @@ function GmListItem({
       </Button>
     );
 
-    if (isGlvMarket) {
+    if (isGlv) {
       return (
         <TooltipWithPortal
           content={
@@ -428,10 +427,10 @@ function GmListItem({
         {btn}
       </TooltipWithPortal>
     );
-  }, [isShiftAvailable, market?.marketTokenAddress, shouldScrollToTop, isGlvMarket]);
+  }, [isShiftAvailable, market?.marketTokenAddress, shouldScrollToTop, isGlv]);
 
-  const apy = isGlvMarket
-    ? getByKey(glvMarketsTokensApyData, market.marketTokenAddress)
+  const apy = isGlv
+    ? getByKey(glvTokensApyData, market.marketTokenAddress)
     : getByKey(marketsTokensApyData, token?.address);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
@@ -464,7 +463,7 @@ function GmListItem({
           </div>
           <div>
             <div className="flex text-16">
-              {isGlvMarket
+              {isGlv
                 ? getGlvDisplayName(market)
                 : getMarketIndexName({ indexToken, isSpotOnly: Boolean(market?.isSpotOnly) })}
 
@@ -490,7 +489,7 @@ function GmListItem({
         />
       </ExchangeTd>
       <ExchangeTd>
-        {isGlvMarket ? (
+        {isGlv ? (
           <MintableAmount mintableInfo={getMintableInfoGlv(market, marketTokensData)} market={market} token={token} />
         ) : (
           market && (
@@ -511,7 +510,7 @@ function GmListItem({
           daysConsidered={daysConsidered}
           earnedRecently={marketEarnings?.recent}
           earnedTotal={marketEarnings?.total}
-          isGlv={isGlvMarket}
+          isGlv={isGlv}
         />
       </ExchangeTd>
 

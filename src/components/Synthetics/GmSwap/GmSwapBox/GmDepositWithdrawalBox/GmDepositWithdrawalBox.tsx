@@ -10,7 +10,7 @@ import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -30,7 +30,7 @@ import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token, getMinResidualAmount } from "domain/tokens";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
@@ -85,7 +85,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   // #endregion
 
   // #region Selectors
-  const glvAndMarketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
@@ -127,14 +127,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
    */
   const { marketInfo, glvInfo } = useMemo(() => {
     const initialMarketInfo = getByKey(glvAndMarketsInfoData, marketAddress);
-    const isGlvMarket = initialMarketInfo && isGlv(initialMarketInfo);
-    const marketInfo = isGlvMarket
+    const isGlv = initialMarketInfo && isGlvInfo(initialMarketInfo);
+    const marketInfo = isGlv
       ? selectedGlvGmMarket
         ? marketsInfoData?.[selectedGlvGmMarket]
         : undefined
       : initialMarketInfo;
 
-    const glvInfo = isGlvMarket ? initialMarketInfo : undefined;
+    const glvInfo = isGlv ? initialMarketInfo : undefined;
 
     return {
       marketInfo,
@@ -500,7 +500,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     setMarketOrGlvTokenInputValue("");
   }, [setFirstTokenInputValue, setMarketOrGlvTokenInputValue, setSecondTokenInputValue]);
 
-  const onMarketChange = useCallback(
+  const onGlvOrMarketChange = useCallback(
     (marketAddress: string) => {
       resetInputs();
       onSelectMarket(marketAddress);
@@ -508,7 +508,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     [onSelectMarket, resetInputs]
   );
 
-  const onGmPoolChange = useCallback(
+  const onMarketChange = useCallback(
     (marketAddress: string) => {
       setIsGmPoolSelectedManually(true);
       onSelectGlvGmMarket?.(marketAddress);
@@ -662,11 +662,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const marketTokenSelectMarket = useCallback(
     (marketInfo: GlvOrMarketInfo): void => {
-      onMarketChange(marketInfo.marketTokenAddress);
+      onGlvOrMarketChange(marketInfo.marketTokenAddress);
       showMarketToast(marketInfo);
       onSelectGlvGmMarket?.(undefined);
     },
-    [onMarketChange, onSelectGlvGmMarket]
+    [onGlvOrMarketChange, onSelectGlvGmMarket]
   );
   // #endregion
 
@@ -693,10 +693,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   useEffect(
     function updateMarket() {
       if (!marketAddress && sortedMarketsInfoByIndexToken.length) {
-        onMarketChange(sortedMarketsInfoByIndexToken[0].marketTokenAddress);
+        onGlvOrMarketChange(sortedMarketsInfoByIndexToken[0].marketTokenAddress);
       }
     },
-    [marketAddress, onMarketChange, sortedMarketsInfoByIndexToken]
+    [marketAddress, onGlvOrMarketChange, sortedMarketsInfoByIndexToken]
   );
 
   useUpdateByQueryParams({
@@ -899,8 +899,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           isHighPriceImpactAccepted={isHighPriceImpactAccepted}
           setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
           isSingle={isSingle}
-          onGmPoolChange={onGmPoolChange}
-          onMarketChange={onMarketChange}
+          onMarketChange={glvInfo ? onMarketChange : onGlvOrMarketChange}
         />
 
         {((submitState.tokensToApprove && submitState.tokensToApprove.length > 0) ||
@@ -919,7 +918,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                     tokenAddress={address}
                     tokenSymbol={
                       marketTokenData
-                        ? isGlv(market)
+                        ? isGlvInfo(market)
                           ? market.glvToken.contractSymbol
                           : token.assetSymbol ?? token.symbol
                         : token.assetSymbol ?? token.symbol

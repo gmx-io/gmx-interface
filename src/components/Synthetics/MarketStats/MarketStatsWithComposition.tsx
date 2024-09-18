@@ -26,7 +26,7 @@ import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import { MARKET_STATS_DECIMALS } from "config/ui";
-import { getMintableInfoGlv, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
 import { formatDateTime } from "../../../lib/dates";
@@ -48,7 +48,7 @@ type Props = {
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
 };
 
 export function MarketStatsWithComposition(p: Props) {
@@ -60,11 +60,11 @@ export function MarketStatsWithComposition(p: Props) {
     marketTokensData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
   } = p;
   const { chainId } = useChainId();
 
-  const isGlvMarket = marketInfo && isGlv(marketInfo);
+  const isGlv = marketInfo && isGlvInfo(marketInfo);
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;
@@ -99,7 +99,7 @@ export function MarketStatsWithComposition(p: Props) {
 
   const maxLongTokenValue = useMemo(
     () =>
-      isGlvMarket
+      isGlv
         ? []
         : [
             formatTokenAmountWithUsd(
@@ -113,7 +113,7 @@ export function MarketStatsWithComposition(p: Props) {
               : "",
           ],
     [
-      isGlvMarket,
+      isGlv,
       longToken?.decimals,
       longToken?.symbol,
       marketInfo,
@@ -123,7 +123,7 @@ export function MarketStatsWithComposition(p: Props) {
   );
   const maxShortTokenValue = useMemo(
     () =>
-      isGlvMarket
+      isGlv
         ? []
         : [
             formatTokenAmountWithUsd(
@@ -137,7 +137,7 @@ export function MarketStatsWithComposition(p: Props) {
               : "",
           ],
     [
-      isGlvMarket,
+      isGlv,
       marketInfo,
       mintableInfo?.shortDepositCapacityAmount,
       mintableInfo?.shortDepositCapacityUsd,
@@ -147,12 +147,12 @@ export function MarketStatsWithComposition(p: Props) {
   );
 
   const buyableRow = useMemo(() => {
-    const mintable = isGlvMarket ? getMintableInfoGlv(marketInfo, marketTokensData) : mintableInfo;
+    const mintable = isGlv ? getMintableInfoGlv(marketInfo, marketTokensData) : mintableInfo;
     const buyableInfo = mintable
       ? formatTokenAmountWithUsd(
           mintable.mintableAmount,
           mintable.mintableUsd,
-          isGlvMarket ? marketToken?.symbol : marketToken?.symbol,
+          isGlv ? marketToken?.symbol : marketToken?.symbol,
           marketToken?.decimals,
           {
             displayDecimals: 0,
@@ -160,7 +160,7 @@ export function MarketStatsWithComposition(p: Props) {
         )
       : "...";
 
-    if (isGlvMarket) {
+    if (isGlv) {
       return <CardRow label={t`Buyable`} value={buyableInfo} />;
     }
 
@@ -170,7 +170,7 @@ export function MarketStatsWithComposition(p: Props) {
         value={
           mintableInfo && marketTotalSupplyUsd !== undefined && marketToken ? (
             <Tooltip
-              disabled={isGlvMarket}
+              disabled={isGlv}
               maxAllowedWidth={350}
               handle={buyableInfo}
               position="bottom-end"
@@ -212,7 +212,7 @@ export function MarketStatsWithComposition(p: Props) {
       />
     );
   }, [
-    isGlvMarket,
+    isGlv,
     marketInfo,
     marketToken,
     marketTotalSupplyUsd,
@@ -223,7 +223,7 @@ export function MarketStatsWithComposition(p: Props) {
   ]);
 
   const sellableRow = useMemo(() => {
-    const sellable = isGlvMarket ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
+    const sellable = isGlv ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
     const sellableValue = sellable
       ? formatTokenAmountWithUsd(
           sellable?.totalAmount,
@@ -236,7 +236,7 @@ export function MarketStatsWithComposition(p: Props) {
         )
       : "...";
 
-    if (isGlvMarket) {
+    if (isGlv) {
       return <CardRow label={t`Sellable`} value={sellableValue} />;
     }
 
@@ -301,7 +301,7 @@ export function MarketStatsWithComposition(p: Props) {
     maxShortSellableTokenAmount,
     marketTokensData,
     marketsInfoData,
-    isGlvMarket,
+    isGlv,
   ]);
 
   const canFitCompositionOnRow = useMedia("(min-width: 1200px)");
@@ -326,12 +326,12 @@ export function MarketStatsWithComposition(p: Props) {
           marketsTokensAPRData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           currentMarketInfo={marketInfo}
-          glvMarketsTokensApyData={glvMarketsTokensApyData}
+          glvTokensApyData={glvTokensApyData}
         />
         <div className="App-card-divider !-mx-20" />
         <div className="App-card-content">
           <MarketDescription marketInfo={marketInfo} />
-          {isGlvMarket ? (
+          {isGlv ? (
             <CardRow
               label={t`Vault`}
               value={
@@ -372,7 +372,7 @@ export function MarketStatsWithComposition(p: Props) {
                 }
                 position="bottom-end"
                 renderContent={() => {
-                  if (isGlvMarket) {
+                  if (isGlv) {
                     return (
                       <div>
                         <Trans>
@@ -408,7 +408,7 @@ export function MarketStatsWithComposition(p: Props) {
                 ? formatTokenAmountWithUsd(
                     marketBalance ?? 0n,
                     marketBalanceUsd ?? 0n,
-                    isGlvMarket ? "GLV" : "GM",
+                    isGlv ? "GLV" : "GM",
                     marketToken?.decimals ?? 18
                   )
                 : "..."
@@ -419,7 +419,7 @@ export function MarketStatsWithComposition(p: Props) {
             label={t`APY`}
             value={
               <AprInfo
-                apy={isGlvMarket ? glvMarketsTokensApyData?.[marketInfo?.marketTokenAddress] : apy}
+                apy={isGlv ? glvTokensApyData?.[marketInfo?.marketTokenAddress] : apy}
                 incentiveApr={incentiveApr}
                 lidoApr={lidoApr}
                 tokenAddress={marketToken?.address ?? zeroAddress}
@@ -434,7 +434,7 @@ export function MarketStatsWithComposition(p: Props) {
                 ? formatTokenAmountWithUsd(
                     marketTotalSupply,
                     marketTotalSupplyUsd,
-                    isGlvMarket ? "GLV" : "GM",
+                    isGlv ? "GLV" : "GM",
                     marketToken?.decimals,
                     {
                       displayDecimals: 0,
@@ -447,7 +447,7 @@ export function MarketStatsWithComposition(p: Props) {
           {buyableRow}
           {sellableRow}
 
-          {isGlvMarket && (
+          {isGlv && (
             <>
               <CardRow
                 label={t`Last Rebalance`}

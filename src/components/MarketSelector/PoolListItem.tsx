@@ -7,7 +7,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { getGlvDisplayName, getMarketBadge, GlvOrMarketInfo } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -48,12 +48,12 @@ export function PoolListItem(props: {
     onFavoriteClick,
     onSelectOption,
   } = props;
-  const { longToken, shortToken, indexToken } = marketInfo;
+  const { longToken, shortToken } = marketInfo;
   const chainId = useSelector(selectChainId);
 
   const indexTokenImage = marketInfo.isSpotOnly
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
-    : getNormalizedTokenSymbol(indexToken.symbol);
+    : getNormalizedTokenSymbol(isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol);
 
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -72,7 +72,7 @@ export function PoolListItem(props: {
       balance,
       balanceUsd,
       state,
-      name: isGlv(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
+      name: isGlvInfo(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
     });
   }, [balance, balanceUsd, indexName, marketInfo, onSelectOption, poolName, state]);
 
@@ -117,7 +117,7 @@ export function PoolListItem(props: {
           </div>
           <div className="Token-symbol">
             <div className="Token-text">
-              {isGlv(marketInfo) ? (
+              {isGlvInfo(marketInfo) ? (
                 <div className="flex items-center leading-1">
                   <span>{getGlvDisplayName(marketInfo)}</span>
                   <span className="subtext">[{poolName}]</span>

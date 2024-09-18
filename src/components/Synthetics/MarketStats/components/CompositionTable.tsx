@@ -8,7 +8,7 @@ import { TOKEN_COLOR_MAP } from "config/tokens";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 
 import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
@@ -41,24 +41,24 @@ interface GlvTableConfig {
 export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
-  const isGlvMarket = marketInfo && isGlv(marketInfo);
+  const isGlv = marketInfo && isGlvInfo(marketInfo);
 
   const selectGmComposition = useGlvGmMarketsWithComposition(true, marketInfo?.marketTokenAddress);
 
   const [col1, col2, col3] = useMemo(() => {
-    if (isGlvMarket) {
+    if (isGlv) {
       return [t`MARKET`, t`TVL`, t`COMP.`];
     }
 
     return [t`COLLATERAL`, t`AMOUNT`, t`COMP.`];
-  }, [isGlvMarket]);
+  }, [isGlv]);
 
   const table: GmTableConfig | GlvTableConfig | undefined = useMemo(() => {
     if (!marketInfo) {
       return undefined;
     }
 
-    if (isGlvMarket) {
+    if (isGlv) {
       if (!marketsInfoData || !tokensData) {
         return undefined;
       }
@@ -95,7 +95,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
         },
       ],
     };
-  }, [marketInfo, marketsInfoData, isGlvMarket, tokensData, selectGmComposition]);
+  }, [marketInfo, marketsInfoData, isGlv, tokensData, selectGmComposition]);
 
   const rows = useMemo(() => {
     if (!table) {

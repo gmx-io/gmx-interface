@@ -11,8 +11,8 @@ import { Mode, Operation } from "./types";
 import Tab from "components/Tab/Tab";
 import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 
-import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvInfo } from "domain/synthetics/markets";
 
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
@@ -63,7 +63,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
 
   const marketAddress = selectedMarketAddress;
 
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 
@@ -88,7 +88,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   const localizedOperationLabelsGLV = useLocalizedMap(OPERATION_LABELS_GLV);
 
   const localizedOperationLabels = useMemo(
-    () => (marketInfo && isGlv(marketInfo) ? localizedOperationLabelsGLV : localizedOperationLabelsGM),
+    () => (marketInfo && isGlvInfo(marketInfo) ? localizedOperationLabelsGLV : localizedOperationLabelsGM),
     [marketInfo, localizedOperationLabelsGM, localizedOperationLabelsGLV]
   );
 

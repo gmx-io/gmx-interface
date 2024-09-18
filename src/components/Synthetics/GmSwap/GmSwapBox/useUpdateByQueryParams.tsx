@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 
 import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
 
-import { selectChainId, selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
@@ -17,7 +17,7 @@ import { helperToast } from "lib/helperToast";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 
-import { isGlv } from "../../../../domain/synthetics/markets/glv";
+import { isGlvInfo } from "../../../../domain/synthetics/markets/glv";
 import { Mode, Operation } from "./types";
 
 type SearchParams = {
@@ -52,7 +52,7 @@ export function useUpdateByQueryParams({
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
 
   const chainId = useSelector(selectChainId);
-  const marketsInfo = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfo = useSelector(selectGlvAndMarketsInfoData);
   const markets = useMemo(() => values(marketsInfo), [marketsInfo]);
 
   useEffect(
@@ -79,13 +79,13 @@ export function useUpdateByQueryParams({
       if (pickBestGlv) {
         setOperation(Operation.Deposit);
 
-        const glvs = Object.values(marketsInfo).filter((m) => isGlv(m)) as GlvInfo[];
+        const glvs = Object.values(marketsInfo).filter((m) => isGlvInfo(m)) as GlvInfo[];
 
         if (glvs.length) {
           const bestGlv = glvs.reduce((best, glv) => {
             return (best.glvToken.totalSupply ?? 0n) > (glv.glvToken.totalSupply ?? 0n) ? best : glv;
           });
-          marketAddress = bestGlv.indexTokenAddress.toLowerCase();
+          marketAddress = bestGlv.marketTokenAddress.toLowerCase();
         }
       }
 
@@ -114,10 +114,10 @@ export function useUpdateByQueryParams({
           const marketInfo = markets.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
           if (marketInfo) {
             onSelectMarket(marketInfo.marketTokenAddress);
-            const isGlvMarket = isGlv(marketInfo);
-            const indexName = isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo);
+            const isGlv = isGlvInfo(marketInfo);
+            const indexName = isGlv ? marketInfo.name : getMarketIndexName(marketInfo);
             const poolName = getMarketPoolName(marketInfo);
-            const titlePrefix = isGlvMarket ? getGlvDisplayName(marketInfo) : "GM: ";
+            const titlePrefix = isGlv ? getGlvDisplayName(marketInfo) : "GM: ";
             helperToast.success(
               <Trans>
                 <div className="inline-flex">
@@ -138,12 +138,12 @@ export function useUpdateByQueryParams({
               setOperation(Operation.Deposit);
             }
 
-            if (pool && isGlvMarket && setFirstTokenAddress) {
+            if (pool && isGlv && setFirstTokenAddress) {
               setFirstTokenAddress(pool);
               onSelectGlvGmMarket?.(pool);
             }
 
-            if (!pool && isGlvMarket && selectedGlvGmMarket) {
+            if (!pool && isGlv && selectedGlvGmMarket) {
               onSelectGlvGmMarket?.(undefined);
             }
           }

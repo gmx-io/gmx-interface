@@ -13,7 +13,7 @@ import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStat
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import { GlvInfo, MarketInfo, getMarketIndexName, getMarketPoolName, isMarket } from "domain/synthetics/markets";
+import { GlvInfo, MarketInfo, getMarketIndexName, getMarketPoolName, isMarketInfo } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   gmTokensFavoritesTabOptionLabels,
@@ -29,7 +29,7 @@ import "./MarketSelector.scss";
 type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   isDeposit: boolean;
   glvInfo: GlvInfo;
-  onSelectGmMarket?: (market: MarketInfo) => void;
+  onSelectMarket?: (market: MarketInfo) => void;
   disablePoolSelector?: boolean;
 };
 
@@ -41,7 +41,7 @@ export function GmPoolsSelectorForGlvMarket({
   marketTokensData,
   selectedMarketAddress,
   showBalances,
-  onSelectGmMarket,
+  onSelectMarket,
   getMarketState,
   showAllPools = false,
   showIndexIcon = false,
@@ -63,23 +63,23 @@ export function GmPoolsSelectorForGlvMarket({
     const allMarkets =
       markets
         .map((market) => {
-          const gmMarketInfo = market.market;
+          const marketInfo = market.market;
 
-          if (!gmMarketInfo) {
+          if (!marketInfo) {
             return null;
           }
 
-          const indexName = getMarketIndexName(gmMarketInfo);
-          const marketToken = getByKey(marketTokensData, gmMarketInfo.marketTokenAddress);
+          const indexName = getMarketIndexName(marketInfo);
+          const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
           const gmBalance = marketToken?.balance;
           const gmBalanceUsd = convertToUsd(marketToken?.balance, marketToken?.decimals, marketToken?.prices.minPrice);
-          const state = getMarketState?.(gmMarketInfo);
+          const state = getMarketState?.(marketInfo);
 
           return {
             indexName,
             poolName: indexName,
-            name: gmMarketInfo.name,
-            marketInfo: gmMarketInfo,
+            name: marketInfo.name,
+            marketInfo: marketInfo,
             balance: gmBalance ?? 0n,
             balanceUsd: gmBalanceUsd ?? 0n,
             state,
@@ -110,7 +110,8 @@ export function GmPoolsSelectorForGlvMarket({
     [marketsOptions, selectedMarketAddress]
   );
 
-  const marketInfo = selectedPool?.marketInfo;
+  const selectedMarketInfo = selectedPool?.marketInfo;
+  const marketInfo = selectedMarketInfo && isMarketInfo(selectedMarketInfo) ? selectedMarketInfo : undefined;
 
   const filteredOptions = useMemo(() => {
     const lowercaseSearchKeyword = searchKeyword.toLowerCase();
@@ -126,12 +127,12 @@ export function GmPoolsSelectorForGlvMarket({
 
   const onSelectGmPool = useCallback(
     function onSelectOption(option: MarketOption) {
-      if (isMarket(option.marketInfo)) {
-        onSelectGmMarket?.(option.marketInfo);
+      if (isMarketInfo(option.marketInfo)) {
+        onSelectMarket?.(option.marketInfo);
         setIsModalVisible(false);
       }
     },
-    [onSelectGmMarket, setIsModalVisible]
+    [onSelectMarket, setIsModalVisible]
   );
 
   const handleKeyDown = useCallback(
@@ -162,7 +163,7 @@ export function GmPoolsSelectorForGlvMarket({
     setSearchKeyword(e.target.value);
   }, []);
 
-  function displayPoolLabel(marketInfo: MarketInfo | GlvInfo | undefined) {
+  function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
 
     return (

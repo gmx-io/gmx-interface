@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 
 import {
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useMarketTokensData } from "domain/synthetics/markets";
-import { getMaxUsdCapUsdInGmGlvMarket, isGlv } from "domain/synthetics/markets/glv";
+import { getMaxUsdCapUsdInGmGlvMarket, isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
 
 import { useChainId } from "lib/chains";
@@ -19,7 +19,7 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
     isDeposit,
   });
 
-  const allMarkets = useSelector(selectGlvAndGmMarketsData);
+  const allMarkets = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
   return useMemo(() => {
@@ -29,7 +29,7 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
 
     const glv = allMarkets[glvAddress];
 
-    if (!glv || !isGlv(glv)) {
+    if (!glv || !isGlvInfo(glv)) {
       return [];
     }
 

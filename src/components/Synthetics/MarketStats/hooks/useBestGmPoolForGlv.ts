@@ -4,7 +4,7 @@ import { TokenInputState } from "components/Synthetics/GmSwap/GmSwapBox/GmDeposi
 import type { useDepositWithdrawalFees } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalFees";
 
 import { GlvInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
@@ -65,10 +65,10 @@ export const useBestGmPoolAddressForGlv = ({
   isGmPoolSelectedManually: boolean;
   onSelectGlvGmMarket?: (marketAddress?: string) => void;
 }) => {
-  const marketsWithComposition = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.indexTokenAddress);
+  const marketsWithComposition = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.marketTokenAddress);
 
   const isEligible = useMemo(() => {
-    return glvInfo && isGlv(glvInfo) && marketsWithComposition.length > 0 && !isMarketTokenDeposit;
+    return glvInfo && isGlvInfo(glvInfo) && marketsWithComposition.length > 0 && !isMarketTokenDeposit;
   }, [glvInfo, marketsWithComposition, isMarketTokenDeposit]);
 
   const byComposition = useMemo(() => {

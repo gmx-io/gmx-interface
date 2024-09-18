@@ -11,7 +11,7 @@ import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMi
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
 import { GLV_MARKETS } from "config/markets";
-import { isGlv } from "./glv";
+import { isGlvInfo } from "./glv";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -32,7 +32,7 @@ export function getMarketBadge(chainId: number, market: GlvOrMarketInfo | undefi
     return undefined;
   }
 
-  if (isGlv(market)) {
+  if (isGlvInfo(market)) {
     return GLV_MARKETS[chainId]?.[market.marketTokenAddress]?.shortening || "GLV";
   }
 
@@ -47,14 +47,16 @@ export function getGlvMarketShortening(chainId: number, address: string) {
   return GLV_MARKETS[chainId]?.[address]?.shortening || "";
 }
 
-export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {
-  const { indexToken, isSpotOnly } = p;
+export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token }) & { isSpotOnly: boolean }) {
+  const { isSpotOnly } = p;
+
+  const firstToken = "indexToken" in p ? p.indexToken : p.glvToken;
 
   if (isSpotOnly) {
     return `SWAP-ONLY`;
   }
 
-  return `${indexToken.baseSymbol || indexToken.symbol}/USD`;
+  return `${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
@@ -558,4 +560,4 @@ export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
   }
 }
 
-export const isMarket = (market: GlvInfo | MarketInfo): market is MarketInfo => !isGlv(market);
+export const isMarketInfo = (market: GlvInfo | MarketInfo): market is MarketInfo => !isGlvInfo(market);

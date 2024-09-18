@@ -43,7 +43,7 @@ export function useMarketTokensDataRequest(
 
   const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;
 
-  const { data: gmMarketTokensData } = useMulticall(chainId, "useMarketTokensData", {
+  const { data: marketTokensData } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
@@ -150,17 +150,17 @@ export function useMarketTokensDataRequest(
   });
 
   const gmAndGlvMarketTokensData = useMemo(() => {
-    if (!gmMarketTokensData || !glvData || Object.values(glvData).length === 0) {
-      return gmMarketTokensData;
+    if (!marketTokensData || !glvData || Object.values(glvData).length === 0) {
+      return marketTokensData;
     }
 
-    const result = { ...gmMarketTokensData };
+    const result = { ...marketTokensData };
     Object.values(glvData).forEach((glvMarket) => {
-      result[glvMarket.indexTokenAddress] = glvMarket.indexToken;
+      result[glvMarket.marketTokenAddress] = glvMarket.glvToken;
     });
 
     return result;
-  }, [gmMarketTokensData, glvData]);
+  }, [marketTokensData, glvData]);
 
   return {
     marketTokensData: gmAndGlvMarketTokensData,

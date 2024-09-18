@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
   selectDepositMarketTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -31,7 +31,7 @@ export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -99,7 +99,7 @@ export function MarketPoolsPage() {
             marketsInfoData={marketsInfoData}
             marketInfo={marketInfo}
             marketToken={marketToken}
-            glvMarketsTokensApyData={glvApyInfoData}
+            glvTokensApyData={glvApyInfoData}
           />
 
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
@@ -122,7 +122,7 @@ export function MarketPoolsPage() {
           </div>
         </div>
         <GmList
-          glvMarketsTokensApyData={glvApyInfoData}
+          glvTokensApyData={glvApyInfoData}
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}

@@ -4,7 +4,7 @@ import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo, MarketInfo } from "domai
 import { getByKey } from "lib/objects";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 export function useUpdateMarkets({
   marketsInfoData,
@@ -56,7 +56,7 @@ export function useUpdateMarkets({
       const isToMarketSameAsSelected = toMarketAddress === newSelectedMarketAddress;
       const isToMarketValid = isToMarketAvailable && isToMarketRelated && !isToMarketSameAsSelected;
 
-      if (toMarketInfo && isGlv(toMarketInfo)) {
+      if (toMarketInfo && isGlvInfo(toMarketInfo)) {
         return;
       }
 
