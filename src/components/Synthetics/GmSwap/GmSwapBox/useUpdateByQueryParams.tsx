@@ -37,6 +37,7 @@ export function useUpdateByQueryParams({
   onSelectMarket,
   selectedMarketForGlv,
   onSelectedMarketForGlv,
+  setIsMarketForGlvSelectedManually,
 }: {
   operation: Operation;
   setOperation: (operation: Operation) => void;
@@ -45,6 +46,7 @@ export function useUpdateByQueryParams({
   onSelectMarket: (marketAddress: string) => void;
   onSelectedMarketForGlv?: (marketAddress?: string) => void;
   selectedMarketForGlv?: string;
+  setIsMarketForGlvSelectedManually?: (isMarketForGlvSelectedManually: boolean) => void;
 }) {
   const history = useHistory();
   const searchParams = useSearchParams<SearchParams>();
@@ -113,6 +115,7 @@ export function useUpdateByQueryParams({
           const marketInfo = markets.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
           if (marketInfo) {
             onSelectMarket(marketInfo.marketTokenAddress);
+            setIsMarketForGlvSelectedManually?.(false);
             const isGlv = isGlvInfo(marketInfo);
             const indexName = isGlv ? undefined : getMarketIndexName(marketInfo);
             const poolName = getMarketPoolName(marketInfo);
@@ -166,6 +169,7 @@ export function useUpdateByQueryParams({
       setOperation,
       setMode,
       setFirstTokenAddress,
+      setIsMarketForGlvSelectedManually,
       chainId,
       markets,
       marketsInfo,

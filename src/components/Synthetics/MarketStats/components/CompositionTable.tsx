@@ -26,7 +26,7 @@ interface GmTableConfig {
     token: TokenData;
     amount: bigint;
     prefix: string;
-    comp: number;
+    composition: number;
   }[];
 }
 interface GlvTableConfig {
@@ -34,7 +34,7 @@ interface GlvTableConfig {
   data: {
     market: MarketInfo;
     tvl: readonly [used: bigint, available: bigint];
-    comp: number;
+    composition: number;
   }[];
 }
 
@@ -84,13 +84,13 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
         {
           token: longToken,
           amount: longPoolAmount,
-          comp: compLong,
+          composition: compLong,
           prefix: "Long",
         },
         {
           token: shortToken,
           amount: shortPoolAmount,
-          comp: compShort,
+          composition: compShort,
           prefix: "Short",
         },
       ],
@@ -103,8 +103,8 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
     }
 
     if (table.type === "glv") {
-      return table.data.map(({ comp, market, tvl }, index) => {
-        if (comp === undefined || comp === undefined || !market?.indexToken) {
+      return table.data.map(({ composition, market, tvl }, index) => {
+        if (composition === undefined || composition === undefined || !market?.indexToken) {
           return null;
         }
 
@@ -125,7 +125,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               {formatAmountHuman(tvl[0], USD_DECIMALS, true, 1)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 1)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {comp.toFixed(2)}%
+              {composition.toFixed(2)}%
             </ExchangeTd>
           </ExchangeTr>
         );
@@ -133,8 +133,8 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
     }
 
     if (table.type === "gm") {
-      return table.data.map(({ amount, comp, token, prefix }, index) => {
-        if (amount === undefined || comp === undefined || !token) {
+      return table.data.map(({ amount, composition, token, prefix }, index) => {
+        if (amount === undefined || composition === undefined || !token) {
           return null;
         }
 
@@ -157,7 +157,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               {formatAmountHuman(amount, token.decimals, false, 3)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {comp.toFixed(2)}%
+              {composition.toFixed(2)}%
             </ExchangeTd>
           </ExchangeTr>
         );

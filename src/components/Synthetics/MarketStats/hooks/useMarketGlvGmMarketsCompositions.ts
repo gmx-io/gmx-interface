@@ -63,13 +63,13 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
           market,
           token: token,
           tvl: [balanceUsd, getMaxUsdCapUsdInGmGlvMarket(glvMarket, token)] as const,
-          comp: sum === 0n ? 0 : (bigintToNumber(balanceUsd, 30) * 100) / bigintToNumber(sum, 30),
+          composition: sum === 0n ? 0 : (bigintToNumber(balanceUsd, 30) * 100) / bigintToNumber(sum, 30),
         };
       })
       .filter(Boolean as unknown as FilterOutFalsy);
 
     return rows.sort((a, b) => {
-      return b.comp - a.comp;
+      return b.composition - a.composition;
     });
   }, [allMarkets, glvAddress, marketTokensData, marketsInfoData]);
 };

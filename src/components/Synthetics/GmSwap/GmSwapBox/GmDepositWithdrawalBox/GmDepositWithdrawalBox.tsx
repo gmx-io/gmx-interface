@@ -504,6 +504,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     (marketAddress: string) => {
       resetInputs();
       onSelectMarket(marketAddress);
+      setIsMarketForGlvSelectedManually(false);
     },
     [onSelectMarket, resetInputs]
   );
@@ -512,7 +513,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     (marketAddress: string) => {
       setIsMarketForGlvSelectedManually(true);
       onSelectedMarketForGlv?.(marketAddress);
-      setIsMarketForGlvSelectedManually(false);
     },
     [onSelectedMarketForGlv]
   );
@@ -708,6 +708,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     onSelectedMarketForGlv,
     selectedMarketForGlv,
     setFirstTokenAddress,
+    setIsMarketForGlvSelectedManually,
   });
 
   useUpdateTokens({

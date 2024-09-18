@@ -4,7 +4,7 @@ import { TokenInputState } from "components/Synthetics/GmSwap/GmSwapBox/GmDeposi
 import type { useDepositWithdrawalFees } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalFees";
 
 import { GlvInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { getSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
@@ -71,30 +71,7 @@ export const useBestGmPoolAddressForGlv = ({
     return glvInfo && isGlvInfo(glvInfo) && marketsWithComposition.length > 0 && !isMarketTokenDeposit;
   }, [glvInfo, marketsWithComposition, isMarketTokenDeposit]);
 
-  const byComposition = useMemo(() => {
-    if (!isEligible) {
-      return [];
-    }
-
-    const sortedMarketsWithComposition = [...marketsWithComposition]
-      .sort((a, b) => {
-        return b.comp - a.comp;
-      })
-      .filter((marketConfig) => {
-        const availableBuyableGmUsd = getMaxUsdBuyableAmountInMarketWithGm(
-          marketConfig.glvMarket,
-          glvInfo!,
-          marketConfig.market,
-          marketConfig.token
-        );
-
-        return availableBuyableGmUsd > 0;
-      });
-
-    return sortedMarketsWithComposition;
-  }, [glvInfo, marketsWithComposition, isEligible]);
-
-  const byGlv = useMemo(() => {
+  const markets = useMemo(() => {
     if (!isEligible || !glvInfo) {
       return [];
     }
@@ -104,79 +81,68 @@ export const useBestGmPoolAddressForGlv = ({
       ? getSellableInfoGlv(glvInfo, marketsInfoData, marketTokensData, selectedMarketForGlv)
       : undefined;
 
-    return [...marketsWithComposition]
-      .map((marketConfig) => {
-        const marketInfo = marketConfig.market;
+    return [...marketsWithComposition].map((marketConfig) => {
+      const marketInfo = marketConfig.market;
 
-        const longTokenAmount = (marketInfo.isSameCollaterals ? halfOfLong : longTokenInputState?.amount) || 0n;
-        const shortTokenAmount =
-          (marketInfo.isSameCollaterals
-            ? longTokenInputState?.amount !== undefined
-              ? longTokenInputState.amount - longTokenAmount
-              : undefined
-            : shortTokenInputState?.amount) || 0n;
+      const longTokenAmount = (marketInfo.isSameCollaterals ? halfOfLong : longTokenInputState?.amount) || 0n;
+      const shortTokenAmount =
+        (marketInfo.isSameCollaterals
+          ? longTokenInputState?.amount !== undefined
+            ? longTokenInputState.amount - longTokenAmount
+            : undefined
+          : shortTokenInputState?.amount) || 0n;
 
-        const amounts = getDepositAmounts({
-          marketInfo,
-          marketToken: marketConfig.token,
-          longToken: marketInfo.longToken,
-          shortToken: marketInfo.shortToken,
-          longTokenAmount,
-          shortTokenAmount,
-          marketTokenAmount,
-          includeLongToken: Boolean(longTokenInputState?.address),
-          includeShortToken: Boolean(shortTokenInputState?.address),
-          uiFeeFactor,
-          glvTokenAmount: glvTokenAmount ?? 0n,
-          strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
-          isMarketTokenDeposit: false,
-          glvInfo,
-          glvToken: glvInfo.glvToken,
-        });
+      const amounts = getDepositAmounts({
+        marketInfo,
+        marketToken: marketConfig.token,
+        longToken: marketInfo.longToken,
+        shortToken: marketInfo.shortToken,
+        longTokenAmount,
+        shortTokenAmount,
+        marketTokenAmount,
+        includeLongToken: Boolean(longTokenInputState?.address),
+        includeShortToken: Boolean(shortTokenInputState?.address),
+        uiFeeFactor,
+        glvTokenAmount: glvTokenAmount ?? 0n,
+        strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
+        isMarketTokenDeposit: false,
+        glvInfo,
+        glvToken: glvInfo.glvToken,
+      });
 
-        const [error] = getGmSwapError({
-          isDeposit,
-          marketInfo,
-          glvInfo,
-          marketToken: marketConfig.token,
-          longToken: marketInfo.longToken,
-          shortToken: marketInfo.shortToken,
-          marketTokenAmount,
-          glvTokenAmount: glvTokenAmount ?? 0n,
-          glvToken: glvInfo.glvToken,
-          glvTokenUsd: amounts?.glvTokenUsd,
-          marketTokenUsd: amounts?.marketTokenUsd,
-          longTokenAmount: amounts?.longTokenAmount,
-          shortTokenAmount: amounts?.shortTokenAmount,
-          longTokenUsd: amounts?.longTokenUsd,
-          shortTokenUsd: amounts?.shortTokenUsd,
-          longTokenLiquidityUsd: longTokenLiquidityUsd,
-          shortTokenLiquidityUsd: shortTokenLiquidityUsd,
-          fees,
-          isHighPriceImpact: false,
-          isHighPriceImpactAccepted: true,
-          priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
-          vaultSellableAmount: vaultSellableAmount?.totalAmount,
-          marketTokensData,
-        });
+      const [error] = getGmSwapError({
+        isDeposit,
+        marketInfo,
+        glvInfo,
+        marketToken: marketConfig.token,
+        longToken: marketInfo.longToken,
+        shortToken: marketInfo.shortToken,
+        marketTokenAmount,
+        glvTokenAmount: glvTokenAmount ?? 0n,
+        glvToken: glvInfo.glvToken,
+        glvTokenUsd: amounts?.glvTokenUsd,
+        marketTokenUsd: amounts?.marketTokenUsd,
+        longTokenAmount: amounts?.longTokenAmount,
+        shortTokenAmount: amounts?.shortTokenAmount,
+        longTokenUsd: amounts?.longTokenUsd,
+        shortTokenUsd: amounts?.shortTokenUsd,
+        longTokenLiquidityUsd: longTokenLiquidityUsd,
+        shortTokenLiquidityUsd: shortTokenLiquidityUsd,
+        fees,
+        isHighPriceImpact: false,
+        isHighPriceImpactAccepted: true,
+        priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
+        vaultSellableAmount: vaultSellableAmount?.totalAmount,
+        marketTokensData,
+      });
 
-        return {
-          isValid: error === undefined,
-          market: marketConfig.market,
-          amount: amounts.glvTokenUsd,
-        };
-      })
-      .sort((a, b) => {
-        if (a.isValid && !b.isValid) {
-          return -1;
-        }
-
-        if (!a.isValid && b.isValid) {
-          return 1;
-        }
-        return b.amount > a.amount ? 1 : -1;
-      })
-      .map(({ market }) => market);
+      return {
+        isValid: error === undefined,
+        market: marketConfig.market,
+        amount: amounts.glvTokenUsd,
+        composition: marketConfig.composition,
+      };
+    });
   }, [
     marketsWithComposition,
     marketTokenAmount,
@@ -196,6 +162,42 @@ export const useBestGmPoolAddressForGlv = ({
     glvTokenAmount,
   ]);
 
+  const byAmount = useMemo(
+    () =>
+      [...markets]
+        .sort((a, b) => {
+          if (a.isValid && !b.isValid) {
+            return -1;
+          }
+
+          if (!a.isValid && b.isValid) {
+            return 1;
+          }
+
+          return b.amount > a.amount ? 1 : -1;
+        })
+        .map(({ market }) => market),
+    [markets]
+  );
+
+  const byComposition = useMemo(
+    () =>
+      [...markets]
+        .sort((a, b) => {
+          if (a.isValid && !b.isValid) {
+            return -1;
+          }
+
+          if (!a.isValid && b.isValid) {
+            return 1;
+          }
+
+          return b.composition > a.composition ? 1 : -1;
+        })
+        .map(({ market }) => market),
+    [markets]
+  );
+
   const bestGmMarketAddress = useMemo(() => {
     if (isMarketTokenDeposit) {
       return undefined;
@@ -210,18 +212,18 @@ export const useBestGmPoolAddressForGlv = ({
         (longTokenInputState?.amount === 0n || longTokenInputState?.amount === undefined) &&
         (shortTokenInputState?.amount === 0n || shortTokenInputState?.amount === undefined)
       ) {
-        return byComposition[0]?.market.marketTokenAddress;
+        return byComposition[0]?.marketTokenAddress;
       }
 
-      return byGlv[0]?.marketTokenAddress;
+      return byAmount[0]?.marketTokenAddress;
     } else {
-      return byComposition[0]?.market.marketTokenAddress;
+      return byComposition[0]?.marketTokenAddress;
     }
   }, [
     byComposition,
     isDeposit,
     selectedMarketForGlv,
-    byGlv,
+    byAmount,
     isMarketTokenDeposit,
     longTokenInputState,
     shortTokenInputState,
@@ -272,5 +274,6 @@ export const useBestGmPoolAddressForGlv = ({
     previousShortTokenAddress,
     isEligible,
     fromMarketTokenInputState,
+    isDeposit,
   ]);
 };
