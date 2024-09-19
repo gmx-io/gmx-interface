@@ -1,4 +1,5 @@
-import { MarketInfo } from "domain/synthetics/markets";
+import { GlvOrMarketInfo } from "domain/synthetics/markets";
+
 import { TokensData } from "domain/synthetics/tokens";
 import { GmTokensFavoritesContextType } from "domain/synthetics/tokens/useGmTokensFavorites";
 
@@ -7,12 +8,12 @@ export type CommonPoolSelectorProps = {
   className?: string;
   selectedMarketAddress?: string;
   selectedIndexName?: string;
-  markets: MarketInfo[];
+  markets: GlvOrMarketInfo[];
   marketTokensData?: TokensData;
   showBalances?: boolean;
   isSideMenu?: boolean;
-  getMarketState?: (market: MarketInfo) => MarketState | undefined;
-  onSelectMarket: (market: MarketInfo) => void;
+  getMarketState?: (market: GlvOrMarketInfo) => MarketState | undefined;
+  onSelectMarket: (market: GlvOrMarketInfo) => void;
   showAllPools?: boolean;
   showIndexIcon?: boolean;
 } & GmTokensFavoritesContextType;
@@ -27,7 +28,7 @@ export type MarketOption = {
   indexName: string;
   poolName: string;
   name: string;
-  marketInfo: MarketInfo;
+  marketInfo: GlvOrMarketInfo;
   balance: bigint;
   balanceUsd: bigint;
   state?: MarketState;

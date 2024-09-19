@@ -58,7 +58,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { GLV_ENABLED } from "config/markets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -76,7 +76,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const { glvMarketInfo } = useGlvMarketsInfo(GLV_ENABLED[chainId], {
+  const { glvData } = useGlvMarketsInfo(isGlvEnabled(chainId), {
     marketsInfoData,
     tokensData,
     chainId,
@@ -86,9 +86,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const GlvAndGmMarketsData = useMemo(() => {
     return {
       ...marketsInfoData,
-      ...glvMarketInfo,
+      ...glvData,
     };
-  }, [marketsInfoData, glvMarketInfo]);
+  }, [marketsInfoData, glvData]);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
@@ -262,16 +262,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.glv,
+        glvAddress: eventData.addressItems.items.glv,
+        marketAddress: eventData.addressItems.items.market,
         initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
         initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
         longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
         shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount:
-          eventData.uintItems.items.marketTokenAmount === 0n
-            ? eventData.uintItems.items.initialLongTokenAmount
-            : eventData.uintItems.items.marketTokenAmount,
+        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
         initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
+        initialMarketTokenAmount: eventData.uintItems.items.marketTokenAmount,
         minMarketTokens: eventData.uintItems.items.minGlvTokens,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
         executionFee: eventData.uintItems.items.executionFee,
@@ -340,7 +339,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     GlvDepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-
       if (depositStatuses[key]?.data) {
         const metricId = getGMSwapMetricId(depositStatuses[key].data!);
 

@@ -9,9 +9,9 @@ import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
-import { ContractMarketPrices, Market, MarketInfo } from "./types";
-import { GLV_MARKETS_APPEARANCE } from "config/markets";
-import { GlvMarketInfo } from "./useGlvMarkets";
+import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
+import { GLV_MARKETS } from "config/markets";
+import { isGlvInfo } from "./glv";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -20,29 +20,53 @@ export function getMarketFullName(p: { longToken: Token; shortToken: Token; inde
 }
 
 export function getGlvMarketName(chainId: number, address: string) {
-  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.name;
+  return GLV_MARKETS[chainId]?.[address]?.name;
 }
 
-export function getGlvMarketDisplayName(glv: GlvMarketInfo) {
+export function getGlvDisplayName(glv: GlvInfo) {
   return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
 }
 
+export function getGlvOrMarketAddress(marketOrGlvInfo: MarketInfo | GlvInfo): string;
+export function getGlvOrMarketAddress(marketOrGlvInfo?: undefined): undefined;
+export function getGlvOrMarketAddress(marketOrGlvInfo?: MarketInfo | GlvInfo) {
+  if (!marketOrGlvInfo) {
+    return undefined;
+  }
+
+  return isMarketInfo(marketOrGlvInfo) ? marketOrGlvInfo.marketTokenAddress : marketOrGlvInfo.glvTokenAddress;
+}
+
+export function getMarketBadge(chainId: number, market: GlvOrMarketInfo | undefined) {
+  if (!market) {
+    return undefined;
+  }
+
+  if (isGlvInfo(market)) {
+    return GLV_MARKETS[chainId]?.[getGlvOrMarketAddress(market)]?.shortening || "GLV";
+  }
+
+  return market.isSpotOnly ? undefined : ([market.longToken.symbol, market.shortToken.symbol] as const);
+}
+
 export function getGlvMarketSubtitle(chainId: number, address: string) {
-  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.subtitle || "";
+  return GLV_MARKETS[chainId]?.[address]?.subtitle || "";
 }
 
 export function getGlvMarketShortening(chainId: number, address: string) {
-  return GLV_MARKETS_APPEARANCE[chainId]?.[address]?.shortening || "";
+  return GLV_MARKETS[chainId]?.[address]?.shortening || "";
 }
 
-export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {
-  const { indexToken, isSpotOnly } = p;
+export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token }) & { isSpotOnly: boolean }) {
+  const { isSpotOnly } = p;
+
+  const firstToken = "indexToken" in p ? p.indexToken : p.glvToken;
 
   if (isSpotOnly) {
     return `SWAP-ONLY`;
   }
 
-  return `${indexToken.baseSymbol || indexToken.symbol}/USD`;
+  return `${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
@@ -58,7 +82,13 @@ export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
 /**
  * Apart from usual cases, returns `long` for single token backed markets.
  */
-export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress: string): "long" | "short" | undefined {
+export function getTokenPoolType(
+  marketInfo: {
+    longToken: Token;
+    shortToken: Token;
+  },
+  tokenAddress: string
+): "long" | "short" | undefined {
   const { longToken, shortToken } = marketInfo;
 
   if (longToken.address === shortToken.address && tokenAddress === longToken.address) {
@@ -539,3 +569,5 @@ export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
     return [0.1, 1, 2, 5, 10];
   }
 }
+
+export const isMarketInfo = (market: GlvInfo | MarketInfo): market is MarketInfo => !isGlvInfo(market);

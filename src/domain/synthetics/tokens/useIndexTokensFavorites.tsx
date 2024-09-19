@@ -69,3 +69,5 @@ export const indexTokensFavoritesTabOptionLabels = {
   }),
   favorites: msg`Favorites`,
 };
+
+export const marketTokensTabOptions = ["all", "favorites"];

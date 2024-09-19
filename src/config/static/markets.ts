@@ -553,7 +553,7 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
     // MATIC/USD [ETH-USDC]
     "0x62408de4cB1a499842EC53296EF8dD99A825CcEb": {
       enabled: true,
-      listingDate: DEFAULT_LISTING,
+      listingDate: p("17 Sep 2024"),
       marketTokenAddress: "0x62408de4cB1a499842EC53296EF8dD99A825CcEb",
       indexTokenAddress: "0xadc4698B257F78187Fd675FBf591a09f4c975240",
       longTokenAddress: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",

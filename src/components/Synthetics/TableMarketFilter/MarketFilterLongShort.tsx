@@ -8,7 +8,7 @@ import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globals
 import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { isOrderForPosition } from "domain/synthetics/orders/utils";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
@@ -71,7 +71,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       return {
         text: "any " + market.name,
         data: {
-          marketAddress: market.marketTokenAddress as Address,
+          marketAddress: getGlvOrMarketAddress(market) as Address,
           direction: "any",
         },
       };

@@ -1,10 +1,11 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
-import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
+import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { getByKey } from "lib/objects";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 
 export function useUpdateMarkets({
   marketsInfoData,
@@ -16,9 +17,9 @@ export function useUpdateMarkets({
   selectedMarketInfo,
   setToMarketAddress,
 }: {
-  marketsInfoData: MarketsInfoData | undefined;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   selectedMarketAddress: string | undefined;
-  shiftAvailableMarkets: MarketInfo[];
+  shiftAvailableMarkets: GlvOrMarketInfo[];
   onSelectMarket: (marketAddress: string) => void;
   toMarketAddress: string | undefined;
   toMarketInfo: MarketInfo | undefined;
@@ -35,7 +36,7 @@ export function useUpdateMarkets({
 
       const isSelectedMarketValid = Boolean(
         selectedMarketAddress &&
-          shiftAvailableMarkets.find((market) => market.marketTokenAddress === selectedMarketAddress)
+          shiftAvailableMarkets.find((market) => getGlvOrMarketAddress(market) === selectedMarketAddress)
       );
 
       if (!isSelectedMarketValid) {
@@ -45,7 +46,7 @@ export function useUpdateMarkets({
           return;
         }
 
-        newSelectedMarketAddress = someAvailableMarket.marketTokenAddress;
+        newSelectedMarketAddress = getGlvOrMarketAddress(someAvailableMarket);
         onSelectMarket(newSelectedMarketAddress);
       }
 
@@ -56,7 +57,7 @@ export function useUpdateMarkets({
       const isToMarketSameAsSelected = toMarketAddress === newSelectedMarketAddress;
       const isToMarketValid = isToMarketAvailable && isToMarketRelated && !isToMarketSameAsSelected;
 
-      if (toMarketInfo && isGlv(toMarketInfo)) {
+      if (toMarketInfo && isGlvInfo(toMarketInfo)) {
         return;
       }
 
@@ -71,7 +72,7 @@ export function useUpdateMarkets({
           return;
         }
 
-        setToMarketAddress(someAvailableMarket.marketTokenAddress);
+        setToMarketAddress(getGlvOrMarketAddress(someAvailableMarket));
       }
     },
     [

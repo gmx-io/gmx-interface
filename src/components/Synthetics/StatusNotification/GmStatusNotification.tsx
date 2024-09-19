@@ -10,21 +10,26 @@ import {
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  GlvAndGmMarketsInfoData,
+  getGlvDisplayName,
+  getMarketIndexName,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { useToastAutoClose } from "./useToastAutoClose";
 import { StatusNotification } from "./StatusNotification";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { useToastAutoClose } from "./useToastAutoClose";
 
 export type Props = {
   toastTimestamp: number;
   pendingDepositData?: PendingDepositData;
   pendingWithdrawalData?: PendingWithdrawalData;
   pendingShiftData?: PendingShiftData;
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData?: GlvAndGmMarketsInfoData;
   tokensData?: TokensData;
 };
 
@@ -144,8 +149,9 @@ export function GmStatusNotification({
       }
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
-      const isGlvMarket = marketInfo && isGlv(marketInfo);
-      const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
+      const glv = pendingDepositData.isGlvDeposit ? getByKey(marketsInfoData, pendingDepositData.glvAddress) : null;
+      const glvInfo = glv && isGlvInfo(glv) ? glv : null;
+      const indexName = glvInfo ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
       let tokensText: string | ReactNode = "";
@@ -158,14 +164,18 @@ export function GmStatusNotification({
           .join(" and ");
       }
 
-      if (isGlvMarket && pendingDepositData.gmAddress) {
-        const gmMarket = marketsInfoData?.[pendingDepositData.gmAddress];
+      if (glvInfo && pendingDepositData.isMarketDeposit) {
+        const gmMarket = marketsInfoData?.[pendingDepositData.marketAddress];
 
         if (gmMarket) {
           tokensText = (
             <>
-              GM: {getMarketIndexName(gmMarket)}
-              <span className="subtext gm-toast">[{getMarketPoolName(gmMarket)}]</span>
+              GM:
+              <span className="inline-flex whitespace-nowrap">
+                {" "}
+                {getMarketIndexName(gmMarket)}
+                <PoolName>{getMarketPoolName(gmMarket)}</PoolName>
+              </span>
             </>
           );
         }
@@ -175,8 +185,9 @@ export function GmStatusNotification({
         return (
           <Trans>
             <div className="inline-flex">
-              Buying {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
-              {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
+              Buying {glvInfo ? getGlvDisplayName(glvInfo) : "GM:"}
+              {indexName ? <span>&nbsp;{indexName}</span> : null}
+              <PoolName>{poolName}</PoolName>
             </div>{" "}
             <span>with {tokensText}</span>
           </Trans>
@@ -186,15 +197,16 @@ export function GmStatusNotification({
         return t`Unknown sell GM order`;
       }
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
-      const isGlvMarket = marketInfo && isGlv(marketInfo);
-      const indexName = marketInfo ? (isGlvMarket ? marketInfo.name : getMarketIndexName(marketInfo)) : "";
+      const isGlv = marketInfo && isGlvInfo(marketInfo);
+      const indexName = isGlv ? undefined : marketInfo ? getMarketIndexName(marketInfo) : undefined;
       const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
       return (
         <Trans>
           <div className="inline-flex">
-            Selling {isGlvMarket ? "GLV" : "GM"}:&nbsp;<span>{indexName}</span>
-            {poolName && <span className="subtext gm-toast">[{poolName}]</span>}
+            Selling {isGlv ? getGlvDisplayName(marketInfo) : "GM"}
+            {indexName && <span>:&nbsp;{indexName}</span>}
+            <PoolName>{poolName}</PoolName>
           </div>
         </Trans>
       );
@@ -216,12 +228,12 @@ export function GmStatusNotification({
           Shifting from{" "}
           <span className="inline-flex items-center">
             <span>GM: {fromIndexName}</span>
-            <span className="ml-2 text-12 leading-1 text-gray-300">[{fromPoolName}]</span>
+            <PoolName>{fromPoolName}</PoolName>
           </span>{" "}
           to{" "}
           <span className="inline-flex items-center">
             <span>GM: {toIndexName}</span>
-            {toPoolName && <span className="ml-2 text-12 leading-1 text-gray-300">[{toPoolName}]</span>}
+            <PoolName>{toPoolName}</PoolName>
           </span>
         </Trans>
       );
@@ -406,4 +418,8 @@ export function GmStatusNotification({
       {executionStatus}
     </StatusNotification>
   );
+}
+
+function PoolName({ children }: { children: ReactNode }) {
+  return children ? <span className="ml-2 text-12 font-normal text-gray-300">[{children}]</span> : null;
 }

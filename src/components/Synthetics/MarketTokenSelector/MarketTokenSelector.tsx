@@ -8,13 +8,14 @@ import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import {
-  MarketInfo,
+  GlvAndGmMarketsInfoData,
+  GlvOrMarketInfo,
   MarketTokensAPRData,
-  MarketsInfoData,
-  getGlvMarketDisplayName,
+  getGlvDisplayName,
   getGlvMarketShortening,
   getGlvMarketSubtitle,
   getMarketIndexName,
+  getGlvOrMarketAddress,
   getMarketPoolName,
   getMintableMarketTokens,
   getSellableMarketToken,
@@ -24,7 +25,7 @@ import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import {
   indexTokensFavoritesTabOptionLabels,
-  indexTokensFavoritesTabOptions,
+  marketTokensTabOptions,
 } from "domain/synthetics/tokens/useIndexTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { useLocalizedMap } from "lib/i18n";
@@ -37,7 +38,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { getMintableInfoGlv, getSellableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
@@ -47,14 +48,13 @@ import {
 
 type Props = {
   chainId: number;
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData?: GlvAndGmMarketsInfoData;
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensLidoAprData?: MarketTokensAPRData;
-  glvMarketsTokensApyData?: MarketTokensAPRData;
-  // eslint-disable-next-line react/no-unused-prop-types
-  currentMarketInfo?: MarketInfo;
+  glvTokensApyData?: MarketTokensAPRData;
+  currentMarketInfo?: GlvOrMarketInfo;
 };
 
 export default function MarketTokenSelector(props: Props) {
@@ -66,17 +66,19 @@ export default function MarketTokenSelector(props: Props) {
     marketsInfoData,
     marketTokensData,
     currentMarketInfo,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
   } = props;
   const indexName = currentMarketInfo && getMarketIndexName(currentMarketInfo);
   const poolName = currentMarketInfo && getMarketPoolName(currentMarketInfo);
 
+  const isGlv = currentMarketInfo && isGlvInfo(currentMarketInfo);
+
   const iconName = currentMarketInfo?.isSpotOnly
     ? getNormalizedTokenSymbol(currentMarketInfo.longToken.symbol) +
       getNormalizedTokenSymbol(currentMarketInfo.shortToken.symbol)
-    : currentMarketInfo?.indexToken.symbol;
-
-  const isGlvMarket = currentMarketInfo && isGlv(currentMarketInfo);
+    : isGlv
+      ? currentMarketInfo?.glvToken.symbol
+      : currentMarketInfo?.indexToken.symbol;
 
   return (
     <SelectorBase
@@ -93,15 +95,15 @@ export default function MarketTokenSelector(props: Props) {
                 displaySize={30}
                 importSize={40}
                 badge={
-                  isGlvMarket
-                    ? getGlvMarketShortening(chainId, currentMarketInfo.indexTokenAddress)
+                  isGlv
+                    ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(currentMarketInfo))
                     : ([currentMarketInfo.longToken.symbol, currentMarketInfo.shortToken.symbol] as const)
                 }
               />
               <div className="ml-16">
                 <div className="flex items-center text-16">
-                  {isGlvMarket ? (
-                    <span>{getGlvMarketDisplayName(currentMarketInfo)}</span>
+                  {isGlv ? (
+                    <span>{getGlvDisplayName(currentMarketInfo)}</span>
                   ) : (
                     <span>GM{indexName && `: ${indexName}`}</span>
                   )}
@@ -110,8 +112,8 @@ export default function MarketTokenSelector(props: Props) {
                   </span>
                 </div>
                 <div className="text-12 text-gray-400 group-hover/selector-base:text-[color:inherit]">
-                  {isGlvMarket
-                    ? getGlvMarketSubtitle(chainId, currentMarketInfo.indexTokenAddress)
+                  {isGlv
+                    ? getGlvMarketSubtitle(chainId, getGlvOrMarketAddress(currentMarketInfo))
                     : "GMX Market Tokens"}
                 </div>
               </div>
@@ -132,7 +134,7 @@ export default function MarketTokenSelector(props: Props) {
         marketsInfoData={marketsInfoData}
         marketTokensData={marketTokensData}
         currentMarketInfo={currentMarketInfo}
-        glvMarketsTokensApyData={glvMarketsTokensApyData}
+        glvTokensApyData={glvTokensApyData}
       />
     </SelectorBase>
   );
@@ -148,7 +150,7 @@ function MarketTokenSelectorInternal(props: Props) {
     marketsTokensAPRData,
     marketsInfoData,
     marketTokensData,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
   } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
@@ -167,7 +169,7 @@ function MarketTokenSelectorInternal(props: Props) {
     marketsTokensAPRData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
     orderBy,
     direction,
     marketTokensData: marketTokensData,
@@ -232,7 +234,7 @@ function MarketTokenSelectorInternal(props: Props) {
           value={searchKeyword}
           setValue={handleSearch}
           onKeyDown={handleKeyDown}
-          placeholder="Search Market"
+          placeholder="Search Pool"
         />
       </SelectorBaseMobileHeaderContent>
       <div
@@ -251,7 +253,7 @@ function MarketTokenSelectorInternal(props: Props) {
                   handleSelectToken(sortedTokensInfo[0].market.address);
                 }
               }}
-              placeholder="Search Market"
+              placeholder="Search Pool"
             />
             <div className="divider" />
           </>
@@ -259,7 +261,7 @@ function MarketTokenSelectorInternal(props: Props) {
 
         <Tab
           className="px-15 py-4"
-          options={indexTokensFavoritesTabOptions}
+          options={marketTokensTabOptions}
           optionLabels={localizedTabOptionLabels}
           type="inline"
           option={tab}
@@ -276,7 +278,7 @@ function MarketTokenSelectorInternal(props: Props) {
               <thead>
                 <tr>
                   <th className={thClassName} colSpan={2}>
-                    <Trans>MARKET</Trans>
+                    <Trans>POOL</Trans>
                   </th>
                   <th className={thClassName}>
                     <Sorter {...getSorterProps("buyable")}>
@@ -333,7 +335,7 @@ function useFilterSortTokensInfo({
   marketsTokensAPRData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
   orderBy,
   direction,
 }: {
@@ -342,12 +344,12 @@ function useFilterSortTokensInfo({
   searchKeyword: string;
   tab: GmTokenFavoritesTabOption;
   marketTokensData: TokensData | undefined;
-  marketsInfoData: MarketsInfoData | undefined;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   favoriteTokens: string[];
   marketsTokensAPRData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
   orderBy: SortField;
   direction: SortDirection;
 }) {
@@ -366,12 +368,11 @@ function useFilterSortTokensInfo({
         if (!searchKeyword.trim()) {
           textSearchMatch = true;
         } else {
-          const marketName = isGlv(marketInfo) ? getGlvMarketDisplayName(marketInfo) : marketInfo.name;
+          const marketName = isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name;
           textSearchMatch = marketName.toLowerCase().includes(searchKeyword.toLowerCase());
         }
 
         const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(market.address) : true;
-
         return textSearchMatch && favoriteMatch;
       });
     }
@@ -379,18 +380,18 @@ function useFilterSortTokensInfo({
     return filteredTokens.map((market) => {
       const marketInfo = getByKey(marketsInfoData, market?.address)!;
 
-      const isGlvMarket = isGlv(marketInfo);
+      const isGlv = isGlvInfo(marketInfo);
 
-      const mintableInfo = isGlvMarket
+      const mintableInfo = isGlv
         ? getMintableInfoGlv(marketInfo, marketTokensData)
         : getMintableMarketTokens(marketInfo, market);
-      const sellableInfo = isGlvMarket
-        ? getSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData)
+      const sellableInfo = isGlv
+        ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData)
         : getSellableMarketToken(marketInfo, market);
-      const apr = getByKey(isGlvMarket ? glvMarketsTokensApyData : marketsTokensAPRData, market?.address);
-      const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
-      const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
-      const indexName = isGlvMarket ? getGlvMarketDisplayName(marketInfo) : getMarketIndexName(marketInfo);
+      const apr = getByKey(isGlv ? glvTokensApyData : marketsTokensAPRData, market?.address);
+      const incentiveApr = getByKey(marketsTokensIncentiveAprData, getGlvOrMarketAddress(marketInfo));
+      const lidoApr = getByKey(marketsTokensLidoAprData, getGlvOrMarketAddress(marketInfo));
+      const indexName = isGlv ? getGlvDisplayName(marketInfo) : getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
         market,
@@ -414,7 +415,7 @@ function useFilterSortTokensInfo({
     marketsTokensLidoAprData,
     tab,
     marketTokensData,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
   ]);
 
   const sortedTokensInfo = useMemo(() => {
@@ -439,12 +440,12 @@ function useFilterSortTokensInfo({
 
       if (orderBy === "apy") {
         let aprA = a.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, a.marketInfo.marketTokenAddress))) {
+        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(a.marketInfo)))) {
           aprA += a.apr ?? 0n;
         }
 
         let aprB = b.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, b.marketInfo.marketTokenAddress))) {
+        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(b.marketInfo)))) {
           aprB += b.apr ?? 0n;
         }
 
@@ -475,14 +476,14 @@ function MarketTokenListItem({
   incentiveApr,
   lidoApr,
 }: {
-  marketInfo: MarketInfo;
+  marketInfo: GlvOrMarketInfo;
   market: TokenData;
   isFavorite: boolean;
   onFavorite: (address: string) => void;
   handleSelectToken: (address: string) => void;
   isSmallMobile: boolean;
   mintableInfo: ReturnType<typeof getMintableMarketTokens | typeof getMintableInfoGlv>;
-  sellableInfo: ReturnType<typeof getSellableMarketToken | typeof getSellableInfoGlv>;
+  sellableInfo: ReturnType<typeof getSellableMarketToken | typeof getTotalSellableInfoGlv>;
   rowVerticalPadding: string;
   indexName?: string;
   poolName?: string;
@@ -491,10 +492,10 @@ function MarketTokenListItem({
   incentiveApr: bigint | undefined;
   lidoApr: bigint | undefined;
 }) {
-  const { indexToken, longToken, shortToken } = marketInfo;
+  const { longToken, shortToken } = marketInfo;
   const iconName = marketInfo.isSpotOnly
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
-    : getNormalizedTokenSymbol(indexToken.symbol);
+    : getNormalizedTokenSymbol(isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol);
 
   const handleFavoriteClick = useCallback(() => onFavorite(market.address), [market.address, onFavorite]);
 

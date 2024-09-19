@@ -36,7 +36,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge }: P
   if (badge) {
     if (typeof badge === "string") {
       sub = (
-        <span className="absolute -bottom-8 -right-8 z-10 rounded-20 border border-slate-800 bg-slate-500 px-4 py-2 text-12 !text-white">
+        <span className="pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 border border-slate-800 bg-slate-500 px-4 py-2 text-12 !text-white">
           {badge}
         </span>
       );

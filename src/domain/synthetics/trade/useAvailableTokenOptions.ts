@@ -1,10 +1,10 @@
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { GlvAndGmMarketsInfoData, MarketInfo, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
+import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
-import { isGlv } from "../markets/glv";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -19,7 +19,7 @@ export type AvailableTokenOptions = {
 export function useAvailableTokenOptions(
   chainId: number,
   p: {
-    marketsInfoData?: MarketsInfoData;
+    marketsInfoData?: GlvAndGmMarketsInfoData;
     tokensData?: TokensData;
     marketTokens?: TokensData;
   }
@@ -30,7 +30,9 @@ export function useAvailableTokenOptions(
     const marketsInfo = Object.values(marketsInfoData || {})
       .filter((market) => !market.isDisabled)
       .sort((a, b) => {
-        return a.indexToken?.symbol.localeCompare(b.indexToken?.symbol);
+        const tokenA = isGlvInfo(a) ? a.glvToken : a.indexToken;
+        const tokenB = isGlvInfo(b) ? b.glvToken : b.indexToken;
+        return tokenA?.symbol.localeCompare(tokenB?.symbol);
       });
 
     const allMarkets = new Set<MarketInfo>();
@@ -46,7 +48,7 @@ export function useAvailableTokenOptions(
     const shortTokensWithPoolValue: { [address: string]: bigint } = {};
 
     for (const marketInfo of marketsInfo) {
-      if (isGlv(marketInfo)) {
+      if (isGlvInfo(marketInfo)) {
         if (marketInfo.isDisabled) {
           continue;
         }
@@ -54,7 +56,7 @@ export function useAvailableTokenOptions(
         marketInfo.markets.forEach((market) => {
           const gmMarket = marketsInfoData?.[market.address];
 
-          if (!gmMarket) {
+          if (!gmMarket || !isMarketInfo(gmMarket)) {
             return;
           }
 

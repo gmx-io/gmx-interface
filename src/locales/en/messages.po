@@ -158,7 +158,7 @@ msgstr "Order submitted!"
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 
-#: src/domain/synthetics/markets/createWithdrawalTxn.ts
+#: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
 msgstr "Withdrawal error."
@@ -295,12 +295,17 @@ msgstr "Enter NFT Address"
 msgid "AVAILABLE"
 msgstr "AVAILABLE"
 
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+#~ msgid "GM"
+#~ msgstr "GM"
+
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm Settle"
 msgstr "Confirm Settle"
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
-#: src/domain/synthetics/markets/createDepositTxn.ts
+#: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error."
 msgstr "Deposit error."
 
@@ -325,10 +330,18 @@ msgstr "Unstaking..."
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "You can change the \"Collateral In\" token above to find lower fees"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
+msgstr "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient GM balance"
+msgstr "Insufficient GM balance"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
@@ -602,10 +615,9 @@ msgstr "Search Token"
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr "Buy GMX using Decentralized Exchange Aggregators:"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-msgid "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-msgstr "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
+#~ msgid "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
+#~ msgstr "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -637,7 +649,7 @@ msgstr "Claim {totalUsd}"
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "MARKET"
 msgstr "MARKET"
 
@@ -971,6 +983,7 @@ msgid "Allow all my tokens to be transferred to a new account"
 msgstr "Allow all my tokens to be transferred to a new account"
 
 #: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APY: {0}"
 msgstr "Avalanche Max. APY: {0}"
 
@@ -1085,8 +1098,8 @@ msgid "Generating and activating Subaccount"
 msgstr "Generating and activating Subaccount"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
-msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
+#~ msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
+#~ msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
@@ -1218,6 +1231,10 @@ msgstr "Leverage disabled, pending {0} upgrade"
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT Address"
 msgstr "NFT Address"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -1712,6 +1729,7 @@ msgstr "and zero price impact"
 msgid "Cumulative PnL"
 msgstr "Cumulative PnL"
 
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum Max. APY:"
 msgstr "Arbitrum Max. APY:"
@@ -2282,8 +2300,8 @@ msgid "Vest with GMX on Avalanche"
 msgstr "Vest with GMX on Avalanche"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
-msgstr "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
+#~ msgid "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
+#~ msgstr "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
@@ -2538,8 +2556,8 @@ msgid "Increase Size (Limit)"
 msgstr "Increase Size (Limit)"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
-msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
+#~ msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
+#~ msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
@@ -2699,6 +2717,10 @@ msgstr "Update Order"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
 msgstr "Mark price for the liquidation."
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
+msgstr "<0>Selling {0}{1}<1>{poolName}</1></0>"
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3022,6 +3044,10 @@ msgstr "Order Acceptable Price"
 msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
+msgstr "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
+
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
@@ -3276,6 +3302,10 @@ msgstr "Unstake"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "More Options"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
+msgstr "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
@@ -3579,6 +3609,7 @@ msgstr "Rebates earned by this account as a trader."
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Read more"
 msgstr "Read more"
@@ -3816,6 +3847,11 @@ msgstr "Cancel failed"
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
 
+#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+#~ msgid "GLV"
+#~ msgstr "GLV"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -3831,6 +3867,10 @@ msgstr "Single"
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "Funding fees"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient liquidity in GM Pool"
+msgstr "Insufficient liquidity in GM Pool"
 
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
@@ -3870,6 +3910,10 @@ msgstr "Unknown sell GM order"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -4192,7 +4236,7 @@ msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr "{0}: {1}, Price: {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "POOL"
 msgstr "POOL"
@@ -4325,6 +4369,10 @@ msgstr "Enter your answer here"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake GMX"
 msgstr "Stake GMX"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
+msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral code updated!"
@@ -4507,6 +4555,10 @@ msgstr "GMX Announcements"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referrals"
+
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "<0>GLV Vaults</0> include multiple GM Tokens and are automatically rebalanced."
+msgstr "<0>GLV Vaults</0> include multiple GM Tokens and are automatically rebalanced."
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Max Leverage without PnL: 100x"
@@ -6216,6 +6268,7 @@ msgstr "Select a collateral"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
@@ -6608,10 +6661,16 @@ msgstr "Confirm Claim"
 msgid "GMX community discussion"
 msgstr "GMX community discussion"
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+msgstr "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr "Sell GM"
 
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -6690,8 +6749,8 @@ msgid "Pool"
 msgstr "Pool"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
-msgstr "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
+#~ msgid "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
+#~ msgstr "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
@@ -6970,6 +7029,10 @@ msgstr "Referral Terms"
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
 msgstr "No markets matched."
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
+msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Stake esGMX"
@@ -7661,6 +7724,11 @@ msgstr "Limit Swap"
 msgid "Compound"
 msgstr "Compound"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
+msgid "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
+msgstr "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
+
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Sell for {0}"
@@ -7746,8 +7814,8 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
-msgstr "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
+#~ msgid "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
+#~ msgstr "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
