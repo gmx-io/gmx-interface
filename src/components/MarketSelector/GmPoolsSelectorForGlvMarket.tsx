@@ -148,10 +148,6 @@ export function GmPoolsSelectorForGlvMarket({
     [onSelectGmPool, filteredOptions]
   );
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
-  }, []);
-
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
 
@@ -178,7 +174,7 @@ export function GmPoolsSelectorForGlvMarket({
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
               value={searchKeyword}
-              setValue={handleSearch}
+              setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={handleKeyDown}
             />

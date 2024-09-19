@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import noop from "lodash/noop";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Address, isAddress, isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
 
@@ -126,10 +125,6 @@ export function GmList({
     return getTotalGmInfo(marketTokensData);
   }, [marketTokensData, active]);
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  }, []);
-
   return (
     <div className="rounded-4 bg-slate-800">
       <div className="flex items-center justify-between">
@@ -140,11 +135,10 @@ export function GmList({
           <img src={currentIcons.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
           <SearchInput
             size="s"
-            value={searchText}
-            setValue={handleSearch}
             className="*:!text-16"
+            value={searchText}
+            setValue={setSearchText}
             placeholder="Search Pool"
-            onKeyDown={noop}
             autoFocus={false}
           />
         </div>

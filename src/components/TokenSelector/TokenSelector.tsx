@@ -99,10 +99,6 @@ export default function TokenSelector(props: Props) {
     }
   }, [isModalVisible]);
 
-  const onSearchKeywordChange = (e) => {
-    setSearchKeyword(e.target.value);
-  };
-
   const filteredTokens = visibleTokens.filter((item) => {
     return (
       item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
@@ -192,12 +188,7 @@ export default function TokenSelector(props: Props) {
         label={props.label}
         footerContent={footerContent}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={onSearchKeywordChange}
-            onKeyDown={_handleKeyDown}
-          />
+          <SearchInput className="mt-15" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={_handleKeyDown} />
         }
       >
         {missedCoinsPlace && (

@@ -195,10 +195,6 @@ function MarketTokenSelectorInternal(props: Props) {
   );
   const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
 
-  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(event.target.value);
-  }, []);
-
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter" && sortedTokensInfo.length > 0) {
@@ -215,7 +211,7 @@ function MarketTokenSelectorInternal(props: Props) {
           <SearchInput
             className="w-full"
             value={searchKeyword}
-            setValue={handleSearch}
+            setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
             placeholder="Search Pool"
           />
@@ -233,7 +229,7 @@ function MarketTokenSelectorInternal(props: Props) {
               <SearchInput
                 className="w-full"
                 value={searchKeyword}
-                setValue={handleSearch}
+                setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
                 placeholder="Search Pool"
               />

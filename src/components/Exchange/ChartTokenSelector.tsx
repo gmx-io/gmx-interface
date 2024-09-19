@@ -138,7 +138,7 @@ export default function ChartTokenSelector(props: Props) {
                 <SearchInput
                   className="m-15"
                   value={searchKeyword}
-                  setValue={({ target }) => setSearchKeyword(target.value)}
+                  setValue={setSearchKeyword}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && filteredTokens.length > 0) {
                       onSelect(filteredTokens[0]);

@@ -172,13 +172,6 @@ function MarketsList(props: { options: Token[] | undefined }) {
     rowHorizontalPadding
   );
 
-  const handleSetValue = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchKeyword(event.target.value);
-    },
-    [setSearchKeyword]
-  );
-
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Enter" && sortedTokens && sortedTokens.length > 0) {
@@ -193,7 +186,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
     <>
       <SelectorBaseMobileHeaderContent>
         <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
-          <SearchInput className="w-full" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
+          <SearchInput className="w-full" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={handleKeyDown} />
           {!isSwap && <FavoriteIndexTabs />}
         </div>
       </SelectorBaseMobileHeaderContent>
@@ -208,7 +201,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
               <SearchInput
                 className="w-full"
                 value={searchKeyword}
-                setValue={handleSetValue}
+                setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
               />
               <FavoriteIndexTabs />

@@ -126,6 +126,7 @@ module.exports = {
     colors: colors,
     textDecorationColor: colors,
     placeholderColor: {
+      ...colors,
       gray: "rgb(117, 117, 117)",
     },
     // @see https://tailwindcss.com/blog/tailwindcss-v3-2#max-width-and-dynamic-breakpoints

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
@@ -130,10 +130,6 @@ export function PoolSelector({
     }
   };
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
-  }, []);
-
   function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined) {
     if (!marketInfo) return "...";
     let name;
@@ -166,7 +162,7 @@ export function PoolSelector({
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
               value={searchKeyword}
-              setValue={handleSearch}
+              setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={_handleKeyDown}
             />

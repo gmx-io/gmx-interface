@@ -75,7 +75,6 @@ export function LeaderboardAccountsTable({
   }, [activeCompetition, isCompetitions, setDirection, setOrderBy]);
 
   const [search, setSearch] = useState("");
-  const setValue = useCallback((e) => setSearch(e.target.value), []);
   const handleKeyDown = useCallback(() => null, []);
   const ranks = useLeaderboardAccountsRanks();
   const term = useDebounce(search, 300);
@@ -176,7 +175,7 @@ export function LeaderboardAccountsTable({
           placeholder={t`Search Address`}
           className="max-w-lg"
           value={search}
-          setValue={setValue}
+          setValue={setSearch}
           onKeyDown={handleKeyDown}
           size="s"
         />

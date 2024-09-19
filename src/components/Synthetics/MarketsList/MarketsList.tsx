@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
-import noop from "lodash/noop";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Address, isAddress, isAddressEqual } from "viem";
 
 import usePagination from "components/Referrals/usePagination";
@@ -44,10 +43,6 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   >();
   const [searchText, setSearchText] = useState("");
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  }, []);
-
   const filteredMarkets = useFilterSortMarkets({ searchText, indexTokensStats, orderBy, direction });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -64,10 +59,9 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
         <SearchInput
           size="s"
           value={searchText}
-          setValue={handleSearch}
+          setValue={setSearchText}
           className="*:!text-16"
           placeholder="Search Market"
-          onKeyDown={noop}
           autoFocus={false}
         />
       </div>

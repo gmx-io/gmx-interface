@@ -158,7 +158,7 @@ export function MarketSelector({
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
               value={searchKeyword}
-              setValue={(e) => setSearchKeyword(e.target.value)}
+              setValue={setSearchKeyword}
               placeholder={t`Search Market`}
               onKeyDown={_handleKeyDown}
             />
