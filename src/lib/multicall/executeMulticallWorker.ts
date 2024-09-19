@@ -99,6 +99,7 @@ export async function executeMulticallWorker(
         data: {
           isInMainThread: false,
           errorName: error.name,
+          errorGroup: "Worker multicall error",
           errorMessage: error.message,
           errorStack: error.stack,
         },

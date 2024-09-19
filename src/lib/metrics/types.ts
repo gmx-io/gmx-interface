@@ -269,6 +269,7 @@ export type ShiftGmMetricData = {
 export type ErrorMetricData = {
   errorContext?: string;
   errorMessage?: string;
+  errorGroup?: string;
   errorStack?: string;
   errorStackHash?: string;
   errorName?: string;

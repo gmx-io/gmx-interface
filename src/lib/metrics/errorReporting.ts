@@ -19,6 +19,7 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
   let errorName: string | undefined = undefined;
   let contractError: string | undefined = undefined;
   let txErrorType: TxErrorType | undefined = undefined;
+  let errorGroup: string | undefined = undefined;
   let txErrorData: any = undefined;
   let isUserError: boolean | undefined = undefined;
   let isUserRejectedError: boolean | undefined = undefined;
@@ -73,8 +74,15 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
     errorStackHash = cryptoJs.SHA256(errorStack).toString(cryptoJs.enc.Hex);
   }
 
+  if (txErrorType) {
+    errorGroup = txErrorType;
+  } else if (errorMessage) {
+    errorGroup = errorMessage.slice(0, 30);
+  }
+
   return {
     errorMessage,
+    errorGroup,
     errorStack,
     errorStackHash,
     errorName,
