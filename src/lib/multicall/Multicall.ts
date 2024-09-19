@@ -282,7 +282,7 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.groupEnd();
 
-      if (!isFallbackMode) {
+      if (!isFallbackMode && this.abFlags?.testRpcWindowFallback) {
         this.fallbackRpcSwitcher?.trigger();
       }
 
@@ -373,10 +373,14 @@ export class Multicall {
       isAlchemy: isFallbackMode,
     });
 
-    if (!isFallbackMode) {
-      this.fallbackRpcSwitcher?.trigger();
+    if (this.abFlags?.testRpcWindowFallback) {
+      if (!isFallbackMode) {
+        this.fallbackRpcSwitcher?.trigger();
+      }
+
+      return await fallbackMulticall(new Error("multicall fallback error")).then(processResponse);
     }
 
-    return await fallbackMulticall(new Error("multicall fallback error")).then(processResponse);
+    return result;
   }
 }
