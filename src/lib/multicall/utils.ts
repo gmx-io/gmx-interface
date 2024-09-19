@@ -11,7 +11,7 @@ export function serializeMulticallErrors(errors: MulticallErrors<any>) {
       const errorMessage = callError.shortMessage || callError.message.slice(0, 50);
 
       // Log unique errors
-      if (lastError !== errorMessage) {
+      if (!lastError || lastError !== errorMessage) {
         errorString += `${callName}: ${errorMessage}; `;
       }
 
