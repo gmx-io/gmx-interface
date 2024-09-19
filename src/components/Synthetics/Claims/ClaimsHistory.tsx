@@ -21,6 +21,7 @@ import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
 import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 import { MarketFilter } from "components/Synthetics/TableMarketFilter/MarketFilter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { ClaimHistoryRow } from "./ClaimHistoryRow/ClaimHistoryRow";
 import { ActionFilter } from "./filters/ActionFilter";
 
@@ -98,7 +99,8 @@ export function ClaimsHistory() {
             </Button>
           </div>
         </div>
-        <div className="ClaimsHistory-horizontal-scroll-container">
+
+        <TableScrollFadeContainer>
           <table className="ClaimsHistory-table">
             <colgroup>
               <col className="ClaimsHistory-action-column" />
@@ -141,7 +143,7 @@ export function ClaimsHistory() {
               )}
             </tbody>
           </table>
-        </div>
+        </TableScrollFadeContainer>
 
         <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </div>

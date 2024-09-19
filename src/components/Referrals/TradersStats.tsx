@@ -18,6 +18,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
@@ -203,7 +204,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             bodyPadding={false}
             divider={false}
           >
-            <div className="overflow-x-auto">
+            <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
                   <TableTheadTr bordered>
@@ -312,7 +313,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   })}
                 </tbody>
               </table>
-            </div>
+            </TableScrollFadeContainer>
             <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
           </Card>
         </div>

@@ -5,7 +5,7 @@ import ButtonLink from "./ButtonLink";
 
 import "./Button.scss";
 
-type ButtonVariant = "primary" | "primary-action" | "secondary" | "link";
+type ButtonVariant = "primary" | "primary-action" | "secondary" | "link" | "ghost";
 
 type ButtonProps = HTMLProps<HTMLButtonElement> & {
   children: ReactNode;

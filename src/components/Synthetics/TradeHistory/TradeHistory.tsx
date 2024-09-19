@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
-
 import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -16,9 +15,10 @@ import Button from "components/Button/Button";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -127,7 +127,7 @@ export function TradeHistory(p: Props) {
 
   return (
     <div className="TradeHistorySynthetics">
-      <div className="App-box max-[962px]:!-mr-[--default-container-padding] max-[962px]:!rounded-r-0 max-[800px]:!-mr-[--default-container-padding-mobile]">
+      <div className="App-box">
         <div className="flex flex-wrap items-center justify-between gap-y-8 px-16 py-8">
           <div>
             <Trans>Trade History</Trans>
@@ -148,7 +148,8 @@ export function TradeHistory(p: Props) {
             </Button>
           </div>
         </div>
-        <div className="TradeHistorySynthetics-horizontal-scroll-container">
+
+        <TableScrollFadeContainer>
           <table className="TradeHistorySynthetics-table">
             <colgroup>
               <col className="TradeHistorySynthetics-action-column" />
@@ -212,7 +213,7 @@ export function TradeHistory(p: Props) {
               )}
             </tbody>
           </table>
-        </div>
+        </TableScrollFadeContainer>
 
         <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </div>

@@ -32,6 +32,7 @@ import {
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sortGmTokensByField } from "./sortGmTokensByField";
@@ -39,6 +40,8 @@ import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
+import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
@@ -47,6 +50,10 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ApyTooltipContent } from "./ApyTooltipContent";
 import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
@@ -89,6 +96,7 @@ export function GmList({
     () => new Set(shiftAvailableMarkets.map((m) => getGlvOrMarketAddress(m))),
     [shiftAvailableMarkets]
   );
+  const { tab, favoriteTokens, toggleFavoriteToken } = useGmTokensFavorites();
 
   const isLoading = !marketsInfo || !marketTokensData || glvsLoading;
 
@@ -103,6 +111,8 @@ export function GmList({
     marketsTokensLidoAprData,
     searchText,
     tokensData,
+    tab,
+    favoriteTokens,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -121,27 +131,28 @@ export function GmList({
   }, []);
 
   return (
-    <div
-      className="rounded-4 bg-slate-800
-                   max-[1164px]:!-mr-[--default-container-padding] max-[1164px]:!rounded-r-0
-                   max-[600px]:!-mr-[--default-container-padding-mobile]"
-    >
-      <div className="flex items-center px-16 py-8">
-        <span className="text-16">
-          <Trans>Pools</Trans>
-        </span>
-        <img src={currentIcons.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
-        <SearchInput
-          size="s"
-          value={searchText}
-          setValue={handleSearch}
-          className="*:!text-16"
-          placeholder="Search Pool"
-          onKeyDown={noop}
-          autoFocus={false}
-        />
+    <div className="rounded-4 bg-slate-800">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center px-16 py-8">
+          <span className="text-16">
+            <Trans>Pools</Trans>
+          </span>
+          <img src={currentIcons.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
+          <SearchInput
+            size="s"
+            value={searchText}
+            setValue={handleSearch}
+            className="*:!text-16"
+            placeholder="Search Pool"
+            onKeyDown={noop}
+            autoFocus={false}
+          />
+        </div>
+        <div className="pr-16">
+          <FavoriteGmTabs />
+        </div>
       </div>
-      <div className="overflow-x-auto">
+      <TableScrollFadeContainer>
         <table className="w-[max(100%,1100px)]">
           <thead>
             <TableTheadTr bordered>
@@ -209,6 +220,8 @@ export function GmList({
                   glvTokensApyData={glvTokensApyData}
                   shouldScrollToTop={shouldScrollToTop}
                   isShiftAvailable={token.symbol === "GLV" ? false : shiftAvailableMarketAddressSet.has(token.address)}
+                  isFavorite={favoriteTokens.includes(token.address)}
+                  onFavoriteClick={toggleFavoriteToken}
                 />
               ))}
             {!currentData.length && !isLoading && (
@@ -223,7 +236,7 @@ export function GmList({
             {isLoading && <GMListSkeleton />}
           </tbody>
         </table>
-      </div>
+      </TableScrollFadeContainer>
       <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
     </div>
   );
@@ -240,6 +253,8 @@ function useFilterSortPools({
   glvTokensApyData,
   searchText,
   tokensData,
+  tab,
+  favoriteTokens,
 }: {
   marketsInfo: GlvAndGmMarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
@@ -251,6 +266,8 @@ function useFilterSortPools({
   glvTokensApyData: MarketTokensAPRData | undefined;
   searchText: string;
   tokensData: TokensData | undefined;
+  tab: GmTokenFavoritesTabOption;
+  favoriteTokens: string[];
 }) {
   const chainId = useSelector(selectChainId);
 
@@ -287,25 +304,32 @@ function useFilterSortPools({
   ]);
 
   const filteredTokens = useMemo(() => {
-    if (!searchText.trim()) {
+    if (!searchText.trim() && tab === "all") {
       return sortedTokens;
     }
 
     return sortedTokens.filter((token) => {
       const market = getByKey(marketsInfo, token?.address);
-      const isGlv = isGlvInfo(market);
-      const indexToken = isGlv ? market.glvToken : getTokenData(tokensData, market?.indexTokenAddress, "native");
+      let indexToken: TokenData | undefined;
+      if (isGlv(market)) {
+        indexToken = market.indexToken;
+      } else if (market?.isSpotOnly) {
+        indexToken = undefined;
+      } else {
+        indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+      }
+
       const longToken = getTokenData(tokensData, market?.longTokenAddress);
       const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
-      if (!market || !indexToken || !longToken || !shortToken) {
+      if (!market || !longToken || !shortToken) {
         return false;
       }
 
       const poolName = isGlvInfo(market) ? market.name ?? "GLV" : market.name;
 
-      const indexSymbol = indexToken.symbol;
-      const indexName = indexToken.name;
+      const indexSymbol = indexToken?.symbol;
+      const indexName = indexToken?.name;
 
       const longSymbol = longToken.symbol;
       const longName = longToken.name;
@@ -318,22 +342,31 @@ function useFilterSortPools({
       const longTokenAddress = market.longTokenAddress;
       const shortTokenAddress = market.shortTokenAddress;
 
-      return (
-        poolName.toLowerCase().includes(searchText.toLowerCase()) ||
-        indexSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-        indexName.toLowerCase().includes(searchText.toLowerCase()) ||
-        longSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-        longName.toLowerCase().includes(searchText.toLowerCase()) ||
-        shortSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-        shortName.toLowerCase().includes(searchText.toLowerCase()) ||
-        (isAddress(searchText) &&
-          (isAddressEqual(marketOrGlvTokenAddress as Address, searchText) ||
-            isAddressEqual(indexTokenAddress as Address, searchText) ||
-            isAddressEqual(longTokenAddress as Address, searchText) ||
-            isAddressEqual(shortTokenAddress as Address, searchText)))
-      );
+      let textSearchMatch: boolean;
+
+      if (!searchText.trim()) {
+        textSearchMatch = true;
+      } else {
+        textSearchMatch =
+          poolName.toLowerCase().includes(searchText.toLowerCase()) ||
+          indexSymbol?.toLowerCase().includes(searchText.toLowerCase()) ||
+          indexName?.toLowerCase().includes(searchText.toLowerCase()) ||
+          longSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
+          longName.toLowerCase().includes(searchText.toLowerCase()) ||
+          shortSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
+          shortName.toLowerCase().includes(searchText.toLowerCase()) ||
+          (isAddress(searchText) &&
+            (isAddressEqual(marketTokenAddress as Address, searchText) ||
+              isAddressEqual(indexTokenAddress as Address, searchText) ||
+              isAddressEqual(longTokenAddress as Address, searchText) ||
+              isAddressEqual(shortTokenAddress as Address, searchText)));
+      }
+
+      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(marketTokenAddress) : true;
+
+      return textSearchMatch && favoriteMatch;
     });
-  }, [marketsInfo, searchText, sortedTokens, tokensData]);
+  }, [favoriteTokens, marketsInfo, searchText, sortedTokens, tab, tokensData]);
 
   return filteredTokens;
 }
@@ -347,6 +380,8 @@ function GmListItem({
   shouldScrollToTop,
   isShiftAvailable,
   marketTokensData,
+  isFavorite,
+  onFavoriteClick,
 }: {
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -356,6 +391,8 @@ function GmListItem({
   shouldScrollToTop: boolean | undefined;
   isShiftAvailable: boolean;
   marketTokensData: TokensData | undefined;
+  isFavorite: boolean;
+  onFavoriteClick: (address: string) => void;
 }) {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
@@ -443,10 +480,22 @@ function GmListItem({
 
   const tokenIconBadge = getMarketBadge(chainId, marketOrGlv);
 
+  const handleFavoriteClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (!market) return;
+    onFavoriteClick(market.marketTokenAddress);
+  };
+
   return (
     <TableTr key={token.address} hoverable={false} bordered={false}>
       <TableTd>
-        <div className="flex">
+        <div className="flex items-start">
+          <div
+            className="-ml-8 mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
+            onClick={handleFavoriteClick}
+          >
+            <FavoriteStar isFavorite={isFavorite} />
+          </div>
           <div className="mr-12 flex shrink-0 items-center">
             <TokenIcon
               symbol={tokenIconName}

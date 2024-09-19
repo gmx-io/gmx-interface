@@ -15,22 +15,17 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
-import {
-  indexTokensFavoritesTabOptionLabels,
-  indexTokensFavoritesTabOptions,
-  useIndexTokensFavorites,
-} from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { useIndexTokensFavorites } from "domain/synthetics/tokens/useIndexTokensFavorites";
 import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
-import { useLocalizedMap } from "lib/i18n";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { FavoriteIndexTabs } from "components/FavoriteTabs/FavoriteIndexTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
@@ -110,7 +105,7 @@ type SortField = "longLiquidity" | "shortLiquidity" | "unspecified";
 
 function MarketsList(props: { options: Token[] | undefined }) {
   const { options } = props;
-  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useIndexTokensFavorites();
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
   const isSmallMobile = useMedia("(max-width: 450px)");
@@ -177,8 +172,6 @@ function MarketsList(props: { options: Token[] | undefined }) {
     rowHorizontalPadding
   );
 
-  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
-
   const handleSetValue = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchKeyword(event.target.value);
@@ -196,21 +189,13 @@ function MarketsList(props: { options: Token[] | undefined }) {
     [sortedTokens, handleMarketSelect]
   );
 
-  const handleFavoriteClick = useCallback(
-    (address: string) => {
-      if (favoriteTokens?.includes(address)) {
-        setFavoriteTokens((favoriteTokens || []).filter((item) => item !== address));
-      } else {
-        setFavoriteTokens([...(favoriteTokens || []), address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <SearchInput className="mt-15" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
+        <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
+          <SearchInput className="w-full" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
+          {!isSwap && <FavoriteIndexTabs />}
+        </div>
       </SelectorBaseMobileHeaderContent>
       <div
         className={cx("Synths-ChartTokenSelector", {
@@ -219,19 +204,17 @@ function MarketsList(props: { options: Token[] | undefined }) {
       >
         {!isMobile && (
           <>
-            <SearchInput className="m-15" value={searchKeyword} setValue={handleSetValue} onKeyDown={handleKeyDown} />
+            <div className="m-16 flex justify-between gap-16">
+              <SearchInput
+                className="w-full"
+                value={searchKeyword}
+                setValue={handleSetValue}
+                onKeyDown={handleKeyDown}
+              />
+              <FavoriteIndexTabs />
+            </div>
             <div className="divider" />
           </>
-        )}
-        {!isSwap && (
-          <Tab
-            className="px-15 py-4"
-            options={indexTokensFavoritesTabOptions}
-            optionLabels={localizedTabOptionLabels}
-            type="inline"
-            option={tab}
-            setOption={setTab}
-          />
         )}
 
         <div
@@ -270,7 +253,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
                   isSwap={isSwap}
                   isSmallMobile={isSmallMobile}
                   isFavorite={favoriteTokens?.includes(token.address)}
-                  onFavorite={handleFavoriteClick}
+                  onFavorite={toggleFavoriteToken}
                   rowVerticalPadding={rowVerticalPadding}
                   rowHorizontalPadding={rowHorizontalPadding}
                   tdClassName={tdClassName}

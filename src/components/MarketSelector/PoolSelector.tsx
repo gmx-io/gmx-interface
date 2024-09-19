@@ -12,24 +12,19 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import {
-  gmTokensFavoritesTabOptionLabels,
-  gmTokensFavoritesTabOptions,
-} from "domain/synthetics/tokens/useGmTokensFavorites";
-import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 
+import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
 import SearchInput from "components/SearchInput/SearchInput";
-import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
+import { PoolListItem } from "./PoolListItem";
 
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
 import "./MarketSelector.scss";
-import { PoolListItem } from "./PoolListItem";
 
 export function PoolSelector({
   selectedMarketAddress,
@@ -45,14 +40,11 @@ export function PoolSelector({
   showAllPools = false,
   showIndexIcon = false,
   favoriteTokens,
-  setFavoriteTokens,
+  toggleFavoriteToken,
   tab,
-  setTab,
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-
-  const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
@@ -138,17 +130,6 @@ export function PoolSelector({
     }
   };
 
-  const handleFavoriteClick = useCallback(
-    (address: string): void => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((token) => token !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(e.target.value);
   }, []);
@@ -182,24 +163,17 @@ export function PoolSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={handleSearch}
-            placeholder={t`Search Pool`}
-            onKeyDown={_handleKeyDown}
-          />
+          <div className="mt-16 flex items-center gap-16">
+            <SearchInput
+              value={searchKeyword}
+              setValue={handleSearch}
+              placeholder={t`Search Pool`}
+              onKeyDown={_handleKeyDown}
+            />
+            <FavoriteGmTabs />
+          </div>
         }
       >
-        <Tab
-          className="mb-10"
-          options={gmTokensFavoritesTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
-
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
             return (
@@ -211,7 +185,7 @@ export function PoolSelector({
                 isInFirstHalf={marketIndex < filteredOptions.length / 2}
                 showAllPools={showAllPools}
                 showBalances={showBalances}
-                onFavoriteClick={handleFavoriteClick}
+                onFavoriteClick={toggleFavoriteToken}
                 onSelectOption={onSelectOption}
               />
             );

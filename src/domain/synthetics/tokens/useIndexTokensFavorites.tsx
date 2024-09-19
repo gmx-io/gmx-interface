@@ -17,6 +17,7 @@ type IndexTokensFavoritesContextType = {
    */
   favoriteTokens: string[];
   setFavoriteTokens: (favoriteTokens: string[]) => void;
+  toggleFavoriteToken: (address: string) => void;
 };
 
 const context = createContext<IndexTokensFavoritesContextType>({
@@ -24,6 +25,7 @@ const context = createContext<IndexTokensFavoritesContextType>({
   setTab: noop,
   favoriteTokens: [],
   setFavoriteTokens: noop,
+  toggleFavoriteToken: noop,
 });
 
 const Provider = context.Provider;
@@ -49,9 +51,26 @@ export function IndexTokensFavoritesContextProvider({ children }: PropsWithChild
     [setFavoriteTokens]
   );
 
+  const handleToggleFavoriteToken = useCallback(
+    (address: string): void => {
+      if (favoriteTokens!.includes(address)) {
+        setFavoriteTokens(favoriteTokens!.filter((token) => token !== address));
+      } else {
+        setFavoriteTokens([...favoriteTokens!, address]);
+      }
+    },
+    [favoriteTokens, setFavoriteTokens]
+  );
+
   const stableObj = useMemo<IndexTokensFavoritesContextType>(
-    () => ({ tab: tab!, setTab, favoriteTokens: favoriteTokens!, setFavoriteTokens: handleSetFavoriteTokens }),
-    [tab, setTab, favoriteTokens, handleSetFavoriteTokens]
+    () => ({
+      tab: tab!,
+      setTab,
+      favoriteTokens: favoriteTokens!,
+      setFavoriteTokens: handleSetFavoriteTokens,
+      toggleFavoriteToken: handleToggleFavoriteToken,
+    }),
+    [tab, setTab, favoriteTokens, handleSetFavoriteTokens, handleToggleFavoriteToken]
   );
 
   return <Provider value={stableObj}>{children}</Provider>;

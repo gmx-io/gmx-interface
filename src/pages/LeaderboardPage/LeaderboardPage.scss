@@ -183,9 +183,7 @@ $tabs-threshold: 990px;
 .CompetitionPrizes {
   display: flex;
   align-items: center;
-  min-width: 0;
   margin-bottom: 2rem;
-  overflow-x: auto;
 
   &__prize {
     display: flex;
@@ -194,7 +192,6 @@ $tabs-threshold: 990px;
     &-container {
       flex: 1 1;
       margin-right: 1.8rem;
-      margin-bottom: 1rem;
       background-color: var(--color-slate-800);
       display: flex;
       align-items: center;
@@ -403,17 +400,11 @@ $tabs-threshold: 990px;
   width: 1.7rem;
 }
 
-.LeaderboardNavigation .LeaderboardHeader__item {
-  margin-right: 0.8rem;
-  margin-bottom: 0.8rem;
+.LeaderboardHeader__item {
   white-space: nowrap;
 
   &_selected {
     background: var(--color-slate-500) !important;
-  }
-
-  &:last-child {
-    margin-right: 0;
   }
 }
 
@@ -475,21 +466,13 @@ $tabs-threshold: 990px;
 }
 
 .TableBox__head {
-  background-color: var(--color-slate-800);
   padding: 16px;
-  border-radius: 0.4rem 0.4rem 0 0;
 }
 
 .TableBox__footer {
-  background-color: var(--color-slate-800);
   padding: 1rem 1.6rem;
-  border-radius: 0 0 0.4rem 0.4rem;
   border-top: 1px solid var(--color-gray-900);
   height: 5.8rem;
-
-  & .pagination {
-    margin-top: 0;
-  }
 }
 
 .TableBox table.Exchange-list tr {

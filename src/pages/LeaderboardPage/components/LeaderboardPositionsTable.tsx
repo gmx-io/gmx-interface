@@ -28,6 +28,7 @@ import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -107,7 +108,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
   );
 
   return (
-    <div>
+    <div className="rounded-4 bg-slate-800">
       <div className="TableBox__head">
         <SearchInput
           placeholder={t`Search Address`}
@@ -118,8 +119,8 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
           size="s"
         />
       </div>
-      <div className="overflow-x-auto bg-slate-800">
-        <table className={"w-full min-w-[1100px]  table-fixed"}>
+      <TableScrollFadeContainer>
+        <table className="w-full min-w-[1100px] table-fixed">
           <thead>
             <TableTheadTr bordered>
               <TableHeaderCell
@@ -147,9 +148,9 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
           </thead>
           <tbody>{content}</tbody>
         </table>
-      </div>
+      </TableScrollFadeContainer>
       <div className="TableBox__footer">
-        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
+        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} topMargin={false} />
       </div>
     </div>
   );

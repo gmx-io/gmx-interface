@@ -5,12 +5,11 @@ import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
 
-import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 
+import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
-import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import {
@@ -22,10 +21,6 @@ import {
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import {
-  gmTokensFavoritesTabOptionLabels,
-  gmTokensFavoritesTabOptions,
-} from "domain/synthetics/tokens/useGmTokensFavorites";
 
 import Modal from "../Modal/Modal";
 import { PoolListItem } from "./PoolListItem";
@@ -54,17 +49,14 @@ export function GmPoolsSelectorForGlvMarket({
   showIndexIcon = false,
   favoriteTokens,
   glvInfo,
-  setFavoriteTokens,
+  toggleFavoriteToken,
   tab,
-  setTab,
   disablePoolSelector,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const markets = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.glvTokenAddress);
-
-  const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets =
@@ -156,17 +148,6 @@ export function GmPoolsSelectorForGlvMarket({
     [onSelectGmPool, filteredOptions]
   );
 
-  const handleFavoriteClick = useCallback(
-    (address: string): void => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((token) => token !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(e.target.value);
   }, []);
@@ -194,24 +175,17 @@ export function GmPoolsSelectorForGlvMarket({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={handleSearch}
-            placeholder={t`Search Pool`}
-            onKeyDown={handleKeyDown}
-          />
+          <div className="mt-16 flex items-center gap-16">
+            <SearchInput
+              value={searchKeyword}
+              setValue={handleSearch}
+              placeholder={t`Search Pool`}
+              onKeyDown={handleKeyDown}
+            />
+            <FavoriteGmTabs />
+          </div>
         }
       >
-        <Tab
-          className="mb-10"
-          options={gmTokensFavoritesTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
-
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => (
             <PoolListItem
@@ -222,7 +196,7 @@ export function GmPoolsSelectorForGlvMarket({
               isInFirstHalf={marketIndex < filteredOptions.length / 2}
               showAllPools={showAllPools}
               showBalances={showBalances}
-              onFavoriteClick={handleFavoriteClick}
+              onFavoriteClick={toggleFavoriteToken}
               onSelectOption={onSelectGmPool}
             />
           ))}

@@ -17,9 +17,10 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
@@ -56,11 +57,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   );
 
   return (
-    <div
-      className="my-15 rounded-4 bg-slate-800 text-left
-                 max-[964px]:!-mr-[--default-container-padding] max-[964px]:!rounded-r-0
-                 max-[600px]:!-mr-[--default-container-padding-mobile]"
-    >
+    <div className="my-15 rounded-4 bg-slate-800 text-left">
       <div className="flex items-center px-16 py-8 text-16">
         <Trans>GM Pools</Trans>
         <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
@@ -74,7 +71,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
           autoFocus={false}
         />
       </div>
-      <div className="overflow-x-auto">
+      <TableScrollFadeContainer>
         <table className="w-[max(100%,900px)]">
           <thead>
             <TableTheadTr bordered>
@@ -117,7 +114,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
             {!indexTokensStats.length && <MarketListSkeleton />}
           </tbody>
         </table>
-      </div>
+      </TableScrollFadeContainer>
       {indexTokensStats.length > 0 && !currentData.length && (
         <div className="p-14 text-center text-gray-400">
           <Trans>No markets found.</Trans>

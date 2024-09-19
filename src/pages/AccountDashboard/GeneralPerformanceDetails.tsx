@@ -10,6 +10,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTh, TableTheadTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { PnlSummaryPoint, usePnlSummaryData } from "domain/synthetics/accountStats";
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
@@ -32,7 +33,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
         <Trans>General Performance Details</Trans>
       </div>
 
-      <div className="overflow-x-auto">
+      <TableScrollFadeContainer>
         <table className="w-full min-w-max">
           <thead>
             <TableTheadTr bordered>
@@ -81,7 +82,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
             <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
           </div>
         )}
-      </div>
+      </TableScrollFadeContainer>
     </div>
   );
 }

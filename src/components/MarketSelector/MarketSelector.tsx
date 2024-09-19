@@ -5,20 +5,15 @@ import { BiChevronDown } from "react-icons/bi";
 
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
-import {
-  indexTokensFavoritesTabOptionLabels,
-  indexTokensFavoritesTabOptions,
-  useIndexTokensFavorites,
-} from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { useIndexTokensFavorites } from "domain/synthetics/tokens/useIndexTokensFavorites";
 
-import { useLocalizedMap } from "lib/i18n";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { FavoriteIndexTabs } from "components/FavoriteTabs/FavoriteIndexTabs";
 import SearchInput from "components/SearchInput/SearchInput";
-import Tab from "components/Tab/Tab";
 
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
@@ -71,8 +66,7 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
-  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
+  const { tab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -161,23 +155,17 @@ export function MarketSelector({
         label={label}
         footerContent={footerContent}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={(e) => setSearchKeyword(e.target.value)}
-            placeholder={t`Search Market`}
-            onKeyDown={_handleKeyDown}
-          />
+          <div className="mt-16 flex items-center gap-16">
+            <SearchInput
+              value={searchKeyword}
+              setValue={(e) => setSearchKeyword(e.target.value)}
+              placeholder={t`Search Market`}
+              onKeyDown={_handleKeyDown}
+            />
+            <FavoriteIndexTabs />
+          </div>
         }
       >
-        <Tab
-          options={indexTokensFavoritesTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
-
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => (
             <MarketListItem

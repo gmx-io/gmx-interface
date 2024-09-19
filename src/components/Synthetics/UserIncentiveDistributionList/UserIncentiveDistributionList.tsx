@@ -29,6 +29,7 @@ import EmptyMessage from "components/Referrals/EmptyMessage";
 import usePagination from "components/Referrals/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tooltip from "components/Tooltip/Tooltip";
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
@@ -122,7 +123,7 @@ export default function UserIncentiveDistributionList() {
         bodyPadding={false}
         divider={false}
       >
-        <div className="overflow-x-auto">
+        <TableScrollFadeContainer>
           <table className="w-full min-w-max">
             <thead>
               <TableTheadTr bordered>
@@ -144,7 +145,7 @@ export default function UserIncentiveDistributionList() {
               {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
             </tbody>
           </table>
-        </div>
+        </TableScrollFadeContainer>
         <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </Card>
     </div>

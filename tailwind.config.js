@@ -84,6 +84,21 @@ function injectColorsPlugin({ addBase, theme }) {
   });
 }
 
+/**
+ * @type {import('tailwindcss/types/config').PluginCreator}
+ */
+function customUtilsPlugin({ addUtilities, theme }) {
+  addUtilities({
+    ".scrollbar-hide": {
+      "scrollbar-width": "none",
+      "-ms-overflow-style": "none",
+      "&::-webkit-scrollbar": {
+        display: "none",
+      },
+    },
+  });
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
@@ -123,5 +138,5 @@ module.exports = {
       ),
     },
   },
-  plugins: [injectColorsPlugin],
+  plugins: [injectColorsPlugin, customUtilsPlugin],
 };

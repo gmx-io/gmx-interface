@@ -14,8 +14,8 @@ import {
   getGlvDisplayName,
   getGlvMarketShortening,
   getGlvMarketSubtitle,
-  getMarketIndexName,
   getGlvOrMarketAddress,
+  getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
   getSellableMarketToken,
@@ -23,20 +23,15 @@ import {
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
-import {
-  indexTokensFavoritesTabOptionLabels,
-  marketTokensTabOptions,
-} from "domain/synthetics/tokens/useIndexTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { useLocalizedMap } from "lib/i18n";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
@@ -157,7 +152,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 
-  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useGmTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useGmTokensFavorites();
 
   const sortedTokensInfo = useFilterSortTokensInfo({
     chainId,
@@ -200,19 +195,6 @@ function MarketTokenSelectorInternal(props: Props) {
   );
   const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
 
-  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
-
-  const handleFavoriteClick = useCallback(
-    (address: string) => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
   const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(event.target.value);
   }, []);
@@ -229,13 +211,16 @@ function MarketTokenSelectorInternal(props: Props) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <SearchInput
-          className="mt-16"
-          value={searchKeyword}
-          setValue={handleSearch}
-          onKeyDown={handleKeyDown}
-          placeholder="Search Pool"
-        />
+        <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
+          <SearchInput
+            className="w-full"
+            value={searchKeyword}
+            setValue={handleSearch}
+            onKeyDown={handleKeyDown}
+            placeholder="Search Pool"
+          />
+          <FavoriteGmTabs />
+        </div>
       </SelectorBaseMobileHeaderContent>
       <div
         className={cx({
@@ -244,29 +229,19 @@ function MarketTokenSelectorInternal(props: Props) {
       >
         {!isMobile && (
           <>
-            <SearchInput
-              className="m-16"
-              value={searchKeyword}
-              setValue={({ target }) => setSearchKeyword(target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && sortedTokensInfo.length > 0) {
-                  handleSelectToken(sortedTokensInfo[0].market.address);
-                }
-              }}
-              placeholder="Search Pool"
-            />
+            <div className="m-16 flex justify-between gap-16">
+              <SearchInput
+                className="w-full"
+                value={searchKeyword}
+                setValue={handleSearch}
+                onKeyDown={handleKeyDown}
+                placeholder="Search Pool"
+              />
+              <FavoriteGmTabs />
+            </div>
             <div className="divider" />
           </>
         )}
-
-        <Tab
-          className="px-16 py-4"
-          options={marketTokensTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
 
         <div
           className={cx({
@@ -305,7 +280,7 @@ function MarketTokenSelectorInternal(props: Props) {
                   {...option}
                   tdClassName={tdClassName}
                   isFavorite={favoriteTokens.includes(option.market.address)}
-                  onFavorite={handleFavoriteClick}
+                  onFavorite={toggleFavoriteToken}
                   handleSelectToken={handleSelectToken}
                   isSmallMobile={isSmallMobile}
                   rowVerticalPadding={rowVerticalPadding}

@@ -32,6 +32,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tooltip from "components/Tooltip/Tooltip";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
@@ -285,7 +286,7 @@ function AffiliatesStats({
           divider={false}
           bodyPadding={false}
         >
-          <div className="overflow-x-auto">
+          <TableScrollFadeContainer>
             <table className="w-full">
               <thead>
                 <TableTheadTr bordered>
@@ -368,7 +369,7 @@ function AffiliatesStats({
                 })}
               </tbody>
             </table>
-          </div>
+          </TableScrollFadeContainer>
           <BottomTablePagination
             page={currentAffiliatesPage}
             pageCount={affiliatesPageCount}
@@ -384,7 +385,7 @@ function AffiliatesStats({
             bodyPadding={false}
             divider={false}
           >
-            <div className="overflow-x-auto">
+            <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
                   <TableTheadTr bordered>
@@ -507,7 +508,7 @@ function AffiliatesStats({
                   })}
                 </tbody>
               </table>
-            </div>
+            </TableScrollFadeContainer>
             <BottomTablePagination
               page={currentRebatePage}
               pageCount={rebatePageCount}

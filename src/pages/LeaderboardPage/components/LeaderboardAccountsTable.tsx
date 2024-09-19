@@ -23,6 +23,7 @@ import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -169,7 +170,7 @@ export function LeaderboardAccountsTable({
   );
 
   return (
-    <div>
+    <div className="rounded-4 bg-slate-800">
       <div className="TableBox__head">
         <SearchInput
           placeholder={t`Search Address`}
@@ -180,7 +181,7 @@ export function LeaderboardAccountsTable({
           size="s"
         />
       </div>
-      <div className="overflow-x-auto bg-slate-800">
+      <TableScrollFadeContainer>
         <table className="w-full">
           <thead>
             <TableTheadTr bordered>
@@ -240,9 +241,9 @@ export function LeaderboardAccountsTable({
           </thead>
           <tbody>{content}</tbody>
         </table>
-      </div>
+      </TableScrollFadeContainer>
       <div className="TableBox__footer">
-        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
+        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} topMargin={false} />
       </div>
     </div>
   );
