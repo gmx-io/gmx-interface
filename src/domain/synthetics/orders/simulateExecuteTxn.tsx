@@ -7,6 +7,7 @@ import {
   getMulticallContract,
   getExchangeRouterContract,
   getGlvRouterContract,
+  getZeroAddressContract,
 } from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
@@ -18,6 +19,7 @@ import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
+import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -49,13 +51,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const dataStore = getDataStoreContract(chainId, provider);
   const multicall = getMulticallContract(chainId, provider);
   const exchangeRouter = getExchangeRouterContract(chainId, provider);
-  let glvRouter;
-
-  try {
-    glvRouter = getGlvRouterContract(chainId, provider);
-  } catch (e) {
-    // no glv router in networks without glv
-  }
+  const glvRouter = isGlvEnabled(chainId) ? getGlvRouterContract(chainId, provider) : getZeroAddressContract(provider);
 
   const result = await multicall.blockAndAggregate.staticCall([
     { target: dataStoreAddress, callData: dataStore.interface.encodeFunctionData("getUint", [NONCE_KEY]) },

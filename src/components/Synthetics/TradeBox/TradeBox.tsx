@@ -6,11 +6,12 @@ import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 import { useKey, useLatest, usePrevious } from "react-use";
 
-import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getBridgingOptionsForToken } from "config/bridging";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {

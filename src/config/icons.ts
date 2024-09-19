@@ -17,6 +17,7 @@ import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avalanche.svg";
+import glvIcon from "img/ic_glv_40.svg";
 
 const ICONS = {
   [ARBITRUM]: {
@@ -51,6 +52,7 @@ const ICONS = {
     glp: glpIcon,
     esgmx: esGMXIcon,
     gm: gmIcon,
+    glv: glvIcon,
   },
 };
 

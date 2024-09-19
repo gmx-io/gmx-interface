@@ -1,18 +1,18 @@
 import { t } from "@lingui/macro";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getMarketIndexName, getGlvOrMarketAddress, isMarketInfo } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -42,14 +42,14 @@ import { GmFees } from "../../GmFees/GmFees";
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { Swap } from "../Swap";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { isGlv } from "domain/synthetics/markets/glv";
+
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { MarketState } from "components/MarketSelector/types";
 
 export function GmShiftBox({
   selectedMarketAddress,
   onSelectMarket,
-  onSelectGlvGmMarket,
+  onSelectedMarketForGlv,
   onSetMode,
   onSetOperation,
 }: {
@@ -57,7 +57,7 @@ export function GmShiftBox({
   onSelectMarket: (marketAddress: string) => void;
   onSetMode: (mode: Mode) => void;
   onSetOperation: (operation: Operation) => void;
-  onSelectGlvGmMarket?: (marketAddress: string) => void;
+  onSelectedMarketForGlv?: (marketAddress: string) => void;
 }) {
   const [toMarketAddress, setToMarketAddress] = useState<string | undefined>(undefined);
   const [selectedMarketText, setSelectedMarketText] = useState("");
@@ -70,7 +70,7 @@ export function GmShiftBox({
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
@@ -86,10 +86,25 @@ export function GmShiftBox({
   );
   const { shouldDisableValidationForTesting } = useSettings();
 
-  const selectedMarketInfo = getByKey(marketsInfoData, selectedMarketAddress);
+  const selectedMarketInfo = useMemo(() => {
+    const market = getByKey(marketsInfoData, selectedMarketAddress);
+    if (isGlvInfo(market)) {
+      return undefined;
+    }
+
+    return market;
+  }, [selectedMarketAddress, marketsInfoData]);
   const selectedIndexName = selectedMarketInfo ? getMarketIndexName(selectedMarketInfo) : "...";
   const selectedToken = getByKey(depositMarketTokensData, selectedMarketAddress);
-  const toMarketInfo = getByKey(marketsInfoData, toMarketAddress);
+  const toMarketInfo = useMemo(() => {
+    const market = getByKey(marketsInfoData, toMarketAddress);
+
+    if (isGlvInfo(market)) {
+      return undefined;
+    }
+
+    return market;
+  }, [toMarketAddress, marketsInfoData]);
   const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "...";
   const toToken = getByKey(depositMarketTokensData, toMarketAddress);
 
@@ -156,7 +171,8 @@ export function GmShiftBox({
 
   useUpdateTokens({ amounts, selectedToken, toToken, focusedInput, setToMarketText, setSelectedMarketText });
 
-  const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, toMarketAddress);
+  const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
+  const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
 
   useUpdateByQueryParams({
     operation: Operation.Shift,
@@ -189,8 +205,10 @@ export function GmShiftBox({
   );
   const handleSelectedTokenFocus = useCallback(() => setFocusedInput("selectedMarket"), []);
   const handleSelectedTokenSelectMarket = useCallback(
-    (marketInfo: MarketInfo): void => {
-      onSelectMarket(marketInfo.marketTokenAddress);
+    (marketInfo: GlvOrMarketInfo): void => {
+      if (isMarketInfo(marketInfo)) {
+        onSelectMarket(marketInfo.marketTokenAddress);
+      }
       handleClearValues();
     },
     [handleClearValues, onSelectMarket]
@@ -202,29 +220,41 @@ export function GmShiftBox({
   );
   const handleToTokenFocus = useCallback(() => setFocusedInput("toMarket"), []);
   const handleToTokenSelectMarket = useCallback(
-    (marketInfo: MarketInfo): void => {
-      if (isGlv(marketInfo) && selectedMarketInfo?.marketTokenAddress) {
-        onSelectMarket(marketInfo.marketTokenAddress);
-        setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
-        onSetOperation(Operation.Deposit);
-        onSelectGlvGmMarket?.(selectedMarketInfo.marketTokenAddress);
+    (marketInfo: GlvOrMarketInfo): void => {
+      if (isGlvInfo(marketInfo)) {
+        setGlvForShiftAddress(getGlvOrMarketAddress(marketInfo));
       } else {
         setToMarketAddress(marketInfo.marketTokenAddress);
         handleClearValues();
       }
     },
-    [
-      handleClearValues,
-      onSelectGlvGmMarket,
-      onSelectMarket,
-      onSetOperation,
-      selectedMarketInfo,
-      setFirstTokenAddressForDeposit,
-    ]
+    [handleClearValues, setToMarketAddress]
   );
 
-  const getShiftReceiveMarketState = useCallback((marketInfo: MarketInfo | GlvMarketInfo): MarketState => {
-    if (isGlv(marketInfo)) {
+  useEffect(() => {
+    if (glvForShiftAddress && selectedMarketInfo) {
+      onSelectMarket(glvForShiftAddress);
+      setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
+      onSetOperation(Operation.Deposit);
+      onSelectedMarketForGlv?.(selectedMarketInfo.marketTokenAddress);
+    }
+
+    return () => {
+      if (glvForShiftAddress) {
+        setGlvForShiftAddress(undefined);
+      }
+    };
+  }, [
+    glvForShiftAddress,
+    onSelectedMarketForGlv,
+    onSelectMarket,
+    onSetOperation,
+    selectedMarketInfo,
+    setFirstTokenAddressForDeposit,
+  ]);
+
+  const getShiftReceiveMarketState = useCallback((marketInfo: GlvOrMarketInfo): MarketState => {
+    if (isGlvInfo(marketInfo)) {
       return {
         warning:
           "Shifting From GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.",
