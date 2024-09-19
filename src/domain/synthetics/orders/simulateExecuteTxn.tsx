@@ -13,7 +13,7 @@ import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { ethers, BytesLike, BaseContract } from "ethers";
-import { getErrorMessage } from "lib/contracts/transactionErrors";
+import { extractError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
@@ -71,7 +71,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const nextKey = orderKey(dataStoreAddress, nextNonce) as BytesLike;
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
-  const priceTimestamp = blockTimestamp + 5n;
+  const priceTimestamp = blockTimestamp + 10n;
   const method = p.method || "simulateExecuteOrder";
 
   const isGlv = method === "simulateExecuteGlvDeposit" || method === "simulateExecuteGlvWithdrawal";
@@ -144,8 +144,11 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       },
       {
         retryCount: 2,
-        delay: 500,
-        shouldRetry: ({ error }) => error.toString().includes("unsupported block number"),
+        delay: 200,
+        shouldRetry: ({ error }) => {
+          const [message] = extractError(error);
+          return message?.includes("unsupported block number") ?? false;
+        },
       }
     );
   } catch (txnError) {
