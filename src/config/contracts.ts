@@ -343,4 +343,4 @@ export const getMulticallContract = makeGetContract("Multicall", Multicall__fact
 export const getExchangeRouterContract = makeGetContract("ExchangeRouter", ExchangeRouter__factory);
 export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__factory);
 
-export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, "", provider);
+export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, [], provider);
