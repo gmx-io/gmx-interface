@@ -13,7 +13,14 @@ import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStat
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import { GlvInfo, MarketInfo, getMarketIndexName, getMarketPoolName, isMarketInfo } from "domain/synthetics/markets";
+import {
+  GlvInfo,
+  MarketInfo,
+  getMarketIndexName,
+  getGlvOrMarketAddress,
+  getMarketPoolName,
+  isMarketInfo,
+} from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   gmTokensFavoritesTabOptionLabels,
@@ -55,7 +62,7 @@ export function GmPoolsSelectorForGlvMarket({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const markets = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.marketTokenAddress);
+  const markets = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.glvTokenAddress);
 
   const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
 
@@ -106,7 +113,7 @@ export function GmPoolsSelectorForGlvMarket({
   }, [getMarketState, marketTokensData, markets]);
 
   const selectedPool = useMemo(
-    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress),
+    () => marketsOptions.find((option) => getGlvOrMarketAddress(option.marketInfo) === selectedMarketAddress),
     [marketsOptions, selectedMarketAddress]
   );
 
@@ -119,7 +126,8 @@ export function GmPoolsSelectorForGlvMarket({
       const name = option.name.toLowerCase();
       const textSearchMatch = name.includes(lowercaseSearchKeyword);
 
-      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.marketTokenAddress) : true;
+      const favoriteMatch =
+        tab === "favorites" ? favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo)) : true;
 
       return textSearchMatch && favoriteMatch;
     });
@@ -207,10 +215,10 @@ export function GmPoolsSelectorForGlvMarket({
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => (
             <PoolListItem
-              key={option.marketInfo.marketTokenAddress}
+              key={getGlvOrMarketAddress(option.marketInfo)}
               {...option}
-              marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
-              isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
+              marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.marketInfo))}
+              isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo))}
               isInFirstHalf={marketIndex < filteredOptions.length / 2}
               showAllPools={showAllPools}
               showBalances={showBalances}

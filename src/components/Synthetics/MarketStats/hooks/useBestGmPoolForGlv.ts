@@ -58,7 +58,7 @@ export const useBestGmPoolAddressForGlv = ({
   isMarketForGlvSelectedManually: boolean;
   onSelectedMarketForGlv?: (marketAddress?: string) => void;
 }) => {
-  const marketsWithComposition = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.marketTokenAddress);
+  const marketsWithComposition = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.glvTokenAddress);
 
   const isEligible = useMemo(() => {
     return glvInfo && isGlvInfo(glvInfo) && marketsWithComposition.length > 0 && !isMarketTokenDeposit;

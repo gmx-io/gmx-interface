@@ -181,7 +181,7 @@ export type GlvInfo = {
   glvToken: TokenData & {
     contractSymbol: string;
   };
-  marketTokenAddress: string;
+  glvTokenAddress: string;
   longTokenAddress: string;
   shortTokenAddress: string;
   isSameCollaterals: boolean;

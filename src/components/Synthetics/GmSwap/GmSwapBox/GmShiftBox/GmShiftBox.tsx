@@ -12,7 +12,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvOrMarketInfo, getMarketIndexName, isMarketInfo } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getMarketIndexName, getGlvOrMarketAddress, isMarketInfo } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -222,7 +222,7 @@ export function GmShiftBox({
   const handleToTokenSelectMarket = useCallback(
     (marketInfo: GlvOrMarketInfo): void => {
       if (isGlvInfo(marketInfo)) {
-        setGlvForShiftAddress(marketInfo.marketTokenAddress);
+        setGlvForShiftAddress(getGlvOrMarketAddress(marketInfo));
       } else {
         setToMarketAddress(marketInfo.marketTokenAddress);
         handleClearValues();

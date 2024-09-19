@@ -7,7 +7,7 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
@@ -55,7 +55,7 @@ export function MarketFilterBase({
       .map((market) => {
         return {
           text: market.name,
-          data: market.marketTokenAddress,
+          data: getGlvOrMarketAddress(market),
         };
       });
   }, [excludeSpotOnly, markets]);

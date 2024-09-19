@@ -11,7 +11,7 @@ import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthe
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 
-import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
+import { getMarketIndexName, getGlvOrMarketAddress } from "../../../../domain/synthetics/markets/utils";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
 import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
 import { USD_DECIMALS } from "config/factors";
@@ -43,7 +43,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
   const tokensData = useSelector(selectTokensData);
   const isGlv = marketInfo && isGlvInfo(marketInfo);
 
-  const selectGmComposition = useGlvGmMarketsWithComposition(true, marketInfo?.marketTokenAddress);
+  const selectGmComposition = useGlvGmMarketsWithComposition(true, marketInfo && getGlvOrMarketAddress(marketInfo));
 
   const [col1, col2, col3] = useMemo(() => {
     if (isGlv) {

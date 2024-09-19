@@ -15,6 +15,7 @@ import {
   getGlvMarketShortening,
   getGlvMarketSubtitle,
   getMarketIndexName,
+  getGlvOrMarketAddress,
   getMarketPoolName,
   getMintableMarketTokens,
   getSellableMarketToken,
@@ -95,7 +96,7 @@ export default function MarketTokenSelector(props: Props) {
                 importSize={40}
                 badge={
                   isGlv
-                    ? getGlvMarketShortening(chainId, currentMarketInfo.marketTokenAddress)
+                    ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(currentMarketInfo))
                     : ([currentMarketInfo.longToken.symbol, currentMarketInfo.shortToken.symbol] as const)
                 }
               />
@@ -111,7 +112,9 @@ export default function MarketTokenSelector(props: Props) {
                   </span>
                 </div>
                 <div className="text-12 text-gray-400 group-hover/selector-base:text-[color:inherit]">
-                  {isGlv ? getGlvMarketSubtitle(chainId, currentMarketInfo.marketTokenAddress) : "GMX Market Tokens"}
+                  {isGlv
+                    ? getGlvMarketSubtitle(chainId, getGlvOrMarketAddress(currentMarketInfo))
+                    : "GMX Market Tokens"}
                 </div>
               </div>
             </>
@@ -386,8 +389,8 @@ function useFilterSortTokensInfo({
         ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData)
         : getSellableMarketToken(marketInfo, market);
       const apr = getByKey(isGlv ? glvTokensApyData : marketsTokensAPRData, market?.address);
-      const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
-      const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
+      const incentiveApr = getByKey(marketsTokensIncentiveAprData, getGlvOrMarketAddress(marketInfo));
+      const lidoApr = getByKey(marketsTokensLidoAprData, getGlvOrMarketAddress(marketInfo));
       const indexName = isGlv ? getGlvDisplayName(marketInfo) : getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
@@ -437,12 +440,12 @@ function useFilterSortTokensInfo({
 
       if (orderBy === "apy") {
         let aprA = a.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, a.marketInfo.marketTokenAddress))) {
+        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(a.marketInfo)))) {
           aprA += a.apr ?? 0n;
         }
 
         let aprB = b.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, b.marketInfo.marketTokenAddress))) {
+        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(b.marketInfo)))) {
           aprB += b.apr ?? 0n;
         }
 

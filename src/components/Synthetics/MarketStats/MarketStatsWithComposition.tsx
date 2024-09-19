@@ -8,6 +8,7 @@ import {
   MarketTokensAPRData,
   getGlvDisplayName,
   getMarketIndexName,
+  getGlvOrMarketAddress,
   getMarketPoolName,
   getMaxPoolUsd,
   getPoolUsdWithoutPnl,
@@ -90,9 +91,9 @@ export function MarketStatsWithComposition(p: Props) {
     shortToken?.prices.minPrice
   );
 
-  const apy = getByKey(marketsTokensApyData, marketInfo?.marketTokenAddress);
-  const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
-  const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo?.marketTokenAddress);
+  const apy = getByKey(marketsTokensApyData, marketInfo && getGlvOrMarketAddress(marketInfo));
+  const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo && getGlvOrMarketAddress(marketInfo));
+  const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo && getGlvOrMarketAddress(marketInfo));
 
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
@@ -419,7 +420,7 @@ export function MarketStatsWithComposition(p: Props) {
             label={t`APY`}
             value={
               <AprInfo
-                apy={isGlv ? glvTokensApyData?.[marketInfo?.marketTokenAddress] : apy}
+                apy={isGlv ? glvTokensApyData?.[getGlvOrMarketAddress(marketInfo)] : apy}
                 incentiveApr={incentiveApr}
                 lidoApr={lidoApr}
                 tokenAddress={marketToken?.address ?? zeroAddress}

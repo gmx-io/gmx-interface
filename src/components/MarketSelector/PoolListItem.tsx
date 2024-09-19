@@ -6,7 +6,7 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
-import { getGlvDisplayName, getMarketBadge, GlvOrMarketInfo } from "domain/synthetics/markets";
+import { getGlvDisplayName, getMarketBadge, getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 
@@ -57,7 +57,7 @@ export function PoolListItem(props: {
 
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    onFavoriteClick(marketInfo.marketTokenAddress);
+    onFavoriteClick(getGlvOrMarketAddress(marketInfo));
   };
 
   const handleClick = useCallback(() => {

@@ -156,7 +156,7 @@ export function useMarketTokensDataRequest(
 
     const result = { ...marketTokensData };
     Object.values(glvData).forEach((glvMarket) => {
-      result[glvMarket.marketTokenAddress] = glvMarket.glvToken;
+      result[glvMarket.glvTokenAddress] = glvMarket.glvToken;
     });
 
     return result;

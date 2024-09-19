@@ -5,6 +5,7 @@ import { getByKey } from "lib/objects";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 
 export function useUpdateMarkets({
   marketsInfoData,
@@ -35,7 +36,7 @@ export function useUpdateMarkets({
 
       const isSelectedMarketValid = Boolean(
         selectedMarketAddress &&
-          shiftAvailableMarkets.find((market) => market.marketTokenAddress === selectedMarketAddress)
+          shiftAvailableMarkets.find((market) => getGlvOrMarketAddress(market) === selectedMarketAddress)
       );
 
       if (!isSelectedMarketValid) {
@@ -45,7 +46,7 @@ export function useUpdateMarkets({
           return;
         }
 
-        newSelectedMarketAddress = someAvailableMarket.marketTokenAddress;
+        newSelectedMarketAddress = getGlvOrMarketAddress(someAvailableMarket);
         onSelectMarket(newSelectedMarketAddress);
       }
 
@@ -71,7 +72,7 @@ export function useUpdateMarkets({
           return;
         }
 
-        setToMarketAddress(someAvailableMarket.marketTokenAddress);
+        setToMarketAddress(getGlvOrMarketAddress(someAvailableMarket));
       }
     },
     [

@@ -22,6 +22,7 @@ import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
+  getGlvOrMarketAddress,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
@@ -663,7 +664,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const marketTokenSelectMarket = useCallback(
     (marketInfo: GlvOrMarketInfo): void => {
-      onGlvOrMarketChange(marketInfo.marketTokenAddress);
+      onGlvOrMarketChange(getGlvOrMarketAddress(marketInfo));
       showMarketToast(marketInfo);
       onSelectedMarketForGlv?.(undefined);
     },
@@ -694,7 +695,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   useEffect(
     function updateMarket() {
       if (!marketAddress && sortedMarketsInfoByIndexToken.length) {
-        onGlvOrMarketChange(sortedMarketsInfoByIndexToken[0].marketTokenAddress);
+        onGlvOrMarketChange(getGlvOrMarketAddress(sortedMarketsInfoByIndexToken[0]));
       }
     },
     [marketAddress, onGlvOrMarketChange, sortedMarketsInfoByIndexToken]

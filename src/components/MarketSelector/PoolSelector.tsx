@@ -4,7 +4,13 @@ import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { GlvOrMarketInfo, getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  GlvOrMarketInfo,
+  getGlvDisplayName,
+  getMarketIndexName,
+  getGlvOrMarketAddress,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   gmTokensFavoritesTabOptionLabels,
@@ -59,7 +65,7 @@ export function PoolSelector({
       .map((marketInfo) => {
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
-        const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
+        const marketToken = getByKey(marketTokensData, getGlvOrMarketAddress(marketInfo));
         const gmBalance = marketToken?.balance;
         const gmBalanceUsd = convertToUsd(marketToken?.balance, marketToken?.decimals, marketToken?.prices.minPrice);
         const state = getMarketState?.(marketInfo);
@@ -93,7 +99,8 @@ export function PoolSelector({
   }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
   const marketInfo = useMemo(
-    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress)?.marketInfo,
+    () =>
+      marketsOptions.find((option) => getGlvOrMarketAddress(option.marketInfo) === selectedMarketAddress)?.marketInfo,
     [marketsOptions, selectedMarketAddress]
   );
 
@@ -109,7 +116,8 @@ export function PoolSelector({
       }
 
       const textSearchMatch = name.includes(lowercaseSearchKeyword);
-      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.marketTokenAddress) : true;
+      const favoriteMatch =
+        tab === "favorites" ? favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo)) : true;
 
       return textSearchMatch && favoriteMatch;
     });
@@ -196,10 +204,10 @@ export function PoolSelector({
           {filteredOptions.map((option, marketIndex) => {
             return (
               <PoolListItem
-                key={option.marketInfo.marketTokenAddress}
+                key={getGlvOrMarketAddress(option.marketInfo)}
                 {...option}
-                marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
-                isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
+                marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.marketInfo))}
+                isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo))}
                 isInFirstHalf={marketIndex < filteredOptions.length / 2}
                 showAllPools={showAllPools}
                 showBalances={showBalances}

@@ -84,7 +84,7 @@ export const useDepositWithdrawalTransactions = ({
           initialLongTokenAddress,
           initialShortTokenAddress,
           minMarketTokens: glvTokenAmount ?? 0n,
-          glvAddress: glvInfo.marketTokenAddress,
+          glvAddress: glvInfo.glvTokenAddress,
           marketTokenAddress: selectedMarketForGlv,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
@@ -164,7 +164,7 @@ export const useDepositWithdrawalTransactions = ({
           initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
-          glvTokenAddress: glvInfo.marketTokenAddress,
+          glvTokenAddress: glvInfo.glvTokenAddress,
           glvTokenAmount: glvTokenAmount!,
           minLongTokenAmount: longTokenAmount,
           minShortTokenAmount: shortTokenAmount,
@@ -175,7 +175,7 @@ export const useDepositWithdrawalTransactions = ({
           setPendingTxns,
           setPendingWithdrawal,
           selectedGmMarket: selectedMarketForGlv,
-          glv: glvInfo.marketTokenAddress,
+          glv: glvInfo.glvTokenAddress,
         });
       }
 

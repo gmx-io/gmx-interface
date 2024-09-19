@@ -50,7 +50,7 @@ export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, ma
     } else if (!isGlv && market.isSpotOnly) {
       groupKey = market.marketTokenAddress as Address;
     } else {
-      groupKey = isGlv ? (market.marketTokenAddress as Address) : (market.indexTokenAddress as Address);
+      groupKey = isGlv ? (market.glvTokenAddress as Address) : (market.indexTokenAddress as Address);
     }
 
     if (!groupedTokens[groupKey]) {

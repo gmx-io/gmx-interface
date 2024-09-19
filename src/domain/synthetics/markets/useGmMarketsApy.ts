@@ -407,7 +407,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
       return {};
     }
 
-    return Object.values(glvData).reduce((acc, { markets, marketTokenAddress }) => {
+    return Object.values(glvData).reduce((acc, { markets, glvTokenAddress }) => {
       const marketData = markets.map((market) => {
         const isBaseApyEligible = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, market.address));
         const apy = isBaseApyEligible ? data.marketsTokensApyData[market.address] : 0n;
@@ -429,9 +429,9 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         : marketData.reduce((acc: bigint, { amountUsd, apy }) => acc + amountUsd * apy, 0n);
 
       if (sumApys === undefined) {
-        acc[marketTokenAddress] = undefined;
+        acc[glvTokenAddress] = undefined;
       } else {
-        acc[marketTokenAddress] = total === 0n ? 0n : sumApys / total;
+        acc[glvTokenAddress] = total === 0n ? 0n : sumApys / total;
       }
 
       return acc;

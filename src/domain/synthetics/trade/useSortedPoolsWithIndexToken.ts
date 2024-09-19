@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
-import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "../markets";
+import { getGlvOrMarketAddress, type GlvAndGmMarketsInfoData, type GlvOrMarketInfo } from "../markets";
 import { isGlvInfo } from "../markets/glv";
 
 import { type TokenData, type TokensData, convertToUsd } from "../tokens";
@@ -30,12 +30,12 @@ export function sortMarketsWithIndexToken(
     .map((markets) => {
       return markets
         .filter((market) => {
-          const marketInfoData = getByKey(marketsInfoData, market.marketTokenAddress)!;
+          const marketInfoData = getByKey(marketsInfoData, getGlvOrMarketAddress(market))!;
           return !marketInfoData.isDisabled;
         })
         .map((market) => ({
           isGlv: isGlvInfo(market),
-          token: getByKey(marketTokensData, market.marketTokenAddress)!,
+          token: getByKey(marketTokensData, getGlvOrMarketAddress(market))!,
         }));
     })
     .filter((markets) => markets.length > 0);

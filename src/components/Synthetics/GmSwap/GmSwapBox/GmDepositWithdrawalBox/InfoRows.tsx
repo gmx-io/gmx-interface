@@ -16,7 +16,7 @@ import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsSt
 import { ARBITRUM } from "config/chains";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
+import { getGlvOrMarketAddress, GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -74,7 +74,7 @@ export function InfoRows({
 
   const onSelectMarketOrGlv = useCallback(
     (glvOrMarketInfo: GlvOrMarketInfo) => {
-      onMarketChange(glvOrMarketInfo.marketTokenAddress);
+      onMarketChange(getGlvOrMarketAddress(glvOrMarketInfo));
       showMarketToast(glvOrMarketInfo);
     },
     [onMarketChange]

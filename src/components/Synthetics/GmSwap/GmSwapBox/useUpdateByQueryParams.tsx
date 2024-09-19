@@ -10,7 +10,12 @@ import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsSt
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import {
+  getGlvDisplayName,
+  getMarketIndexName,
+  getGlvOrMarketAddress,
+  getMarketPoolName,
+} from "domain/synthetics/markets/utils";
 
 import { helperToast } from "lib/helperToast";
 import { getMatchingValueFromObject } from "lib/objects";
@@ -86,7 +91,7 @@ export function useUpdateByQueryParams({
           const bestGlv = glvs.reduce((best, glv) => {
             return (best.glvToken.totalSupply ?? 0n) > (glv.glvToken.totalSupply ?? 0n) ? best : glv;
           });
-          marketAddress = bestGlv.marketTokenAddress.toLowerCase();
+          marketAddress = bestGlv.glvTokenAddress.toLowerCase();
         }
       }
 
@@ -112,9 +117,11 @@ export function useUpdateByQueryParams({
 
       if ((marketAddress || pool) && marketsOrGlvs.length > 0) {
         if (marketAddress && isAddress(marketAddress)) {
-          const marketInfo = marketsOrGlvs.find((market) => market.marketTokenAddress.toLowerCase() === marketAddress);
+          const marketInfo = marketsOrGlvs.find(
+            (market) => getGlvOrMarketAddress(market).toLowerCase() === marketAddress
+          );
           if (marketInfo) {
-            onSelectMarket(marketInfo.marketTokenAddress);
+            onSelectMarket(getGlvOrMarketAddress(marketInfo));
             setIsMarketForGlvSelectedManually?.(false);
             const isGlv = isGlvInfo(marketInfo);
             const indexName = isGlv ? undefined : getMarketIndexName(marketInfo);
@@ -133,7 +140,7 @@ export function useUpdateByQueryParams({
 
             const isCurrentlyShift = currentOperation === Operation.Shift;
             const isNewMarketShiftAvailable = shiftAvailableMarkets.find(
-              (shiftMarket) => shiftMarket.marketTokenAddress === marketInfo.marketTokenAddress
+              (shiftMarket) => getGlvOrMarketAddress(shiftMarket) === getGlvOrMarketAddress(marketInfo)
             );
 
             if (isCurrentlyShift && !isNewMarketShiftAvailable) {

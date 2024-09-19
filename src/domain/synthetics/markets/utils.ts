@@ -27,13 +27,23 @@ export function getGlvDisplayName(glv: GlvInfo) {
   return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
 }
 
+export function getGlvOrMarketAddress(marketOrGlvInfo: MarketInfo | GlvInfo): string;
+export function getGlvOrMarketAddress(marketOrGlvInfo?: undefined): undefined;
+export function getGlvOrMarketAddress(marketOrGlvInfo?: MarketInfo | GlvInfo) {
+  if (!marketOrGlvInfo) {
+    return undefined;
+  }
+
+  return isMarketInfo(marketOrGlvInfo) ? marketOrGlvInfo.marketTokenAddress : marketOrGlvInfo.glvTokenAddress;
+}
+
 export function getMarketBadge(chainId: number, market: GlvOrMarketInfo | undefined) {
   if (!market) {
     return undefined;
   }
 
   if (isGlvInfo(market)) {
-    return GLV_MARKETS[chainId]?.[market.marketTokenAddress]?.shortening || "GLV";
+    return GLV_MARKETS[chainId]?.[getGlvOrMarketAddress(market)]?.shortening || "GLV";
   }
 
   return market.isSpotOnly ? undefined : ([market.longToken.symbol, market.shortToken.symbol] as const);

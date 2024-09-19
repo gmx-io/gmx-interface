@@ -16,6 +16,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import "./GmSwapBox.scss";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 
 export type GmSwapBoxProps = {
   selectedMarketAddress?: string;
@@ -71,7 +72,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
     }
 
     const isSelectedMarketShiftAvailable = Boolean(
-      shiftAvailableMarkets.find((market) => market.marketTokenAddress === marketAddress)
+      shiftAvailableMarkets.find((market) => getGlvOrMarketAddress(market) === marketAddress)
     );
 
     if (!isSelectedMarketShiftAvailable) {
