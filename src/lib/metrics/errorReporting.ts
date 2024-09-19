@@ -77,7 +77,7 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
   if (txErrorType) {
     errorGroup = txErrorType;
   } else if (errorMessage) {
-    errorGroup = errorMessage.slice(0, 30);
+    errorGroup = errorMessage.slice(0, 30).replace(/\d+/g, "XXX");
   }
 
   return {
