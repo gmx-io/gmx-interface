@@ -18,6 +18,7 @@ import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
+import { withRetry } from "viem";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -137,18 +138,30 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 
   try {
-    await router.multicall.staticCall(simulationPayloadData, {
-      value: p.value,
-      blockTag: blockNumber,
-      from: p.account,
-    });
+    await withRetry(
+      () => {
+        return router.multicall.staticCall(simulationPayloadData, {
+          value: p.value,
+          blockTag: blockNumber,
+          from: p.account,
+        });
+      },
+      {
+        retryCount: 2,
+        delay: 200,
+        shouldRetry: ({ error }) => error.toString().includes("unsupported block number"),
+      }
+    );
   } catch (txnError) {
     const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
     let msg: React.ReactNode = undefined;
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-      if (!errorData) throw new Error("No data found in error.");
+
+      const error = new Error("No data found in error.");
+      error.cause = txnError;
+      if (!errorData) throw error;
 
       const parsedError = customErrors.interface.parseError(errorData);
       const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
