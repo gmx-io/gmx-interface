@@ -144,7 +144,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       },
       {
         retryCount: 2,
-        delay: 200,
+        delay: 500,
         shouldRetry: ({ error }) => error.toString().includes("unsupported block number"),
       }
     );
