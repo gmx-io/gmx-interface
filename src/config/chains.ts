@@ -225,13 +225,13 @@ export const RPC_PROVIDERS = {
     "https://bsc-dataseed4.binance.org",
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-  [ARBITRUM]: ["https://arb1.arbitrum.io/rpc"],
+  [ARBITRUM]: ["https://arbitrum-one-rpc.publicnode.com"],
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     // "https://arbitrum-goerli.public.blastapi.io",
   ],
-  [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
+  [AVALANCHE]: ["https://avalanche-c-chain-rpc.publicnode.com"],
   [AVALANCHE_FUJI]: [
     "https://avalanche-fuji-c-chain.publicnode.com",
     "https://api.avax-test.network/ext/bc/C/rpc",
