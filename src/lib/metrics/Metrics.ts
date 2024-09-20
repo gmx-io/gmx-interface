@@ -5,7 +5,7 @@ import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/number
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
-import { METRIC_WINDOW_EVENT_NAME } from "./emitMetricEvent";
+import { METRIC_WINDOW_COUNTER_EVENT_NAME, METRIC_WINDOW_EVENT_NAME } from "./emitMetricEvent";
 import { prepareErrorMetricData } from "./errorReporting";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData } from "./types";
@@ -14,7 +14,8 @@ export type MetricEventParams = {
   event: string;
   data?: object;
   time?: number;
-  isError: boolean;
+  isError?: boolean;
+  isCounter?: boolean;
 };
 
 const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
@@ -136,6 +137,10 @@ export class Metrics {
       throw new Error("Metrics: Fetcher is not initialized to send metric");
     }
 
+    if (params.isCounter) {
+      return this.fetcher.fetchPostCounter({ event: params.event, abFlags: this.globalMetricData.abFlags }, this.debug);
+    }
+
     const { time, isError, data, event } = params;
     const wallets = await getWalletNames();
 
@@ -147,7 +152,7 @@ export class Metrics {
         wallet: wallets.current,
         event: event,
         version: getAppVersion(),
-        isError,
+        isError: Boolean(isError),
         time,
         customFields: {
           ...(data ? this.serializeCustomFields(data) : {}),
@@ -159,7 +164,14 @@ export class Metrics {
     );
   };
 
-  pushError = async (error: unknown, errorSource: string) => {
+  pushCounter(event: string) {
+    this.pushEvent<MetricEventParams>({
+      event,
+      isCounter: true,
+    });
+  }
+
+  pushError = (error: unknown, errorSource: string) => {
     const errorData = prepareErrorMetricData(error);
 
     if (!errorData) {
@@ -185,12 +197,14 @@ export class Metrics {
 
   subscribeToEvents = () => {
     window.addEventListener(METRIC_WINDOW_EVENT_NAME, this.handleWindowEvent);
+    window.addEventListener(METRIC_WINDOW_COUNTER_EVENT_NAME, this.handleWindowCounter);
     window.addEventListener("error", this.handleError);
     window.addEventListener("unhandledrejection", this.handleUnhandledRejection);
   };
 
   unsubscribeFromEvents = () => {
     window.removeEventListener(METRIC_WINDOW_EVENT_NAME, this.handleWindowEvent);
+    window.removeEventListener(METRIC_WINDOW_COUNTER_EVENT_NAME, this.handleWindowCounter);
     window.removeEventListener("error", this.handleError);
     window.removeEventListener("unhandledrejection", this.handleUnhandledRejection);
   };
@@ -198,6 +212,11 @@ export class Metrics {
   handleWindowEvent = (event: Event) => {
     const { detail } = event as CustomEvent;
     this.pushEvent<MetricEventParams>(detail);
+  };
+
+  handleWindowCounter = (event: Event) => {
+    const { detail } = event as CustomEvent;
+    this.pushCounter(detail.event);
   };
 
   handleError = (event) => {
