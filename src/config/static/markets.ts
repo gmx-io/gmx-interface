@@ -268,14 +268,15 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
     // APE/USD [APE-USDC]
-    "0xdf034cd3df9a80eABFA0556232a91E03Ca67D5Cb": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xdf034cd3df9a80eABFA0556232a91E03Ca67D5Cb",
-      indexTokenAddress: "0x74885b4D524d497261259B38900f54e6dbAd2210",
-      longTokenAddress: "0x74885b4D524d497261259B38900f54e6dbAd2210",
-      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    },
+    // "0xdf034cd3df9a80eABFA0556232a91E03Ca67D5Cb": {
+    //   // TODO: Enable
+    //   enabled: false,
+    //   listingDate: DEFAULT_LISTING,
+    //   marketTokenAddress: "0xdf034cd3df9a80eABFA0556232a91E03Ca67D5Cb",
+    //   indexTokenAddress: "0x74885b4D524d497261259B38900f54e6dbAd2210",
+    //   longTokenAddress: "0x74885b4D524d497261259B38900f54e6dbAd2210",
+    //   shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    // },
     // STX/USD [wBTC-USDC]
     "0xD9377d9B9a2327C7778867203deeA73AB8a68b6B": {
       enabled: true,

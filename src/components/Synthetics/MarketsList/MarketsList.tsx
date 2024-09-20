@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
-import { Address, isAddress, isAddressEqual } from "viem";
 
 import usePagination from "components/Referrals/usePagination";
 import { getIcon } from "config/icons";
@@ -10,6 +9,7 @@ import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTo
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
+import { useFuse } from "lib/useFuse";
 
 import Pagination from "components/Pagination/Pagination";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -137,26 +137,24 @@ function useFilterSortMarkets({
   orderBy: string;
   direction: string;
 }) {
+  const fuse = useFuse(
+    () =>
+      indexTokensStats.map((indexTokenStat, index) => ({
+        id: index,
+        name: indexTokenStat.token.name,
+        symbol: indexTokenStat.token.symbol,
+        address: indexTokenStat.token.address,
+      })),
+    indexTokensStats.map((indexTokenStat) => indexTokenStat.token.address)
+  );
+
   const filteredMarkets = useMemo(() => {
     if (!searchText.trim()) {
       return indexTokensStats;
     }
 
-    return indexTokensStats.filter((indexTokenStat) => {
-      const token = indexTokenStat.token;
-
-      const tokenSymbol = token.symbol;
-      const tokenName = token.name;
-
-      const tokenAddress = token.address;
-
-      return (
-        tokenSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-        tokenName.toLowerCase().includes(searchText.toLowerCase()) ||
-        (isAddress(searchText) && isAddressEqual(tokenAddress as Address, searchText))
-      );
-    });
-  }, [indexTokensStats, searchText]);
+    return fuse.search(searchText).map((result) => indexTokensStats[result.item.id]);
+  }, [indexTokensStats, searchText, fuse]);
 
   const sortedMarkets = useMemo(() => {
     if (orderBy === "unspecified" || direction === "unspecified") {

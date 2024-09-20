@@ -1,12 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useMemo, useState } from "react";
-import { Address, isAddress, isAddressEqual } from "viem";
+import keys from "lodash/keys";
+import values from "lodash/values";
+import React, { useMemo, useState } from "react";
+import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import usePagination from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol, getToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -20,12 +22,15 @@ import {
   GlvAndGmMarketsInfoData,
   MarketTokensAPRData,
   getGlvDisplayName,
+  getGlvMarketName,
+  getGlvMarketSubtitle,
   getGlvOrMarketAddress,
   getMarketBadge,
   getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
   getTotalGmInfo,
+  isMarketInfo,
   useMarketTokensData,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -34,6 +39,7 @@ import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthe
 import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 import { sortGmTokensByField } from "./sortGmTokensByField";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
@@ -46,13 +52,10 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ApyTooltipContent } from "./ApyTooltipContent";
 import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
@@ -83,7 +86,6 @@ export function GmList({
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectGlvAndMarketsInfoData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
-  const tokensData = useTokensData();
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
   const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId);
@@ -109,7 +111,6 @@ export function GmList({
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
     searchText,
-    tokensData,
     tab,
     favoriteTokens,
   });
@@ -246,7 +247,6 @@ function useFilterSortPools({
   marketsTokensLidoAprData,
   glvTokensApyData,
   searchText,
-  tokensData,
   tab,
   favoriteTokens,
 }: {
@@ -259,15 +259,55 @@ function useFilterSortPools({
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvTokensApyData: MarketTokensAPRData | undefined;
   searchText: string;
-  tokensData: TokensData | undefined;
   tab: GmTokenFavoritesTabOption;
   favoriteTokens: string[];
 }) {
   const chainId = useSelector(selectChainId);
 
+  const fuse = useFuse(
+    () =>
+      values(marketsInfo).map((market) => ({
+        id: getGlvOrMarketAddress(market),
+        glvOrMarketAddress: getGlvOrMarketAddress(market),
+        longTokenAddress: market.longTokenAddress,
+        shortTokenAddress: market.shortTokenAddress,
+        indexTokenAddress: isMarketInfo(market)
+          ? market.indexTokenAddress === zeroAddress
+            ? undefined
+            : market.indexTokenAddress
+          : undefined,
+        longTokenName: getToken(chainId, market.longTokenAddress).name,
+        shortTokenName: getToken(chainId, market.shortTokenAddress).name,
+        indexTokenName: isMarketInfo(market)
+          ? market.indexTokenAddress === zeroAddress
+            ? ""
+            : getToken(chainId, market.indexTokenAddress).name
+          : undefined,
+        name: isGlvInfo(market)
+          ? getGlvMarketSubtitle(chainId, market.glvTokenAddress) || getGlvMarketName(chainId, market.glvTokenAddress)
+          : getMarketIndexName({
+              indexToken: getToken(chainId, market.indexTokenAddress),
+              isSpotOnly: market.indexTokenAddress === zeroAddress,
+            }),
+      })),
+    {
+      name: {
+        weight: 2,
+      },
+      indexTokenName: {
+        weight: 2,
+      },
+    },
+    [chainId, keys(marketsInfo).join(",")]
+  );
+
   const sortedTokens = useMemo(() => {
     if (!marketsInfo || !marketTokensData) {
       return [];
+    }
+
+    if (searchText.trim()) {
+      return fuse.search(searchText).map((result) => marketTokensData[result.item.glvOrMarketAddress]);
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
@@ -286,15 +326,17 @@ function useFilterSortPools({
       glvTokensApyData,
     });
   }, [
-    chainId,
-    direction,
-    marketTokensData,
     marketsInfo,
+    marketTokensData,
+    searchText,
+    orderBy,
+    direction,
+    chainId,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     glvTokensApyData,
     marketsTokensLidoAprData,
-    orderBy,
+    fuse,
   ]);
 
   const filteredTokens = useMemo(() => {
@@ -304,63 +346,18 @@ function useFilterSortPools({
 
     return sortedTokens.filter((token) => {
       const market = getByKey(marketsInfo, token?.address);
-      let indexToken: TokenData | undefined;
-      if (isGlv(market)) {
-        indexToken = market.indexToken;
-      } else if (market?.isSpotOnly) {
-        indexToken = undefined;
-      } else {
-        indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-      }
 
-      const longToken = getTokenData(tokensData, market?.longTokenAddress);
-      const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
-
-      if (!market || !longToken || !shortToken) {
+      if (!market) {
         return false;
       }
 
-      const poolName = isGlvInfo(market) ? market.name ?? "GLV" : market.name;
-
-      const indexSymbol = indexToken?.symbol;
-      const indexName = indexToken?.name;
-
-      const longSymbol = longToken.symbol;
-      const longName = longToken.name;
-
-      const shortSymbol = shortToken.symbol;
-      const shortName = shortToken.name;
-
       const marketOrGlvTokenAddress = getGlvOrMarketAddress(market);
-      const indexTokenAddress = isGlv ? undefined : market.indexTokenAddress;
-      const longTokenAddress = market.longTokenAddress;
-      const shortTokenAddress = market.shortTokenAddress;
 
-      let textSearchMatch: boolean;
+      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(marketOrGlvTokenAddress) : true;
 
-      if (!searchText.trim()) {
-        textSearchMatch = true;
-      } else {
-        textSearchMatch =
-          poolName.toLowerCase().includes(searchText.toLowerCase()) ||
-          indexSymbol?.toLowerCase().includes(searchText.toLowerCase()) ||
-          indexName?.toLowerCase().includes(searchText.toLowerCase()) ||
-          longSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-          longName.toLowerCase().includes(searchText.toLowerCase()) ||
-          shortSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-          shortName.toLowerCase().includes(searchText.toLowerCase()) ||
-          (isAddress(searchText) &&
-            (isAddressEqual(marketTokenAddress as Address, searchText) ||
-              isAddressEqual(indexTokenAddress as Address, searchText) ||
-              isAddressEqual(longTokenAddress as Address, searchText) ||
-              isAddressEqual(shortTokenAddress as Address, searchText)));
-      }
-
-      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(marketTokenAddress) : true;
-
-      return textSearchMatch && favoriteMatch;
+      return favoriteMatch;
     });
-  }, [favoriteTokens, marketsInfo, searchText, sortedTokens, tab, tokensData]);
+  }, [favoriteTokens, marketsInfo, searchText, sortedTokens, tab]);
 
   return filteredTokens;
 }
@@ -476,8 +473,8 @@ function GmListItem({
 
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (!market) return;
-    onFavoriteClick(market.marketTokenAddress);
+    if (!marketOrGlvTokenAddress) return;
+    onFavoriteClick(marketOrGlvTokenAddress);
   };
 
   return (

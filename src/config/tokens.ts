@@ -354,6 +354,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
         "https://assets.coingecko.com/coins/images/11224/standard/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tbtc",
     },
+    // TODO: Enable
+    // {
+    //   name: "APE",
+    //   symbol: "APE",
+    //   address: "0x74885b4D524d497261259B38900f54e6dbAd2210",
+    //   decimals: 18,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/24383/standard/apecoin.jpg?1696523566",
+    //   coingeckoUrl: "https://www.coingecko.com/en/coins/apecoin",
+    // },
     {
       name: "GMX LP",
       symbol: "GLP",

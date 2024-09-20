@@ -26,6 +26,7 @@ import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/syntheti
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
@@ -324,31 +325,36 @@ function useFilterSortTokensInfo({
   orderBy: SortField;
   direction: SortDirection;
 }) {
+  const fuse = useFuse(
+    () =>
+      sortedMarketsByIndexToken.map((market, index) => {
+        const marketInfo = getByKey(marketsInfoData, market?.address)!;
+        return {
+          id: index,
+          marketName: isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name,
+        };
+      }),
+    sortedMarketsByIndexToken.map((market) => market.address)
+  );
+
   const filteredTokensInfo = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
       return [];
     }
 
-    let filteredTokens: TokenData[];
-    if (searchKeyword.length < 1 && tab === "all") {
-      filteredTokens = sortedMarketsByIndexToken;
-    } else {
-      filteredTokens = sortedMarketsByIndexToken.filter((market) => {
-        const marketInfo = getByKey(marketsInfoData, market?.address)!;
-        let textSearchMatch = false;
-        if (!searchKeyword.trim()) {
-          textSearchMatch = true;
-        } else {
-          const marketName = isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name;
-          textSearchMatch = marketName.toLowerCase().includes(searchKeyword.toLowerCase());
-        }
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => sortedMarketsByIndexToken[result.item.id])
+      : sortedMarketsByIndexToken;
 
-        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(market.address) : true;
-        return textSearchMatch && favoriteMatch;
-      });
-    }
+    const tabMatched = textMatched.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(item.address);
+      }
 
-    return filteredTokens.map((market) => {
+      return true;
+    });
+
+    return tabMatched.map((market) => {
       const marketInfo = getByKey(marketsInfoData, market?.address)!;
 
       const isGlv = isGlvInfo(marketInfo);
@@ -377,16 +383,17 @@ function useFilterSortTokensInfo({
       };
     });
   }, [
+    sortedMarketsByIndexToken,
+    searchKeyword,
+    fuse,
+    tab,
     favoriteTokens,
     marketsInfoData,
-    marketsTokensAPRData,
-    marketsTokensIncentiveAprData,
-    searchKeyword,
-    sortedMarketsByIndexToken,
-    marketsTokensLidoAprData,
-    tab,
     marketTokensData,
     glvTokensApyData,
+    marketsTokensAPRData,
+    marketsTokensIncentiveAprData,
+    marketsTokensLidoAprData,
   ]);
 
   const sortedTokensInfo = useMemo(() => {

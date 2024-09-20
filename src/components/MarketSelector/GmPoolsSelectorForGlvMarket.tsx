@@ -6,6 +6,7 @@ import { BiChevronDown } from "react-icons/bi";
 import { getNormalizedTokenSymbol } from "config/tokens";
 
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -112,18 +113,32 @@ export function GmPoolsSelectorForGlvMarket({
   const selectedMarketInfo = selectedPool?.marketInfo;
   const marketInfo = selectedMarketInfo && isMarketInfo(selectedMarketInfo) ? selectedMarketInfo : undefined;
 
+  const fuse = useFuse(
+    () =>
+      marketsOptions.map((item, index) => ({
+        id: index,
+        name: item.name,
+        longTokenName: item.marketInfo.longToken.name,
+        shortTokenName: item.marketInfo.shortToken.name,
+      })),
+    marketsOptions?.map((item) => item.name)
+  );
+
   const filteredOptions = useMemo(() => {
-    const lowercaseSearchKeyword = searchKeyword.toLowerCase();
-    return marketsOptions.filter((option) => {
-      const name = option.name.toLowerCase();
-      const textSearchMatch = name.includes(lowercaseSearchKeyword);
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      : marketsOptions;
 
-      const favoriteMatch =
-        tab === "favorites" ? favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo)) : true;
+    const tabMatched = textMatched?.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo));
+      }
 
-      return textSearchMatch && favoriteMatch;
+      return true;
     });
-  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
+
+    return tabMatched;
+  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
 
   const onSelectGmPool = useCallback(
     function onSelectOption(option: MarketOption) {

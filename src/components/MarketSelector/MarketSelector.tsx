@@ -10,6 +10,7 @@ import { useIndexTokensFavorites } from "domain/synthetics/tokens/useIndexTokens
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteIndexTabs } from "components/FavoriteTabs/FavoriteIndexTabs";
@@ -102,16 +103,31 @@ export function MarketSelector({
 
   const marketInfo = marketsOptions.find((option) => option.indexName === selectedIndexName)?.marketInfo;
 
-  const filteredOptions = marketsOptions.filter((option) => {
-    const textSearchMatch =
-      option.indexName.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
-      (!option.marketInfo.isSpotOnly &&
-        option.marketInfo.indexToken.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
+  const fuse = useFuse(
+    () =>
+      marketsOptions.map((item, index) => ({
+        id: index,
+        name: item.indexName,
+        indexTokenName: item.marketInfo.isSpotOnly ? "" : item.marketInfo.indexToken.name,
+      })),
+    marketsOptions?.map((item) => item.marketInfo.indexToken.address)
+  );
 
-    const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.indexToken.address) : true;
+  const filteredOptions = useMemo(() => {
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      : marketsOptions;
 
-    return textSearchMatch && favoriteMatch;
-  });
+    const tabMatched = textMatched?.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(item.marketInfo.marketTokenAddress);
+      }
+
+      return true;
+    });
+
+    return tabMatched;
+  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,

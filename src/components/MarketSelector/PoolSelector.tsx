@@ -7,20 +7,20 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
-  getMarketIndexName,
   getGlvOrMarketAddress,
+  getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
 import { PoolListItem } from "./PoolListItem";
-
-import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
@@ -96,24 +96,32 @@ export function PoolSelector({
     [marketsOptions, selectedMarketAddress]
   );
 
+  const fuse = useFuse(
+    () =>
+      marketsOptions.map((item, index) => ({
+        id: index,
+        name: isGlvInfo(item.marketInfo) ? "glv " + item.name : item.name,
+        longTokenName: item.marketInfo.longToken.name,
+        shortTokenName: item.marketInfo.shortToken.name,
+      })),
+    marketsOptions?.map((item) => item.indexName)
+  );
+
   const filteredOptions = useMemo(() => {
-    const lowercaseSearchKeyword = searchKeyword.toLowerCase();
-    return marketsOptions.filter((option) => {
-      let name = option.name.toLowerCase();
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      : marketsOptions;
 
-      const isGlv = isGlvInfo(option.marketInfo);
-
-      if (isGlv) {
-        name = "glv " + name;
+    const tabMatched = textMatched?.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo));
       }
 
-      const textSearchMatch = name.includes(lowercaseSearchKeyword);
-      const favoriteMatch =
-        tab === "favorites" ? favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo)) : true;
-
-      return textSearchMatch && favoriteMatch;
+      return true;
     });
-  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
+
+    return tabMatched;
+  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);

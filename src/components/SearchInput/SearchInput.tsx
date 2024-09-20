@@ -60,9 +60,9 @@ export default function SearchInput({
         onChange={handleChange}
         onKeyDown={onKeyDown}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx("placeholder-slate-100 block w-full bg-scroll bg-[12px_center] bg-no-repeat", {
-          "bg-[length:20px_20px] py-10 pl-40 pr-10 text-16": size === "m",
-          "bg-[length:15px] py-[8.5px] pl-34 pr-10 text-14 ": size === "s",
+        className={cx("block w-full bg-scroll bg-[12px_center] bg-no-repeat placeholder-slate-100", {
+          "bg-[length:20px_20px] py-10 pl-40 pr-34 text-16": size === "m",
+          "bg-[length:15px] py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
         })}
         style={STYLE}
       />

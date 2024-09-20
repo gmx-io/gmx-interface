@@ -20,7 +20,8 @@ import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteIndexTabs } from "components/FavoriteTabs/FavoriteIndexTabs";
@@ -283,24 +284,25 @@ function useFilterSortTokens({
   direction: SortDirection;
   orderBy: SortField;
 }) {
-  const filteredTokens: Token[] | undefined = useMemo(
-    () =>
-      options?.filter((item) => {
-        let textSearchMatch = false;
-        if (!searchKeyword.trim()) {
-          textSearchMatch = true;
-        } else {
-          textSearchMatch =
-            item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-            item.symbol.toLowerCase().includes(searchKeyword.toLowerCase());
-        }
-
-        const favoriteMatch = tab === "favorites" && !isSwap ? favoriteTokens?.includes(item.address) : true;
-
-        return textSearchMatch && favoriteMatch;
-      }),
-    [favoriteTokens, isSwap, options, searchKeyword, tab]
+  const fuse = useFuse(
+    () => options?.map((item, index) => ({ id: index, name: item.name, symbol: item.symbol })) || EMPTY_ARRAY,
+    options?.map((item) => item.address)
   );
+
+  const filteredTokens: Token[] | undefined = useMemo(() => {
+    const textMatched =
+      searchKeyword.trim() && options ? fuse.search(searchKeyword).map((result) => options[result.item.id]) : options;
+
+    const tabMatched = textMatched?.filter((item) => {
+      if (tab === "favorites" && !isSwap) {
+        return favoriteTokens?.includes(item.address);
+      }
+
+      return true;
+    });
+
+    return tabMatched;
+  }, [favoriteTokens, fuse, isSwap, options, searchKeyword, tab]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
