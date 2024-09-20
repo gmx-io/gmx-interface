@@ -3,6 +3,7 @@ import cx from "classnames";
 import React, { useCallback, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 
+import { USD_DECIMALS } from "config/factors";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectTradeboxChooseSuitableMarket,
@@ -23,7 +24,6 @@ import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -32,6 +32,9 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
+import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
@@ -96,6 +99,7 @@ export default function ChartTokenSelector(props: Props) {
       }
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
+      footerContent={<MissedCoinsHint place={MissedCoinsPlace.marketDropdown} withIcon />}
     >
       <MarketsList options={options} />
     </SelectorBase>
@@ -119,6 +123,12 @@ function MarketsList(props: { options: Token[] | undefined }) {
   const isSwap = tradeType === TradeType.Swap;
 
   const sortedTokens = useFilterSortTokens({ options, searchKeyword, tab, isSwap, favoriteTokens, direction, orderBy });
+
+  useMissedCoinsSearch({
+    searchText: searchKeyword,
+    isEmpty: !sortedTokens?.length && tab == "all",
+    place: MissedCoinsPlace.marketDropdown,
+  });
 
   const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const marketsInfoData = useMarketsInfoData();
@@ -270,6 +280,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
           {options && options.length > 0 && !sortedTokens?.length && (
             <div className="py-15 text-center text-gray-400">
               <Trans>No markets matched.</Trans>
+              <MissedCoinsHint place={MissedCoinsPlace.marketDropdown} className="pl-4 pt-4" />
             </div>
           )}
         </div>

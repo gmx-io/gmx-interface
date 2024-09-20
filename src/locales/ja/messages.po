@@ -1927,6 +1927,10 @@ msgstr "この注文が執行された場合、少なくとも{0} {1}を受け�
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 msgstr "ポジションは参照価格{0}でオープンされ、価格インパクトを考慮していません。最大スリッページは-{1}%です。<0/><1/>スリッページの設定は、ウォレットを接続した後、ページ右上のアドレスをクリックして表示される設定で行うことができます。<2/><3/><4>詳細を読む</4>"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Error submitting feedback"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
 msgstr "指値注文が作成できませんでした。"
@@ -2720,6 +2724,10 @@ msgstr ""
 msgid "T"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Please enter the names of the coins you'd like to see added:"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount created"
 msgstr ""
@@ -2734,6 +2742,10 @@ msgstr "利益"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
+msgstr ""
+
+#: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
+msgid "Can’t find the coin you need? Let us know"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3037,6 +3049,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Let us know which coins you're missing"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -4605,6 +4621,10 @@ msgstr "トレード"
 msgid "Telegram Groups"
 msgstr "Telegramグループ"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter at least 2 symbols"
+msgstr ""
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Search Action"
@@ -5395,6 +5415,10 @@ msgstr "利益喪失および{action}"
 msgid "Win/Loss"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Names could be separated by commas or spaces"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from decentralized exchanges"
 msgstr ""
@@ -5539,6 +5563,7 @@ msgstr ""
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx

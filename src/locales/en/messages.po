@@ -1927,6 +1927,10 @@ msgstr "You will receive at least {0} {1} if this order is executed. The executi
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Error submitting feedback"
+msgstr "Error submitting feedback"
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
 msgstr "Limit order creation failed."
@@ -2720,6 +2724,10 @@ msgstr "Max leverage: {0}x"
 msgid "T"
 msgstr "T"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Please enter the names of the coins you'd like to see added:"
+msgstr "Please enter the names of the coins you'd like to see added:"
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount created"
 msgstr "Subaccount created"
@@ -2735,6 +2743,10 @@ msgstr "Profit"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
 msgstr "Order creation failed."
+
+#: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
+msgid "Can’t find the coin you need? Let us know"
+msgstr "Can’t find the coin you need? Let us know"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Delegated to"
@@ -3038,6 +3050,10 @@ msgstr "Avg. Size"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Let us know which coins you're missing"
+msgstr "Let us know which coins you're missing"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable withdraw sent."
@@ -4608,6 +4624,10 @@ msgstr "Trades"
 msgid "Telegram Groups"
 msgstr "Telegram Groups"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter at least 2 symbols"
+msgstr "Enter at least 2 symbols"
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Search Action"
@@ -5398,6 +5418,10 @@ msgstr "Forfeit profit and {action}"
 msgid "Win/Loss"
 msgstr "Win/Loss"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Names could be separated by commas or spaces"
+msgstr "Names could be separated by commas or spaces"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from decentralized exchanges"
 msgstr "Buy GMX from decentralized exchanges"
@@ -5542,6 +5566,7 @@ msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>
 msgid "{daysConsidered}d accrued Fees"
 msgstr "{daysConsidered}d accrued Fees"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx

@@ -16,10 +16,10 @@ import { useChainId } from "lib/chains";
 
 import { BiChevronDown, BiChevronLeft, BiChevronRight } from "react-icons/bi";
 
-import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
-import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
+import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 
 const MIN_FADE_AREA = 24; //px
 const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px

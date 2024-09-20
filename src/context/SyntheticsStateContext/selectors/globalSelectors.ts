@@ -32,6 +32,9 @@ export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positi
 export const selectClosingPositionKey = (s: SyntheticsState) => s.globals.closingPositionKey;
 export const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.setClosingPositionKey;
 
+export const selectMissedCoinsModalPlace = (s: SyntheticsState) => s.globals.missedCoinsModalPlace;
+export const selectSetMissedCoinsModalPlace = (s: SyntheticsState) => s.globals.setMissedCoinsModalPlace;
+
 export const selectGasLimits = (s: SyntheticsState) => s.globals.gasLimits;
 export const selectGasPrice = (s: SyntheticsState) => s.globals.gasPrice;
 

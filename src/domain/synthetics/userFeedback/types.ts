@@ -29,3 +29,8 @@ export type Question = {
   questionType: QuestionType;
   question: string;
 };
+
+export enum MissedCoinsPlace {
+  marketDropdown = "marketDropdown",
+  payToken = "payToken",
+}
