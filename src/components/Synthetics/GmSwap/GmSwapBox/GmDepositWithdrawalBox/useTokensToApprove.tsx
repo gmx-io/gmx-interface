@@ -63,7 +63,7 @@ export const useTokensToApprove = ({
           }
         }
       } else if (operation === Operation.Withdrawal) {
-        addresses.push(marketToken.address);
+        addresses.push(glvToken ? glvToken.address : marketToken.address);
       }
 
       return uniq(addresses);
@@ -76,6 +76,7 @@ export const useTokensToApprove = ({
       shortTokenAmount,
       shortToken,
       glvInfo,
+      glvToken,
       isMarketTokenDeposit,
       marketTokenAmount,
     ]
@@ -132,7 +133,7 @@ export const useTokensToApprove = ({
         }
       } else if (operation === Operation.Withdrawal) {
         if (glvInfo && shouldApproveGlvToken) {
-          addresses.push(marketToken.address);
+          addresses.push(glvToken.address);
         } else if (!glvInfo && shouldApproveMarketToken) {
           addresses.push(marketToken.address);
         }
