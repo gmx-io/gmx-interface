@@ -1,26 +1,21 @@
-import { formatAmountForMetrics, metrics, MissedCoinEvent } from "lib/metrics";
-import { MissedCoinsPlace } from "./types";
-import debounce from "lodash/debounce";
 import { USD_DECIMALS } from "config/factors";
+import { formatAmountForMetrics, metrics, MissedCoinEvent } from "lib/metrics";
+import debounce from "lodash/debounce";
+import { MissedCoinsPlace } from "./types";
+import { COIN_REGEXP } from "./utils";
 
 export function sendMissedCoinsFeedback({
   totalVolume,
   monthVolume,
-  coinsInput,
+  coins,
   place,
 }: {
   totalVolume: bigint | undefined;
   monthVolume: bigint | undefined;
   place: MissedCoinsPlace;
-  coinsInput: string;
+  coins: string[];
 }) {
-  const coins = coinsInput.trim().toUpperCase().split(/,|\W/);
-
   coins.forEach((coin) => {
-    if (coin.length === 0) {
-      return;
-    }
-
     metrics.pushEvent<MissedCoinEvent>({
       event: "missedCoin.popup",
       isError: false,
@@ -49,7 +44,7 @@ export const sendMissedCoinSearchDebounced = debounce(
   }) => {
     const coin = searchText.trim().toUpperCase();
 
-    if (coin.length === 0) {
+    if (coin.length === 0 || coin.length > 10 || !coin.match(COIN_REGEXP)) {
       return;
     }
 

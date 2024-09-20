@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
-import { MAX_FEEDBACK_LENGTH } from "config/ui";
 import {
   selectAccountStats,
   selectLastMonthAccountStats,
@@ -10,6 +9,7 @@ import {
   selectSetMissedCoinsModalPlace,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { COIN_REGEXP } from "domain/synthetics/userFeedback";
 import { sendMissedCoinsFeedback } from "domain/synthetics/userFeedback/requests";
 import { helperToast } from "lib/helperToast";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -31,9 +31,10 @@ export function MissedCoinsModal() {
   );
 
   const [coinsInputText, setCoinsInputText] = useState<string>("");
+  const coins = coinsInputText.trim().toUpperCase().split(/,|\W/);
 
   const onChangeCoinsInput = useCallback((val: string) => {
-    if (val.length > MAX_FEEDBACK_LENGTH) {
+    if (val.length > 100) {
       return;
     }
 
@@ -42,24 +43,55 @@ export function MissedCoinsModal() {
 
   const onSubmit = useCallback(() => {
     if (!missedCoinsModalPlace) {
-      helperToast.error(t`Error submitting feedback`);
+      helperToast.error(t`Error submitting coins`);
       return;
     }
 
     sendMissedCoinsFeedback({
       place: missedCoinsModalPlace,
-      coinsInput: coinsInputText,
+      coins,
       totalVolume: accountStats?.volume,
       monthVolume: lastMonthAccountStats?.volume,
     });
 
     setIsVisible(false);
-  }, [accountStats?.volume, coinsInputText, lastMonthAccountStats?.volume, missedCoinsModalPlace, setIsVisible]);
+  }, [accountStats?.volume, coins, lastMonthAccountStats?.volume, missedCoinsModalPlace, setIsVisible]);
+
+  const error = useMemo(() => {
+    if (coinsInputText.trim().length === 0) {
+      return t`Enter a value`;
+    }
+
+    if (coins.length > 10) {
+      return t`Enter up to 10 coins`;
+    }
+
+    if (coins.some((coin) => coin.length > 10)) {
+      return t`Max 10 symbols in name`;
+    }
+
+    if (coins.some((coin) => coin.length === 0 || !coin.match(COIN_REGEXP))) {
+      return t`Enter a valid coin names`;
+    }
+
+    const { isUnique } = coins.reduce(
+      ({ cache, isUnique }, coin) => {
+        return !isUnique || cache[coin]
+          ? { cache, isUnique: false }
+          : { cache: { ...cache, [coin]: coin }, isUnique: true };
+      },
+      { cache: {}, isUnique: true } as { cache: any; isUnique: boolean }
+    );
+
+    if (!isUnique) {
+      return t`Enter unique coins`;
+    }
+  }, [coins, coinsInputText]);
 
   const submitButtonState = useMemo(() => {
-    if (coinsInputText.trim().length < 2) {
+    if (error) {
       return {
-        text: t`Enter at least 2 symbols`,
+        text: error,
         disabled: true,
       };
     }
@@ -68,7 +100,7 @@ export function MissedCoinsModal() {
       text: t`Submit`,
       disabled: false,
     };
-  }, [coinsInputText]);
+  }, [error]);
 
   useEffect(
     function resetEff() {
