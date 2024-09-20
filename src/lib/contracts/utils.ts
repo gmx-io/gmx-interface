@@ -7,8 +7,7 @@ import {
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { BaseContract, Contract, Provider, Wallet } from "ethers";
 import { bigMath } from "lib/bigmath";
-import { MetricEventParams } from "lib/metrics";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { withRetry } from "viem";
 
 export async function getGasPrice(provider: Provider, chainId: number) {
@@ -22,7 +21,7 @@ export async function getGasPrice(provider: Provider, chainId: number) {
       const isInvalidBlockError = error?.message?.includes("invalid value for value.hash");
 
       if (isInvalidBlockError) {
-        emitMetricEvent<MetricEventParams>({ event: "error.getFeeData.value.hash", isCounter: true });
+        emitMetricCounter({ event: "error.getFeeData.value.hash" });
       }
 
       return isInvalidBlockError;

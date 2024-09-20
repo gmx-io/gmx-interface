@@ -5,7 +5,7 @@ import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/number
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
-import { METRIC_WINDOW_EVENT_NAME } from "./emitMetricEvent";
+import { METRIC_WINDOW_COUNTER_EVENT_NAME, METRIC_WINDOW_EVENT_NAME } from "./emitMetricEvent";
 import { prepareErrorMetricData } from "./errorReporting";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData } from "./types";
@@ -197,12 +197,14 @@ export class Metrics {
 
   subscribeToEvents = () => {
     window.addEventListener(METRIC_WINDOW_EVENT_NAME, this.handleWindowEvent);
+    window.addEventListener(METRIC_WINDOW_COUNTER_EVENT_NAME, this.handleWindowCounter);
     window.addEventListener("error", this.handleError);
     window.addEventListener("unhandledrejection", this.handleUnhandledRejection);
   };
 
   unsubscribeFromEvents = () => {
     window.removeEventListener(METRIC_WINDOW_EVENT_NAME, this.handleWindowEvent);
+    window.removeEventListener(METRIC_WINDOW_COUNTER_EVENT_NAME, this.handleWindowCounter);
     window.removeEventListener("error", this.handleError);
     window.removeEventListener("unhandledrejection", this.handleUnhandledRejection);
   };
@@ -210,6 +212,11 @@ export class Metrics {
   handleWindowEvent = (event: Event) => {
     const { detail } = event as CustomEvent;
     this.pushEvent<MetricEventParams>(detail);
+  };
+
+  handleWindowCounter = (event: Event) => {
+    const { detail } = event as CustomEvent;
+    this.pushCounter(detail.event);
   };
 
   handleError = (event) => {
