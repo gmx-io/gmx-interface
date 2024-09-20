@@ -14,7 +14,8 @@ export type MetricEventParams = {
   event: string;
   data?: object;
   time?: number;
-  isError: boolean;
+  isError?: boolean;
+  isCounter?: boolean;
 };
 
 const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
@@ -136,6 +137,10 @@ export class Metrics {
       throw new Error("Metrics: Fetcher is not initialized to send metric");
     }
 
+    if (params.isCounter) {
+      return this.fetcher.fetchPostCounter({ event: params.event, abFlags: this.globalMetricData.abFlags }, this.debug);
+    }
+
     const { time, isError, data, event } = params;
     const wallets = await getWalletNames();
 
@@ -147,7 +152,7 @@ export class Metrics {
         wallet: wallets.current,
         event: event,
         version: getAppVersion(),
-        isError,
+        isError: Boolean(isError),
         time,
         customFields: {
           ...(data ? this.serializeCustomFields(data) : {}),
@@ -159,7 +164,14 @@ export class Metrics {
     );
   };
 
-  pushError = async (error: unknown, errorSource: string) => {
+  pushCounter(event: string) {
+    this.pushEvent<MetricEventParams>({
+      event,
+      isCounter: true,
+    });
+  }
+
+  pushError = (error: unknown, errorSource: string) => {
     const errorData = prepareErrorMetricData(error);
 
     if (!errorData) {
