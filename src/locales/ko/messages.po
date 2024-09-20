@@ -286,6 +286,10 @@ msgstr "최대 풀 수용량인 {0}에 도달했습니다<0/><1/>다른 토큰�
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "해당 Gambit 프로토콜은 베타 버전입니다. 참여하기 전에 <0>스테이킹 세부사항</0>을 참조해주세요."
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a value"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
 msgstr "NFT 주소 입력"
@@ -1928,8 +1932,8 @@ msgid "The position will be opened at a reference price of {0}, not accounting f
 msgstr "포지션은 참조 가격 {0}에서 열릴 것이며, 가격 영향을 고려하지 않고 최대 슬리피지는 -{1}%입니다.<0/><1/>슬리피지는 설정에서 구성할 수 있으며, 지갑 연결 후 페이지 우측 상단의 주소를 클릭하여 찾을 수 있습니다.<2/><3/><4>더 읽기</4>."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Error submitting feedback"
-msgstr ""
+#~ msgid "Error submitting feedback"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2417,6 +2421,10 @@ msgstr "트랜잭션 전송됨."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter up to 10 coins"
 msgstr ""
 
 #: src/pages/Actions/SyntheticsActions.tsx
@@ -3909,6 +3917,10 @@ msgstr ""
 msgid "Capital Used"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Max 10 symbols in name"
+msgstr ""
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4622,8 +4634,8 @@ msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter at least 2 symbols"
-msgstr ""
+#~ msgid "Enter at least 2 symbols"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -4793,6 +4805,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Error submitting coins"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -6985,6 +7001,10 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "추천 약관"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter unique coins"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
@@ -7220,6 +7240,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a valid coin names"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx

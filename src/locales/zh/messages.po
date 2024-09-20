@@ -286,6 +286,10 @@ msgstr "已达到{0}<0/><1/>池的最大容量，请使用另一个代币铸币G
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节</0>"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a value"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
 msgstr "输入NFT地址"
@@ -1928,8 +1932,8 @@ msgid "The position will be opened at a reference price of {0}, not accounting f
 msgstr "该仓位将在参考价格 {0} 开仓，不考虑价格影响，最大滑点为-{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>阅读更多</4>"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Error submitting feedback"
-msgstr ""
+#~ msgid "Error submitting feedback"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2417,6 +2421,10 @@ msgstr "交易送出"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter up to 10 coins"
 msgstr ""
 
 #: src/pages/Actions/SyntheticsActions.tsx
@@ -3909,6 +3917,10 @@ msgstr ""
 msgid "Capital Used"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Max 10 symbols in name"
+msgstr ""
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4622,8 +4634,8 @@ msgid "Telegram Groups"
 msgstr "电报群"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter at least 2 symbols"
-msgstr ""
+#~ msgid "Enter at least 2 symbols"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -4793,6 +4805,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Error submitting coins"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -6985,6 +7001,10 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "推荐条款"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter unique coins"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
@@ -7220,6 +7240,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a valid coin names"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx

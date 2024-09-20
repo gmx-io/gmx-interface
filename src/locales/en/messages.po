@@ -286,6 +286,10 @@ msgstr "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another t
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a value"
+msgstr "Enter a value"
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
 msgstr "Enter NFT Address"
@@ -1928,8 +1932,8 @@ msgid "The position will be opened at a reference price of {0}, not accounting f
 msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Error submitting feedback"
-msgstr "Error submitting feedback"
+#~ msgid "Error submitting feedback"
+#~ msgstr "Error submitting feedback"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2418,6 +2422,10 @@ msgstr "Transaction sent."
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
 msgstr "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter up to 10 coins"
+msgstr "Enter up to 10 coins"
 
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
@@ -3912,6 +3920,10 @@ msgstr "You have an existing position in the {0} market pool.<0><1>Switch to {1}
 msgid "Capital Used"
 msgstr "Capital Used"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Max 10 symbols in name"
+msgstr "Max 10 symbols in name"
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4625,8 +4637,8 @@ msgid "Telegram Groups"
 msgstr "Telegram Groups"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter at least 2 symbols"
-msgstr "Enter at least 2 symbols"
+#~ msgid "Enter at least 2 symbols"
+#~ msgstr "Enter at least 2 symbols"
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -4797,6 +4809,10 @@ msgstr "Top PnL (%)"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Error submitting coins"
+msgstr "Error submitting coins"
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "WARNING: High Fees"
@@ -6991,6 +7007,10 @@ msgstr "GLP Vault"
 msgid "Referral Terms"
 msgstr "Referral Terms"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter unique coins"
+msgstr "Enter unique coins"
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
@@ -7227,6 +7247,10 @@ msgstr "Click on the Position to select its market, then use the trade box to in
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "Limit Decrease"
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a valid coin names"
+msgstr "Enter a valid coin names"
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
