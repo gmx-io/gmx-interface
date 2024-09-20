@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useLocalStorage } from "react-use";
+import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 
 export function useLocalStorageByChainId<T>(
   chainId: number,
@@ -50,4 +51,8 @@ export function useLocalStorageSerializeKey<T>(
   key = JSON.stringify(key);
 
   return useLocalStorage<T>(key, initialValue, opts);
+}
+
+export function isDebugMode() {
+  return localStorage.getItem(JSON.stringify(SHOW_DEBUG_VALUES_KEY)) === "true";
 }

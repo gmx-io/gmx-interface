@@ -106,7 +106,14 @@ export interface OracleFetcher {
   fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchPostTiming(body: { event: string; time: number; abFlags: Record<string, boolean> }): Promise<Response>;
-  fetchPostCounter(body: { event: string; abFlags: Record<string, boolean> }, debug?: boolean): Promise<Response>;
+  fetchPostCounter(
+    body: {
+      event: string;
+      abFlags: Record<string, boolean>;
+      customFields?: Record<string, boolean | string | number>;
+    },
+    debug?: boolean
+  ): Promise<Response>;
 }
 
 export class OracleKeeperFetcher implements OracleFetcher {
@@ -248,7 +255,14 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPostCounter(body: { event: string; abFlags: Record<string, boolean> }, debug?: boolean): Promise<Response> {
+  fetchPostCounter(
+    body: {
+      event: string;
+      abFlags: Record<string, boolean>;
+      customFields?: Record<string, boolean | string | number>;
+    },
+    debug?: boolean
+  ): Promise<Response> {
     if (debug) {
       // eslint-disable-next-line no-console
       console.log("sendCounter", body);

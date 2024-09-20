@@ -5,11 +5,13 @@ import { sleep } from "lib/sleep";
 import { promiseWithResolvers } from "lib/utils";
 
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { MAX_TIMEOUT } from "./Multicall";
+import { MAX_TIMEOUT, MulticallProviderUrls } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { getAbFlags } from "config/ab";
+import { getBestRpcUrl } from "lib/rpc/bestRpcTracker";
+import { getFallbackRpcUrl } from "config/chains";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
 
@@ -56,9 +58,15 @@ export async function executeMulticallWorker(
 ): Promise<MulticallResult<any> | undefined> {
   const id = uniqueId("multicall-");
 
+  const providerUrls: MulticallProviderUrls = {
+    primary: getBestRpcUrl(chainId),
+    secondary: getFallbackRpcUrl(chainId),
+  };
+
   executorWorker.postMessage({
     id,
     chainId,
+    providerUrls,
     request,
     abFlags: getAbFlags(),
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
