@@ -1,7 +1,12 @@
-import { METRIC_WINDOW_EVENT_NAME } from "lib/metrics/emitMetricEvent";
+import {
+  METRIC_EVENT_DISPATCH_NAME,
+  METRIC_COUNTER_DISPATCH_NAME,
+  METRIC_TIMING_DISPATCH_NAME,
+} from "lib/metrics/emitMetricEvent";
 
 import { MAX_TIMEOUT, Multicall, MulticallProviderUrls } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
+import { isWebWorker } from "config/env";
 
 async function executeMulticall(
   chainId: number,
@@ -40,9 +45,25 @@ async function run(event) {
   }
 }
 
-globalThis.addEventListener(METRIC_WINDOW_EVENT_NAME, (event) => {
-  postMessage({
-    isMetrics: true,
-    detail: (event as CustomEvent).detail,
+if (isWebWorker) {
+  globalThis.addEventListener(METRIC_EVENT_DISPATCH_NAME, (event) => {
+    postMessage({
+      isMetrics: true,
+      detail: (event as CustomEvent).detail,
+    });
   });
-});
+
+  globalThis.addEventListener(METRIC_COUNTER_DISPATCH_NAME, (event) => {
+    postMessage({
+      isCounter: true,
+      detail: (event as CustomEvent).detail,
+    });
+  });
+
+  globalThis.addEventListener(METRIC_TIMING_DISPATCH_NAME, (event) => {
+    postMessage({
+      isTiming: true,
+      detail: (event as CustomEvent).detail,
+    });
+  });
+}

@@ -12,9 +12,9 @@ import CustomErrors from "abis/CustomErrors.json";
 import { MulticallErrorEvent, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { getStaticOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { serializeMulticallErrors } from "./utils";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
+import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -124,19 +124,17 @@ export class Multicall {
     restoreTimeout: 5 * 60 * 1000, // 5 minutes
     eventsThreshold: 3,
     onFallback: () => {
-      getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
-        event: `multicall.fallbackRpcMode.on`,
-        abFlags: this.abFlags,
-        customFields: {
+      emitMetricCounter({
+        event: "multicall.fallbackRpcMode.on",
+        data: {
           isInMainThread: !isWebWorker,
         },
       });
     },
     onRestore: () => {
-      getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
-        event: `multicall.fallbackRpcMode.off`,
-        abFlags: this.abFlags,
-        customFields: {
+      emitMetricCounter({
+        event: "multicall.fallbackRpcMode.off",
+        data: {
           isInMainThread: !isWebWorker,
         },
       });
@@ -209,11 +207,29 @@ export class Multicall {
       event: "call" | "timeout" | "error",
       { requestType, rpcProvider }: { requestType: "initial" | "retry"; rpcProvider: string }
     ) => {
-      getStaticOracleKeeperFetcher(this.chainId).fetchPostCounter({
+      emitMetricCounter({
         event: `multicall.request.${event}`,
-        abFlags: this.abFlags,
-        customFields: {
+        data: {
           isInMainThread: !isWebWorker,
+          requestType,
+          rpcProvider,
+        },
+      });
+    };
+
+    const sendTiming = ({
+      time,
+      requestType,
+      rpcProvider,
+    }: {
+      time: number;
+      requestType: "initial" | "retry";
+      rpcProvider: string;
+    }) => {
+      emitMetricTiming({
+        event: "multicall.request.timing",
+        time,
+        data: {
           requestType,
           rpcProvider,
         },
@@ -291,33 +307,46 @@ export class Multicall {
 
       const fallbackClient = Multicall.getViemClient(this.chainId, fallbackProviderUrl);
 
-      return fallbackClient.multicall({ contracts: encodedPayload as any }).catch((_viemError) => {
-        const e = new Error(_viemError.message.slice(0, 150));
-        // eslint-disable-next-line no-console
-        console.groupCollapsed("multicall fallback error:");
-        // eslint-disable-next-line no-console
-        console.error(e);
-        // eslint-disable-next-line no-console
-        console.groupEnd();
+      const durationStart = performance.now();
 
-        emitMetricEvent<MulticallErrorEvent>({
-          event: "multicall.error",
-          isError: true,
-          data: {
+      return fallbackClient
+        .multicall({ contracts: encodedPayload as any })
+        .then((response) => {
+          sendTiming({
+            time: Math.round(performance.now() - durationStart),
             requestType: "retry",
             rpcProvider: fallbackProviderName,
-            isInMainThread: !isWebWorker,
-            errorMessage: _viemError.message,
-          },
-        });
+          });
 
-        sendCounterEvent("error", {
-          requestType: "retry",
-          rpcProvider: fallbackProviderName,
-        });
+          return response;
+        })
+        .catch((_viemError) => {
+          const e = new Error(_viemError.message.slice(0, 150));
+          // eslint-disable-next-line no-console
+          console.groupCollapsed("multicall fallback error:");
+          // eslint-disable-next-line no-console
+          console.error(e);
+          // eslint-disable-next-line no-console
+          console.groupEnd();
 
-        throw e;
-      });
+          emitMetricEvent<MulticallErrorEvent>({
+            event: "multicall.error",
+            isError: true,
+            data: {
+              requestType: "retry",
+              rpcProvider: fallbackProviderName,
+              isInMainThread: !isWebWorker,
+              errorMessage: _viemError.message,
+            },
+          });
+
+          sendCounterEvent("error", {
+            requestType: "retry",
+            rpcProvider: fallbackProviderName,
+          });
+
+          throw e;
+        });
     };
 
     sendCounterEvent("call", {
@@ -325,11 +354,21 @@ export class Multicall {
       rpcProvider: rpcProviderName,
     });
 
+    const durationStart = performance.now();
+
     const result = await Promise.race([
       client.multicall({ contracts: encodedPayload as any }),
       sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
     ])
-      .then(processResponse)
+      .then((response) => {
+        sendTiming({
+          time: Math.round(performance.now() - durationStart),
+          requestType: "initial",
+          rpcProvider: rpcProviderName,
+        });
+
+        return processResponse(response);
+      })
       .catch((_viemError) => {
         const e = new Error(_viemError.message.slice(0, 150));
 

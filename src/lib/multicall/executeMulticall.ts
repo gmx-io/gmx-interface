@@ -2,13 +2,12 @@ import entries from "lodash/entries";
 import throttle from "lodash/throttle";
 import values from "lodash/values";
 import { stableHash } from "swr/_internal";
-import { getAbFlags } from "config/ab";
 import chunk from "lodash/chunk";
 
 import { isDevelopment } from "config/env";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { promiseWithResolvers } from "lib/utils";
-import { getStaticOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 
 import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
@@ -272,22 +271,32 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     throttledExecuteBackgroundChainsMulticalls();
   }
 
+  emitMetricCounter({
+    event: "multicall.batched.call",
+    data: {
+      priority,
+    },
+  });
+
   const durationStart = performance.now();
 
   return promise.then((result) => {
     const duration = performance.now() - durationStart;
-    const abFlags = getAbFlags();
 
     if (result.success) {
-      getStaticOracleKeeperFetcher(chainId).fetchPostTiming({
-        event: `multicall.${priority}.execute.timing`,
+      emitMetricTiming({
+        event: "multicall.batched.timing",
         time: Math.round(duration),
-        abFlags,
+        data: {
+          priority,
+        },
       });
     } else {
-      getStaticOracleKeeperFetcher(chainId).fetchPostCounter({
-        event: `multicall.${priority}.execute.error`,
-        abFlags,
+      emitMetricCounter({
+        event: "multicall.batched.error",
+        data: {
+          priority,
+        },
       });
     }
 
