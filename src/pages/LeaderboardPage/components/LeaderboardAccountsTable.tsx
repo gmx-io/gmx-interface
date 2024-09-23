@@ -173,7 +173,7 @@ export function LeaderboardAccountsTable({
       <div className="TableBox__head">
         <SearchInput
           placeholder={t`Search Address`}
-          className="max-w-lg"
+          className="max-w-lg *:!text-16"
           value={search}
           setValue={setSearch}
           onKeyDown={handleKeyDown}
@@ -395,11 +395,11 @@ const TableRow = memo(
 
 const EmptyRow = memo(() => {
   return (
-    <tr className="Table_tr">
-      <td colSpan={7} className="Table_no-results-row">
+    <TableTr hoverable={false} bordered={false}>
+      <TableTd colSpan={7}>
         <Trans>No results found</Trans>
-      </td>
-    </tr>
+      </TableTd>
+    </TableTr>
   );
 });
 

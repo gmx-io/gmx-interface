@@ -67,7 +67,7 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useIndexTokensFavorites();
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -120,7 +120,7 @@ export function MarketSelector({
 
     const tabMatched = textMatched?.filter((item) => {
       if (tab === "favorites") {
-        return favoriteTokens?.includes(item.marketInfo.marketTokenAddress);
+        return favoriteTokens?.includes(item.marketInfo.indexToken.address);
       }
 
       return true;
@@ -150,17 +150,6 @@ export function MarketSelector({
       }
     }
   };
-
-  const handleFavoriteClick = useCallback(
-    (address: string) => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
 
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
@@ -192,7 +181,7 @@ export function MarketSelector({
               isFavorite={favoriteTokens?.includes(option.marketInfo.indexToken.address)}
               isInFirstHalf={marketIndex < filteredOptions.length / 2}
               onSelectOption={onSelectOption}
-              onFavoriteClick={handleFavoriteClick}
+              onFavoriteClick={toggleFavoriteToken}
             />
           ))}
         </div>
