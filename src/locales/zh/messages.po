@@ -1356,6 +1356,10 @@ msgstr ""
 msgid "GMX Announcements and Updates"
 msgstr "GMX公告和更新"
 
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR will be airdropped as {airdropTokenTitle} and T tokens. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/Stake/StakeV1.jsx
 msgid "Claim failed"
 msgstr "领取失败"
@@ -3097,6 +3101,10 @@ msgstr ""
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "你的esGMX（IOU）余额在提领后将减少您的领回金额，这是可预期的"
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "TBTC LP incentives"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
@@ -4609,10 +4617,6 @@ msgstr ""
 msgid "Sell order executed"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
-msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound submitted!"
 msgstr ""
@@ -5034,10 +5038,6 @@ msgstr "最低要求抵押品"
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx

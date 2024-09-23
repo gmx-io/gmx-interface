@@ -2,15 +2,16 @@ import { Trans, t } from "@lingui/macro";
 import { addDays, formatDistanceToNowStrict } from "date-fns";
 import { useCallback, useMemo } from "react";
 
+import { ETHENA_DASHBOARD_URL, isEthenaSatsIncentivizedMarket } from "config/ethena";
 import { getIncentivesV2Url } from "config/links";
 import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/markets";
+import { TBTC_INFORMATION_URL, isTbtcIncentivizedMarket } from "config/tbtc";
+import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
-import { ETHENA_DASHBOARD_URL, isEthenaSatsIncentivizedMarket } from "config/ethena";
-import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -54,6 +55,7 @@ export function AprInfo({
   const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[tokenAddress] !== undefined;
   const isLidoApr = lidoApr !== undefined && lidoApr > 0n;
   const isEthenaSatsIncentive = isEthenaSatsIncentivizedMarket(tokenAddress);
+  const isTbtcIncentive = isTbtcIncentivizedMarket(tokenAddress);
 
   const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
@@ -86,14 +88,22 @@ export function AprInfo({
             </Trans>
           </div>
         )}
-        {isIncentiveActive && (
-          <div>
-            <Trans>
-              The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
-              <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
-            </Trans>
-          </div>
-        )}
+        {isIncentiveActive &&
+          (isTbtcIncentive ? (
+            <div>
+              <Trans>
+                The Bonus APR will be airdropped as {airdropTokenTitle} and T tokens.{" "}
+                <ExternalLink href={TBTC_INFORMATION_URL}>Read more</ExternalLink>.
+              </Trans>
+            </div>
+          ) : (
+            <div>
+              <Trans>
+                The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
+                <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
+              </Trans>
+            </div>
+          ))}
         {isEthenaSatsIncentive && (
           <div>
             <Trans>
@@ -115,6 +125,7 @@ export function AprInfo({
     lidoApr,
     isLidoApr,
     isEthenaSatsIncentive,
+    isTbtcIncentive,
   ]);
 
   const aprNode = useMemo(() => {
