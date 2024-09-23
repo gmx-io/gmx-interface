@@ -26,7 +26,7 @@ import Card from "components/Common/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import EmptyMessage from "components/Referrals/EmptyMessage";
-import usePagination from "components/Referrals/usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -143,6 +143,12 @@ export default function UserIncentiveDistributionList() {
             </thead>
             <tbody>
               {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
+              {currentIncentiveData &&
+                currentIncentiveData.length > 0 &&
+                currentIncentiveData.length < DEFAULT_PAGE_SIZE && (
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                  <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentIncentiveData.length) }} />
+                )}
             </tbody>
           </table>
         </TableScrollFadeContainer>

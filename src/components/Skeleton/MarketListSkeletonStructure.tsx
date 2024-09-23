@@ -7,7 +7,7 @@ export default function MarketListSkeletonStructure() {
     <TableTr bordered={false} hoverable={false}>
       <TableTd>
         <div className="flex items-center">
-          <Skeleton className="mr-10" height={40} width={40} circle />
+          <Skeleton className="mr-10 !block" height={40} width={40} circle inline />
           <Skeleton width={60} height={12} />
         </div>
       </TableTd>

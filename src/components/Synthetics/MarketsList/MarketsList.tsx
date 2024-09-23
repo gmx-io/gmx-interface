@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
-import usePagination from "components/Referrals/usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
@@ -48,7 +48,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
     `${chainId} ${direction} ${orderBy} ${searchText}`,
     filteredMarkets,
-    10
+    DEFAULT_PAGE_SIZE
   );
 
   return (
@@ -105,6 +105,9 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               currentData.length > 0 &&
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
+            {indexTokensStats.length > 0 && currentData.length < DEFAULT_PAGE_SIZE && (
+              <MarketListSkeleton invisible count={DEFAULT_PAGE_SIZE - currentData.length} />
+            )}
             {!indexTokensStats.length && <MarketListSkeleton />}
           </tbody>
         </table>

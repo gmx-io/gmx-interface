@@ -14,10 +14,21 @@ import "./Skeleton.scss";
 
 type Props = {
   count?: number;
+  invisible?: boolean;
   Structure: ComponentType;
 };
 
-function TableListSkeleton({ count = 10, Structure, ...restProps }: Props) {
+function TableListSkeleton({ count = 10, Structure, invisible = false, ...restProps }: Props) {
+  if (invisible) {
+    return (
+      <SkeletonTheme baseColor="transparent" highlightColor="transparent" enableAnimation={false}>
+        {Array.from({ length: count }).map((_, index) => (
+          <Structure {...restProps} key={index} />
+        ))}
+      </SkeletonTheme>
+    );
+  }
+
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       {Array.from({ length: count }).map((_, index) => (
@@ -29,6 +40,7 @@ function TableListSkeleton({ count = 10, Structure, ...restProps }: Props) {
 
 type SkeletonProps<Component extends FunctionComponent> = {
   count?: number;
+  invisible?: boolean;
 } & ComponentPropsWithoutRef<Component>;
 
 export function MarketListSkeleton(props: SkeletonProps<typeof MarketListSkeletonStructure>) {

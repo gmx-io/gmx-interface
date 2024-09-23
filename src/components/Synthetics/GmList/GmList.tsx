@@ -6,7 +6,7 @@ import React, { useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import usePagination from "components/Referrals/usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
 import { getNormalizedTokenSymbol, getToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -118,7 +118,7 @@ export function GmList({
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
     `${chainId} ${direction} ${orderBy} ${searchText}`,
     filteredGmTokens,
-    10
+    DEFAULT_PAGE_SIZE
   );
 
   const userTotalGmInfo = useMemo(() => {
@@ -227,6 +227,10 @@ export function GmList({
                   </div>
                 </TableTd>
               </TableTr>
+            )}
+
+            {!isLoading && currentData.length > 0 && currentData.length < DEFAULT_PAGE_SIZE && (
+              <GMListSkeleton invisible count={DEFAULT_PAGE_SIZE - currentData.length} />
             )}
             {isLoading && <GMListSkeleton />}
           </tbody>

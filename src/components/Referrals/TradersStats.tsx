@@ -12,7 +12,7 @@ import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
-import usePagination from "./usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -311,6 +311,11 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                       </TableTr>
                     );
                   })}
+                  {currentDiscountDistributions.length > 0 &&
+                    currentDiscountDistributions.length < DEFAULT_PAGE_SIZE && (
+                      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                      <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentDiscountDistributions.length) }}></tr>
+                    )}
                 </tbody>
               </table>
             </TableScrollFadeContainer>

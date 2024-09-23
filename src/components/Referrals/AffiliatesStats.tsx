@@ -25,7 +25,7 @@ import {
   getUSDValue,
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
-import usePagination from "./usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -367,6 +367,10 @@ function AffiliatesStats({
                     </TableTr>
                   );
                 })}
+                {currentAffiliatesData.length > 0 && currentAffiliatesData.length < DEFAULT_PAGE_SIZE && (
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                  <tr style={{ height: 43 * (DEFAULT_PAGE_SIZE - currentAffiliatesData.length) }}></tr>
+                )}
               </tbody>
             </table>
           </TableScrollFadeContainer>
@@ -506,6 +510,10 @@ function AffiliatesStats({
                       </TableTr>
                     );
                   })}
+                  {currentRebateData.length < DEFAULT_PAGE_SIZE && (
+                    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                    <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentRebateData.length) }}></tr>
+                  )}
                 </tbody>
               </table>
             </TableScrollFadeContainer>
