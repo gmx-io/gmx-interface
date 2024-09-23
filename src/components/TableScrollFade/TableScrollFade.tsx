@@ -173,15 +173,14 @@ function ScrollFadeControls({
     <div className="pointer-events-none absolute flex h-full w-full flex-row justify-between" ref={absoluteRef}>
       <div
         className={cx(
-          "group pointer-events-auto z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-l from-[transparent]",
           toColor,
           "flex justify-start",
           isContainerLarge ? "items-start" : "items-center",
           {
-            "!cursor-default": scrollLeft <= 0,
-            "opacity-100": scrollLeft > 0,
-            "opacity-0": scrollLeft <= 0,
+            "!cursor-default opacity-0": scrollLeft <= 0,
+            "pointer-events-auto opacity-100": scrollLeft > 0,
           }
         )}
         style={leftStyles}
@@ -195,15 +194,14 @@ function ScrollFadeControls({
       </div>
       <div
         className={cx(
-          "group pointer-events-auto z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-r from-[transparent]",
           toColor,
           "flex justify-end",
           isContainerLarge ? "items-start" : "items-center",
           {
-            "!cursor-default": scrollRight <= 0,
-            "opacity-100": scrollRight > 0,
-            "opacity-0": scrollRight <= 0,
+            "!cursor-default opacity-0": scrollRight <= 0,
+            "pointer-events-auto opacity-100": scrollRight > 0,
           }
         )}
         style={rightStyles}
@@ -225,7 +223,7 @@ export function TableScrollFadeContainer({ children }: PropsWithChildren<{}>) {
   return (
     <div className="relative">
       <ScrollFadeControls {...tableScrollFade} />
-      <div className="overflow-x-auto scrollbar-hide" ref={tableScrollFade.scrollableRef}>
+      <div className="scrollbar-hide overflow-x-auto" ref={tableScrollFade.scrollableRef}>
         {children}
       </div>
     </div>
@@ -238,7 +236,7 @@ export function BodyScrollFadeContainer({ children, className }: PropsWithChildr
   return (
     <div className="relative">
       <ScrollFadeControls {...scrollFade} gradientColor="slate-900" />
-      <div className={cx("overflow-x-auto scrollbar-hide", className)} ref={scrollFade.scrollableRef}>
+      <div className={cx("scrollbar-hide overflow-x-auto", className)} ref={scrollFade.scrollableRef}>
         {children}
       </div>
     </div>
