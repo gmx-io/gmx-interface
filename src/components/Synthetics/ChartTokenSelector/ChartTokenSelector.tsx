@@ -280,7 +280,6 @@ function MarketsList(props: { options: Token[] | undefined }) {
           {options && options.length > 0 && !sortedTokens?.length && (
             <div className="py-15 text-center text-gray-400">
               <Trans>No markets matched.</Trans>
-              <MissedCoinsHint place={MissedCoinsPlace.marketDropdown} className="pl-4 pt-4" />
             </div>
           )}
         </div>
