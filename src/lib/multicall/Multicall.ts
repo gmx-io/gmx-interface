@@ -4,7 +4,6 @@ import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains"
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { isWebWorker } from "config/env";
-import { hashData } from "lib/hash";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -185,15 +184,11 @@ export class Multicall {
           callKey,
         });
 
-        const args = call.shouldHashParams
-          ? call.params?.map((keyValue: any[]) => hashData(keyValue[0], keyValue[1]))
-          : call.params;
-
         encodedPayload.push({
           address: contractCallConfig.contractAddress,
           functionName: call.methodName,
+          args: call.params,
           abi,
-          args,
         });
       });
     });

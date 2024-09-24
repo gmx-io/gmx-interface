@@ -27,7 +27,6 @@ export async function buildMarketsConfigsRequest(
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
       abi: DataStore.abi,
-      shouldHashParams: false,
       calls: {
         isDisabled: {
           methodName: "getBool",

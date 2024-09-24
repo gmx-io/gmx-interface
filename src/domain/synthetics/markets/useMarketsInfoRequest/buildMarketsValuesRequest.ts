@@ -111,7 +111,6 @@ export async function buildMarketsValuesRequest(
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
       abi: DataStore.abi,
-      shouldHashParams: false,
       calls: {
         longPoolAmount: {
           methodName: "getUint",
