@@ -145,6 +145,7 @@ export function SyntheticsStateContextProvider({
     isDeposit: true,
     account,
     glvData: glvInfo.glvData,
+    withGlv: shouldFetchGlvMarkets,
   });
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
