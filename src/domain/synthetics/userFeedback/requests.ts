@@ -59,5 +59,5 @@ export const sendMissedCoinSearchDebounced = debounce(
       },
     });
   },
-  400
+  500
 );
