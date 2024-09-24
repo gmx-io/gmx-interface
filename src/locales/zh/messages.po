@@ -26,7 +26,7 @@ msgstr "钱包未连接"
 msgid "Not likely"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Available on your preferred network"
 msgstr "可在您的首选网络上使用"
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "Subaccount activated"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX目前在Arbitrum和Avalanche上线"
 
@@ -167,7 +167,7 @@ msgstr ""
 msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "去中心化<0/>永续交易所"
 
@@ -298,11 +298,6 @@ msgstr "输入NFT地址"
 #: src/components/Glp/GlpSwap.jsx
 msgid "AVAILABLE"
 msgstr "可用的"
-
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
-#~ msgid "GM"
-#~ msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm Settle"
@@ -619,10 +614,6 @@ msgstr "搜索代币"
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-#~ msgid "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -703,7 +694,7 @@ msgstr ""
 msgid "Acceptable price for the order."
 msgstr "订单的可接受价格"
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "通过简单的互换界面开立头寸。方便地从任何币值换成你选择的头寸"
 
@@ -1100,10 +1091,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Generating and activating Subaccount"
 msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
-#~ msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
@@ -1615,7 +1602,7 @@ msgstr ""
 msgid "Global Leaderboard"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Simple Swaps"
 msgstr "简易交易"
 
@@ -1921,7 +1908,7 @@ msgstr ""
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "要求增加{tokenSymbol} {longOrShortText} 由 {0} USD"
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 msgstr ""
 
@@ -1948,10 +1935,6 @@ msgstr "如果该订单被执行，您将至少收到{0} {1} 确切的执行价�
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 msgstr "该仓位将在参考价格 {0} 开仓，不考虑价格影响，最大滑点为-{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>阅读更多</4>"
-
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-#~ msgid "Error submitting feedback"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2019,7 +2002,7 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "未加载流动资金数据"
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
 msgstr "总交易量"
 
@@ -2258,7 +2241,7 @@ msgstr ""
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Launch App"
 msgstr "启动应用程序"
 
@@ -2306,10 +2289,6 @@ msgstr "净率/1小时"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Vest with GMX on Avalanche"
 msgstr "在Avalanche上授权GMX"
-
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
-#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
@@ -2567,10 +2546,6 @@ msgstr ""
 msgid "Increase Size (Limit)"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 msgstr ""
@@ -2710,7 +2685,7 @@ msgstr ""
 msgid "Invalid Liquidation Price"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "高质量价格供给的总和决定了清算时间。使头寸不受暂时波动的影响"
 
@@ -3401,6 +3376,7 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Avalanche"
 msgstr ""
 
@@ -3469,7 +3445,7 @@ msgstr "核准失败"
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Open Interest"
 msgstr "开启利息"
 
@@ -3868,11 +3844,6 @@ msgstr "取消失败"
 msgid "Fulfilling order request"
 msgstr ""
 
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
-#~ msgid "GLV"
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "目前，您最多可以授权{0}个esGMX代币，比例为{1}个esGMX。 {stakingToken}对1esGMX"
@@ -4127,7 +4098,7 @@ msgstr "订单"
 msgid "Media Kit"
 msgstr "多媒体工具"
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Reduce Liquidation Risks"
 msgstr "降低清算风险"
 
@@ -4159,7 +4130,7 @@ msgstr ""
 msgid "Claim V2 Rebates from your referred Traders."
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Three tokens create our ecosystem"
 msgstr ""
 
@@ -4458,7 +4429,7 @@ msgstr "所有时间"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "在下面选择你的归属选项，然后点击 \"Claim\""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Save on Costs"
 msgstr "节省成本"
 
@@ -4684,10 +4655,6 @@ msgstr "交易"
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Telegram Groups"
 msgstr "电报群"
-
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-#~ msgid "Enter at least 2 symbols"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -6708,7 +6675,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Arbitrum"
 msgstr ""
 
@@ -6782,10 +6748,6 @@ msgstr "做多"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Pool"
 msgstr "池子"
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
-#~ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
@@ -7585,7 +7547,7 @@ msgid "Complete Transfer"
 msgstr "完成转移"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Total Users"
 msgstr "用户总数"
 
@@ -7667,7 +7629,7 @@ msgstr ""
 msgid "Close {0} {1}"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
 
@@ -7859,10 +7821,6 @@ msgstr "价格高于标价"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
