@@ -33,10 +33,6 @@ export function MissedCoinsModal() {
   const [coinsInputText, setCoinsInputText] = useState<string>("");
   const coins = coinsInputText.trim().toUpperCase().split(/,|\W/).filter(Boolean);
 
-  const onChangeCoinsInput = useCallback((val: string) => {
-    setCoinsInputText(val);
-  }, []);
-
   const onSubmit = useCallback(() => {
     if (!missedCoinsModalPlace) {
       helperToast.error(t`Error submitting coins`);
@@ -115,7 +111,7 @@ export function MissedCoinsModal() {
         <Trans>Please enter the names of the coins you'd like to see added:</Trans>
         <Textarea
           value={coinsInputText}
-          onChange={onChangeCoinsInput}
+          onChange={setCoinsInputText}
           placeholder={t`Names could be separated by commas or spaces`}
         />
       </div>
