@@ -20,7 +20,7 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
   let errorName: string | undefined = undefined;
   let contractError: string | undefined = undefined;
   let txErrorType: TxErrorType | undefined = undefined;
-  let errorGroup: string | undefined = undefined;
+  let errorGroup: string | undefined = "Unknown group";
   let txErrorData: any = undefined;
   let isUserError: boolean | undefined = undefined;
   let isUserRejectedError: boolean | undefined = undefined;
@@ -79,8 +79,6 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
     errorGroup = replaceUrls(errorGroup);
   } else if (errorName) {
     errorGroup = errorName;
-  } else {
-    errorGroup = "Unknown group";
   }
 
   return {
