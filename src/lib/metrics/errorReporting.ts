@@ -74,9 +74,10 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
   if (txErrorType) {
     errorGroup = `Txn Error: ${txErrorType}`;
   } else if (errorMessage) {
-    errorGroup = errorMessage.slice(0, 50);
-    errorGroup = errorGroup.replace(/\d+/g, "XXX");
+    errorGroup = errorMessage.slice(0, 300);
     errorGroup = replaceUrls(errorGroup);
+    errorGroup = errorGroup.replace(/\d+/g, "XXX");
+    errorGroup = errorGroup.slice(0, 50);
   } else if (errorName) {
     errorGroup = errorName;
   }
