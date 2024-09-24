@@ -5,7 +5,8 @@ import { ethers } from "ethers";
 import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "../contracts/transactionErrors";
 import { ErrorMetricData } from "./types";
 
-const IGNORE_ERROR_MESSAGES = ["user rejected action", "failed to fetch"];
+const URL_REGEXP =
+  /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
@@ -28,10 +29,6 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
     errorMessage = hasMessage(errorInfo)
       ? errorInfo.message ?? (hasMessage(error) ? error.message : String(error))
       : String(error);
-
-    if (IGNORE_ERROR_MESSAGES.some((ignore) => errorMessage.toLowerCase().startsWith(ignore))) {
-      return;
-    }
 
     errorStack = hasStack(error) ? error.stack : undefined;
 
@@ -77,7 +74,9 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
   if (txErrorType) {
     errorGroup = `Txn Error: ${txErrorType}`;
   } else if (errorMessage) {
-    errorGroup = errorMessage.slice(0, 30).replace(/\d+/g, "XXX");
+    errorGroup = errorMessage.slice(0, 50);
+    errorGroup = errorGroup.replace(/\d+/g, "XXX");
+    errorGroup = replaceUrls(errorGroup);
   }
 
   return {
@@ -104,4 +103,16 @@ function hasStack(error: unknown): error is { stack: string } {
 
 function hasName(error: unknown): error is { name: string } {
   return !!error && typeof error === "object" && typeof (error as { name: string }).name === "string";
+}
+
+function replaceUrls(text: string) {
+  const matches = [...text.matchAll(URL_REGEXP)];
+
+  let result = text;
+
+  matches.forEach((match) => {
+    result = result.replace(match[0], match[1]);
+  });
+
+  return result;
 }
