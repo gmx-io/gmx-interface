@@ -5,7 +5,6 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
-import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { UserFeedback } from "domain/synthetics/userFeedback";
 import { isLocal, isDevelopment, APP_VERSION } from "config/env";
 
@@ -77,14 +76,6 @@ function parseOracleCandle(rawCandle: number[]): Bar {
 
 let fallbackThrottleTimerId: any;
 
-export function getStaticOracleKeeperFetcher(chainId: number, forceIncentivesActive?: boolean): OracleFetcher {
-  return new OracleKeeperFetcher({
-    chainId,
-    oracleKeeperIndex: getOracleKeeperRandomIndex(chainId),
-    forceIncentivesActive: Boolean(forceIncentivesActive),
-  });
-}
-
 type PostReport2Body = {
   isDev: boolean;
   host: string;
@@ -105,7 +96,15 @@ export interface OracleFetcher {
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
   fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
-  fetchPostTiming(body: { event: string; time: number; abFlags: Record<string, boolean> }): Promise<Response>;
+  fetchPostTiming(
+    body: {
+      event: string;
+      time: number;
+      abFlags: Record<string, boolean>;
+      customFields?: Record<string, boolean | string | number>;
+    },
+    debug?: boolean
+  ): Promise<Response>;
   fetchPostCounter(
     body: {
       event: string;
@@ -240,7 +239,20 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPostTiming(body: { event: string; time: number; abFlags: Record<string, boolean> }): Promise<Response> {
+  fetchPostTiming(
+    body: {
+      event: string;
+      time: number;
+      abFlags: Record<string, boolean>;
+      customFields?: Record<string, boolean | string | number>;
+    },
+    debug?: boolean
+  ): Promise<Response> {
+    if (debug) {
+      // eslint-disable-next-line no-console
+      console.log("sendTiming", body);
+    }
+
     return fetch(buildUrl(this.url!, "/report/ui/timing"), {
       method: "POST",
       headers: {

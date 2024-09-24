@@ -5,7 +5,11 @@ import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/number
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames } from "lib/wallets/getWalletNames";
-import { METRIC_WINDOW_COUNTER_EVENT_NAME, METRIC_WINDOW_EVENT_NAME } from "./emitMetricEvent";
+import {
+  METRIC_COUNTER_DISPATCH_NAME,
+  METRIC_TIMING_DISPATCH_NAME,
+  METRIC_EVENT_DISPATCH_NAME,
+} from "./emitMetricEvent";
 import { prepareErrorMetricData } from "./errorReporting";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData } from "./types";
@@ -16,6 +20,7 @@ export type MetricEventParams = {
   time?: number;
   isError?: boolean;
   isCounter?: boolean;
+  isTiming?: boolean;
 };
 
 const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
@@ -138,7 +143,26 @@ export class Metrics {
     }
 
     if (params.isCounter) {
-      return this.fetcher.fetchPostCounter({ event: params.event, abFlags: this.globalMetricData.abFlags }, this.debug);
+      return this.fetcher.fetchPostCounter(
+        {
+          event: params.event,
+          abFlags: this.globalMetricData.abFlags,
+          customFields: params.data ? this.serializeCustomFields(params.data) : undefined,
+        },
+        this.debug
+      );
+    }
+
+    if (params.isTiming && params.time) {
+      return this.fetcher.fetchPostTiming(
+        {
+          event: params.event,
+          time: params.time,
+          abFlags: this.globalMetricData.abFlags,
+          customFields: params.data ? this.serializeCustomFields(params.data) : undefined,
+        },
+        this.debug
+      );
     }
 
     const { time, isError, data, event } = params;
@@ -164,10 +188,20 @@ export class Metrics {
     );
   };
 
-  pushCounter(event: string) {
+  pushCounter(event: string, data?: object) {
     this.pushEvent<MetricEventParams>({
       event,
+      data,
       isCounter: true,
+    });
+  }
+
+  pushTiming(event: string, time: number, data?: object) {
+    this.pushEvent<MetricEventParams>({
+      event,
+      time,
+      isTiming: true,
+      data,
     });
   }
 
@@ -196,15 +230,17 @@ export class Metrics {
   };
 
   subscribeToEvents = () => {
-    window.addEventListener(METRIC_WINDOW_EVENT_NAME, this.handleWindowEvent);
-    window.addEventListener(METRIC_WINDOW_COUNTER_EVENT_NAME, this.handleWindowCounter);
+    window.addEventListener(METRIC_EVENT_DISPATCH_NAME, this.handleWindowEvent);
+    window.addEventListener(METRIC_COUNTER_DISPATCH_NAME, this.handleWindowCounter);
+    window.addEventListener(METRIC_TIMING_DISPATCH_NAME, this.handleWindowTiming);
     window.addEventListener("error", this.handleError);
     window.addEventListener("unhandledrejection", this.handleUnhandledRejection);
   };
 
   unsubscribeFromEvents = () => {
-    window.removeEventListener(METRIC_WINDOW_EVENT_NAME, this.handleWindowEvent);
-    window.removeEventListener(METRIC_WINDOW_COUNTER_EVENT_NAME, this.handleWindowCounter);
+    window.removeEventListener(METRIC_EVENT_DISPATCH_NAME, this.handleWindowEvent);
+    window.removeEventListener(METRIC_COUNTER_DISPATCH_NAME, this.handleWindowCounter);
+    window.removeEventListener(METRIC_TIMING_DISPATCH_NAME, this.handleWindowTiming);
     window.removeEventListener("error", this.handleError);
     window.removeEventListener("unhandledrejection", this.handleUnhandledRejection);
   };
@@ -216,7 +252,12 @@ export class Metrics {
 
   handleWindowCounter = (event: Event) => {
     const { detail } = event as CustomEvent;
-    this.pushCounter(detail.event);
+    this.pushCounter(detail.event, detail.data);
+  };
+
+  handleWindowTiming = (event: Event) => {
+    const { detail } = event as CustomEvent;
+    this.pushTiming(detail.event, detail.time, detail.data);
   };
 
   handleError = (event) => {

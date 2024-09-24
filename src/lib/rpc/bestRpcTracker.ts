@@ -9,7 +9,6 @@ import {
 } from "config/chains";
 import { getRpcProviderKey } from "config/localStorage";
 import { isDebugMode } from "lib/localStorage";
-import entries from "lodash/entries";
 import orderBy from "lodash/orderBy";
 import minBy from "lodash/minBy";
 import { differenceInMilliseconds } from "date-fns";
@@ -20,11 +19,11 @@ import { getIsFlagEnabled } from "config/ab";
 import { sleep } from "lib/sleep";
 import sample from "lodash/sample";
 import { useEffect, useState } from "react";
-import { getStaticOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import { getAbFlags } from "config/ab";
-import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 
-const PROBE_INTERVAL = 10 * 1000; // 10 seconds / Frequency of RPC probing
+import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
+import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+
+const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
 const STORAGE_EXPIRE_TIMEOUT = 5 * 60 * 1000; // 5 minutes / Time after which provider saved in the localStorage is considered stale
 const DISABLE_UNUSED_TRACKING_TIMEOUT = 1 * 60 * 1000; // 1 minute / Pause probing if no requests for the best RPC for this time
@@ -58,6 +57,7 @@ type ProviderData = {
 
 type RpcTrackerState = {
   [chainId: number]: {
+    chainId: number;
     lastUsage: Date | null;
     currentBestProviderUrl: string;
     providers: {
@@ -66,124 +66,126 @@ type RpcTrackerState = {
   };
 };
 
-let trackingIntervalId: number | null = null;
-let trackerState: RpcTrackerState | null = null;
+const trackerState = initTrackerState();
+let trackerTimeoutId: number | null = null;
 
-function initRpcTracking() {
-  trackerState = initTrackerState();
+trackRpcProviders({ warmUp: true });
 
-  if (trackingIntervalId) {
-    clearInterval(trackingIntervalId);
-  }
-  measureRpcData({ warmUp: true });
-  trackingIntervalId = window.setInterval(() => measureRpcData(), PROBE_INTERVAL);
-}
+function trackRpcProviders({ warmUp = false } = {}) {
+  Promise.all(
+    Object.values(trackerState).map(async (chainTrackerState) => {
+      const { providers, lastUsage, chainId } = chainTrackerState;
+      const hasMultipleProviders = Object.keys(providers).length > 1;
+      const isUnusedChain =
+        !lastUsage || differenceInMilliseconds(Date.now(), lastUsage) > DISABLE_UNUSED_TRACKING_TIMEOUT;
+      const isChainTrackingEnabled = (warmUp || !isUnusedChain) && hasMultipleProviders;
 
-function measureRpcData({ warmUp = false } = {}) {
-  if (!trackerState) {
-    throw new Error("RPC tracker state is not initialized");
-  }
-
-  entries(trackerState).forEach(async ([chainIdRaw, chainTracker]) => {
-    const chainId = Number(chainIdRaw);
-    const providers = Object.values(chainTracker.providers);
-
-    const isUnusedChain =
-      !chainTracker.lastUsage ||
-      differenceInMilliseconds(Date.now(), chainTracker.lastUsage) > DISABLE_UNUSED_TRACKING_TIMEOUT;
-    const isTrackingEnabled = (warmUp || !isUnusedChain) && providers.length > 1;
-
-    if (!isTrackingEnabled) {
-      return;
-    }
-
-    const probePromises = providers.map((providerInfo) => {
-      return probeRpc(chainId, providerInfo.provider, providerInfo.url);
-    });
-
-    const probeResults = await Promise.all(probePromises);
-    const successProbeResults = probeResults.filter((probe) => probe.isSuccess);
-
-    if (!successProbeResults.length) {
-      setCurrentProvider(chainId, getFallbackRpcUrl(chainId));
-
-      return;
-    }
-
-    const probeResultsByBlockNumber = orderBy(successProbeResults, ["blockNumber"], ["desc"]);
-    let bestBlockNumberProbe = probeResultsByBlockNumber[0];
-    const secondBlockNumberProbe = probeResultsByBlockNumber[1];
-
-    // Rare case when RPC returned a block number from the future
-    if (
-      bestBlockNumberProbe?.blockNumber &&
-      secondBlockNumberProbe?.blockNumber &&
-      bestBlockNumberProbe.blockNumber - secondBlockNumberProbe.blockNumber > BLOCK_FROM_FUTURE_THRESHOLD
-    ) {
-      bestBlockNumberProbe.isSuccess = false;
-      bestBlockNumberProbe = secondBlockNumberProbe;
-    }
-
-    const probeStats = probeResultsByBlockNumber.map((probe) => {
-      let isValid = probe.isSuccess;
-
-      const bestBlockNumber = bestBlockNumberProbe.blockNumber;
-      const currProbeBlockNumber = probe.blockNumber;
-
-      // If the block number is lagging behind the best one
-      if (bestBlockNumber && currProbeBlockNumber && bestBlockNumber - currProbeBlockNumber > BLOCK_LAGGING_THRESHOLD) {
-        isValid = false;
+      if (!isChainTrackingEnabled) {
+        return;
       }
 
-      return {
-        ...probe,
-        isValid,
-      };
-    });
+      const nextProviderUrl = await getBestRpcProviderForChain(chainTrackerState).catch((e) => {
+        if (e.message !== "no-success-probes") {
+          // eslint-disable-next-line no-console
+          console.error(e);
+        }
 
-    const bestResponseTimeValidProbe = minBy(
-      probeStats.filter((probe) => probe.isValid),
-      "responseTime"
-    );
+        return getFallbackRpcUrl(chainId);
+      });
 
-    if (bestResponseTimeValidProbe) {
-      setCurrentProvider(chainId, bestResponseTimeValidProbe.url);
+      setCurrentProvider(chainId, nextProviderUrl);
+    })
+  ).finally(() => {
+    if (trackerTimeoutId) {
+      window.clearTimeout(trackerTimeoutId);
     }
 
-    if (isDebugMode()) {
-      // eslint-disable-next-line no-console
-      console.table(
-        orderBy(
-          probeStats.map((probe) => ({
-            url: probe.url,
-            isSelected: probe.url === bestResponseTimeValidProbe?.url ? "✅" : "",
-            isValid: probe.isValid ? "✅" : "❌",
-            responseTime: probe.responseTime,
-            blockNumber: probe.blockNumber,
-          })),
-          ["responseTime"],
-          ["asc"]
-        )
-      );
-    }
+    trackerTimeoutId = window.setTimeout(() => trackRpcProviders(), PROBE_TIMEOUT);
   });
 }
 
-function setCurrentProvider(chainId: number, newProviderUrl: string) {
-  if (!trackerState) {
-    throw new Error("RPC tracker state is not initialized");
+async function getBestRpcProviderForChain({ providers, chainId }: RpcTrackerState[number]) {
+  const providersList = Object.values(providers);
+
+  const probePromises = providersList.map((providerInfo) => {
+    return probeRpc(chainId, providerInfo.provider, providerInfo.url);
+  });
+
+  const probeResults = await Promise.all(probePromises);
+  const successProbeResults = probeResults.filter((probe) => probe.isSuccess);
+
+  if (!successProbeResults.length) {
+    throw new Error("no-success-probes");
   }
 
+  const probeResultsByBlockNumber = orderBy(successProbeResults, ["blockNumber"], ["desc"]);
+  let bestBlockNumberProbe = probeResultsByBlockNumber[0];
+  const secondBlockNumberProbe = probeResultsByBlockNumber[1];
+
+  // Rare case when RPC returned a block number from the future
+  if (
+    bestBlockNumberProbe?.blockNumber &&
+    secondBlockNumberProbe?.blockNumber &&
+    bestBlockNumberProbe.blockNumber - secondBlockNumberProbe.blockNumber > BLOCK_FROM_FUTURE_THRESHOLD
+  ) {
+    bestBlockNumberProbe.isSuccess = false;
+    bestBlockNumberProbe = secondBlockNumberProbe;
+  }
+
+  const probeStats = probeResultsByBlockNumber.map((probe) => {
+    let isValid = probe.isSuccess;
+
+    const bestBlockNumber = bestBlockNumberProbe.blockNumber;
+    const currProbeBlockNumber = probe.blockNumber;
+
+    // If the block number is lagging behind the best one
+    if (bestBlockNumber && currProbeBlockNumber && bestBlockNumber - currProbeBlockNumber > BLOCK_LAGGING_THRESHOLD) {
+      isValid = false;
+    }
+
+    return {
+      ...probe,
+      isValid,
+    };
+  });
+
+  const bestResponseTimeValidProbe = minBy(
+    probeStats.filter((probe) => probe.isValid),
+    "responseTime"
+  );
+
+  if (isDebugMode()) {
+    // eslint-disable-next-line no-console
+    console.table(
+      orderBy(
+        probeStats.map((probe) => ({
+          url: probe.url,
+          isSelected: probe.url === bestResponseTimeValidProbe?.url ? "✅" : "",
+          isValid: probe.isValid ? "✅" : "❌",
+          responseTime: probe.responseTime,
+          blockNumber: probe.blockNumber,
+        })),
+        ["responseTime"],
+        ["asc"]
+      )
+    );
+  }
+
+  if (!bestResponseTimeValidProbe?.url) {
+    throw new Error("no-success-probes");
+  }
+
+  return bestResponseTimeValidProbe.url;
+}
+
+function setCurrentProvider(chainId: number, newProviderUrl: string) {
   trackerState[chainId].currentBestProviderUrl = newProviderUrl;
 
   window.dispatchEvent(new CustomEvent(RPC_TRACKER_UPDATE_EVENT));
 
-  getStaticOracleKeeperFetcher(chainId).fetchPostCounter({
+  emitMetricCounter({
     event: "rpcTracker.ranking.setBestRpc",
-    customFields: {
-      rpcProvider: getProviderNameFromUrl(newProviderUrl),
-    },
-    abFlags: getAbFlags(),
+    data: { rpcProvider: getProviderNameFromUrl(newProviderUrl) },
   });
 
   const storageKey = JSON.stringify(getRpcProviderKey(chainId));
@@ -335,6 +337,7 @@ function initTrackerState() {
     }
 
     acc[chainId] = {
+      chainId,
       lastUsage: null,
       currentBestProviderUrl,
       providers,
@@ -349,14 +352,6 @@ export function getBestRpcUrl(chainId: number) {
     return RPC_PROVIDERS[chainId][0] as string;
   }
 
-  if (!trackerState) {
-    initRpcTracking();
-  }
-
-  if (!trackerState) {
-    throw new Error("RPC tracker state is not initialized");
-  }
-
   if (!trackerState[chainId]) {
     if (RPC_PROVIDERS[chainId]?.length) {
       return sample(RPC_PROVIDERS[chainId]);
@@ -367,7 +362,7 @@ export function getBestRpcUrl(chainId: number) {
 
   trackerState[chainId].lastUsage = new Date();
 
-  return trackerState[chainId].currentBestProviderUrl;
+  return trackerState[chainId].currentBestProviderUrl ?? RPC_PROVIDERS[chainId][0];
 }
 
 export function useBestRpcUrl(chainId: number) {
