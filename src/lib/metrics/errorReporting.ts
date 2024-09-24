@@ -79,6 +79,8 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
     errorGroup = replaceUrls(errorGroup);
   } else if (errorName) {
     errorGroup = errorName;
+  } else {
+    errorGroup = "Unknown group";
   }
 
   return {
