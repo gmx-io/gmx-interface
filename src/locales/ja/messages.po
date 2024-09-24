@@ -1278,10 +1278,6 @@ msgstr "アカウント"
 msgid "Keep leverage at {0}"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
-msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "もし現在ポジションがある場合、そのポジションは{0} USDでクローズされます。<0/><1/>この手仕舞い価格はアセットの価格変動に従い変化します。<2/><3/><4>詳細</4>"
@@ -3702,6 +3698,10 @@ msgstr "ネットレート / 1時間"
 msgid "Claim esGMX Rewards"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {avalancheLink}."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request"
 msgstr ""
@@ -5471,6 +5471,10 @@ msgstr "{formattedNetRate} / 1 時間"
 msgid "Balance"
 msgstr "残高"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
@@ -6220,6 +6224,10 @@ msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -7168,10 +7176,6 @@ msgstr ""
 msgid "Failed to update order"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
-msgstr ""
-
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Open {0} {longOrShortText}"
 msgstr ""
@@ -7684,10 +7688,6 @@ msgstr "紹介コードを入力"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx

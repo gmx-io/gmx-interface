@@ -1278,10 +1278,6 @@ msgstr "帐户"
 msgid "Keep leverage at {0}"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
-msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>阅读更多</4>"
@@ -3702,6 +3698,10 @@ msgstr "净率 / 1小时"
 msgid "Claim esGMX Rewards"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {avalancheLink}."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request"
 msgstr ""
@@ -5471,6 +5471,10 @@ msgstr "{formattedNetRate} / 1 小时"
 msgid "Balance"
 msgstr "余额"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
@@ -6220,6 +6224,10 @@ msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -7168,10 +7176,6 @@ msgstr ""
 msgid "Failed to update order"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
-msgstr ""
-
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Open {0} {longOrShortText}"
 msgstr ""
@@ -7684,10 +7688,6 @@ msgstr "输入推荐代码"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx

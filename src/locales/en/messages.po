@@ -1278,10 +1278,6 @@ msgstr "account"
 msgid "Keep leverage at {0}"
 msgstr "Keep leverage at {0}"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
-msgstr "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
@@ -3705,6 +3701,10 @@ msgstr "Net Rate / 1h"
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {avalancheLink}."
+msgstr "Trading incentives program is live on {avalancheLink}."
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request"
 msgstr "Sending sell request"
@@ -5474,6 +5474,10 @@ msgstr "{formattedNetRate} / 1h"
 msgid "Balance"
 msgstr "Balance"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
+msgstr "Liquidity and trading incentives programs are live on {avalancheLink}."
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr "I do not want to transfer the Affiliate esGMX tokens"
@@ -6227,6 +6231,10 @@ msgstr "Edit {0} {1}"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
 msgstr "We Value Your Feedback"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {avalancheLink}."
+msgstr "Liquidity incentives program is live on {avalancheLink}."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
@@ -7174,10 +7182,6 @@ msgstr "Price Impact Rebates"
 msgid "Failed to update order"
 msgstr "Failed to update order"
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
-msgstr "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
-
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
@@ -7691,10 +7695,6 @@ msgstr "Enter Referral Code"
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
-msgstr "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
