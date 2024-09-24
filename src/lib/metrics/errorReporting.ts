@@ -77,6 +77,8 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
     errorGroup = errorMessage.slice(0, 50);
     errorGroup = errorGroup.replace(/\d+/g, "XXX");
     errorGroup = replaceUrls(errorGroup);
+  } else if (errorName) {
+    errorGroup = errorName;
   }
 
   return {
