@@ -31,13 +31,9 @@ export function MissedCoinsModal() {
   );
 
   const [coinsInputText, setCoinsInputText] = useState<string>("");
-  const coins = coinsInputText.trim().toUpperCase().split(/,|\W/);
+  const coins = coinsInputText.trim().toUpperCase().split(/,|\W/).filter(Boolean);
 
   const onChangeCoinsInput = useCallback((val: string) => {
-    if (val.length > 100) {
-      return;
-    }
-
     setCoinsInputText(val);
   }, []);
 
@@ -60,6 +56,10 @@ export function MissedCoinsModal() {
   const error = useMemo(() => {
     if (coinsInputText.trim().length === 0) {
       return t`Enter a value`;
+    }
+
+    if (coinsInputText.length > 110) {
+      return t`Max 110 symbols exceeded`;
     }
 
     if (coins.length > 10) {
