@@ -122,6 +122,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -129,7 +130,6 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
@@ -141,6 +141,8 @@ import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 import SwapIcon from "img/swap.svg?react";
 
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
 import "./TradeBox.scss";
 
 export type Props = {
@@ -977,8 +979,10 @@ export function TradeBox(p: Props) {
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
+              missedCoinsPlace={MissedCoinsPlace.payToken}
               extendedSortSequence={sortedLongAndShortTokens}
               qa="collateral-selector"
+              footerContent={<MissedCoinsHint place={MissedCoinsPlace.payToken} className="!my-12 mx-15" withIcon />}
             />
           )}
         </BuyInputSection>
@@ -1059,7 +1063,11 @@ export function TradeBox(p: Props) {
                 }
                 markets={sortedAllMarkets ?? EMPTY_ARRAY}
                 isSideMenu
+                missedCoinsPlace={MissedCoinsPlace.marketDropdown}
                 onSelectMarket={(_indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+                footerContent={
+                  <MissedCoinsHint place={MissedCoinsPlace.marketDropdown} className="!my-12 mx-15" withIcon />
+                }
               />
             )}
           </BuyInputSection>

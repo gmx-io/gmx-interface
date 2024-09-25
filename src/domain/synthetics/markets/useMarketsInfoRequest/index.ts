@@ -223,7 +223,6 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     chainId,
     isDependenciesLoading,
     marketsAddresses,
-    marketsData,
   });
 
   const mergedData = useMemo(() => {
@@ -424,12 +423,10 @@ function useMarketsConfigsRequest({
   chainId,
   isDependenciesLoading,
   marketsAddresses,
-  marketsData,
 }: {
   chainId: number;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
-  marketsData: MarketsData | undefined;
 }) {
   const dataStoreAddress = getContract(chainId, "DataStore");
 
@@ -443,7 +440,6 @@ function useMarketsConfigsRequest({
     request: () =>
       buildMarketsConfigsRequest(chainId, {
         marketsAddresses,
-        marketsData,
         dataStoreAddress,
       }),
     parseResponse: (res) => {

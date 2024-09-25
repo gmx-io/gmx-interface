@@ -49,6 +49,7 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { useMedia } from "react-use";
+import { MissedCoinsModal } from "components/MissedCoinsModal/MissedCoinsModal";
 
 export type Props = {
   openSettings: () => void;
@@ -356,6 +357,7 @@ export function SyntheticsPage(p: Props) {
 
       <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
+      <MissedCoinsModal />
       <Footer />
     </div>
   );

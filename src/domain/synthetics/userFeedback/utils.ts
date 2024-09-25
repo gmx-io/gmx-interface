@@ -1,6 +1,8 @@
 import { t } from "@lingui/macro";
 import { Answer, Question, QuestionType } from "./types";
 
+export const COIN_REGEXP = /[A-za-z0-9_\\.-]/;
+
 export function formatAnswersByQuestionType(answers: Answer[]) {
   return answers.reduce(
     (acc, answer) => {

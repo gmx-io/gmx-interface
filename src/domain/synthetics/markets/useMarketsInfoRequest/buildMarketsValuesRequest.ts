@@ -1,15 +1,6 @@
-import {
-  CLAIMABLE_FUNDING_AMOUNT,
-  MAX_PNL_FACTOR_FOR_TRADERS_KEY,
-  OPEN_INTEREST_IN_TOKENS_KEY,
-  OPEN_INTEREST_KEY,
-  POOL_AMOUNT_KEY,
-  POSITION_IMPACT_POOL_AMOUNT_KEY,
-  SWAP_IMPACT_POOL_AMOUNT_KEY,
-} from "config/dataStore";
+import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config/dataStore";
 import { getByKey } from "lib/objects";
 import { hashDataMap } from "lib/multicall/hashDataMap";
-import { getIsFlagEnabled } from "config/ab";
 
 import { MarketsData } from "domain/synthetics/markets/types";
 import { MarketValuesMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
@@ -93,73 +84,6 @@ export async function buildMarketsValuesRequest(
       },
     };
 
-    const unhashedKeys = {
-      longPoolAmount: [
-        ["bytes32", "address", "address"],
-        [POOL_AMOUNT_KEY, marketAddress, market.longTokenAddress],
-      ],
-      shortPoolAmount: [
-        ["bytes32", "address", "address"],
-        [POOL_AMOUNT_KEY, marketAddress, market.shortTokenAddress],
-      ],
-      positionImpactPoolAmount: [
-        ["bytes32", "address"],
-        [POSITION_IMPACT_POOL_AMOUNT_KEY, marketAddress],
-      ],
-      swapImpactPoolAmountLong: [
-        ["bytes32", "address", "address"],
-        [SWAP_IMPACT_POOL_AMOUNT_KEY, marketAddress, market.longTokenAddress],
-      ],
-      swapImpactPoolAmountShort: [
-        ["bytes32", "address", "address"],
-        [SWAP_IMPACT_POOL_AMOUNT_KEY, marketAddress, market.shortTokenAddress],
-      ],
-      claimableFundingAmountLong: account
-        ? [
-            ["bytes32", "address", "address", "address"],
-            [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
-          ]
-        : undefined,
-      claimableFundingAmountShort: account
-        ? [
-            ["bytes32", "address", "address", "address"],
-            [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
-          ]
-        : undefined,
-      longInterestUsingLongToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_KEY, marketAddress, market.longTokenAddress, true],
-      ],
-      longInterestUsingShortToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_KEY, marketAddress, market.shortTokenAddress, true],
-      ],
-      shortInterestUsingLongToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_KEY, marketAddress, market.longTokenAddress, false],
-      ],
-      shortInterestUsingShortToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_KEY, marketAddress, market.shortTokenAddress, false],
-      ],
-      longInterestInTokensUsingLongToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_IN_TOKENS_KEY, marketAddress, market.longTokenAddress, true],
-      ],
-      longInterestInTokensUsingShortToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_IN_TOKENS_KEY, marketAddress, market.shortTokenAddress, true],
-      ],
-      shortInterestInTokensUsingLongToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_IN_TOKENS_KEY, marketAddress, market.longTokenAddress, false],
-      ],
-      shortInterestInTokensUsingShortToken: [
-        ["bytes32", "address", "address", "bool"],
-        [OPEN_INTEREST_IN_TOKENS_KEY, marketAddress, market.shortTokenAddress, false],
-      ],
-    };
-
     const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
@@ -168,29 +92,25 @@ export async function buildMarketsValuesRequest(
       );
     }
 
-    const shouldUsePrebuiltHashedKeys = getIsFlagEnabled("testPrebuiltMarkets");
-    const keys = shouldUsePrebuiltHashedKeys
-      ? {
-          ...prebuiltHashedKeys,
-          ...(account
-            ? hashDataMap({
-                claimableFundingAmountLong: [
-                  ["bytes32", "address", "address", "address"],
-                  [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
-                ],
-                claimableFundingAmountShort: [
-                  ["bytes32", "address", "address", "address"],
-                  [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
-                ],
-              })
-            : {}),
-        }
-      : unhashedKeys;
+    const keys = {
+      ...prebuiltHashedKeys,
+      ...(account
+        ? hashDataMap({
+            claimableFundingAmountLong: [
+              ["bytes32", "address", "address", "address"],
+              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
+            ],
+            claimableFundingAmountShort: [
+              ["bytes32", "address", "address", "address"],
+              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
+            ],
+          })
+        : {}),
+    };
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
       abi: DataStore.abi,
-      shouldHashParams: !shouldUsePrebuiltHashedKeys,
       calls: {
         longPoolAmount: {
           methodName: "getUint",

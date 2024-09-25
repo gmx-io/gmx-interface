@@ -1,21 +1,23 @@
-import { useState, useEffect, ReactNode, useMemo } from "react";
 import cx from "classnames";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
 
 import Modal from "../Modal/Modal";
 
-import dropDownIcon from "img/DROP_DOWN.svg";
-import "./TokenSelector.scss";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import { getToken } from "config/tokens";
-import { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { convertToUsd } from "domain/synthetics/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { bigMath } from "lib/bigmath";
+import { getToken } from "config/tokens";
 import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
+import { convertToUsd } from "domain/synthetics/tokens";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import dropDownIcon from "img/DROP_DOWN.svg";
+import { bigMath } from "lib/bigmath";
+import { expandDecimals, formatAmount } from "lib/numbers";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
+import "./TokenSelector.scss";
 
 type TokenState = {
   disabled?: boolean;
@@ -43,7 +45,9 @@ type Props = {
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
+  missedCoinsPlace?: MissedCoinsPlace;
   showTokenName?: boolean;
+  footerContent?: ReactNode;
   marketsInfoData?: MarketsInfoData;
   qa?: string;
 };
@@ -75,6 +79,8 @@ export default function TokenSelector(props: Props) {
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
     showTokenName,
+    footerContent,
+    missedCoinsPlace,
     marketsInfoData,
     chainId,
     qa,
@@ -184,6 +190,7 @@ export default function TokenSelector(props: Props) {
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
+        footerContent={footerContent}
         headerContent={
           <SearchInput
             className="mt-15"
@@ -193,6 +200,13 @@ export default function TokenSelector(props: Props) {
           />
         }
       >
+        {missedCoinsPlace && (
+          <WithMissedCoinsSearch
+            searchKeyword={searchKeyword}
+            place={missedCoinsPlace}
+            isEmpty={!filteredTokens.length}
+          />
+        )}
         <div className="TokenSelector-tokens">
           {sortedFilteredTokens.map((token, tokenIndex) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);

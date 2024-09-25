@@ -24,6 +24,8 @@ import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 import "./MarketSelector.scss";
+import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 
 type Props = {
   label?: string;
@@ -34,6 +36,8 @@ type Props = {
   showBalances?: boolean;
   selectedMarketLabel?: ReactNode | string;
   isSideMenu?: boolean;
+  missedCoinsPlace?: MissedCoinsPlace;
+  footerContent?: ReactNode;
   getMarketState?: (market: MarketInfo) => MarketState | undefined;
   onSelectMarket: (indexName: string, market: MarketInfo) => void;
 };
@@ -60,6 +64,8 @@ export function MarketSelector({
   isSideMenu,
   marketTokensData,
   showBalances,
+  footerContent,
+  missedCoinsPlace,
   onSelectMarket,
   getMarketState,
 }: Props) {
@@ -113,6 +119,13 @@ export function MarketSelector({
     return textSearchMatch && favoriteMatch;
   });
 
+  useMissedCoinsSearch({
+    searchText: searchKeyword,
+    isEmpty: !filteredOptions.length && tab === "all",
+    place: missedCoinsPlace,
+    skip: !missedCoinsPlace,
+  });
+
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.indexName, option.marketInfo);
     setIsModalVisible(false);
@@ -146,6 +159,7 @@ export function MarketSelector({
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
+        footerContent={footerContent}
         headerContent={
           <SearchInput
             className="mt-15"
