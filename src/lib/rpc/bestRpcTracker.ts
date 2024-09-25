@@ -6,6 +6,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   getFallbackRpcUrl,
+  getAlchemyArbitrumHttpUrl,
 } from "config/chains";
 import { getRpcProviderKey } from "config/localStorage";
 import { isDebugMode } from "lib/localStorage";
@@ -65,6 +66,10 @@ type RpcTrackerState = {
     };
   };
 };
+
+if (getIsFlagEnabled("testAlchemyRpcErrorRate")) {
+  RPC_PROVIDERS[ARBITRUM].unshift(getAlchemyArbitrumHttpUrl());
+}
 
 const trackerState = initTrackerState();
 let trackerTimeoutId: number | null = null;

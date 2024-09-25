@@ -14,7 +14,6 @@ import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher
 import { serializeMulticallErrors } from "./utils";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
-import { getIsFlagEnabled } from "config/ab";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -294,7 +293,7 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.groupEnd();
 
-      if (!isAlchemy && !getIsFlagEnabled("testAlchemyRpcErrorRate")) {
+      if (!isAlchemy && !this.abFlags.testAlchemyRpcErrorRate) {
         this.fallbackRpcSwitcher?.trigger();
       }
 
@@ -408,7 +407,7 @@ export class Multicall {
       rpcProvider: rpcProviderName,
     });
 
-    if (!isAlchemy && !getIsFlagEnabled("testAlchemyRpcErrorRate")) {
+    if (!isAlchemy && !this.abFlags.testAlchemyRpcErrorRate) {
       this.fallbackRpcSwitcher?.trigger();
     }
 
