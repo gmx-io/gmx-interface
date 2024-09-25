@@ -1,7 +1,7 @@
 import mapValues from "lodash/mapValues";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
-type Flag = "testRpcWindowFallback" | "testPrebuiltMarkets";
+type Flag = "testPrebuiltMarkets" | "testSmartRpcSwitching";
 
 type AbFlag = {
   enabled: boolean;
@@ -12,8 +12,8 @@ type AbStorage = {
 };
 
 const abFlagsConfig: Record<Flag, number> = {
-  testRpcWindowFallback: 0.5,
   testPrebuiltMarkets: 0.5,
+  testSmartRpcSwitching: 0.5,
 };
 
 const flags: Flag[] = Object.keys(abFlagsConfig) as Flag[];

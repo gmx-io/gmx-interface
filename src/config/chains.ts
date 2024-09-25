@@ -225,13 +225,24 @@ export const RPC_PROVIDERS = {
     "https://bsc-dataseed4.binance.org",
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-  [ARBITRUM]: ["https://arb1.arbitrum.io/rpc"],
+  [ARBITRUM]: [
+    "https://arb1.arbitrum.io/rpc",
+    "https://arbitrum-one-rpc.publicnode.com",
+    "https://1rpc.io/arb",
+    "https://arbitrum-one.public.blastapi.io",
+    "https://arbitrum.drpc.org",
+    "https://rpc.ankr.com/arbitrum",
+  ],
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     // "https://arbitrum-goerli.public.blastapi.io",
   ],
-  [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
+  [AVALANCHE]: [
+    "https://api.avax.network/ext/bc/C/rpc",
+    "https://avalanche-c-chain-rpc.publicnode.com",
+    "https://1rpc.io/avax/c",
+  ],
   [AVALANCHE_FUJI]: [
     "https://avalanche-fuji-c-chain.publicnode.com",
     "https://api.avax-test.network/ext/bc/C/rpc",
@@ -336,11 +347,7 @@ export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
 }
 
-export function getRpcUrl(chainId: number): string | undefined {
-  return sample(RPC_PROVIDERS[chainId]);
-}
-
-export function getFallbackRpcUrl(chainId: number): string | undefined {
+export function getFallbackRpcUrl(chainId: number): string {
   return sample(FALLBACK_PROVIDERS[chainId]);
 }
 

@@ -4,9 +4,8 @@ import {
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
-  NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
-  getRpcUrl,
   getFallbackRpcUrl,
+  NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
 } from "config/chains";
 import { getContract } from "config/contracts";
 import {
@@ -40,6 +39,7 @@ import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState }
 import { createContext, useContextSelector } from "use-context-selector";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { useBestRpcUrl } from "lib/rpc/bestRpcTracker";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
@@ -302,13 +302,13 @@ function useSubaccountCustomSigners() {
   const { chainId } = useChainId();
   const privateKey = useSubaccountPrivateKey();
 
-  return useMemo(() => {
-    const publicRpc = getRpcUrl(chainId);
-    const fallbackRpc = getFallbackRpcUrl(chainId);
+  const primaryRpc = useBestRpcUrl(chainId);
+  const fallbackRpc = getFallbackRpcUrl(chainId);
 
+  return useMemo(() => {
     const rpcUrls: string[] = [];
 
-    if (publicRpc) rpcUrls.push(publicRpc);
+    if (primaryRpc) rpcUrls.push(primaryRpc);
     if (fallbackRpc) rpcUrls.push(fallbackRpc);
 
     if (!rpcUrls.length || !privateKey) return undefined;
@@ -320,7 +320,7 @@ function useSubaccountCustomSigners() {
 
       return new ethers.Wallet(privateKey, provider);
     });
-  }, [chainId, privateKey]);
+  }, [chainId, privateKey, primaryRpc, fallbackRpc]);
 }
 
 export function useSubaccount(requiredBalance: bigint | null, requiredActions = 1) {

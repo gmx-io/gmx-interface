@@ -106,7 +106,7 @@ export function glvMaxMarketTokenBalanceAmountKey(glvAddress: string, market: st
   return hashData(["bytes32", "address", "address"], [GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT, glvAddress, market]);
 }
 
-export function isGlvMarketDisabledKey(glvAddress: string, market: string) {
+export function isGlvDisabledKey(glvAddress: string, market: string) {
   return hashData(["bytes32", "address", "address"], [IS_GLV_MARKET_DISABLED, glvAddress, market]);
 }
 

@@ -18,13 +18,15 @@ export function getPendingDepositKey(data: PendingDepositData) {
   if (data.isGlvDeposit) {
     return [
       data.account,
-      data.marketAddress,
+      data.glvAddress,
       data.initialLongTokenAddress,
       data.initialShortTokenAddress,
       data.longTokenSwapPath.join("-"),
       data.shortTokenSwapPath.join("-"),
       data.shouldUnwrapNativeToken,
       data.initialLongTokenAmount.toString(),
+      data.initialShortTokenAmount.toString(),
+      (data.initialMarketTokenAmount ?? 0n).toString(),
     ].join(":");
   }
 

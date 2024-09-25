@@ -2402,7 +2402,7 @@ export default function StakeV2() {
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
-            glvMarketsTokensApyData={glvApyInfoData}
+            glvTokensApyData={glvApyInfoData}
             isDeposit={false}
             shouldScrollToTop
           />

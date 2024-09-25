@@ -4,7 +4,7 @@ import type { Address } from "viem";
 
 import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 /**
  * Sorts GM tokens by:
@@ -30,7 +30,7 @@ export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, ma
       continue;
     }
 
-    const marketTokenData = isGlv(market) ? market.indexToken : marketTokensData[market.marketTokenAddress];
+    const marketTokenData = isGlvInfo(market) ? market.glvToken : marketTokensData[market.marketTokenAddress];
 
     if (!marketTokenData) {
       continue;
@@ -42,22 +42,22 @@ export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, ma
       marketTokenData.prices.minPrice
     )!;
 
-    const isGlvMarket = isGlv(market);
+    const isGlv = isGlvInfo(market);
 
     let groupKey: Address | "nonZero";
     if (marketTokenData.balance !== undefined && marketTokenData.balance !== 0n) {
       groupKey = "nonZero";
-    } else if (!isGlvMarket && market.isSpotOnly) {
+    } else if (!isGlv && market.isSpotOnly) {
       groupKey = market.marketTokenAddress as Address;
     } else {
-      groupKey = market.indexTokenAddress as Address;
+      groupKey = isGlv ? (market.glvTokenAddress as Address) : (market.indexTokenAddress as Address);
     }
 
     if (!groupedTokens[groupKey]) {
       groupedTokens[groupKey] = {
         tokens: [],
         totalSupplyUsd: 0n,
-        isGlv: isGlvMarket,
+        isGlv: isGlv,
       };
     }
 

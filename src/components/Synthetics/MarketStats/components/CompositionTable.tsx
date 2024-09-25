@@ -7,18 +7,17 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TOKEN_COLOR_MAP } from "config/tokens";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getPoolUsdWithoutPnl, MarketInfo } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
-import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
+import { getMarketIndexName, getGlvOrMarketAddress } from "../../../../domain/synthetics/markets/utils";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
 import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
 import { USD_DECIMALS } from "config/factors";
 
 interface CompositionTableGmProps {
-  marketInfo?: MarketInfo | GlvMarketInfo;
+  marketInfo?: GlvOrMarketInfo;
 }
 
 interface GmTableConfig {
@@ -27,39 +26,39 @@ interface GmTableConfig {
     token: TokenData;
     amount: bigint;
     prefix: string;
-    comp: number;
+    composition: number;
   }[];
 }
 interface GlvTableConfig {
   type: "glv";
   data: {
-    pool: MarketInfo;
+    market: MarketInfo;
     tvl: readonly [used: bigint, available: bigint];
-    comp: number;
+    composition: number;
   }[];
 }
 
 export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
-  const isGlvMarket = marketInfo && isGlv(marketInfo);
+  const isGlv = marketInfo && isGlvInfo(marketInfo);
 
-  const selectGmComposition = useGlvGmMarketsWithComposition(true, marketInfo?.marketTokenAddress);
+  const selectGmComposition = useGlvGmMarketsWithComposition(true, marketInfo && getGlvOrMarketAddress(marketInfo));
 
   const [col1, col2, col3] = useMemo(() => {
-    if (isGlvMarket) {
-      return [t`POOL`, t`TVL`, t`COMP.`];
+    if (isGlv) {
+      return [t`MARKET`, t`TVL`, t`COMP.`];
     }
 
     return [t`COLLATERAL`, t`AMOUNT`, t`COMP.`];
-  }, [isGlvMarket]);
+  }, [isGlv]);
 
   const table: GmTableConfig | GlvTableConfig | undefined = useMemo(() => {
     if (!marketInfo) {
       return undefined;
     }
 
-    if (isGlvMarket) {
+    if (isGlv) {
       if (!marketsInfoData || !tokensData) {
         return undefined;
       }
@@ -85,18 +84,18 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
         {
           token: longToken,
           amount: longPoolAmount,
-          comp: compLong,
+          composition: compLong,
           prefix: "Long",
         },
         {
           token: shortToken,
           amount: shortPoolAmount,
-          comp: compShort,
+          composition: compShort,
           prefix: "Short",
         },
       ],
     };
-  }, [marketInfo, marketsInfoData, isGlvMarket, tokensData, selectGmComposition]);
+  }, [marketInfo, marketsInfoData, isGlv, tokensData, selectGmComposition]);
 
   const rows = useMemo(() => {
     if (!table) {
@@ -104,29 +103,29 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
     }
 
     if (table.type === "glv") {
-      return table.data.map(({ comp, pool, tvl }, index) => {
-        if (comp === undefined || comp === undefined || !pool?.indexToken) {
+      return table.data.map(({ composition, market, tvl }, index) => {
+        if (composition === undefined || composition === undefined || !market?.indexToken) {
           return null;
         }
 
         return (
-          <ExchangeTr key={`comp-data-${pool.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
+          <ExchangeTr key={`comp-data-${market.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
             <ExchangeTd className="py-6" padding="none">
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
                   // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  style={{ backgroundColor: TOKEN_COLOR_MAP[pool.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
+                  style={{ backgroundColor: TOKEN_COLOR_MAP[market.indexToken.symbol] ?? TOKEN_COLOR_MAP.default }}
                 />
-                <TokenIcon symbol={pool.indexToken.symbol} displaySize={24} />
-                <span>{getMarketIndexName({ indexToken: pool.indexToken, isSpotOnly: false })}</span>
+                <TokenIcon symbol={market.indexToken.symbol} displaySize={24} />
+                <span>{getMarketIndexName(market)}</span>
               </span>
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
               {formatAmountHuman(tvl[0], USD_DECIMALS, true, 1)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 1)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {comp.toFixed(2)}%
+              {composition.toFixed(2)}%
             </ExchangeTd>
           </ExchangeTr>
         );
@@ -134,8 +133,8 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
     }
 
     if (table.type === "gm") {
-      return table.data.map(({ amount, comp, token, prefix }, index) => {
-        if (amount === undefined || comp === undefined || !token) {
+      return table.data.map(({ amount, composition, token, prefix }, index) => {
+        if (amount === undefined || composition === undefined || !token) {
           return null;
         }
 
@@ -150,7 +149,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                 />
                 <TokenIcon symbol={token.symbol} displaySize={24} />
                 <span>
-                  {prefix}: {token.symbol}
+                  <span className="opacity-70">{prefix}:</span> {token.symbol}
                 </span>
               </span>
             </ExchangeTd>
@@ -158,7 +157,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
               {formatAmountHuman(amount, token.decimals, false, 3)}
             </ExchangeTd>
             <ExchangeTd className="py-6" padding="none">
-              {comp.toFixed(2)}%
+              {composition.toFixed(2)}%
             </ExchangeTd>
           </ExchangeTr>
         );

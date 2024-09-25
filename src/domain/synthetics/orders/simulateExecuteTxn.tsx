@@ -7,17 +7,20 @@ import {
   getMulticallContract,
   getExchangeRouterContract,
   getGlvRouterContract,
+  getZeroAddressContract,
 } from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { ethers, BytesLike, BaseContract } from "ethers";
-import { getErrorMessage } from "lib/contracts/transactionErrors";
+import { extractError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
+import { withRetry } from "viem";
+import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -49,13 +52,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const dataStore = getDataStoreContract(chainId, provider);
   const multicall = getMulticallContract(chainId, provider);
   const exchangeRouter = getExchangeRouterContract(chainId, provider);
-  let glvRouter;
-
-  try {
-    glvRouter = getGlvRouterContract(chainId, provider);
-  } catch (e) {
-    // no glv router in networks without glv
-  }
+  const glvRouter = isGlvEnabled(chainId) ? getGlvRouterContract(chainId, provider) : getZeroAddressContract(provider);
 
   const result = await multicall.blockAndAggregate.staticCall([
     { target: dataStoreAddress, callData: dataStore.interface.encodeFunctionData("getUint", [NONCE_KEY]) },
@@ -74,7 +71,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   const nextKey = orderKey(dataStoreAddress, nextNonce) as BytesLike;
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
-  const priceTimestamp = blockTimestamp + 5n;
+  const priceTimestamp = blockTimestamp + 10n;
   const method = p.method || "simulateExecuteOrder";
 
   const isGlv = method === "simulateExecuteGlvDeposit" || method === "simulateExecuteGlvWithdrawal";
@@ -137,18 +134,33 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 
   try {
-    await router.multicall.staticCall(simulationPayloadData, {
-      value: p.value,
-      blockTag: blockNumber,
-      from: p.account,
-    });
+    await withRetry(
+      () => {
+        return router.multicall.staticCall(simulationPayloadData, {
+          value: p.value,
+          blockTag: blockNumber,
+          from: p.account,
+        });
+      },
+      {
+        retryCount: 2,
+        delay: 200,
+        shouldRetry: ({ error }) => {
+          const [message] = extractError(error);
+          return message?.includes("unsupported block number") ?? false;
+        },
+      }
+    );
   } catch (txnError) {
     const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
     let msg: React.ReactNode = undefined;
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-      if (!errorData) throw new Error("No data found in error.");
+
+      const error = new Error("No data found in error.");
+      error.cause = txnError;
+      if (!errorData) throw error;
 
       const parsedError = customErrors.interface.parseError(errorData);
       const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
@@ -233,12 +245,12 @@ function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPri
       max: convertToContractPrice(token.prices.maxPrice, token.decimals),
     };
 
-    const primaryOverridedPrice = primaryPricesMap[address];
+    const primaryOverriddenPrice = primaryPricesMap[address];
 
-    if (primaryOverridedPrice) {
+    if (primaryOverriddenPrice) {
       primaryPrices.push({
-        min: convertToContractPrice(primaryOverridedPrice.minPrice, token.decimals),
-        max: convertToContractPrice(primaryOverridedPrice.maxPrice, token.decimals),
+        min: convertToContractPrice(primaryOverriddenPrice.minPrice, token.decimals),
+        max: convertToContractPrice(primaryOverriddenPrice.maxPrice, token.decimals),
       });
     } else {
       primaryPrices.push(currentPrice);

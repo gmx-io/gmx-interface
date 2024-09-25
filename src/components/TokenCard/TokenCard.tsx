@@ -25,18 +25,22 @@ import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 
 import sparkleIcon from "img/sparkle.svg";
+import { GlvList, useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { RawIncentivesStats } from "lib/oracleKeeperFetcher";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
+const glvIcon = getIcon("common", "glv");
 
-function calculateMaxApr(chainId: number, apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
+function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData, chainId?: number) {
   const allKeys = uniq(keys(apr).concat(keys(incentiveApr)));
 
   let maxApr = 0n;
 
   for (const key of allKeys) {
-    const isBaseApyReadyToBeShown = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, key));
+    const isBaseApyReadyToBeShown = chainId ? getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, key)) : true;
 
     let aprValue = 0n;
     if (isBaseApyReadyToBeShown) {
@@ -54,17 +58,46 @@ function calculateMaxApr(chainId: number, apr: MarketTokensAPRData, incentiveApr
   return maxApr;
 }
 
+const hasGlvRewards = (stats: RawIncentivesStats | null, glvs: GlvList | undefined) =>
+  stats?.lp?.isActive &&
+  Object.entries(stats?.lp.rewardsPerMarket ?? {}).some(([market, reward]) => {
+    return Object.values(glvs ?? {}).some(({ glv }) => glv.glvToken === market && BigInt(reward) > 0n);
+  });
+
 type Props = {
   showRedirectModal?: (to: string) => void;
 };
 
 export default function TokenCard({ showRedirectModal }: Props) {
   const { chainId } = useChainId();
-  const { active } = useWallet();
+  const { active, account } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
   const avalancheIncentiveState = useIncentiveStats(AVALANCHE);
-  const { marketsTokensApyData: arbApy, marketsTokensIncentiveAprData: arbIncentiveApr } = useGmMarketsApy(ARBITRUM);
-  const { marketsTokensApyData: avaxApy, marketsTokensIncentiveAprData: avaxIncentiveApr } = useGmMarketsApy(AVALANCHE);
+
+  const { glvs: glvArb } = useGlvMarketsInfo(isGlvEnabled(ARBITRUM), {
+    chainId: ARBITRUM,
+    account,
+    marketsInfoData: undefined,
+    tokensData: undefined,
+  });
+
+  const { glvs: glvAvax } = useGlvMarketsInfo(isGlvEnabled(AVALANCHE), {
+    chainId: AVALANCHE,
+    marketsInfoData: undefined,
+    tokensData: undefined,
+    account,
+  });
+
+  const {
+    marketsTokensApyData: arbApy,
+    marketsTokensIncentiveAprData: arbIncentiveApr,
+    glvApyInfoData: arbGlvApy,
+  } = useGmMarketsApy(ARBITRUM);
+  const {
+    marketsTokensApyData: avaxApy,
+    marketsTokensIncentiveAprData: avaxIncentiveApr,
+    glvApyInfoData: avaxGlvApy,
+  } = useGmMarketsApy(AVALANCHE);
 
   const maxApyText = useMemo(() => {
     if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)
@@ -73,14 +106,23 @@ export default function TokenCard({ showRedirectModal }: Props) {
         [AVALANCHE]: "...%",
       };
 
-    const maxArbApy = calculateMaxApr(ARBITRUM, arbApy, arbIncentiveApr);
-    const maxAvaxApy = calculateMaxApr(AVALANCHE, avaxApy, avaxIncentiveApr);
+    const maxArbApy = calculateMaxApr(arbApy, arbIncentiveApr, ARBITRUM);
+    const maxAvaxApy = calculateMaxApr(avaxApy, avaxIncentiveApr, AVALANCHE);
 
     return {
       [ARBITRUM]: `${formatAmount(maxArbApy, 28, 2)}%`,
       [AVALANCHE]: `${formatAmount(maxAvaxApy, 28, 2)}%`,
     };
   }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
+
+  const maxGlvApyText = useMemo(() => {
+    const arb = !arbGlvApy ? "...%" : `${formatAmount(calculateMaxApr(arbGlvApy, {}, ARBITRUM), 28, 2)}%`;
+    const avax = !avaxGlvApy ? "...%" : `${formatAmount(calculateMaxApr(avaxGlvApy, {}, AVALANCHE), 28, 2)}%`;
+    return {
+      [ARBITRUM]: isGlvEnabled(ARBITRUM) ? arb : undefined,
+      [AVALANCHE]: isGlvEnabled(AVALANCHE) ? avax : undefined,
+    };
+  }, [arbGlvApy, avaxGlvApy]);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -143,6 +185,38 @@ export default function TokenCard({ showRedirectModal }: Props) {
     }
   }, [arbitrumIncentiveState?.lp?.isActive, avalancheIncentiveState?.lp?.isActive]);
 
+  const glvsIncentivizedLabel = useMemo(() => {
+    const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
+    const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
+    const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
+
+    const hasArbitrumGlvIncentives = hasGlvRewards(arbitrumIncentiveState, glvArb);
+    const hasAvaxGlvIncentives = hasGlvRewards(avalancheIncentiveState, glvAvax);
+
+    if (hasArbitrumGlvIncentives && hasAvaxGlvIncentives) {
+      return (
+        <Trans>
+          {arbitrumLink} and {avalancheLink} GLV Pools are{" "}
+          <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else if (hasArbitrumGlvIncentives) {
+      return (
+        <Trans>
+          {arbitrumLink} GLV Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else if (hasAvaxGlvIncentives) {
+      return (
+        <Trans>
+          {avalancheLink} GLV Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
+        </Trans>
+      );
+    } else {
+      return null;
+    }
+  }, [glvArb, glvAvax, arbitrumIncentiveState, avalancheIncentiveState]);
+
   return (
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
@@ -180,6 +254,53 @@ export default function TokenCard({ showRedirectModal }: Props) {
           >
             <Trans>Read more</Trans>
           </Button>
+        </div>
+      </div>
+      <div className="Home-token-card-option">
+        <div>
+          <div className="Home-token-card-option-icon">
+            <img src={glvIcon} alt="GLV icon" /> GLV
+          </div>
+          <div className="Home-token-card-option-info">
+            <div className="Home-token-card-option-title">
+              <Trans>
+                GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees
+                generated by them.
+              </Trans>
+            </div>
+          </div>
+          {glvsIncentivizedLabel && (
+            <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{glvsIncentivizedLabel}</div>
+          )}
+          <div className="Home-token-card-option-apr">
+            <Trans>Arbitrum Max. APY:</Trans> {maxGlvApyText?.[ARBITRUM]}
+            {maxGlvApyText?.[AVALANCHE] && (
+              <>
+                , <Trans>Avalanche Max. APY: {maxGlvApyText?.[AVALANCHE]}</Trans>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="Home-token-card-option-action Token-card-buy">
+          <div className="buy">
+            <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={ARBITRUM}>
+              <Trans>View on Arbitrum</Trans>
+            </BuyLink>
+            {isGlvEnabled(AVALANCHE) && (
+              <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={AVALANCHE}>
+                <Trans>View on Arbitrum</Trans>
+              </BuyLink>
+            )}
+          </div>
+          <a
+            href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
+            target="_blank"
+            rel="noreferrer"
+            className="default-btn read-more"
+          >
+            <Trans>Read more</Trans>
+          </a>
         </div>
       </div>
       <div className="Home-token-card-option">

@@ -13,19 +13,21 @@ import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
 import { useTokensDataRequest } from "../tokens";
-import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData, MarketsInfoData } from "./types";
+import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import { getPoolUsdWithoutPnl, isMarketInfo } from "domain/synthetics/markets";
 import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";
-import { isGlv } from "./glv";
-import { GLV_ENABLED } from "config/markets";
+import { isGlvEnabled, isGlvInfo } from "./glv";
+import { getMarketListingDate } from "config/markets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
+import { useGlvMarketsInfo } from "./useGlvMarkets";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -59,7 +61,7 @@ function useMarketAddresses(marketsInfoData: GlvAndGmMarketsInfoData | undefined
 
 function useExcludedLiquidityMarketMap(
   chainId: number,
-  marketsInfoData: MarketsInfoData | undefined
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined
 ): {
   [marketAddress: string]: bigint;
 } {
@@ -189,6 +191,9 @@ function useIncentivesBonusApr(
     const marketTokensAPRData: MarketTokensAPRData = {};
     for (const marketAddress of marketAddresses) {
       const market = getByKey(marketsInfoData, marketAddress);
+      if (!market || !isMarketInfo(market)) {
+        continue;
+      }
       const marketToken = marketTokensData?.[marketAddress];
       const poolValue = market?.poolValueMin;
 
@@ -227,14 +232,22 @@ function useIncentivesBonusApr(
 }
 
 export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
+  const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
-  const glvInfo = useSelector(selectGlvInfo);
-  const glvMarketInfo = GLV_ENABLED[chainId] ? glvInfo : undefined;
+  const enabledGlv = isGlvEnabled(chainId);
+  const account = useSelector(selectAccount);
+
+  const { glvData } = useGlvMarketsInfo(enabledGlv, {
+    marketsInfoData: onlyGmMarketsInfoData,
+    tokensData,
+    chainId,
+    account,
+  });
 
   const marketsInfoData = {
     ...onlyGmMarketsInfoData,
-    ...glvMarketInfo,
+    ...glvData,
   };
 
   const marketAddresses = useMarketAddresses(marketsInfoData);
@@ -309,7 +322,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         );
 
         const marketInfo = getByKey(marketsInfoData, marketAddress);
-        if (!marketInfo) return acc;
+        if (!marketInfo || !isMarketInfo(marketInfo)) return acc;
 
         const x1total = BigInt(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
         const x1borrowing = BigInt(lteStartOfPeriodFees[0]?.cumulativeBorrowingFeeUsdPerPoolValue ?? 0);
@@ -337,7 +350,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
 
       const marketsTokensLidoAprData = marketAddresses.reduce((acc, marketAddress) => {
         const marketInfo = getByKey(marketsInfoData, marketAddress);
-        if (!marketInfo || !wstEthToken || lidoApr === undefined || isGlv(marketInfo)) return acc;
+        if (!marketInfo || !wstEthToken || lidoApr === undefined || isGlvInfo(marketInfo)) return acc;
 
         const longTokenData = {
           address: marketInfo.longTokenAddress,
@@ -390,13 +403,14 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData);
 
   const glvApyInfoData = useMemo(() => {
-    if (!glvMarketInfo || !data?.marketsTokensApyData) {
+    if (!glvData || !data?.marketsTokensApyData) {
       return {};
     }
 
-    return Object.values(glvMarketInfo).reduce((acc, { markets, indexTokenAddress }) => {
+    return Object.values(glvData).reduce((acc, { markets, glvTokenAddress }) => {
       const marketData = markets.map((market) => {
-        const apy = data.marketsTokensApyData[market.address];
+        const isBaseApyEligible = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, market.address));
+        const apy = isBaseApyEligible ? data.marketsTokensApyData[market.address] : 0n;
         const marketBalance = market.gmBalance;
         const price = marketTokensData?.[market.address].prices.minPrice ?? 0n;
         const decimals = marketTokensData?.[market.address].decimals ?? 0;
@@ -415,14 +429,14 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         : marketData.reduce((acc: bigint, { amountUsd, apy }) => acc + amountUsd * apy, 0n);
 
       if (sumApys === undefined) {
-        acc[indexTokenAddress] = undefined;
+        acc[glvTokenAddress] = undefined;
       } else {
-        acc[indexTokenAddress] = total === 0n ? 0n : sumApys / total;
+        acc[glvTokenAddress] = total === 0n ? 0n : sumApys / total;
       }
 
       return acc;
     }, {});
-  }, [glvMarketInfo, data?.marketsTokensApyData, marketTokensData]);
+  }, [glvData, data?.marketsTokensApyData, marketTokensData, chainId]);
 
   return {
     glvApyInfoData,

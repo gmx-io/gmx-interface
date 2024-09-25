@@ -4,7 +4,13 @@ import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { MarketInfo, getGlvMarketDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  GlvOrMarketInfo,
+  getGlvDisplayName,
+  getMarketIndexName,
+  getGlvOrMarketAddress,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   gmTokensFavoritesTabOptionLabels,
@@ -18,7 +24,7 @@ import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
 
-import { isGlv } from "domain/synthetics/markets/glv";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
@@ -52,12 +58,14 @@ export function PoolSelector({
     const allMarkets = markets
       .filter(
         (market) =>
-          !market.isDisabled && market.indexToken && (showAllPools || getMarketIndexName(market) === selectedIndexName)
+          !market.isDisabled &&
+          (isGlvInfo(market) ? true : market.indexToken) &&
+          (showAllPools || getMarketIndexName(market) === selectedIndexName)
       )
       .map((marketInfo) => {
         const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
-        const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
+        const marketToken = getByKey(marketTokensData, getGlvOrMarketAddress(marketInfo));
         const gmBalance = marketToken?.balance;
         const gmBalanceUsd = convertToUsd(marketToken?.balance, marketToken?.decimals, marketToken?.prices.minPrice);
         const state = getMarketState?.(marketInfo);
@@ -65,7 +73,7 @@ export function PoolSelector({
         return {
           indexName,
           poolName,
-          name: isGlv(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
+          name: isGlvInfo(marketInfo) ? marketInfo.name ?? "GLV" : marketInfo.name,
           marketInfo,
           balance: gmBalance ?? 0n,
           balanceUsd: gmBalanceUsd ?? 0n,
@@ -91,7 +99,8 @@ export function PoolSelector({
   }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
   const marketInfo = useMemo(
-    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress)?.marketInfo,
+    () =>
+      marketsOptions.find((option) => getGlvOrMarketAddress(option.marketInfo) === selectedMarketAddress)?.marketInfo,
     [marketsOptions, selectedMarketAddress]
   );
 
@@ -100,13 +109,15 @@ export function PoolSelector({
     return marketsOptions.filter((option) => {
       let name = option.name.toLowerCase();
 
-      if (isGlv(option.marketInfo)) {
+      const isGlv = isGlvInfo(option.marketInfo);
+
+      if (isGlv) {
         name = "glv " + name;
       }
 
       const textSearchMatch = name.includes(lowercaseSearchKeyword);
-
-      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.marketTokenAddress) : true;
+      const favoriteMatch =
+        tab === "favorites" ? favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo)) : true;
 
       return textSearchMatch && favoriteMatch;
     });
@@ -142,12 +153,12 @@ export function PoolSelector({
     setSearchKeyword(e.target.value);
   }, []);
 
-  function displayPoolLabel(marketInfo: MarketInfo | undefined) {
+  function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined) {
     if (!marketInfo) return "...";
     let name;
 
-    if (isGlv(marketInfo)) {
-      name = getGlvMarketDisplayName(marketInfo);
+    if (isGlvInfo(marketInfo)) {
+      name = getGlvDisplayName(marketInfo);
     } else {
       name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
     }
@@ -193,10 +204,10 @@ export function PoolSelector({
           {filteredOptions.map((option, marketIndex) => {
             return (
               <PoolListItem
-                key={option.marketInfo.marketTokenAddress}
+                key={getGlvOrMarketAddress(option.marketInfo)}
                 {...option}
-                marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
-                isFavorite={favoriteTokens?.includes(option.marketInfo.marketTokenAddress)}
+                marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.marketInfo))}
+                isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo))}
                 isInFirstHalf={marketIndex < filteredOptions.length / 2}
                 showAllPools={showAllPools}
                 showBalances={showBalances}
@@ -217,7 +228,9 @@ export function PoolSelector({
                 marketInfo.isSpotOnly
                   ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
                     getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
-                  : marketInfo?.indexToken.symbol
+                  : isGlvInfo(marketInfo)
+                    ? marketInfo.glvToken.symbol
+                    : marketInfo?.indexToken.symbol
               }
               importSize={40}
               displaySize={20}

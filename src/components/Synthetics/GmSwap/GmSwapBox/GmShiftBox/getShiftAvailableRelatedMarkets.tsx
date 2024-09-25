@@ -1,5 +1,5 @@
-import { isGlv } from "domain/synthetics/markets/glv";
-import type { GlvAndGmMarketsInfoData, MarketInfo } from "domain/synthetics/markets/types";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
 
 import { EMPTY_ARRAY } from "lib/objects";
 
@@ -9,7 +9,7 @@ export function getShiftAvailableRelatedMarkets({
   marketTokenAddress,
 }: {
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-  sortedMarketsInfoByIndexToken: MarketInfo[];
+  sortedMarketsInfoByIndexToken: GlvOrMarketInfo[];
   marketTokenAddress?: string;
 }) {
   if (!marketsInfoData) {
@@ -30,7 +30,7 @@ export function getShiftAvailableRelatedMarkets({
   const shortTokenAddress = currentMarketInfo.shortTokenAddress;
 
   const gmToGmShiftRelatedMarkets = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
-    if (isGlv(marketInfo)) {
+    if (isGlvInfo(marketInfo)) {
       return false;
     }
 
@@ -42,7 +42,7 @@ export function getShiftAvailableRelatedMarkets({
   });
 
   const relatedGlvs = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
-    if (isGlv(marketInfo)) {
+    if (isGlvInfo(marketInfo)) {
       return marketInfo.markets.some((market) => market.address === marketTokenAddress);
     }
 
