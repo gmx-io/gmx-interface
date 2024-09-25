@@ -17,7 +17,7 @@ import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecu
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<typeof usePriceImpactWarningState>) {
   const tokenData = useTokensData();
@@ -29,7 +29,7 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const executionFee = useSelector(selectTradeboxExecutionFee);
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData, mutate: mutateTokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
     skip: false,
@@ -81,6 +81,12 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     isHighFeeConsentError,
   ]);
 
+  const handleApproveSubmitted = useCallback(() => {
+    setTimeout(() => {
+      mutateTokensAllowanceData();
+    }, 2000);
+  }, [mutateTokensAllowanceData]);
+
   const element = (
     <>
       <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
@@ -90,6 +96,7 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
           tokenAddress={fromToken.address}
           tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
           spenderAddress={getContract(chainId, "SyntheticsRouter")}
+          onApproveSubmitted={handleApproveSubmitted}
         />
       )) ||
         null}
