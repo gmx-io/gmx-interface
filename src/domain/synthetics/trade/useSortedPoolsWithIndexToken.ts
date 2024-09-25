@@ -3,8 +3,9 @@ import { useMemo } from "react";
 
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
-import type { MarketInfo, GlvAndGmMarketsInfoData } from "../markets";
-import { isGlv } from "../markets/glv";
+import { getGlvOrMarketAddress, type GlvAndGmMarketsInfoData, type GlvOrMarketInfo } from "../markets";
+import { isGlvInfo } from "../markets/glv";
+
 import { type TokenData, type TokensData, convertToUsd } from "../tokens";
 
 const DEFAULT_VALUE = {
@@ -20,7 +21,7 @@ export function sortMarketsWithIndexToken(
     return DEFAULT_VALUE;
   }
   // Group markets by index token address
-  const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
+  const groupedMarketList: { [marketAddress: string]: GlvOrMarketInfo[] } = groupBy(
     Object.values(marketsInfoData),
     (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
   );
@@ -29,12 +30,12 @@ export function sortMarketsWithIndexToken(
     .map((markets) => {
       return markets
         .filter((market) => {
-          const marketInfoData = getByKey(marketsInfoData, market.marketTokenAddress)!;
+          const marketInfoData = getByKey(marketsInfoData, getGlvOrMarketAddress(market))!;
           return !marketInfoData.isDisabled;
         })
         .map((market) => ({
-          isGlv: isGlv(market),
-          token: getByKey(marketTokensData, market.marketTokenAddress)!,
+          isGlv: isGlvInfo(market),
+          token: getByKey(marketTokensData, getGlvOrMarketAddress(market))!,
         }));
     })
     .filter((markets) => markets.length > 0);

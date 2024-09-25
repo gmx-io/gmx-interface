@@ -138,14 +138,15 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         return result as TResult;
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error(`Multicall request failed: ${name}`, e);
-        e.message = `Multicall request failed: ${name} ${e.message}`;
+        console.error(`Multicall request failed`, e);
+        e.message = `Multicall request failed ${e.message}`;
 
         emitMetricEvent<ErrorEvent>({
           event: "error",
           isError: true,
           data: {
             errorName: e.name,
+            errorGroup: `Multicall request failed`,
             errorMessage: e.message,
             errorStack: e.stack,
             errorStackHash: cryptoJs.SHA256(e.stack).toString(cryptoJs.enc.Hex),

@@ -18,14 +18,13 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
   const [firstTokenAddress, setFirstTokenAddress] = useDepositWithdrawalSetFirstTokenAddress(isDeposit, marketAddress);
-
   const [secondTokenAddress, setSecondTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "second"],
     undefined
   );
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
-  const [marketTokenInputValue, setMarketTokenInputValue] = useSafeState<string>("");
+  const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
 
   return {
     focusedInput,
@@ -46,7 +45,7 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
     secondTokenInputValue,
     setSecondTokenInputValue,
 
-    marketTokenInputValue,
-    setMarketTokenInputValue,
+    marketOrGlvTokenInputValue,
+    setMarketOrGlvTokenInputValue,
   };
 }

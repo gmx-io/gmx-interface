@@ -4,12 +4,14 @@ import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { sleep } from "lib/sleep";
 import { promiseWithResolvers } from "lib/utils";
 
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { MAX_TIMEOUT } from "./Multicall";
+import { emitMetricEvent, emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { MAX_TIMEOUT, MulticallProviderUrls } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { getAbFlags } from "config/ab";
+import { getBestRpcUrl } from "lib/rpc/bestRpcTracker";
+import { getFallbackRpcUrl } from "config/chains";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
 
@@ -18,6 +20,23 @@ const promises: Record<string, { resolve: (value: any) => void; reject: (error: 
 executorWorker.onmessage = (event) => {
   if ("isMetrics" in event.data) {
     emitMetricEvent<MetricEventParams>(event.data.detail);
+    return;
+  }
+
+  if ("isCounter" in event.data) {
+    emitMetricCounter({
+      event: event.data.detail.event,
+      data: event.data.detail.data,
+    });
+    return;
+  }
+
+  if ("isTiming" in event.data) {
+    emitMetricTiming({
+      event: event.data.detail.event,
+      time: event.data.detail.time,
+      data: event.data.detail.data,
+    });
     return;
   }
 
@@ -56,9 +75,15 @@ export async function executeMulticallWorker(
 ): Promise<MulticallResult<any> | undefined> {
   const id = uniqueId("multicall-");
 
+  const providerUrls: MulticallProviderUrls = {
+    primary: getBestRpcUrl(chainId),
+    secondary: getFallbackRpcUrl(chainId),
+  };
+
   executorWorker.postMessage({
     id,
     chainId,
+    providerUrls,
     request,
     abFlags: getAbFlags(),
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
@@ -99,6 +124,7 @@ export async function executeMulticallWorker(
         data: {
           isInMainThread: false,
           errorName: error.name,
+          errorGroup: "Worker multicall error",
           errorMessage: error.message,
           errorStack: error.stack,
         },

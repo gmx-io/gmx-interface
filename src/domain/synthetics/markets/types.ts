@@ -1,5 +1,4 @@
 import { TokenData } from "domain/synthetics/tokens";
-import { GlvMarketInfo } from "./useGlvMarkets";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
@@ -135,7 +134,7 @@ export type MarketsInfoData = {
 };
 
 export type GlvAndGmMarketsInfoData = {
-  [marketAddress: string]: MarketInfo | GlvMarketInfo;
+  [marketAddress: string]: MarketInfo | GlvInfo;
 };
 
 export type MarketTokensAPRData = {
@@ -171,3 +170,36 @@ export type ContractMarketPrices = {
     max: bigint;
   };
 };
+
+export type GlvOrMarketInfo = MarketInfo | GlvInfo;
+
+export type GlvInfoData = {
+  [key in string]: GlvInfo;
+};
+
+export type GlvInfo = {
+  glvToken: TokenData & {
+    contractSymbol: string;
+  };
+  glvTokenAddress: string;
+  longTokenAddress: string;
+  shortTokenAddress: string;
+  isSameCollaterals: boolean;
+  isSpotOnly: boolean;
+  name: string;
+  longToken: TokenData;
+  shortToken: TokenData;
+  markets: GlvMarket[];
+  shiftLastExecutedAt: bigint;
+  shiftMinInterval: bigint;
+  isDisabled: boolean;
+  data: string;
+};
+
+export interface GlvMarket {
+  address: string;
+  isDisabled: boolean;
+  maxMarketTokenBalanceUsd: bigint;
+  glvMaxMarketTokenBalanceAmount: bigint;
+  gmBalance: bigint;
+}

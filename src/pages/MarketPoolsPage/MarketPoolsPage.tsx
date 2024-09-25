@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
   selectDepositMarketTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -31,7 +31,7 @@ export function MarketPoolsPage() {
   const { chainId } = useChainId();
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -42,26 +42,26 @@ export function MarketPoolsPage() {
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
 
-  const [selectedMarketGmKey, setSelectedMarketGmKey] = useLocalStorageSerializeKey<string | undefined>(
+  const [selectedMarketOrGlvKey, setSelectedMarketOrGlvKey] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositMarketKey(chainId),
     undefined
   );
 
-  const [selectedGlvGmMarketKey, setSelectedGlvGmMarketKey] = useState<string | undefined>(undefined);
+  const [selectedMarketForGlv, setSelectedMarketForGlv] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketGmKey));
+    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, selectedMarketOrGlvKey));
 
     if (!newAvailableModes.includes(mode)) {
       setMode(newAvailableModes[0]);
     }
-  }, [marketsInfoData, mode, operation, selectedMarketGmKey]);
+  }, [marketsInfoData, mode, operation, selectedMarketOrGlvKey]);
 
-  const marketInfo = getByKey(marketsInfoData, selectedMarketGmKey);
+  const marketInfo = getByKey(marketsInfoData, selectedMarketOrGlvKey);
 
   const marketToken = getTokenData(
     operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
-    selectedMarketGmKey
+    selectedMarketOrGlvKey
   );
 
   return (
@@ -77,7 +77,12 @@ export function MarketPoolsPage() {
                 to earn fees from swaps and leverage trading.
               </Trans>
               <br />
-              <Trans>GLV Vaults include multiple GM Tokens and are automatically rebalanced.</Trans>
+              <Trans>
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools">
+                  GLV Vaults
+                </ExternalLink>{" "}
+                include multiple GM Tokens and are automatically rebalanced.
+              </Trans>
               <br />
               <Trans>Shift GM Tokens between eligible pools without paying buy/sell fees.</Trans>
             </>
@@ -94,15 +99,15 @@ export function MarketPoolsPage() {
             marketsInfoData={marketsInfoData}
             marketInfo={marketInfo}
             marketToken={marketToken}
-            glvMarketsTokensApyData={glvApyInfoData}
+            glvTokensApyData={glvApyInfoData}
           />
 
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
-              selectedMarketAddress={selectedMarketGmKey}
-              onSelectMarket={setSelectedMarketGmKey}
-              selectedGlvGmMarket={selectedGlvGmMarketKey}
-              onSelectGlvGmMarket={setSelectedGlvGmMarketKey}
+              selectedMarketAddress={selectedMarketOrGlvKey}
+              onSelectMarket={setSelectedMarketOrGlvKey}
+              selectedMarketForGlv={selectedMarketForGlv}
+              onSelectedMarketForGlv={setSelectedMarketForGlv}
               operation={operation}
               mode={mode}
               onSetMode={setMode}
@@ -117,7 +122,7 @@ export function MarketPoolsPage() {
           </div>
         </div>
         <GmList
-          glvMarketsTokensApyData={glvApyInfoData}
+          glvTokensApyData={glvApyInfoData}
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}

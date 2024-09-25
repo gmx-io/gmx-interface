@@ -1,10 +1,13 @@
 import { useMemo } from "react";
 
-import { selectGlvAndGmMarketsData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectGlvAndMarketsInfoData,
+  selectMarketsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useMarketTokensData } from "domain/synthetics/markets";
-import { getMaxUsdCapUsdInGmGlvMarket, isGlv } from "domain/synthetics/markets/glv";
+import { getMaxUsdCapUsdInGmGlvMarket, isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
 
 import { useChainId } from "lib/chains";
@@ -16,7 +19,8 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
     isDeposit,
   });
 
-  const allMarkets = useSelector(selectGlvAndGmMarketsData);
+  const allMarkets = useSelector(selectGlvAndMarketsInfoData);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
 
   return useMemo(() => {
     if (!glvAddress) {
@@ -25,36 +29,47 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
 
     const glv = allMarkets[glvAddress];
 
-    if (!glv || !isGlv(glv)) {
+    if (!glv || !isGlvInfo(glv)) {
       return [];
     }
 
-    const sum = glv.markets.reduce((acc, market) => acc + market.gmBalance, 0n);
-    const rows = glv.markets
-      .map((market) => {
-        const gmMarket = allMarkets[market.address];
-        const token = marketTokensData?.[gmMarket?.marketTokenAddress];
+    const sum = glv.markets.reduce((acc, market) => {
+      const token = marketTokensData?.[market.address];
+      if (!token) {
+        return acc;
+      }
 
+      return acc + (convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n);
+    }, 0n);
+
+    const rows = glv.markets
+      .map((glvMarket) => {
+        const market = marketsInfoData?.[glvMarket.address];
+
+        if (!market) {
+          return null;
+        }
+
+        const token = marketTokensData?.[market?.marketTokenAddress];
         if (!token) {
           return null;
         }
 
+        const balanceUsd = convertToUsd(glvMarket.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+
         return {
-          amount: market.gmBalance,
-          gmMarket: market,
-          pool: gmMarket,
+          amount: glvMarket.gmBalance,
+          glvMarket: glvMarket,
+          market,
           token: token,
-          tvl: [
-            convertToUsd(market.gmBalance, token.decimals, token.prices.maxPrice) ?? 0n,
-            getMaxUsdCapUsdInGmGlvMarket(market, token),
-          ] as const,
-          comp: sum === 0n ? 0 : (bigintToNumber(market.gmBalance, 1) * 100) / bigintToNumber(sum, 1),
+          tvl: [balanceUsd, getMaxUsdCapUsdInGmGlvMarket(glvMarket, token)] as const,
+          composition: sum === 0n ? 0 : (bigintToNumber(balanceUsd, 30) * 100) / bigintToNumber(sum, 30),
         };
       })
       .filter(Boolean as unknown as FilterOutFalsy);
 
     return rows.sort((a, b) => {
-      return b.comp - a.comp;
+      return b.composition - a.composition;
     });
-  }, [allMarkets, glvAddress, marketTokensData]);
+  }, [allMarkets, glvAddress, marketTokensData, marketsInfoData]);
 };

@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 
-import { getSellableMarketToken, MarketInfo } from "domain/synthetics/markets";
-import { isGlv } from "domain/synthetics/markets/glv";
+import { getSellableMarketToken, GlvOrMarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 
-export const useMarketSellableToken = (marketInfo?: MarketInfo, marketToken?: TokenData) => {
+export const useMarketSellableToken = (marketInfo?: GlvOrMarketInfo, marketToken?: TokenData) => {
   return useMemo(() => {
-    if (!marketInfo || isGlv(marketInfo)) {
+    if (!marketInfo || isGlvInfo(marketInfo)) {
       return undefined;
     }
 

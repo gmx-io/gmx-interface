@@ -13,7 +13,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   selectChainId,
   selectGlvInfoLoading,
-  selectGlvAndGmMarketsData,
+  selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -25,8 +25,9 @@ import {
   getMintableMarketTokens,
   getTotalGmInfo,
   useMarketTokensData,
-  getGlvMarketShortening,
-  getGlvMarketDisplayName,
+  getGlvDisplayName,
+  getMarketBadge,
+  getGlvOrMarketAddress,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -44,7 +45,7 @@ import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getMintableInfoGlv, isGlv } from "domain/synthetics/markets/glv";
+import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 import { ApyTooltipContent } from "./ApyTooltipContent";
@@ -53,7 +54,7 @@ import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "./GmTokensTotalBalanceInfo";
 
 type Props = {
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
@@ -67,14 +68,14 @@ export type SortField = "price" | "totalSupply" | "buyable" | "wallet" | "apy" |
 
 export function GmList({
   marketsTokensApyData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
   shouldScrollToTop,
   isDeposit,
 }: Props) {
   const chainId = useSelector(selectChainId);
-  const marketsInfo = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfo = useSelector(selectGlvAndMarketsInfoData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const tokensData = useTokensData();
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
@@ -85,7 +86,7 @@ export function GmList({
   const [searchText, setSearchText] = useState("");
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableMarketAddressSet = useMemo(
-    () => new Set(shiftAvailableMarkets.map((m) => m.marketTokenAddress)),
+    () => new Set(shiftAvailableMarkets.map((m) => getGlvOrMarketAddress(m))),
     [shiftAvailableMarkets]
   );
 
@@ -96,7 +97,7 @@ export function GmList({
     marketTokensData,
     orderBy,
     direction,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
@@ -206,7 +207,7 @@ export function GmList({
                   marketsTokensApyData={marketsTokensApyData}
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
                   marketsTokensLidoAprData={marketsTokensLidoAprData}
-                  glvMarketsTokensApyData={glvMarketsTokensApyData}
+                  glvTokensApyData={glvTokensApyData}
                   shouldScrollToTop={shouldScrollToTop}
                   isShiftAvailable={token.symbol === "GLV" ? false : shiftAvailableMarketAddressSet.has(token.address)}
                 />
@@ -244,7 +245,7 @@ function useFilterSortPools({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
   searchText,
   tokensData,
 }: {
@@ -255,7 +256,7 @@ function useFilterSortPools({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
   searchText: string;
   tokensData: TokensData | undefined;
 }) {
@@ -279,7 +280,7 @@ function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
-      glvMarketsTokensApyData,
+      glvTokensApyData,
     });
   }, [
     chainId,
@@ -288,7 +289,7 @@ function useFilterSortPools({
     marketsInfo,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
-    glvMarketsTokensApyData,
+    glvTokensApyData,
     marketsTokensLidoAprData,
     orderBy,
   ]);
@@ -300,9 +301,8 @@ function useFilterSortPools({
 
     return sortedTokens.filter((token) => {
       const market = getByKey(marketsInfo, token?.address);
-      const indexToken = isGlv(market)
-        ? market.indexToken
-        : getTokenData(tokensData, market?.indexTokenAddress, "native");
+      const isGlv = isGlvInfo(market);
+      const indexToken = isGlv ? market.glvToken : getTokenData(tokensData, market?.indexTokenAddress, "native");
       const longToken = getTokenData(tokensData, market?.longTokenAddress);
       const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
@@ -310,7 +310,7 @@ function useFilterSortPools({
         return false;
       }
 
-      const poolName = isGlv(market) ? market.name ?? "GLV" : market.name;
+      const poolName = isGlvInfo(market) ? market.name ?? "GLV" : market.name;
 
       const indexSymbol = indexToken.symbol;
       const indexName = indexToken.name;
@@ -321,8 +321,8 @@ function useFilterSortPools({
       const shortSymbol = shortToken.symbol;
       const shortName = shortToken.name;
 
-      const marketTokenAddress = market.marketTokenAddress;
-      const indexTokenAddress = market.indexTokenAddress;
+      const marketOrGlvTokenAddress = getGlvOrMarketAddress(market);
+      const indexTokenAddress = isGlv ? undefined : market.indexTokenAddress;
       const longTokenAddress = market.longTokenAddress;
       const shortTokenAddress = market.shortTokenAddress;
 
@@ -335,7 +335,7 @@ function useFilterSortPools({
         shortSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
         shortName.toLowerCase().includes(searchText.toLowerCase()) ||
         (isAddress(searchText) &&
-          (isAddressEqual(marketTokenAddress as Address, searchText) ||
+          (isAddressEqual(marketOrGlvTokenAddress as Address, searchText) ||
             isAddressEqual(indexTokenAddress as Address, searchText) ||
             isAddressEqual(longTokenAddress as Address, searchText) ||
             isAddressEqual(shortTokenAddress as Address, searchText)))
@@ -351,7 +351,7 @@ function GmListItem({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  glvMarketsTokensApyData,
+  glvTokensApyData,
   shouldScrollToTop,
   isShiftAvailable,
   marketTokensData,
@@ -360,33 +360,35 @@ function GmListItem({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvMarketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensApyData: MarketTokensAPRData | undefined;
   shouldScrollToTop: boolean | undefined;
   isShiftAvailable: boolean;
   marketTokensData: TokensData | undefined;
 }) {
   const chainId = useSelector(selectChainId);
-  const marketsInfoData = useSelector(selectGlvAndGmMarketsData);
+  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const userEarnings = useUserEarnings(chainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
 
-  const market = getByKey(marketsInfoData, token?.address);
+  const marketOrGlv = getByKey(marketsInfoData, token?.address);
 
-  const isGlvMarket = isGlv(market);
+  const isGlv = isGlvInfo(marketOrGlv);
 
-  const indexToken = isGlvMarket ? market.indexToken : getTokenData(tokensData, market?.indexTokenAddress, "native");
-  const longToken = getTokenData(tokensData, market?.longTokenAddress);
-  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+  const indexToken = isGlv ? marketOrGlv.glvToken : getTokenData(tokensData, marketOrGlv?.indexTokenAddress, "native");
+  const longToken = getTokenData(tokensData, marketOrGlv?.longTokenAddress);
+  const shortToken = getTokenData(tokensData, marketOrGlv?.shortTokenAddress);
+
+  const marketOrGlvTokenAddress = marketOrGlv && getGlvOrMarketAddress(marketOrGlv);
 
   const mintableInfo = useMemo(() => {
-    if (!market || !token || isGlvMarket) {
+    if (!marketOrGlv || !token || isGlv) {
       return undefined;
     }
 
-    return getMintableMarketTokens(market, token);
-  }, [market, token, isGlvMarket]);
+    return getMintableMarketTokens(marketOrGlv, token);
+  }, [marketOrGlv, token, isGlv]);
 
   const shiftButton = useMemo(() => {
     const btn = (
@@ -396,18 +398,18 @@ function GmListItem({
         })}
         variant="secondary"
         disabled={!isShiftAvailable}
-        to={`/pools/?market=${market?.marketTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
+        to={`/pools/?market=${marketOrGlvTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
       >
         <Trans>Shift</Trans>
       </Button>
     );
 
-    if (isGlvMarket) {
+    if (isGlv) {
       return (
         <TooltipWithPortal
           content={
             <Trans>
-              Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens.
+              Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens.
               However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens.
             </Trans>
           }
@@ -428,10 +430,10 @@ function GmListItem({
         {btn}
       </TooltipWithPortal>
     );
-  }, [isShiftAvailable, market?.marketTokenAddress, shouldScrollToTop, isGlvMarket]);
+  }, [isShiftAvailable, marketOrGlvTokenAddress, shouldScrollToTop, isGlv]);
 
-  const apy = isGlvMarket
-    ? getByKey(glvMarketsTokensApyData, market.indexToken.address)
+  const apy = isGlv
+    ? getByKey(glvTokensApyData, marketOrGlvTokenAddress)
     : getByKey(marketsTokensApyData, token?.address);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
@@ -443,16 +445,11 @@ function GmListItem({
 
   const totalSupply = token?.totalSupply;
   const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
-  const tokenIconName = market?.isSpotOnly
+  const tokenIconName = marketOrGlv?.isSpotOnly
     ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
     : getNormalizedTokenSymbol(indexToken.symbol);
 
-  const tokenIconBadge =
-    !market || market.isSpotOnly
-      ? undefined
-      : isGlvMarket
-        ? getGlvMarketShortening(chainId, market.indexTokenAddress)
-        : ([market.longToken.symbol, market.shortToken.symbol] as const);
+  const tokenIconBadge = getMarketBadge(chainId, marketOrGlv);
 
   return (
     <ExchangeTr key={token.address} hoverable={false} bordered={false}>
@@ -469,9 +466,9 @@ function GmListItem({
           </div>
           <div>
             <div className="flex text-16">
-              {isGlvMarket
-                ? getGlvMarketDisplayName(market)
-                : getMarketIndexName({ indexToken, isSpotOnly: Boolean(market?.isSpotOnly) })}
+              {isGlv
+                ? getGlvDisplayName(marketOrGlv)
+                : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -482,7 +479,7 @@ function GmListItem({
             </div>
           </div>
         </div>
-        {showDebugValues && <span style={tokenAddressStyle}>{market?.marketTokenAddress}</span>}
+        {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </ExchangeTd>
       <ExchangeTd>{formatUsdPrice(token.prices?.minPrice)}</ExchangeTd>
       <ExchangeTd>
@@ -495,13 +492,17 @@ function GmListItem({
         />
       </ExchangeTd>
       <ExchangeTd>
-        {isGlvMarket ? (
-          <MintableAmount mintableInfo={getMintableInfoGlv(market, marketTokensData)} market={market} token={token} />
+        {isGlv ? (
+          <MintableAmount
+            mintableInfo={getMintableInfoGlv(marketOrGlv, marketTokensData)}
+            market={marketOrGlv}
+            token={token}
+          />
         ) : (
-          market && (
+          marketOrGlv && (
             <MintableAmount
               mintableInfo={mintableInfo}
-              market={market}
+              market={marketOrGlv}
               token={token}
               longToken={longToken}
               shortToken={shortToken}
@@ -516,7 +517,7 @@ function GmListItem({
           daysConsidered={daysConsidered}
           earnedRecently={marketEarnings?.recent}
           earnedTotal={marketEarnings?.total}
-          isGlv={isGlvMarket}
+          isGlv={isGlv}
         />
       </ExchangeTd>
 
@@ -529,14 +530,14 @@ function GmListItem({
           <Button
             className="flex-grow"
             variant="secondary"
-            to={`/pools/?market=${market?.marketTokenAddress}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
+            to={`/pools/?market=${marketOrGlvTokenAddress}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
           >
             <Trans>Buy</Trans>
           </Button>
           <Button
             className="flex-grow"
             variant="secondary"
-            to={`/pools/?market=${market?.marketTokenAddress}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
+            to={`/pools/?market=${marketOrGlvTokenAddress}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
           >
             <Trans>Sell</Trans>
           </Button>

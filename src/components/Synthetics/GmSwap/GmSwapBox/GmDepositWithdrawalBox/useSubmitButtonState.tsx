@@ -1,31 +1,24 @@
-import uniq from "lodash/uniq";
-import { useCallback, useMemo } from "react";
 import { plural, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useCallback, useMemo } from "react";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import {
-  getNeedTokenApprove,
-  getTokenData,
-  TokenData,
-  TokensData,
-  useTokensAllowanceData,
-} from "domain/synthetics/tokens";
+import { GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
-import { getSellableInfoGlv } from "domain/synthetics/markets/glv";
-import { GlvMarketInfo } from "domain/synthetics/markets/useGlvMarkets";
 
 import useWallet from "lib/wallets/useWallet";
 
-import { Operation } from "../types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
-import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
+import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
+import { useTokensToApprove } from "./useTokensToApprove";
+
+import { Operation } from "../types";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -33,23 +26,12 @@ interface Props {
   isDeposit: boolean;
   routerAddress: string;
   marketInfo?: MarketInfo;
-  vaultInfo?: GlvMarketInfo;
+  glvInfo?: GlvInfo;
   marketToken: TokenData;
   operation: Operation;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
-
-  marketTokenAmount: bigint | undefined;
-  marketTokenUsd: bigint | undefined;
-  longTokenAmount: bigint | undefined;
-  longTokenUsd: bigint | undefined;
-  shortTokenAmount: bigint | undefined;
-  shortTokenUsd: bigint | undefined;
-
-  fromMarketTokenAmount?: bigint;
-  fromMarketToken?: TokenData;
-  fromMarketTokenUsd?: bigint;
-
+  glvToken: TokenData | undefined;
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
 
@@ -62,7 +44,7 @@ interface Props {
   tokensData: TokensData | undefined;
   marketTokensData?: TokensData;
   executionFee: ExecutionFee | undefined;
-  selectedGlvGmMarket?: string;
+  selectedMarketForGlv?: string;
   isMarketTokenDeposit?: boolean;
   marketsInfoData?: MarketsInfoData;
 }
@@ -80,13 +62,10 @@ export const useSubmitButtonState = ({
   fees,
   marketInfo,
   marketToken,
-  operation,
   longToken,
-  longTokenAmount,
+  operation,
   shortToken,
-  shortTokenAmount,
-
-  marketTokenAmount,
+  glvToken,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
 
@@ -95,21 +74,29 @@ export const useSubmitButtonState = ({
 
   shouldDisableValidation,
 
-  fromMarketTokenAmount,
-  fromMarketToken,
   tokensData,
   marketTokensData,
   executionFee,
-  selectedGlvGmMarket,
+  selectedMarketForGlv,
   isHighFeeConsentError,
-  vaultInfo,
+  glvInfo,
   isMarketTokenDeposit,
-  marketsInfoData,
 }: Props) => {
   const chainId = useSelector(selectChainId);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
+
+  const {
+    glvTokenAmount = 0n,
+    glvTokenUsd = 0n,
+    longTokenAmount = 0n,
+    longTokenUsd = 0n,
+    marketTokenAmount = 0n,
+    marketTokenUsd = 0n,
+    shortTokenAmount = 0n,
+    shortTokenUsd = 0n,
+  } = amounts ?? {};
 
   const { isSubmitting, onSubmit } = useDepositWithdrawalTransactions({
     marketInfo,
@@ -120,11 +107,12 @@ export const useSubmitButtonState = ({
     shortToken,
     shortTokenAmount,
     marketTokenAmount,
+    glvTokenAmount,
     shouldDisableValidation,
     tokensData,
     executionFee,
-    selectedGlvGmMarket,
-    vaultInfo,
+    selectedMarketForGlv,
+    glvInfo,
     isMarketTokenDeposit,
   });
 
@@ -132,133 +120,54 @@ export const useSubmitButtonState = ({
     openConnectModal?.();
   }, [openConnectModal]);
 
-  const payTokenAddresses = useMemo(
-    function getPayTokenAddresses() {
-      if (!marketToken) {
-        return [];
-      }
-
-      const addresses: string[] = [];
-
-      if (operation === Operation.Deposit) {
-        if (longTokenAmount !== undefined && longTokenAmount > 0 && longToken) {
-          addresses.push(longToken.address);
-        }
-        if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortToken) {
-          addresses.push(shortToken.address);
-        }
-      } else if (operation === Operation.Withdrawal) {
-        addresses.push(marketToken.address);
-      }
-
-      return uniq(addresses);
-    },
-    [operation, marketToken, longTokenAmount, longToken, shortTokenAmount, shortToken]
-  );
-
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: routerAddress,
-    tokenAddresses: payTokenAddresses,
-  });
-
-  const isAllowanceLoaded = Boolean(tokensAllowanceData);
-
   const commonError = getCommonError({
     chainId,
     isConnected: true,
     hasOutdatedUi,
   })[0];
 
-  const vaultSellableAmount = vaultInfo
-    ? getSellableInfoGlv(vaultInfo, marketsInfoData, marketTokensData, selectedGlvGmMarket)
-    : undefined;
-
   const [swapError, swapErrorDescription] = getGmSwapError({
     isDeposit,
     marketInfo,
-    vaultInfo,
+    glvInfo,
     marketToken,
     longToken,
-    shortToken: shortToken,
+    shortToken,
+    glvToken,
+    glvTokenAmount,
+    glvTokenUsd,
     marketTokenAmount,
-    marketTokenUsd: amounts?.marketTokenUsd,
-    longTokenAmount: amounts?.longTokenAmount,
-    shortTokenAmount: amounts?.shortTokenAmount,
-    longTokenUsd: amounts?.longTokenUsd,
-    shortTokenUsd: amounts?.shortTokenUsd,
+    marketTokenUsd,
+    longTokenAmount,
+    shortTokenAmount,
+    longTokenUsd,
+    shortTokenUsd,
     longTokenLiquidityUsd: longTokenLiquidityUsd,
     shortTokenLiquidityUsd: shortTokenLiquidityUsd,
     fees,
     isHighPriceImpact: Boolean(isHighPriceImpact),
     isHighPriceImpactAccepted,
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
-    vaultSellableAmount: vaultSellableAmount?.totalAmount,
     marketTokensData,
+    isMarketTokenDeposit,
   });
 
   const error = commonError || swapError;
 
-  const tokensToApprove = useMemo(
-    function getTokensToApprove() {
-      const addresses: string[] = [];
-
-      if (!tokensAllowanceData) {
-        return addresses;
-      }
-
-      if (operation === Operation.Deposit) {
-        if (
-          longTokenAmount !== undefined &&
-          longTokenAmount > 0 &&
-          longToken &&
-          getNeedTokenApprove(tokensAllowanceData, longToken.address, longTokenAmount)
-        ) {
-          addresses.push(longToken.address);
-        }
-
-        if (
-          shortTokenAmount !== undefined &&
-          shortTokenAmount > 0 &&
-          shortToken &&
-          getNeedTokenApprove(tokensAllowanceData, shortToken.address, shortTokenAmount)
-        ) {
-          addresses.push(shortToken.address);
-        }
-      } else if (operation === Operation.Withdrawal) {
-        if (
-          marketTokenAmount !== undefined &&
-          marketTokenAmount > 0 &&
-          marketToken &&
-          getNeedTokenApprove(tokensAllowanceData, marketToken.address, marketTokenAmount)
-        ) {
-          addresses.push(marketToken.address);
-        }
-      } else if (operation === Operation.Shift) {
-        if (
-          fromMarketTokenAmount !== undefined &&
-          fromMarketTokenAmount > 0 &&
-          fromMarketToken &&
-          getNeedTokenApprove(tokensAllowanceData, fromMarketToken.address, fromMarketTokenAmount)
-        ) {
-          addresses.push(fromMarketToken.address);
-        }
-      }
-
-      return uniq(addresses);
-    },
-    [
-      fromMarketToken,
-      fromMarketTokenAmount,
-      longToken,
-      longTokenAmount,
-      marketToken,
-      marketTokenAmount,
-      operation,
-      shortToken,
-      shortTokenAmount,
-      tokensAllowanceData,
-    ]
-  );
+  const { tokensToApprove, payTokenAddresses, isAllowanceLoaded } = useTokensToApprove({
+    routerAddress,
+    glvInfo,
+    operation,
+    marketToken,
+    marketTokenAmount,
+    longToken,
+    longTokenAmount,
+    shortToken,
+    shortTokenAmount,
+    glvToken,
+    glvTokenAmount,
+    isMarketTokenDeposit,
+  });
 
   return useMemo(() => {
     if (!account) {
@@ -287,7 +196,7 @@ export const useSubmitButtonState = ({
       };
     }
 
-    const operationTokenSymbol = vaultInfo ? "GLV" : "GM";
+    const operationTokenSymbol = glvInfo ? "GLV" : "GM";
 
     if (isSubmitting) {
       return {
@@ -306,7 +215,7 @@ export const useSubmitButtonState = ({
     if (tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address) || getTokenData(marketTokensData, address);
-        return address === marketToken.address ? operationTokenSymbol : token?.assetSymbol ?? token?.symbol;
+        return token?.symbol;
       });
 
       const symbolsText = symbols.join(", ");
@@ -343,6 +252,6 @@ export const useSubmitButtonState = ({
     payTokenAddresses.length,
     isHighFeeConsentError,
     swapErrorDescription,
-    vaultInfo,
+    glvInfo,
   ]);
 };

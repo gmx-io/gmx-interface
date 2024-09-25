@@ -59,6 +59,8 @@ export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
+export const RPC_PROVIDER = "rpc-provider";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {
@@ -107,6 +109,10 @@ export function getAllowedSlippageKey(chainId: number) {
 
 export function getExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
+}
+
+export function getRpcProviderKey(chainId: number | string) {
+  return [chainId, RPC_PROVIDER];
 }
 
 // TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then

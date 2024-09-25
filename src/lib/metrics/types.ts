@@ -147,8 +147,8 @@ export type MulticallTimeoutEvent = {
   data: {
     metricType: "rpcTimeout" | "multicallTimeout" | "workerTimeout";
     isInMainThread: boolean;
-    isFallback?: boolean;
-    isAlchemy?: boolean;
+    requestType?: "initial" | "retry";
+    rpcProvider?: string;
     errorMessage: string;
   };
 };
@@ -158,8 +158,8 @@ export type MulticallErrorEvent = {
   isError: true;
   data: {
     isInMainThread: boolean;
-    isFallback?: boolean;
-    isAlchemy?: boolean;
+    rpcProvider?: string;
+    requestType?: "initial" | "retry";
     errorMessage: string;
   };
 };
@@ -270,6 +270,7 @@ export type ShiftGmMetricData = {
 export type ErrorMetricData = {
   errorContext?: string;
   errorMessage?: string;
+  errorGroup?: string;
   errorStack?: string;
   errorStackHash?: string;
   errorName?: string;

@@ -17,13 +17,14 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { bigMath } from "lib/bigmath";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
+import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 
 type TokenState = {
   disabled?: boolean;
   message?: string;
 };
 
-export type ExtendedToken = Token & { isGm?: boolean };
+type ExtendedToken = Token & { isMarketToken?: boolean };
 
 type Props = {
   chainId: number;
@@ -47,6 +48,7 @@ type Props = {
   missedCoinsPlace?: MissedCoinsPlace;
   showTokenName?: boolean;
   footerContent?: ReactNode;
+  marketsInfoData?: MarketsInfoData;
   qa?: string;
 };
 
@@ -79,6 +81,8 @@ export default function TokenSelector(props: Props) {
     showTokenName,
     footerContent,
     missedCoinsPlace,
+    marketsInfoData,
+    chainId,
     qa,
   } = props;
 
@@ -221,6 +225,10 @@ export default function TokenSelector(props: Props) {
             }
 
             const tokenState = getTokenState(info) || {};
+            const marketToken = Object.values(marketsInfoData ?? {}).find(
+              (market) => market.marketTokenAddress === token.address
+            );
+            const tokenBadge = token.isMarketToken && marketToken ? getMarketBadge(chainId, marketToken) : undefined;
 
             return (
               <div
@@ -242,10 +250,16 @@ export default function TokenSelector(props: Props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <TokenIcon symbol={token.symbol} className="token-logo" displaySize={40} importSize={40} />
+                    <TokenIcon
+                      symbol={token.symbol}
+                      className="token-logo"
+                      displaySize={40}
+                      importSize={40}
+                      badge={tokenBadge}
+                    />
                   )}
                   <div className="Token-symbol">
-                    <div className="Token-text">{token.isGm ? "GM" : token.symbol}</div>
+                    <div className="Token-text">{token.isMarketToken ? "GM" : token.symbol}</div>
                     <span className="text-accent">{token.name}</span>
                   </div>
                 </div>
