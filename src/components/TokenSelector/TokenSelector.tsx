@@ -1,23 +1,23 @@
-import { useState, useEffect, ReactNode, useMemo } from "react";
 import cx from "classnames";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
 
 import Modal from "../Modal/Modal";
 
-import dropDownIcon from "img/DROP_DOWN.svg";
-import "./TokenSelector.scss";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import { getToken } from "config/tokens";
-import { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { convertToUsd } from "domain/synthetics/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { bigMath } from "lib/bigmath";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
+import { getToken } from "config/tokens";
 import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
+import { convertToUsd } from "domain/synthetics/tokens";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import dropDownIcon from "img/DROP_DOWN.svg";
+import { bigMath } from "lib/bigmath";
+import { expandDecimals, formatAmount } from "lib/numbers";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
+import "./TokenSelector.scss";
 
 type TokenState = {
   disabled?: boolean;
@@ -110,13 +110,6 @@ export default function TokenSelector(props: Props) {
     );
   });
 
-  useMissedCoinsSearch({
-    searchText: searchKeyword,
-    isEmpty: !filteredTokens.length,
-    place: missedCoinsPlace,
-    skip: !missedCoinsPlace,
-  });
-
   const sortedFilteredTokens = useMemo(() => {
     const tokensWithBalance: ExtendedToken[] = [];
     const tokensWithoutBalance: ExtendedToken[] = showBalances ? [] : filteredTokens;
@@ -207,6 +200,13 @@ export default function TokenSelector(props: Props) {
           />
         }
       >
+        {missedCoinsPlace && (
+          <WithMissedCoinsSearch
+            searchKeyword={searchKeyword}
+            place={missedCoinsPlace}
+            isEmpty={!filteredTokens.length}
+          />
+        )}
         <div className="TokenSelector-tokens">
           {sortedFilteredTokens.map((token, tokenIndex) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
