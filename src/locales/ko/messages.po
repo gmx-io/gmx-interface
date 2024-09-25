@@ -286,6 +286,10 @@ msgstr "최대 풀 수용량인 {0}에 도달했습니다<0/><1/>다른 토큰�
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "해당 Gambit 프로토콜은 베타 버전입니다. 참여하기 전에 <0>스테이킹 세부사항</0>을 참조해주세요."
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a value"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
 msgstr "NFT 주소 입력"
@@ -1927,6 +1931,10 @@ msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 msgstr "포지션은 참조 가격 {0}에서 열릴 것이며, 가격 영향을 고려하지 않고 최대 슬리피지는 -{1}%입니다.<0/><1/>슬리피지는 설정에서 구성할 수 있으며, 지갑 연결 후 페이지 우측 상단의 주소를 클릭하여 찾을 수 있습니다.<2/><3/><4>더 읽기</4>."
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+#~ msgid "Error submitting feedback"
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
 msgstr "지정가 주문 생성 실패."
@@ -2415,6 +2423,10 @@ msgstr "트랜잭션 전송됨."
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter up to 10 coins"
+msgstr ""
+
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr ""
@@ -2720,6 +2732,10 @@ msgstr ""
 msgid "T"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Please enter the names of the coins you'd like to see added:"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount created"
 msgstr ""
@@ -2734,6 +2750,10 @@ msgstr "수익"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
+msgstr ""
+
+#: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
+msgid "Can’t find the coin you need? Let us know"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -3037,6 +3057,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Let us know which coins you're missing"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -3893,6 +3917,10 @@ msgstr ""
 msgid "Capital Used"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Max 10 symbols in name"
+msgstr ""
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4605,6 +4633,10 @@ msgstr "트레이드"
 msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+#~ msgid "Enter at least 2 symbols"
+#~ msgstr ""
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Search Action"
@@ -4773,6 +4805,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Error submitting coins"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -5395,6 +5431,10 @@ msgstr "이익 상실 및 {action}"
 msgid "Win/Loss"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Names could be separated by commas or spaces"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from decentralized exchanges"
 msgstr ""
@@ -5539,6 +5579,7 @@ msgstr ""
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.jsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
@@ -6960,6 +7001,10 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "추천 약관"
 
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter unique coins"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
@@ -7195,6 +7240,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
+msgstr ""
+
+#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
+msgid "Enter a valid coin names"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx

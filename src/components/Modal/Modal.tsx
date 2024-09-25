@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo, PropsWithChildren, useCallback } from "react";
+import React, { useRef, useEffect, useMemo, PropsWithChildren, useCallback, ReactNode } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
@@ -30,6 +30,7 @@ export type ModalProps = PropsWithChildren<{
   zIndex?: number;
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
+  footerContent?: ReactNode;
   onAfterOpen?: () => void;
   contentPadding?: boolean;
   qa?: string;
@@ -42,6 +43,7 @@ export default function Modal({
   zIndex,
   children,
   headerContent,
+  footerContent,
   contentPadding = true,
   onAfterOpen,
   setIsVisible,
@@ -97,12 +99,18 @@ export default function Modal({
               </div>
               {headerContent}
             </div>
-            <div className="divider" />
+
             <RemoveScroll className="overflow-auto">
               <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalRef}>
                 {children}
               </div>
             </RemoveScroll>
+            {footerContent && (
+              <>
+                <div className="divider" />
+                <div>{footerContent}</div>
+              </>
+            )}
           </div>
         </motion.div>
       )}

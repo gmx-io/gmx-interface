@@ -11,16 +11,17 @@ interface Props {
   children: ReactNode;
   className?: string;
   compact?: boolean;
+  onClick?: () => void;
   /**
    * @default "text-gray-300"
    */
   textColor?: "text-gray-300" | "text-yellow-500";
 }
 
-export function AlertInfo({ compact = false, children, type, textColor = "text-gray-300", className }: Props) {
+export function AlertInfo({ compact = false, children, type, textColor = "text-gray-300", className, onClick }: Props) {
   const Icon = type === "warning" ? WarnIconComponent : InfoIconComponent;
   return (
-    <div className={cx("AlertInfo", { compact }, textColor, className)}>
+    <div className={cx("AlertInfo", { compact }, textColor, className)} onClick={onClick}>
       <div className="AlertInfo-icon">
         <Icon aria-label="Alert Icon" />
       </div>

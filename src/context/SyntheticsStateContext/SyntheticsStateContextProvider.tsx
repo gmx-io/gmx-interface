@@ -38,6 +38,7 @@ import { Context, createContext, useContext, useContextSelector } from "use-cont
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { AccountStats } from "domain/synthetics/accountStats";
 import { GLV_ENABLED } from "config/markets";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -70,6 +71,9 @@ export type SyntheticsState = {
 
     keepLeverage: boolean | undefined;
     setKeepLeverage: (value: boolean) => void;
+
+    missedCoinsModalPlace: MissedCoinsPlace | undefined;
+    setMissedCoinsModalPlace: (place: MissedCoinsPlace | undefined) => void;
 
     gasLimits: ReturnType<typeof useGasLimits>;
     gasPrice: ReturnType<typeof useGasPrice>;
@@ -150,6 +154,8 @@ export function SyntheticsStateContextProvider({
     chainId,
     isTradePage
   );
+
+  const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
 
@@ -239,6 +245,9 @@ export function SyntheticsStateContextProvider({
         closingPositionKey,
         setClosingPositionKey,
 
+        missedCoinsModalPlace,
+        setMissedCoinsModalPlace,
+
         gasLimits,
         gasPrice,
 
@@ -267,12 +276,14 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     ordersInfo,
     positionsConstants,
+    glvInfo,
     isLoading,
     positionsInfoData,
     uiFeeFactor,
     userReferralInfo,
     depositMarketTokensData,
     closingPositionKey,
+    missedCoinsModalPlace,
     gasLimits,
     gasPrice,
     keepLeverage,
@@ -289,7 +300,6 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
-    glvInfo,
   ]);
 
   latestState = state;

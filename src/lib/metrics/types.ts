@@ -1,4 +1,5 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { TxErrorType } from "lib/contracts/transactionErrors";
 
 export type GlobalMetricData = {
@@ -279,4 +280,17 @@ export type ErrorMetricData = {
   txErrorType?: TxErrorType;
   txErrorData?: unknown;
   errorSource?: string;
+};
+
+// Missed coins
+export type MissedCoinEvent = {
+  event: "missedCoin.search" | "missedCoin.popup";
+  isError: false;
+  data: {
+    coin: string;
+    totalVolume: number | undefined;
+    monthVolume: number | undefined;
+    place: MissedCoinsPlace;
+    account?: string;
+  };
 };

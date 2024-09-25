@@ -2,9 +2,9 @@
 import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
-import { createPortal } from "react-dom";
 import noop from "lodash/noop";
 import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
@@ -23,6 +23,7 @@ type Props = PropsWithChildren<{
   popoverYOffset?: number;
   mobileModalContentPadding?: boolean;
   popoverPlacement?: Placement;
+  footerContent?: ReactNode;
   qa?: string;
 }>;
 
@@ -191,6 +192,12 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
                 onPointerDown={suppressPointerDown}
               >
                 <SelectorContextProvider close={popoverProps.close}>{props.children}</SelectorContextProvider>
+                {props.footerContent && (
+                  <>
+                    <div className="divider" />
+                    <div className="px-15 py-12">{props.footerContent}</div>
+                  </>
+                )}
               </Popover.Panel>
             </FloatingPortal>
           )}
@@ -236,6 +243,12 @@ function SelectorBaseMobile(props: Props) {
         <SelectorContextProvider close={toggleVisibility} mobileHeader={headerContent}>
           {props.children}
         </SelectorContextProvider>
+        {props.footerContent && (
+          <div className="absolute bottom-0 left-0 right-0 bg-slate-800 ">
+            <div className="divider" />
+            <div className="px-15 py-12">{props.footerContent}</div>
+          </div>
+        )}
       </Modal>
     </>
   );

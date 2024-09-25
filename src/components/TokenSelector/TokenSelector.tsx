@@ -15,6 +15,8 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { bigMath } from "lib/bigmath";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 
 type TokenState = {
   disabled?: boolean;
@@ -42,7 +44,9 @@ type Props = {
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
+  missedCoinsPlace?: MissedCoinsPlace;
   showTokenName?: boolean;
+  footerContent?: ReactNode;
   qa?: string;
 };
 
@@ -73,6 +77,8 @@ export default function TokenSelector(props: Props) {
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
     showTokenName,
+    footerContent,
+    missedCoinsPlace,
     qa,
   } = props;
 
@@ -98,6 +104,13 @@ export default function TokenSelector(props: Props) {
       item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
       item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
     );
+  });
+
+  useMissedCoinsSearch({
+    searchText: searchKeyword,
+    isEmpty: !filteredTokens.length,
+    place: missedCoinsPlace,
+    skip: !missedCoinsPlace,
   });
 
   const sortedFilteredTokens = useMemo(() => {
@@ -180,6 +193,7 @@ export default function TokenSelector(props: Props) {
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
+        footerContent={footerContent}
         headerContent={
           <SearchInput
             className="mt-15"
