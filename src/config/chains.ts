@@ -11,7 +11,6 @@ import {
   ETH_MAINNET,
   ARBITRUM_GOERLI,
 } from "./static/chains";
-import { getIsFlagEnabled } from "./ab";
 
 export * from "./static/chains";
 
@@ -227,7 +226,6 @@ export const RPC_PROVIDERS = {
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [
-    ...(getIsFlagEnabled("testAlchemyRpcErrorRate") ? [getAlchemyArbitrumHttpUrl()] : []),
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
