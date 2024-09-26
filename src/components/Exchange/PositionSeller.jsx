@@ -950,7 +950,11 @@ export default function PositionSeller(props) {
     })
       .then(async () => {
         setFromValue("");
-        setSavedRecieveTokenAddress(swapToToken.address);
+
+        if (swapToToken) {
+          setSavedRecieveTokenAddress(swapToToken.address);
+        }
+
         setIsVisible(false);
 
         let nextSize = position.size - sizeDelta;
