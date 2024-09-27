@@ -53,7 +53,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "PRECIO"
 
@@ -1103,7 +1103,7 @@ msgstr ""
 msgid "Select pool"
 msgstr "Seleccionar reserva"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "WEIGHT"
 msgstr "PESO"
 
@@ -1495,6 +1495,10 @@ msgstr ""
 msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Fees for the past"
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "Si tienes una posición existente, la posición se cerrará a un precio de referencia de {0}, sin tener en cuenta el impacto del precio.<0/><1/>Este precio de salida cambiará con el precio del activo.<2/><3/><4>Leer más</4>."
@@ -1538,7 +1542,7 @@ msgstr ""
 msgid "Create Order"
 msgstr "Crear Orden"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Utilization"
 msgstr "Utilización"
 
@@ -2048,7 +2052,7 @@ msgid "Max {0} sellable amount exceeded"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "TOKEN"
 
@@ -3974,8 +3978,8 @@ msgstr ""
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "GLP Index Composition"
 msgstr "Composición Índice GLP"
 
@@ -4246,7 +4250,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "RESERVA"
 
@@ -4293,7 +4297,7 @@ msgstr ""
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "La orden no se puede ejecutar pues reduciría el apalancamiento de la posición por debajo de 1"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Weight"
 msgstr "Peso"
 
@@ -4551,7 +4555,7 @@ msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Plea
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "UTILIZACIÓN"
 
@@ -4745,7 +4749,7 @@ msgstr "Falló la actualización del código de referido."
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4953,10 +4957,6 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "No hay posiciones abiertas"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Fees for the part"
-msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GLV"
@@ -5560,8 +5560,8 @@ msgstr ""
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool Amount"
 msgstr "Cantidad de Reserva"
 
@@ -6250,8 +6250,8 @@ msgstr ""
 msgid "Buy GMX"
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Max {0} Capacity"
 msgstr "Capacidad {0} máxima"
 
@@ -6757,7 +6757,7 @@ msgstr "Largo"
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "Reserva"
 
@@ -7052,8 +7052,8 @@ msgstr ""
 msgid "Stake esGMX"
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Target Min Amount"
 msgstr "Cantidad Mínima Objetivo"
 

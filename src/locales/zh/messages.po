@@ -53,7 +53,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "价钱"
 
@@ -1103,7 +1103,7 @@ msgstr ""
 msgid "Select pool"
 msgstr "选择池子"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "WEIGHT"
 msgstr "重量"
 
@@ -1495,6 +1495,10 @@ msgstr ""
 msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Fees for the past"
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭，不考虑价格影响。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>阅读更多</4>"
@@ -1538,7 +1542,7 @@ msgstr ""
 msgid "Create Order"
 msgstr "创建指令"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Utilization"
 msgstr "使用情况"
 
@@ -2048,7 +2052,7 @@ msgid "Max {0} sellable amount exceeded"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "代币"
 
@@ -3974,8 +3978,8 @@ msgstr ""
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "GLP Index Composition"
 msgstr "GLP指数构成"
 
@@ -4246,7 +4250,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "池子"
 
@@ -4293,7 +4297,7 @@ msgstr ""
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "订单无法被执行，这将使头寸的杠杆率低于1"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Weight"
 msgstr "重量"
 
@@ -4551,7 +4555,7 @@ msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Plea
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "使用方法"
 
@@ -4745,7 +4749,7 @@ msgstr "推荐代码更新失败"
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4953,10 +4957,6 @@ msgstr "<<<<<<< HEAD"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "没有未结头寸"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Fees for the part"
-msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GLV"
@@ -5560,8 +5560,8 @@ msgstr ""
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool Amount"
 msgstr "池子数量"
 
@@ -6250,8 +6250,8 @@ msgstr ""
 msgid "Buy GMX"
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Max {0} Capacity"
 msgstr "最高{0}上限"
 
@@ -6757,7 +6757,7 @@ msgstr "做多"
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "池子"
 
@@ -7052,8 +7052,8 @@ msgstr ""
 msgid "Stake esGMX"
 msgstr ""
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Target Min Amount"
 msgstr "目标最低金额"
 

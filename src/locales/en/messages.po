@@ -53,7 +53,7 @@ msgstr "You have an existing order in the {0} market pool.<0><1>Switch to {1} ma
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "PRICE"
 
@@ -1103,7 +1103,7 @@ msgstr "Generating and activating Subaccount"
 msgid "Select pool"
 msgstr "Select pool"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "WEIGHT"
 msgstr "WEIGHT"
 
@@ -1495,6 +1495,10 @@ msgstr "Referral Discount"
 msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
 msgstr "{longOrShort} positions do not pay a funding fee or a borrow fee."
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Fees for the past"
+msgstr "Fees for the past"
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
@@ -1538,7 +1542,7 @@ msgstr "Withdrew {0} from {positionText}"
 msgid "Create Order"
 msgstr "Create Order"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Utilization"
 msgstr "Utilization"
 
@@ -2048,7 +2052,7 @@ msgid "Max {0} sellable amount exceeded"
 msgstr "Max {0} sellable amount exceeded"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "TOKEN"
 
@@ -3977,8 +3981,8 @@ msgstr "Execute order simulation failed."
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "Invalid Transfer Addresses: Please check the url."
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
 
@@ -4249,7 +4253,7 @@ msgstr "{0}: {1}, Price: {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "POOL"
 
@@ -4296,7 +4300,7 @@ msgstr "Leftover collateral below 5 USD"
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "Order cannot be executed as it would reduce the position's leverage below 1"
 
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Weight"
 msgstr "Weight"
 
@@ -4554,7 +4558,7 @@ msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Plea
 msgstr "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
 
@@ -4748,7 +4752,7 @@ msgstr "Referral code updated failed."
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4956,10 +4960,6 @@ msgstr "LONG LIQ."
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "No open positions"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Fees for the part"
-msgstr "Fees for the part"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GLV"
@@ -5563,8 +5563,8 @@ msgstr "Buy or Transfer ETH to Arbitrum"
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr "Expected execution price for the order, including the current price impact, once the limit order executes."
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool Amount"
 msgstr "Pool Amount"
 
@@ -6256,8 +6256,8 @@ msgstr "Max GM buyable amount reached"
 msgid "Buy GMX"
 msgstr "Buy GMX"
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Max {0} Capacity"
 msgstr "Max {0} Capacity"
 
@@ -6763,7 +6763,7 @@ msgstr "Long"
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "Pool"
 
@@ -7058,8 +7058,8 @@ msgstr "Shifting from GLV to another pool is not possible, as GLV can only be so
 msgid "Stake esGMX"
 msgstr "Stake esGMX"
 
-#: src/pages/Dashboard/V1Table.tsx
-#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
+#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Target Min Amount"
 msgstr "Target Min Amount"
 
