@@ -16,9 +16,9 @@ import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { BN_ZERO, formatTokenAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
-import AssetDropdown from "./AssetDropdown";
 
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import AssetDropdown from "./AssetDropdown";
 
 export function GmCard() {
   const { chainId } = useChainId();

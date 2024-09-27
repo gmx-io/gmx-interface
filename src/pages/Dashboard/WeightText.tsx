@@ -1,12 +1,14 @@
 import { Trans, t } from "@lingui/macro";
-import TooltipComponent from "components/Tooltip/Tooltip";
 import { Link } from "react-router-dom";
+
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TokenInfo } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { formatAmount } from "lib/numbers";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipComponent from "components/Tooltip/Tooltip";
 
 export function WeightText({
   tokenInfo,
@@ -41,62 +43,60 @@ export function WeightText({
       handle={weightText}
       position="bottom-end"
       maxAllowedWidth={300}
-      renderContent={() => {
-        return (
-          <>
-            <StatsTooltipRow
-              label={t`Current Weight`}
-              value={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
-              showDollar={false}
-            />
-            <StatsTooltipRow
-              label={t`Target Weight`}
-              value={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
-              showDollar={false}
-            />
-            <br />
-            {currentWeightBps < targetWeightBps && (
-              <div className="text-white">
-                <Trans>
-                  {tokenInfo.symbol} is below its target weight.
-                  <br />
-                  <br />
-                  Get lower fees to{" "}
-                  <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
-                    buy GLP
-                  </Link>{" "}
-                  with {tokenInfo.symbol}, and to{" "}
-                  <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                    swap
-                  </Link>{" "}
-                  {tokenInfo.symbol} for other tokens.
-                </Trans>
-              </div>
-            )}
-            {currentWeightBps > targetWeightBps && (
-              <div className="text-white">
-                <Trans>
-                  {tokenInfo.symbol} is above its target weight.
-                  <br />
-                  <br />
-                  Get lower fees to{" "}
-                  <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                    swap
-                  </Link>{" "}
-                  tokens for {tokenInfo.symbol}.
-                </Trans>
-              </div>
-            )}
-            <br />
-            <div>
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">
-                <Trans>Read more</Trans>
-              </ExternalLink>
-              .
+      content={
+        <>
+          <StatsTooltipRow
+            label={t`Current Weight`}
+            value={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
+            showDollar={false}
+          />
+          <StatsTooltipRow
+            label={t`Target Weight`}
+            value={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
+            showDollar={false}
+          />
+          <br />
+          {currentWeightBps < targetWeightBps && (
+            <div className="text-white">
+              <Trans>
+                {tokenInfo.symbol} is below its target weight.
+                <br />
+                <br />
+                Get lower fees to{" "}
+                <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
+                  buy GLP
+                </Link>{" "}
+                with {tokenInfo.symbol}, and to{" "}
+                <Link to="/trade" target="_blank" rel="noopener noreferrer">
+                  swap
+                </Link>{" "}
+                {tokenInfo.symbol} for other tokens.
+              </Trans>
             </div>
-          </>
-        );
-      }}
+          )}
+          {currentWeightBps > targetWeightBps && (
+            <div className="text-white">
+              <Trans>
+                {tokenInfo.symbol} is above its target weight.
+                <br />
+                <br />
+                Get lower fees to{" "}
+                <Link to="/trade" target="_blank" rel="noopener noreferrer">
+                  swap
+                </Link>{" "}
+                tokens for {tokenInfo.symbol}.
+              </Trans>
+            </div>
+          )}
+          <br />
+          <div>
+            <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">
+              <Trans>Read more</Trans>
+            </ExternalLink>
+            .
+          </div>
+        </>
+      }
     />
   );
 }

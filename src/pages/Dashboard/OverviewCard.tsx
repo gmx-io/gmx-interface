@@ -6,7 +6,6 @@ import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { getWhitelistedV1Tokens } from "config/tokens";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useFeesSummary, useVolumeInfo } from "domain/stats";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
@@ -15,7 +14,7 @@ import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
-import { BN_ZERO, expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
@@ -59,10 +58,6 @@ export function OverviewCard({
 
   const positionStatsInfo = getPositionStats(positionStats);
 
-  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
-  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
-
-  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
   const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
   const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
 
@@ -228,16 +223,6 @@ export function OverviewCard({
   );
   // #endregion Fees
 
-  let adjustedUsdgSupply = BN_ZERO;
-
-  for (let i = 0; i < tokenList.length; i++) {
-    const token = tokenList[i];
-    const tokenInfo = infoTokens[token.address];
-    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
-      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
-    }
-  }
-
   const dailyVolumeEntries = useMemo(
     () => ({
       "V1 Arbitrum": v1ArbitrumDailyVolume,
@@ -389,7 +374,7 @@ export function OverviewCard({
               position="bottom-end"
               className="whitespace-nowrap"
               handle={`$${formatAmount(totalDailyVolume, USD_DECIMALS, 0, true)}`}
-              renderContent={() => <ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
+              content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
             />
           </div>
         </div>
@@ -402,7 +387,7 @@ export function OverviewCard({
               position="bottom-end"
               className="whitespace-nowrap"
               handle={`$${formatAmount(totalOpenInterest, USD_DECIMALS, 0, true)}`}
-              renderContent={() => <ChainsStatsTooltipRow entries={openInterestEntries} />}
+              content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
             />
           </div>
         </div>
@@ -415,7 +400,7 @@ export function OverviewCard({
               position="bottom-end"
               className="whitespace-nowrap"
               handle={`$${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}`}
-              renderContent={() => <ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
+              content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
             />
           </div>
         </div>
@@ -428,14 +413,14 @@ export function OverviewCard({
               position="bottom-end"
               className="whitespace-nowrap"
               handle={`$${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}`}
-              renderContent={() => <ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
+              content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
             />
           </div>
         </div>
         {feesSummary?.lastUpdatedAt ? (
           <div className="App-card-row">
             <div className="label">
-              <Trans>Fees for the part</Trans> {formatDistanceToNowStrict(feesSummary.lastUpdatedAt * 1000)}
+              <Trans>Fees for the past</Trans> {formatDistanceToNowStrict(feesSummary.lastUpdatedAt * 1000)}
             </div>
             <div>
               <TooltipComponent

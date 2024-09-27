@@ -1,18 +1,20 @@
 import { Trans, t } from "@lingui/macro";
-import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
+import { useMemo } from "react";
+
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { GMX_PRICE_DECIMALS } from "config/ui";
+import { useTotalGmxStaked } from "domain/legacy";
 import { bigMath } from "lib/bigmath";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
-import { useMemo } from "react";
-import AssetDropdown from "./AssetDropdown";
-import { useTotalGmxStaked } from "domain/legacy";
-import { AVALANCHE, ARBITRUM } from "config/chains";
 import { sumBigInts } from "lib/sumBigInts";
+
+import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipComponent from "components/Tooltip/Tooltip";
+import AssetDropdown from "./AssetDropdown";
 
 export function GmxCard({
   chainId,
@@ -141,7 +143,7 @@ export function GmxCard({
                   position="bottom-end"
                   className="whitespace-nowrap"
                   handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                  renderContent={() => (
+                  content={
                     <>
                       <StatsTooltipRow
                         label={t`Price on Arbitrum`}
@@ -154,7 +156,7 @@ export function GmxCard({
                         showDollar={true}
                       />
                     </>
-                  )}
+                  }
                 />
               )}
             </div>

@@ -8,22 +8,24 @@ import { GLP_PRICE_DECIMALS } from "config/ui";
 import { useInfoTokens } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { GLP_DECIMALS } from "lib/legacy";
-import { BN_ZERO, formatAmount } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
-import AssetDropdown from "./AssetDropdown";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import AssetDropdown from "./AssetDropdown";
 
 export function GlpCard({
   chainId,
   glpPrice,
   glpSupply,
   glpMarketCap,
+  adjustedUsdgSupply,
 }: {
   chainId: number;
   glpPrice: bigint;
   glpSupply: bigint | undefined;
   glpMarketCap: bigint | undefined;
+  adjustedUsdgSupply: bigint;
 }) {
   const currentIcons = getIcons(chainId)!;
 
@@ -33,15 +35,6 @@ export function GlpCard({
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
-
-  let adjustedUsdgSupply = BN_ZERO;
-  for (let i = 0; i < tokenList.length; i++) {
-    const token = tokenList[i];
-    const tokenInfo = infoTokens[token.address];
-    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
-      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
-    }
-  }
 
   const { glpPool, stableGlp, totalGlp } = useMemo(() => {
     let stableGlp = 0;

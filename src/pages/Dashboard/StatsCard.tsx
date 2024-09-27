@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
@@ -13,7 +14,6 @@ import { GLP_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
 import { getCurrentFeesUsd } from "./getCurrentFeesUsd";
 import { getWhitelistedTokenAddresses } from "./getWhitelistedTokenAddresses";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";

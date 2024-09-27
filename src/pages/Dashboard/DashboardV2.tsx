@@ -3,6 +3,7 @@ import { Trans, t } from "@lingui/macro";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getIsSyntheticsSupported } from "config/features";
+import { getWhitelistedV1Tokens } from "config/tokens";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
 import { useInfoTokens } from "domain/tokens";
@@ -25,7 +26,7 @@ import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";
 import { OverviewCard } from "./OverviewCard";
 import { StatsCard } from "./StatsCard";
-import { V1Table } from "./V1Table";
+import { MarketsListV1 } from "./MarketsListV1";
 
 import "./DashboardV2.css";
 
@@ -91,6 +92,18 @@ export default function DashboardV2() {
       : undefined;
   const glpMarketCap = chainId === ARBITRUM ? glpMarketCapArbitrum : glpMarketCapAvalanche;
 
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+
+  let adjustedUsdgSupply = 0n;
+  for (let i = 0; i < tokenList.length; i++) {
+    const token = tokenList[i];
+    const tokenInfo = infoTokens[token.address];
+    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
+      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
+    }
+  }
+
   return (
     <SEO title={getPageTitle(t`Dashboard`)}>
       <div className="default-container DashboardV2 page-layout">
@@ -129,11 +142,24 @@ export default function DashboardV2() {
                 totalGmxInLiquidity={totalGmxInLiquidity}
               />
               {isV1 && (
-                <GlpCard chainId={chainId} glpPrice={glpPrice} glpSupply={glpSupply} glpMarketCap={glpMarketCap} />
+                <GlpCard
+                  chainId={chainId}
+                  glpPrice={glpPrice}
+                  glpSupply={glpSupply}
+                  glpMarketCap={glpMarketCap}
+                  adjustedUsdgSupply={adjustedUsdgSupply}
+                />
               )}
               {isV2 && <GmCard />}
             </div>
-            {isV1 && <V1Table chainId={chainId} infoTokens={infoTokens} totalTokenWeights={totalTokenWeights} />}
+            {isV1 && (
+              <MarketsListV1
+                chainId={chainId}
+                infoTokens={infoTokens}
+                totalTokenWeights={totalTokenWeights}
+                adjustedUsdgSupply={adjustedUsdgSupply}
+              />
+            )}
             {isV2 && getIsSyntheticsSupported(chainId) && (
               <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
                 <MarketsList />

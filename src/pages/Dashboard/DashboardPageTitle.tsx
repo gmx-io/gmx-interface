@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+
 import PageTitle from "components/PageTitle/PageTitle";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
