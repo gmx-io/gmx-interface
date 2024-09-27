@@ -83,7 +83,7 @@ const BuyLink = ({
   to: string;
   children: React.ReactNode;
   network: number;
-  showRedirectModal?: (to: string) => void;
+  showRedirectModal: undefined | ((to: string) => void);
 }) => {
   const changeNetwork = useCallback(
     (network) => {
@@ -321,6 +321,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               network={ARBITRUM}
               chainId={chainId}
               active={active}
+              showRedirectModal={showRedirectModal}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
@@ -331,6 +332,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
                 network={AVALANCHE}
                 chainId={chainId}
                 active={active}
+                showRedirectModal={showRedirectModal}
               >
                 <Trans>View on Avalanche</Trans>
               </BuyLink>
