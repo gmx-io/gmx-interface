@@ -91,10 +91,20 @@ export default function DashboardV2() {
     gmxMarketCap = bigMath.mulDiv(gmxPrice, totalGmxSupply, expandDecimals(1, GMX_DECIMALS));
   }
 
-  let stakedGmxSupplyUsd;
+  let totalStakedGmxUsd;
   if (gmxPrice !== undefined && totalStakedGmx !== undefined) {
-    stakedGmxSupplyUsd = bigMath.mulDiv(totalStakedGmx, gmxPrice, expandDecimals(1, GMX_DECIMALS));
+    totalStakedGmxUsd = bigMath.mulDiv(totalStakedGmx, gmxPrice, expandDecimals(1, GMX_DECIMALS));
   }
+
+  const stakedGmxArbitrumUsd =
+    gmxPriceFromArbitrum !== undefined && stakedGmxArbitrum !== undefined
+      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPriceFromArbitrum, expandDecimals(1, GMX_DECIMALS))
+      : undefined;
+
+  const stakedGmxAvalancheUsd =
+    gmxPriceFromAvalanche !== undefined && stakedGmxAvalanche !== undefined
+      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPriceFromAvalanche, expandDecimals(1, GMX_DECIMALS))
+      : undefined;
 
   // #region GLP TVL
 
@@ -235,7 +245,9 @@ export default function DashboardV2() {
                 gmxPriceFromArbitrum={gmxPriceFromArbitrum}
                 gmxPriceFromAvalanche={gmxPriceFromAvalanche}
                 totalGmxSupply={totalGmxSupply}
-                stakedGmxSupplyUsd={stakedGmxSupplyUsd}
+                totalStakedGmxUsd={totalStakedGmxUsd}
+                stakedGmxArbitrumUsd={stakedGmxArbitrumUsd}
+                stakedGmxAvalancheUsd={stakedGmxAvalancheUsd}
                 stakedGmxArbitrum={stakedGmxArbitrum}
                 stakedGmxAvalanche={stakedGmxAvalanche}
                 gmxMarketCap={gmxMarketCap}
