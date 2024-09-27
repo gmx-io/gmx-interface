@@ -1,31 +1,47 @@
 import { Trans, t } from "@lingui/macro";
-import TooltipComponent from "components/Tooltip/Tooltip";
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { DEFAULT_MAX_USDG_AMOUNT } from "lib/legacy";
 import PageTitle from "components/PageTitle/PageTitle";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import TooltipComponent from "components/Tooltip/Tooltip";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { InfoTokens, Token } from "domain/tokens";
+import { getWhitelistedV1Tokens } from "config/tokens";
+import { InfoTokens } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
-import { formatAmount, formatKeyAmount, formatUsdPrice } from "lib/numbers";
+import { DEFAULT_MAX_USDG_AMOUNT } from "lib/legacy";
+import { BN_ZERO, formatAmount, formatKeyAmount, formatUsdPrice } from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
 import { WeightText } from "./WeightText";
 
 export function V1Table({
   chainId,
-  visibleTokens,
+
   infoTokens,
-  adjustedUsdgSupply,
   totalTokenWeights,
 }: {
   chainId: number;
-  visibleTokens: Token[];
+
   infoTokens: InfoTokens;
-  adjustedUsdgSupply: bigint | undefined;
   totalTokenWeights: bigint | undefined;
 }) {
   const currentIcons = getIcons(chainId)!;
+
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+  const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
+
+  if (visibleTokens.length === 0) {
+    return null;
+  }
+
+  let adjustedUsdgSupply = BN_ZERO;
+  for (let i = 0; i < tokenList.length; i++) {
+    const token = tokenList[i];
+    const tokenInfo = infoTokens[token.address];
+    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
+      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
+    }
+  }
 
   return (
     <>

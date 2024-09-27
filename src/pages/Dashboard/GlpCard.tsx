@@ -1,28 +1,80 @@
 import { Trans, t } from "@lingui/macro";
-import { USD_DECIMALS } from "config/factors";
-import { GLP_DECIMALS } from "lib/legacy";
-import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import { useMemo } from "react";
+
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
+import { TOKEN_COLOR_MAP, getWhitelistedV1Tokens } from "config/tokens";
 import { GLP_PRICE_DECIMALS } from "config/ui";
-import { formatAmount } from "lib/numbers";
+import { useInfoTokens } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
+import { GLP_DECIMALS } from "lib/legacy";
+import { BN_ZERO, formatAmount } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
+
 import AssetDropdown from "./AssetDropdown";
+import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 
 export function GlpCard({
   chainId,
   glpPrice,
   glpSupply,
   glpMarketCap,
-  stablePercentage,
-  glpPool,
 }: {
   chainId: number;
   glpPrice: bigint;
   glpSupply: bigint | undefined;
   glpMarketCap: bigint | undefined;
-  stablePercentage: string;
-  glpPool: any;
 }) {
   const currentIcons = getIcons(chainId)!;
+
+  const { active, signer } = useWallet();
+
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+
+  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
+
+  let adjustedUsdgSupply = BN_ZERO;
+  for (let i = 0; i < tokenList.length; i++) {
+    const token = tokenList[i];
+    const tokenInfo = infoTokens[token.address];
+    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
+      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
+    }
+  }
+
+  const { glpPool, stableGlp, totalGlp } = useMemo(() => {
+    let stableGlp = 0;
+    let totalGlp = 0;
+    const glpPool = tokenList
+      .map((token) => {
+        const tokenInfo = infoTokens[token.address];
+        if (tokenInfo.usdgAmount !== undefined && adjustedUsdgSupply !== undefined && adjustedUsdgSupply > 0) {
+          const currentWeightBps = bigMath.mulDiv(
+            tokenInfo.usdgAmount,
+            BASIS_POINTS_DIVISOR_BIGINT,
+            adjustedUsdgSupply
+          );
+          if (tokenInfo.isStable) {
+            stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+          }
+          totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+          return {
+            fullname: token.name,
+            name: token.symbol,
+            color: TOKEN_COLOR_MAP[token.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
+            value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
+          };
+        }
+        return null;
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+      .filter(<T extends unknown>(x: T): x is NonNullable<T> => Boolean(x));
+
+    return { glpPool, stableGlp, totalGlp };
+  }, [adjustedUsdgSupply, infoTokens, tokenList]);
+
+  let stablePercentage = totalGlp > 0 ? ((stableGlp * 100) / totalGlp).toFixed(2) : "0.0";
 
   return (
     <div className="App-card">

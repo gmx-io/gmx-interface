@@ -6,8 +6,10 @@ import { getWhitelistedV1Tokens } from "config/tokens";
 import GlpManager from "abis/GlpManager.json";
 import ReaderV2 from "abis/ReaderV2.json";
 import VaultV2 from "abis/VaultV2.json";
+import { useMulticall } from "lib/multicall/useMulticall";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 
-export function buildDashboardRequest(chainId: number) {
+function buildDashboardRequest(chainId: number) {
   const gmxAddress = getContract(chainId, "GMX");
   const glpAddress = getContract(chainId, "GLP");
   const usdgAddress = getContract(chainId, "USDG");
@@ -53,7 +55,8 @@ export function buildDashboardRequest(chainId: number) {
     },
   };
 }
-export function parseDashboardResponse(result) {
+
+function parseDashboardResponse(result) {
   const minAum = result.data.glp.getAums.returnValues[0];
   const maxAum = result.data.glp.getAums.returnValues[1];
   const aum = (minAum + maxAum) / 2n;
@@ -74,4 +77,17 @@ export function parseDashboardResponse(result) {
       totalTokenWeights: result.data.vault.totalTokenWeights.returnValues[0] as bigint,
     },
   };
+}
+
+export type ChainStats = ReturnType<typeof parseDashboardResponse>;
+
+export function useDashboardChainStatsMulticall(chainId: number) {
+  const { data } = useMulticall(chainId, `useDashboardChainStatsMulticall`, {
+    key: [chainId],
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+    request: buildDashboardRequest,
+    parseResponse: parseDashboardResponse,
+  });
+
+  return data;
 }

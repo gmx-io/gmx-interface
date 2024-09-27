@@ -7,9 +7,12 @@ import { getIcons } from "config/icons";
 import { GMX_PRICE_DECIMALS } from "config/ui";
 import { bigMath } from "lib/bigmath";
 import { GMX_DECIMALS } from "lib/legacy";
-import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 import AssetDropdown from "./AssetDropdown";
+import { useTotalGmxStaked } from "domain/legacy";
+import { AVALANCHE, ARBITRUM } from "config/chains";
+import { sumBigInts } from "lib/sumBigInts";
 
 export function GmxCard({
   chainId,
@@ -17,12 +20,6 @@ export function GmxCard({
   gmxPriceFromArbitrum,
   gmxPriceFromAvalanche,
   totalGmxSupply,
-  totalStakedGmxUsd,
-  totalStakedGmx,
-  stakedGmxArbitrum,
-  stakedGmxArbitrumUsd,
-  stakedGmxAvalanche,
-  stakedGmxAvalancheUsd,
   gmxMarketCap,
   totalGmxInLiquidity,
 }: {
@@ -31,16 +28,22 @@ export function GmxCard({
   gmxPriceFromArbitrum: bigint | undefined;
   gmxPriceFromAvalanche: bigint | undefined;
   totalGmxSupply: bigint | undefined;
-  totalStakedGmxUsd: bigint | undefined;
-  totalStakedGmx: bigint;
-  stakedGmxArbitrum: bigint | undefined;
-  stakedGmxArbitrumUsd: bigint | undefined;
-  stakedGmxAvalanche: bigint | undefined;
-  stakedGmxAvalancheUsd: bigint | undefined;
   gmxMarketCap: bigint | undefined;
   totalGmxInLiquidity: bigint;
 }) {
   const currentIcons = getIcons(chainId)!;
+
+  let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
+
+  const stakedGmxArbitrumUsd =
+    gmxPriceFromArbitrum !== undefined && stakedGmxArbitrum !== undefined
+      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPriceFromArbitrum, expandDecimals(1, GMX_DECIMALS))
+      : undefined;
+  const stakedGmxAvalancheUsd =
+    gmxPriceFromAvalanche !== undefined && stakedGmxAvalanche !== undefined
+      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPriceFromAvalanche, expandDecimals(1, GMX_DECIMALS))
+      : undefined;
+  const totalStakedGmxUsd = sumBigInts(stakedGmxArbitrumUsd, stakedGmxAvalancheUsd);
 
   let stakedPercent = 0;
 

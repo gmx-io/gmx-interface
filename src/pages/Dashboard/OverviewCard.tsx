@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
+import { formatDistanceToNowStrict } from "date-fns";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { formatDistanceToNowStrict } from "date-fns";
 
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
@@ -16,23 +16,24 @@ import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
 import { BN_ZERO, expandDecimals, formatAmount } from "lib/numbers";
+import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
-import { ACTIVE_CHAIN_IDS, ChainStats } from "./DashboardV2";
+import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
 import { getCurrentFeesUsd } from "./getCurrentFeesUsd";
 import { getPositionStats } from "./getPositionStats";
 import { getWhitelistedTokenAddresses } from "./getWhitelistedTokenAddresses";
-import { sumBigInts } from "./sumBigInts";
+import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
 export function OverviewCard({
-  arbitrumData,
-  avalancheData,
+  statsArbitrum,
+  statsAvalanche,
 }: {
-  arbitrumData?: ChainStats;
-  avalancheData?: ChainStats;
+  statsArbitrum?: ChainStats;
+  statsAvalanche?: ChainStats;
 }) {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
@@ -40,12 +41,115 @@ export function OverviewCard({
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
 
-  const { data: positionStats } = useSWR(
+  const { data: positionStats } = useSWR<
+    {
+      totalActivePositions: number;
+      totalLongPositionSizes: string;
+      totalLongPositionCollaterals: string;
+      totalShortPositionCollaterals: string;
+      totalShortPositionSizes: string;
+      openInterest: bigint;
+    }[]
+  >(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
     {
       fetcher: arrayURLFetcher,
     }
   );
+
+  const positionStatsInfo = getPositionStats(positionStats);
+
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+
+  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
+  const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
+  const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
+
+  const v1Fees = useMemo(() => {
+    if (!statsArbitrum?.reader?.fees || !statsAvalanche?.reader?.fees) {
+      return undefined;
+    }
+    const feeUsdArbitrum = getCurrentFeesUsd(
+      getWhitelistedTokenAddresses(ARBITRUM),
+      statsArbitrum.reader.fees,
+      infoTokensArbitrum
+    );
+
+    const feeUsdAvalanche = getCurrentFeesUsd(
+      getWhitelistedTokenAddresses(AVALANCHE),
+      statsAvalanche.reader.fees,
+      infoTokensAvax
+    );
+
+    return {
+      total: feeUsdArbitrum + feeUsdAvalanche,
+      [ARBITRUM]: feeUsdArbitrum,
+      [AVALANCHE]: feeUsdAvalanche,
+    };
+  }, [statsArbitrum?.reader.fees, statsAvalanche?.reader.fees, infoTokensArbitrum, infoTokensAvax]);
+
+  const { data: feesSummaryByChain } = useFeesSummary();
+
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+
+  let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
+
+  // #region TVL and GLP Pool
+  const glpTvlArbitrum = statsArbitrum?.glp.aum;
+  const glpTvlAvalanche = statsAvalanche?.glp.aum;
+
+  const glpSupplyArbitrum = statsArbitrum?.reader?.tokenBalancesWithSupplies?.glpSupply;
+  const glpSupplyAvalanche = statsAvalanche?.reader?.tokenBalancesWithSupplies?.glpSupply;
+
+  const glpPriceArbitrum =
+    glpTvlArbitrum !== undefined && glpTvlArbitrum > 0n && glpSupplyArbitrum !== undefined
+      ? bigMath.mulDiv(glpTvlArbitrum, expandDecimals(1, GLP_DECIMALS), glpSupplyArbitrum)
+      : expandDecimals(1, USD_DECIMALS);
+
+  const glpPriceAvalanche =
+    glpTvlAvalanche !== undefined && glpTvlAvalanche > 0n && glpSupplyAvalanche !== undefined
+      ? bigMath.mulDiv(glpTvlAvalanche, expandDecimals(1, GLP_DECIMALS), glpSupplyAvalanche)
+      : expandDecimals(1, USD_DECIMALS);
+
+  const glpMarketCapArbitrum =
+    glpSupplyArbitrum !== undefined
+      ? bigMath.mulDiv(glpPriceArbitrum, glpSupplyArbitrum, expandDecimals(1, GLP_DECIMALS))
+      : undefined;
+
+  const glpMarketCapAvalanche =
+    glpSupplyAvalanche !== undefined
+      ? bigMath.mulDiv(glpPriceAvalanche, glpSupplyAvalanche, expandDecimals(1, GLP_DECIMALS))
+      : undefined;
+
+  const totalGlpTvl =
+    glpTvlArbitrum !== undefined && glpTvlAvalanche !== undefined ? glpTvlArbitrum + glpTvlAvalanche : undefined;
+
+  const gmTvlArbitrum = v2ArbitrumOverview.totalGMLiquidity;
+  const gmTvlAvalanche = v2AvalancheOverview.totalGMLiquidity;
+
+  const totalGmTvl = gmTvlArbitrum + gmTvlAvalanche;
+
+  let displayTvlArbitrum: bigint | undefined = undefined;
+  let displayTvlAvalanche: bigint | undefined = undefined;
+  let displayTvl: bigint | undefined = undefined;
+  if (
+    gmxPrice !== undefined &&
+    stakedGmxArbitrum !== undefined &&
+    stakedGmxAvalanche !== undefined &&
+    glpMarketCapArbitrum !== undefined &&
+    glpMarketCapAvalanche !== undefined
+  ) {
+    const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
+    const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
+
+    // GMX Staked + GLP Pools + GM Pools
+    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum;
+    displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche;
+    displayTvl = displayTvlArbitrum + displayTvlAvalanche;
+  }
+
+  // #endregion TVL and GLP Pool
 
   // #region Daily Volume
   const v1DailyVolumeInfo = useVolumeInfo();
@@ -61,120 +165,9 @@ export function OverviewCard({
     v2ArbitrumDailyVolume,
     v2AvalancheDailyVolume
   );
-
   // #endregion Daily Volume
-  const positionStatsInfo = getPositionStats(positionStats);
 
-  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
-  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
-
-  const suppliesArbitrum = arbitrumData?.reader?.tokenBalancesWithSupplies;
-  const suppliesAvalanche = avalancheData?.reader?.tokenBalancesWithSupplies;
-
-  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
-  const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
-  const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
-
-  const v1Fees = useMemo(() => {
-    if (!arbitrumData?.reader?.fees || !avalancheData?.reader?.fees) {
-      return undefined;
-    }
-    const arbitrumFeeUsd = getCurrentFeesUsd(
-      getWhitelistedTokenAddresses(ARBITRUM),
-      arbitrumData.reader.fees,
-      infoTokensArbitrum
-    );
-
-    const avalancheFeeUsd = getCurrentFeesUsd(
-      getWhitelistedTokenAddresses(AVALANCHE),
-      avalancheData.reader.fees,
-      infoTokensAvax
-    );
-
-    return {
-      total: arbitrumFeeUsd + avalancheFeeUsd,
-      [ARBITRUM]: arbitrumFeeUsd,
-      [AVALANCHE]: avalancheFeeUsd,
-    };
-  }, [arbitrumData?.reader.fees, avalancheData?.reader.fees, infoTokensArbitrum, infoTokensAvax]);
-
-  const { data: feesSummaryByChain } = useFeesSummary();
   const feesSummary = feesSummaryByChain[chainId];
-
-  // #region Dashboard Math
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-
-  let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
-
-  // #region GLP TVL
-  const arbitrumGlpTvl = arbitrumData?.glp.aum;
-  const avalancheGlpTvl = avalancheData?.glp.aum;
-
-  const totalGlpTvl =
-    arbitrumGlpTvl !== undefined && avalancheGlpTvl !== undefined ? arbitrumGlpTvl + avalancheGlpTvl : undefined;
-
-  // #endregion GLP TVL
-  // #region GLP Supply
-  const glpSupplyArbitrum = suppliesArbitrum?.glpSupply;
-  const glpSupplyAvalanche = suppliesAvalanche?.glpSupply;
-
-  // #endregion GLP Supply
-  // #region GLP Price
-  const glpPriceArbitrum =
-    arbitrumGlpTvl !== undefined && arbitrumGlpTvl > 0n && glpSupplyArbitrum !== undefined
-      ? bigMath.mulDiv(arbitrumGlpTvl, expandDecimals(1, GLP_DECIMALS), glpSupplyArbitrum)
-      : expandDecimals(1, USD_DECIMALS);
-
-  const glpPriceAvalanche =
-    avalancheGlpTvl !== undefined && avalancheGlpTvl > 0n && glpSupplyAvalanche !== undefined
-      ? bigMath.mulDiv(avalancheGlpTvl, expandDecimals(1, GLP_DECIMALS), glpSupplyAvalanche)
-      : expandDecimals(1, USD_DECIMALS);
-
-  // #endregion GLP Price
-  // #region GLP Market Cap
-  const glpMarketCapArbitrum =
-    glpSupplyArbitrum !== undefined
-      ? bigMath.mulDiv(glpPriceArbitrum, glpSupplyArbitrum, expandDecimals(1, GLP_DECIMALS))
-      : undefined;
-
-  const glpMarketCapAvalanche =
-    glpSupplyAvalanche !== undefined
-      ? bigMath.mulDiv(glpPriceAvalanche, glpSupplyAvalanche, expandDecimals(1, GLP_DECIMALS))
-      : undefined;
-
-  const totalGlpMarketCap =
-    glpMarketCapArbitrum !== undefined && glpMarketCapAvalanche !== undefined
-      ? glpMarketCapArbitrum + glpMarketCapAvalanche
-      : undefined;
-
-  // #endregion GLP Market Cap
-  // #region GM TVL
-  const arbitrumGmTvl = v2ArbitrumOverview.totalGMLiquidity;
-  const avalancheGmTvl = v2AvalancheOverview.totalGMLiquidity;
-
-  const totalGmTvl = arbitrumGmTvl + avalancheGmTvl;
-
-  // #endregion GM TVL
-  let displayTvlArbitrum: bigint | undefined = undefined;
-  let displayTvlAvalanche: bigint | undefined = undefined;
-  let displayTvl: bigint | undefined = undefined;
-  if (
-    gmxPrice !== undefined &&
-    totalStakedGmx !== undefined &&
-    totalGlpMarketCap !== undefined &&
-    stakedGmxArbitrum !== undefined &&
-    stakedGmxAvalanche !== undefined &&
-    glpMarketCapArbitrum !== undefined &&
-    glpMarketCapAvalanche !== undefined
-  ) {
-    const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
-    const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
-
-    // GMX Staked + GLP Pools + GM Pools
-    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + arbitrumGmTvl;
-    displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + avalancheGmTvl;
-    displayTvl = displayTvlArbitrum + displayTvlAvalanche;
-  }
 
   // #region Open Interest
   const v1ArbitrumOpenInterest = positionStatsInfo?.[ARBITRUM]?.openInterest;
@@ -188,8 +181,8 @@ export function OverviewCard({
     v2ArbitrumOpenInterest,
     v2AvalancheOpenInterest
   );
-
   // #endregion Open Interest
+
   // #region Long Position Sizes
   const v1ArbitrumLongPositionSizes = positionStatsInfo?.[ARBITRUM]?.totalLongPositionSizes;
   const v1AvalancheLongPositionSizes = positionStatsInfo?.[AVALANCHE]?.totalLongPositionSizes;
@@ -203,8 +196,8 @@ export function OverviewCard({
     v2ArbitrumLongPositionSizes,
     v2AvalancheLongPositionSizes
   );
-
   // #endregion Long Position Sizes
+
   // #region Short Position Sizes
   const v1ArbitrumShortPositionSizes = positionStatsInfo?.[ARBITRUM]?.totalShortPositionSizes;
   const v1AvalancheShortPositionSizes = positionStatsInfo?.[AVALANCHE]?.totalShortPositionSizes;
@@ -218,8 +211,8 @@ export function OverviewCard({
     v2ArbitrumShortPositionSizes,
     v2AvalancheShortPositionSizes
   );
-
   // #endregion Short Position Sizes
+
   // #region Fees
   const v1ArbitrumWeeklyFees = v1Fees?.[ARBITRUM];
   const v1AvalancheWeeklyFees = v1Fees?.[AVALANCHE];
@@ -233,8 +226,8 @@ export function OverviewCard({
     v2ArbitrumWeeklyFees,
     v2AvalancheWeeklyFees
   );
-
   // #endregion Fees
+
   let adjustedUsdgSupply = BN_ZERO;
 
   for (let i = 0; i < tokenList.length; i++) {
@@ -245,7 +238,6 @@ export function OverviewCard({
     }
   }
 
-  // #endregion Dashboard Math
   const dailyVolumeEntries = useMemo(
     () => ({
       "V1 Arbitrum": v1ArbitrumDailyVolume,
@@ -352,8 +344,8 @@ export function OverviewCard({
                   <Trans>Total value of tokens in the GLP pools.</Trans>
                   <br />
                   <br />
-                  <StatsTooltipRow label="Arbitrum" value={formatAmount(arbitrumGlpTvl, USD_DECIMALS, 0, true)} />
-                  <StatsTooltipRow label="Avalanche" value={formatAmount(avalancheGlpTvl, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow label="Arbitrum" value={formatAmount(glpTvlArbitrum, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow label="Avalanche" value={formatAmount(glpTvlAvalanche, USD_DECIMALS, 0, true)} />
                   <div className="my-8 h-1 bg-gray-800" />
                   <StatsTooltipRow label="Total" value={formatAmount(totalGlpTvl, USD_DECIMALS, 0, true)} />
                   <br />
@@ -379,8 +371,8 @@ export function OverviewCard({
                   <Trans>Total value of tokens in GM Pools.</Trans>
                   <br />
                   <br />
-                  <StatsTooltipRow label="Arbitrum" value={formatAmount(arbitrumGmTvl, USD_DECIMALS, 0, true)} />
-                  <StatsTooltipRow label="Avalanche" value={formatAmount(avalancheGmTvl, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow label="Arbitrum" value={formatAmount(gmTvlArbitrum, USD_DECIMALS, 0, true)} />
+                  <StatsTooltipRow label="Avalanche" value={formatAmount(gmTvlAvalanche, USD_DECIMALS, 0, true)} />
                   <div className="!my-8 h-1 bg-gray-800" />
                   <StatsTooltipRow label="Total" value={formatAmount(totalGmTvl, USD_DECIMALS, 0, true)} />
                 </>

@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
+
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getTokenBySymbol } from "config/tokens";
@@ -12,12 +11,15 @@ import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { GLP_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
+import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
-import { ChainStats } from "./DashboardV2";
 import { getCurrentFeesUsd } from "./getCurrentFeesUsd";
 import { getWhitelistedTokenAddresses } from "./getWhitelistedTokenAddresses";
-import { sumBigInts } from "./sumBigInts";
+import type { ChainStats } from "./useDashboardChainStatsMulticall";
+
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import TooltipComponent from "components/Tooltip/Tooltip";
 
 const ethTreasuryFund = expandDecimals(350 + 148 + 384, 18);
 const glpTreasuryFund = expandDecimals(660001, 18);
@@ -25,8 +27,14 @@ const usdcTreasuryFund = expandDecimals(784598 + 200000, 30);
 
 const hourSeconds = 60 * 60;
 
-export function StatsCard({ arbitrumData, avalancheData }: { arbitrumData?: ChainStats; avalancheData?: ChainStats }) {
-  const { active, signer } = useWallet();
+export function StatsCard({
+  statsArbitrum,
+  statsAvalanche,
+}: {
+  statsArbitrum?: ChainStats;
+  statsAvalanche?: ChainStats;
+}) {
+  const { active } = useWallet();
   const { chainId } = useChainId();
   const v1TotalVolume = useTotalVolume();
 
@@ -35,31 +43,31 @@ export function StatsCard({ arbitrumData, avalancheData }: { arbitrumData?: Chai
 
   const uniqueUsers = useUniqueUsers();
 
-  const suppliesArbitrum = arbitrumData?.reader.tokenBalancesWithSupplies;
-  const suppliesAvalanche = avalancheData?.reader.tokenBalancesWithSupplies;
+  const suppliesArbitrum = statsArbitrum?.reader.tokenBalancesWithSupplies;
+  const suppliesAvalanche = statsAvalanche?.reader.tokenBalancesWithSupplies;
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
   const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
   const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
+  const infoTokens = chainId === ARBITRUM ? infoTokensArbitrum : infoTokensAvax;
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
 
   // #region Fees
 
   const v1ArbitrumOldFeesUsd = useMemo(() => {
-    if (!arbitrumData?.reader?.fees || !infoTokensArbitrum) {
+    if (!statsArbitrum?.reader?.fees || !infoTokensArbitrum) {
       return undefined;
     }
 
-    return getCurrentFeesUsd(getWhitelistedTokenAddresses(ARBITRUM), arbitrumData.reader.fees, infoTokensArbitrum);
-  }, [arbitrumData?.reader?.fees, infoTokensArbitrum]);
+    return getCurrentFeesUsd(getWhitelistedTokenAddresses(ARBITRUM), statsArbitrum.reader.fees, infoTokensArbitrum);
+  }, [statsArbitrum?.reader?.fees, infoTokensArbitrum]);
 
   const v1AvalancheOldFees = useMemo(() => {
-    if (!avalancheData?.reader?.fees || !infoTokensAvax) {
+    if (!statsAvalanche?.reader?.fees || !infoTokensAvax) {
       return undefined;
     }
 
-    return getCurrentFeesUsd(getWhitelistedTokenAddresses(AVALANCHE), avalancheData.reader.fees, infoTokensAvax);
-  }, [avalancheData?.reader?.fees, infoTokensAvax]);
+    return getCurrentFeesUsd(getWhitelistedTokenAddresses(AVALANCHE), statsAvalanche.reader.fees, infoTokensAvax);
+  }, [statsAvalanche?.reader?.fees, infoTokensAvax]);
 
   const { data: v1RecentFeesSummaryByChain } = useFeesSummary();
 
@@ -103,28 +111,26 @@ export function StatsCard({ arbitrumData, avalancheData }: { arbitrumData?: Chai
   // #endregion Fees
 
   // #region Treasury
-  const arbitrumGlpTvl = arbitrumData?.glp.aum;
-  const avalancheGlpTvl = avalancheData?.glp.aum;
+  const glpTvlArbitrum = statsArbitrum?.glp.aum;
+  const glpTvlAvalanche = statsAvalanche?.glp.aum;
+
+  const glpTvl = chainId === ARBITRUM ? glpTvlArbitrum : glpTvlAvalanche;
 
   const glpSupplyArbitrum = suppliesArbitrum?.glpSupply;
   const glpSupplyAvalanche = suppliesAvalanche?.glpSupply;
 
-  const glpPriceArbitrum =
-    arbitrumGlpTvl !== undefined && arbitrumGlpTvl > 0n && glpSupplyArbitrum !== undefined
-      ? bigMath.mulDiv(arbitrumGlpTvl, expandDecimals(1, GLP_DECIMALS), glpSupplyArbitrum)
-      : expandDecimals(1, USD_DECIMALS);
+  const glpSupply = chainId === ARBITRUM ? glpSupplyArbitrum : glpSupplyAvalanche;
 
-  const glpPriceAvalanche =
-    avalancheGlpTvl !== undefined && avalancheGlpTvl > 0n && glpSupplyAvalanche !== undefined
-      ? bigMath.mulDiv(avalancheGlpTvl, expandDecimals(1, GLP_DECIMALS), glpSupplyAvalanche)
+  const glpPrice =
+    glpTvl !== undefined && glpTvl > 0n && glpSupply !== undefined
+      ? bigMath.mulDiv(glpTvl, expandDecimals(1, GLP_DECIMALS), glpSupply)
       : expandDecimals(1, USD_DECIMALS);
-
-  const glpPrice = chainId === ARBITRUM ? glpPriceArbitrum : glpPriceAvalanche;
 
   let totalTreasuryFundUsd: bigint | undefined = undefined;
 
   if (eth && eth.contractMinPrice !== undefined && glpPrice !== undefined) {
     const ethTreasuryFundUsd = bigMath.mulDiv(ethTreasuryFund, eth.contractMinPrice, expandDecimals(1, eth.decimals));
+
     const glpTreasuryFundUsd = bigMath.mulDiv(glpTreasuryFund, glpPrice, expandDecimals(1, 18));
 
     totalTreasuryFundUsd = ethTreasuryFundUsd + glpTreasuryFundUsd + usdcTreasuryFund;
