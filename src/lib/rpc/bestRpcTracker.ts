@@ -6,12 +6,12 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   getFallbackRpcUrl,
-  getAlchemyArbitrumHttpUrl,
 } from "config/chains";
 import { getRpcProviderKey } from "config/localStorage";
 import { isDebugMode } from "lib/localStorage";
 import orderBy from "lodash/orderBy";
 import minBy from "lodash/minBy";
+import maxBy from "lodash/maxBy";
 import { differenceInMilliseconds } from "date-fns";
 import { getMulticallContract, getDataStoreContract } from "config/contracts";
 import { getContract } from "config/contracts";
@@ -67,10 +67,6 @@ type RpcTrackerState = {
   };
 };
 
-if (getIsFlagEnabled("testAlchemyRpcErrorRate")) {
-  RPC_PROVIDERS[ARBITRUM].unshift(getAlchemyArbitrumHttpUrl());
-}
-
 const trackerState = initTrackerState();
 let trackerTimeoutId: number | null = null;
 
@@ -89,16 +85,19 @@ function trackRpcProviders({ warmUp = false } = {}) {
         return;
       }
 
-      const nextProviderUrl = await getBestRpcProviderForChain(chainTrackerState).catch((e) => {
+      const { url: nextProviderUrl, bestBlockGap } = await getBestRpcProviderForChain(chainTrackerState).catch((e) => {
         if (e.message !== "no-success-probes") {
           // eslint-disable-next-line no-console
           console.error(e);
         }
 
-        return getFallbackRpcUrl(chainId);
+        return {
+          url: getFallbackRpcUrl(chainId),
+          bestBlockGap: undefined,
+        };
       });
 
-      setCurrentProvider(chainId, nextProviderUrl);
+      setCurrentProvider(chainId, nextProviderUrl, bestBlockGap);
     })
   ).finally(() => {
     if (trackerTimeoutId) {
@@ -154,10 +153,10 @@ async function getBestRpcProviderForChain({ providers, chainId }: RpcTrackerStat
     };
   });
 
-  const bestResponseTimeValidProbe = minBy(
-    probeStats.filter((probe) => probe.isValid),
-    "responseTime"
-  );
+  const validProbesStats = probeStats.filter((probe) => probe.isValid);
+
+  const bestResponseTimeValidProbe = minBy(validProbesStats, "responseTime");
+  const bestBlockNumberValidProbe = maxBy(validProbesStats, "blockNumber");
 
   if (isDebugMode()) {
     // eslint-disable-next-line no-console
@@ -180,17 +179,28 @@ async function getBestRpcProviderForChain({ providers, chainId }: RpcTrackerStat
     throw new Error("no-success-probes");
   }
 
-  return bestResponseTimeValidProbe.url;
+  const bestBlockGap =
+    bestBlockNumberValidProbe?.blockNumber && bestResponseTimeValidProbe.blockNumber
+      ? bestBlockNumberValidProbe.blockNumber - bestResponseTimeValidProbe.blockNumber
+      : undefined;
+
+  return {
+    url: bestResponseTimeValidProbe.url,
+    bestBlockGap,
+  };
 }
 
-function setCurrentProvider(chainId: number, newProviderUrl: string) {
+function setCurrentProvider(chainId: number, newProviderUrl: string, bestBlockGap?: number) {
   trackerState[chainId].currentBestProviderUrl = newProviderUrl;
 
   window.dispatchEvent(new CustomEvent(RPC_TRACKER_UPDATE_EVENT));
 
   emitMetricCounter({
     event: "rpcTracker.ranking.setBestRpc",
-    data: { rpcProvider: getProviderNameFromUrl(newProviderUrl) },
+    data: {
+      rpcProvider: getProviderNameFromUrl(newProviderUrl),
+      bestBlockGap: bestBlockGap ?? "unknown",
+    },
   });
 
   const storageKey = JSON.stringify(getRpcProviderKey(chainId));

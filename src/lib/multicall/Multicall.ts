@@ -293,7 +293,7 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.groupEnd();
 
-      if (!isAlchemy && !this.abFlags.testAlchemyRpcErrorRate) {
+      if (!isAlchemy) {
         this.fallbackRpcSwitcher?.trigger();
       }
 
@@ -407,7 +407,7 @@ export class Multicall {
       rpcProvider: rpcProviderName,
     });
 
-    if (!isAlchemy && !this.abFlags.testAlchemyRpcErrorRate) {
+    if (!isAlchemy) {
       this.fallbackRpcSwitcher?.trigger();
     }
 
