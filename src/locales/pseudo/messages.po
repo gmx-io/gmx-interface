@@ -53,7 +53,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "PRICE"
 msgstr ""
 
@@ -154,7 +154,7 @@ msgstr ""
 msgid "Order submitted!"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/WeightText.tsx
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr ""
 
@@ -219,6 +219,7 @@ msgid "Deposit submitted!"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr ""
 
@@ -250,6 +251,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
 msgstr ""
 
@@ -264,10 +266,6 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -384,7 +382,7 @@ msgstr ""
 msgid "SELLABLE"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
 msgstr ""
 
@@ -464,6 +462,7 @@ msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr ""
 
@@ -516,7 +515,7 @@ msgstr ""
 msgid "hide"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr ""
 
@@ -752,6 +751,10 @@ msgstr ""
 msgid "Open Interest Balance"
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "This value may be higher on other websites due to the collateral of positions being included in the calculation."
+msgstr ""
+
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
@@ -867,9 +870,9 @@ msgstr ""
 msgid "Buy {operationTokenSymbol}"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GlpCard.tsx
+#: src/pages/Dashboard/GmCard.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 msgid "Market Cap"
 msgstr ""
 
@@ -969,7 +972,7 @@ msgstr ""
 msgid "Protocol"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "Overview"
 msgstr ""
 
@@ -1034,7 +1037,7 @@ msgstr ""
 msgid "Buy Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "Tokens"
 msgstr ""
 
@@ -1088,6 +1091,10 @@ msgstr ""
 msgid "Vest"
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Total value of tokens in the GLP pools."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Generating and activating Subaccount"
 msgstr ""
@@ -1096,7 +1103,7 @@ msgstr ""
 msgid "Select pool"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "WEIGHT"
 msgstr ""
 
@@ -1120,6 +1127,7 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Total"
@@ -1182,7 +1190,7 @@ msgid "Withdrawing {0} to Main Account"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
 
@@ -1304,7 +1312,7 @@ msgstr ""
 msgid "Discover GMX Alerts"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Price on Avalanche"
 msgstr ""
@@ -1341,10 +1349,6 @@ msgstr ""
 
 #: src/pages/Stake/StakeV1.jsx
 msgid "Claim failed"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "06 Jan 2022"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -1534,7 +1538,7 @@ msgstr ""
 msgid "Create Order"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "Utilization"
 msgstr ""
 
@@ -1639,7 +1643,7 @@ msgstr ""
 msgid "Update order executed"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 msgid "not staked"
 msgstr ""
 
@@ -1702,10 +1706,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Total Fees"
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -1787,7 +1787,7 @@ msgid "Checking code..."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
 msgstr ""
 
@@ -1812,7 +1812,7 @@ msgid "No open position, order cannot be executed unless a position is opened"
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short Positions"
 msgstr ""
 
@@ -2048,7 +2048,7 @@ msgid "Max {0} sellable amount exceeded"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "TOKEN"
 msgstr ""
 
@@ -2187,6 +2187,7 @@ msgstr ""
 #. Total Value Locked
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr ""
 
@@ -2194,8 +2195,8 @@ msgstr ""
 msgid "Shift Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GlpCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
 msgstr ""
 
@@ -2654,10 +2655,6 @@ msgstr ""
 msgid "V1 Arbitrum"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "AUM"
-msgstr ""
-
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
@@ -2737,6 +2734,10 @@ msgstr ""
 msgid "Forfeit profit and Short"
 msgstr ""
 
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "Staked on Arbitrum"
+msgstr ""
+
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "Profit"
 msgstr ""
@@ -2794,8 +2795,8 @@ msgstr ""
 msgid "Enable orders failed."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GlpCard.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
@@ -3444,7 +3445,7 @@ msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
 msgstr ""
@@ -3490,10 +3491,6 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid Receiver Address"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -3575,7 +3572,7 @@ msgstr ""
 msgid "Collateral In"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "GM Markets"
 msgstr ""
 
@@ -3610,7 +3607,7 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr ""
 
@@ -3940,6 +3937,10 @@ msgstr ""
 msgid "Max 10 symbols in name"
 msgstr ""
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "Users"
+msgstr ""
+
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -3973,8 +3974,8 @@ msgstr ""
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "GLP Index Composition"
 msgstr ""
 
@@ -4097,6 +4098,10 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "Staked on Avalanche"
+msgstr ""
+
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
@@ -4136,6 +4141,10 @@ msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Three tokens create our ecosystem"
+msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Total value of tokens in GM Pools."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -4237,7 +4246,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "POOL"
 msgstr ""
 
@@ -4284,7 +4293,7 @@ msgstr ""
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "Weight"
 msgstr ""
 
@@ -4331,7 +4340,7 @@ msgstr ""
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Price on Arbitrum"
 msgstr ""
@@ -4542,7 +4551,7 @@ msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Plea
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "UTILIZATION"
 msgstr ""
 
@@ -4696,10 +4705,6 @@ msgstr ""
 msgid "Open a position"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "<0>GM Pools total value ({chainName}).</0>"
-msgstr ""
-
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD market pools for your order."
 msgstr ""
@@ -4738,9 +4743,9 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GlpCard.tsx
+#: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Dashboard/V1Table.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -4774,8 +4779,8 @@ msgid "GMX & Voting Power"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 msgstr ""
 
@@ -4805,7 +4810,11 @@ msgstr ""
 msgid "pay"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "Total circulating supply of GMX tokens."
+msgstr ""
+
+#: src/pages/Dashboard/WeightText.tsx
 msgid "Target Weight"
 msgstr ""
 
@@ -4929,9 +4938,8 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GlpCard.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr ""
 
@@ -4944,6 +4952,10 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
+msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Fees for the part"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -5287,7 +5299,7 @@ msgstr ""
 msgid "High price impact, review execution price."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GlpCard.tsx
 msgid "Stablecoin Percentage"
 msgstr ""
 
@@ -5548,8 +5560,8 @@ msgstr ""
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "Pool Amount"
 msgstr ""
 
@@ -5566,10 +5578,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Fees since"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -5924,7 +5932,7 @@ msgstr ""
 msgid "Search Type"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/WeightText.tsx
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr ""
 
@@ -6242,8 +6250,8 @@ msgstr ""
 msgid "Buy GMX"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "Max {0} Capacity"
 msgstr ""
 
@@ -6589,7 +6597,7 @@ msgstr ""
 msgid "Approving {stakingTokenSymbol}..."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/WeightText.tsx
 msgid "Current Weight"
 msgstr ""
 
@@ -6749,7 +6757,7 @@ msgstr ""
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "Pool"
 msgstr ""
 
@@ -6856,7 +6864,7 @@ msgid "Pay Amount"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
 
@@ -6885,6 +6893,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV2.tsx
@@ -7043,8 +7052,8 @@ msgstr ""
 msgid "Stake esGMX"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/V1Table.tsx
+#: src/pages/Dashboard/V1Table.tsx
 msgid "Target Min Amount"
 msgstr ""
 
@@ -7091,7 +7100,7 @@ msgstr ""
 msgid "Leave at least {0} {1} for gas"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
 msgstr ""
 
@@ -7100,7 +7109,6 @@ msgid "There is not enough {0} in your account on {1} to send this transaction.<
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Volume"
 msgstr ""
 
@@ -7432,6 +7440,10 @@ msgstr ""
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Assets under management takes into account:"
+msgstr ""
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
 msgstr ""
@@ -7530,7 +7542,7 @@ msgstr ""
 msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr ""
 
@@ -7546,7 +7558,6 @@ msgstr ""
 msgid "Complete Transfer"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Home/Home.tsx
 msgid "Total Users"
 msgstr ""
@@ -7691,12 +7702,8 @@ msgid "Partial Liquidation"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Total Stats"
 msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -7705,10 +7712,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -7955,7 +7958,7 @@ msgid "Link"
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/pages/Dashboard/DashboardV2.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "Long Positions"
 msgstr ""
 
@@ -7965,10 +7968,6 @@ msgstr ""
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.tsx
-msgid "01 Sep 2021"
 msgstr ""
 
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
@@ -8024,6 +8023,10 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Pending Transfer Approval"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "For detailed stats:"
 msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.jsx
