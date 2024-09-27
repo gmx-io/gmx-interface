@@ -423,7 +423,7 @@ export function MarketStatsWithComposition(p: Props) {
                 apy={isGlv ? glvTokensApyData?.[getGlvOrMarketAddress(marketInfo)] : apy}
                 incentiveApr={incentiveApr}
                 lidoApr={lidoApr}
-                tokenAddress={marketToken?.address ?? zeroAddress}
+                marketAddress={marketToken?.address ?? zeroAddress}
               />
             }
           />

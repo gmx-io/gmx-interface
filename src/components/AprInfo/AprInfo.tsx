@@ -28,17 +28,17 @@ export function AprInfo({
   incentiveApr,
   lidoApr,
   showTooltip = true,
-  tokenAddress,
+  marketAddress,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
   lidoApr: bigint | undefined;
   showTooltip?: boolean;
-  tokenAddress: string;
+  marketAddress: string;
 }) {
   const { chainId } = useChainId();
 
-  const listingDate = getMarketListingDate(chainId, tokenAddress);
+  const listingDate = getMarketListingDate(chainId, marketAddress);
   const { isBaseAprReadyToBeShown, apyReadyToBeShownDate } = useMemo(
     () => ({
       isBaseAprReadyToBeShown: getIsBaseApyReadyToBeShown(listingDate),
@@ -52,10 +52,10 @@ export function AprInfo({
     totalApr += apy ?? 0n;
   }
   const incentivesData = useLiquidityProvidersIncentives(chainId);
-  const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[tokenAddress] !== undefined;
+  const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[marketAddress] !== undefined;
   const isLidoApr = lidoApr !== undefined && lidoApr > 0n;
-  const isEthenaSatsIncentive = isEthenaSatsIncentivizedMarket(tokenAddress);
-  const isTbtcIncentive = isTbtcIncentivizedMarket(tokenAddress);
+  const isEthenaSatsIncentive = isEthenaSatsIncentivizedMarket(marketAddress);
+  const isTbtcIncentive = isTbtcIncentivizedMarket(marketAddress);
 
   const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
