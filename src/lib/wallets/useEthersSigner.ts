@@ -22,7 +22,7 @@ export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
   const { data: client } = useConnectorClient<Config>({ chainId });
 
   return useMemo(() => {
-    if (!client) {
+    if (!client?.account) {
       return undefined;
     }
 

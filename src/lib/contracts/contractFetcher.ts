@@ -178,8 +178,8 @@ async function fetchContractData({
       id
     );
 
-    if (!result.data.getContractCall.call.success) {
-      const error = result.data.getContractCall.call.error;
+    if (!result?.data?.getContractCall?.call?.success) {
+      const error = result?.data?.getContractCall?.call?.error || "Unknown error";
       throw new Error(error);
     }
 
