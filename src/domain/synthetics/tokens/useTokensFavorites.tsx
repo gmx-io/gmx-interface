@@ -11,9 +11,10 @@ import {
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId } from "lib/localStorage";
-import { EMPTY_ARRAY } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 
 export type TokenFavoritesTabOption = "all" | "favorites";
+export type TokenFavoritesType = "gm" | "index";
 export type TokenFavoriteKey =
   | "chart-token-selector"
   | "market-selector"
@@ -25,16 +26,33 @@ export type TokenFavoriteKey =
   | "gm-list"
   | "gm-pool-selector";
 
-type TokensFavoritesContextType = {
-  keys: {
-    [key in TokenFavoriteKey]?: {
-      tab: TokenFavoritesTabOption;
-      favoriteTokens: string[];
-    };
+const TAB_TYPE_MAP: Record<TokenFavoriteKey, TokenFavoritesType> = {
+  "chart-token-selector": "index",
+  "market-selector": "index",
+  "pool-selector": "index",
+  "gm-token-selector": "gm",
+  "gm-token-receive-pay-selector": "gm",
+  "gm-list": "gm",
+  "gm-pool-selector": "gm",
+};
+
+type TokensFavoritesStore = {
+  tabs: {
+    [key in TokenFavoriteKey]?: TokenFavoritesTabOption;
   };
+  gmFavoriteTokens: string[];
+  indexFavoriteTokens: string[];
+};
+
+const DEFAULT_TOKENS_FAVORITES_STORE: TokensFavoritesStore = {
+  tabs: EMPTY_OBJECT,
+  gmFavoriteTokens: EMPTY_ARRAY,
+  indexFavoriteTokens: EMPTY_ARRAY,
+};
+
+type TokensFavoritesContextType = TokensFavoritesStore & {
   setTab: (key: TokenFavoriteKey, tab: TokenFavoritesTabOption) => void;
-  setFavoriteTokens: (key: TokenFavoriteKey, favoriteTokens: string[]) => void;
-  toggleFavoriteToken: (key: TokenFavoriteKey, address: string) => void;
+  toggleFavoriteToken: (type: TokenFavoritesType, address: string) => void;
 };
 
 export type TokenFavoritesState = {
@@ -45,9 +63,10 @@ export type TokenFavoritesState = {
 };
 
 const context = createContext<TokensFavoritesContextType>({
-  keys: {},
+  tabs: {},
+  gmFavoriteTokens: EMPTY_ARRAY,
+  indexFavoriteTokens: EMPTY_ARRAY,
   setTab: noop,
-  setFavoriteTokens: noop,
   toggleFavoriteToken: noop,
 });
 
@@ -62,10 +81,10 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
   // TODO: migrate to useSelector(selectChainId) when SyntheticsStateContext is refactored
   const { chainId } = useChainId();
 
-  const [settings, setSettings] = useLocalStorageByChainId<TokensFavoritesContextType["keys"]>(
+  const [settings, setSettings] = useLocalStorageByChainId<TokensFavoritesStore>(
     chainId,
     TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY,
-    {}
+    DEFAULT_TOKENS_FAVORITES_STORE
   );
 
   const setTab = useCallback(
@@ -73,24 +92,9 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
       setSettings((prev) => {
         return {
           ...prev,
-          [key]: {
-            ...prev[key],
-            tab,
-          },
-        };
-      });
-    },
-    [setSettings]
-  );
-
-  const setFavoriteTokens = useCallback(
-    (key: TokenFavoriteKey, favoriteTokens: string[]) => {
-      setSettings((prev) => {
-        return {
-          ...prev,
-          [key]: {
-            ...prev[key],
-            favoriteTokens,
+          tabs: {
+            ...prev.tabs,
+            [key]: tab,
           },
         };
       });
@@ -99,20 +103,24 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
   );
 
   const toggleFavoriteToken = useCallback(
-    (key: TokenFavoriteKey, address: string) => {
+    (type: TokenFavoritesType, address: string) => {
       setSettings((prev) => {
-        const favoriteTokens = prev[key]?.favoriteTokens || [];
+        const favoriteTokens = type === "gm" ? prev.gmFavoriteTokens : prev.indexFavoriteTokens;
         const updatedFavoriteTokens = favoriteTokens.includes(address)
           ? favoriteTokens.filter((token) => token !== address)
           : [...favoriteTokens, address];
 
-        return {
+        const newState = {
           ...prev,
-          [key]: {
-            ...prev[key],
-            favoriteTokens: updatedFavoriteTokens,
-          },
         };
+
+        if (type === "gm") {
+          newState.gmFavoriteTokens = updatedFavoriteTokens;
+        } else {
+          newState.indexFavoriteTokens = updatedFavoriteTokens;
+        }
+
+        return newState;
       });
     },
     [setSettings]
@@ -120,35 +128,37 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
 
   const stableObj = useMemo<TokensFavoritesContextType>(
     () => ({
-      keys: settings!,
+      tabs: settings!.tabs,
+      gmFavoriteTokens: settings!.gmFavoriteTokens,
+      indexFavoriteTokens: settings!.indexFavoriteTokens,
       setTab,
-      setFavoriteTokens,
       toggleFavoriteToken,
     }),
-    [settings, setTab, setFavoriteTokens, toggleFavoriteToken]
+    [settings, setTab, toggleFavoriteToken]
   );
 
   return <Provider value={stableObj}>{children}</Provider>;
 }
 
 export function useTokensFavorites(key: TokenFavoriteKey): TokenFavoritesState {
-  const { keys, setTab, toggleFavoriteToken } = useContext(context);
+  const { tabs, setTab, toggleFavoriteToken, indexFavoriteTokens, gmFavoriteTokens } = useContext(context);
+  const type = TAB_TYPE_MAP[key];
 
-  const tab = keys[key]?.tab || "all";
-  const favoriteTokens = keys[key]?.favoriteTokens || EMPTY_ARRAY;
+  const tab = tabs[key] || "all";
+  const favoriteTokens = type === "gm" ? gmFavoriteTokens : indexFavoriteTokens;
 
   const internalSetTab = useCallback(
     (tab: TokenFavoritesTabOption) => {
       setTab(key, tab);
     },
-    [setTab, key]
+    [key, setTab]
   );
 
   const internalToggleFavoriteToken = useCallback(
     (address: string) => {
-      toggleFavoriteToken(key, address);
+      toggleFavoriteToken(type, address);
     },
-    [toggleFavoriteToken, key]
+    [toggleFavoriteToken, type]
   );
 
   return {

@@ -4,9 +4,9 @@ import { TableTd, TableTr } from "components/Table/Table";
 
 export function LeaderboardTopPositionsStructure() {
   return (
-    <TableTr bordered={false} hoverable={false}>
+    <TableTr bordered={false} hoverable={false} className="h-47">
       <TableTd>
-        <Skeleton className="my-5" width={40} />
+        <Skeleton width={40} />
       </TableTd>
       <TableTd>
         <Skeleton width={250} />
