@@ -138,6 +138,10 @@ export function getSubaccountConfigKey(chainId: number | undefined, account: str
   return [chainId, account, "one-click-trading-config"];
 }
 
+export function getIsLargeAccountKey(account: string) {
+  return [account, "is-large-account"];
+}
+
 export function getSyntheticsReceiveMoneyTokenKey(
   chainId: number,
   marketName: string | undefined,

@@ -7,7 +7,7 @@ import {
   AVALANCHE_FUJI,
   getFallbackRpcUrl,
 } from "config/chains";
-import { getRpcProviderKey } from "config/localStorage";
+import { getRpcProviderKey, getIsLargeAccountKey } from "config/localStorage";
 import { isDebugMode } from "lib/localStorage";
 import orderBy from "lodash/orderBy";
 import minBy from "lodash/minBy";
@@ -19,10 +19,13 @@ import { HASHED_MARKET_CONFIG_KEYS } from "prebuilt";
 import { sleep } from "lib/sleep";
 import sample from "lodash/sample";
 import { useEffect, useState } from "react";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { zeroAddress } from "viem";
 
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { RpcTrackerRankingCounter } from "lib/metrics";
+import { useIsLargeAccount } from "domain/synthetics/accountStats/useIsLargeAccount";
 
 const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
@@ -69,6 +72,7 @@ type RpcTrackerState = {
 
 const trackerState = initTrackerState();
 let trackerTimeoutId: number | null = null;
+let isLargeAccount = false;
 
 trackRpcProviders({ warmUp: true });
 
@@ -79,7 +83,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
       const hasMultipleProviders = Object.keys(providers).length > 1;
       const isUnusedChain =
         !lastUsage || differenceInMilliseconds(Date.now(), lastUsage) > DISABLE_UNUSED_TRACKING_TIMEOUT;
-      const isChainTrackingEnabled = (warmUp || !isUnusedChain) && hasMultipleProviders;
+      const isChainTrackingEnabled = !isLargeAccount && (warmUp || !isUnusedChain) && hasMultipleProviders;
 
       if (!isChainTrackingEnabled) {
         return;
@@ -363,6 +367,10 @@ function initTrackerState() {
 }
 
 export function getBestRpcUrl(chainId: number) {
+  if (isLargeAccount) {
+    return getFallbackRpcUrl(chainId);
+  }
+
   if (!trackerState[chainId]) {
     if (RPC_PROVIDERS[chainId]?.length) {
       return sample(RPC_PROVIDERS[chainId]);
@@ -400,4 +408,27 @@ export function useBestRpcUrl(chainId: number) {
   }, [chainId]);
 
   return bestRpcUrl;
+}
+
+export function useIsLargeAccountTracker(account?: string) {
+  const isLargeCurrentAccount = useIsLargeAccount(account);
+  const [isLargeAccountStoredValue, setIsLargeAccountStoredValue] = useLocalStorageSerializeKey<boolean>(
+    getIsLargeAccountKey(account ?? zeroAddress),
+    false
+  );
+
+  useEffect(() => {
+    if (!account) {
+      isLargeAccount = false;
+    } else if (isLargeCurrentAccount !== undefined) {
+      setIsLargeAccountStoredValue(isLargeCurrentAccount);
+      isLargeAccount = isLargeCurrentAccount;
+    } else if (isLargeAccountStoredValue) {
+      isLargeAccount = true;
+    } else {
+      isLargeAccount = false;
+    }
+  }, [account, isLargeCurrentAccount, isLargeAccountStoredValue, setIsLargeAccountStoredValue]);
+
+  return isLargeAccount;
 }
