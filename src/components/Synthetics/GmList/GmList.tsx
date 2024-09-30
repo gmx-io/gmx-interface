@@ -275,47 +275,24 @@ function useFilterSortPools({
     () =>
       values(marketsInfo).map((market) => {
         let name = "";
+        let symbol = "";
         if (isGlvInfo(market)) {
-          const glvName = getGlvMarketName(chainId, market.glvTokenAddress);
+          symbol = market.glvToken.symbol;
           const displayName = getGlvDisplayName(market);
           const subtitle = getGlvMarketSubtitle(chainId, market.glvTokenAddress);
 
-          name = [glvName, displayName, subtitle].filter(Boolean).join(" ");
+          name = [displayName, subtitle].filter(Boolean).join(" ");
         } else {
-          name = getMarketIndexName({
-            indexToken: getToken(chainId, market.indexTokenAddress),
-            isSpotOnly: market.indexTokenAddress === zeroAddress,
-          });
+          symbol = market.indexToken.symbol;
+          name = market.indexToken.name;
         }
 
         return {
           id: getGlvOrMarketAddress(market),
-          glvOrMarketAddress: getGlvOrMarketAddress(market),
-          longTokenAddress: market.longTokenAddress,
-          shortTokenAddress: market.shortTokenAddress,
-          indexTokenAddress: isMarketInfo(market)
-            ? market.indexTokenAddress === zeroAddress
-              ? undefined
-              : market.indexTokenAddress
-            : undefined,
-          longTokenName: getToken(chainId, market.longTokenAddress).name,
-          shortTokenName: getToken(chainId, market.shortTokenAddress).name,
-          indexTokenName: isMarketInfo(market)
-            ? market.indexTokenAddress === zeroAddress
-              ? ""
-              : getToken(chainId, market.indexTokenAddress).name
-            : "",
           name,
+          symbol,
         };
       }),
-    {
-      name: {
-        weight: 2,
-      },
-      indexTokenName: {
-        weight: 2,
-      },
-    },
     [chainId, keys(marketsInfo).join(",")]
   );
 
@@ -325,7 +302,7 @@ function useFilterSortPools({
     }
 
     if (searchText.trim()) {
-      return fuse.search(searchText).map((result) => marketTokensData[result.item.glvOrMarketAddress]);
+      return fuse.search(searchText).map((result) => marketTokensData[result.item.id]);
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {

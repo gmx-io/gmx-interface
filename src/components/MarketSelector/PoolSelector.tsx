@@ -100,7 +100,7 @@ export function PoolSelector({
     () =>
       marketsOptions.map((item, index) => ({
         id: index,
-        name: isGlvInfo(item.marketInfo) ? "glv " + item.name : item.name,
+        name: isGlvInfo(item.marketInfo) ? getGlvDisplayName(item.marketInfo) : item.name,
         longTokenName: item.marketInfo.longToken.name,
         shortTokenName: item.marketInfo.shortToken.name,
       })),
