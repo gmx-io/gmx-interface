@@ -2,6 +2,7 @@ import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { PeriodAccountStats, useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
+import { useIsLargeAccountTracker } from "lib/rpc/bestRpcTracker";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -81,6 +82,7 @@ export type SyntheticsState = {
     lastWeekAccountStats?: PeriodAccountStats;
     lastMonthAccountStats?: PeriodAccountStats;
     accountStats?: AccountStats;
+    isLargeAccount?: boolean;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -187,6 +189,8 @@ export function SyntheticsStateContextProvider({
 
   const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
 
+  const isLargeAccount = useIsLargeAccountTracker(walletAccount);
+
   const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
     account,
     from: timePerios.week[0],
@@ -256,6 +260,7 @@ export function SyntheticsStateContextProvider({
         lastWeekAccountStats,
         lastMonthAccountStats,
         accountStats,
+        isLargeAccount,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -300,6 +305,7 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
+    isLargeAccount,
   ]);
 
   latestState = state;
