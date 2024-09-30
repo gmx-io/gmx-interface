@@ -22,7 +22,7 @@ import {
 } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
+import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -30,9 +30,10 @@ import { useFuse } from "lib/useFuse";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
-import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
@@ -153,7 +154,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 
-  const { tab, favoriteTokens, toggleFavoriteToken } = useGmTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-token-selector");
 
   const sortedTokensInfo = useFilterSortTokensInfo({
     chainId,
@@ -216,7 +217,7 @@ function MarketTokenSelectorInternal(props: Props) {
             onKeyDown={handleKeyDown}
             placeholder="Search Pool"
           />
-          <FavoriteGmTabs />
+          <FavoriteTabs favoritesKey="gm-token-selector" />
         </div>
       </SelectorBaseMobileHeaderContent>
       <div
@@ -234,7 +235,7 @@ function MarketTokenSelectorInternal(props: Props) {
                 onKeyDown={handleKeyDown}
                 placeholder="Search Pool"
               />
-              <FavoriteGmTabs />
+              <FavoriteTabs favoritesKey="gm-token-selector" />
             </div>
             <div className="divider" />
           </>
@@ -284,13 +285,15 @@ function MarketTokenSelectorInternal(props: Props) {
                 />
               ))}
             </tbody>
+            {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={6} className="text-gray-400">
+                  <Trans>No markets matched.</Trans>
+                </TableTd>
+              </TableTr>
+            )}
           </table>
         </div>
-        {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-          <div className="py-16 text-center text-gray-400">
-            <Trans>No markets matched.</Trans>
-          </div>
-        )}
       </div>
     </>
   );
@@ -314,7 +317,7 @@ function useFilterSortTokensInfo({
   chainId: number;
   sortedMarketsByIndexToken: TokenData[];
   searchKeyword: string;
-  tab: GmTokenFavoritesTabOption;
+  tab: TokenFavoritesTabOption;
   marketTokensData: TokensData | undefined;
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   favoriteTokens: string[];

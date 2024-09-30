@@ -253,6 +253,7 @@ function SelectorBaseMobile(props: Props) {
         className="SelectorBase-mobile-modal"
         headerContent={<div ref={headerContentRef} />}
         contentPadding={props.mobileModalContentPadding}
+        noDivider
       >
         <SelectorContextProvider close={toggleVisibility} mobileHeader={headerContent}>
           {props.children}

@@ -11,7 +11,7 @@ import { importImage } from "lib/legacy";
 import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 import { useFuse } from "lib/useFuse";
 
-import Pagination from "components/Pagination/Pagination";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -105,26 +105,25 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               currentData.length > 0 &&
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
+            {indexTokensStats.length > 0 && !currentData.length && (
+              <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
+                <TableTd colSpan={6} className="align-top text-gray-400">
+                  <Trans>No markets found.</Trans>
+                </TableTd>
+              </TableTr>
+            )}
+
             {indexTokensStats.length > 0 && currentData.length < DEFAULT_PAGE_SIZE && (
-              <MarketListSkeleton invisible count={DEFAULT_PAGE_SIZE - currentData.length} />
+              <MarketListSkeleton
+                invisible
+                count={currentData.length === 0 ? DEFAULT_PAGE_SIZE - 1 : DEFAULT_PAGE_SIZE - currentData.length}
+              />
             )}
             {!indexTokensStats.length && <MarketListSkeleton />}
           </tbody>
         </table>
       </TableScrollFadeContainer>
-      {indexTokensStats.length > 0 && !currentData.length && (
-        <div className="p-14 text-center text-gray-400">
-          <Trans>No markets found.</Trans>
-        </div>
-      )}
-      {pageCount > 1 && (
-        <>
-          <div className="h-1 bg-slate-700"></div>
-          <div className="py-10">
-            <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-          </div>
-        </>
-      )}
+      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
     </div>
   );
 }

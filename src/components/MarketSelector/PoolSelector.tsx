@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
@@ -13,10 +13,11 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
+import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { getByKey } from "lib/objects";
 import { useFuse } from "lib/useFuse";
 
-import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
@@ -39,12 +40,11 @@ export function PoolSelector({
   getMarketState,
   showAllPools = false,
   showIndexIcon = false,
-  favoriteTokens,
-  toggleFavoriteToken,
-  tab,
+  favoriteKey,
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites(favoriteKey);
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
@@ -174,7 +174,7 @@ export function PoolSelector({
               placeholder={t`Search Pool`}
               onKeyDown={_handleKeyDown}
             />
-            <FavoriteGmTabs />
+            <FavoriteTabs favoritesKey="gm-token-receive-pay-selector" />
           </div>
         }
       >
@@ -195,6 +195,11 @@ export function PoolSelector({
             );
           })}
         </div>
+        {filteredOptions.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No pools matched.</Trans>
+          </div>
+        )}
       </Modal>
 
       {marketInfo && (

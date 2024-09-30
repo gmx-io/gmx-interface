@@ -17,7 +17,7 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 
 import AddressView from "components/AddressView/AddressView";
-import Pagination from "components/Pagination/Pagination";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -43,6 +43,8 @@ function getWinnerRankClassname(rank: number | null, competition: CompetitionTyp
 
 type LeaderboardAccountField = keyof LeaderboardAccount;
 
+const PER_PAGE = 20;
+
 export function LeaderboardAccountsTable({
   accounts,
   activeCompetition,
@@ -51,7 +53,6 @@ export function LeaderboardAccountsTable({
   activeCompetition: CompetitionType | undefined;
 }) {
   const currentAccount = useLeaderboardCurrentAccount();
-  const perPage = 20;
   const { isLoading, data } = accounts;
   const [page, setPage] = useState(1);
   const { orderBy, direction, getSorterProps, setDirection, setOrderBy } = useSorterHandlers<LeaderboardAccountField>(
@@ -112,11 +113,11 @@ export function LeaderboardAccountsTable({
     return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
   }, [sorted, term]);
 
-  const indexFrom = (page - 1) * perPage;
+  const indexFrom = (page - 1) * PER_PAGE;
   const activeRank = activeCompetition === "pnlPercentage" ? ranks.pnlPercentage : ranks.pnl;
   const rowsData = useMemo(
     () =>
-      filteredStats.slice(indexFrom, indexFrom + perPage).map((leaderboardAccount, i) => ({
+      filteredStats.slice(indexFrom, indexFrom + PER_PAGE).map((leaderboardAccount, i) => ({
         account: leaderboardAccount,
         index: i,
         rank: activeRank.get(leaderboardAccount.account) ?? null,
@@ -134,10 +135,10 @@ export function LeaderboardAccountsTable({
       rank,
     };
   }, [activeRank, currentAccount, term]);
-  const pageCount = Math.ceil(filteredStats.length / perPage);
+  const pageCount = Math.ceil(filteredStats.length / PER_PAGE);
 
   const content = isLoading ? (
-    <TopAccountsSkeleton count={perPage} />
+    <TopAccountsSkeleton count={PER_PAGE} />
   ) : (
     <>
       {pinnedRowData && (
@@ -165,6 +166,7 @@ export function LeaderboardAccountsTable({
       ) : (
         <EmptyRow />
       )}
+      {rowsData.length < PER_PAGE && <TopAccountsSkeleton invisible count={PER_PAGE - rowsData.length} />}
     </>
   );
 
@@ -241,9 +243,7 @@ export function LeaderboardAccountsTable({
           <tbody>{content}</tbody>
         </table>
       </TableScrollFadeContainer>
-      <div className="TableBox__footer">
-        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} topMargin={false} />
-      </div>
+      <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
 }
@@ -395,8 +395,8 @@ const TableRow = memo(
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} bordered={false}>
-      <TableTd colSpan={7}>
+    <TableTr hoverable={false} bordered={false} className="h-47">
+      <TableTd colSpan={7} className="align-top text-gray-400">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>

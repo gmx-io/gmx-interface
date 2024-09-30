@@ -1,14 +1,18 @@
 import { useCallback } from "react";
 
-import { gmTokensFavoritesTabOptionLabels, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
+import {
+  TokenFavoriteKey,
+  tokensFavoritesTabOptionLabels,
+  useTokensFavorites,
+} from "domain/synthetics/tokens/useTokensFavorites";
 import { useLocalizedMap } from "lib/i18n";
 
 import Button from "components/Button/Button";
 
-export function FavoriteGmTabs() {
-  const { tab, setTab } = useGmTokensFavorites();
+export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey }) {
+  const { tab, setTab } = useTokensFavorites(favoritesKey);
 
-  const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
+  const localizedTabOptionLabels = useLocalizedMap(tokensFavoritesTabOptionLabels);
 
   const handleAll = useCallback(() => {
     setTab("all");

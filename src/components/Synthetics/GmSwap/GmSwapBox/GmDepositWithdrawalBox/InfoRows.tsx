@@ -18,7 +18,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { getGlvOrMarketAddress, GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
-import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { GmSwapFees } from "domain/synthetics/trade";
 
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
@@ -62,7 +61,6 @@ export function InfoRows({
   disablePoolSelector?: boolean;
 }) {
   const chainId = useSelector(selectChainId);
-  const gmTokenFavoritesContext = useGmTokensFavorites();
   const markets = values(useSelector(selectGlvAndMarketsInfoData));
 
   const onSelectMarket = useCallback(
@@ -104,7 +102,7 @@ export function InfoRows({
                 showBalances
                 disablePoolSelector={disablePoolSelector}
                 onSelectMarket={onSelectMarket}
-                {...gmTokenFavoritesContext}
+                favoriteKey="gm-pool-selector"
               />
             ) : (
               <PoolSelector
@@ -117,7 +115,7 @@ export function InfoRows({
                 isSideMenu
                 showBalances
                 onSelectMarket={onSelectMarketOrGlv}
-                {...gmTokenFavoritesContext}
+                favoriteKey="gm-pool-selector"
               />
             )
           }

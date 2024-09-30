@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
@@ -8,7 +8,7 @@ import { getNormalizedTokenSymbol } from "config/tokens";
 import { getByKey } from "lib/objects";
 import { useFuse } from "lib/useFuse";
 
-import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -22,6 +22,7 @@ import {
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
+import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 
 import Modal from "../Modal/Modal";
 import { PoolListItem } from "./PoolListItem";
@@ -48,14 +49,13 @@ export function GmPoolsSelectorForGlvMarket({
   getMarketState,
   showAllPools = false,
   showIndexIcon = false,
-  favoriteTokens,
   glvInfo,
-  toggleFavoriteToken,
-  tab,
   disablePoolSelector,
+  favoriteKey,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const { favoriteTokens, toggleFavoriteToken, tab } = useTokensFavorites(favoriteKey);
 
   const markets = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.glvTokenAddress);
 
@@ -115,13 +115,17 @@ export function GmPoolsSelectorForGlvMarket({
 
   const fuse = useFuse(
     () =>
-      marketsOptions.map((item, index) => ({
-        id: index,
-        name: item.name,
-        longTokenName: item.marketInfo.longToken.name,
-        shortTokenName: item.marketInfo.shortToken.name,
-      })),
-    marketsOptions?.map((item) => item.name)
+      marketsOptions.map((item, index) => {
+        const indexTokenName = (item.marketInfo as MarketInfo).indexToken.name;
+        const indexTokenSymbol = (item.marketInfo as MarketInfo).indexToken.symbol;
+
+        return {
+          id: index,
+          indexTokenName,
+          indexTokenSymbol,
+        };
+      }),
+    marketsOptions?.map((item) => (item.marketInfo as MarketInfo).marketTokenAddress)
   );
 
   const filteredOptions = useMemo(() => {
@@ -193,7 +197,7 @@ export function GmPoolsSelectorForGlvMarket({
               placeholder={t`Search Pool`}
               onKeyDown={handleKeyDown}
             />
-            <FavoriteGmTabs />
+            <FavoriteTabs favoritesKey="gm-pool-selector" />
           </div>
         }
       >
@@ -212,6 +216,11 @@ export function GmPoolsSelectorForGlvMarket({
             />
           ))}
         </div>
+        {filteredOptions.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No pools matched.</Trans>
+          </div>
+        )}
       </Modal>
 
       {marketInfo && (

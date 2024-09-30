@@ -15,7 +15,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
-import { useIndexTokensFavorites } from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { TradeType } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
@@ -24,9 +24,10 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useFuse } from "lib/useFuse";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
-import { FavoriteIndexTabs } from "components/FavoriteTabs/FavoriteIndexTabs";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { TableTd } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
@@ -106,7 +107,7 @@ type SortField = "longLiquidity" | "shortLiquidity" | "unspecified";
 
 function MarketsList(props: { options: Token[] | undefined }) {
   const { options } = props;
-  const { tab, favoriteTokens, toggleFavoriteToken } = useIndexTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("chart-token-selector");
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
   const isSmallMobile = useMedia("(max-width: 450px)");
@@ -188,7 +189,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
       <SelectorBaseMobileHeaderContent>
         <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
           <SearchInput className="w-full" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={handleKeyDown} />
-          {!isSwap && <FavoriteIndexTabs />}
+          {!isSwap && <FavoriteTabs favoritesKey="chart-token-selector" />}
         </div>
       </SelectorBaseMobileHeaderContent>
       <div
@@ -205,9 +206,8 @@ function MarketsList(props: { options: Token[] | undefined }) {
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
               />
-              <FavoriteIndexTabs />
+              <FavoriteTabs favoritesKey="chart-token-selector" />
             </div>
-            <div className="divider" />
           </>
         )}
 
@@ -254,13 +254,13 @@ function MarketsList(props: { options: Token[] | undefined }) {
                   onMarketSelect={handleMarketSelect}
                 />
               ))}
+              {options && options.length > 0 && !sortedTokens?.length && (
+                <TableTd colSpan={isSwap ? 1 : 3} className="text-gray-400">
+                  <Trans>No markets matched.</Trans>
+                </TableTd>
+              )}
             </tbody>
           </table>
-          {options && options.length > 0 && !sortedTokens?.length && (
-            <div className="py-15 text-center text-gray-400">
-              <Trans>No markets matched.</Trans>
-            </div>
-          )}
         </div>
       </div>
     </>

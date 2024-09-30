@@ -9,7 +9,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { TableTh, TableTheadTr } from "components/Table/Table";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { PnlSummaryPoint, usePnlSummaryData } from "domain/synthetics/accountStats";
@@ -92,10 +92,10 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
   const showDebugValues = useShowDebugValues();
 
   return (
-    <tr key={row.bucketLabel}>
-      <td className="py-13 pl-16 pr-5">{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</td>
-      <td className="px-5 py-13">{formatUsd(row.volume, { maxThreshold: null })}</td>
-      <td className="px-5 py-13">
+    <TableTr key={row.bucketLabel} hoverable={false} bordered={false}>
+      <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
+      <TableTd>{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
+      <TableTd>
         <TooltipWithPortal
           disableHandleStyle
           tooltipClassName="cursor-help *:cursor-auto"
@@ -133,8 +133,8 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
         >
           {formatUsd(row.pnlUsd)}
         </TooltipWithPortal>
-      </td>
-      <td className="px-5 py-13">
+      </TableTd>
+      <TableTd>
         <TooltipWithPortal
           disableHandleStyle
           tooltipClassName="cursor-help *:cursor-auto"
@@ -147,8 +147,8 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
         >
           {formatPercentage(row.pnlBps, { signed: true })}
         </TooltipWithPortal>
-      </td>
-      <td className="py-13 pl-5 pr-16 text-right">
+      </TableTd>
+      <TableTd>
         <TooltipWithPortal
           handle={`${row.wins} / ${row.losses}`}
           content={
@@ -164,7 +164,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
             </>
           }
         />
-      </td>
-    </tr>
+      </TableTd>
+    </TableTr>
   );
 }

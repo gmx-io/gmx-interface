@@ -75,7 +75,7 @@ export default function SearchInput({
       >
         <div
           className={cx(
-            "rounded-4 p-4 text-slate-500",
+            "rounded-4 p-4 text-gray-500",
             "group-hover:bg-[#50577e99] group-hover:text-slate-100 group-focus:bg-[#50577e99] group-focus:text-slate-100",
             "group-active:bg-[#50577eb3] group-active:text-gray-300"
           )}

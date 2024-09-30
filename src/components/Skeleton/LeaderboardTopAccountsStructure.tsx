@@ -6,25 +6,28 @@ export function LeaderboardTopAccountsStructure() {
   return (
     <TableTr bordered={false} hoverable={false}>
       <TableTd>
-        <Skeleton className="my-5" width={40} />
+        <Skeleton width={40} inline />
       </TableTd>
       <TableTd>
-        <Skeleton width={250} />
+        <div className="flex items-center gap-6 py-[1.5px]">
+          <Skeleton circle width={20} height={20} inline className="!block" />
+          <Skeleton width={120} inline className="!block" />
+        </div>
       </TableTd>
       <TableTd>
-        <Skeleton />
+        <Skeleton inline />
       </TableTd>
       <TableTd>
-        <Skeleton />
+        <Skeleton inline />
       </TableTd>
       <TableTd>
-        <Skeleton />
+        <Skeleton inline />
       </TableTd>
       <TableTd>
-        <Skeleton width={100} />
+        <Skeleton width={100} inline />
       </TableTd>
       <TableTd>
-        <Skeleton width={110} />
+        <Skeleton width={110} inline />
       </TableTd>
     </TableTr>
   );

@@ -22,7 +22,7 @@ import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 
 import AddressView from "components/AddressView/AddressView";
-import Pagination from "components/Pagination/Pagination";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -42,8 +42,9 @@ function getWinnerRankClassname(rank: number | null) {
 
 type LeaderboardPositionField = keyof LeaderboardPosition;
 
+const PER_PAGE = 20;
+
 export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
-  const perPage = 20;
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>("qualifyingPnl", "desc");
@@ -79,10 +80,10 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
     return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
   }, [sorted, term]);
 
-  const indexFrom = (page - 1) * perPage;
+  const indexFrom = (page - 1) * PER_PAGE;
   const rowsData = useMemo(
     () =>
-      filteredStats.slice(indexFrom, indexFrom + perPage).map((position, i) => ({
+      filteredStats.slice(indexFrom, indexFrom + PER_PAGE).map((position, i) => ({
         position,
         index: i,
         rank: position.rank,
@@ -90,10 +91,10 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
     [filteredStats, indexFrom]
   );
 
-  const pageCount = Math.ceil(filteredStats.length / perPage);
+  const pageCount = Math.ceil(filteredStats.length / PER_PAGE);
 
   const content = isLoading ? (
-    <TopPositionsSkeleton count={perPage} />
+    <TopPositionsSkeleton count={PER_PAGE} />
   ) : (
     <>
       {rowsData.length ? (
@@ -103,6 +104,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
       ) : (
         <EmptyRow />
       )}
+      {rowsData.length < PER_PAGE && <TopPositionsSkeleton invisible count={PER_PAGE - rowsData.length} />}
     </>
   );
 
@@ -148,9 +150,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
           <tbody>{content}</tbody>
         </table>
       </TableScrollFadeContainer>
-      <div className="TableBox__footer">
-        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} topMargin={false} />
-      </div>
+      <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
 }
@@ -409,8 +409,8 @@ const TableCell = memo(({ children, className }: { children: ReactNode; classNam
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} bordered={false}>
-      <TableTd colSpan={7}>
+    <TableTr hoverable={false} bordered={false} className="h-47">
+      <TableTd colSpan={7} className="align-top text-gray-400">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>

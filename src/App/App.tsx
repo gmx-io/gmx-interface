@@ -24,8 +24,7 @@ import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountC
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { PendingTransaction } from "domain/legacy";
-import { GmTokensFavoritesContextProvider } from "domain/synthetics/tokens/useGmTokensFavorites";
-import { IndexTokensFavoritesContextProvider } from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { TokensFavoritesContextProvider } from "domain/synthetics/tokens/useTokensFavorites";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
@@ -115,8 +114,7 @@ function App() {
   }, []);
 
   let app = <AppRoutes />;
-  app = <IndexTokensFavoritesContextProvider>{app}</IndexTokensFavoritesContextProvider>;
-  app = <GmTokensFavoritesContextProvider>{app}</GmTokensFavoritesContextProvider>;
+  app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;

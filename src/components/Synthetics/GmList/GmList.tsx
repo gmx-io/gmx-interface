@@ -36,7 +36,7 @@ import {
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
+import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useFuse } from "lib/useFuse";
@@ -46,7 +46,7 @@ import { sortGmTokensDefault } from "./sortGmTokensDefault";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
-import { FavoriteGmTabs } from "components/FavoriteTabs/FavoriteGmTabs";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
@@ -97,7 +97,7 @@ export function GmList({
     () => new Set(shiftAvailableMarkets.map((m) => getGlvOrMarketAddress(m))),
     [shiftAvailableMarkets]
   );
-  const { tab, favoriteTokens, toggleFavoriteToken } = useGmTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");
 
   const isLoading = !marketsInfo || !marketTokensData || glvsLoading;
 
@@ -144,7 +144,7 @@ export function GmList({
           />
         </div>
         <div className="pr-16">
-          <FavoriteGmTabs />
+          <FavoriteTabs favoritesKey="gm-list" />
         </div>
       </div>
       <TableScrollFadeContainer>
@@ -220,17 +220,20 @@ export function GmList({
                 />
               ))}
             {!currentData.length && !isLoading && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={7}>
-                  <div className="text-center text-gray-400">
+              <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
+                <TableTd colSpan={7} className="align-top">
+                  <div className="text-gray-400">
                     <Trans>No GM pools found.</Trans>
                   </div>
                 </TableTd>
               </TableTr>
             )}
 
-            {!isLoading && currentData.length > 0 && currentData.length < DEFAULT_PAGE_SIZE && (
-              <GMListSkeleton invisible count={DEFAULT_PAGE_SIZE - currentData.length} />
+            {!isLoading && currentData.length < DEFAULT_PAGE_SIZE && (
+              <GMListSkeleton
+                invisible
+                count={currentData.length === 0 ? DEFAULT_PAGE_SIZE - 1 : DEFAULT_PAGE_SIZE - currentData.length}
+              />
             )}
             {isLoading && <GMListSkeleton />}
           </tbody>
@@ -263,37 +266,48 @@ function useFilterSortPools({
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvTokensApyData: MarketTokensAPRData | undefined;
   searchText: string;
-  tab: GmTokenFavoritesTabOption;
+  tab: TokenFavoritesTabOption;
   favoriteTokens: string[];
 }) {
   const chainId = useSelector(selectChainId);
 
   const fuse = useFuse(
     () =>
-      values(marketsInfo).map((market) => ({
-        id: getGlvOrMarketAddress(market),
-        glvOrMarketAddress: getGlvOrMarketAddress(market),
-        longTokenAddress: market.longTokenAddress,
-        shortTokenAddress: market.shortTokenAddress,
-        indexTokenAddress: isMarketInfo(market)
-          ? market.indexTokenAddress === zeroAddress
-            ? undefined
-            : market.indexTokenAddress
-          : undefined,
-        longTokenName: getToken(chainId, market.longTokenAddress).name,
-        shortTokenName: getToken(chainId, market.shortTokenAddress).name,
-        indexTokenName: isMarketInfo(market)
-          ? market.indexTokenAddress === zeroAddress
-            ? ""
-            : getToken(chainId, market.indexTokenAddress).name
-          : undefined,
-        name: isGlvInfo(market)
-          ? getGlvMarketSubtitle(chainId, market.glvTokenAddress) || getGlvMarketName(chainId, market.glvTokenAddress)
-          : getMarketIndexName({
-              indexToken: getToken(chainId, market.indexTokenAddress),
-              isSpotOnly: market.indexTokenAddress === zeroAddress,
-            }),
-      })),
+      values(marketsInfo).map((market) => {
+        let name = "";
+        if (isGlvInfo(market)) {
+          const glvName = getGlvMarketName(chainId, market.glvTokenAddress);
+          const displayName = getGlvDisplayName(market);
+          const subtitle = getGlvMarketSubtitle(chainId, market.glvTokenAddress);
+
+          name = [glvName, displayName, subtitle].filter(Boolean).join(" ");
+        } else {
+          name = getMarketIndexName({
+            indexToken: getToken(chainId, market.indexTokenAddress),
+            isSpotOnly: market.indexTokenAddress === zeroAddress,
+          });
+        }
+
+        return {
+          id: getGlvOrMarketAddress(market),
+          glvOrMarketAddress: getGlvOrMarketAddress(market),
+          longTokenAddress: market.longTokenAddress,
+          shortTokenAddress: market.shortTokenAddress,
+          indexTokenAddress: isMarketInfo(market)
+            ? market.indexTokenAddress === zeroAddress
+              ? undefined
+              : market.indexTokenAddress
+            : undefined,
+          longTokenName: getToken(chainId, market.longTokenAddress).name,
+          shortTokenName: getToken(chainId, market.shortTokenAddress).name,
+          indexTokenName: isMarketInfo(market)
+            ? market.indexTokenAddress === zeroAddress
+              ? ""
+              : getToken(chainId, market.indexTokenAddress).name
+            : "",
+          name,
+        };
+      }),
     {
       name: {
         weight: 2,

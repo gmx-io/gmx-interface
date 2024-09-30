@@ -1,11 +1,11 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
-import { useIndexTokensFavorites } from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -13,7 +13,7 @@ import { getByKey } from "lib/objects";
 import { useFuse } from "lib/useFuse";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
-import { FavoriteIndexTabs } from "components/FavoriteTabs/FavoriteIndexTabs";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 
 import Modal from "../Modal/Modal";
@@ -67,7 +67,7 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab, favoriteTokens, toggleFavoriteToken } = useIndexTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("market-selector");
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -167,7 +167,7 @@ export function MarketSelector({
               placeholder={t`Search Market`}
               onKeyDown={_handleKeyDown}
             />
-            <FavoriteIndexTabs />
+            <FavoriteTabs favoritesKey="market-selector" />
           </div>
         }
       >
@@ -185,6 +185,11 @@ export function MarketSelector({
             />
           ))}
         </div>
+        {filteredOptions.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No markets matched.</Trans>
+          </div>
+        )}
       </Modal>
       {selectedMarketLabel ? (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">

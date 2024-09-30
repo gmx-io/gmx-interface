@@ -1,8 +1,10 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
 
+import { getMarketUiConfig } from "config/markets";
 import { getToken } from "config/tokens";
 import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -102,7 +104,17 @@ export default function TokenSelector(props: Props) {
   }, [isModalVisible]);
 
   const fuse = useFuse(
-    () => visibleTokens.map((token, index) => ({ id: index, name: token.name, symbol: token.symbol })),
+    () =>
+      visibleTokens.map((token, index) => {
+        let name = token.name;
+        if (token.isMarketToken) {
+          const indexTokenAdress = getMarketUiConfig(props.chainId, token.address)?.indexTokenAddress;
+          const indexToken = getToken(props.chainId, indexTokenAdress);
+          name = indexToken.name ? `GM ${indexToken.name}` : name;
+        }
+
+        return { id: index, name, symbol: token.symbol };
+      }),
     visibleTokens.map((item) => item.address)
   );
 
@@ -282,6 +294,11 @@ export default function TokenSelector(props: Props) {
             );
           })}
         </div>
+        {sortedFilteredTokens.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No tokens matched.</Trans>
+          </div>
+        )}
       </Modal>
       {selectedTokenLabel ? (
         <div data-qa={qa} className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>

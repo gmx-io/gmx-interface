@@ -160,7 +160,7 @@ export function OrderList({
   return (
     <div ref={ref}>
       {isContainerSmall && orders.length === 0 && (
-        <div className="rounded-4 bg-slate-800 p-14">{isLoading ? t`Loading...` : t`No open orders`}</div>
+        <div className="rounded-4 bg-slate-800 p-14 text-gray-400">{isLoading ? t`Loading...` : t`No open orders`}</div>
       )}
 
       {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (
@@ -253,7 +253,7 @@ export function OrderList({
           <tbody>
             {orders.length === 0 && (
               <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={7} className="text-gray-300">
+                <TableTd colSpan={7} className="text-gray-400">
                   {isLoading ? t`Loading...` : t`No open orders`}
                 </TableTd>
               </TableTr>

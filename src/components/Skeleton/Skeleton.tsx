@@ -51,11 +51,11 @@ export function GMListSkeleton(props: SkeletonProps<typeof GMListSkeletonStructu
   return <TableListSkeleton {...props} Structure={GMListSkeletonStructure} />;
 }
 
-export function TopAccountsSkeleton(props) {
+export function TopAccountsSkeleton(props: SkeletonProps<typeof LeaderboardTopAccountsStructure>) {
   return <TableListSkeleton {...props} Structure={LeaderboardTopAccountsStructure} />;
 }
 
-export function TopPositionsSkeleton(props) {
+export function TopPositionsSkeleton(props: SkeletonProps<typeof LeaderboardTopPositionsStructure>) {
   return <TableListSkeleton {...props} Structure={LeaderboardTopPositionsStructure} />;
 }
 

@@ -398,6 +398,11 @@ msgstr "You can get {0} better open cost {zeroPriceImpactMessage} in the {1} mar
 msgid "Swap {0} to {1} on 1inch"
 msgstr "Swap {0} to {1} on 1inch"
 
+#: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
+#: src/components/MarketSelector/PoolSelector.tsx
+msgid "No pools matched."
+msgstr "No pools matched."
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1250,6 +1255,10 @@ msgstr "Insufficient Available Liquidity to swap to {0}:"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Created At"
 msgstr "Created At"
+
+#: src/components/TokenSelector/TokenSelector.tsx
+msgid "No tokens matched."
+msgstr "No tokens matched."
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Withdraw {0} USD from {1}{longOrShortText}"
@@ -3111,10 +3120,8 @@ msgstr "Order cannot be executed as the remaining position would be smaller than
 msgid "Claiming..."
 msgstr "Claiming..."
 
-#. GM market token selector all markets filter
-#. Chart token selector all markets filter
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+#. Filter option for tokens favorites
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
 msgid "All"
 msgstr "All"
 
@@ -4193,6 +4200,7 @@ msgid "This competition has ended."
 msgstr "This competition has ended."
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts Net Rate / 1h"
 msgstr "Shorts Net Rate / 1h"
 
@@ -4397,8 +4405,7 @@ msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to 
 msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
 msgid "Favorites"
 msgstr "Favorites"
 
@@ -5201,6 +5208,7 @@ msgstr "Current {0} shorts"
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "To complete the transfer, you must switch your connected account to {receiver}."
 
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 msgid "Longs Net Rate / 1h"
 msgstr "Longs Net Rate / 1h"
@@ -7048,6 +7056,7 @@ msgstr "Referral Terms"
 msgid "Enter unique coins"
 msgstr "Enter unique coins"
 
+#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."

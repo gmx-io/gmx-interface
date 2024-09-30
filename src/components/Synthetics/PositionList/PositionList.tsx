@@ -49,7 +49,9 @@ export function PositionList(p: Props) {
     <div>
       {isMobile && (
         <>
-          {positions.length === 0 && <div className="App-card">{isLoading ? t`Loading...` : t`No open positions`}</div>}
+          {positions.length === 0 && (
+            <div className="App-card text-gray-400">{isLoading ? t`Loading...` : t`No open positions`}</div>
+          )}
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
             {!isLoading &&
               positions.map((position) => (
@@ -108,7 +110,7 @@ export function PositionList(p: Props) {
             {positions.length === 0 && (
               <TableTr hoverable={false} bordered={false}>
                 <TableTd colSpan={15}>
-                  <div className="text-gray-300">{isLoading ? t`Loading...` : t`No open positions`}</div>
+                  <div className="text-gray-400">{isLoading ? t`Loading...` : t`No open positions`}</div>
                 </TableTd>
               </TableTr>
             )}

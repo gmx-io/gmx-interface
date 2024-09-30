@@ -56,7 +56,7 @@ export function useFuse<T extends { id: string | number }>(collectionGetter: () 
 
   const searcher = new Fuse<T>(collection, {
     keys,
-    threshold: 0.5,
+    threshold: 0.4,
   });
 
   cache.current = searcher;

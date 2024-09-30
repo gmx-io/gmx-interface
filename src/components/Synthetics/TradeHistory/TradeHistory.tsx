@@ -199,14 +199,14 @@ export function TradeHistory(p: Props) {
               )}
               {isEmpty && hasFilters && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd className="text-gray-300">
+                  <TableTd className="text-gray-400" colSpan={5}>
                     <Trans>No trades match the selected filters</Trans>
                   </TableTd>
                 </TableTr>
               )}
               {isEmpty && !hasFilters && !isLoading && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd className="text-gray-300" colSpan={5}>
+                  <TableTd className="text-gray-400" colSpan={5}>
                     <Trans>No trades yet</Trans>
                   </TableTd>
                 </TableTr>
