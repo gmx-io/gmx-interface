@@ -1,18 +1,16 @@
-import cryptoJs from "crypto-js";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
-import { KeyedMutator, stableHash } from "swr/_internal";
+import cryptoJs from "crypto-js";
+import { stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
-import { ErrorEvent } from "lib/metrics";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { serializeMulticallErrors } from "./utils";
-
-const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { ErrorEvent } from "lib/metrics";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -51,8 +49,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
 
-  const hashedFullKey = stableHash(swrFullKey);
-
   const { data, mutate, error } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
@@ -88,7 +84,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         let priority: "urgent" | "background" = "urgent";
 
-        const hasData = defaultConfig.cache.get(hashedFullKey)?.isLoading === false;
+        const hasData = defaultConfig.cache.get(stableHash(swrFullKey))?.isLoading === false;
 
         let isInterval = false;
         if (typeof params.refreshInterval === "number") {
@@ -101,10 +97,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           }
         }
 
-        if (mutateFlagsRef.current[hashedFullKey]) {
-          priority = "urgent";
-          delete mutateFlagsRef.current[hashedFullKey];
-        } else if (hasData && isInterval) {
+        if (hasData && isInterval) {
           priority = "background";
         }
 
@@ -170,17 +163,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     },
   });
 
-  const handleMutate: KeyedMutator<TResult | undefined> = useCallback(
-    (...args) => {
-      mutateFlagsRef.current[hashedFullKey] = true;
-      return mutate(...args);
-    },
-    [mutate, hashedFullKey]
-  );
-
   return {
     data,
-    mutate: handleMutate,
+    mutate,
     isLoading: Boolean(swrFullKey) && !data,
     error: error as Error | undefined,
   };
