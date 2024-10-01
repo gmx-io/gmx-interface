@@ -1,30 +1,32 @@
-import Token from "abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
-import { TokensAllowanceData } from "./types";
+import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
+import type { TokensAllowanceData } from "./types";
+
+import Token from "abis/Token.json";
 
 type TokenAllowanceResult = {
   tokensAllowanceData?: TokensAllowanceData;
+  refetchTokensAllowanceData: () => void;
 };
 
 const defaultValue = {};
 
 export function useTokensAllowanceData(
   chainId: number,
-  p: { spenderAddress?: string; tokenAddresses: string[]; skip?: boolean }
+  { spenderAddress, tokenAddresses, skip }: { spenderAddress?: string; tokenAddresses: string[]; skip?: boolean }
 ): TokenAllowanceResult {
-  const { spenderAddress, tokenAddresses } = p;
   const { account } = useWallet();
 
   const isNativeToken = tokenAddresses.length === 1 && tokenAddresses[0] === NATIVE_TOKEN_ADDRESS;
 
-  const { data } = useMulticall(chainId, "useTokenAllowance", {
+  const { data, mutate } = useMulticall(chainId, "useTokenAllowance", {
     key:
-      !p.skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
+      !skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
         ? [account, spenderAddress, tokenAddresses.join("-")]
         : null,
-
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     request: () =>
       tokenAddresses
         .filter((address) => address !== NATIVE_TOKEN_ADDRESS)
@@ -53,5 +55,6 @@ export function useTokensAllowanceData(
 
   return {
     tokensAllowanceData: isNativeToken ? defaultValue : data,
+    refetchTokensAllowanceData: mutate,
   };
 }

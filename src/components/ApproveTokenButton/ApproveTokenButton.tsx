@@ -2,11 +2,13 @@ import { Trans } from "@lingui/macro";
 import { getWrappedToken } from "config/tokens";
 import { approveTokens } from "domain/tokens";
 import { isAddressZero } from "lib/legacy";
+import noop from "lodash/noop";
 import { useState } from "react";
 import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
 
-import "./ApproveTokenButton.scss";
 import useWallet from "lib/wallets/useWallet";
+
+import "./ApproveTokenButton.scss";
 
 type Props = {
   spenderAddress: string;
@@ -15,6 +17,7 @@ type Props = {
   isApproved?: boolean;
   approveAmount?: bigint;
   customLabel?: string;
+  onApproveSubmitted?: () => void;
 };
 
 export function ApproveTokenButton(p: Props) {
@@ -34,11 +37,14 @@ export function ApproveTokenButton(p: Props) {
       tokenAddress: tokenAddress,
       spender: p.spenderAddress,
       pendingTxns: [],
-      setPendingTxns: () => null,
+      setPendingTxns: noop,
       infoTokens: {},
       chainId,
       approveAmount: p.approveAmount,
-      onApproveSubmitted: () => setIsApproveSubmitted(true),
+      onApproveSubmitted: () => {
+        setIsApproveSubmitted(true);
+        p.onApproveSubmitted?.();
+      },
     });
   }
 
