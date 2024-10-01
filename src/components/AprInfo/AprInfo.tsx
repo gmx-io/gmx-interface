@@ -88,22 +88,17 @@ export function AprInfo({
             </Trans>
           </div>
         )}
-        {isIncentiveActive &&
-          (isTbtcIncentive ? (
-            <div>
-              <Trans>
-                The Bonus APR will be airdropped as {airdropTokenTitle} and T tokens.{" "}
-                <ExternalLink href={TBTC_INFORMATION_URL}>Read more</ExternalLink>.
-              </Trans>
-            </div>
-          ) : (
-            <div>
-              <Trans>
-                The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
-                <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
-              </Trans>
-            </div>
-          ))}
+        {isIncentiveActive && (
+          <div>
+            <Trans>
+              The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
+              <ExternalLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
+                Read more
+              </ExternalLink>
+              .
+            </Trans>
+          </div>
+        )}
         {isEthenaSatsIncentive && (
           <div>
             <Trans>
