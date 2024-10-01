@@ -16,7 +16,6 @@ import { differenceInMilliseconds } from "date-fns";
 import { getMulticallContract, getDataStoreContract } from "config/contracts";
 import { getContract } from "config/contracts";
 import { HASHED_MARKET_CONFIG_KEYS } from "prebuilt";
-import { getIsFlagEnabled } from "config/ab";
 import { sleep } from "lib/sleep";
 import sample from "lodash/sample";
 import { useEffect, useState } from "react";
@@ -363,10 +362,6 @@ function initTrackerState() {
 }
 
 export function getBestRpcUrl(chainId: number) {
-  if (!getIsFlagEnabled("testSmartRpcSwitching")) {
-    return RPC_PROVIDERS[chainId][0] as string;
-  }
-
   if (!trackerState[chainId]) {
     if (RPC_PROVIDERS[chainId]?.length) {
       return sample(RPC_PROVIDERS[chainId]);
