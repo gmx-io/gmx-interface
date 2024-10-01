@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { getRequestId, LoadingSuccessEvent, MeasureMetricType, metrics } from ".";
 
-const MEASUREMENTS: {
+const measurementByMetricType: {
   [key: string]: { requestId: string; inited: boolean; done?: boolean };
 } = {};
 
@@ -19,13 +19,13 @@ export function useMeasureComponentMountTime({
       if (
         typeof performance === "undefined" ||
         (onlyForLocation && onlyForLocation !== INITIAL_LOCATION) ||
-        MEASUREMENTS[metricType]?.done
+        measurementByMetricType[metricType]?.done
       ) {
         return;
       }
 
-      if (!MEASUREMENTS[metricType]) {
-        MEASUREMENTS[metricType] = {
+      if (!measurementByMetricType[metricType]) {
+        measurementByMetricType[metricType] = {
           requestId: getRequestId(),
           inited: true,
         };
@@ -36,11 +36,11 @@ export function useMeasureComponentMountTime({
         isError: false,
         time: performance.now(),
         data: {
-          requestId: MEASUREMENTS[metricType].requestId,
+          requestId: measurementByMetricType[metricType].requestId,
         },
       });
 
-      MEASUREMENTS[metricType].done = true;
+      measurementByMetricType[metricType].done = true;
     },
     [metricType, onlyForLocation]
   );

@@ -35,8 +35,8 @@ import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
 
 const DEFAULT_PERIOD = "5m";
-let METRICS_REQUEST_ID: string | undefined = undefined;
-let METRICS_IS_FIRST_TIME_LOAD = true;
+let metricsRequestId: string | undefined = undefined;
+let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
   const chartToken = useSelector(selectChartToken);
@@ -150,16 +150,16 @@ export function TVChart() {
     metrics.startTimer("candlesLoad");
 
     dataProvider.setOnBarsLoadStarted(() => {
-      METRICS_IS_FIRST_TIME_LOAD = !METRICS_REQUEST_ID;
-      METRICS_REQUEST_ID = getRequestId();
+      metricsIsFirstLoadTime = !metricsRequestId;
+      metricsRequestId = getRequestId();
 
       metrics.pushEvent<LoadingStartEvent>({
         event: "candlesLoad.started",
         isError: false,
         time: metrics.getTime("candlesLoad", true),
         data: {
-          requestId: METRICS_REQUEST_ID,
-          isFirstTimeLoad: METRICS_IS_FIRST_TIME_LOAD,
+          requestId: metricsRequestId,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
         },
       });
 
@@ -172,8 +172,8 @@ export function TVChart() {
         isError: false,
         time: metrics.getTime("candlesLoad", true),
         data: {
-          requestId: METRICS_REQUEST_ID!,
-          isFirstTimeLoad: METRICS_IS_FIRST_TIME_LOAD,
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
         },
       });
 
@@ -188,8 +188,8 @@ export function TVChart() {
         isError: false,
         time: metrics.getTime("candlesLoad", true),
         data: {
-          requestId: METRICS_REQUEST_ID!,
-          isFirstTimeLoad: METRICS_IS_FIRST_TIME_LOAD,
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
           ...metricData,
         },
       });

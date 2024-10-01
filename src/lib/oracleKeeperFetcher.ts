@@ -107,13 +107,22 @@ export type TimingPayload = {
   customFields?: { [key: string]: any };
 };
 
-export type BatchReportEntry = {
-  type: "event" | "counter" | "timing";
-  payload: UiReportPayload | CounterPayload | TimingPayload;
-};
+export type BatchReportItem =
+  | {
+      type: "event";
+      payload: UiReportPayload;
+    }
+  | {
+      type: "counter";
+      payload: CounterPayload;
+    }
+  | {
+      type: "timing";
+      payload: TimingPayload;
+    };
 
 export type BatchReportBody = {
-  items: BatchReportEntry[];
+  items: BatchReportItem[];
 };
 
 export interface OracleFetcher {
@@ -240,9 +249,9 @@ export class OracleKeeperFetcher implements OracleFetcher {
       console.log("sendBatchMetrics", body);
     }
 
-    // if (isLocal()) {
-    //   return Promise.resolve(new Response());
-    // }
+    if (isLocal()) {
+      return Promise.resolve(new Response());
+    }
 
     return fetch(buildUrl(this.url!, "/report/ui/batch_report"), {
       method: "POST",

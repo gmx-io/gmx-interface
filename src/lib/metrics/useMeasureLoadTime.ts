@@ -11,7 +11,7 @@ import {
 import { getRequestId } from "lib/metrics/utils";
 import { useEffect } from "react";
 
-const MEASUREMENTS: {
+const measurementByMetricType: {
   [key: string]: {
     requestId: string;
     done?: boolean;
@@ -35,8 +35,8 @@ export function useMeasureLoadTime({
   timeout?: number;
   skip?: boolean;
 }) {
-  MEASUREMENTS[metricType] = MEASUREMENTS[metricType] || {};
-  const measure = MEASUREMENTS[metricType];
+  measurementByMetricType[metricType] = measurementByMetricType[metricType] || {};
+  const measure = measurementByMetricType[metricType];
 
   useEffect(
     function onLocationChangeEff() {

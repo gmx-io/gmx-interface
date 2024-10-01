@@ -1,7 +1,7 @@
 import { isDevelopment } from "config/env";
 import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
 import {
-  BatchReportEntry,
+  BatchReportItem,
   CounterPayload,
   OracleFetcher,
   TimingPayload,
@@ -43,7 +43,7 @@ export class Metrics {
   fetcher?: OracleFetcher;
   debug = false;
   globalMetricData: GlobalMetricData = {} as GlobalMetricData;
-  queue: BatchReportEntry[] = [];
+  queue: BatchReportItem[] = [];
   wallets?: WalletNames;
   eventIndex = 0;
   isProcessing = false;
@@ -177,21 +177,15 @@ export class Metrics {
 
     // Avoid infinite queue growth
     if (this.queue.length > MAX_QUEUE_LENGTH) {
-      this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
+      this.queue = this.queue.slice(MAX_QUEUE_LENGTH - 1);
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: Slice queue");
       }
     }
 
-    let items;
-    if (this.queue.length > MAX_BATCH_LENGTH) {
-      items = this.queue.slice(0, MAX_BATCH_LENGTH);
-      this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
-    } else {
-      items = this.queue;
-      this.queue = [];
-    }
+    const items = this.queue.slice(0, MAX_BATCH_LENGTH);
+    this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
 
     if (this.debug) {
       // eslint-disable-next-line no-console
@@ -203,12 +197,6 @@ export class Metrics {
       .then(async (res) => {
         if (res.status === 400) {
           const errorData = await res.json();
-
-          if (typeof errorData.index === "number") {
-            this.queue.push(...items.slice(errorData.index));
-          } else {
-            this.queue.push(...items);
-          }
 
           throw new Error(JSON.stringify(errorData));
         }
