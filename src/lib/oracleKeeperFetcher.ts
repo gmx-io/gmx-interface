@@ -153,7 +153,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
     }
   ) => void;
   public readonly url: string;
-  public readonly url2 = "http://localhost:3004";
   private readonly forceIncentivesActive: boolean;
 
   constructor(p: {
@@ -264,7 +263,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       return Promise.resolve(new Response());
     }
 
-    return fetch(buildUrl(this.url2!, "/report/ui/event"), {
+    return fetch(buildUrl(this.url!, "/report/ui/event"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
