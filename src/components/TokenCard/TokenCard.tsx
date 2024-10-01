@@ -289,7 +289,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </BuyLink>
             {isGlvEnabled(AVALANCHE) && (
               <BuyLink to="/pools?pickBestGlv=1" className="default-btn" network={AVALANCHE}>
-                <Trans>View on Arbitrum</Trans>
+                <Trans>View on Avalanche</Trans>
               </BuyLink>
             )}
           </div>

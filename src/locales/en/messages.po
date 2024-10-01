@@ -3401,6 +3401,7 @@ msgstr "Buy {nativeTokenSymbol}"
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Avalanche"
 msgstr "View on Avalanche"
 
@@ -6710,7 +6711,6 @@ msgstr "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgid "Sell GM"
 msgstr "Sell GM"
 
-#: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
