@@ -299,11 +299,6 @@ msgstr "NFT 주소 입력"
 msgid "AVAILABLE"
 msgstr "사용가능"
 
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
-#~ msgid "GM"
-#~ msgstr ""
-
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm Settle"
 msgstr ""
@@ -618,10 +613,6 @@ msgstr "토큰 찾기"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-#~ msgid "<0>{0}: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -1101,10 +1092,6 @@ msgstr ""
 msgid "Generating and activating Subaccount"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
-#~ msgstr ""
-
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
 msgstr "풀 선택"
@@ -1276,10 +1263,6 @@ msgstr "게정"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Keep leverage at {0}"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -1949,10 +1932,6 @@ msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 msgstr "포지션은 참조 가격 {0}에서 열릴 것이며, 가격 영향을 고려하지 않고 최대 슬리피지는 -{1}%입니다.<0/><1/>슬리피지는 설정에서 구성할 수 있으며, 지갑 연결 후 페이지 우측 상단의 주소를 클릭하여 찾을 수 있습니다.<2/><3/><4>더 읽기</4>."
 
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-#~ msgid "Error submitting feedback"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
 msgstr "지정가 주문 생성 실패."
@@ -2307,10 +2286,6 @@ msgstr "1시간 당 순 수수료율"
 msgid "Vest with GMX on Avalanche"
 msgstr "Avalanche에서 GMX로 베스팅하기"
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "GLV Vaults include multiple GM Tokens and are automatically rebalanced."
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "{0} {longOrShortText} 감소 요청, -{1} USD, 허용가능한 가격: {2} {3} USD"
@@ -2566,10 +2541,6 @@ msgstr ""
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Limit)"
 msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>[{fromPoolName}]</2></0> to <3><4>GM: {toIndexName}</4>{0}</3>"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
@@ -3096,6 +3067,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "TBTC LP incentives"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -3694,6 +3669,10 @@ msgstr "1시간 당 순 수수료율"
 msgid "Claim esGMX Rewards"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Trading incentives program is live on {avalancheLink}."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request"
 msgstr ""
@@ -3867,11 +3846,6 @@ msgstr "취소 실패"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr ""
-
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
-#~ msgid "GLV"
-#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -4609,10 +4583,6 @@ msgstr ""
 msgid "Sell order executed"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} GM Pools are <0>incentivized{sparkle}.</0>"
-msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Compound submitted!"
 msgstr ""
@@ -4684,10 +4654,6 @@ msgstr "트레이드"
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
-
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-#~ msgid "Enter at least 2 symbols"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
@@ -5034,10 +5000,6 @@ msgstr "최소 필요 담보"
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} and {avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -5470,6 +5432,10 @@ msgstr "{formattedNetRate} / 1시간"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Balance"
 msgstr "잔고"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
@@ -6222,6 +6188,10 @@ msgstr "<<<<<<< HEAD"
 msgid "We Value Your Feedback"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Liquidity incentives program is live on {avalancheLink}."
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
@@ -6783,10 +6753,6 @@ msgstr "롱"
 msgid "Pool"
 msgstr "풀"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "<0>Buying {0}: <1>{indexName}</1>{1}</0> <2>with {tokensText}</2>"
-#~ msgstr ""
-
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr ""
@@ -7166,10 +7132,6 @@ msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-msgid "Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}."
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx
@@ -7686,10 +7648,6 @@ msgstr "추천 코드 입력"
 msgid "EIP-4844, 20-27 Mar"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-msgid "Trading incentives program is live on {arbitrumLink} and {avalancheLink}."
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/NftWallet/NftWallet.jsx
@@ -7859,10 +7817,6 @@ msgstr "가격이 시장 평균가보다 높습니다"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "<0>Selling {0}: <1>{indexName}</1>{1}</0>"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts

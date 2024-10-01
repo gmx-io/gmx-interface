@@ -159,22 +159,9 @@ export default function TokenCard({ showRedirectModal }: Props) {
 
   const poolsIncentivizedLabel = useMemo(() => {
     const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
-    const arbitrumLink = <ExternalLink href={getIncentivesV2Url(ARBITRUM)}>Arbitrum</ExternalLink>;
     const avalancheLink = <ExternalLink href={getIncentivesV2Url(AVALANCHE)}>Avalanche</ExternalLink>;
-    if (arbitrumIncentiveState?.lp?.isActive && avalancheIncentiveState?.lp?.isActive) {
-      return (
-        <Trans>
-          {arbitrumLink} and {avalancheLink} GM Pools are{" "}
-          <span className="whitespace-nowrap">incentivized{sparkle}.</span>
-        </Trans>
-      );
-    } else if (arbitrumIncentiveState?.lp?.isActive) {
-      return (
-        <Trans>
-          {arbitrumLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
-        </Trans>
-      );
-    } else if (avalancheIncentiveState?.lp?.isActive) {
+
+    if (avalancheIncentiveState?.lp?.isActive) {
       return (
         <Trans>
           {avalancheLink} GM Pools are <span className="whitespace-nowrap">incentivized{sparkle}.</span>
@@ -183,7 +170,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
     } else {
       return null;
     }
-  }, [arbitrumIncentiveState?.lp?.isActive, avalancheIncentiveState?.lp?.isActive]);
+  }, [avalancheIncentiveState?.lp?.isActive]);
 
   const glvsIncentivizedLabel = useMemo(() => {
     const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
