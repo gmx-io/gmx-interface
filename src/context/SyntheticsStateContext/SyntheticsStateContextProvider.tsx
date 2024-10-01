@@ -32,13 +32,15 @@ import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { AccountStats } from "domain/synthetics/accountStats";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -115,6 +117,7 @@ export function SyntheticsStateContextProvider({
   const { chainId: selectedChainId } = useChainId();
 
   const { account: walletAccount, signer } = useWallet();
+  const { connectModalOpen } = useConnectModal();
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -161,6 +164,7 @@ export function SyntheticsStateContextProvider({
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
+  console.log("braah connectModalOpen", connectModalOpen);
 
   const {
     isLoading,
@@ -219,38 +223,13 @@ export function SyntheticsStateContextProvider({
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
-  useMeasureLoadTime({
-    isLoaded: Boolean(account),
-    error: undefined,
-    metricType: "accountInfo",
-  });
-
-  useMeasureLoadTime({
-    isLoaded: Boolean(marketsInfo.marketsInfoData),
-    error: marketsInfo.error,
-    skip: pageType !== "trade",
-    metricType: "marketsInfoLoad",
-  });
-
-  useMeasureLoadTime({
-    isLoaded: Boolean(
-      marketsInfo.marketsInfoData &&
-        account &&
-        marketsInfo.pricesUpdatedAt &&
-        marketsInfo.tokensData &&
-        marketsInfo.isBalancesLoaded &&
-        isCandlesLoaded
-    ),
-    error: marketsInfo.error,
-    skip: !account || pageType !== "trade",
-    metricType: "tradingDataLoad",
-  });
-
-  useMeasureLoadTime({
-    isLoaded: Boolean(positionsInfoData && !isLoading),
-    error: positionsInfoError || marketsInfo.error,
-    skip: !account || pageType !== "trade",
-    metricType: "positionsListLoad",
+  useCollectSyntheticsMetrics({
+    marketsInfo,
+    isPositionsInfoLoading: isLoading,
+    positionsInfoData,
+    positionsInfoError,
+    isCandlesLoaded,
+    pageType,
   });
 
   const state = useMemo(() => {
