@@ -461,7 +461,6 @@ msgstr "Erstellte Limit Order für {0} {1}: {2} USD!"
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Ungültiger Token von Token: \"{0}\" zu Token: \"{toTokenAddress}\""
 
-#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr "Statistiken"
@@ -670,6 +669,10 @@ msgstr "Markt-Orders"
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we address your concerns and improve your experience?"
+msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Total value locked takes into account:"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -7440,10 +7443,6 @@ msgstr ""
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Assets under management takes into account:"
-msgstr ""
-
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
 msgstr ""
@@ -7705,6 +7704,10 @@ msgstr "Teilweise Liquidierung"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
 msgstr "24h Volumen"
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "Total Stats"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"

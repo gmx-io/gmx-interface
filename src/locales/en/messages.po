@@ -461,7 +461,6 @@ msgstr "Created limit order for {0} {1}: {2} USD!"
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 
-#: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr "Stats"
@@ -671,6 +670,10 @@ msgstr "Market Orders"
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we address your concerns and improve your experience?"
 msgstr "How can we address your concerns and improve your experience?"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Total value locked takes into account:"
+msgstr "Total value locked takes into account:"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -7446,10 +7449,6 @@ msgstr "Shift is only applicable to GM pools when there are other pools with the
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Assets under management takes into account:"
-msgstr "Assets under management takes into account:"
-
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
 msgstr "Orders ({ordersCount})"
@@ -7711,6 +7710,10 @@ msgstr "Partial Liquidation"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
 msgstr "24h Volume"
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "Total Stats"
+msgstr "Total Stats"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"

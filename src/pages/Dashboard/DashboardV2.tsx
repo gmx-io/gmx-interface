@@ -108,7 +108,7 @@ export default function DashboardV2() {
     <SEO title={getPageTitle(t`Dashboard`)}>
       <div className="default-container DashboardV2 page-layout">
         <PageTitle
-          title={t`Stats`}
+          title={t`Total Stats`}
           showNetworkIcon={false}
           isTop
           qa="dashboard-page"

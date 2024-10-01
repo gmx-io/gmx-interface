@@ -300,7 +300,7 @@ export function OverviewCard({
               position="bottom-end"
               content={
                 <>
-                  <Trans>Assets under management takes into account:</Trans>
+                  <Trans>Total value locked takes into account:</Trans>
                   <br />
                   <ul className="my-8 list-disc">
                     <li className="p-2">GMX Staked</li>
