@@ -237,7 +237,6 @@ function MarketTokenSelectorInternal(props: Props) {
               />
               <FavoriteTabs favoritesKey="gm-token-selector" />
             </div>
-            <div className="divider" />
           </>
         )}
 
