@@ -226,6 +226,13 @@ export function SyntheticsStateContextProvider({
   });
 
   useMeasureLoadTime({
+    isLoaded: Boolean(marketsInfo.marketsInfoData),
+    error: marketsInfo.error,
+    skip: pageType !== "trade",
+    metricType: "marketsInfoLoad",
+  });
+
+  useMeasureLoadTime({
     isLoaded: Boolean(
       marketsInfo.marketsInfoData &&
         account &&
@@ -236,7 +243,7 @@ export function SyntheticsStateContextProvider({
     ),
     error: marketsInfo.error,
     skip: !account || pageType !== "trade",
-    metricType: "tradingData",
+    metricType: "tradingDataLoad",
   });
 
   useMeasureLoadTime({

@@ -32,9 +32,10 @@ export enum LoadingStage {
 
 export type MeasureMetricType =
   | "positionsListLoad"
+  | "marketsInfoLoad"
   | "multicall"
   | "candlesLoad"
-  | "tradingData"
+  | "tradingDataLoad"
   | "accountInfo"
   | "syntheticsPage";
 
