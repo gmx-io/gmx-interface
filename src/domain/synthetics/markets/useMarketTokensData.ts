@@ -27,15 +27,23 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensDataRequest(
   chainId: number,
-  p: { isDeposit: boolean; account?: string; glvData?: GlvInfoData; withGlv?: boolean }
+  p: {
+    isDeposit: boolean;
+    account?: string;
+    glvData?: GlvInfoData;
+    /**
+     * @default true
+     */
+    withGlv?: boolean;
+  }
 ): MarketTokensDataResult {
-  const { isDeposit, account, glvData = {} } = p;
+  const { isDeposit, account, glvData = {}, withGlv = true } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   let isGlvTokensLoaded;
 
-  if (p.withGlv === false) {
+  if (withGlv === false) {
     isGlvTokensLoaded = true;
   } else {
     isGlvTokensLoaded = isGlvEnabled(chainId) ? Object.values(glvData).length > 0 : true;
