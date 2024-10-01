@@ -10,7 +10,7 @@ import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { getAbFlags } from "config/ab";
-import { getBestRpcUrl } from "lib/rpc/bestRpcTracker";
+import { getBestRpcUrl, getIsLargeAccount } from "lib/rpc/bestRpcTracker";
 import { getFallbackRpcUrl } from "config/chains";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
@@ -86,6 +86,7 @@ export async function executeMulticallWorker(
     providerUrls,
     request,
     abFlags: getAbFlags(),
+    isLargeAccount: getIsLargeAccount(),
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
   });
 

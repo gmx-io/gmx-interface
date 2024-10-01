@@ -153,7 +153,12 @@ export class Multicall {
     private abFlags: Record<string, boolean>
   ) {}
 
-  async call(providerUrls: MulticallProviderUrls, request: MulticallRequestConfig<any>, maxTimeout: number) {
+  async call(
+    providerUrls: MulticallProviderUrls,
+    request: MulticallRequestConfig<any>,
+    maxTimeout: number,
+    isLargeAccount: boolean
+  ) {
     const originalKeys: {
       contractKey: string;
       callKey: string;
@@ -214,6 +219,7 @@ export class Multicall {
           isInMainThread: !isWebWorker,
           requestType,
           rpcProvider,
+          isLargeAccount,
         },
       });
     };
@@ -233,6 +239,7 @@ export class Multicall {
         data: {
           requestType,
           rpcProvider,
+          isLargeAccount,
         },
       });
     };
@@ -338,6 +345,7 @@ export class Multicall {
               rpcProvider: fallbackProviderName,
               isInMainThread: !isWebWorker,
               errorMessage: _viemError.message,
+              isLargeAccount,
             },
           });
 
@@ -381,6 +389,7 @@ export class Multicall {
             isInMainThread: !isWebWorker,
             requestType: "initial",
             rpcProvider: rpcProviderName,
+            isLargeAccount,
             errorMessage: _viemError.message.slice(0, 150),
           },
         });
@@ -404,6 +413,7 @@ export class Multicall {
         requestType: "initial",
         rpcProvider: rpcProviderName,
         isInMainThread: !isWebWorker,
+        isLargeAccount,
         errorMessage: serializeMulticallErrors(result.errors),
       },
     });

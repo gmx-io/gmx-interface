@@ -24,7 +24,7 @@ export function useAccountVolumeStats(params: { account?: string }) {
     dailyVolume: { date: string; volume: bigint }[];
   }>(account ? ["useAccountVolumeStats", account] : null, {
     fetcher: async () => {
-      const clientPromises = LARGE_ACCOUNT_CHAINS.map(async (chainId) => {
+      const chainPromises = LARGE_ACCOUNT_CHAINS.map(async (chainId) => {
         const client = getSubsquidGraphClient(chainId);
 
         const dailyQueries = last30dList.map((day, index) => {
@@ -70,12 +70,13 @@ export function useAccountVolumeStats(params: { account?: string }) {
         };
       });
 
-      const results = await Promise.all(clientPromises);
+      const chainResults = await Promise.all(chainPromises);
 
-      const totalVolume = results.reduce((acc, result) => acc + result.totalVolume, 0n);
+      const totalVolume = chainResults.reduce((acc, result) => acc + result.totalVolume, 0n);
 
       const dailyVolume = last30dList.map((day, index) => {
-        const volume = results.reduce((acc, result) => acc + result.dailyVolume[index]?.volume ?? 0n, 0n);
+        const volume = chainResults.reduce((acc, { dailyVolume }) => acc + dailyVolume[index].volume, 0n);
+
         return {
           date: format(day, "yyyy-MM-dd"),
           volume,
