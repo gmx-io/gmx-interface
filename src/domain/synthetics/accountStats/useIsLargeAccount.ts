@@ -5,11 +5,11 @@ import { expandDecimals } from "lib/numbers";
 import { useAccountVolumeStats } from "./useAccountVolumeStats";
 
 // Thresholds to recognise large accounts
-const X1_MAX_DAILY_VOLUME = expandDecimals(1000n, USD_DECIMALS);
-const X2_AGG_7_DAYS_VOLUME = expandDecimals(10000n, USD_DECIMALS);
-const X3_AGG_14_DAYS_VOLUME = expandDecimals(20000n, USD_DECIMALS);
-const X4_AGG_30_DAYS_VOLUME = expandDecimals(40000n, USD_DECIMALS);
-const X5_AGG_ALL_TIME_VOLUME = expandDecimals(100000n, USD_DECIMALS);
+const X1_MAX_DAILY_VOLUME = expandDecimals(220_000n, USD_DECIMALS);
+const X2_AGG_7_DAYS_VOLUME = expandDecimals(500_000n, USD_DECIMALS);
+const X3_AGG_14_DAYS_VOLUME = expandDecimals(1_200_000n, USD_DECIMALS);
+const X4_AGG_30_DAYS_VOLUME = expandDecimals(3_000_000n, USD_DECIMALS);
+const X5_AGG_ALL_TIME_VOLUME = expandDecimals(5_000_000n, USD_DECIMALS);
 
 export function useIsLargeAccount(account?: string) {
   const { data, error, isLoading } = useAccountVolumeStats({ account });

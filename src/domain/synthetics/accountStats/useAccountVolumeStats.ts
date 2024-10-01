@@ -9,8 +9,8 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 
 const LARGE_ACCOUNT_CHAINS = [ARBITRUM, AVALANCHE];
 
-export function useAccountVolumeStats(params: { account?: string; enabled?: boolean }) {
-  const { account, enabled = true } = params;
+export function useAccountVolumeStats(params: { account?: string }) {
+  const { account } = params;
 
   const now = new Date();
   const date30dAgo = subDays(now, 30);
@@ -22,7 +22,7 @@ export function useAccountVolumeStats(params: { account?: string; enabled?: bool
   const { data, error, isLoading } = useSWR<{
     totalVolume: bigint;
     dailyVolume: { date: string; volume: bigint }[];
-  }>(enabled && account ? ["useAccountVolumeStats", account] : null, {
+  }>(account ? ["useAccountVolumeStats", account] : null, {
     fetcher: async () => {
       const clientPromises = LARGE_ACCOUNT_CHAINS.map(async (chainId) => {
         const client = getSubsquidGraphClient(chainId);
