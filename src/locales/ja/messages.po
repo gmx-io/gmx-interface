@@ -400,6 +400,8 @@ msgstr "{0} を {1}に1inchでスワップする"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No pools matched."
 msgstr ""
 
@@ -5351,10 +5353,6 @@ msgstr ""
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "No GM pools found."
-msgstr ""
-
 #: src/pages/PageNotFound/PageNotFound.jsx
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>戻る </0><1>ホームページへ</1> <2>or </2> <3>トレードへ</3>"
@@ -7052,7 +7050,6 @@ msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""
 

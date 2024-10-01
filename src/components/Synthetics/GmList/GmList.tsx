@@ -223,7 +223,7 @@ export function GmList({
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                 <TableTd colSpan={7} className="align-top">
                   <div className="text-gray-400">
-                    <Trans>No GM pools found.</Trans>
+                    <Trans>No pools matched.</Trans>
                   </div>
                 </TableTd>
               </TableTr>
