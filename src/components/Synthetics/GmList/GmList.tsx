@@ -3,12 +3,11 @@ import cx from "classnames";
 import keys from "lodash/keys";
 import values from "lodash/values";
 import React, { useMemo, useState } from "react";
-import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
-import { getNormalizedTokenSymbol, getToken } from "config/tokens";
+import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -22,7 +21,6 @@ import {
   GlvAndGmMarketsInfoData,
   MarketTokensAPRData,
   getGlvDisplayName,
-  getGlvMarketName,
   getGlvMarketSubtitle,
   getGlvOrMarketAddress,
   getMarketBadge,
@@ -30,7 +28,6 @@ import {
   getMarketPoolName,
   getMintableMarketTokens,
   getTotalGmInfo,
-  isMarketInfo,
   useMarketTokensData,
 } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -88,7 +85,7 @@ export function GmList({
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
   const { isConnected: active } = useAccount();
-  const currentIcons = getIcons(chainId);
+  const currentIcons = getIcons(chainId)!;
   const userEarnings = useUserEarnings(chainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
   const [searchText, setSearchText] = useState("");
