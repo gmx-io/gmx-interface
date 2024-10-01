@@ -294,7 +294,7 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
-    // BTC/USD [TBTC]
+    // BTC/USD [tBTC]
     "0xd62068697bCc92AF253225676D618B0C9f17C663": {
       enabled: true,
       listingDate: p("11 Sep 2024"),

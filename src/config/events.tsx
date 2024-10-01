@@ -34,7 +34,7 @@ export const homeEventsData: EventData[] = [];
 export const appEventsData: EventData[] = [
   {
     id: "tbtc-market-arbitrum",
-    title: "BTC/USD [TBTC] market added on Arbitrum",
+    title: "BTC/USD [tBTC] market added on Arbitrum",
     isActive: true,
     startDate: "10 Sep 2024, 00:00",
     endDate: "25 Sep 2024, 00:00",
@@ -45,7 +45,7 @@ export const appEventsData: EventData[] = [
         <Link to="/pools/?market=0xd62068697bCc92AF253225676D618B0C9f17C663&operation=buy&scroll=1">
           provide liquidity
         </Link>{" "}
-        to this pool by using <TokenSymbolWithIcon symbol="TBTC" />.
+        to this pool by using <TokenSymbolWithIcon symbol="tBTC" />.
       </>
     ),
   },
