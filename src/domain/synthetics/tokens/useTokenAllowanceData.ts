@@ -8,7 +8,7 @@ import Token from "abis/Token.json";
 
 type TokenAllowanceResult = {
   tokensAllowanceData?: TokensAllowanceData;
-  mutate: () => void;
+  refetchTokensAllowanceData: () => void;
 };
 
 const defaultValue = {};
@@ -55,6 +55,6 @@ export function useTokensAllowanceData(
 
   return {
     tokensAllowanceData: isNativeToken ? defaultValue : data,
-    mutate,
+    refetchTokensAllowanceData: mutate,
   };
 }

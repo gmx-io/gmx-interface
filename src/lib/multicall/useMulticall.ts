@@ -51,6 +51,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
 
+  const hashedFullKey = stableHash(swrFullKey);
+
   const { data, mutate, error } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
@@ -86,9 +88,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         let priority: "urgent" | "background" = "urgent";
 
-        const key = stableHash(swrFullKey);
-
-        const hasData = defaultConfig.cache.get(key)?.isLoading === false;
+        const hasData = defaultConfig.cache.get(hashedFullKey)?.isLoading === false;
 
         let isInterval = false;
         if (typeof params.refreshInterval === "number") {
@@ -101,9 +101,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           }
         }
 
-        if (mutateFlagsRef.current[key]) {
+        if (mutateFlagsRef.current[hashedFullKey]) {
           priority = "urgent";
-          delete mutateFlagsRef.current[key];
+          delete mutateFlagsRef.current[hashedFullKey];
         } else if (hasData && isInterval) {
           priority = "background";
         }
@@ -171,12 +171,10 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   const handleMutate: KeyedMutator<TResult | undefined> = useCallback(
     (...args) => {
-      const key = stableHash(swrFullKey);
-      mutateFlagsRef.current[key] = true;
+      mutateFlagsRef.current[hashedFullKey] = true;
       return mutate(...args);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mutate, stableHash(swrFullKey)]
+    [mutate, hashedFullKey]
   );
 
   return {

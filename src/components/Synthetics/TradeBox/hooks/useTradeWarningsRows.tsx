@@ -29,7 +29,7 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const executionFee = useSelector(selectTradeboxExecutionFee);
-  const { tokensAllowanceData, mutate: mutateTokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData, refetchTokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
     skip: false,
@@ -83,9 +83,9 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
 
   const handleApproveSubmitted = useCallback(() => {
     setTimeout(() => {
-      mutateTokensAllowanceData();
+      refetchTokensAllowanceData();
     }, 2000);
-  }, [mutateTokensAllowanceData]);
+  }, [refetchTokensAllowanceData]);
 
   const element = (
     <>
