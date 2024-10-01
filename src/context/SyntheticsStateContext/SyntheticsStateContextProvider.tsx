@@ -81,6 +81,8 @@ export type SyntheticsState = {
     lastWeekAccountStats?: PeriodAccountStats;
     lastMonthAccountStats?: PeriodAccountStats;
     accountStats?: AccountStats;
+    isCandlesLoaded: boolean;
+    setIsCandlesLoaded: (isLoaded: boolean) => void;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -150,6 +152,7 @@ export function SyntheticsStateContextProvider({
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [isCandlesLoaded, setIsCandlesLoaded] = useState(false);
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
     chainId,
     isTradePage
@@ -217,6 +220,26 @@ export function SyntheticsStateContextProvider({
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   useMeasureLoadTime({
+    isLoaded: Boolean(account),
+    error: undefined,
+    metricType: "accountInfo",
+  });
+
+  useMeasureLoadTime({
+    isLoaded: Boolean(
+      marketsInfo.marketsInfoData &&
+        account &&
+        marketsInfo.pricesUpdatedAt &&
+        marketsInfo.tokensData &&
+        marketsInfo.isBalancesLoaded &&
+        isCandlesLoaded
+    ),
+    error: marketsInfo.error,
+    skip: !account || pageType !== "trade",
+    metricType: "tradingData",
+  });
+
+  useMeasureLoadTime({
     isLoaded: Boolean(positionsInfoData && !isLoading),
     error: positionsInfoError || marketsInfo.error,
     skip: !account || pageType !== "trade",
@@ -256,6 +279,8 @@ export function SyntheticsStateContextProvider({
         lastWeekAccountStats,
         lastMonthAccountStats,
         accountStats,
+        isCandlesLoaded,
+        setIsCandlesLoaded,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -291,6 +316,7 @@ export function SyntheticsStateContextProvider({
     lastWeekAccountStats,
     lastMonthAccountStats,
     accountStats,
+    isCandlesLoaded,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

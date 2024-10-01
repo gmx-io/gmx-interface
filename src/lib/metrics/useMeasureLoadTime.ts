@@ -12,7 +12,13 @@ import { getRequestId } from "lib/metrics/utils";
 import { useEffect } from "react";
 
 const MEASUREMENTS: {
-  [key: string]: { requestId: string; done?: boolean; timeoutId?: number; location: string };
+  [key: string]: {
+    requestId: string;
+    done?: boolean;
+    timeoutId?: number;
+    location: string;
+    isFirstTimeLoading: boolean;
+  };
 } = {};
 const fromLocalStorage = false;
 

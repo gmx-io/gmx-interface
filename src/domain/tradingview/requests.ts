@@ -12,12 +12,14 @@ function getCurrentBarTimestamp(periodSeconds: number) {
 export const getTokenChartPrice = async (
   chainId: number,
   symbol: string,
-  period: string
+  period: string,
+  onFallback?: (ex: Error) => void
 ): Promise<FromOldToNewArray<Bar>> => {
   let prices: FromOldToNewArray<Bar> = [];
   try {
     prices = await getChartPricesFromStats(chainId, symbol, period);
   } catch (ex) {
+    onFallback?.(ex);
     // eslint-disable-next-line no-console
     console.warn(ex, "Switching to graph chainlink data");
     try {

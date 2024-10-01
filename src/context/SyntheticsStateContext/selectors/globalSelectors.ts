@@ -36,6 +36,9 @@ export const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.set
 export const selectMissedCoinsModalPlace = (s: SyntheticsState) => s.globals.missedCoinsModalPlace;
 export const selectSetMissedCoinsModalPlace = (s: SyntheticsState) => s.globals.setMissedCoinsModalPlace;
 
+export const selectIsCandlesLoaded = (s: SyntheticsState) => s.globals.isCandlesLoaded;
+export const selectSetIsCandlesLoaded = (s: SyntheticsState) => s.globals.setIsCandlesLoaded;
+
 export const selectGasLimits = (s: SyntheticsState) => s.globals.gasLimits;
 export const selectGasPrice = (s: SyntheticsState) => s.globals.gasPrice;
 

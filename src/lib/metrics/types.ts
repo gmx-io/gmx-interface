@@ -9,6 +9,9 @@ export type GlobalMetricData = {
   abFlags: Record<string, boolean>;
   isMobile: boolean;
   isHomeSite: boolean;
+  browserName?: string;
+  browserVersion?: string;
+  platform?: string;
 };
 
 export enum OrderStage {
@@ -27,7 +30,13 @@ export enum LoadingStage {
   Failed = "failed",
 }
 
-export type MeasureMetricType = "positionsListLoad" | "multicall";
+export type MeasureMetricType =
+  | "positionsListLoad"
+  | "multicall"
+  | "candlesLoad"
+  | "tradingData"
+  | "accountInfo"
+  | "syntheticsPage";
 
 export type OrderMetricType =
   | SwapMetricData["metricType"]
@@ -54,8 +63,10 @@ export type OrderMetricData =
 export type LoadingStartEvent = {
   event: `${MeasureMetricType}.${LoadingStage.Started}`;
   isError: false;
+  time?: number;
   data: {
     requestId: string;
+    isFirstTimeLoad?: boolean;
   };
 };
 
@@ -65,6 +76,7 @@ export type LoadingSuccessEvent = {
   time: number | undefined;
   data: {
     requestId: string;
+    isFirstTimeLoad?: boolean;
   };
 };
 
@@ -74,6 +86,7 @@ export type LoadingTimeoutEvent = {
   time: number | undefined;
   data: {
     requestId: string;
+    isFirstTimeLoad?: boolean;
   };
 };
 
@@ -83,6 +96,7 @@ export type LoadingFailedEvent = {
   time: number | undefined;
   data: {
     requestId: string;
+    isFirstTimeLoad?: boolean;
   } & ErrorMetricData;
 };
 

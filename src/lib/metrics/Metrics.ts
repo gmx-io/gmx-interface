@@ -1,10 +1,16 @@
 import { isDevelopment } from "config/env";
 import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
-import { OracleFetcher } from "lib/oracleKeeperFetcher";
+import {
+  BatchReportEntry,
+  CounterPayload,
+  OracleFetcher,
+  TimingPayload,
+  UiReportPayload,
+} from "lib/oracleKeeperFetcher";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
-import { getWalletNames } from "lib/wallets/getWalletNames";
+import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
 import {
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
@@ -25,7 +31,8 @@ export type MetricEventParams = {
 
 const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
 const MAX_QUEUE_LENGTH = 500;
-const RETRY_INTERVAL = 2000;
+const MAX_BATCH_LENGTH = 100;
+const BATCH_INTERVAL = 1000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
 
 type CachedMetricData = { _metricDataCreated: number; metricId: string };
@@ -36,9 +43,11 @@ export class Metrics {
   fetcher?: OracleFetcher;
   debug = false;
   globalMetricData: GlobalMetricData = {} as GlobalMetricData;
-  queue: MetricEventParams[] = [];
+  queue: BatchReportEntry[] = [];
+  wallets?: WalletNames;
   eventIndex = 0;
   isProcessing = false;
+  performanceObserver?: PerformanceObserver;
 
   static _instance: Metrics;
 
@@ -66,142 +75,68 @@ export class Metrics {
     this.globalMetricData = { ...this.globalMetricData, ...meta };
   };
 
+  async updateWalletNames() {
+    this.wallets = await getWalletNames();
+  }
+
   // Require Generic type to be specified
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
-    this.queue.push(params);
+    const { time, isError, data, event } = params;
 
-    if (this.fetcher && !this.isProcessing) {
-      this._processQueue();
-    }
-  };
-
-  _processQueue = (retriesLeft = 10): Promise<void> => {
-    if (retriesLeft === 0) {
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: Retries exhausted");
-      }
-      this.isProcessing = false;
-      return Promise.resolve();
-    }
-
-    if (this.queue.length === 0) {
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: Queue processed ");
-      }
-      this.isProcessing = false;
-      return Promise.resolve();
-    }
-
-    // Avoid infinite queue growth
-    if (this.queue.length >= MAX_QUEUE_LENGTH) {
-      this.queue = this.queue.slice(MAX_QUEUE_LENGTH - 1);
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: Slice queue");
-      }
-    }
-
-    const ev = this.queue.shift();
-
-    if (!ev) {
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: No event to process");
-      }
-      this.isProcessing = false;
-      return Promise.resolve();
-    }
-
-    this.isProcessing = true;
+    const payload = {
+      isDev: isDevelopment(),
+      host: window.location.host,
+      url: window.location.href,
+      event: event,
+      version: getAppVersion(),
+      isError: Boolean(isError),
+      time,
+      customFields: {
+        ...(data ? this.serializeCustomFields(data) : {}),
+        ...this.globalMetricData,
+        wallets: this.wallets,
+      },
+    } as UiReportPayload;
 
     if (this.debug) {
       // eslint-disable-next-line no-console
-      console.log(`Metrics: Sending event, queue length: ${this.queue.length}`);
+      console.log(`Metrics: push event`, event, payload);
     }
 
-    return this._sendMetric(ev)
-      .then(() => {
-        return this._processQueue();
-      })
-      .catch((error) => {
-        if (this.debug) {
-          // eslint-disable-next-line no-console
-          console.error(`Metrics: Error sending metric, retries left: ${retriesLeft}`, error);
-        }
-
-        this.queue.unshift(ev);
-
-        return sleep(RETRY_INTERVAL).then(() => this._processQueue(retriesLeft - 1));
-      });
-  };
-
-  _sendMetric = async (params: MetricEventParams) => {
-    if (!this.fetcher) {
-      throw new Error("Metrics: Fetcher is not initialized to send metric");
-    }
-
-    if (params.isCounter) {
-      return this.fetcher.fetchPostCounter(
-        {
-          event: params.event,
-          abFlags: this.globalMetricData.abFlags,
-          customFields: params.data ? this.serializeCustomFields(params.data) : undefined,
-        },
-        this.debug
-      );
-    }
-
-    if (params.isTiming && params.time) {
-      return this.fetcher.fetchPostTiming(
-        {
-          event: params.event,
-          time: params.time,
-          abFlags: this.globalMetricData.abFlags,
-          customFields: params.data ? this.serializeCustomFields(params.data) : undefined,
-        },
-        this.debug
-      );
-    }
-
-    const { time, isError, data, event } = params;
-    const wallets = await getWalletNames();
-
-    await this.fetcher?.fetchPostEvent(
-      {
-        isDev: isDevelopment(),
-        host: window.location.host,
-        url: window.location.href,
-        wallet: wallets.current,
-        event: event,
-        version: getAppVersion(),
-        isError: Boolean(isError),
-        time,
-        customFields: {
-          ...(data ? this.serializeCustomFields(data) : {}),
-          ...this.globalMetricData,
-          wallets,
-        },
-      },
-      this.debug
-    );
+    this.queue.push({
+      type: "event",
+      payload,
+    });
   };
 
   pushCounter(event: string, data?: object) {
-    this.pushEvent<MetricEventParams>({
-      event,
-      data,
-      isCounter: true,
+    this.queue.push({
+      type: "counter",
+      payload: {
+        event,
+        isDev: isDevelopment(),
+        host: window.location.host,
+        url: window.location.href,
+        version: getAppVersion(),
+        abFlags: this.globalMetricData.abFlags,
+        customFields: data ? this.serializeCustomFields(data) : undefined,
+      } as CounterPayload,
     });
   }
 
   pushTiming(event: string, time: number, data?: object) {
-    this.pushEvent<MetricEventParams>({
-      event,
-      time,
-      isTiming: true,
-      data,
+    this.queue.push({
+      type: "timing",
+      payload: {
+        event,
+        isDev: isDevelopment(),
+        host: window.location.host,
+        url: window.location.href,
+        version: getAppVersion(),
+        time,
+        abFlags: this.globalMetricData.abFlags,
+        customFields: data ? this.serializeCustomFields(data) : undefined,
+      } as TimingPayload,
     });
   }
 
@@ -229,12 +164,74 @@ export class Metrics {
     this.pushEvent(event);
   };
 
+  _processQueue = async () => {
+    this.isProcessing = true;
+
+    if (this.queue.length === 0) {
+      if (this.debug) {
+        // eslint-disable-next-line no-console
+        console.log("Metrics: queue is empty");
+      }
+      return;
+    }
+
+    // Avoid infinite queue growth
+    if (this.queue.length > MAX_QUEUE_LENGTH) {
+      this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
+      if (this.debug) {
+        // eslint-disable-next-line no-console
+        console.log("Metrics: Slice queue");
+      }
+    }
+
+    let items;
+    if (this.queue.length > MAX_BATCH_LENGTH) {
+      items = this.queue.slice(0, MAX_BATCH_LENGTH);
+      this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
+    } else {
+      items = this.queue;
+      this.queue = [];
+    }
+
+    if (this.debug) {
+      // eslint-disable-next-line no-console
+      console.log(`Metrics: send batch metrics: ${items.length} items`);
+    }
+
+    await this.fetcher
+      ?.fetchPostBatchReport({ items }, this.debug)
+      .then(async (res) => {
+        if (res.status === 400) {
+          const errorData = await res.json();
+
+          if (typeof errorData.index === "number") {
+            this.queue.push(...items.slice(errorData.index));
+          } else {
+            this.queue.push(...items);
+          }
+
+          throw new Error(JSON.stringify(errorData));
+        }
+
+        if (!res.ok) {
+          this.queue.push(...items);
+          throw new Error(res.statusText);
+        }
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(`Metrics: Error sending batch metrics`, error);
+      })
+      .finally(() => sleep(BATCH_INTERVAL).then(this._processQueue));
+  };
+
   subscribeToEvents = () => {
     window.addEventListener(METRIC_EVENT_DISPATCH_NAME, this.handleWindowEvent);
     window.addEventListener(METRIC_COUNTER_DISPATCH_NAME, this.handleWindowCounter);
     window.addEventListener(METRIC_TIMING_DISPATCH_NAME, this.handleWindowTiming);
     window.addEventListener("error", this.handleError);
     window.addEventListener("unhandledrejection", this.handleUnhandledRejection);
+    this.subscribeToLongTasks();
   };
 
   unsubscribeFromEvents = () => {
@@ -243,6 +240,34 @@ export class Metrics {
     window.removeEventListener(METRIC_TIMING_DISPATCH_NAME, this.handleWindowTiming);
     window.removeEventListener("error", this.handleError);
     window.removeEventListener("unhandledrejection", this.handleUnhandledRejection);
+    this.performanceObserver?.disconnect();
+  };
+
+  subscribeToLongTasks = () => {
+    if (typeof PerformanceObserver === "undefined") {
+      this.pushError("PerformanceObserver is not supported, skip", "subscribeToLongTasks");
+      return;
+    }
+
+    try {
+      this.performanceObserver = new PerformanceObserver((list) => {
+        try {
+          list.getEntries().forEach((entry) => {
+            if (entry.name === "self") {
+              this.pushTiming(`longtasks.self.timing`, entry.duration);
+            }
+          });
+        } catch (error) {
+          this.pushError(error, "subscribeToLongTasks");
+          this.performanceObserver?.disconnect();
+        }
+      });
+
+      this.performanceObserver.observe({ entryTypes: ["longtask"], buffered: true });
+    } catch (error) {
+      this.pushError(error, "subscribeToLongTasks");
+      this.performanceObserver?.disconnect();
+    }
   };
 
   handleWindowEvent = (event: Event) => {

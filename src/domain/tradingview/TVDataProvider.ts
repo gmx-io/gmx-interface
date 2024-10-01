@@ -36,7 +36,12 @@ export class TVDataProvider {
     isChartReady: boolean;
   };
   shouldResetCache = false;
+
   updateInterval?: ReturnType<typeof setInterval>;
+
+  onBarsLoadStarted?: () => void;
+  onBarsLoaded?: () => void;
+  onBarsLoadFailed?: (error: Error) => void;
 
   constructor({ resolutions, chainId }: { resolutions: { [key: number]: string }; chainId: number }) {
     const { barsInfo, chartTokenInfo } = initialState;
@@ -126,8 +131,13 @@ export class TVDataProvider {
     return this.getLimitBars(chainId, ticker, period, limit);
   }
 
-  async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<FromOldToNewArray<Bar>> {
-    return getTokenChartPrice(chainId, ticker, period);
+  async getTokenChartPrice(
+    chainId: number,
+    ticker: string,
+    period: string,
+    onFallback?: (ex: Error) => void
+  ): Promise<FromOldToNewArray<Bar>> {
+    return getTokenChartPrice(chainId, ticker, period, onFallback);
   }
 
   async getTokenHistoryBars(
@@ -138,10 +148,11 @@ export class TVDataProvider {
   ): Promise<FromOldToNewArray<Bar>> {
     const barsInfo = this.barsInfo;
     if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
+      this.onBarsLoadStarted?.();
       try {
         this.liveBars = [];
 
-        const bars = await this.getTokenChartPrice(chainId, ticker, period);
+        const bars = await this.getTokenChartPrice(chainId, ticker, period, this.onBarsLoadFailed);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
         const latestBar = bars[bars.length - 1];
 
@@ -153,11 +164,13 @@ export class TVDataProvider {
         this.barsInfo.ticker = ticker;
         this.barsInfo.period = period;
         this.shouldResetCache = false;
+        this.onBarsLoaded?.();
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
         this.barsInfo = initialState.barsInfo;
         this.shouldResetCache = false;
+        this.onBarsLoadFailed?.(error);
       }
     }
 
@@ -265,6 +278,18 @@ export class TVDataProvider {
 
   setChainId(chainId: number) {
     this.chainId = chainId;
+  }
+
+  setOnBarsLoadStarted(cb: () => void) {
+    this.onBarsLoadStarted = cb;
+  }
+
+  setOnBarsLoaded(cb: () => void) {
+    this.onBarsLoaded = cb;
+  }
+
+  setOnBarsLoadFailed(cb: (error: Error) => void) {
+    this.onBarsLoadFailed = cb;
   }
 
   get currentPrice() {
