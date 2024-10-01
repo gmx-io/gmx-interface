@@ -26,7 +26,7 @@ msgstr "Portefeuille non connecté"
 msgid "Not likely"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Available on your preferred network"
 msgstr "Disponible sur le réseau de votre choix"
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "Subaccount activated"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX est en émission direct sur Arbitrum et Avalanche."
 
@@ -167,7 +167,7 @@ msgstr ""
 msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "Décentralisé <0/>Bourse perpétuelle"
 
@@ -694,7 +694,7 @@ msgstr ""
 msgid "Acceptable price for the order."
 msgstr "Prix acceptable pour l'ordre."
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Ouvrez ces positions dans une interface d'échange simple. Échangez facilement n'importe quel actif, pris en charge à la position de votre choix."
 
@@ -1598,7 +1598,7 @@ msgstr ""
 msgid "Global Leaderboard"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Simple Swaps"
 msgstr "Échanges simples"
 
@@ -1904,7 +1904,7 @@ msgstr ""
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Augmentation requise de {tokenSymbol} {longOrShortText} par {0} USD."
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 msgstr ""
 
@@ -1998,7 +1998,7 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "Les données de liquidité ne sont pas chargées"
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
 msgstr "Volume total des échanges"
 
@@ -2237,7 +2237,7 @@ msgstr ""
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Launch App"
 msgstr "Lancer l'application"
 
@@ -2681,7 +2681,7 @@ msgstr ""
 msgid "Invalid Liquidation Price"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "Un agrégat de flux de prix de qualité supérieure détermine quand les liquidations ont lieu. Cela protège les positions des oscillations temporaires."
 
@@ -3376,6 +3376,7 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Avalanche"
 msgstr ""
 
@@ -3444,7 +3445,7 @@ msgstr "Approbation rejetée"
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Open Interest"
 msgstr "Intérêt ouvert"
 
@@ -4101,7 +4102,7 @@ msgstr "Ordre"
 msgid "Media Kit"
 msgstr "Kit Média"
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Reduce Liquidation Risks"
 msgstr "Réduire les risques de liquidation"
 
@@ -4133,7 +4134,7 @@ msgstr ""
 msgid "Claim V2 Rebates from your referred Traders."
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Three tokens create our ecosystem"
 msgstr ""
 
@@ -4432,7 +4433,7 @@ msgstr "Tout le temps"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "Sélectionnez votre option de vesting ci-dessous, puis cliquez sur \"Réclamation\"."
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Save on Costs"
 msgstr "Économiser sur les coûts"
 
@@ -6678,7 +6679,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "View on Arbitrum"
 msgstr ""
 
@@ -7547,7 +7547,7 @@ msgid "Complete Transfer"
 msgstr "Transfert complet"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Total Users"
 msgstr "Nombre total d'utilisateurs"
 
@@ -7629,7 +7629,7 @@ msgstr ""
 msgid "Close {0} {1}"
 msgstr ""
 
-#: src/pages/Home/Home.jsx
+#: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
 
