@@ -149,6 +149,7 @@ export type MulticallTimeoutEvent = {
     isInMainThread: boolean;
     requestType?: "initial" | "retry";
     rpcProvider?: string;
+    isLargeAccount?: boolean;
     errorMessage: string;
   };
 };
@@ -160,6 +161,7 @@ export type MulticallErrorEvent = {
     isInMainThread: boolean;
     rpcProvider?: string;
     requestType?: "initial" | "retry";
+    isLargeAccount?: boolean;
     errorMessage: string;
   };
 };
