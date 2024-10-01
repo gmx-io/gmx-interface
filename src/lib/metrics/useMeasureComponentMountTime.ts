@@ -29,7 +29,6 @@ export function useMeasureComponentMountTime({
           requestId: getRequestId(),
           inited: true,
         };
-        return;
       }
 
       metrics.pushEvent<LoadingSuccessEvent>({
