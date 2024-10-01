@@ -33,6 +33,25 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "glv-wavax",
+    title: "GLV [WAVAX-USDC] is live",
+    isActive: true,
+    startDate: "01 Oct 2024, 00:00",
+    endDate: "15 Oct 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/pools/?market=0x901eE57f7118A7be56ac079cbCDa7F22663A3874&operation=buy&scroll=1">Buy</Link> the first
+        automatically rebalanced vault on Avalanche combining multiple GM tokens with WAVAX, USDC, or eligible GM
+        tokens.
+      </>
+    ),
+    link: {
+      text: "Read more",
+      href: "https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools",
+      newTab: true,
+    },
+  },
+  {
     id: "tbtc-market-arbitrum",
     title: "BTC/USD [TBTC] market added on Arbitrum",
     isActive: true,
