@@ -196,7 +196,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </Modal>
       </div>
-      {currentDiscountDistributions.length > -1 ? (
+      {currentDiscountDistributions.length > 0 ? (
         <div className="reward-history">
           <Card
             title={t`Rebates Distribution History`}

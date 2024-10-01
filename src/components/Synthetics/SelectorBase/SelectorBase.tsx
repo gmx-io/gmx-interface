@@ -94,7 +94,7 @@ export function SelectorBaseDesktopRow(
     return (
       <TooltipWithPortal
         as={TableTr}
-        className={cx("SelectorBaseUtils-row ", props.className)}
+        className={cx("SelectorBaseUtils-row", props.className)}
         content={props.disabledMessage}
         position="bottom-end"
         bordered={false}
@@ -259,7 +259,7 @@ function SelectorBaseMobile(props: Props) {
           {props.children}
         </SelectorContextProvider>
         {props.footerContent && (
-          <div className="absolute bottom-0 left-0 right-0 bg-slate-800 ">
+          <div className="absolute bottom-0 left-0 right-0 bg-slate-800">
             <div className="divider" />
             <div className="px-15 py-12">{props.footerContent}</div>
           </div>
