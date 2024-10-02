@@ -1,7 +1,12 @@
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
-import { PeriodAccountStats, useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
+import {
+  AccountStats,
+  PeriodAccountStats,
+  useAccountStats,
+  usePeriodAccountStats,
+} from "domain/synthetics/accountStats";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -12,6 +17,8 @@ import {
   useMarkets,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -21,26 +28,21 @@ import {
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
-import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
-import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { AccountStats } from "domain/synthetics/accountStats";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
+import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -117,7 +119,6 @@ export function SyntheticsStateContextProvider({
   const { chainId: selectedChainId } = useChainId();
 
   const { account: walletAccount, signer } = useWallet();
-  const { connectModalOpen } = useConnectModal();
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   let checkSummedAccount: string | undefined;
@@ -165,7 +166,6 @@ export function SyntheticsStateContextProvider({
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
-  console.log("braah connectModalOpen", connectModalOpen);
 
   const {
     isLoading,

@@ -177,7 +177,7 @@ export class Metrics {
 
     // Avoid infinite queue growth
     if (this.queue.length > MAX_QUEUE_LENGTH) {
-      this.queue = this.queue.slice(MAX_QUEUE_LENGTH - 1);
+      this.queue = this.queue.slice(-MAX_QUEUE_LENGTH);
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: Slice queue");

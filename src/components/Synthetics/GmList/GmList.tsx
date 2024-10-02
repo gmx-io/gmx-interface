@@ -130,7 +130,7 @@ export function GmList({
         <span className="text-16">
           <Trans>Pools</Trans>
         </span>
-        <img src={currentIcons.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
+        <img src={currentIcons?.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
         <SearchInput
           size="s"
           value={searchText}
