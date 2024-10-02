@@ -145,7 +145,7 @@ export function ClaimModal(p: Props) {
           </Trans>
         </div>
       </div>
-      <div className="mb-20 mt-15 h-1 bg-slate-700" />
+      <div className="App-card-divider ClaimModal-divider" />
       <div className="ClaimSettleModal-info-row">
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">

@@ -5,11 +5,11 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { bigNumberify } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-const URL = `${GMX_STATS_API_URL}/volume/24h`;
-
 export function useVolumeInfo() {
+  const url = `${GMX_STATS_API_URL}/volume/24h`;
+
   const { data } = useSWR(
-    URL,
+    url,
     async (url) => {
       const res = await fetch(url);
       const json = await res.json();

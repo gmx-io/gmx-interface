@@ -1,37 +1,33 @@
-import { Trans } from "@lingui/macro";
+import React from "react";
+import Footer from "components/Footer/Footer";
+import "./Home.css";
+
+import simpleSwapIcon from "img/ic_simpleswaps.svg";
+import costIcon from "img/ic_cost.svg";
+import liquidityIcon from "img/ic_liquidity.svg";
+import totaluserIcon from "img/ic_totaluser.svg";
+
+import statsIcon from "img/ic_stats.svg";
+import tradingIcon from "img/ic_trading.svg";
+
 import useSWR from "swr";
 
-import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE } from "config/chains";
-import { USD_DECIMALS } from "config/factors";
-import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useUserStat } from "domain/legacy";
-import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { getTotalVolumeSum } from "lib/legacy";
-import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
+import { USD_DECIMALS } from "config/factors";
 
-import Footer from "components/Footer/Footer";
-import { HeaderLink } from "components/Header/HeaderLink";
-import TokenCard from "components/TokenCard/TokenCard";
+import { useUserStat } from "domain/legacy";
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
 import avaxIcon from "img/ic_avalanche_96.svg";
-import costIcon from "img/ic_cost.svg";
-import liquidityIcon from "img/ic_liquidity.svg";
-import simpleSwapIcon from "img/ic_simpleswaps.svg";
-import statsIcon from "img/ic_stats.svg";
-import totaluserIcon from "img/ic_totaluser.svg";
-import tradingIcon from "img/ic_trading.svg";
 
-import "./Home.css";
-
-function LaunchExchangeButton({ showRedirectModal }: { showRedirectModal: (to: string) => void }) {
-  return (
-    <HeaderLink className="default-btn" to="/trade" showRedirectModal={showRedirectModal}>
-      <Trans>Launch App</Trans>
-    </HeaderLink>
-  );
-}
+import TokenCard from "components/TokenCard/TokenCard";
+import { Trans } from "@lingui/macro";
+import { HeaderLink } from "components/Header/HeaderLink";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { getServerUrl } from "config/backend";
+import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
+import useV2Stats from "domain/synthetics/stats/useV2Stats";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 
 export default function Home({ showRedirectModal }) {
   const arbV2Stats = useV2Stats(ARBITRUM);
@@ -114,8 +110,16 @@ export default function Home({ showRedirectModal }) {
   }
 
   if (arbV2Stats && avaxV2Stats) {
-    totalUsers = Number(bigNumberify(totalUsers)! + arbV2Stats.totalUsers + avaxV2Stats.totalUsers);
+    totalUsers = Number(bigNumberify(totalUsers) + arbV2Stats.totalUsers + avaxV2Stats.totalUsers);
   }
+
+  const LaunchExchangeButton = () => {
+    return (
+      <HeaderLink className="default-btn" to="/trade" showRedirectModal={showRedirectModal}>
+        <Trans>Launch App</Trans>
+      </HeaderLink>
+    );
+  };
 
   return (
     <div className="Home">
@@ -134,7 +138,7 @@ export default function Home({ showRedirectModal }) {
                 Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet
               </Trans>
             </div>
-            <LaunchExchangeButton showRedirectModal={showRedirectModal} />
+            <LaunchExchangeButton />
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -231,7 +235,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <LaunchExchangeButton showRedirectModal={showRedirectModal} />
+                  <LaunchExchangeButton />
                 </div>
               </div>
             </div>
@@ -242,7 +246,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <LaunchExchangeButton showRedirectModal={showRedirectModal} />
+                  <LaunchExchangeButton />
                 </div>
               </div>
             </div>
@@ -256,7 +260,7 @@ export default function Home({ showRedirectModal }) {
               <Trans>Three tokens create our ecosystem</Trans>
             </div>
           </div>
-          <SyntheticsStateContextProvider pageType="home" skipLocalReferralCode={false}>
+          <SyntheticsStateContextProvider pageType="home">
             <TokenCard showRedirectModal={showRedirectModal} />
           </SyntheticsStateContextProvider>
         </div>

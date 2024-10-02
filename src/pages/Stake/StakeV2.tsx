@@ -1204,6 +1204,11 @@ export default function StakeV2() {
   const { openConnectModal } = useConnectModal();
   const incentiveStats = useIncentiveStats(chainId);
   const incentivesMessage = useMemo(() => {
+    const arbitrumLink = (
+      <ExternalLink newTab href={getIncentivesV2Url(ARBITRUM)}>
+        {getChainName(ARBITRUM)}
+      </ExternalLink>
+    );
     const avalancheLink = (
       <ExternalLink newTab href={getIncentivesV2Url(AVALANCHE)}>
         {getChainName(AVALANCHE)}
@@ -1212,19 +1217,25 @@ export default function StakeV2() {
     if (incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive) {
       return (
         <div>
-          <Trans>Liquidity and trading incentives programs are live on {avalancheLink}.</Trans>
+          <Trans>
+            Liquidity and trading incentives programs are live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
         </div>
       );
     } else if (incentiveStats?.lp?.isActive) {
       return (
         <div>
-          <Trans>Liquidity incentives program is live on {avalancheLink}.</Trans>
+          <Trans>
+            Liquidity incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
         </div>
       );
     } else if (incentiveStats?.trading?.isActive) {
       return (
         <div>
-          <Trans>Trading incentives program is live on {avalancheLink}.</Trans>
+          <Trans>
+            Trading incentives program is live on {arbitrumLink} and {avalancheLink}.
+          </Trans>
         </div>
       );
     }

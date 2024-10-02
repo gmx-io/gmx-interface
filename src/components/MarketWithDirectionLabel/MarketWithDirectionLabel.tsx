@@ -23,12 +23,7 @@ export function MarketWithDirectionLabel({
       })}
     >
       <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>
-      <TokenIcon
-        className="mx-5 size-20 !align-[-3px]"
-        displaySize={20}
-        symbol={tokenSymbol}
-        importSize={iconImportSize}
-      />
+      <TokenIcon className="mx-5" displaySize={20} symbol={tokenSymbol} importSize={iconImportSize} />
       <span>{indexName}</span>
     </div>
   );

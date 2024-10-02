@@ -19,18 +19,7 @@ import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avalanche.svg";
 import glvIcon from "img/ic_glv_40.svg";
 
-const ICONS: Record<
-  number | "common",
-  {
-    network?: string;
-    gmx: string;
-    glp: string;
-    esgmx?: string;
-    gm: string;
-    gmxOutline?: string;
-    glv?: string;
-  }
-> = {
+const ICONS = {
   [ARBITRUM]: {
     network: arbitrum,
     gmx: gmxArbitrum,

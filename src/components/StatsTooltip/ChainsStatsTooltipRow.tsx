@@ -41,7 +41,7 @@ export default function ChainsStatsTooltipRow({
           </p>
         );
       })}
-      <div className="my-5 h-1 bg-gray-800" />
+      <div className="Tooltip-divider" />
       <p className="Tooltip-row">
         <span className="label">
           <Trans>Total:</Trans>

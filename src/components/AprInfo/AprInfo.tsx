@@ -2,16 +2,15 @@ import { Trans, t } from "@lingui/macro";
 import { addDays, formatDistanceToNowStrict } from "date-fns";
 import { useCallback, useMemo } from "react";
 
-import { ETHENA_DASHBOARD_URL, isEthenaSatsIncentivizedMarket } from "config/ethena";
 import { getIncentivesV2Url } from "config/links";
 import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/markets";
-import { TBTC_INFORMATION_URL, isTbtcIncentivizedMarket } from "config/tbtc";
-import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
+import { ETHENA_DASHBOARD_URL, isEthenaSatsIncentivizedMarket } from "config/ethena";
+import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -28,17 +27,17 @@ export function AprInfo({
   incentiveApr,
   lidoApr,
   showTooltip = true,
-  marketAddress,
+  tokenAddress,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
   lidoApr: bigint | undefined;
   showTooltip?: boolean;
-  marketAddress: string;
+  tokenAddress: string;
 }) {
   const { chainId } = useChainId();
 
-  const listingDate = getMarketListingDate(chainId, marketAddress);
+  const listingDate = getMarketListingDate(chainId, tokenAddress);
   const { isBaseAprReadyToBeShown, apyReadyToBeShownDate } = useMemo(
     () => ({
       isBaseAprReadyToBeShown: getIsBaseApyReadyToBeShown(listingDate),
@@ -52,10 +51,9 @@ export function AprInfo({
     totalApr += apy ?? 0n;
   }
   const incentivesData = useLiquidityProvidersIncentives(chainId);
-  const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[marketAddress] !== undefined;
+  const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[tokenAddress] !== undefined;
   const isLidoApr = lidoApr !== undefined && lidoApr > 0n;
-  const isEthenaSatsIncentive = isEthenaSatsIncentivizedMarket(marketAddress);
-  const isTbtcIncentive = isTbtcIncentivizedMarket(marketAddress);
+  const isEthenaSatsIncentive = isEthenaSatsIncentivizedMarket(tokenAddress);
 
   const airdropTokenTitle = useLpAirdroppedTokenTitle();
 
@@ -92,10 +90,7 @@ export function AprInfo({
           <div>
             <Trans>
               The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
-              <ExternalLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
-                Read more
-              </ExternalLink>
-              .
+              <ExternalLink href={getIncentivesV2Url(chainId)}>Read more</ExternalLink>.
             </Trans>
           </div>
         )}
@@ -120,7 +115,6 @@ export function AprInfo({
     lidoApr,
     isLidoApr,
     isEthenaSatsIncentive,
-    isTbtcIncentive,
   ]);
 
   const aprNode = useMemo(() => {

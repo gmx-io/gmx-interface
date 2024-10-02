@@ -69,9 +69,9 @@ export function ClaimablePositionPriceImpactRebateModal({
           <Trans>Claim {totalUsd}</Trans>
         </div>
       </div>
-      <div className="mb-20 mt-15 h-1 bg-slate-700" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
+          <div className="App-card-divider" />
           <div className="ClaimSettleModal-header">
             <div>
               <Trans>MARKET</Trans>

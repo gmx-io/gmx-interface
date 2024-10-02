@@ -522,7 +522,7 @@ function GmListItem({
       </ExchangeTd>
 
       <ExchangeTd>
-        <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+        <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} tokenAddress={token.address} />
       </ExchangeTd>
 
       <ExchangeTd className="w-[350px]">
