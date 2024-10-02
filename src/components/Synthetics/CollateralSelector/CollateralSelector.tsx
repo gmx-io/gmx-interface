@@ -4,9 +4,18 @@ import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useMedia } from "react-use";
 
+import {
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import type { MarketInfo } from "domain/synthetics/markets";
 import type { TokenData } from "domain/synthetics/tokens/types";
+import type { TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
+import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
 
+import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
@@ -14,19 +23,10 @@ import {
   SelectorBaseDesktopRow,
   SelectorBaseMobileButton,
   SelectorBaseMobileList,
-  SelectorBaseTableHeadRow,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
-import {
-  selectTradeboxMarketInfo,
-  selectTradeboxTradeType,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
 import "./CollateralSelector.scss";
-import { TradeType } from "domain/synthetics/trade";
-import { MarketInfo } from "domain/synthetics/markets";
 
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
@@ -56,11 +56,11 @@ function CollateralSelectorDesktop(props: Props & { tradeType: TradeType; market
   return (
     <table className="CollateralSelector-table" data-qa="collateral-in-selector-table">
       <thead>
-        <SelectorBaseTableHeadRow>
-          <th>
+        <TableTheadTr bordered>
+          <TableTh>
             <Trans>Collateral In</Trans>
-          </th>
-        </SelectorBaseTableHeadRow>
+          </TableTh>
+        </TableTheadTr>
       </thead>
       <tbody>
         {props.options?.map((option) => (
@@ -115,7 +115,7 @@ function CollateralListItemDesktop({
         disabled
         disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
       >
-        <td className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
+        <TableTd className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
           <TokenIcon
             symbol={tokenData.symbol}
             displaySize={24}
@@ -123,7 +123,7 @@ function CollateralListItemDesktop({
             className="CollateralSelector-collateral-logo-first"
           />
           <div>{tokenData.symbol}</div>
-        </td>
+        </TableTd>
       </SelectorBaseDesktopRow>
     );
   }
@@ -133,7 +133,7 @@ function CollateralListItemDesktop({
       message={marketInfo && tradeType ? getCollateralInHintText(tradeType, tokenData, marketInfo) : undefined}
       onClick={handleClick}
     >
-      <td className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
+      <TableTd className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
         <TokenIcon
           symbol={tokenData.symbol}
           displaySize={24}
@@ -141,7 +141,7 @@ function CollateralListItemDesktop({
           className="CollateralSelector-collateral-logo-first"
         />
         <div>{tokenData.symbol}</div>
-      </td>
+      </TableTd>
     </SelectorBaseDesktopRow>
   );
 }

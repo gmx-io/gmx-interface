@@ -53,7 +53,7 @@ export default function SyntheticsActions() {
             }
           />
         </div>
-        <TradeHistory account={undefined} forAllAccounts={true} shouldShowPaginationButtons />
+        <TradeHistory account={undefined} forAllAccounts={true} />
       </div>
       <Footer />
     </div>

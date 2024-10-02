@@ -4,12 +4,13 @@ import React, { useCallback } from "react";
 import { useMedia } from "react-use";
 
 import { numberToState } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
+import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
 import { formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
-import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
+import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
@@ -17,7 +18,6 @@ import {
   SelectorBaseDesktopRow,
   SelectorBaseMobileButton,
   SelectorBaseMobileList,
-  SelectorBaseTableHeadRow,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
 
@@ -52,18 +52,18 @@ function PoolSelector2Desktop(props: Props) {
   return (
     <table className="PoolSelector2-table">
       <thead>
-        <SelectorBaseTableHeadRow>
-          <th>
+        <TableTheadTr bordered>
+          <TableTh>
             <Trans>Pool</Trans>
-          </th>
-          <th>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</th>
-          <th>
+          </TableTh>
+          <TableTh>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</TableTh>
+          <TableTh>
             <Trans>Net Rate</Trans>
-          </th>
-          <th>
+          </TableTh>
+          <TableTh>
             <Trans>Open Cost</Trans>
-          </th>
-        </SelectorBaseTableHeadRow>
+          </TableTh>
+        </TableTheadTr>
       </thead>
       <tbody>
         {props.options?.map((option) => (
@@ -119,7 +119,7 @@ function PoolListItemDesktop({
 
   return (
     <SelectorBaseDesktopRow onClick={handleClick}>
-      <td className="PoolSelector2-column-pool" data-qa={`pool-selector-row-${poolName}`}>
+      <TableTd className="PoolSelector2-column-pool" data-qa={`pool-selector-row-${poolName}`}>
         <div className="PoolSelector2-collateral-logos">
           <>
             <TokenIcon
@@ -139,30 +139,30 @@ function PoolListItemDesktop({
           </>
         </div>
         <div>{poolName}</div>
-      </td>
-      <td
+      </TableTd>
+      <TableTd
         className={cx({
           "text-red-500": !isEnoughLiquidity,
         })}
       >
         {formattedLiquidity}
-      </td>
-      <td
+      </TableTd>
+      <TableTd
         className={cx({
           "text-red-500": netRateState === "error",
           "text-green-500": netRateState === "success",
         })}
       >
         <Trans>{formattedNetRate} / 1h</Trans>
-      </td>
-      <td
+      </TableTd>
+      <TableTd
         className={cx("PoolSelector2-column-open-fees", {
           "text-red-500": openFeesState === "error",
           "text-green-500": openFeesState === "success",
         })}
       >
         {formattedOpenFees}
-      </td>
+      </TableTd>
     </SelectorBaseDesktopRow>
   );
 }

@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
+import { USD_DECIMALS } from "config/factors";
 import { getWrappedToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -26,7 +27,6 @@ import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { calculatePriceDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
@@ -34,10 +34,10 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
+import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
-import { SwapMarketLabel } from "../../SwapMarketLabel/SwapMarketLabel";
-import { ExchangeTd, ExchangeTr } from "../OrderList/ExchangeTable";
 
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./OrderItem.scss";
@@ -404,13 +404,13 @@ function OrderItemLarge({
   );
 
   return (
-    <ExchangeTr ref={handleSetRef}>
+    <TableTr ref={handleSetRef}>
       {!hideActions && onToggleOrder && (
-        <ExchangeTd className="cursor-pointer" onClick={onToggleOrder}>
+        <TableTd className="cursor-pointer" onClick={onToggleOrder}>
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
-        </ExchangeTd>
+        </TableTd>
       )}
-      <ExchangeTd>
+      <TableTd>
         {isSwap ? (
           <Tooltip
             handle={
@@ -458,23 +458,23 @@ function OrderItemLarge({
             disableHandleStyle
           />
         )}
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <OrderItemTypeLabel order={order} />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <Title order={order} showDebugValues={showDebugValues} />
-      </ExchangeTd>
+      </TableTd>
 
-      <ExchangeTd>
+      <TableTd>
         <TriggerPrice order={order} hideActions={hideActions} />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <MarkPrice order={order} />
-      </ExchangeTd>
+      </TableTd>
       {!hideActions && (
-        <ExchangeTd>
-          <div className="flex items-center">
+        <TableTd>
+          <div className="inline-flex items-center">
             <button className="cursor-pointer p-6 text-gray-300 hover:text-white" onClick={setEditingOrderKey}>
               <AiOutlineEdit title={t`Edit order`} fontSize={16} />
             </button>
@@ -488,9 +488,9 @@ function OrderItemLarge({
               </button>
             )}
           </div>
-        </ExchangeTd>
+        </TableTd>
       )}
-    </ExchangeTr>
+    </TableTr>
   );
 }
 

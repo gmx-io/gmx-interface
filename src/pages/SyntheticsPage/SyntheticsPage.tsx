@@ -205,7 +205,6 @@ export function SyntheticsPage(p: Props) {
   function renderClaims() {
     return (
       <Claims
-        shouldShowPaginationButtons
         setIsSettling={setIsSettling}
         isSettling={isSettling}
         setPendingTxns={setPendingTxns}
@@ -301,7 +300,7 @@ export function SyntheticsPage(p: Props) {
                   onCancelSelectedOrders={onCancelSelectedOrders}
                 />
               )}
-              {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
+              {listSection === ListSection.Trades && <TradeHistory account={account} />}
               {listSection === ListSection.Claims && renderClaims()}
             </div>
           )}
@@ -348,7 +347,7 @@ export function SyntheticsPage(p: Props) {
                 onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
-            {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
+            {listSection === ListSection.Trades && <TradeHistory account={account} />}
             {listSection === ListSection.Claims && renderClaims()}
           </div>
         )}

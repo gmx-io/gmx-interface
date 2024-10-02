@@ -21,6 +21,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
+import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -180,12 +181,12 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
 
   return (
     <>
-      <tr
+      <TableTr
         className={cx("TradeHistoryRow", {
           debug: showDebugValues,
         })}
       >
-        <td>
+        <TableTd>
           <div className="flex">
             {msg.actionComment ? (
               <TooltipWithPortal
@@ -226,16 +227,16 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               {tradeAction.account}
             </Link>
           )}
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
             disableHandleStyle
             tooltipClassName="cursor-help *:cursor-auto"
             handle={marketTooltipHandle}
             renderContent={renderMarketContent}
           />
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           {msg.swapFromTokenSymbol ? (
             <Trans>
               {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} importSize={24} />
@@ -245,8 +246,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           ) : (
             msg.size
           )}
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
             tooltipClassName="TradeHistoryRow-price-tooltip-portal"
             handle={msg.price}
@@ -254,8 +255,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             renderContent={renderPriceContent}
             maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
           />
-        </td>
-        <td className="TradeHistoryRow-pnl-fees">
+        </TableTd>
+        <TableTd className="TradeHistoryRow-pnl-fees">
           {!msg.pnl ? (
             <span className="text-gray-300">-</span>
           ) : (
@@ -268,14 +269,14 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               {msg.pnl}
             </span>
           )}
-        </td>
-      </tr>
+        </TableTd>
+      </TableTr>
       {showDebugValues && (
-        <tr>
-          <td colSpan={4}>
+        <TableTr>
+          <TableTd colSpan={42}>
             <div className="muted">Order Key: {tradeAction.orderKey}</div>
-          </td>
-        </tr>
+          </TableTd>
+        </TableTr>
       )}
     </>
   );

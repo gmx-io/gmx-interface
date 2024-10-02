@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
@@ -86,11 +87,11 @@ export function LeaderboardNavigation() {
   }, [pageKey]);
 
   return (
-    <div className="LeaderboardNavigation default-container-mobile-one-sided">
+    <BodyScrollFadeContainer className="default-container flex gap-8">
       {navigationItems.map((item) => (
         <NavigationItem item={item} key={item.key} />
       ))}
-    </div>
+    </BodyScrollFadeContainer>
   );
 }
 

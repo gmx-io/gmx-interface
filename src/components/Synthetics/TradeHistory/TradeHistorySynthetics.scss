@@ -1,8 +1,4 @@
 .TradeHistorySynthetics {
-  &-horizontal-scroll-container {
-    overflow-x: auto;
-  }
-
   &-table {
     width: max(100%, 900px) !important;
 
@@ -10,29 +6,6 @@
     margin-right: -10px;
 
     table-layout: fixed;
-
-    // TODO midas-myth 18.03.2024 decouple these styles and make a separate base table component
-    tbody tr {
-      cursor: default !important;
-    }
-  }
-
-  &-header tr {
-    cursor: default !important;
-    border-bottom: none !important;
-  }
-
-  &-header tr:hover {
-    background: unset !important;
-    box-shadow: none !important;
-  }
-
-  &-header th {
-    text-transform: uppercase;
-  }
-
-  &-padded-cell {
-    padding: 1em 1.5rem;
   }
 
   &-controls-right {

@@ -398,6 +398,13 @@ msgstr ""
 msgid "Swap {0} to {1} on 1inch"
 msgstr ""
 
+#: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
+#: src/components/MarketSelector/PoolSelector.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+msgid "No pools matched."
+msgstr ""
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1249,6 +1256,10 @@ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Created At"
+msgstr ""
+
+#: src/components/TokenSelector/TokenSelector.tsx
+msgid "No tokens matched."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
@@ -3111,10 +3122,8 @@ msgstr ""
 msgid "Claiming..."
 msgstr ""
 
-#. GM market token selector all markets filter
-#. Chart token selector all markets filter
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+#. Filter option for tokens favorites
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
 msgid "All"
 msgstr ""
 
@@ -4190,6 +4199,7 @@ msgid "This competition has ended."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts Net Rate / 1h"
 msgstr ""
 
@@ -4394,8 +4404,7 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr ""
 
-#: src/domain/synthetics/tokens/useGmTokensFavorites.tsx
-#: src/domain/synthetics/tokens/useIndexTokensFavorites.tsx
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
 msgid "Favorites"
 msgstr ""
 
@@ -5199,6 +5208,7 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
+#: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 msgid "Longs Net Rate / 1h"
 msgstr ""
 
@@ -5341,10 +5351,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
-msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "No GM pools found."
 msgstr ""
 
 #: src/pages/PageNotFound/PageNotFound.jsx
@@ -7042,8 +7048,8 @@ msgstr ""
 msgid "Enter unique coins"
 msgstr ""
 
+#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""
 

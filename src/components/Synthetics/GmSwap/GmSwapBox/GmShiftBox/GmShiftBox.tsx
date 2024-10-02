@@ -14,7 +14,6 @@ import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/sele
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvOrMarketInfo, getMarketIndexName, getGlvOrMarketAddress, isMarketInfo } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
-import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { bigMath } from "lib/bigmath";
 import { formatAmountFree, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -62,7 +61,6 @@ export function GmShiftBox({
   const [toMarketAddress, setToMarketAddress] = useState<string | undefined>(undefined);
   const [selectedMarketText, setSelectedMarketText] = useState("");
   const [toMarketText, setToMarketText] = useState("");
-  const gmTokenFavoritesContext = useGmTokensFavorites();
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
@@ -291,7 +289,7 @@ export function GmShiftBox({
             showIndexIcon
             showBalances
             marketTokensData={depositMarketTokensData}
-            {...gmTokenFavoritesContext}
+            favoriteKey="gm-token-selector"
           />
         </BuyInputSection>
         <Swap />
@@ -317,7 +315,7 @@ export function GmShiftBox({
             showIndexIcon
             showBalances
             marketTokensData={depositMarketTokensData}
-            {...gmTokenFavoritesContext}
+            favoriteKey="gm-token-selector"
           />
         </BuyInputSection>
         <ExchangeInfo className={isHighPriceImpact ? undefined : "mb-10"} dividerClassName="App-card-divider">

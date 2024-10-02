@@ -1,24 +1,69 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
+import { useMedia } from "react-use";
 
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { formatRatePercentage } from "lib/numbers";
 
-import "./NetFeeTooltip.scss";
-
 export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
+  const isMobile = useMedia("(max-width: 800px)");
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-16">
+        {marketStats.map((stat) => {
+          const { marketInfo: market, netFeeLong, netFeeShort } = stat;
+          return (
+            <div key={market.marketTokenAddress} className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-start text-white">
+                <span>{getMarketIndexName(market)}</span>
+                <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-300">
+                  <Trans>Longs Net Rate / 1h</Trans>
+                </span>
+                <span
+                  className={cx({
+                    "text-green-500": netFeeLong > 0,
+                    "text-red-500": netFeeLong < 0,
+                  })}
+                >
+                  {formatRatePercentage(netFeeLong)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-300">
+                  <Trans>Shorts Net Rate / 1h</Trans>
+                </span>
+                <span
+                  className={cx({
+                    "text-green-500": netFeeShort > 0,
+                    "text-red-500": netFeeShort < 0,
+                  })}
+                >
+                  {formatRatePercentage(netFeeShort)}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
-    <table className="NetFeeTooltip">
-      <thead className="NetFeeTooltip-head">
+    <table className="w-full">
+      <thead>
         <tr>
-          <th>
+          <th className="pb-10 font-normal uppercase text-gray-300">
             <Trans>Pool</Trans>
           </th>
-          <th className="NetFeeTooltip-cell-center">
+          <th className="pb-10 pr-10 text-right font-normal uppercase text-gray-300">
             <Trans>Longs Net Rate / 1h</Trans>
           </th>
-          <th className="NetFeeTooltip-cell-right">
+          <th className="pb-10  text-right font-normal uppercase text-gray-300">
             <Trans>Shorts Net Rate / 1h</Trans>
           </th>
         </tr>
@@ -36,7 +81,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 </div>
               </td>
               <td
-                className={cx("NetFeeTooltip-cell-center", {
+                className={cx("pr-10 text-right", {
                   "text-green-500": netFeeLong > 0,
                   "text-red-500": netFeeLong < 0,
                 })}
@@ -44,7 +89,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 {formatRatePercentage(netFeeLong)}
               </td>
               <td
-                className={cx("NetFeeTooltip-cell-right", {
+                className={cx("text-right", {
                   "text-green-500": netFeeShort > 0,
                   "text-red-500": netFeeShort < 0,
                 })}

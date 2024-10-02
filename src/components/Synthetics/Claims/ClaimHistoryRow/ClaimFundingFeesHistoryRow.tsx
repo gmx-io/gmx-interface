@@ -18,6 +18,7 @@ import {
   formatTradeActionTimestamp,
   formatTradeActionTimestampISO,
 } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
+import { TableTd, TableTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -203,8 +204,8 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
   }, [claimAction]);
 
   return (
-    <tr>
-      <td>
+    <TableTr>
+      <TableTd>
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle">{_(eventTitleDescriptor)}</div>
           <ExternalLink
@@ -220,9 +221,9 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
           tooltipClassName="ClaimHistoryRow-tooltip-portal"
           renderContent={renderIsoTimestamp}
         />
-      </td>
-      <td>{marketContent}</td>
-      <td className="ClaimHistoryRow-size">{sizeContent}</td>
-    </tr>
+      </TableTd>
+      <TableTd>{marketContent}</TableTd>
+      <TableTd>{sizeContent}</TableTd>
+    </TableTr>
   );
 }

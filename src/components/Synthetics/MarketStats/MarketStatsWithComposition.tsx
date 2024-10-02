@@ -474,15 +474,15 @@ export function MarketStatsWithComposition(p: Props) {
           "mt-20 border-t border-t-slate-700": !canFitCompositionOnRow,
         })}
       >
-        <div className="p-20">
+        <div className="px-16 pt-16">
           <p>Composition</p>
           <CompositionBar
             marketInfo={marketInfo}
             marketsInfoData={marketsInfoData}
             marketTokensData={marketTokensData}
           />
-          <CompositionTableGm marketInfo={marketInfo} />
         </div>
+        <CompositionTableGm marketInfo={marketInfo} />
       </div>
     </div>
   );

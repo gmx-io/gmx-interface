@@ -1,7 +1,10 @@
+import type Fuse from "fuse.js";
 import isEqual from "lodash/isEqual";
 import { ComponentType, memo, useCallback, useMemo } from "react";
 
 import { definedOrThrow } from "lib/guards";
+import { EMPTY_ARRAY } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import Checkbox from "components/Checkbox/Checkbox";
 
@@ -139,6 +142,20 @@ export function useFilteredGroups<T>({
   value?: T[] | T;
   options: Item<T>[] | Group<T>[];
 }): FilteredGroup<T>[] | null {
+  const fuse = useFuse(
+    () =>
+      !isGrouped
+        ? EMPTY_ARRAY
+        : (options as Group<T>[]).flatMap((group, groupIndex) =>
+            group.items.map((item, itemIndex) => ({
+              id: `${groupIndex}_${itemIndex}`,
+              text: item.text,
+            }))
+          ),
+
+    [options, isGrouped]
+  );
+
   return useMemo(() => {
     if (!isGrouped) return null;
 
@@ -149,8 +166,9 @@ export function useFilteredGroups<T>({
       search,
       value,
       multiple,
+      fuse,
     });
-  }, [isGrouped, search, multiple, options, value]);
+  }, [isGrouped, search, multiple, options, value, fuse]);
 }
 
 function filterGroups<T>({
@@ -158,17 +176,23 @@ function filterGroups<T>({
   search,
   value,
   multiple,
+  fuse,
 }: {
   groups: Group<T>[];
   search: string;
   value?: T[] | T;
   multiple?: boolean;
+  fuse: Fuse<{ id: string; text: string }>;
 }): FilteredGroup<T>[] {
+  const matchedItems = fuse.search(search).map((result) => result.item);
+
   return groups
-    .map((group) => {
-      const items = group.items.filter((pair) => {
-        return pair.text.toLowerCase().includes(search.toLowerCase());
-      });
+    .map((group, groupIndex) => {
+      const items = !search.trim()
+        ? group.items
+        : group.items.filter((item, itemIndex) =>
+            matchedItems.some((matchedItem) => matchedItem.id === `${groupIndex}_${itemIndex}`)
+          );
 
       let isEverythingSelected: boolean | undefined;
       let isEverythingFilteredSelected: boolean | undefined;
