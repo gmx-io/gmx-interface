@@ -267,6 +267,7 @@ function AffiliatesStats({
           </div>
         </Modal>
         <Card
+          slimHeader
           title={
             <div className="referral-table-header">
               <p className="title">
