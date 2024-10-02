@@ -283,14 +283,14 @@ function MarketTokenSelectorInternal(props: Props) {
                   rowVerticalPadding={rowVerticalPadding}
                 />
               ))}
+              {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
+                <TableTr hoverable={false} bordered={false}>
+                  <TableTd colSpan={6} className="text-gray-400">
+                    <Trans>No pools matched.</Trans>
+                  </TableTd>
+                </TableTr>
+              )}
             </tbody>
-            {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={6} className="text-gray-400">
-                  <Trans>No pools matched.</Trans>
-                </TableTd>
-              </TableTr>
-            )}
           </table>
         </div>
       </div>

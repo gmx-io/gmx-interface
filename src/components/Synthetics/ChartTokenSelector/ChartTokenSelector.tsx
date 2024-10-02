@@ -27,7 +27,7 @@ import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import { TableTd } from "components/Table/Table";
+import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
@@ -255,9 +255,11 @@ function MarketsList(props: { options: Token[] | undefined }) {
                 />
               ))}
               {options && options.length > 0 && !sortedTokens?.length && (
-                <TableTd colSpan={isSwap ? 1 : 3} className="text-gray-400">
-                  <Trans>No markets matched.</Trans>
-                </TableTd>
+                <TableTr hoverable={false} bordered={false}>
+                  <TableTd colSpan={isSwap ? 1 : 3} className="text-gray-400">
+                    <Trans>No markets matched.</Trans>
+                  </TableTd>
+                </TableTr>
               )}
             </tbody>
           </table>
