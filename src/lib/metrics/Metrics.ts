@@ -172,7 +172,7 @@ export class Metrics {
         // eslint-disable-next-line no-console
         console.log("Metrics: queue is empty");
       }
-      return;
+      return sleep(BATCH_INTERVAL).then(this._processQueue);
     }
 
     // Avoid infinite queue growth
