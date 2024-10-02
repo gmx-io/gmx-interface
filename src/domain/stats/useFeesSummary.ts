@@ -1,10 +1,18 @@
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import useSWR from "swr";
-const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI];
 
-export function useFeesSummary() {
+const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+
+export function useFeesSummary(): {
+  data: {
+    [chainId: string]: {
+      lastUpdatedAt: number;
+      totalFees: number;
+    };
+  };
+} {
   const { data: feesSummary } = useSWR(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/fees_summary")),
     {
