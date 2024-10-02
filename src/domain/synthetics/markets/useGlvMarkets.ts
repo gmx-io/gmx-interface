@@ -110,10 +110,10 @@ export function useGlvMarketsInfo(
             markets.map((market) => {
               const contractPrices = getContractMarketPrices(tokensData, marketsInfoData[market]);
 
-              return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.min];
+              return [contractPrices?.indexTokenPrice!.min, contractPrices?.indexTokenPrice!.max];
             }),
-            [contractGlvPricesLong.max, contractGlvPricesLong.min],
-            [contractGlvPricesShort.max, contractGlvPricesShort.min],
+            [contractGlvPricesLong.min, contractGlvPricesLong.max],
+            [contractGlvPricesShort.min, contractGlvPricesShort.max],
             glv.glvToken,
           ];
 
