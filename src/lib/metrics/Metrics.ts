@@ -34,6 +34,7 @@ const MAX_QUEUE_LENGTH = 500;
 const MAX_BATCH_LENGTH = 100;
 const BATCH_INTERVAL = 1000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
+const BAD_REQUEST_ERROR = "BadRequest";
 
 type CachedMetricData = { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
@@ -167,6 +168,14 @@ export class Metrics {
   _processQueue = async () => {
     this.isProcessing = true;
 
+    if (!this.fetcher) {
+      if (this.debug) {
+        // eslint-disable-next-line no-console
+        console.log("Metrics: fetcher is not initialized");
+      }
+      return sleep(BATCH_INTERVAL).then(this._processQueue);
+    }
+
     if (this.queue.length === 0) {
       if (this.debug) {
         // eslint-disable-next-line no-console
@@ -193,22 +202,28 @@ export class Metrics {
     }
 
     return this.fetcher
-      ?.fetchPostBatchReport({ items }, this.debug)
+      .fetchPostBatchReport({ items }, this.debug)
       .then(async (res) => {
         if (res.status === 400) {
           const errorData = await res.json();
 
-          throw new Error(JSON.stringify(errorData));
+          const error = new Error(JSON.stringify(errorData));
+          error.name = BAD_REQUEST_ERROR;
         }
 
         if (!res.ok) {
-          this.queue.push(...items);
           throw new Error(res.statusText);
         }
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(`Metrics: Error sending batch metrics`, error);
+
+        if (error.name === BAD_REQUEST_ERROR) {
+          this.pushError(error, "Metrics");
+        } else {
+          this.queue.push(...items);
+        }
       })
       .finally(() => sleep(BATCH_INTERVAL).then(this._processQueue));
   };
