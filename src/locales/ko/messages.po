@@ -2495,6 +2495,10 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
+#: src/config/bridging.tsx
+msgid "Mint tBTC using BTC with <0>Threshold</0>"
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "해당 트레이드를 시작하기위해 담보로 {swapTokenSymbol}을 \"지불\" 토큰으로서 선택할 필요가 있습니다."
@@ -3088,8 +3092,8 @@ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claimin
 msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-msgid "TBTC LP incentives"
-msgstr ""
+#~ msgid "TBTC LP incentives"
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -3884,6 +3888,10 @@ msgstr ""
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "GMX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 11월 30일까지 진행되며, <1>여기를 클릭해</1> 더 많은 정보를 확인하세요."
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "tBTC LP incentives"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
@@ -7160,8 +7168,8 @@ msgid "Give us your feedback on GMX."
 msgstr ""
 
 #: src/config/bridging.tsx
-msgid "Mint TBTC using BTC with <0>Threshold</0>"
-msgstr ""
+#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"

@@ -2495,6 +2495,10 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
+#: src/config/bridging.tsx
+msgid "Mint tBTC using BTC with <0>Threshold</0>"
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "Tienes que seleccionar {swapTokenSymbol} como el token de \"Pagar\" para usar como garantía para iniciar esta operación."
@@ -3088,8 +3092,8 @@ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claimin
 msgstr "El saldo de su esGMX (IOU) disminuirá en la cantidad de su reclamación después de reclamar, este es el comportamiento esperado."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-msgid "TBTC LP incentives"
-msgstr ""
+#~ msgid "TBTC LP incentives"
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -3884,6 +3888,10 @@ msgstr ""
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Opere en GMX y gane <0>$250.000</0> en premios! Activo hasta el 30 de Noviembre, <1>haz click aquí</1> para aprender más."
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "tBTC LP incentives"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
@@ -7160,8 +7168,8 @@ msgid "Give us your feedback on GMX."
 msgstr ""
 
 #: src/config/bridging.tsx
-msgid "Mint TBTC using BTC with <0>Threshold</0>"
-msgstr ""
+#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
