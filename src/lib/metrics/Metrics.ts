@@ -192,7 +192,7 @@ export class Metrics {
       console.log(`Metrics: send batch metrics: ${items.length} items`);
     }
 
-    await this.fetcher
+    return this.fetcher
       ?.fetchPostBatchReport({ items }, this.debug)
       .then(async (res) => {
         if (res.status === 400) {
