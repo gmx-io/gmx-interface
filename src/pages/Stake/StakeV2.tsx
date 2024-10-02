@@ -1334,8 +1334,13 @@ export default function StakeV2() {
   ];
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData, glvApyInfoData } =
-    useGmMarketsApy(chainId);
+  const {
+    marketsTokensApyData,
+    marketsTokensIncentiveAprData,
+    glvTokensIncentiveAprData,
+    marketsTokensLidoAprData,
+    glvApyInfoData,
+  } = useGmMarketsApy(chainId);
   const vestingData = useVestingData(account);
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
@@ -2390,6 +2395,7 @@ export default function StakeV2() {
           <GmList
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
             glvTokensApyData={glvApyInfoData}
             isDeposit={false}

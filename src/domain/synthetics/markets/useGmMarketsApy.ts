@@ -40,6 +40,7 @@ type RawPoolValue = {
 
 type GmGlvTokensAPRResult = {
   glvApyInfoData: MarketTokensAPRData;
+  glvTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensLidoAprData?: MarketTokensAPRData;
   marketsTokensApyData?: MarketTokensAPRData;
@@ -138,10 +139,7 @@ function useExcludedLiquidityMarketMap(
   return excludedBalancesMulticall.data ?? {};
 }
 
-function useIncentivesBonusApr(
-  chainId: number,
-  marketsInfoData: GlvAndGmMarketsInfoData | undefined
-): MarketTokensAPRData {
+function useIncentivesBonusApr(chainId: number, marketsInfoData: GlvAndGmMarketsInfoData | undefined) {
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(marketsInfoData);
@@ -185,10 +183,12 @@ function useIncentivesBonusApr(
     return undefined;
   }, [marketToken, regularToken]);
 
-  const marketTokensAPRData = useMemo<MarketTokensAPRData>(() => {
+  const marketTokensAPRData = useMemo(() => {
     if (!liquidityProvidersIncentives || !token) return {};
 
     const marketTokensAPRData: MarketTokensAPRData = {};
+    const glvTokensAPRData: MarketTokensAPRData = {};
+
     for (const marketAddress of marketAddresses) {
       const market = getByKey(marketsInfoData, marketAddress);
       if (!market) {
@@ -215,10 +215,17 @@ function useIncentivesBonusApr(
           poolValueWithoutExcludedLPs
         ) * yearMultiplier;
 
-      marketTokensAPRData[marketAddress] = apr;
+      if (isGlvInfo(market)) {
+        glvTokensAPRData[marketAddress] = apr;
+      } else {
+        marketTokensAPRData[marketAddress] = apr;
+      }
     }
 
-    return marketTokensAPRData;
+    return {
+      marketTokensAPRData,
+      glvTokensAPRData,
+    };
   }, [
     excludedLiquidityMarketMap,
     liquidityProvidersIncentives,
@@ -441,7 +448,8 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   return {
     glvApyInfoData,
     marketsTokensLidoAprData: data?.marketsTokensLidoAprData,
-    marketsTokensIncentiveAprData,
+    marketsTokensIncentiveAprData: marketsTokensIncentiveAprData.marketTokensAPRData,
+    glvTokensIncentiveAprData: marketsTokensIncentiveAprData.glvTokensAPRData,
     avgMarketsApy: data?.avgMarketsApy,
     marketsTokensApyData: data?.marketsTokensApyData,
   };
