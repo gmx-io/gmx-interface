@@ -1,10 +1,10 @@
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Pagination from "components/Pagination/Pagination";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "components/Synthetics/OrderList/ExchangeTable";
-import Tooltip from "components/Tooltip/Tooltip";
+import { useMemo, useRef, useState } from "react";
+import { BiCopy } from "react-icons/bi";
+import { FiPlus, FiTwitter } from "react-icons/fi";
+import { IoWarningOutline } from "react-icons/io5";
+import { useCopyToClipboard } from "react-use";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
@@ -17,19 +17,6 @@ import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo, useRef, useState } from "react";
-import { BiCopy } from "react-icons/bi";
-import { FiPlus, FiTwitter } from "react-icons/fi";
-import { IoWarningOutline } from "react-icons/io5";
-import { useCopyToClipboard } from "react-use";
-import Card from "../Common/Card";
-import Modal from "../Modal/Modal";
-import { AffiliateCodeForm } from "./AddAffiliateCode";
-import "./AffiliatesStats.scss";
-import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
-import EmptyMessage from "./EmptyMessage";
-import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
-import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
   getSharePercentage,
@@ -38,7 +25,24 @@ import {
   getUSDValue,
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
-import usePagination from "./usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
+
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import Tooltip from "components/Tooltip/Tooltip";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+import { AffiliateCodeForm } from "./AddAffiliateCode";
+import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
+import EmptyMessage from "./EmptyMessage";
+import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
+import ReferralInfoCard from "./ReferralInfoCard";
+
+import "./AffiliatesStats.scss";
 
 type Props = {
   chainId: number;
@@ -263,6 +267,7 @@ function AffiliatesStats({
           </div>
         </Modal>
         <Card
+          slimHeader
           title={
             <div className="referral-table-header">
               <p className="title">
@@ -279,31 +284,32 @@ function AffiliatesStats({
               </Button>
             </div>
           }
+          divider={false}
           bodyPadding={false}
         >
-          <div className="overflow-x-auto">
+          <TableScrollFadeContainer>
             <table className="w-full">
               <thead>
-                <ExchangeTheadTr>
-                  <ExchangeTh scope="col">
+                <TableTheadTr bordered>
+                  <TableTh scope="col">
                     <Trans>Referral Code</Trans>
-                  </ExchangeTh>
-                  <ExchangeTh scope="col">
+                  </TableTh>
+                  <TableTh scope="col">
                     <Trans>Total Volume</Trans>
-                  </ExchangeTh>
-                  <ExchangeTh scope="col">
+                  </TableTh>
+                  <TableTh scope="col">
                     <Trans>Traders Referred</Trans>
-                  </ExchangeTh>
-                  <ExchangeTh scope="col">
+                  </TableTh>
+                  <TableTh scope="col">
                     <Trans>Total Rebates</Trans>
-                  </ExchangeTh>
-                </ExchangeTheadTr>
+                  </TableTh>
+                </TableTheadTr>
               </thead>
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   return (
-                    <ExchangeTr key={index} hoverable={false} bordered={false}>
-                      <ExchangeTd data-label="Referral Code">
+                    <TableTr key={index} hoverable={false} bordered={false}>
+                      <TableTd data-label="Referral Code">
                         <div className="table-referral-code">
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
@@ -325,8 +331,8 @@ function AffiliatesStats({
                           </a>
                           <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
-                      </ExchangeTd>
-                      <ExchangeTd data-label="Total Volume">
+                      </TableTd>
+                      <TableTd data-label="Total Volume">
                         <Tooltip
                           handle={`$${getUSDValue(stat.volume)}`}
                           position="bottom-start"
@@ -338,9 +344,9 @@ function AffiliatesStats({
                             </>
                           )}
                         />
-                      </ExchangeTd>
-                      <ExchangeTd data-label="Traders Referred">{stat.registeredReferralsCount}</ExchangeTd>
-                      <ExchangeTd data-label="Total Rebates">
+                      </TableTd>
+                      <TableTd data-label="Traders Referred">{stat.registeredReferralsCount}</TableTd>
+                      <TableTd data-label="Total Rebates">
                         <Tooltip
                           handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
                           position="bottom-start"
@@ -358,19 +364,23 @@ function AffiliatesStats({
                             </>
                           )}
                         />
-                      </ExchangeTd>
-                    </ExchangeTr>
+                      </TableTd>
+                    </TableTr>
                   );
                 })}
+                {currentAffiliatesData.length > 0 && currentAffiliatesData.length < DEFAULT_PAGE_SIZE && (
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                  <tr style={{ height: 43 * (DEFAULT_PAGE_SIZE - currentAffiliatesData.length) }}></tr>
+                )}
               </tbody>
             </table>
-          </div>
+          </TableScrollFadeContainer>
+          <BottomTablePagination
+            page={currentAffiliatesPage}
+            pageCount={affiliatesPageCount}
+            onPageChange={setCurrentAffiliatesPage}
+          />
         </Card>
-        <Pagination
-          page={currentAffiliatesPage}
-          pageCount={affiliatesPageCount}
-          onPageChange={(page) => setCurrentAffiliatesPage(page)}
-        />
       </div>
       {currentRebateData.length > 0 ? (
         <div className="reward-history">
@@ -378,24 +388,25 @@ function AffiliatesStats({
             title={t`Rebates Distribution History`}
             tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
             bodyPadding={false}
+            divider={false}
           >
-            <div className="overflow-x-auto">
+            <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <ExchangeTheadTr>
-                    <ExchangeTh scope="col">
+                  <TableTheadTr bordered>
+                    <TableTh scope="col">
                       <Trans>Date</Trans>
-                    </ExchangeTh>
-                    <ExchangeTh scope="col">
+                    </TableTh>
+                    <TableTh scope="col">
                       <Trans>Type</Trans>
-                    </ExchangeTh>
-                    <ExchangeTh scope="col">
+                    </TableTh>
+                    <TableTh scope="col">
                       <Trans>Amount</Trans>
-                    </ExchangeTh>
-                    <ExchangeTh scope="col">
+                    </TableTh>
+                    <TableTh scope="col">
                       <Trans>Transaction</Trans>
-                    </ExchangeTh>
-                  </ExchangeTheadTr>
+                    </TableTh>
+                  </TableTheadTr>
                 </thead>
                 <tbody>
                   {currentRebateData.map((rebate, index) => {
@@ -438,10 +449,10 @@ function AffiliatesStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <ExchangeTr key={index} hoverable={false} bordered={false}>
-                        <ExchangeTd data-label="Date">{formatDate(rebate.timestamp)}</ExchangeTd>
-                        <ExchangeTd data-label="Type">{rebateType}</ExchangeTd>
-                        <ExchangeTd data-label="Amount">
+                      <TableTr key={index} hoverable={false} bordered={false}>
+                        <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
+                        <TableTd data-label="Type">{rebateType}</TableTd>
+                        <TableTd data-label="Amount">
                           <Tooltip
                             className="whitespace-nowrap"
                             handle={
@@ -491,24 +502,28 @@ function AffiliatesStats({
                               </>
                             )}
                           />
-                        </ExchangeTd>
-                        <ExchangeTd data-label="Transaction">
+                        </TableTd>
+                        <TableTd data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
                             {shortenAddress(rebate.transactionHash, 13)}
                           </ExternalLink>
-                        </ExchangeTd>
-                      </ExchangeTr>
+                        </TableTd>
+                      </TableTr>
                     );
                   })}
+                  {currentRebateData.length < DEFAULT_PAGE_SIZE && (
+                    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                    <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentRebateData.length) }}></tr>
+                  )}
                 </tbody>
               </table>
-            </div>
+            </TableScrollFadeContainer>
+            <BottomTablePagination
+              page={currentRebatePage}
+              pageCount={rebatePageCount}
+              onPageChange={setCurrentRebatePage}
+            />
           </Card>
-          <Pagination
-            page={currentRebatePage}
-            pageCount={rebatePageCount}
-            onPageChange={(page) => setCurrentRebatePage(page)}
-          />
         </div>
       ) : (
         <EmptyMessage

@@ -1,16 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import AddressView from "components/AddressView/AddressView";
-import Pagination from "components/Pagination/Pagination";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
-import SearchInput from "components/SearchInput/SearchInput";
-import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { TooltipPosition } from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { USD_DECIMALS } from "config/factors";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
@@ -25,9 +17,21 @@ import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
 import { bigMath } from "lib/bigmath";
-import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { useDebounce } from "lib/useDebounce";
+
+import AddressView from "components/AddressView/AddressView";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import SearchInput from "components/SearchInput/SearchInput";
+import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
+import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { TooltipPosition } from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -38,26 +42,13 @@ function getWinnerRankClassname(rank: number | null) {
 
 type LeaderboardPositionField = keyof LeaderboardPosition;
 
+const PER_PAGE = 20;
+
 export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
-  const perPage = 20;
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
-  const [orderBy, setOrderBy] = useState<LeaderboardPositionField>("qualifyingPnl");
-  const [direction, setDirection] = useState<number>(1);
-  const handleColumnClick = useCallback(
-    (key: string) => {
-      if (key === orderBy) {
-        setDirection((d: number) => -1 * d);
-      } else {
-        setOrderBy(key as LeaderboardPositionField);
-        setDirection(1);
-      }
-    },
-    [orderBy]
-  );
-
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>("qualifyingPnl", "desc");
   const [search, setSearch] = useState("");
-  const setValue = useCallback((e) => setSearch(e.target.value), []);
   const handleKeyDown = useCallback(() => null, []);
   const term = useDebounce(search, 300);
 
@@ -67,12 +58,17 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
 
   const sorted = useMemo(() => {
     return [...data].sort((a, b) => {
-      const key = orderBy;
+      let key = orderBy;
+      if (key === "unspecified" || direction === "unspecified") {
+        key = "qualifyingPnl";
+      }
+
+      const directionMultiplier = direction === "asc" ? -1 : 1;
 
       if (typeof a[key] === "bigint" && typeof b[key] === "bigint") {
-        return direction * ((a[key] as bigint) > (b[key] as bigint) ? -1 : 1);
+        return directionMultiplier * ((a[key] as bigint) > (b[key] as bigint) ? -1 : 1);
       } else if (typeof a[key] === "number" && typeof b[key] === "number") {
-        return direction * (a[key] > b[key] ? -1 : 1);
+        return directionMultiplier * (a[key] > b[key] ? -1 : 1);
       } else {
         return 1;
       }
@@ -84,10 +80,10 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
     return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
   }, [sorted, term]);
 
-  const indexFrom = (page - 1) * perPage;
+  const indexFrom = (page - 1) * PER_PAGE;
   const rowsData = useMemo(
     () =>
-      filteredStats.slice(indexFrom, indexFrom + perPage).map((position, i) => ({
+      filteredStats.slice(indexFrom, indexFrom + PER_PAGE).map((position, i) => ({
         position,
         index: i,
         rank: position.rank,
@@ -95,16 +91,10 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
     [filteredStats, indexFrom]
   );
 
-  const pageCount = Math.ceil(filteredStats.length / perPage);
-
-  const getSortableClass = useCallback(
-    (key: LeaderboardPositionField) =>
-      cx(orderBy === key ? (direction > 0 ? "sorted-asc" : "sorted-desc") : "sortable"),
-    [direction, orderBy]
-  );
+  const pageCount = Math.ceil(filteredStats.length / PER_PAGE);
 
   const content = isLoading ? (
-    <TopPositionsSkeleton count={perPage} />
+    <TopPositionsSkeleton count={PER_PAGE} />
   ) : (
     <>
       {rowsData.length ? (
@@ -114,25 +104,26 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
       ) : (
         <EmptyRow />
       )}
+      {rowsData.length < PER_PAGE && <TopPositionsSkeleton invisible count={PER_PAGE - rowsData.length} />}
     </>
   );
 
   return (
-    <div>
+    <div className="rounded-4 bg-slate-800">
       <div className="TableBox__head">
         <SearchInput
           placeholder={t`Search Address`}
-          className="LeaderboardSearch"
+          className="max-w-lg *:!text-16"
           value={search}
-          setValue={setValue}
+          setValue={setSearch}
           onKeyDown={handleKeyDown}
           size="s"
         />
       </div>
-      <div className="TableBox">
-        <table className={cx("Exchange-list", "App-box", "Table")}>
-          <tbody>
-            <tr className="Exchange-list-header">
+      <TableScrollFadeContainer>
+        <table className="w-full min-w-[1100px] table-fixed">
+          <thead>
+            <TableTheadTr bordered>
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
@@ -140,54 +131,26 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
                   displayDecimals: 0,
                 })} in "Capital Used" are ranked.`}
                 tooltipPosition="bottom-start"
-                columnName="rank"
               />
-              <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" columnName="account" />
+              <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" />
               <TableHeaderCell
+                {...getSorterProps("qualifyingPnl")}
                 title={t`PnL ($)`}
                 width={12}
                 tooltip={t`The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees.`}
                 tooltipPosition="bottom-end"
-                onClick={handleColumnClick}
-                columnName="qualifyingPnl"
-                className={getSortableClass("qualifyingPnl")}
               />
-              <TableHeaderCell title={t`Position`} width={10} tooltipPosition="bottom-end" columnName="key" />
-              <TableHeaderCell
-                title={t`Entry Price`}
-                width={10}
-                onClick={handleColumnClick}
-                columnName="entryPrice"
-                className={getSortableClass("entryPrice")}
-              />
-              <TableHeaderCell
-                title={t`Size`}
-                width={12}
-                onClick={handleColumnClick}
-                columnName="sizeInUsd"
-                className={getSortableClass("sizeInUsd")}
-              />
-              <TableHeaderCell
-                title={t`Lev.`}
-                width={1}
-                onClick={handleColumnClick}
-                columnName="leverage"
-                className={getSortableClass("leverage")}
-              />
-              <TableHeaderCell
-                title={t`Liq. Price`}
-                width={10}
-                columnName="liquidationPrice"
-                className={cx("text-right")}
-              />
-            </tr>
-            {content}
-          </tbody>
+              <TableHeaderCell title={t`Position`} width={10} tooltipPosition="bottom-end" />
+              <TableHeaderCell {...getSorterProps("entryPrice")} title={t`Entry Price`} width={10} />
+              <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`Size`} width={12} />
+              <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={1} />
+              <TableHeaderCell title={t`Liq. Price`} width={10} />
+            </TableTheadTr>
+          </thead>
+          <tbody>{content}</tbody>
         </table>
-      </div>
-      <div className="TableBox__footer">
-        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
-      </div>
+      </TableScrollFadeContainer>
+      <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
 }
@@ -195,22 +158,20 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
 const TableHeaderCell = memo(
   ({
     breakpoint,
-    columnName,
     title,
-    className,
-    onClick,
+    direction,
+    onChange,
     tooltip,
     tooltipPosition,
     width,
   }: {
     title: string;
-    className?: string;
     tooltip?: ReactNode;
     tooltipPosition?: TooltipPosition;
-    onClick?: (columnName: LeaderboardPositionField | "liquidationPrice") => void;
-    columnName: LeaderboardPositionField | "liquidationPrice";
+    onChange?: (direction: SortDirection) => void;
     width?: number | ((breakpoint?: string) => number);
     breakpoint?: string;
+    direction?: SortDirection;
   }) => {
     const style =
       width !== undefined
@@ -219,23 +180,40 @@ const TableHeaderCell = memo(
           }
         : undefined;
 
-    const handleClick = useCallback(() => onClick?.(columnName), [columnName, onClick]);
     const stopPropagation = useCallback((e) => e.stopPropagation(), []);
-    const renderContent = useCallback(() => <div onClick={stopPropagation}>{tooltip}</div>, [stopPropagation, tooltip]);
+
+    const isSortable = onChange !== undefined;
+
+    if (isSortable) {
+      return (
+        <TableTh style={style}>
+          <Sorter direction={direction!} onChange={onChange}>
+            {tooltip ? (
+              <TooltipWithPortal
+                handle={<span className="whitespace-nowrap">{title}</span>}
+                position={tooltipPosition || "bottom"}
+                content={<div onClick={stopPropagation}>{tooltip}</div>}
+              />
+            ) : (
+              <span className="whitespace-nowrap">{title}</span>
+            )}
+          </Sorter>
+        </TableTh>
+      );
+    }
 
     return (
-      <th onClick={handleClick} className={cx("TableHeader", className)} style={style}>
+      <TableTh style={style}>
         {tooltip ? (
           <TooltipWithPortal
-            handle={<span className="TableHeaderTitle">{title}</span>}
+            handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
-            className="TableHeaderTooltip"
-            renderContent={renderContent}
+            content={<div onClick={stopPropagation}>{tooltip}</div>}
           />
         ) : (
-          <span className="TableHeaderTitle">{title}</span>
+          <span className="whitespace-nowrap">{title}</span>
         )}
-      </th>
+      </TableTh>
     );
   }
 );
@@ -347,8 +325,8 @@ const TableRow = memo(
     }, [indexToken?.priceDecimals, indexToken?.prices.maxPrice, liquidationPrice]);
 
     return (
-      <tr className="Table_tr" key={position.key}>
-        <TableCell>
+      <TableTr key={position.key} bordered={false}>
+        <TableCell className="relative">
           <span className={getWinnerRankClassname(rank)}>
             <RankInfo rank={rank} hasSomeCapital />
           </span>
@@ -420,22 +398,22 @@ const TableRow = memo(
             />
           )}
         </TableCell>
-      </tr>
+      </TableTr>
     );
   }
 );
 
 const TableCell = memo(({ children, className }: { children: ReactNode; className?: string }) => {
-  return <td className={className}>{children}</td>;
+  return <TableTd className={className}>{children}</TableTd>;
 });
 
 const EmptyRow = memo(() => {
   return (
-    <tr className="Table_tr">
-      <td colSpan={7} className="Table_no-results-row">
+    <TableTr hoverable={false} bordered={false} className="h-47">
+      <TableTd colSpan={7} className="align-top text-gray-400">
         <Trans>No results found</Trans>
-      </td>
-    </tr>
+      </TableTd>
+    </TableTr>
   );
 });
 

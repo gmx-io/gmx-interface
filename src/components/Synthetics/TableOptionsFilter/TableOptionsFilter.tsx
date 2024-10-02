@@ -1,14 +1,7 @@
 import type { Placement } from "@floating-ui/dom";
 import { Trans } from "@lingui/macro";
 import isEqual from "lodash/isEqual";
-import {
-  ChangeEventHandler,
-  ComponentType,
-  KeyboardEvent as ReactKeyboardEvent,
-  ReactNode,
-  useCallback,
-  useState,
-} from "react";
+import { ComponentType, KeyboardEvent as ReactKeyboardEvent, ReactNode, useCallback, useState } from "react";
 
 import { defined, definedOrThrow } from "lib/guards";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -67,10 +60,6 @@ export function TableOptionsFilter<T>({
   const showGroupToggle = Boolean(multiple && !disableGroupSelection && isGrouped);
 
   const [search, setSearch] = useState("");
-  const handleSetValue = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (event) => setSearch(event.target.value),
-    []
-  );
 
   const filteredGroups = useFilteredGroups({
     isGrouped,
@@ -168,7 +157,7 @@ export function TableOptionsFilter<T>({
         className="TableOptionsFilter-search"
         placeholder={placeholder}
         value={search}
-        setValue={handleSetValue}
+        setValue={setSearch}
         onKeyDown={handleSearchEnterKey}
       />
 

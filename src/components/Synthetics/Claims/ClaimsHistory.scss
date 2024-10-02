@@ -1,7 +1,6 @@
 .ClaimsHistory {
   &-controls {
-    padding: 1em 1.05rem;
-    border-bottom: 1px solid var(--color-slate-700);
+    padding: 8px 16px;
 
     display: flex;
     justify-content: space-between;
@@ -22,35 +21,10 @@
     gap: 0.5em;
   }
 
-  &-horizontal-scroll-container {
-    overflow-x: auto;
-  }
-
   &-table {
     width: max(100%, 600px);
 
     table-layout: fixed;
-
-    // TODO midas-myth 18.03.2024 decouple these styles and make a separate base table component
-    tbody tr {
-      cursor: auto !important;
-    }
-  }
-
-  &-header {
-    tr {
-      cursor: auto !important;
-      border-bottom: none !important;
-
-      &:hover {
-        background: unset !important;
-        box-shadow: none !important;
-      }
-    }
-
-    th {
-      text-transform: uppercase;
-    }
   }
 
   &-price-header {

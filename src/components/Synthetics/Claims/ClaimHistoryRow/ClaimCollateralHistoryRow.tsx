@@ -13,6 +13,7 @@ import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -74,8 +75,8 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   }, [claimAction]);
 
   return (
-    <tr>
-      <td>
+    <TableTr>
+      <TableTd>
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
           <ExternalLink
@@ -91,10 +92,10 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
           tooltipClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
           renderContent={renderIsoTimestamp}
         />
-      </td>
-      <td>{marketNamesJoined}</td>
-      <td className="ClaimHistoryRow-size">{sizeContent}</td>
-    </tr>
+      </TableTd>
+      <TableTd>{marketNamesJoined}</TableTd>
+      <TableTd>{sizeContent}</TableTd>
+    </TableTr>
   );
 }
 

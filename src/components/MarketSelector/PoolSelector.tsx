@@ -1,35 +1,31 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
-  getMarketIndexName,
   getGlvOrMarketAddress,
+  getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
-import {
-  gmTokensFavoritesTabOptionLabels,
-  gmTokensFavoritesTabOptions,
-} from "domain/synthetics/tokens/useGmTokensFavorites";
-import { useLocalizedMap } from "lib/i18n";
+import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
-import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
-
-import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { PoolListItem } from "./PoolListItem";
 
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
 import "./MarketSelector.scss";
-import { PoolListItem } from "./PoolListItem";
 
 export function PoolSelector({
   selectedMarketAddress,
@@ -44,15 +40,11 @@ export function PoolSelector({
   getMarketState,
   showAllPools = false,
   showIndexIcon = false,
-  favoriteTokens,
-  setFavoriteTokens,
-  tab,
-  setTab,
+  favoriteKey,
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-
-  const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites(favoriteKey);
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
@@ -104,24 +96,32 @@ export function PoolSelector({
     [marketsOptions, selectedMarketAddress]
   );
 
+  const fuse = useFuse(
+    () =>
+      marketsOptions.map((item, index) => ({
+        id: index,
+        name: isGlvInfo(item.marketInfo) ? getGlvDisplayName(item.marketInfo) : item.name,
+        longTokenName: item.marketInfo.longToken.name,
+        shortTokenName: item.marketInfo.shortToken.name,
+      })),
+    marketsOptions?.map((item) => item.indexName)
+  );
+
   const filteredOptions = useMemo(() => {
-    const lowercaseSearchKeyword = searchKeyword.toLowerCase();
-    return marketsOptions.filter((option) => {
-      let name = option.name.toLowerCase();
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      : marketsOptions;
 
-      const isGlv = isGlvInfo(option.marketInfo);
-
-      if (isGlv) {
-        name = "glv " + name;
+    const tabMatched = textMatched?.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo));
       }
 
-      const textSearchMatch = name.includes(lowercaseSearchKeyword);
-      const favoriteMatch =
-        tab === "favorites" ? favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo)) : true;
-
-      return textSearchMatch && favoriteMatch;
+      return true;
     });
-  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
+
+    return tabMatched;
+  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);
@@ -137,21 +137,6 @@ export function PoolSelector({
       }
     }
   };
-
-  const handleFavoriteClick = useCallback(
-    (address: string): void => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((token) => token !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
-  }, []);
 
   function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined) {
     if (!marketInfo) return "...";
@@ -182,24 +167,17 @@ export function PoolSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={handleSearch}
-            placeholder={t`Search Pool`}
-            onKeyDown={_handleKeyDown}
-          />
+          <div className="mt-16 flex items-center gap-16">
+            <SearchInput
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              placeholder={t`Search Pool`}
+              onKeyDown={_handleKeyDown}
+            />
+            <FavoriteTabs favoritesKey="gm-token-receive-pay-selector" />
+          </div>
         }
       >
-        <Tab
-          className="mb-10"
-          options={gmTokensFavoritesTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
-
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
             return (
@@ -211,12 +189,17 @@ export function PoolSelector({
                 isInFirstHalf={marketIndex < filteredOptions.length / 2}
                 showAllPools={showAllPools}
                 showBalances={showBalances}
-                onFavoriteClick={handleFavoriteClick}
+                onFavoriteClick={toggleFavoriteToken}
                 onSelectOption={onSelectOption}
               />
             );
           })}
         </div>
+        {filteredOptions.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No pools matched.</Trans>
+          </div>
+        )}
       </Modal>
 
       {marketInfo && (

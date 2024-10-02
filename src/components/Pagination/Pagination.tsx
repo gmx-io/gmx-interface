@@ -4,7 +4,7 @@ import Button from "components/Button/Button";
 
 import "./Pagination.css";
 
-type Props = {
+export type PaginationProps = {
   page: number;
   pageCount: number;
   onPageChange: (page: number) => void;
@@ -22,7 +22,7 @@ function getPageNumbers(current, max = 1) {
   }
 }
 
-export default function Pagination({ page, pageCount, topMargin = true, onPageChange }: Props) {
+export default function Pagination({ page, pageCount, topMargin = true, onPageChange }: PaginationProps) {
   if (pageCount <= 1) {
     return <></>;
   }

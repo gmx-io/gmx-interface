@@ -1,16 +1,16 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
 
-import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
-import Tab from "components/Tab/Tab";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import {
@@ -22,10 +22,7 @@ import {
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import {
-  gmTokensFavoritesTabOptionLabels,
-  gmTokensFavoritesTabOptions,
-} from "domain/synthetics/tokens/useGmTokensFavorites";
+import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 
 import Modal from "../Modal/Modal";
 import { PoolListItem } from "./PoolListItem";
@@ -52,19 +49,15 @@ export function GmPoolsSelectorForGlvMarket({
   getMarketState,
   showAllPools = false,
   showIndexIcon = false,
-  favoriteTokens,
   glvInfo,
-  setFavoriteTokens,
-  tab,
-  setTab,
   disablePoolSelector,
+  favoriteKey,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const { favoriteTokens, toggleFavoriteToken, tab } = useTokensFavorites(favoriteKey);
 
   const markets = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.glvTokenAddress);
-
-  const localizedTabOptionLabels = useLocalizedMap(gmTokensFavoritesTabOptionLabels);
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets =
@@ -120,18 +113,36 @@ export function GmPoolsSelectorForGlvMarket({
   const selectedMarketInfo = selectedPool?.marketInfo;
   const marketInfo = selectedMarketInfo && isMarketInfo(selectedMarketInfo) ? selectedMarketInfo : undefined;
 
+  const fuse = useFuse(
+    () =>
+      marketsOptions.map((item, index) => {
+        const indexTokenName = (item.marketInfo as MarketInfo).indexToken.name;
+        const indexTokenSymbol = (item.marketInfo as MarketInfo).indexToken.symbol;
+
+        return {
+          id: index,
+          indexTokenName,
+          indexTokenSymbol,
+        };
+      }),
+    marketsOptions?.map((item) => (item.marketInfo as MarketInfo).marketTokenAddress)
+  );
+
   const filteredOptions = useMemo(() => {
-    const lowercaseSearchKeyword = searchKeyword.toLowerCase();
-    return marketsOptions.filter((option) => {
-      const name = option.name.toLowerCase();
-      const textSearchMatch = name.includes(lowercaseSearchKeyword);
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      : marketsOptions;
 
-      const favoriteMatch =
-        tab === "favorites" ? favoriteTokens?.includes(getGlvOrMarketAddress(option.marketInfo)) : true;
+    const tabMatched = textMatched?.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo));
+      }
 
-      return textSearchMatch && favoriteMatch;
+      return true;
     });
-  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
+
+    return tabMatched;
+  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
 
   const onSelectGmPool = useCallback(
     function onSelectOption(option: MarketOption) {
@@ -156,21 +167,6 @@ export function GmPoolsSelectorForGlvMarket({
     [onSelectGmPool, filteredOptions]
   );
 
-  const handleFavoriteClick = useCallback(
-    (address: string): void => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((token) => token !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
-  }, []);
-
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
 
@@ -194,24 +190,17 @@ export function GmPoolsSelectorForGlvMarket({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={handleSearch}
-            placeholder={t`Search Pool`}
-            onKeyDown={handleKeyDown}
-          />
+          <div className="mt-16 flex items-center gap-16">
+            <SearchInput
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              placeholder={t`Search Pool`}
+              onKeyDown={handleKeyDown}
+            />
+            <FavoriteTabs favoritesKey="gm-pool-selector" />
+          </div>
         }
       >
-        <Tab
-          className="mb-10"
-          options={gmTokensFavoritesTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
-
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => (
             <PoolListItem
@@ -222,11 +211,16 @@ export function GmPoolsSelectorForGlvMarket({
               isInFirstHalf={marketIndex < filteredOptions.length / 2}
               showAllPools={showAllPools}
               showBalances={showBalances}
-              onFavoriteClick={handleFavoriteClick}
+              onFavoriteClick={toggleFavoriteToken}
               onSelectOption={onSelectGmPool}
             />
           ))}
         </div>
+        {filteredOptions.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No pools matched.</Trans>
+          </div>
+        )}
       </Modal>
 
       {marketInfo && (

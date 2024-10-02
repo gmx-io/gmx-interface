@@ -25,7 +25,9 @@ export const paginate = ({ total, current, size }: PaginateParams) => {
   };
 };
 
-export default function usePagination<T>(paginationKey: string, items: T[] = [], size = 10) {
+export const DEFAULT_PAGE_SIZE = 10;
+
+export default function usePagination<T>(paginationKey: string, items: T[] = [], size = DEFAULT_PAGE_SIZE) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(Math.ceil(items.length / size));
   const prevPaginationKey = usePrevious(paginationKey);

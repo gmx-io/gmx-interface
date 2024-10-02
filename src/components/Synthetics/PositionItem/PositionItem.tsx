@@ -12,6 +12,7 @@ import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/glob
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxMarketAddress,
@@ -37,10 +38,10 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./PositionItem.scss";
 
 export type Props = {
@@ -360,13 +361,14 @@ export function PositionItem(p: Props) {
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
-      <tr
-        data-qa={qaAttr}
-        className={cx("Exchange-list-item", {
-          "Exchange-list-item-active": isCurrentMarket,
-        })}
-      >
-        <td className="clickable" data-qa="position-handle" onClick={() => p.onSelectPositionClick?.()}>
+      <TableTr data-qa={qaAttr}>
+        <TableTd
+          data-qa="position-handle"
+          className={cx({
+            "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
+          })}
+          onClick={() => p.onSelectPositionClick?.()}
+        >
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
@@ -430,12 +432,12 @@ export function PositionItem(p: Props) {
               {p.position.isLong ? t`Long` : t`Short`}
             </span>
           </div>
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           {formatUsd(p.position.sizeInUsd)}
           <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           {/* netValue */}
           {p.position.isOpening ? (
             t`Opening...`
@@ -456,55 +458,55 @@ export function PositionItem(p: Props) {
               )}
             </>
           )}
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           {/* collateral */}
           <div>{renderCollateral()}</div>
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           {/* entryPrice */}
           {p.position.isOpening
             ? t`Opening...`
             : formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
               })}
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
             displayDecimals: marketDecimals,
           })}
-        </td>
-        <td>
+        </TableTd>
+        <TableTd>
           {/* liqPrice */}
           {renderLiquidationPrice()}
-        </td>
-        <td>
-          {/* Close */}
-          {!p.position.isOpening && !p.hideActions && (
-            <button
-              className="Exchange-list-action"
-              onClick={p.onClosePositionClick}
-              disabled={p.position.sizeInUsd == 0n}
-              data-qa="position-close-button"
-            >
-              <Trans>Close</Trans>
-            </button>
-          )}
-        </td>
-        <td>
-          {!p.position.isOpening && !p.hideActions && (
-            <PositionDropdown
-              handleEditCollateral={p.onEditCollateralClick}
-              handleMarketSelect={() => p.onSelectPositionClick?.()}
-              handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
-              handleShare={p.onShareClick}
-              handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
-              handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
-            />
-          )}
-        </td>
-      </tr>
+        </TableTd>
+        {/* Close */}
+        {!p.position.isOpening && !p.hideActions && (
+          <>
+            <TableTd>
+              <button
+                className="Exchange-list-action"
+                onClick={p.onClosePositionClick}
+                disabled={p.position.sizeInUsd == 0n}
+                data-qa="position-close-button"
+              >
+                <Trans>Close</Trans>
+              </button>
+            </TableTd>
+            <TableTd>
+              <PositionDropdown
+                handleEditCollateral={p.onEditCollateralClick}
+                handleMarketSelect={() => p.onSelectPositionClick?.()}
+                handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                handleShare={p.onShareClick}
+                handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
+              />
+            </TableTd>
+          </>
+        )}
+      </TableTr>
     );
   }
 
@@ -512,7 +514,7 @@ export function PositionItem(p: Props) {
     const indexName = getMarketIndexName(p.position.marketInfo);
     const poolName = getMarketPoolName(p.position.marketInfo);
     return (
-      <div className="App-card" data-qa="position-item">
+      <div className="App-card flex flex-col justify-between" data-qa="position-item">
         <div className="flex flex-grow flex-col">
           <div className="flex-grow">
             <div

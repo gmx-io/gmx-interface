@@ -1,9 +1,7 @@
 import { Trans } from "@lingui/macro";
-import noop from "lodash/noop";
-import { useCallback, useMemo, useState } from "react";
-import { Address, isAddress, isAddressEqual } from "viem";
+import { useMemo, useState } from "react";
 
-import usePagination from "components/Referrals/usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
@@ -11,15 +9,17 @@ import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTo
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
+import { useFuse } from "lib/useFuse";
 
-import Pagination from "components/Pagination/Pagination";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../OrderList/ExchangeTable";
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 
@@ -43,95 +43,87 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   >();
   const [searchText, setSearchText] = useState("");
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  }, []);
-
   const filteredMarkets = useFilterSortMarkets({ searchText, indexTokensStats, orderBy, direction });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
     `${chainId} ${direction} ${orderBy} ${searchText}`,
     filteredMarkets,
-    10
+    DEFAULT_PAGE_SIZE
   );
 
   return (
-    <div
-      className="my-15 rounded-4 bg-slate-800 text-left
-                 max-[964px]:!-mr-[--default-container-padding] max-[964px]:!rounded-r-0
-                 max-[600px]:!-mr-[--default-container-padding-mobile]"
-    >
-      <div className="flex items-center px-14 py-10 text-16">
+    <div className="my-15 rounded-4 bg-slate-800 text-left">
+      <div className="flex items-center px-16 py-8 text-16">
         <Trans>GM Pools</Trans>
         <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
         <SearchInput
           size="s"
           value={searchText}
-          setValue={handleSearch}
+          setValue={setSearchText}
           className="*:!text-16"
           placeholder="Search Market"
-          onKeyDown={noop}
           autoFocus={false}
         />
       </div>
-      <div className="h-1 bg-slate-700"></div>
-      <div className="overflow-x-auto">
+      <TableScrollFadeContainer>
         <table className="w-[max(100%,900px)]">
           <thead>
-            <ExchangeTheadTr bordered={false}>
-              <ExchangeTh>
+            <TableTheadTr bordered>
+              <TableTh>
                 <Trans>MARKETS</Trans>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("price")}>
                   <Trans>PRICE</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("tvl")}>
                   <Trans comment="Total Value Locked">TVL</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("liquidity")}>
                   <Trans>LIQUIDITY</Trans>
                 </Sorter>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <TooltipWithPortal
                   handle={<Trans>NET RATE / 1 H</Trans>}
                   renderContent={renderNetFeeHeaderTooltipContent}
                 />
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Sorter {...getSorterProps("utilization")}>
                   <Trans>UTILIZATION</Trans>
                 </Sorter>
-              </ExchangeTh>
-            </ExchangeTheadTr>
+              </TableTh>
+            </TableTheadTr>
           </thead>
           <tbody>
             {indexTokensStats.length > 0 &&
               currentData.length > 0 &&
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
+            {indexTokensStats.length > 0 && !currentData.length && (
+              <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
+                <TableTd colSpan={6} className="align-top text-gray-400">
+                  <Trans>No markets found.</Trans>
+                </TableTd>
+              </TableTr>
+            )}
+
+            {indexTokensStats.length > 0 && currentData.length < DEFAULT_PAGE_SIZE && (
+              <MarketListSkeleton
+                invisible
+                count={currentData.length === 0 ? DEFAULT_PAGE_SIZE - 1 : DEFAULT_PAGE_SIZE - currentData.length}
+              />
+            )}
             {!indexTokensStats.length && <MarketListSkeleton />}
           </tbody>
         </table>
-      </div>
-      {indexTokensStats.length > 0 && !currentData.length && (
-        <div className="p-14 text-center text-gray-400">
-          <Trans>No markets found.</Trans>
-        </div>
-      )}
-      {pageCount > 1 && (
-        <>
-          <div className="h-1 bg-slate-700"></div>
-          <div className="py-10">
-            <Pagination topMargin={false} page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-          </div>
-        </>
-      )}
+      </TableScrollFadeContainer>
+      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
     </div>
   );
 }
@@ -147,26 +139,24 @@ function useFilterSortMarkets({
   orderBy: string;
   direction: string;
 }) {
+  const fuse = useFuse(
+    () =>
+      indexTokensStats.map((indexTokenStat, index) => ({
+        id: index,
+        name: indexTokenStat.token.name,
+        symbol: indexTokenStat.token.symbol,
+        address: indexTokenStat.token.address,
+      })),
+    indexTokensStats.map((indexTokenStat) => indexTokenStat.token.address)
+  );
+
   const filteredMarkets = useMemo(() => {
     if (!searchText.trim()) {
       return indexTokensStats;
     }
 
-    return indexTokensStats.filter((indexTokenStat) => {
-      const token = indexTokenStat.token;
-
-      const tokenSymbol = token.symbol;
-      const tokenName = token.name;
-
-      const tokenAddress = token.address;
-
-      return (
-        tokenSymbol.toLowerCase().includes(searchText.toLowerCase()) ||
-        tokenName.toLowerCase().includes(searchText.toLowerCase()) ||
-        (isAddress(searchText) && isAddressEqual(tokenAddress as Address, searchText))
-      );
-    });
-  }, [indexTokensStats, searchText]);
+    return fuse.search(searchText).map((result) => indexTokensStats[result.item.id]);
+  }, [indexTokensStats, searchText, fuse]);
 
   const sortedMarkets = useMemo(() => {
     if (orderBy === "unspecified" || direction === "unspecified") {
@@ -207,8 +197,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
   const marketIndexName = getMarketIndexName(anyPool.marketInfo);
 
   return (
-    <ExchangeTr key={stats.token.symbol} bordered={false} hoverable={false}>
-      <ExchangeTd>
+    <TableTr key={stats.token.symbol} bordered={false} hoverable={false}>
+      <TableTd>
         <div className="token-symbol-wrapper">
           <div className="flex items-center">
             <div className="App-card-title-info-icon min-h-40">
@@ -226,9 +216,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </div>
           </div>
         </div>
-      </ExchangeTd>
-      <ExchangeTd>{formatUsdPrice(stats.token.prices?.minPrice)}</ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>{formatUsdPrice(stats.token.prices?.minPrice)}</TableTd>
+      <TableTd>
         <TooltipWithPortal
           className="nowrap"
           handle={formatUsd(stats.totalPoolValue)}
@@ -251,8 +241,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </>
           )}
         />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <TooltipWithPortal
           className="nowrap"
           handle={formatUsd(stats.totalMaxLiquidity)}
@@ -275,8 +265,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
             </>
           )}
         />
-      </ExchangeTd>
-      <ExchangeTd>
+      </TableTd>
+      <TableTd>
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
@@ -284,8 +274,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
-      </ExchangeTd>
-      <ExchangeTd>{formatAmount(stats.totalUtilization, 2, 2)}%</ExchangeTd>
-    </ExchangeTr>
+      </TableTd>
+      <TableTd>{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
+    </TableTr>
   );
 }
