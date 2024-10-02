@@ -19,18 +19,17 @@ import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avalanche.svg";
 import glvIcon from "img/ic_glv_40.svg";
 
-const ICONS: Record<
-  number | "common",
-  {
-    network?: string;
-    gmx: string;
-    glp: string;
-    esgmx?: string;
-    gm: string;
-    gmxOutline?: string;
-    glv?: string;
-  }
-> = {
+type ChainIcons = {
+  network?: string;
+  gmx: string;
+  glp: string;
+  esgmx?: string;
+  gm: string;
+  gmxOutline?: string;
+  glv?: string;
+};
+
+const ICONS: Record<number | "common", ChainIcons> = {
   [ARBITRUM]: {
     network: arbitrum,
     gmx: gmxArbitrum,
@@ -67,16 +66,17 @@ const ICONS: Record<
   },
 };
 
-export function getIcon(chainId: number | "common", label: string) {
-  if (chainId in ICONS) {
-    if (label in ICONS[chainId]) {
-      return ICONS[chainId][label];
-    }
+export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
+  if (!chainId || !(chainId in ICONS)) {
+    throw new Error(`No icons found for chain: ${chainId}`);
   }
+
+  return ICONS[chainId][label];
 }
 export function getIcons(chainId: number | "common") {
-  if (!chainId) return;
-  if (chainId in ICONS) {
-    return ICONS[chainId];
+  if (!chainId || !(chainId in ICONS)) {
+    throw new Error(`No icons found for chain: ${chainId}`);
   }
+
+  return ICONS[chainId];
 }
