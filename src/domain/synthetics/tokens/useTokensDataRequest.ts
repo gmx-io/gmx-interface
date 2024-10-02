@@ -8,6 +8,7 @@ import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
 type TokensDataResult = {
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
+  isBalancesLoaded?: boolean;
   error?: Error;
 };
 
@@ -34,6 +35,8 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
       };
     }
 
+    const isBalancesLoaded = Boolean(balancesData);
+
     return {
       tokensData: tokenAddresses.reduce((acc: TokensData, tokenAddress) => {
         const prices = pricesData[tokenAddress];
@@ -52,6 +55,7 @@ export function useTokensDataRequest(chainId: number): TokensDataResult {
         return acc;
       }, {} as TokensData),
       pricesUpdatedAt,
+      isBalancesLoaded,
     };
   }, [error, chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs]);
 }

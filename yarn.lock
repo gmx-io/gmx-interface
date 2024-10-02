@@ -6807,7 +6807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bowser@npm:^2.9.0":
+"bowser@npm:2.11.0, bowser@npm:^2.9.0":
   version: 2.11.0
   resolution: "bowser@npm:2.11.0"
   checksum: 29c3f01f22e703fa6644fc3b684307442df4240b6e10f6cfe1b61c6ca5721073189ca97cdeedb376081148c8518e33b1d818a57f781d70b0b70e1f31fb48814f
@@ -10115,6 +10115,7 @@ __metadata:
     autoprefixer: 10.4.20
     babel-plugin-macros: 3.1.0
     bigdecimal: 0.6.1
+    bowser: 2.11.0
     buffer: 6.0.3
     classnames: 2.3.1
     crypto-js: 4.2.0

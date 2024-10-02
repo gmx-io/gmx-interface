@@ -6,6 +6,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useIsWindowVisible from "lib/useIsWindowVisible";
 import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
+import Bowser from "bowser";
 import { useEffect } from "react";
 import { metrics } from "./Metrics";
 import { isHomeSite } from "../legacy";
@@ -34,6 +35,8 @@ export function useConfigureMetrics() {
   }, [showDebugValues]);
 
   useEffect(() => {
+    const bowser = Bowser.parse(window.navigator.userAgent);
+
     metrics.setGlobalMetricData({
       isMobileMetamask,
       isWindowVisible,
@@ -41,6 +44,13 @@ export function useConfigureMetrics() {
       abFlags: getAbFlags(),
       isMobile: getIsMobileUserAgent(),
       isHomeSite: isHomeSite(),
+      browserName: bowser.browser.name,
+      browserVersion: bowser.browser.version,
+      platform: bowser.platform.type,
     });
   }, [active, isMobileMetamask, isWindowVisible]);
+
+  useEffect(() => {
+    metrics.updateWalletNames();
+  }, [active]);
 }

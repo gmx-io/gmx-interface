@@ -76,16 +76,53 @@ function parseOracleCandle(rawCandle: number[]): Bar {
 
 let fallbackThrottleTimerId: any;
 
-type PostReport2Body = {
+export type UiReportPayload = {
+  isError: boolean;
+  version: string;
+  event: string;
+  message?: string;
+  host: string;
+  url?: string;
+  time?: number;
+  isDev?: boolean;
+  customFields?: any;
+};
+
+export type CounterPayload = {
+  event: string;
+  version: string;
   isDev: boolean;
   host: string;
-  url: string;
-  wallet?: string | null;
+  abFlags: { [key: string]: boolean };
+  customFields?: { [key: string]: any };
+};
+
+export type TimingPayload = {
   event: string;
-  version?: string;
-  isError: boolean;
-  time?: number;
-  customFields: object;
+  version: string;
+  time: number;
+  isDev: boolean;
+  host: string;
+  abFlags: { [key: string]: boolean };
+  customFields?: { [key: string]: any };
+};
+
+export type BatchReportItem =
+  | {
+      type: "event";
+      payload: UiReportPayload;
+    }
+  | {
+      type: "counter";
+      payload: CounterPayload;
+    }
+  | {
+      type: "timing";
+      payload: TimingPayload;
+    };
+
+export type BatchReportBody = {
+  items: BatchReportItem[];
 };
 
 export interface OracleFetcher {
@@ -94,7 +131,8 @@ export interface OracleFetcher {
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
-  fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response>;
+  fetchPostEvent(body: UiReportPayload, debug?: boolean): Promise<Response>;
+  fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchPostTiming(
     body: {
@@ -205,7 +243,26 @@ export class OracleKeeperFetcher implements OracleFetcher {
       });
   }
 
-  fetchPostEvent(body: PostReport2Body, debug?: boolean): Promise<Response> {
+  fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response> {
+    if (debug) {
+      // eslint-disable-next-line no-console
+      console.log("sendBatchMetrics", body);
+    }
+
+    if (isLocal()) {
+      return Promise.resolve(new Response());
+    }
+
+    return fetch(buildUrl(this.url!, "/report/ui/batch_report"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  fetchPostEvent(body: UiReportPayload, debug?: boolean): Promise<Response> {
     if (debug) {
       // eslint-disable-next-line no-console
       console.log("sendMetric", body.event, body);

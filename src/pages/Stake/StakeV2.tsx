@@ -241,7 +241,7 @@ function StakeModal(props: {
             <img
               className="icon mr-5 h-22"
               height="22"
-              src={icons[stakingTokenSymbol.toLowerCase()]}
+              src={icons?.[stakingTokenSymbol.toLowerCase()]}
               alt={stakingTokenSymbol}
             />
             {stakingTokenSymbol}
@@ -386,7 +386,7 @@ function UnstakeModal(props: {
             <img
               className="icon mr-5 h-22"
               height="22"
-              src={icons[unstakingTokenSymbol.toLowerCase()]}
+              src={icons?.[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
             />
             {unstakingTokenSymbol}
@@ -557,7 +557,7 @@ function VesterDepositModal(props: {
             showMaxButton={false}
           >
             <div className="Stake-modal-icons">
-              <img className="icon mr-5 h-22" height="22" src={icons.esgmx} alt="esGMX" />
+              <img className="icon mr-5 h-22" height="22" src={icons?.esgmx} alt="esGMX" />
               esGMX
             </div>
           </BuyInputSection>
@@ -1827,7 +1827,7 @@ export default function StakeV2() {
           <div className="App-card StakeV2-gmx-card">
             <div className="App-card-title">
               <div className="inline-flex items-center">
-                <img className="mr-5 h-20" alt="GMX" src={icons.gmx} height={20} />
+                <img className="mr-5 h-20" alt="GMX" src={icons?.gmx} height={20} />
                 {t`GMX & Voting Power`}
               </div>
             </div>
@@ -2124,7 +2124,7 @@ export default function StakeV2() {
             <div>
               <div className="App-card-title">
                 <div className="inline-flex items-center">
-                  <img className="mr-5 h-20" alt="GLP" src={icons.glp} height={20} />
+                  <img className="mr-5 h-20" alt="GLP" src={icons?.glp} height={20} />
                   GLP
                 </div>
               </div>
@@ -2293,7 +2293,7 @@ export default function StakeV2() {
           <div className="App-card">
             <div className="App-card-title">
               <div className="inline-flex items-center">
-                <img className="mr-5 h-20" alt="GLP" src={icons.esgmx} height={20} />
+                <img className="mr-5 h-20" alt="GLP" src={icons?.esgmx} height={20} />
                 <span>
                   <Trans>Escrowed GMX</Trans>
                 </span>
@@ -2418,7 +2418,7 @@ export default function StakeV2() {
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
                 <div className="inline-flex items-center">
-                  <img className="mr-5 h-20" alt="GMX" src={icons.gmx} height={20} />
+                  <img className="mr-5 h-20" alt="GMX" src={icons?.gmx} height={20} />
                   <Trans>GMX Vault</Trans>
                 </div>
               </div>
@@ -2529,7 +2529,7 @@ export default function StakeV2() {
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
                 <div className="inline-flex items-center">
-                  <img className="mr-5 h-20" alt="GLP" src={icons.glp} height={20} />
+                  <img className="mr-5 h-20" alt="GLP" src={icons?.glp} height={20} />
                   <Trans>GLP Vault</Trans>
                 </div>
               </div>
@@ -2620,7 +2620,7 @@ export default function StakeV2() {
               <div className="App-card StakeV2-gmx-card">
                 <div className="App-card-title">
                   <div className="inline-flex items-center">
-                    <img className="mr-5 h-20" alt="GLP" src={icons.gmx} height={20} />
+                    <img className="mr-5 h-20" alt="GLP" src={icons?.gmx} height={20} />
                     <Trans>Affiliate Vault</Trans>
                   </div>
                 </div>

@@ -84,6 +84,10 @@ class MockOracleKeeperFetcher implements OracleFetcher {
   fetchPostTiming(): Promise<Response> {
     return Promise.resolve(new Response());
   }
+
+  fetchPostBatchReport(): Promise<Response> {
+    return Promise.resolve(new Response());
+  }
 }
 
 describe("subscribeBars", () => {
