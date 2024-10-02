@@ -63,7 +63,7 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       generateLink: () => "https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum",
     },
   ],
-  TBTC: [
+  tBTC: [
     {
       name: "Portalbridge",
       generateLink: () => "https://portalbridge.com/",
@@ -72,7 +72,7 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       name: "Threshold",
       render: () => (
         <Trans>
-          Mint TBTC using BTC with{" "}
+          Mint tBTC using BTC with{" "}
           <ExternalLink href="https://arbitrum.threshold.network/minting">Threshold</ExternalLink>
         </Trans>
       ),
