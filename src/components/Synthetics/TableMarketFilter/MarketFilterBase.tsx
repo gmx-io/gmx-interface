@@ -40,7 +40,10 @@ export function MarketFilterBase({
 }: MarketFilterBaseProps) {
   const marketsInfoData = useMarketsInfoData();
   const chainId = useSelector(selectChainId);
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, {
+    isDeposit: true,
+    withGlv: false,
+  });
   const { marketsInfo: markets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
   const marketsOptions = useMemo<Item<string>[]>(() => {

@@ -553,7 +553,7 @@ function MarketTokenListItem({
           incentiveApr={incentiveApr}
           lidoApr={lidoApr}
           showTooltip={false}
-          tokenAddress={market.address}
+          marketAddress={market.address}
         />
       </td>
     </tr>
