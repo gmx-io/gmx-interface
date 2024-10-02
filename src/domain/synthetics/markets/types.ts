@@ -193,6 +193,8 @@ export type GlvInfo = {
   shiftLastExecutedAt: bigint;
   shiftMinInterval: bigint;
   isDisabled: boolean;
+  poolValueMax: bigint;
+  poolValueMin: bigint;
   data: string;
 };
 

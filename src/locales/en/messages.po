@@ -2495,6 +2495,10 @@ msgstr "Funding Fee Rate"
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 
+#: src/config/bridging.tsx
+msgid "Mint tBTC using BTC with <0>Threshold</0>"
+msgstr "Mint tBTC using BTC with <0>Threshold</0>"
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -3088,8 +3092,8 @@ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claimin
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-msgid "TBTC LP incentives"
-msgstr "TBTC LP incentives"
+#~ msgid "TBTC LP incentives"
+#~ msgstr "TBTC LP incentives"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -3887,6 +3891,10 @@ msgstr "Insufficient liquidity in GM Pool"
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "tBTC LP incentives"
+msgstr "tBTC LP incentives"
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
@@ -7166,8 +7174,8 @@ msgid "Give us your feedback on GMX."
 msgstr "Give us your feedback on GMX."
 
 #: src/config/bridging.tsx
-msgid "Mint TBTC using BTC with <0>Threshold</0>"
-msgstr "Mint TBTC using BTC with <0>Threshold</0>"
+#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
+#~ msgstr "Mint TBTC using BTC with <0>Threshold</0>"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"

@@ -47,7 +47,13 @@ export const GLV_MARKETS: {
     },
   },
   [ARBITRUM_GOERLI]: {},
-  [AVALANCHE]: {},
+  [AVALANCHE]: {
+    "0x901eE57f7118A7be56ac079cbCDa7F22663A3874": {
+      name: undefined,
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+    },
+  },
   [AVALANCHE_FUJI]: {
     "0xc519a5b8e5e93D3ec85D62231C1681c44952689d": {
       name: "High Caps",

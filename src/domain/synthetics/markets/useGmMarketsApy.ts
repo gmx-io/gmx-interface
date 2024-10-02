@@ -191,7 +191,7 @@ function useIncentivesBonusApr(
     const marketTokensAPRData: MarketTokensAPRData = {};
     for (const marketAddress of marketAddresses) {
       const market = getByKey(marketsInfoData, marketAddress);
-      if (!market || !isMarketInfo(market)) {
+      if (!market) {
         continue;
       }
       const marketToken = marketTokensData?.[marketAddress];
