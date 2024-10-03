@@ -170,10 +170,10 @@ export default function TokenCard({ showRedirectModal }: Props) {
   const maxGlvApyText = useMemo(() => {
     const arb = !arbGlvApy
       ? "...%"
-      : `${formatAmount(calculateMaxApr({ ...arbGlvApy, ...arbGlvIncentiveApr }, {}, ARBITRUM), 28, 2)}%`;
+      : `${formatAmount(calculateMaxApr(arbGlvApy, arbGlvIncentiveApr ?? {}, ARBITRUM), 28, 2)}%`;
     const avax = !avaxGlvApy
       ? "...%"
-      : `${formatAmount(calculateMaxApr({ ...avaxGlvApy, ...avaxGlvIncentiveApr }, {}, AVALANCHE), 28, 2)}%`;
+      : `${formatAmount(calculateMaxApr(avaxGlvApy, avaxGlvIncentiveApr ?? {}, AVALANCHE), 28, 2)}%`;
     return {
       [ARBITRUM]: isGlvEnabled(ARBITRUM) ? arb : undefined,
       [AVALANCHE]: isGlvEnabled(AVALANCHE) ? avax : undefined,

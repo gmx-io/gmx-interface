@@ -16,7 +16,7 @@ import { useTokensDataRequest } from "../tokens";
 import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { getPoolUsdWithoutPnl, isMarketInfo } from "domain/synthetics/markets";
+import { getPoolUsdWithoutPnl, GlvInfoData, isMarketInfo } from "domain/synthetics/markets";
 import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
@@ -139,11 +139,15 @@ function useExcludedLiquidityMarketMap(
   return excludedBalancesMulticall.data ?? {};
 }
 
-function useIncentivesBonusApr(chainId: number, marketsInfoData: GlvAndGmMarketsInfoData | undefined) {
+function useIncentivesBonusApr(
+  chainId: number,
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined,
+  glvData: GlvInfoData | undefined
+) {
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(marketsInfoData);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: true, glvData });
   const tokenAddress = liquidityProvidersIncentives?.token;
   const excludedLiquidityMarketMap = useExcludedLiquidityMarketMap(chainId, marketsInfoData);
 
@@ -194,6 +198,7 @@ function useIncentivesBonusApr(chainId: number, marketsInfoData: GlvAndGmMarkets
       if (!market) {
         continue;
       }
+
       const marketToken = marketTokensData?.[marketAddress];
       const poolValue = market?.poolValueMin;
 
@@ -407,7 +412,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
     },
   });
 
-  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData);
+  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData, glvData);
 
   const glvApyInfoData = useMemo(() => {
     if (!glvData || !data?.marketsTokensApyData) {
