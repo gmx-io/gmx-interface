@@ -183,7 +183,7 @@ export function LeaderboardAccountsTable({
         />
       </div>
       <TableScrollFadeContainer>
-        <table className="w-full">
+        <table className="w-full min-w-[1000px]">
           <thead>
             <TableTheadTr bordered>
               <TableHeaderCell
