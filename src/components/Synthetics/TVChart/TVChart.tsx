@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
-import { usePrevious, useMedia } from "react-use";
+import { useMedia, usePrevious } from "react-use";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { convertTokenAddress, getPriceDecimals } from "config/tokens";
@@ -15,23 +15,28 @@ import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContex
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isIncreaseOrderType, isSwapOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
 
+import { USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 
 import { TVChartHeader } from "./TVChartHeader";
 
+import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
 
 const DEFAULT_PERIOD = "5m";
+let metricsRequestId: string | undefined = undefined;
+let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
   const chartToken = useSelector(selectChartToken);
@@ -41,6 +46,7 @@ export function TVChart() {
 
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
   const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
   const chartTokenAddress = chartToken?.address;
 
@@ -139,12 +145,62 @@ export function TVChart() {
       oracleFetcher: oracleKeeperFetcher,
       chainId,
     });
+
+    // Start timer for dataProvider initialization
+    metrics.startTimer("candlesLoad");
+
+    dataProvider.setOnBarsLoadStarted(() => {
+      metricsIsFirstLoadTime = !metricsRequestId;
+      metricsRequestId = getRequestId();
+
+      metrics.pushEvent<LoadingStartEvent>({
+        event: "candlesLoad.started",
+        isError: false,
+        time: metrics.getTime("candlesLoad", true),
+        data: {
+          requestId: metricsRequestId,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
+        },
+      });
+
+      metrics.startTimer("candlesLoad");
+    });
+
+    dataProvider.setOnBarsLoaded(() => {
+      metrics.pushEvent<LoadingSuccessEvent>({
+        event: "candlesLoad.success",
+        isError: false,
+        time: metrics.getTime("candlesLoad", true),
+        data: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
+        },
+      });
+
+      setIsCandlesLoaded(true);
+    });
+
+    dataProvider.setOnBarsLoadFailed((error) => {
+      const metricData = prepareErrorMetricData(error);
+
+      metrics.pushEvent<LoadingStartEvent>({
+        event: "candlesLoad.started",
+        isError: false,
+        time: metrics.getTime("candlesLoad", true),
+        data: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
+          ...metricData,
+        },
+      });
+    });
+
     setDataProvider(dataProvider);
 
     return () => {
       dataProvider.finalize();
     };
-  }, [oracleKeeperFetcher, chainId]);
+  }, [oracleKeeperFetcher, chainId, setIsCandlesLoaded]);
 
   useEffect(
     function updatePeriod() {

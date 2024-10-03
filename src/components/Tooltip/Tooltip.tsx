@@ -15,10 +15,9 @@ import {
 } from "@floating-ui/react";
 import cx from "classnames";
 import {
-  ComponentType,
+  ComponentPropsWithoutRef,
+  ElementType,
   MouseEvent,
-  PropsWithChildren,
-  ReactHTML,
   ReactNode,
   useCallback,
   useEffect,
@@ -27,18 +26,20 @@ import {
 } from "react";
 
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
+import { usePrevious } from "lib/usePrevious";
+
 import { DEFAULT_ARROW_COLOR, arrowColor } from "./arrowColor";
 
-import { usePrevious } from "lib/usePrevious";
 import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
 
-export type TooltipProps<T extends PropsWithChildren = PropsWithChildren> = {
+type InnerTooltipProps<T extends ElementType> = {
   /**
    * Takes precedence over `children`
    */
   handle?: ReactNode;
+  children?: ReactNode;
   renderContent?: () => ReactNode;
   content?: ReactNode | undefined | null;
   position?: TooltipPosition;
@@ -64,14 +65,17 @@ export type TooltipProps<T extends PropsWithChildren = PropsWithChildren> = {
    *
    * This element should extend `HTMLProps<HTMLElement>`.
    */
-  as?: ComponentType<T> | keyof ReactHTML;
+  as?: T;
   withPortal?: boolean;
   shouldStopPropagation?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
-} & T;
+};
 
-export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>({
+export type TooltipProps<T extends ElementType> = InnerTooltipProps<T> &
+  Omit<ComponentPropsWithoutRef<T>, keyof InnerTooltipProps<T>>;
+
+export default function Tooltip<T extends ElementType>({
   handle,
   children,
   renderContent,
@@ -177,10 +181,15 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
     const Container = as as any;
     return (
       <Container
-        {...(containerProps as T)}
+        {...containerProps}
         className={cx("Tooltip", className)}
         ref={refs.setReference}
-        {...getReferenceProps()}
+        {...getReferenceProps({
+          onClick: (e: MouseEvent) => {
+            preventClick(e);
+            containerProps.onClick?.(e);
+          },
+        })}
       >
         {children}
         {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
@@ -193,10 +202,14 @@ export default function Tooltip<T extends PropsWithChildren = PropsWithChildren>
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        {...getReferenceProps()}
-        onClick={preventClick}
         className={cx({ "Tooltip-handle": !disableHandleStyle }, handleClassName)}
         style={handleStyle}
+        {...getReferenceProps({
+          onClick: (e: MouseEvent) => {
+            preventClick(e);
+            containerProps.onClick?.(e);
+          },
+        })}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {isHandlerDisabled ? (

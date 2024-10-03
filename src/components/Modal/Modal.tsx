@@ -34,6 +34,7 @@ export type ModalProps = PropsWithChildren<{
   onAfterOpen?: () => void;
   contentPadding?: boolean;
   qa?: string;
+  noDivider?: boolean;
 }>;
 
 export default function Modal({
@@ -45,6 +46,7 @@ export default function Modal({
   headerContent,
   footerContent,
   contentPadding = true,
+  noDivider = false,
   onAfterOpen,
   setIsVisible,
   qa,
@@ -99,7 +101,7 @@ export default function Modal({
               </div>
               {headerContent}
             </div>
-
+            {!noDivider && <div className="divider" />}
             <RemoveScroll className="overflow-auto">
               <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalRef}>
                 {children}

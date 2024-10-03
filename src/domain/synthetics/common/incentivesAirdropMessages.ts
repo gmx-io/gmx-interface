@@ -9,6 +9,7 @@ export const INCENTIVE_TYPE_MAP = {
   1006: t`STIP.b Retroactive Bonus`,
   1100: t`Avalanche LP incentives`,
   1101: t`Avalanche trading incentives`,
+  1200: t`tBTC LP incentives`,
 };
 
 export const INCENTIVE_TOOLTIP_MAP = {

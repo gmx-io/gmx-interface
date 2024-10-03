@@ -27,14 +27,14 @@ import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
+import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
+import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
-import { ExchangeTable, ExchangeTd, ExchangeTh, ExchangeTheadTr } from "./ExchangeTable";
 import { OrderTypeFilter } from "./filters/OrderTypeFilter";
-import Button from "components/Button/Button";
 
 type Props = {
   hideActions?: boolean;
@@ -160,7 +160,7 @@ export function OrderList({
   return (
     <div ref={ref}>
       {isContainerSmall && orders.length === 0 && (
-        <div className="rounded-4 bg-slate-800 p-14">{isLoading ? t`Loading...` : t`No open orders`}</div>
+        <div className="rounded-4 bg-slate-800 p-14 text-gray-400">{isLoading ? t`Loading...` : t`No open orders`}</div>
       )}
 
       {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (
@@ -215,44 +215,48 @@ export function OrderList({
       )}
 
       {!isContainerSmall && (
-        <ExchangeTable>
+        <Table>
           <thead>
-            <ExchangeTheadTr>
+            <TableTheadTr bordered>
               {!hideActions && (
-                <ExchangeTh className="cursor-pointer" onClick={onSelectAllOrders}>
+                <TableTh className="cursor-pointer" onClick={onSelectAllOrders}>
                   <Checkbox
                     isPartialChecked={onlySomeOrdersSelected}
                     isChecked={areAllOrdersSelected}
                     setIsChecked={onSelectAllOrders}
                   />
-                </ExchangeTh>
+                </TableTh>
               )}
-              <ExchangeTh>
+              <TableTh>
                 <MarketFilterLongShort
                   withPositions="withOrders"
                   value={marketsDirectionsFilter}
                   onChange={setMarketsDirectionsFilter}
                 />
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Trans>Size</Trans>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Trans>Trigger Price</Trans>
-              </ExchangeTh>
-              <ExchangeTh>
+              </TableTh>
+              <TableTh>
                 <Trans>Mark Price</Trans>
-              </ExchangeTh>
-            </ExchangeTheadTr>
+              </TableTh>
+
+              {!hideActions && <TableTh></TableTh>}
+            </TableTheadTr>
           </thead>
           <tbody>
             {orders.length === 0 && (
-              <tr>
-                <ExchangeTd colSpan={5}>{isLoading ? t`Loading...` : t`No open orders`}</ExchangeTd>
-              </tr>
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={7} className="text-gray-400">
+                  {isLoading ? t`Loading...` : t`No open orders`}
+                </TableTd>
+              </TableTr>
             )}
             {!isLoading &&
               orders.map((order) => (
@@ -270,7 +274,7 @@ export function OrderList({
                 />
               ))}
           </tbody>
-        </ExchangeTable>
+        </Table>
       )}
 
       <OrderEditorContainer />

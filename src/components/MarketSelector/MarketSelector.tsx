@@ -1,24 +1,20 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
-import {
-  indexTokensFavoritesTabOptionLabels,
-  indexTokensFavoritesTabOptions,
-  useIndexTokensFavorites,
-} from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 
-import { useLocalizedMap } from "lib/i18n";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
-import Tab from "components/Tab/Tab";
 
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
@@ -71,8 +67,7 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useIndexTokensFavorites();
-  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("market-selector");
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -108,16 +103,31 @@ export function MarketSelector({
 
   const marketInfo = marketsOptions.find((option) => option.indexName === selectedIndexName)?.marketInfo;
 
-  const filteredOptions = marketsOptions.filter((option) => {
-    const textSearchMatch =
-      option.indexName.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
-      (!option.marketInfo.isSpotOnly &&
-        option.marketInfo.indexToken.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1);
+  const fuse = useFuse(
+    () =>
+      marketsOptions.map((item, index) => ({
+        id: index,
+        name: item.indexName,
+        indexTokenName: item.marketInfo.isSpotOnly ? "" : item.marketInfo.indexToken.name,
+      })),
+    marketsOptions?.map((item) => item.marketInfo.indexToken.address)
+  );
 
-    const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(option.marketInfo.indexToken.address) : true;
+  const filteredOptions = useMemo(() => {
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      : marketsOptions;
 
-    return textSearchMatch && favoriteMatch;
-  });
+    const tabMatched = textMatched?.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(item.marketInfo.indexToken.address);
+      }
+
+      return true;
+    });
+
+    return tabMatched;
+  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -141,17 +151,6 @@ export function MarketSelector({
     }
   };
 
-  const handleFavoriteClick = useCallback(
-    (address: string) => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
       <Modal
@@ -161,23 +160,17 @@ export function MarketSelector({
         label={label}
         footerContent={footerContent}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={(e) => setSearchKeyword(e.target.value)}
-            placeholder={t`Search Market`}
-            onKeyDown={_handleKeyDown}
-          />
+          <div className="mt-16 flex items-center gap-16">
+            <SearchInput
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              placeholder={t`Search Market`}
+              onKeyDown={_handleKeyDown}
+            />
+            <FavoriteTabs favoritesKey="market-selector" />
+          </div>
         }
       >
-        <Tab
-          options={indexTokensFavoritesTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
-
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => (
             <MarketListItem
@@ -188,10 +181,15 @@ export function MarketSelector({
               isFavorite={favoriteTokens?.includes(option.marketInfo.indexToken.address)}
               isInFirstHalf={marketIndex < filteredOptions.length / 2}
               onSelectOption={onSelectOption}
-              onFavoriteClick={handleFavoriteClick}
+              onFavoriteClick={toggleFavoriteToken}
             />
           ))}
         </div>
+        {filteredOptions.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No markets matched.</Trans>
+          </div>
+        )}
       </Modal>
       {selectedMarketLabel ? (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">

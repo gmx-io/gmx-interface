@@ -17,6 +17,7 @@ export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
+  isBalancesLoaded?: boolean;
   error?: Error;
 };
 
@@ -206,7 +207,7 @@ export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { address: account } = useAccount();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt, error: tokensDataError } = useTokensDataRequest(chainId);
+  const { tokensData, pricesUpdatedAt, error: tokensDataError, isBalancesLoaded } = useTokensDataRequest(chainId);
 
   const isDependenciesLoading = !marketsAddresses || !tokensData;
 
@@ -269,6 +270,7 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     tokensData,
     pricesUpdatedAt,
     error,
+    isBalancesLoaded,
   };
 }
 

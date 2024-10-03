@@ -50,6 +50,7 @@ import Tab from "components/Tab/Tab";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { useMedia } from "react-use";
 import { MissedCoinsModal } from "components/MissedCoinsModal/MissedCoinsModal";
+import { useMeasureComponentMountTime } from "lib/metrics";
 
 export type Props = {
   openSettings: () => void;
@@ -204,7 +205,6 @@ export function SyntheticsPage(p: Props) {
   function renderClaims() {
     return (
       <Claims
-        shouldShowPaginationButtons
         setIsSettling={setIsSettling}
         isSettling={isSettling}
         setPendingTxns={setPendingTxns}
@@ -225,6 +225,8 @@ export function SyntheticsPage(p: Props) {
     },
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
+
+  useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
 
   return (
     <div className="Exchange page-layout">
@@ -298,7 +300,7 @@ export function SyntheticsPage(p: Props) {
                   onCancelSelectedOrders={onCancelSelectedOrders}
                 />
               )}
-              {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
+              {listSection === ListSection.Trades && <TradeHistory account={account} />}
               {listSection === ListSection.Claims && renderClaims()}
             </div>
           )}
@@ -345,7 +347,7 @@ export function SyntheticsPage(p: Props) {
                 onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
-            {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
+            {listSection === ListSection.Trades && <TradeHistory account={account} />}
             {listSection === ListSection.Claims && renderClaims()}
           </div>
         )}

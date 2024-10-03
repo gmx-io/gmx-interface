@@ -1,12 +1,10 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { BiChevronDown } from "react-icons/bi";
 
-import Modal from "../Modal/Modal";
-
-import SearchInput from "components/SearchInput/SearchInput";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getMarketUiConfig } from "config/markets";
 import { getToken } from "config/tokens";
 import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -15,8 +13,14 @@ import { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import dropDownIcon from "img/DROP_DOWN.svg";
 import { bigMath } from "lib/bigmath";
 import { expandDecimals, formatAmount } from "lib/numbers";
+import { useFuse } from "lib/useFuse";
+
+import SearchInput from "components/SearchInput/SearchInput";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
+
 import "./TokenSelector.scss";
 
 type TokenState = {
@@ -99,16 +103,28 @@ export default function TokenSelector(props: Props) {
     }
   }, [isModalVisible]);
 
-  const onSearchKeywordChange = (e) => {
-    setSearchKeyword(e.target.value);
-  };
+  const fuse = useFuse(
+    () =>
+      visibleTokens.map((token, index) => {
+        let name = token.name;
+        if (token.isMarketToken) {
+          const indexTokenAdress = getMarketUiConfig(props.chainId, token.address)?.indexTokenAddress;
+          const indexToken = getToken(props.chainId, indexTokenAdress);
+          name = indexToken.name ? `GM ${indexToken.name}` : name;
+        }
 
-  const filteredTokens = visibleTokens.filter((item) => {
-    return (
-      item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
-      item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
-    );
-  });
+        return { id: index, name, symbol: token.symbol };
+      }),
+    visibleTokens.map((item) => item.address)
+  );
+
+  const filteredTokens = useMemo(() => {
+    if (!searchKeyword.trim()) {
+      return visibleTokens;
+    }
+
+    return fuse.search(searchKeyword).map((result) => visibleTokens[result.item.id]);
+  }, [fuse, searchKeyword, visibleTokens]);
 
   const sortedFilteredTokens = useMemo(() => {
     const tokensWithBalance: ExtendedToken[] = [];
@@ -192,12 +208,7 @@ export default function TokenSelector(props: Props) {
         label={props.label}
         footerContent={footerContent}
         headerContent={
-          <SearchInput
-            className="mt-15"
-            value={searchKeyword}
-            setValue={onSearchKeywordChange}
-            onKeyDown={_handleKeyDown}
-          />
+          <SearchInput className="mt-15" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={_handleKeyDown} />
         }
       >
         {missedCoinsPlace && (
@@ -283,6 +294,11 @@ export default function TokenSelector(props: Props) {
             );
           })}
         </div>
+        {sortedFilteredTokens.length === 0 && (
+          <div className="text-16 text-gray-400">
+            <Trans>No tokens matched.</Trans>
+          </div>
+        )}
       </Modal>
       {selectedTokenLabel ? (
         <div data-qa={qa} className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>

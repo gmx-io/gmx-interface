@@ -1,7 +1,12 @@
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
-import { PeriodAccountStats, useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
+import {
+  AccountStats,
+  PeriodAccountStats,
+  useAccountStats,
+  usePeriodAccountStats,
+} from "domain/synthetics/accountStats";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -12,6 +17,8 @@ import {
   useMarkets,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -21,24 +28,21 @@ import {
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
-import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { AccountStats } from "domain/synthetics/accountStats";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -81,6 +85,8 @@ export type SyntheticsState = {
     lastWeekAccountStats?: PeriodAccountStats;
     lastMonthAccountStats?: PeriodAccountStats;
     accountStats?: AccountStats;
+    isCandlesLoaded: boolean;
+    setIsCandlesLoaded: (isLoaded: boolean) => void;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -145,11 +151,13 @@ export function SyntheticsStateContextProvider({
     isDeposit: true,
     account,
     glvData: glvInfo.glvData,
+    withGlv: shouldFetchGlvMarkets,
   });
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [isCandlesLoaded, setIsCandlesLoaded] = useState(false);
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
     chainId,
     isTradePage
@@ -216,11 +224,13 @@ export function SyntheticsStateContextProvider({
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
-  useMeasureLoadTime({
-    isLoaded: Boolean(positionsInfoData && !isLoading),
-    error: positionsInfoError || marketsInfo.error,
-    skip: !account || pageType !== "trade",
-    metricType: "positionsListLoad",
+  useCollectSyntheticsMetrics({
+    marketsInfo,
+    isPositionsInfoLoading: isLoading,
+    positionsInfoData,
+    positionsInfoError,
+    isCandlesLoaded,
+    pageType,
   });
 
   const state = useMemo(() => {
@@ -256,6 +266,8 @@ export function SyntheticsStateContextProvider({
         lastWeekAccountStats,
         lastMonthAccountStats,
         accountStats,
+        isCandlesLoaded,
+        setIsCandlesLoaded,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -291,6 +303,7 @@ export function SyntheticsStateContextProvider({
     lastWeekAccountStats,
     lastMonthAccountStats,
     accountStats,
+    isCandlesLoaded,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

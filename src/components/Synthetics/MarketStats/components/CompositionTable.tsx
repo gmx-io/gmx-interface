@@ -1,9 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { bigintToNumber, formatAmountHuman } from "lib/numbers";
-
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import { USD_DECIMALS } from "config/factors";
 import { TOKEN_COLOR_MAP } from "config/tokens";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -11,10 +9,12 @@ import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthe
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
 
-import { getMarketIndexName, getGlvOrMarketAddress } from "../../../../domain/synthetics/markets/utils";
-import { ExchangeTd, ExchangeTh, ExchangeTheadTr, ExchangeTr } from "../../OrderList/ExchangeTable";
+import { bigintToNumber, formatAmountHuman } from "lib/numbers";
+import { getGlvOrMarketAddress, getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
 import { useGlvGmMarketsWithComposition } from "../hooks/useMarketGlvGmMarketsCompositions";
-import { USD_DECIMALS } from "config/factors";
+
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 interface CompositionTableGmProps {
   marketInfo?: GlvOrMarketInfo;
@@ -109,8 +109,8 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
         }
 
         return (
-          <ExchangeTr key={`comp-data-${market.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
-            <ExchangeTd className="py-6" padding="none">
+          <TableTr key={`comp-data-${market.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
+            <TableTd>
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
@@ -120,14 +120,12 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                 <TokenIcon symbol={market.indexToken.symbol} displaySize={24} />
                 <span>{getMarketIndexName(market)}</span>
               </span>
-            </ExchangeTd>
-            <ExchangeTd className="py-6" padding="none">
+            </TableTd>
+            <TableTd>
               {formatAmountHuman(tvl[0], USD_DECIMALS, true, 1)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 1)}
-            </ExchangeTd>
-            <ExchangeTd className="py-6" padding="none">
-              {composition.toFixed(2)}%
-            </ExchangeTd>
-          </ExchangeTr>
+            </TableTd>
+            <TableTd>{composition.toFixed(2)}%</TableTd>
+          </TableTr>
         );
       });
     }
@@ -139,8 +137,8 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
         }
 
         return (
-          <ExchangeTr key={`comp-data-${token.address}-${index}`} hoverable={false} bordered={false}>
-            <ExchangeTd className="py-6" padding="none">
+          <TableTr key={`comp-data-${token.address}-${index}`} hoverable={false} bordered={false}>
+            <TableTd>
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
@@ -152,33 +150,29 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                   <span className="opacity-70">{prefix}:</span> {token.symbol}
                 </span>
               </span>
-            </ExchangeTd>
-            <ExchangeTd className="py-6" padding="none">
-              {formatAmountHuman(amount, token.decimals, false, 3)}
-            </ExchangeTd>
-            <ExchangeTd className="py-6" padding="none">
-              {composition.toFixed(2)}%
-            </ExchangeTd>
-          </ExchangeTr>
+            </TableTd>
+            <TableTd>{formatAmountHuman(amount, token.decimals, false, 3)}</TableTd>
+            <TableTd>{composition.toFixed(2)}%</TableTd>
+          </TableTr>
         );
       });
     }
   }, [table]);
 
   return (
-    <table className="w-[100%]">
+    <table className="w-full">
       <thead>
-        <ExchangeTheadTr bordered={false}>
-          <ExchangeTh padding="vertical">
+        <TableTheadTr bordered>
+          <TableTh>
             <Trans>{col1}</Trans>
-          </ExchangeTh>
-          <ExchangeTh padding="vertical">
+          </TableTh>
+          <TableTh>
             <Trans>{col2}</Trans>
-          </ExchangeTh>
-          <ExchangeTh padding="vertical">
+          </TableTh>
+          <TableTh>
             <Trans>{col3}</Trans>
-          </ExchangeTh>
-        </ExchangeTheadTr>
+          </TableTh>
+        </TableTheadTr>
       </thead>
       <tbody>{rows}</tbody>
     </table>

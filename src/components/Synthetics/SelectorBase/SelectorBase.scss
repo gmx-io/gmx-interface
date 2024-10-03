@@ -50,33 +50,10 @@
 }
 
 .SelectorBaseUtils {
-  &-table-head-row {
-    th {
-      text-align: left;
-
-      padding: 0.75rem 1.5rem;
-      text-transform: uppercase;
-      font-weight: normal;
-      opacity: 0.7;
-    }
-  }
-
   &-row {
-    cursor: pointer;
-
-    &:hover,
-    &:active {
-      background: var(--color-cold-blue-900);
-      box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
-    }
-
     &-disabled {
       cursor: not-allowed;
       opacity: 0.5;
-    }
-
-    td {
-      padding: 0.75rem 1.5rem;
     }
   }
 

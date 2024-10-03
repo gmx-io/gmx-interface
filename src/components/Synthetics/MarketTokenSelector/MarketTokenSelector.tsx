@@ -14,29 +14,26 @@ import {
   getGlvDisplayName,
   getGlvMarketShortening,
   getGlvMarketSubtitle,
-  getMarketIndexName,
   getGlvOrMarketAddress,
+  getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { GmTokenFavoritesTabOption, useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
-import {
-  indexTokensFavoritesTabOptionLabels,
-  marketTokensTabOptions,
-} from "domain/synthetics/tokens/useIndexTokensFavorites";
+import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { useLocalizedMap } from "lib/i18n";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useFuse } from "lib/useFuse";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import Tab from "components/Tab/Tab";
+import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
@@ -157,7 +154,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 
-  const { tab, setTab, favoriteTokens, setFavoriteTokens } = useGmTokensFavorites();
+  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-token-selector");
 
   const sortedTokensInfo = useFilterSortTokensInfo({
     chainId,
@@ -192,30 +189,13 @@ function MarketTokenSelectorInternal(props: Props) {
   const isSmallMobile = useMedia("(max-width: 560px)");
 
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
-  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15") : "px-15";
+  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-16 last-of-type:pr-16") : "px-16";
   const thClassName = cx(
-    "sticky top-0 z-10 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
   const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
-
-  const localizedTabOptionLabels = useLocalizedMap(indexTokensFavoritesTabOptionLabels);
-
-  const handleFavoriteClick = useCallback(
-    (address: string) => {
-      if (favoriteTokens.includes(address)) {
-        setFavoriteTokens(favoriteTokens.filter((item) => item !== address));
-      } else {
-        setFavoriteTokens([...favoriteTokens, address]);
-      }
-    },
-    [favoriteTokens, setFavoriteTokens]
-  );
-
-  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(event.target.value);
-  }, []);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -229,13 +209,16 @@ function MarketTokenSelectorInternal(props: Props) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <SearchInput
-          className="mt-15"
-          value={searchKeyword}
-          setValue={handleSearch}
-          onKeyDown={handleKeyDown}
-          placeholder="Search Pool"
-        />
+        <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
+          <SearchInput
+            className="w-full"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={handleKeyDown}
+            placeholder="Search Pool"
+          />
+          <FavoriteTabs favoritesKey="gm-token-selector" />
+        </div>
       </SelectorBaseMobileHeaderContent>
       <div
         className={cx({
@@ -244,36 +227,25 @@ function MarketTokenSelectorInternal(props: Props) {
       >
         {!isMobile && (
           <>
-            <SearchInput
-              className="m-15"
-              value={searchKeyword}
-              setValue={({ target }) => setSearchKeyword(target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && sortedTokensInfo.length > 0) {
-                  handleSelectToken(sortedTokensInfo[0].market.address);
-                }
-              }}
-              placeholder="Search Pool"
-            />
-            <div className="divider" />
+            <div className="m-16 flex justify-between gap-16">
+              <SearchInput
+                className="w-full"
+                value={searchKeyword}
+                setValue={setSearchKeyword}
+                onKeyDown={handleKeyDown}
+                placeholder="Search Pool"
+              />
+              <FavoriteTabs favoritesKey="gm-token-selector" />
+            </div>
           </>
         )}
-
-        <Tab
-          className="px-15 py-4"
-          options={marketTokensTabOptions}
-          optionLabels={localizedTabOptionLabels}
-          type="inline"
-          option={tab}
-          setOption={setTab}
-        />
 
         <div
           className={cx({
             "max-h-[444px] overflow-y-auto": !isMobile,
           })}
         >
-          <table className="w-full">
+          <table className="w-full border-separate border-spacing-0">
             {sortedMarketsByIndexToken.length > 0 && (
               <thead>
                 <tr>
@@ -305,20 +277,22 @@ function MarketTokenSelectorInternal(props: Props) {
                   {...option}
                   tdClassName={tdClassName}
                   isFavorite={favoriteTokens.includes(option.market.address)}
-                  onFavorite={handleFavoriteClick}
+                  onFavorite={toggleFavoriteToken}
                   handleSelectToken={handleSelectToken}
                   isSmallMobile={isSmallMobile}
                   rowVerticalPadding={rowVerticalPadding}
                 />
               ))}
+              {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
+                <TableTr hoverable={false} bordered={false}>
+                  <TableTd colSpan={6} className="text-gray-400">
+                    <Trans>No pools matched.</Trans>
+                  </TableTd>
+                </TableTr>
+              )}
             </tbody>
           </table>
         </div>
-        {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-          <div className="py-15 text-center text-gray-400">
-            <Trans>No markets matched.</Trans>
-          </div>
-        )}
       </div>
     </>
   );
@@ -342,7 +316,7 @@ function useFilterSortTokensInfo({
   chainId: number;
   sortedMarketsByIndexToken: TokenData[];
   searchKeyword: string;
-  tab: GmTokenFavoritesTabOption;
+  tab: TokenFavoritesTabOption;
   marketTokensData: TokensData | undefined;
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   favoriteTokens: string[];
@@ -353,31 +327,36 @@ function useFilterSortTokensInfo({
   orderBy: SortField;
   direction: SortDirection;
 }) {
+  const fuse = useFuse(
+    () =>
+      sortedMarketsByIndexToken.map((market, index) => {
+        const marketInfo = getByKey(marketsInfoData, market?.address)!;
+        return {
+          id: index,
+          marketName: isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name,
+        };
+      }),
+    sortedMarketsByIndexToken.map((market) => market.address)
+  );
+
   const filteredTokensInfo = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
       return [];
     }
 
-    let filteredTokens: TokenData[];
-    if (searchKeyword.length < 1 && tab === "all") {
-      filteredTokens = sortedMarketsByIndexToken;
-    } else {
-      filteredTokens = sortedMarketsByIndexToken.filter((market) => {
-        const marketInfo = getByKey(marketsInfoData, market?.address)!;
-        let textSearchMatch = false;
-        if (!searchKeyword.trim()) {
-          textSearchMatch = true;
-        } else {
-          const marketName = isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name;
-          textSearchMatch = marketName.toLowerCase().includes(searchKeyword.toLowerCase());
-        }
+    const textMatched = searchKeyword.trim()
+      ? fuse.search(searchKeyword).map((result) => sortedMarketsByIndexToken[result.item.id])
+      : sortedMarketsByIndexToken;
 
-        const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(market.address) : true;
-        return textSearchMatch && favoriteMatch;
-      });
-    }
+    const tabMatched = textMatched.filter((item) => {
+      if (tab === "favorites") {
+        return favoriteTokens?.includes(item.address);
+      }
 
-    return filteredTokens.map((market) => {
+      return true;
+    });
+
+    return tabMatched.map((market) => {
       const marketInfo = getByKey(marketsInfoData, market?.address)!;
 
       const isGlv = isGlvInfo(marketInfo);
@@ -406,16 +385,17 @@ function useFilterSortTokensInfo({
       };
     });
   }, [
+    sortedMarketsByIndexToken,
+    searchKeyword,
+    fuse,
+    tab,
     favoriteTokens,
     marketsInfoData,
-    marketsTokensAPRData,
-    marketsTokensIncentiveAprData,
-    searchKeyword,
-    sortedMarketsByIndexToken,
-    marketsTokensLidoAprData,
-    tab,
     marketTokensData,
     glvTokensApyData,
+    marketsTokensAPRData,
+    marketsTokensIncentiveAprData,
+    marketsTokensLidoAprData,
   ]);
 
   const sortedTokensInfo = useMemo(() => {
@@ -518,12 +498,12 @@ function MarketTokenListItem({
   return (
     <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
       <td
-        className={cx("rounded-4 pl-15 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
+        className={cx("rounded-4 pl-16 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
       </td>
-      <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-15")} onClick={handleSelect}>
+      <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>
         {marketInfo && !isSmallMobile && (
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
@@ -553,7 +533,7 @@ function MarketTokenListItem({
           incentiveApr={incentiveApr}
           lidoApr={lidoApr}
           showTooltip={false}
-          tokenAddress={market.address}
+          marketAddress={market.address}
         />
       </td>
     </tr>

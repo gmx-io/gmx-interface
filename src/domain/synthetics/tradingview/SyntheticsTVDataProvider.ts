@@ -13,7 +13,12 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
     this.oracleKeeperFetcher = params.oracleFetcher;
   }
 
-  override async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<FromOldToNewArray<Bar>> {
+  override async getTokenChartPrice(
+    chainId: number,
+    ticker: string,
+    period: string,
+    onFallback?: (ex: Error) => void
+  ): Promise<FromOldToNewArray<Bar>> {
     const limit = 5000;
 
     const bars: FromOldToNewArray<Bar> = await Promise.race([
@@ -23,6 +28,7 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
       .catch((ex) => {
         // eslint-disable-next-line no-console
         console.warn(ex, "Switching to graph chainlink data");
+        onFallback?.(ex);
         return Promise.race([
           getChainlinkChartPricesFromGraph(ticker, period),
           sleep(this.candlesTimeout).then(() => Promise.reject(`Chainlink candles timeout`)),

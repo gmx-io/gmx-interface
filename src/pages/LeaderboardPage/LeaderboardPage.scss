@@ -131,10 +131,10 @@ $tabs-threshold: 990px;
   display: inline-flex;
 }
 
-.LeaderboardRankRow-Pinned td:first-child::before {
+.LeaderboardRankCell-Pinned::after {
   content: "";
   display: inline-block;
-  width: 0.2rem;
+  width: 2px;
   height: 100%;
   position: absolute;
   left: 0;
@@ -183,9 +183,7 @@ $tabs-threshold: 990px;
 .CompetitionPrizes {
   display: flex;
   align-items: center;
-  min-width: 0;
   margin-bottom: 2rem;
-  overflow-x: auto;
 
   &__prize {
     display: flex;
@@ -194,7 +192,6 @@ $tabs-threshold: 990px;
     &-container {
       flex: 1 1;
       margin-right: 1.8rem;
-      margin-bottom: 1rem;
       background-color: var(--color-slate-800);
       display: flex;
       align-items: center;
@@ -403,17 +400,11 @@ $tabs-threshold: 990px;
   width: 1.7rem;
 }
 
-.LeaderboardNavigation .LeaderboardHeader__item {
-  margin-right: 0.8rem;
-  margin-bottom: 0.8rem;
+.LeaderboardHeader__item {
   white-space: nowrap;
 
   &_selected {
     background: var(--color-slate-500) !important;
-  }
-
-  &:last-child {
-    margin-right: 0;
   }
 }
 
@@ -475,22 +466,7 @@ $tabs-threshold: 990px;
 }
 
 .TableBox__head {
-  background-color: var(--color-slate-800);
-  padding: 1rem 1.6rem;
-  border-radius: 0.4rem 0.4rem 0 0;
-  border-bottom: 1px solid var(--color-gray-900);
-}
-
-.TableBox__footer {
-  background-color: var(--color-slate-800);
-  padding: 1rem 1.6rem;
-  border-radius: 0 0 0.4rem 0.4rem;
-  border-top: 1px solid var(--color-gray-900);
-  height: 5.8rem;
-
-  & .pagination {
-    margin-top: 0;
-  }
+  padding: 16px;
 }
 
 .TableBox table.Exchange-list tr {
@@ -515,52 +491,6 @@ $tabs-threshold: 990px;
 
 table.Table.Exchange-list th {
   opacity: unset;
-}
-
-.TableHeader .TableHeaderTitle {
-  opacity: 0.7;
-  display: flex;
-  height: 100%;
-  white-space: nowrap;
-  text-transform: uppercase;
-  font-size: var(--font-base);
-}
-.TableHeader.text-right .TableHeaderTitle {
-  justify-content: flex-end;
-}
-
-.TableHeader.sortable .TableHeaderTitle,
-.TableHeader.sorted-asc .TableHeaderTitle,
-.TableHeader.sorted-desc .TableHeaderTitle {
-  cursor: pointer;
-}
-
-.TableHeader.sortable .TableHeaderTitle::after,
-.TableHeader.sorted-asc .TableHeaderTitle::after,
-.TableHeader.sorted-desc .TableHeaderTitle::after {
-  content: "";
-  display: inline-block;
-  width: 1.5rem;
-  margin-left: 0.5rem;
-  background-repeat: no-repeat;
-}
-
-.TableHeader.sortable .TableHeaderTitle::after {
-  background-color: var(--color-gray-300);
-  mask-image: url(../../img/ic_sortable.svg);
-  mask-position: center 0.2rem;
-}
-
-.TableHeader.sorted-asc .TableHeaderTitle::after {
-  background-color: var(--color-gray-300);
-  mask-image: url(../../img/ic_sorted_asc.svg);
-  mask-position: center 0.2rem;
-}
-
-.TableHeader.sorted-desc .TableHeaderTitle::after {
-  background-color: var(--color-gray-300);
-  mask-image: url(../../img/ic_sorted_desc.svg);
-  mask-position: center 0.2rem;
 }
 
 .Table_tr {

@@ -1,7 +1,6 @@
-import { GlvOrMarketInfo } from "domain/synthetics/markets";
-
-import { TokensData } from "domain/synthetics/tokens";
-import { GmTokensFavoritesContextType } from "domain/synthetics/tokens/useGmTokensFavorites";
+import type { GlvOrMarketInfo } from "domain/synthetics/markets";
+import type { TokensData } from "domain/synthetics/tokens";
+import type { TokenFavoriteKey } from "domain/synthetics/tokens/useTokensFavorites";
 
 export type CommonPoolSelectorProps = {
   label?: string;
@@ -16,7 +15,8 @@ export type CommonPoolSelectorProps = {
   onSelectMarket: (market: GlvOrMarketInfo) => void;
   showAllPools?: boolean;
   showIndexIcon?: boolean;
-} & GmTokensFavoritesContextType;
+  favoriteKey: TokenFavoriteKey;
+};
 
 export type MarketState = {
   disabled?: boolean;

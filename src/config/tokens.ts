@@ -347,13 +347,22 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "tBTC",
-      symbol: "TBTC",
+      symbol: "tBTC",
       address: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
       decimals: 18,
       imageUrl:
         "https://assets.coingecko.com/coins/images/11224/standard/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tbtc",
     },
+    // TODO: Enable
+    // {
+    //   name: "APE",
+    //   symbol: "APE",
+    //   address: "0x74885b4D524d497261259B38900f54e6dbAd2210",
+    //   decimals: 18,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/24383/standard/apecoin.jpg?1696523566",
+    //   coingeckoUrl: "https://www.coingecko.com/en/coins/apecoin",
+    // },
     {
       name: "GMX LP",
       symbol: "GLP",
@@ -1051,7 +1060,7 @@ export const TOKEN_COLOR_MAP = {
   LTC: "#16182e",
   OP: "#ff0421",
   DOT: "#e6007a",
-  TBTC: "#000000",
+  tBTC: "#000000",
   TEST: "#2d3ed7",
   SHIB: "#f00601",
   STX: "#eb6230",

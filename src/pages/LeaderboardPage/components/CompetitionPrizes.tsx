@@ -15,6 +15,7 @@ import { shortenAddress } from "lib/legacy";
 import { mustNeverExist } from "lib/types";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 
+import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import rank1Icon from "img/rank1.svg";
@@ -141,11 +142,11 @@ export function CompetitionPrizes({
   }, [accounts, competitionType, hasEnded, leaderboardPageKey]);
 
   return (
-    <div className="CompetitionPrizes default-container">
+    <BodyScrollFadeContainer className="CompetitionPrizes default-container">
       {prizes.map((prize) => (
         <CompetitionPrize prize={prize} key={prize.key} />
       ))}
-    </div>
+    </BodyScrollFadeContainer>
   );
 }
 

@@ -49,7 +49,10 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
   const marketsInfoData = useMarketsInfoData();
   const allPositions = useSelector(selectPositionsInfoDataSortedByMarket);
   const filteredPositions = useSelector(selectPositionsWithOrders);
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, {
+    isDeposit: true,
+    withGlv: false,
+  });
   const { marketsInfo: allMarkets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
   const marketsOptions = useMemo<Group<MarketFilterLongShortItemData>[]>(() => {

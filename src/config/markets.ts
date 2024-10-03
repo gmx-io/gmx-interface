@@ -62,3 +62,7 @@ export const GLV_MARKETS: {
     },
   },
 };
+
+export function getMarketUiConfig(chainId: number, marketAddress: string) {
+  return MARKETS[chainId]?.[marketAddress];
+}

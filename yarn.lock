@@ -6807,7 +6807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bowser@npm:^2.9.0":
+"bowser@npm:2.11.0, bowser@npm:^2.9.0":
   version: 2.11.0
   resolution: "bowser@npm:2.11.0"
   checksum: 29c3f01f22e703fa6644fc3b684307442df4240b6e10f6cfe1b61c6ca5721073189ca97cdeedb376081148c8518e33b1d818a57f781d70b0b70e1f31fb48814f
@@ -9832,6 +9832,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fuse.js@npm:7.0.0":
+  version: 7.0.0
+  resolution: "fuse.js@npm:7.0.0"
+  checksum: d15750efec1808370c0cae92ec9473aa7261c59bca1f15f1cf60039ba6f804b8f95340b5cabd83a4ef55839c1034764856e0128e443921f072aa0d8a20e4cacf
+  languageName: node
+  linkType: hard
+
 "futoin-hkdf@npm:^1.5.3":
   version: 1.5.3
   resolution: "futoin-hkdf@npm:1.5.3"
@@ -10108,6 +10115,7 @@ __metadata:
     autoprefixer: 10.4.20
     babel-plugin-macros: 3.1.0
     bigdecimal: 0.6.1
+    bowser: 2.11.0
     buffer: 6.0.3
     classnames: 2.3.1
     crypto-js: 4.2.0
@@ -10124,6 +10132,7 @@ __metadata:
     eth-testing: 1.9.1
     ethers: 6.12.1
     framer-motion: 11.1.9
+    fuse.js: 7.0.0
     graphql: 15.8.0
     happy-dom: 14.12.3
     hex-to-rgba: 2.0.1

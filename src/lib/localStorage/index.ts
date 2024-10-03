@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import { useLocalStorage } from "react-use";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 
@@ -6,22 +6,26 @@ export function useLocalStorageByChainId<T>(
   chainId: number,
   key: string,
   defaultValue: T
-): [T | undefined, (value: T) => void] {
+): [T | undefined, React.Dispatch<React.SetStateAction<T>>] {
   const [internalValue, setInternalValue] = useLocalStorage(key, {});
+  const internalValueRef = useRef(internalValue);
 
-  const setValue = useCallback(
+  const setValue: React.Dispatch<React.SetStateAction<T>> = useCallback(
     (value) => {
-      setInternalValue((internalValue) => {
-        if (typeof value === "function") {
-          value = value(internalValue?.[chainId] || defaultValue);
-        }
+      const internalValue = internalValueRef.current;
+      if (typeof value === "function") {
+        // @ts-ignore
+        value = value(internalValue?.[chainId] || defaultValue);
+      }
 
-        const newInternalValue = {
-          ...internalValue,
-          [chainId]: value,
-        };
-        return newInternalValue;
-      });
+      const newInternalValue = {
+        ...internalValue,
+        [chainId]: value,
+      };
+
+      internalValueRef.current = newInternalValue;
+
+      setInternalValue(newInternalValue);
     },
     [chainId, setInternalValue, defaultValue]
   );

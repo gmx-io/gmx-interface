@@ -26,7 +26,6 @@ import {
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { useGmTokensFavorites } from "domain/synthetics/tokens/useGmTokensFavorites";
 import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token, getMinResidualAmount } from "domain/tokens";
@@ -102,7 +101,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   });
 
   // #region State
-  const gmTokenFavoritesContext = useGmTokensFavorites();
   const {
     focusedInput,
     setFocusedInput,
@@ -880,7 +878,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               showBalances
               showIndexIcon
               onSelectMarket={marketTokenSelectMarket}
-              {...gmTokenFavoritesContext}
+              favoriteKey="gm-token-receive-pay-selector"
             />
           </BuyInputSection>
         </div>
