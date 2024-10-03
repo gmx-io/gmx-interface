@@ -143,7 +143,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
               <TableHeaderCell title={t`Position`} width={10} tooltipPosition="bottom-end" />
               <TableHeaderCell {...getSorterProps("entryPrice")} title={t`Entry Price`} width={10} />
               <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`Size`} width={12} />
-              <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={1} />
+              <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={4} />
               <TableHeaderCell title={t`Liq. Price`} width={10} />
             </TableTheadTr>
           </thead>

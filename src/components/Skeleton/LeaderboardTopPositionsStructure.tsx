@@ -24,7 +24,7 @@ export function LeaderboardTopPositionsStructure() {
         <Skeleton width={100} />
       </TableTd>
       <TableTd>
-        <Skeleton width={80} />
+        <Skeleton width={50} />
       </TableTd>
       <TableTd>
         <Skeleton width={110} />
