@@ -184,7 +184,12 @@ export default function Tooltip<T extends ElementType>({
         {...containerProps}
         className={cx("Tooltip", className)}
         ref={refs.setReference}
-        {...getReferenceProps()}
+        {...getReferenceProps({
+          onClick: (e: MouseEvent) => {
+            preventClick(e);
+            containerProps.onClick?.(e);
+          },
+        })}
       >
         {children}
         {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
@@ -197,10 +202,14 @@ export default function Tooltip<T extends ElementType>({
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        {...getReferenceProps()}
-        onClick={preventClick}
         className={cx({ "Tooltip-handle": !disableHandleStyle }, handleClassName)}
         style={handleStyle}
+        {...getReferenceProps({
+          onClick: (e: MouseEvent) => {
+            preventClick(e);
+            containerProps.onClick?.(e);
+          },
+        })}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {isHandlerDisabled ? (
