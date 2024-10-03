@@ -94,13 +94,13 @@ export function SelectorBaseDesktopRow(
     return (
       <TooltipWithPortal
         as={TableTr}
-        className={cx("SelectorBaseUtils-row", props.className)}
+        className={cx("SelectorBaseUtils-row SelectorBaseUtils-row-disabled", props.className)}
         content={props.disabledMessage}
         position="bottom-end"
         bordered={false}
         hoverable={false}
       >
-        <div className="SelectorBaseUtils-row-disabled">{props.children}</div>
+        {props.children}
       </TooltipWithPortal>
     );
   }
