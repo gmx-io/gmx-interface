@@ -194,7 +194,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
       </SelectorBaseMobileHeaderContent>
       <div
         className={cx("Synths-ChartTokenSelector", {
-          "w-[448px]": !isMobile && !isSwap,
+          "w-[448px]": !isMobile,
         })}
       >
         {!isMobile && (
@@ -219,7 +219,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
           <table className="text-sm w-full border-separate border-spacing-0">
             <thead className="bg-slate-800">
               <tr>
-                <th className={thClassName} colSpan={isSwap ? 1 : 2}>
+                <th className={thClassName} colSpan={2}>
                   <Trans>Market</Trans>
                 </th>
                 {!isSwap && (
@@ -256,7 +256,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
               ))}
               {options && options.length > 0 && !sortedTokens?.length && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={isSwap ? 1 : 3} className="text-gray-400">
+                  <TableTd colSpan={isSwap ? 2 : 3} className="text-gray-400">
                     <Trans>No markets matched.</Trans>
                   </TableTd>
                 </TableTr>
@@ -296,7 +296,7 @@ function useFilterSortTokens({
       searchKeyword.trim() && options ? fuse.search(searchKeyword).map((result) => options[result.item.id]) : options;
 
     const tabMatched = textMatched?.filter((item) => {
-      if (tab === "favorites" && !isSwap) {
+      if (tab === "favorites") {
         return favoriteTokens?.includes(item.address);
       }
 
@@ -304,7 +304,7 @@ function useFilterSortTokens({
     });
 
     return tabMatched;
-  }, [favoriteTokens, fuse, isSwap, options, searchKeyword, tab]);
+  }, [favoriteTokens, fuse, options, searchKeyword, tab]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
@@ -391,6 +391,12 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row">
+        <td
+          className={cx("cursor-pointer rounded-4 pl-16 pr-4 text-center hover:bg-cold-blue-900", rowVerticalPadding)}
+          onClick={handleFavoriteClick}
+        >
+          <FavoriteStar isFavorite={isFavorite} />
+        </td>
         <td
           className={cx(
             "w-full cursor-pointer rounded-4 hover:bg-cold-blue-900",
