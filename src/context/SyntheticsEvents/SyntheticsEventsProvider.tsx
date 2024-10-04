@@ -4,7 +4,7 @@ import { GmStatusNotification } from "components/Synthetics/StatusNotification/G
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 import { getToken, getWrappedToken } from "config/tokens";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import { subscribeToV2Events } from "context/WebsocketContext/subscribeToEvents";
+import { subscribeToApprovalEvents, subscribeToV2Events } from "context/WebsocketContext/subscribeToEvents";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
@@ -36,6 +36,7 @@ import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
+  ApprovalStatuses,
   DepositCreatedEventData,
   DepositStatuses,
   EventLogData,
@@ -94,6 +95,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
+  const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
@@ -720,9 +722,24 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       const unsubscribe = subscribeToV2Events(chainId, wsProvider, currentAccount, eventLogHandlers);
+      const unsubscribeApproval = subscribeToApprovalEvents(
+        chainId,
+        wsProvider,
+        currentAccount,
+        (tokenAddress, spender, value) => {
+          setApprovalStatuses((old) => ({
+            ...old,
+            [tokenAddress]: {
+              ...old[tokenAddress],
+              [spender]: { value, createdAt: Date.now() },
+            },
+          }));
+        }
+      );
 
       return function cleanup() {
         unsubscribe();
+        unsubscribeApproval();
       };
     },
     [chainId, currentAccount, hasV2LostFocus, wsProvider]
@@ -734,6 +751,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       depositStatuses,
       withdrawalStatuses,
       shiftStatuses,
+      approvalStatuses,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
@@ -842,6 +860,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     depositStatuses,
     marketsInfoData,
     orderStatuses,
+    approvalStatuses,
     pendingPositionsUpdates,
     positionDecreaseEvents,
     positionIncreaseEvents,

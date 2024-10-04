@@ -1,11 +1,9 @@
-import { watchContractEvent } from "@wagmi/core";
-import { useEffect, useMemo } from "react";
-import type { Address, erc20Abi } from "viem";
+import { useMemo } from "react";
 
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import type { TokensAllowanceData } from "./types";
 
@@ -23,12 +21,13 @@ export function useTokensAllowanceData(
 ): TokenAllowanceResult {
   const { spenderAddress, tokenAddresses, skip } = p;
   const { account } = useWallet();
+  const { approvalStatuses } = useSyntheticsEvents();
 
   const isNativeToken = tokenAddresses.length === 1 && tokenAddresses[0] === NATIVE_TOKEN_ADDRESS;
 
-  const { data, mutate } = useMulticall(chainId, "useTokenAllowance", {
+  const { data } = useMulticall(chainId, "useTokenAllowance", {
     key:
-      !p.skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
+      !skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
         ? [account, spenderAddress, tokenAddresses.join("-")]
         : null,
     refreshInterval: CONFIG_UPDATE_INTERVAL,
@@ -50,52 +49,58 @@ export function useTokensAllowanceData(
           return contracts;
         }, {}),
 
-    parseResponse: (res) =>
-      Object.keys(res.data).reduce((tokenAllowance: TokensAllowanceData, address) => {
+    parseResponse: (res) => {
+      const now = Date.now();
+
+      const tokenAllowance = Object.keys(res.data).reduce((tokenAllowance: TokensAllowanceData, address) => {
         tokenAllowance[address] = res.data[address].allowance.returnValues[0];
 
         return tokenAllowance;
-      }, {} as TokensAllowanceData),
+      }, {} as TokensAllowanceData);
+
+      return {
+        tokenAllowance,
+        createdAt: now,
+      };
+    },
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const stableTokenAddresses = useMemo(() => tokenAddresses as Address[], [tokenAddresses.join("-")]);
-
-  useEffect(() => {
-    if (skip || !account || !spenderAddress || stableTokenAddresses.length === 0) {
-      return;
+  const mergedData: TokensAllowanceData | undefined = useMemo(() => {
+    if (!spenderAddress || tokenAddresses.length === 0) {
+      return data?.tokenAllowance;
     }
 
-    const unsubs = (stableTokenAddresses as Address[]).map((address) =>
-      watchContractEvent(getRainbowKitConfig(), {
-        abi: Token.abi as unknown as typeof erc20Abi,
-        address: address,
-        eventName: "Approval",
-        args: {
-          owner: account,
-          spender: spenderAddress as Address,
-        },
-        onLogs: (logs) => {
-          const newData = { ...data };
+    const newData: TokensAllowanceData = {};
 
-          for (const log of logs) {
-            const { owner, spender, value } = log.args;
-            if (owner === account && spender === spenderAddress) {
-              newData[address] = value!;
-            }
-          }
+    for (const tokenAddress of tokenAddresses) {
+      const event = approvalStatuses[tokenAddress]?.[spenderAddress];
+      if (!event) {
+        if (data && tokenAddress in data.tokenAllowance) {
+          newData[tokenAddress] = data.tokenAllowance[tokenAddress];
+        }
+        continue;
+      }
 
-          mutate(newData, { revalidate: false, optimisticData: newData });
-        },
-      })
-    );
+      const eventValue = event.value;
+      const eventCreatedAt = event.createdAt;
 
-    return () => {
-      unsubs.forEach((unsub) => unsub());
-    };
-  }, [account, data, mutate, skip, spenderAddress, stableTokenAddresses]);
+      if (!data || !(tokenAddress in data.tokenAllowance)) {
+        newData[tokenAddress] = eventValue;
+        continue;
+      }
+
+      const allowance = data.tokenAllowance[tokenAddress];
+      if (eventCreatedAt > data.createdAt) {
+        newData[tokenAddress] = eventValue;
+      } else {
+        newData[tokenAddress] = allowance;
+      }
+    }
+
+    return newData;
+  }, [spenderAddress, tokenAddresses, data, approvalStatuses]);
 
   return {
-    tokensAllowanceData: isNativeToken ? defaultValue : data,
+    tokensAllowanceData: isNativeToken ? defaultValue : mergedData,
   };
 }
