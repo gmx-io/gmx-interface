@@ -5,6 +5,7 @@ export type SyntheticsEventsContextType = {
   depositStatuses: DepositStatuses;
   withdrawalStatuses: WithdrawalStatuses;
   shiftStatuses: ShiftStatuses;
+  approvalStatuses: ApprovalStatuses;
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
@@ -275,4 +276,10 @@ export type EventLogData = {
 export type EventTxnParams = {
   transactionHash: string;
   blockNumber: number;
+};
+
+export type ApprovalStatuses = {
+  [tokenAddress: string]: {
+    [spender: string]: { value: bigint; createdAt: number };
+  };
 };
