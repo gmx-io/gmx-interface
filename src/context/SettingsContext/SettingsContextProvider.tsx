@@ -7,6 +7,7 @@ import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "
 import {
   DISABLE_ORDER_VALIDATION_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
+  IS_AUTO_CANCEL_TPSL_KEY,
   ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -41,6 +42,8 @@ export type SettingsContextType = {
   setShouldDisableValidationForTesting: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
+  isAutoCancelTPSL: boolean;
+  setIsAutoCancelTPSL: (val: boolean) => void;
 
   tenderlyAccountSlug: string | undefined;
   setTenderlyAccountSlug: (val: string | undefined) => void;
@@ -99,6 +102,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
     false
+  );
+
+  const [savedIsAutoCancelTPSL, setIsAutoCancelTPSL] = useLocalStorageSerializeKey(
+    [chainId, IS_AUTO_CANCEL_TPSL_KEY],
+    true
   );
 
   const [tenderlyAccountSlug, setTenderlyAccountSlug] = useLocalStorageSerializeKey(tenderlyLsKeys.accountSlug, "");
@@ -167,6 +175,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableValidationForTesting: setSavedShouldDisableValidationForTesting,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
+      isAutoCancelTPSL: savedIsAutoCancelTPSL!,
+      setIsAutoCancelTPSL: setIsAutoCancelTPSL,
 
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
@@ -205,6 +215,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyAccountSlug,
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
+    savedIsAutoCancelTPSL,
+    setIsAutoCancelTPSL,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;
