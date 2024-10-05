@@ -24,6 +24,7 @@ import {
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -49,6 +50,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
+  selectTradeboxSelectedPositionKey,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
@@ -269,6 +271,7 @@ export function TradeBox(p: Props) {
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
@@ -605,6 +608,7 @@ export function TradeBox(p: Props) {
   ]);
 
   const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows(priceImpactWarningState);
+  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({ positionKey: selectedPositionKey });
   const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
   const submitButtonText = useMemo(() => {
@@ -1367,16 +1371,17 @@ export function TradeBox(p: Props) {
             {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
             <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
-              {isSwap && isLimit && (
-                <ExchangeInfo.Group>
+              <ExchangeInfo.Group>
+                {isTrigger && maxAutoCancelOrdersWarning}
+                {isSwap && isLimit && (
                   <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact>
                     <Trans>
                       The execution price will constantly vary based on fees and price impact to guarantee that you
                       receive the minimum receive amount.
                     </Trans>
                   </AlertInfo>
-                </ExchangeInfo.Group>
-              )}
+                )}
+              </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>{isPosition && renderPositionControls()}</ExchangeInfo.Group>
               <ExchangeInfo.Group>
@@ -1393,7 +1398,7 @@ export function TradeBox(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                <TradeBoxAdvancedGroups />
+                <TradeBoxAdvancedGroups className="-my-[1.05rem]" />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

@@ -481,6 +481,10 @@ msgstr ""
 msgid "Market Swap"
 msgstr "市场交换"
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Setting auto-cancel order(s)"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "交易历史"
@@ -3597,6 +3601,10 @@ msgstr ""
 msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易商所赚取的回扣"
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Auto-cancel order(s) set"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3879,6 +3887,10 @@ msgstr "您正要离开GMX.io，并且将被重新导向到第三方独立网站
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
+msgstr ""
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "Read more."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -8006,6 +8018,10 @@ msgstr "符合价格条件"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
+msgstr ""
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Failed to set auto-cancel order(s)"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

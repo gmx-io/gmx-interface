@@ -37,6 +37,7 @@ import { formatAmount, formatAmountFree, formatTokenAmountWithUsd, formatUsd, pa
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -113,6 +114,7 @@ export function PositionSeller(p: Props) {
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
+  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
   const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.market.indexTokenAddress));
 
@@ -274,6 +276,8 @@ export function PositionSeller(p: Props) {
     triggerPrice,
   ]);
 
+  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
+
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
 
   function onSubmit() {
@@ -349,6 +353,7 @@ export function PositionSeller(p: Props) {
         indexToken: position.indexToken,
         tokensData,
         skipSimulation: orderOption === OrderOption.Trigger || shouldDisableValidationForTesting,
+        autoCancel: orderOption === OrderOption.Trigger ? autoCancelOrdersLimit > 0 : false,
       },
       {
         setPendingOrder,
@@ -594,7 +599,9 @@ export function PositionSeller(p: Props) {
               </BuyInputSection>
             )}
 
-            <ExchangeInfo className="PositionEditor-info-box">
+            <ExchangeInfo className="PositionEditor-info-box" dividerClassName="my-15 -mx-15 h-1 bg-slate-700">
+              <ExchangeInfo.Group>{isTrigger && maxAutoCancelOrdersWarning}</ExchangeInfo.Group>
+
               <ExchangeInfo.Group>
                 {isTrigger && triggerPriceRow}
                 {limitPriceRow}
