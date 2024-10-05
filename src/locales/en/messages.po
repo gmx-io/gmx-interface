@@ -485,6 +485,10 @@ msgstr "Max Capacity"
 msgid "Market Swap"
 msgstr "Market Swap"
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Setting auto-cancel order(s)"
+msgstr "Setting auto-cancel order(s)"
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "Trade History"
@@ -681,6 +685,10 @@ msgstr "Market Orders"
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we address your concerns and improve your experience?"
 msgstr "How can we address your concerns and improve your experience?"
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+msgstr "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -1100,6 +1108,10 @@ msgstr "Vest"
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Generating and activating Subaccount"
 msgstr "Generating and activating Subaccount"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+msgstr "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #~ msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into individual tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
@@ -2493,6 +2505,10 @@ msgstr "You will be short {indexSymbol} only from your short position."
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr "GMX V1 {networkName} actions for all accounts."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Auto-Cancel TP/SL"
+msgstr "Auto-Cancel TP/SL"
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
 msgstr "Funding Fee Rate"
@@ -3628,6 +3644,10 @@ msgstr "You will be short {indexSymbol} from your short position, while being lo
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Auto-cancel order(s) set"
+msgstr "Auto-cancel order(s) set"
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3909,6 +3929,10 @@ msgstr "You are leaving GMX.io and will be redirected to a third party, independ
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
 msgstr "Accrued Borrow Fee"
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "Read more."
+msgstr "Read more."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
@@ -8105,6 +8129,10 @@ msgstr "Price conditions are met"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
 msgstr "Unstake GMX"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Failed to set auto-cancel order(s)"
+msgstr "Failed to set auto-cancel order(s)"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"

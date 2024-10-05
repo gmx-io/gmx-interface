@@ -485,6 +485,10 @@ msgstr ""
 msgid "Market Swap"
 msgstr "시장 스왑"
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Setting auto-cancel order(s)"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "트레이딩 히스토리"
@@ -680,6 +684,10 @@ msgstr "시장 주문"
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we address your concerns and improve your experience?"
+msgstr ""
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -1099,6 +1107,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Generating and activating Subaccount"
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -2493,6 +2505,10 @@ msgstr ""
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Auto-Cancel TP/SL"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
 msgstr ""
@@ -3628,6 +3644,10 @@ msgstr ""
 msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Auto-cancel order(s) set"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3905,6 +3925,10 @@ msgstr "귀하는 GMX.io 페이지를 벗어나, 써드파티 웹사이트로 �
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
+msgstr ""
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "Read more."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -8098,6 +8122,10 @@ msgstr "가격 조건에 충족되었습니다"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
+msgstr ""
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Failed to set auto-cancel order(s)"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
