@@ -435,9 +435,10 @@ export function OrderEditor(p: Props) {
       sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
       triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
       acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
+      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
       executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
+      autoCancel: positionOrder.autoCancel,
       setPendingTxns: p.setPendingTxns,
     });
 
@@ -580,7 +581,7 @@ export function OrderEditor(p: Props) {
           </>
         )}
 
-        <ExchangeInfo className="PositionEditor-info-box">
+        <ExchangeInfo className="PositionEditor-info-box" dividerClassName="my-15 -mx-15 h-1 bg-slate-700">
           <ExchangeInfo.Group>
             {isLimitIncreaseOrder && (
               <ExchangeInfoRow
@@ -594,39 +595,34 @@ export function OrderEditor(p: Props) {
               />
             )}
           </ExchangeInfo.Group>
-          <ExchangeInfo.Group>
-            {!isSwapOrderType(p.order.orderType) && (
-              <>
-                {p.order.orderType !== OrderType.StopLossDecrease && (
-                  <>
-                    <AcceptablePriceImpactInputRow
-                      acceptablePriceImpactBps={acceptablePriceImpactBps}
-                      initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
-                      recommendedAcceptablePriceImpactBps={recommendedAcceptablePriceImpactBps}
-                      setAcceptablePriceImpactBps={setAcceptablePriceImpactBps}
-                      priceImpactFeeBps={priceImpactFeeBps}
-                    />
+          {!isSwapOrderType(p.order.orderType) && p.order.orderType !== OrderType.StopLossDecrease && (
+            <ExchangeInfo.Group>
+              <AcceptablePriceImpactInputRow
+                acceptablePriceImpactBps={acceptablePriceImpactBps}
+                initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
+                recommendedAcceptablePriceImpactBps={recommendedAcceptablePriceImpactBps}
+                setAcceptablePriceImpactBps={setAcceptablePriceImpactBps}
+                priceImpactFeeBps={priceImpactFeeBps}
+              />
+            </ExchangeInfo.Group>
+          )}
+          {!isSwapOrderType(p.order.orderType) && (
+            <ExchangeInfo.Group>
+              <ExchangeInfoRow
+                label={t`Acceptable Price`}
+                value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
+              />
 
-                    <div className="line-divider" />
-                  </>
-                )}
-
+              {existingPosition && (
                 <ExchangeInfoRow
-                  label={t`Acceptable Price`}
-                  value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
+                  label={t`Liq. Price`}
+                  value={formatLiquidationPrice(existingPosition.liquidationPrice, {
+                    displayDecimals: marketPriceDecimals,
+                  })}
                 />
-
-                {existingPosition && (
-                  <ExchangeInfoRow
-                    label={t`Liq. Price`}
-                    value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                      displayDecimals: marketPriceDecimals,
-                    })}
-                  />
-                )}
-              </>
-            )}
-          </ExchangeInfo.Group>
+              )}
+            </ExchangeInfo.Group>
+          )}
           <ExchangeInfo.Group>
             {additionalExecutionFee && (
               <ExchangeInfoRow

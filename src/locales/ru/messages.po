@@ -485,6 +485,10 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Setting auto-cancel order(s)"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "История торгов"
@@ -2490,6 +2494,10 @@ msgstr ""
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Auto-Cancel TP/SL"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
 msgstr ""
@@ -3618,6 +3626,10 @@ msgstr ""
 msgid "Rebates earned by this account as a trader."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве трейдера."
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Auto-cancel order(s) set"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3898,6 +3910,10 @@ msgstr "Вы покидаете сайт GMX.io и будете перенапр
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
+msgstr ""
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "Read more."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -8047,6 +8063,10 @@ msgstr "Ценовые условия выполнены"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
+msgstr ""
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Failed to set auto-cancel order(s)"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

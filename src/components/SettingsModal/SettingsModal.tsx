@@ -34,6 +34,7 @@ export function SettingsModal({
   const [slippageAmount, setSlippageAmount] = useState<string>("0");
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState<string>("0");
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
+  const [isAutoCancelTPSL, setIsAutoCancelTPSL] = useState(true);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showDebugValues, setShowDebugValues] = useState(false);
@@ -48,6 +49,7 @@ export function SettingsModal({
       setExecutionFeeBufferBps(String(roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100)));
     }
     setIsPnlInLeverage(settings.isPnlInLeverage);
+    setIsAutoCancelTPSL(settings.isAutoCancelTPSL);
     setShowPnlAfterFees(settings.showPnlAfterFees);
     setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
@@ -90,6 +92,7 @@ export function SettingsModal({
     }
 
     settings.setIsPnlInLeverage(isPnlInLeverage);
+    settings.setIsAutoCancelTPSL(isAutoCancelTPSL);
     settings.setShowPnlAfterFees(showPnlAfterFees);
     settings.setShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     settings.setShowDebugValues(showDebugValues);
@@ -99,6 +102,7 @@ export function SettingsModal({
     slippageAmount,
     executionFeeBufferBps,
     isPnlInLeverage,
+    isAutoCancelTPSL,
     showPnlAfterFees,
     shouldDisableValidationForTesting,
     showDebugValues,
@@ -197,6 +201,24 @@ export function SettingsModal({
       <div className="Exchange-settings-row">
         <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
           <Trans>Include PnL in leverage display</Trans>
+        </Checkbox>
+      </div>
+      <div className="Exchange-settings-row">
+        <Checkbox isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
+          <Tooltip
+            handle={<Trans>Auto-Cancel TP/SL</Trans>}
+            renderContent={() => (
+              <div>
+                <Trans>
+                  Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is
+                  completely closed. This will only affect newly created TP/SL orders.
+                </Trans>
+                <br />
+                <br />
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2">Read more</ExternalLink>
+              </div>
+            )}
+          />
         </Checkbox>
       </div>
       <div className="Exchange-settings-row chart-positions-settings">

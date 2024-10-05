@@ -485,6 +485,10 @@ msgstr "Max Capacity"
 msgid "Market Swap"
 msgstr "Market Swap"
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Setting auto-cancel order(s)"
+msgstr "Setting auto-cancel order(s)"
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "Trade History"
@@ -2490,6 +2494,10 @@ msgstr "You will be short {indexSymbol} only from your short position."
 msgid "GMX V1 {networkName} actions for all accounts."
 msgstr "GMX V1 {networkName} actions for all accounts."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Auto-Cancel TP/SL"
+msgstr "Auto-Cancel TP/SL"
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
 msgstr "Funding Fee Rate"
@@ -3618,6 +3626,10 @@ msgstr "You will be short {indexSymbol} from your short position, while being lo
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Auto-cancel order(s) set"
+msgstr "Auto-cancel order(s) set"
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3902,6 +3914,10 @@ msgstr "You are leaving GMX.io and will be redirected to a third party, independ
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
 msgstr "Accrued Borrow Fee"
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "Read more."
+msgstr "Read more."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
@@ -8054,6 +8070,10 @@ msgstr "Price conditions are met"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
 msgstr "Unstake GMX"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Failed to set auto-cancel order(s)"
+msgstr "Failed to set auto-cancel order(s)"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"
