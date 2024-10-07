@@ -1,6 +1,5 @@
 import { useKey } from "react-use";
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import useSWR from "swr";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { Trans, msg, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
@@ -19,11 +18,10 @@ import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 
 import PositionRouter from "abis/PositionRouter.json";
-import Token from "abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 
 import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
@@ -41,6 +39,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -67,7 +66,6 @@ export default function PositionEditor(props) {
     isVisible,
     setIsVisible,
     infoTokens,
-    active,
     account,
     signer,
     collateralTokenAddress,
@@ -103,12 +101,11 @@ export default function PositionEditor(props) {
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
-  const { data: tokenAllowance } = useSWR(
-    [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: routerAddress,
+    tokenAddresses: [collateralTokenAddress],
+  });
+  const tokenAllowance = tokensAllowanceData?.[collateralTokenAddress];
 
   const isDeposit = option === DEPOSIT;
   const isWithdrawal = option === WITHDRAW;

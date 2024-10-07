@@ -172,7 +172,15 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   const handleMutate: KeyedMutator<TResult | undefined> = useCallback(
     (...args) => {
       const opts = args[1];
-      const shouldRevalidate = !(typeof opts !== "boolean" && opts && opts.revalidate === false);
+      let shouldRevalidate: boolean | undefined;
+
+      if (opts === false) {
+        shouldRevalidate = false;
+      } else if (typeof opts !== "boolean" && opts) {
+        const isRevalidateExplicitlyDisabled = opts.revalidate === false;
+        shouldRevalidate = !isRevalidateExplicitlyDisabled;
+      }
+
       if (shouldRevalidate) {
         mutateFlagsRef.current[hashedFullKey] = true;
       }

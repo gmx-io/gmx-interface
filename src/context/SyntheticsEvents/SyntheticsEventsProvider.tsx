@@ -60,6 +60,7 @@ import {
 } from "./types";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { getIsFlagEnabled } from "config/ab";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -717,11 +718,27 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (hasV2LostFocus || !wsProvider || !currentAccount || !metrics) {
+      if (hasV2LostFocus || !wsProvider || !currentAccount) {
         return;
       }
 
       const unsubscribe = subscribeToV2Events(chainId, wsProvider, currentAccount, eventLogHandlers);
+
+      return function cleanup() {
+        unsubscribe();
+      };
+    },
+    [chainId, currentAccount, hasV2LostFocus, wsProvider]
+  );
+
+  useEffect(
+    function subscribeApproval() {
+      const isEnabled = getIsFlagEnabled("testApprovalWebSocketsEvents");
+
+      if (!wsProvider || !currentAccount || !isEnabled) {
+        return;
+      }
+
       const unsubscribeApproval = subscribeToApprovalEvents(
         chainId,
         wsProvider,
@@ -738,11 +755,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
 
       return function cleanup() {
-        unsubscribe();
         unsubscribeApproval();
       };
     },
-    [chainId, currentAccount, hasV2LostFocus, wsProvider]
+    [chainId, currentAccount, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
