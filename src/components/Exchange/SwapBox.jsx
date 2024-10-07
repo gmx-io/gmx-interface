@@ -4,7 +4,6 @@ import Tooltip from "../Tooltip/Tooltip";
 import "./SwapBox.scss";
 
 import { ethers } from "ethers";
-import useSWR from "swr";
 
 import { BsArrowRight } from "react-icons/bs";
 import { IoMdSwap } from "react-icons/io";
@@ -51,7 +50,6 @@ import OrdersToa from "./OrdersToa";
 
 import PositionRouter from "abis/PositionRouter.json";
 import Router from "abis/Router.json";
-import Token from "abis/Token.json";
 import WETH from "abis/WETH.json";
 
 import LongIcon from "img/long.svg?react";
@@ -73,7 +71,7 @@ import {
   shouldRaiseGasError,
 } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -101,6 +99,7 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useHistory } from "react-router-dom";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 
 const SWAP_ICONS = {
   [LONG]: <LongIcon />,
@@ -313,12 +312,11 @@ export default function SwapBox(props) {
 
   const routerAddress = getContract(chainId, "Router");
   const tokenAllowanceAddress = fromTokenAddress === ZeroAddress ? nativeTokenAddress : fromTokenAddress;
-  const { data: tokenAllowance } = useSWR(
-    active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: routerAddress,
+    tokenAddresses: [tokenAllowanceAddress],
+  });
+  const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
 

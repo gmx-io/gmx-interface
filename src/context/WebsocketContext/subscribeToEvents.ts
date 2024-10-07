@@ -1,8 +1,8 @@
 import EventEmitter from "abis/EventEmitter.json";
 import { getContract } from "config/contracts";
-import { getV2Tokens } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokens } from "config/tokens";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
-import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers } from "ethers";
+import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
 import { MutableRefObject } from "react";
 
 const vaultEvents = {
@@ -145,12 +145,21 @@ export function subscribeToApprovalEvents(
   account: string,
   onApprove: (tokenAddress: string, spender: string, value: bigint) => void
 ) {
-  const spenders = [getContract(chainId, "StakedGmxTracker"), ZeroAddress, getContract(chainId, "SyntheticsRouter")];
+  const spenders = [
+    getContract(chainId, "StakedGmxTracker"),
+    ZeroAddress,
+    getContract(chainId, "GlpManager"),
+    getContract(chainId, "SyntheticsRouter"),
+    getContract(chainId, "Router"),
+  ];
   const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+  const tokenAddresses = getTokens(chainId)
+    .filter((token) => isAddress(token.address) && token.address !== NATIVE_TOKEN_ADDRESS)
+    .map((token) => token.address);
 
   const approvalsFilter: ProviderEvent = {
-    address: getV2Tokens(chainId).map((token) => token.address),
+    address: tokenAddresses,
     topics: [APPROVED_HASH, addressHash, spenderTopics],
   };
 
