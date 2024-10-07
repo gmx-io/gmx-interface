@@ -39,9 +39,9 @@ export function MarketPoolsPage() {
   const {
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
+    glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
-    glvTokensIncentiveAprData,
   } = useGmMarketsApy(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
