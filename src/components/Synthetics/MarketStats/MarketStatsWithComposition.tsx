@@ -47,6 +47,7 @@ type Props = {
   marketInfo?: GlvOrMarketInfo;
   marketToken?: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
+  glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvTokensApyData: MarketTokensAPRData | undefined;
@@ -60,6 +61,7 @@ export function MarketStatsWithComposition(p: Props) {
     marketsInfoData,
     marketTokensData,
     marketsTokensIncentiveAprData,
+    glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvTokensApyData,
   } = p;
@@ -92,7 +94,10 @@ export function MarketStatsWithComposition(p: Props) {
   );
 
   const apy = getByKey(marketsTokensApyData, marketInfo && getGlvOrMarketAddress(marketInfo));
-  const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo && getGlvOrMarketAddress(marketInfo));
+  const glvOrMarketAddress = marketInfo && getGlvOrMarketAddress(marketInfo);
+  const incentiveApr = isGlv
+    ? getByKey(glvTokensIncentiveAprData, glvOrMarketAddress)
+    : getByKey(marketsTokensIncentiveAprData, glvOrMarketAddress);
   const lidoApr = getByKey(marketsTokensLidoAprData, marketInfo && getGlvOrMarketAddress(marketInfo));
 
   const indexName = marketInfo && getMarketIndexName(marketInfo);

@@ -16,7 +16,7 @@ import { useTokensDataRequest } from "../tokens";
 import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { getPoolUsdWithoutPnl, isMarketInfo } from "domain/synthetics/markets";
+import { getPoolUsdWithoutPnl, GlvInfoData, isMarketInfo } from "domain/synthetics/markets";
 import { getTokenBySymbolSafe } from "config/tokens";
 
 import TokenAbi from "abis/Token.json";
@@ -40,6 +40,7 @@ type RawPoolValue = {
 
 type GmGlvTokensAPRResult = {
   glvApyInfoData: MarketTokensAPRData;
+  glvTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensLidoAprData?: MarketTokensAPRData;
   marketsTokensApyData?: MarketTokensAPRData;
@@ -140,12 +141,13 @@ function useExcludedLiquidityMarketMap(
 
 function useIncentivesBonusApr(
   chainId: number,
-  marketsInfoData: GlvAndGmMarketsInfoData | undefined
-): MarketTokensAPRData {
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined,
+  glvData: GlvInfoData | undefined
+) {
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(marketsInfoData);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: true, glvData });
   const tokenAddress = liquidityProvidersIncentives?.token;
   const excludedLiquidityMarketMap = useExcludedLiquidityMarketMap(chainId, marketsInfoData);
 
@@ -185,15 +187,18 @@ function useIncentivesBonusApr(
     return undefined;
   }, [marketToken, regularToken]);
 
-  const marketTokensAPRData = useMemo<MarketTokensAPRData>(() => {
+  const marketTokensAPRData = useMemo(() => {
     if (!liquidityProvidersIncentives || !token) return {};
 
     const marketTokensAPRData: MarketTokensAPRData = {};
+    const glvTokensAPRData: MarketTokensAPRData = {};
+
     for (const marketAddress of marketAddresses) {
       const market = getByKey(marketsInfoData, marketAddress);
       if (!market) {
         continue;
       }
+
       const marketToken = marketTokensData?.[marketAddress];
       const poolValue = market?.poolValueMin;
 
@@ -215,10 +220,17 @@ function useIncentivesBonusApr(
           poolValueWithoutExcludedLPs
         ) * yearMultiplier;
 
-      marketTokensAPRData[marketAddress] = apr;
+      if (isGlvInfo(market)) {
+        glvTokensAPRData[marketAddress] = apr;
+      } else {
+        marketTokensAPRData[marketAddress] = apr;
+      }
     }
 
-    return marketTokensAPRData;
+    return {
+      marketTokensAPRData,
+      glvTokensAPRData,
+    };
   }, [
     excludedLiquidityMarketMap,
     liquidityProvidersIncentives,
@@ -400,7 +412,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
     },
   });
 
-  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData);
+  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData, glvData);
 
   const glvApyInfoData = useMemo(() => {
     if (!glvData || !data?.marketsTokensApyData) {
@@ -441,7 +453,8 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   return {
     glvApyInfoData,
     marketsTokensLidoAprData: data?.marketsTokensLidoAprData,
-    marketsTokensIncentiveAprData,
+    marketsTokensIncentiveAprData: marketsTokensIncentiveAprData.marketTokensAPRData,
+    glvTokensIncentiveAprData: marketsTokensIncentiveAprData.glvTokensAPRData,
     avgMarketsApy: data?.avgMarketsApy,
     marketsTokensApyData: data?.marketsTokensApyData,
   };

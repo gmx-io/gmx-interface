@@ -141,15 +141,17 @@ export default function TokenCard({ showRedirectModal }: Props) {
   const {
     marketsTokensApyData: arbApy,
     marketsTokensIncentiveAprData: arbIncentiveApr,
+    glvTokensIncentiveAprData: arbGlvIncentiveApr,
     glvApyInfoData: arbGlvApy,
   } = useGmMarketsApy(ARBITRUM);
   const {
     marketsTokensApyData: avaxApy,
     marketsTokensIncentiveAprData: avaxIncentiveApr,
+    glvTokensIncentiveAprData: avaxGlvIncentiveApr,
     glvApyInfoData: avaxGlvApy,
   } = useGmMarketsApy(AVALANCHE);
 
-  const maxApyText = useMemo(() => {
+  const maxMarketApyText = useMemo(() => {
     if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)
       return {
         [ARBITRUM]: "...%",
@@ -166,13 +168,17 @@ export default function TokenCard({ showRedirectModal }: Props) {
   }, [arbApy, arbIncentiveApr, avaxApy, avaxIncentiveApr]);
 
   const maxGlvApyText = useMemo(() => {
-    const arb = !arbGlvApy ? "...%" : `${formatAmount(calculateMaxApr(arbGlvApy, {}, ARBITRUM), 28, 2)}%`;
-    const avax = !avaxGlvApy ? "...%" : `${formatAmount(calculateMaxApr(avaxGlvApy, {}, AVALANCHE), 28, 2)}%`;
+    const arb = !arbGlvApy
+      ? "...%"
+      : `${formatAmount(calculateMaxApr(arbGlvApy, arbGlvIncentiveApr ?? {}, ARBITRUM), 28, 2)}%`;
+    const avax = !avaxGlvApy
+      ? "...%"
+      : `${formatAmount(calculateMaxApr(avaxGlvApy, avaxGlvIncentiveApr ?? {}, AVALANCHE), 28, 2)}%`;
     return {
       [ARBITRUM]: isGlvEnabled(ARBITRUM) ? arb : undefined,
       [AVALANCHE]: isGlvEnabled(AVALANCHE) ? avax : undefined,
     };
-  }, [arbGlvApy, avaxGlvApy]);
+  }, [arbGlvApy, avaxGlvApy, arbGlvIncentiveApr, avaxGlvIncentiveApr]);
 
   const poolsIncentivizedLabel = useMemo(() => {
     const sparkle = <img src={sparkleIcon} alt="sparkle" className="relative -top-2 -mr-10 inline h-10 align-top" />;
@@ -351,8 +357,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
             <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{poolsIncentivizedLabel}</div>
           )}
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum Max. APY:</Trans> {maxApyText?.[ARBITRUM]},{" "}
-            <Trans>Avalanche Max. APY: {maxApyText?.[AVALANCHE]}</Trans>{" "}
+            <Trans>Arbitrum Max. APY:</Trans> {maxMarketApyText?.[ARBITRUM]},{" "}
+            <Trans>Avalanche Max. APY: {maxMarketApyText?.[AVALANCHE]}</Trans>{" "}
           </div>
         </div>
 

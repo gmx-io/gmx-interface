@@ -63,6 +63,7 @@ type Props = {
   glvTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   isDeposit: boolean;
@@ -76,6 +77,7 @@ export function GmList({
   marketsTokensApyData,
   glvTokensApyData,
   marketsTokensIncentiveAprData,
+  glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
   shouldScrollToTop,
   isDeposit,
@@ -207,6 +209,7 @@ export function GmList({
                   token={token}
                   marketTokensData={marketTokensData}
                   marketsTokensApyData={marketsTokensApyData}
+                  glvTokensIncentiveAprData={glvTokensIncentiveAprData}
                   marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
                   marketsTokensLidoAprData={marketsTokensLidoAprData}
                   glvTokensApyData={glvTokensApyData}
@@ -358,6 +361,7 @@ function GmListItem({
   token,
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
+  glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
   glvTokensApyData,
   shouldScrollToTop,
@@ -369,6 +373,7 @@ function GmListItem({
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvTokensApyData: MarketTokensAPRData | undefined;
   shouldScrollToTop: boolean | undefined;
@@ -447,7 +452,9 @@ function GmListItem({
   const apy = isGlv
     ? getByKey(glvTokensApyData, marketOrGlvTokenAddress)
     : getByKey(marketsTokensApyData, token?.address);
-  const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+  const incentiveApr = isGlv
+    ? getByKey(glvTokensIncentiveAprData, token?.address)
+    : getByKey(marketsTokensIncentiveAprData, token?.address);
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
