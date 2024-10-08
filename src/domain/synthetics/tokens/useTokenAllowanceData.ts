@@ -23,16 +23,12 @@ export function useTokensAllowanceData(
 
   const isNativeToken = tokenAddresses.length === 1 && tokenAddresses[0] === NATIVE_TOKEN_ADDRESS;
 
-  const {
-    data,
-    // TODO: we wont need mutate if testApprovalWebSocketsEvents is passed
-    mutate,
-  } = useMulticall(chainId, "useTokenAllowance", {
+  const { data, mutate } = useMulticall(chainId, "useTokenAllowance", {
     key:
       !skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
         ? [account, spenderAddress, tokenAddresses.join("-")]
         : null,
-    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL + 5000, // every 10s
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     request: () =>
       tokenAddresses
         .filter((address) => address !== NATIVE_TOKEN_ADDRESS)
