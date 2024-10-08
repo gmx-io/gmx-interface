@@ -9,6 +9,7 @@ import {
   shift,
   size,
   useClick,
+  useDismiss,
   useFloating,
   useHover,
   useInteractions,
@@ -148,8 +149,11 @@ export default function Tooltip<T extends ElementType>({
     enabled: !disabled && closeOnDoubleClick,
     toggle: closeOnDoubleClick,
   });
+  const dismiss = useDismiss(context, {
+    enabled: !disabled,
+  });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
 
   const preventClick = useCallback(
     (event: MouseEvent) => {
