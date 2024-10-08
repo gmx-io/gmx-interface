@@ -6,7 +6,7 @@ import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
+import { useTotalGmxStaked } from "domain/legacy";
 import { useFeesSummary, useVolumeInfo } from "domain/stats";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useInfoTokens } from "domain/tokens";
@@ -26,6 +26,7 @@ import type { ChainStats } from "./useDashboardChainStatsMulticall";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
+import { useGmxPrice } from "domain/synthetics/tokens";
 
 export function OverviewCard({
   statsArbitrum,
@@ -34,7 +35,7 @@ export function OverviewCard({
   statsArbitrum?: ChainStats;
   statsAvalanche?: ChainStats;
 }) {
-  const { active, signer } = useWallet();
+  const { active } = useWallet();
   const { chainId } = useChainId();
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
@@ -86,7 +87,7 @@ export function OverviewCard({
 
   const { data: feesSummaryByChain } = useFeesSummary();
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+  const { gmxPrice } = useGmxPrice(chainId);
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
 
