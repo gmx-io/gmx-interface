@@ -108,6 +108,7 @@ export function GmList({
     glvTokensApyData,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
+    glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     searchText,
     tab,
@@ -251,6 +252,7 @@ function useFilterSortPools({
   direction,
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
+  glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
   glvTokensApyData,
   searchText,
@@ -263,6 +265,7 @@ function useFilterSortPools({
   direction: SortDirection;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
+  glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvTokensApyData: MarketTokensAPRData | undefined;
   searchText: string;
@@ -317,6 +320,7 @@ function useFilterSortPools({
       direction,
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
+      glvTokensIncentiveAprData,
       marketsTokensLidoAprData,
       glvTokensApyData,
     });
@@ -329,6 +333,7 @@ function useFilterSortPools({
     chainId,
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
+    glvTokensIncentiveAprData,
     glvTokensApyData,
     marketsTokensLidoAprData,
     fuse,
