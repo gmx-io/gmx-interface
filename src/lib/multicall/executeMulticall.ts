@@ -13,6 +13,7 @@ import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 
 type MulticallFetcherConfig = {
   [chainId: number]: {
@@ -268,7 +269,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     throttledExecuteBackgroundChainsMulticalls();
   }
 
-  emitMetricCounter({
+  emitMetricCounter<MulticallBatchedCallCounter>({
     event: "multicall.batched.call",
     data: {
       priority,
@@ -281,7 +282,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     const duration = performance.now() - durationStart;
 
     if (result.success) {
-      emitMetricTiming({
+      emitMetricTiming<MulticallBatchedTiming>({
         event: "multicall.batched.timing",
         time: Math.round(duration),
         data: {
@@ -289,7 +290,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
         },
       });
     } else {
-      emitMetricCounter({
+      emitMetricCounter<MulticallBatchedErrorCounter>({
         event: "multicall.batched.error",
         data: {
           priority,

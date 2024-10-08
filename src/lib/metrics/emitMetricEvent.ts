@@ -17,12 +17,12 @@ export function emitMetricEvent<T extends MetricEventParams = never>({ event, da
   );
 }
 
-export function emitMetricCounter({
+export function emitMetricCounter<T extends { event: string; data?: object } = never>({
   event,
   data,
 }: {
-  event: string;
-  data?: Record<string, boolean | string | number>;
+  event: T["event"];
+  data?: T["data"];
 }) {
   globalThis.dispatchEvent(
     new CustomEvent(METRIC_COUNTER_DISPATCH_NAME, {
@@ -34,14 +34,14 @@ export function emitMetricCounter({
   );
 }
 
-export function emitMetricTiming({
+export function emitMetricTiming<T extends { event: string; data?: object } = never>({
   event,
   time,
   data,
 }: {
-  event: string;
+  event: T["event"];
   time: number;
-  data?: Record<string, boolean | string | number>;
+  data?: T["data"];
 }) {
   globalThis.dispatchEvent(
     new CustomEvent(METRIC_TIMING_DISPATCH_NAME, {

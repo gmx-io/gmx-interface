@@ -26,6 +26,8 @@ import { SubaccountModal } from "components/Synthetics/SubaccountModal/Subaccoun
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+import { useOpenAppMetric } from "lib/metrics";
+import { useAccountInitedMetric } from "lib/metrics/";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -43,6 +45,9 @@ export function AppRoutes() {
 
   useEventToast();
   useConfigureMetrics();
+  useOpenAppMetric();
+  useAccountInitedMetric();
+
   const query = useRouteQuery();
 
   useEffect(() => {
