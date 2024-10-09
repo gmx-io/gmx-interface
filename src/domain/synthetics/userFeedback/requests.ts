@@ -21,8 +21,8 @@ export function sendMissedCoinsFeedback({
       isError: false,
       data: {
         coin,
-        totalVolume: formatAmountForMetrics(totalVolume ? totalVolume : 0n, USD_DECIMALS, "toInt"),
-        monthVolume: formatAmountForMetrics(monthVolume ? monthVolume : 0n, USD_DECIMALS, "toInt"),
+        totalVolume: formatAmountForMetrics(totalVolume ? totalVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
+        monthVolume: formatAmountForMetrics(monthVolume ? monthVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
         place,
       },
     });
@@ -53,8 +53,8 @@ export const sendMissedCoinSearchDebounced = debounce(
       isError: false,
       data: {
         coin,
-        totalVolume: formatAmountForMetrics(totalVolume ? totalVolume : 0n, USD_DECIMALS, "toInt"),
-        monthVolume: formatAmountForMetrics(monthVolume ? monthVolume : 0n, USD_DECIMALS, "toInt"),
+        totalVolume: formatAmountForMetrics(totalVolume ? totalVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
+        monthVolume: formatAmountForMetrics(monthVolume ? monthVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
         place,
       },
     });

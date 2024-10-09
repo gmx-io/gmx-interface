@@ -394,8 +394,8 @@ export function roundToTwoDecimals(n: number) {
   return Math.round(n * 100) / 100;
 }
 
-export function roundToOrder(n: bigint) {
-  const decimals = n.toString().length - 1;
+export function roundToOrder(n: bigint, significantDigits = 1) {
+  const decimals = Math.max(n.toString().length - significantDigits, 0);
   return (n / expandDecimals(1, decimals)) * expandDecimals(1, decimals);
 }
 

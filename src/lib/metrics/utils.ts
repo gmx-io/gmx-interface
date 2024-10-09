@@ -7,7 +7,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { TxError } from "lib/contracts/transactionErrors";
-import { formatTokenAmount, roundToOrder } from "lib/numbers";
+import { bigintToNumber, roundToOrder } from "lib/numbers";
 import { metrics, SubmittedOrderEvent } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
 import {
@@ -566,27 +566,19 @@ export function sendOrderCancelledMetric(metricId: OrderMetricId, eventData: Eve
 export function formatAmountForMetrics(
   amount?: bigint,
   decimals = USD_DECIMALS,
-  round: "toOrder" | "toInt" | false = "toOrder"
-) {
+  round: "toOrder" | "toSecondOrderInt" | false = "toOrder"
+): number | undefined {
   if (amount === undefined) {
     return undefined;
   }
 
-  const value = round === "toOrder" ? roundToOrder(amount) : amount;
-
-  const str = formatTokenAmount(value, decimals);
-
-  if (!str) {
-    return undefined;
+  if (round === "toOrder") {
+    return bigintToNumber(roundToOrder(amount), decimals);
+  } else if (round === "toSecondOrderInt") {
+    return Math.round(bigintToNumber(roundToOrder(amount, 2), decimals));
   }
 
-  let result = parseFloat(str);
-
-  if (round === "toInt") {
-    result = Math.round(result);
-  }
-
-  return result;
+  return bigintToNumber(amount, decimals);
 }
 
 export function getRequestId() {

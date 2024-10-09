@@ -10,11 +10,13 @@ import { MissedCoinsPlace } from "./types";
 export function useMissedCoinsSearch({
   searchText,
   isEmpty,
+  isLoaded,
   place,
   skip,
 }: {
   searchText: string;
   isEmpty: boolean;
+  isLoaded: boolean;
   place?: MissedCoinsPlace;
   skip?: boolean;
 }) {
@@ -22,7 +24,7 @@ export function useMissedCoinsSearch({
   const accountStats = useSelector(selectAccountStats);
 
   useEffect(() => {
-    if (!skip && searchText.length > 2 && isEmpty && place) {
+    if (!skip && searchText.length > 2 && isEmpty && place && isLoaded) {
       sendMissedCoinSearchDebounced({
         searchText,
         totalVolume: accountStats?.volume,
@@ -30,5 +32,5 @@ export function useMissedCoinsSearch({
         place,
       });
     }
-  }, [accountStats?.volume, isEmpty, lastMonthAccountStats?.volume, place, searchText, skip]);
+  }, [accountStats?.volume, isEmpty, isLoaded, lastMonthAccountStats?.volume, place, searchText, skip]);
 }

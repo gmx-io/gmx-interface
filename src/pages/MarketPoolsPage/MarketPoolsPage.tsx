@@ -36,8 +36,13 @@ export function MarketPoolsPage() {
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
-  const { marketsTokensApyData, marketsTokensIncentiveAprData, marketsTokensLidoAprData, glvApyInfoData } =
-    useGmMarketsApy(chainId);
+  const {
+    marketsTokensApyData,
+    marketsTokensIncentiveAprData,
+    glvTokensIncentiveAprData,
+    marketsTokensLidoAprData,
+    glvApyInfoData,
+  } = useGmMarketsApy(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
@@ -94,6 +99,7 @@ export function MarketPoolsPage() {
           <MarketStatsWithComposition
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
             marketTokensData={depositMarketTokensData}
             marketsInfoData={marketsInfoData}
@@ -123,6 +129,7 @@ export function MarketPoolsPage() {
         </div>
         <GmList
           glvTokensApyData={glvApyInfoData}
+          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}
