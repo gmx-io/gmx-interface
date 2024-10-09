@@ -35,6 +35,7 @@ export type MeasureMetricType =
   | "marketsInfoLoad"
   | "multicall"
   | "candlesLoad"
+  | "candlesDisplay"
   | "tradingDataLoad"
   | "accountInfo"
   | "syntheticsPage";

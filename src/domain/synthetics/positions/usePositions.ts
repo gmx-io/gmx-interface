@@ -241,7 +241,14 @@ export function useOptimisticPositions(p: {
 
       return acc;
     }, {} as PositionsData);
-  }, [allPositionsKeys, pendingPositionsUpdates, positionDecreaseEvents, positionIncreaseEvents, positionsData]);
+  }, [
+    allPositionsKeys,
+    isLoading,
+    pendingPositionsUpdates,
+    positionDecreaseEvents,
+    positionIncreaseEvents,
+    positionsData,
+  ]);
 }
 
 function applyEventChanges(position: Position, event: PositionIncreaseEvent | PositionDecreaseEvent) {

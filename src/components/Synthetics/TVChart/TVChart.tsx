@@ -30,7 +30,7 @@ import { formatAmount } from "lib/numbers";
 import { TVChartHeader } from "./TVChartHeader";
 
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
 
@@ -148,6 +148,7 @@ export function TVChart() {
 
     // Start timer for dataProvider initialization
     metrics.startTimer("candlesLoad");
+    metrics.startTimer("candlesDisplay");
 
     dataProvider.setOnBarsLoadStarted(() => {
       metricsIsFirstLoadTime = !metricsRequestId;
@@ -159,6 +160,16 @@ export function TVChart() {
         time: metrics.getTime("candlesLoad", true),
         data: {
           requestId: metricsRequestId,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
+        },
+      });
+
+      metrics.pushEvent<LoadingStartEvent>({
+        event: "candlesDisplay.started",
+        isError: false,
+        time: metrics.getTime("candlesDisplay"),
+        data: {
+          requestId: metricsRequestId!,
           isFirstTimeLoad: metricsIsFirstLoadTime,
         },
       });
@@ -177,20 +188,40 @@ export function TVChart() {
         },
       });
 
+      metrics.pushEvent<LoadingSuccessEvent>({
+        event: "candlesDisplay.success",
+        isError: false,
+        time: metrics.getTime("candlesDisplay", true),
+        data: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
+        },
+      });
+
       setIsCandlesLoaded(true);
     });
 
     dataProvider.setOnBarsLoadFailed((error) => {
       const metricData = prepareErrorMetricData(error);
 
-      metrics.pushEvent<LoadingStartEvent>({
-        event: "candlesLoad.started",
-        isError: false,
+      metrics.pushEvent<LoadingFailedEvent>({
+        event: "candlesLoad.failed",
+        isError: true,
         time: metrics.getTime("candlesLoad", true),
         data: {
           requestId: metricsRequestId!,
           isFirstTimeLoad: metricsIsFirstLoadTime,
           ...metricData,
+        },
+      });
+
+      metrics.pushEvent<LoadingFailedEvent>({
+        event: "candlesDisplay.failed",
+        isError: true,
+        time: metrics.getTime("candlesDisplay", true),
+        data: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: metricsIsFirstLoadTime,
         },
       });
     });
