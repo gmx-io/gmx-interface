@@ -283,6 +283,10 @@ export function OverviewCard({
   );
 
   const formattedDuration = useMemo(() => {
+    if (!feesSummary?.lastUpdatedAt) {
+      return "";
+    }
+
     const now = Date.now() / 1000;
     const days = Math.floor((now - feesSummary.lastUpdatedAt) / (3600 * 24));
     let restHours = Math.round((now - feesSummary.lastUpdatedAt) / 3600) - days * 24;
@@ -293,7 +297,7 @@ export function OverviewCard({
     const daysStr = days > 0 ? `${days}d` : "";
     const hoursStr = restHours > 0 ? `${restHours}h` : "";
     return [daysStr, hoursStr].filter(Boolean).join(" ");
-  }, [feesSummary.lastUpdatedAt]);
+  }, [feesSummary?.lastUpdatedAt]);
 
   return (
     <div className="App-card">

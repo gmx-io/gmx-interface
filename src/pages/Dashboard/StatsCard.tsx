@@ -49,7 +49,7 @@ export function StatsCard({
   const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
   const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
   const infoTokens = chainId === ARBITRUM ? infoTokensArbitrum : infoTokensAvax;
-  const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
+  const eth = infoTokens[getTokenBySymbol(chainId === ARBITRUM ? ARBITRUM : AVALANCHE, "ETH").address];
 
   // #region Fees
 
