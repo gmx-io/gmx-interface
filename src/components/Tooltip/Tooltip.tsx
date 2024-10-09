@@ -35,7 +35,7 @@ import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
 
-type InnerTooltipProps<T extends ElementType> = {
+type InnerTooltipProps<T extends ElementType | undefined> = {
   /**
    * Takes precedence over `children`
    */
@@ -73,8 +73,8 @@ type InnerTooltipProps<T extends ElementType> = {
   closeOnDoubleClick?: boolean;
 };
 
-export type TooltipProps<T extends ElementType> = InnerTooltipProps<T> &
-  Omit<ComponentPropsWithoutRef<T>, keyof InnerTooltipProps<T>>;
+export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
+  (T extends undefined ? {} : Omit<ComponentPropsWithoutRef<Exclude<T, undefined>>, keyof InnerTooltipProps<T>>);
 
 export default function Tooltip<T extends ElementType>({
   handle,
