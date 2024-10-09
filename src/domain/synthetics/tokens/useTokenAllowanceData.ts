@@ -1,51 +1,57 @@
 import { useMemo } from "react";
+import { erc20Abi } from "viem";
 
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMulticall } from "lib/multicall";
+import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 import type { TokensAllowanceData } from "./types";
 
-import Token from "abis/Token.json";
-
-type TokenAllowanceResult = { tokensAllowanceData?: TokensAllowanceData; refetchTokensAllowanceData: () => void };
-
-const defaultValue = {};
+type TokenAllowanceResult = { tokensAllowanceData: TokensAllowanceData; refetchTokensAllowanceData: () => void };
 
 export function useTokensAllowanceData(
   chainId: number,
-  p: { spenderAddress?: string; tokenAddresses: string[]; skip?: boolean }
+  p: {
+    spenderAddress?: string;
+    tokenAddresses: (
+      | string
+      // V1 sometimes passes undefined
+      | undefined
+    )[];
+    skip?: boolean;
+  }
 ): TokenAllowanceResult {
   const { spenderAddress, tokenAddresses, skip } = p;
   const { account } = useWallet();
   const { approvalStatuses } = useSyntheticsEvents();
 
-  const isNativeToken = tokenAddresses.length === 1 && tokenAddresses[0] === NATIVE_TOKEN_ADDRESS;
+  const validAddresses = tokenAddresses.filter(
+    (address): address is string => address !== undefined && address !== NATIVE_TOKEN_ADDRESS
+  );
 
   const { data, mutate } = useMulticall(chainId, "useTokenAllowance", {
     key:
-      !skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
-        ? [account, spenderAddress, tokenAddresses.join("-")]
+      !skip && account && spenderAddress && validAddresses.length > 0
+        ? [account, spenderAddress, validAddresses]
         : null,
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     request: () =>
-      tokenAddresses
-        .filter((address) => address !== NATIVE_TOKEN_ADDRESS)
-        .reduce((contracts, address) => {
-          contracts[address] = {
-            contractAddress: address,
-            abi: Token.abi,
-            calls: {
-              allowance: {
-                methodName: "allowance",
-                params: [account, spenderAddress],
-              },
+      validAddresses.reduce((contracts, address) => {
+        contracts[address!] = {
+          contractAddress: address,
+          abi: erc20Abi,
+          calls: {
+            allowance: {
+              methodName: "allowance",
+              params: [account, spenderAddress],
             },
-          };
+          },
+        };
 
-          return contracts;
-        }, {}),
+        return contracts;
+      }, {}),
     parseResponse: (res) => {
       const now = Date.now();
 
@@ -63,13 +69,13 @@ export function useTokensAllowanceData(
   });
 
   const mergedData: TokensAllowanceData | undefined = useMemo(() => {
-    if (!spenderAddress || tokenAddresses.length === 0) {
-      return data?.tokenAllowance;
+    if (!spenderAddress || validAddresses.length === 0) {
+      return EMPTY_OBJECT;
     }
 
     const newData: TokensAllowanceData = {};
 
-    for (const tokenAddress of tokenAddresses) {
+    for (const tokenAddress of validAddresses) {
       const event = approvalStatuses[tokenAddress]?.[spenderAddress];
       const eventValue: bigint | undefined = event?.value;
       const eventCreatedAt: number = event?.createdAt ?? 0;
@@ -85,10 +91,10 @@ export function useTokensAllowanceData(
     }
 
     return newData;
-  }, [spenderAddress, tokenAddresses, data, approvalStatuses]);
+  }, [spenderAddress, validAddresses, data, approvalStatuses]);
 
   return {
-    tokensAllowanceData: isNativeToken ? defaultValue : mergedData,
+    tokensAllowanceData: mergedData,
     refetchTokensAllowanceData: mutate,
   };
 }

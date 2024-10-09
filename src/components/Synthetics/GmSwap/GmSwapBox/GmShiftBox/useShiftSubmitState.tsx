@@ -77,10 +77,6 @@ export function useShiftSubmitState({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      if (!tokensAllowanceData) {
-        return addresses;
-      }
-
       if (
         amounts?.fromTokenAmount !== undefined &&
         amounts?.fromTokenAmount > 0 &&
