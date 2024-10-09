@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { GMX_PRICE_DECIMALS } from "config/ui";
 import { useTotalGmxStaked } from "domain/legacy";
 import { bigMath } from "lib/bigmath";
 import { GMX_DECIMALS } from "lib/legacy";
@@ -135,31 +134,7 @@ export function GmxCard({
             <div className="label">
               <Trans>Price</Trans>
             </div>
-            <div>
-              {gmxPrice === undefined || gmxPrice === 0n ? (
-                "..."
-              ) : (
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                  content={
-                    <>
-                      <StatsTooltipRow
-                        label={t`Price on Arbitrum`}
-                        value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                        showDollar={true}
-                      />
-                      <StatsTooltipRow
-                        label={t`Price on Avalanche`}
-                        value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                        showDollar={true}
-                      />
-                    </>
-                  }
-                />
-              )}
-            </div>
+            <div>{gmxPrice === undefined || gmxPrice === 0n ? "..." : formatUsd(gmxPrice)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
