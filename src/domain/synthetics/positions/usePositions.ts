@@ -44,7 +44,11 @@ export function usePositions(
     account,
   });
 
-  const { data: positionsData, error: positionsError } = useMulticall(chainId, "usePositionsData", {
+  const {
+    data: positionsData,
+    error: positionsError,
+    isLoading,
+  } = useMulticall(chainId, "usePositionsData", {
     key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
@@ -116,6 +120,7 @@ export function usePositions(
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,
     allPositionsKeys: keysAndPrices?.allPositionsKeys,
+    isLoading,
   });
 
   return {
@@ -173,12 +178,13 @@ function useKeysAndPricesParams(p: {
 export function useOptimisticPositions(p: {
   positionsData: PositionsData | undefined;
   allPositionsKeys: string[] | undefined;
+  isLoading: boolean;
 }): PositionsData | undefined {
-  const { positionsData, allPositionsKeys } = p;
+  const { positionsData, allPositionsKeys, isLoading } = p;
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
   return useMemo(() => {
-    if (!allPositionsKeys) {
+    if (!allPositionsKeys || isLoading) {
       return undefined;
     }
 
