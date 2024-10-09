@@ -5,7 +5,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
-import { MarketsInfoData, getMaxAllowedLeverageByMinCollateralFactor } from "../markets";
+import { MarketsData, MarketsInfoData, getMaxAllowedLeverageByMinCollateralFactor } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsInfoData } from "./types";
@@ -31,12 +31,13 @@ export function usePositionsInfoRequest(
   p: {
     account: string | null | undefined;
     marketsInfoData?: MarketsInfoData;
+    marketsData?: MarketsData;
     tokensData?: TokensData;
     showPnlInLeverage: boolean;
     skipLocalReferralCode?: boolean;
   }
 ): PositionsInfoResult {
-  const { showPnlInLeverage, marketsInfoData, tokensData, account, skipLocalReferralCode = false } = p;
+  const { showPnlInLeverage, marketsData, tokensData, account, skipLocalReferralCode = false } = p;
 
   const { signer } = useWallet();
   const { positionsData, error: positionsError } = usePositions(chainId, p);
@@ -57,7 +58,7 @@ export function usePositionsInfoRequest(
       };
     }
 
-    if (!marketsInfoData || !tokensData || !positionsData || minCollateralUsd === undefined) {
+    if (!marketsData || !tokensData || !positionsData || minCollateralUsd === undefined) {
       return {
         isLoading: true,
       };
@@ -66,12 +67,14 @@ export function usePositionsInfoRequest(
     const positionsInfoData = Object.keys(positionsData).reduce((acc: PositionsInfoData, positionKey: string) => {
       const position = getByKey(positionsData, positionKey)!;
 
-      const marketInfo = getByKey(marketsInfoData, position.marketAddress);
-      const indexToken = marketInfo?.indexToken;
-      const pnlToken = position.isLong ? marketInfo?.longToken : marketInfo?.shortToken;
+      const market = getByKey(marketsData, position.marketAddress);
+      const indexToken = getByKey(tokensData, market?.indexTokenAddress);
+      const longToken = getByKey(tokensData, market?.longTokenAddress);
+      const shortToken = getByKey(tokensData, market?.shortTokenAddress);
+      const pnlToken = position.isLong ? longToken : shortToken;
       const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
 
-      if (!marketInfo || !indexToken || !pnlToken || !collateralToken) {
+      if (!market || !indexToken || !longToken || !shortToken || !pnlToken || !collateralToken) {
         return acc;
       }
 
@@ -92,13 +95,13 @@ export function usePositionsInfoRequest(
 
       const pendingClaimableFundingFeesLongUsd = convertToUsd(
         position.claimableLongTokenAmount,
-        marketInfo.longToken.decimals,
-        marketInfo.longToken.prices.minPrice
+        longToken.decimals,
+        longToken.prices.minPrice
       )!;
       const pendingClaimableFundingFeesShortUsd = convertToUsd(
         position.claimableShortTokenAmount,
-        marketInfo.shortToken.decimals,
-        marketInfo.shortToken.prices.minPrice
+        shortToken.decimals,
+        shortToken.prices.minPrice
       )!;
 
       const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd + pendingClaimableFundingFeesShortUsd;
