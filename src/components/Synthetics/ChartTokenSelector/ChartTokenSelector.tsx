@@ -123,7 +123,8 @@ function MarketsList(props: { options: Token[] | undefined }) {
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
-    isEmpty: !sortedTokens?.length && tab == "all",
+    isEmpty: !sortedTokens?.length && tab === "all",
+    isLoaded: Boolean(options?.length),
     place: MissedCoinsPlace.marketDropdown,
   });
 

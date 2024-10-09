@@ -216,6 +216,7 @@ export default function TokenSelector(props: Props) {
             searchKeyword={searchKeyword}
             place={missedCoinsPlace}
             isEmpty={!filteredTokens.length}
+            isLoaded={Boolean(visibleTokens.length)}
           />
         )}
         <div className="TokenSelector-tokens">
