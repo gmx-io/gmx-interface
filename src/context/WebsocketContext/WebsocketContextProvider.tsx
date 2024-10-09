@@ -114,7 +114,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
             listenerCount,
           });
           metrics.pushEvent<WsProviderHealthCheckFailed>({
-            event: "wsProvider.healthCheck",
+            event: "wsProvider.healthCheckFailed",
             isError: false,
             data: {
               requiredListenerCount,

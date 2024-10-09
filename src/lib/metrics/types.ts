@@ -90,7 +90,7 @@ export type WsProviderDisconnected = {
 };
 
 export type WsProviderHealthCheckFailed = {
-  event: "wsProvider.healthCheck";
+  event: "wsProvider.healthCheckFailed";
   isError: false;
   data: {
     requiredListenerCount: number;
