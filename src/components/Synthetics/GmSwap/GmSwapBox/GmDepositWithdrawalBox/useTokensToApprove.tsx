@@ -91,10 +91,6 @@ export const useTokensToApprove = ({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      if (!tokensAllowanceData) {
-        return addresses;
-      }
-
       const shouldApproveMarketToken =
         marketTokenAmount !== undefined &&
         marketTokenAmount > 0 &&
