@@ -162,7 +162,6 @@ function buildFeeder({
             time: metrics.getTime("candlesDisplay"),
             data: {
               requestId: metricsRequestId,
-              isFirstTimeLoad: metricsIsFirstLoadTime,
             },
           });
         }
@@ -223,7 +222,6 @@ function buildFeeder({
               time: metrics.getTime("candlesDisplay", true),
               data: {
                 requestId: metricsRequestId!,
-                isFirstTimeLoad: metricsIsFirstLoadTime,
               },
             });
 

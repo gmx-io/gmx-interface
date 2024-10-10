@@ -201,7 +201,6 @@ export function TVChart() {
         time: metrics.getTime("candlesDisplay", true),
         data: {
           requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
         },
       });
     });
