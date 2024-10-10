@@ -116,6 +116,8 @@ interface OracePriceDecimalsUpdater {
   setOraclePriceDecimals: (decimals?: number) => void;
 }
 
+export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi> & OracePriceDecimalsUpdater;
+
 function buildFeeder({
   chainId,
   stableTokens,
@@ -139,7 +141,9 @@ function buildFeeder({
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
   oraclePriceDecimals?: number;
-}): { datafeed: Partial<IExternalDatafeed & IDatafeedChartApi> & OracePriceDecimalsUpdater } {
+}): { datafeed: TvDatafeed } {
+  console.log("push event inited");
+
   return {
     datafeed: {
       oraclePriceDecimals,
@@ -147,9 +151,11 @@ function buildFeeder({
         this.oraclePriceDecimals = decimals;
       },
       onReady: (callback) => {
+        console.log("push event onReady");
         window.setTimeout(() => callback(getConfigurationData(supportedResolutions)));
       },
       resolveSymbol(symbolName, onSymbolResolvedCallback) {
+        console.log("push event resolveSymbol");
         if (!isChartAvailabeForToken(chainId, symbolName)) {
           symbolName = getNativeToken(chainId).symbol;
         }
@@ -182,6 +188,12 @@ function buildFeeder({
         onHistoryCallback: HistoryCallback,
         onErrorCallback: (error: string) => void
       ) {
+        const reso = 60 * 5 * 300;
+        const to = Math.floor(Date.now() / 1000);
+        const from = to - reso;
+        console.log("push event getBars", resolution, periodParams, { from, to });
+        console.time("getBars");
+        localStorage.setItem("tv-cache", JSON.stringify({ countBack: periodParams.countBack, resolution }));
         if (!supportedResolutions[resolution]) {
           return onErrorCallback("[getBars] Invalid resolution");
         }
@@ -196,6 +208,7 @@ function buildFeeder({
           lastBarTimeRef.current = 0;
           const noData = !bars || bars.length === 0;
           onHistoryCallback(bars, { noData });
+          console.timeEnd("getBars");
         } catch {
           onErrorCallback("Unable to load historical data!");
         }
@@ -206,6 +219,7 @@ function buildFeeder({
         onRealtimeCallback: SubscribeBarsCallback,
         listenerGuid: string
       ) {
+        console.log("push event subscribeBars");
         await subscribeBars({
           symbolInfo,
           resolution,
@@ -221,6 +235,7 @@ function buildFeeder({
         });
       },
       unsubscribeBars: (id) => {
+        console.log("push event unsubscribeBars");
         // id is in the format ETH_#_USD_#_5
         const ticker = id.split("_")[0];
         const isStable = stableTokens.includes(ticker);

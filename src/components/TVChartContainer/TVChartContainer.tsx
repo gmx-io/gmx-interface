@@ -5,7 +5,7 @@ import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradi
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import useTVDatafeed from "domain/tradingview/useTVDatafeed";
+import useTVDatafeed, { TvDatafeed } from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { USD_DECIMALS } from "config/factors";
 import { formatAmount } from "lib/numbers";
@@ -22,13 +22,14 @@ export type ChartLine = {
 };
 
 type Props = {
-  symbol: string;
+  symbol?: string;
   chainId: number;
   chartLines: ChartLine[];
   onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
+  datafeed: TvDatafeed;
   chartToken:
     | ({
         symbol: string;
@@ -44,6 +45,7 @@ export default function TVChartContainer({
   chartLines,
   onSelectToken,
   dataProvider,
+  datafeed,
   period,
   setPeriod,
   chartToken,
@@ -59,7 +61,6 @@ export default function TVChartContainer({
 
   const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
-  const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
@@ -81,6 +82,7 @@ export default function TVChartContainer({
         ticker: chartToken.symbol,
         isChartReady: chartReady,
       });
+      console.log("push event setCurrentChartToken");
     }
   }, [chartToken, chartReady, dataProvider, chainId, oraclePriceDecimals]);
 
@@ -122,7 +124,7 @@ export default function TVChartContainer({
   );
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
+    if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
         tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
         datafeed.setOraclePriceDecimals(oraclePriceDecimals);
@@ -132,6 +134,22 @@ export default function TVChartContainer({
 
   useEffect(() => {
     datafeed.setOraclePriceDecimals(oraclePriceDecimals);
+
+    dataProvider?.resetCache();
+    const tvCache = localStorage.getItem("tv-cache");
+
+    if (tvCache) {
+      const tvc = JSON.parse(tvCache);
+      console.log("push event tvCache", tvc);
+      const period = SUPPORTED_RESOLUTIONS_V2[tvc.resolution];
+      const countBack = tvc.countBack;
+
+      const reso = period * countBack;
+      const to = Math.floor(Date.now() / 1000);
+      const from = to - reso;
+      dataProvider?.getBars(chainId, symbol!, "5", false, { from, to, countBack: countBack, firstDataRequest: true });
+    }
+
     const widgetOptions = {
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
@@ -184,8 +202,6 @@ export default function TVChartContainer({
         setChartDataLoading(false);
       });
     });
-
-    dataProvider?.resetCache();
 
     return () => {
       if (tvWidgetRef.current) {

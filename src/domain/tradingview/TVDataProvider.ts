@@ -140,6 +140,8 @@ export class TVDataProvider {
     return getTokenChartPrice(chainId, ticker, period, onFallback);
   }
 
+  promise?: Promise<any>;
+
   async getTokenHistoryBars(
     chainId: number,
     ticker: string,
@@ -147,12 +149,24 @@ export class TVDataProvider {
     periodParams: PeriodParams
   ): Promise<FromOldToNewArray<Bar>> {
     const barsInfo = this.barsInfo;
+
     if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
+      console.log("bragh reset");
       this.onBarsLoadStarted?.();
       try {
         this.liveBars = [];
 
-        const bars = await this.getTokenChartPrice(chainId, ticker, period, this.onBarsLoadFailed);
+        let promise: any;
+
+        if (this.promise) {
+          promise = this.promise;
+        } else {
+          promise = this.getTokenChartPrice(chainId, ticker, period, this.onBarsLoadFailed);
+          this.promise = promise;
+        }
+
+        const bars = await promise;
+        this.promise = undefined;
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
         const latestBar = bars[bars.length - 1];
 
