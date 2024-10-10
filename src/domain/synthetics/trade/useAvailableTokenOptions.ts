@@ -1,5 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
-import { GlvAndGmMarketsInfoData, MarketInfo, isMarketInfo } from "domain/synthetics/markets";
+import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
@@ -14,17 +14,19 @@ export type AvailableTokenOptions = {
   sortedIndexTokensWithPoolValue: string[];
   sortedLongAndShortTokens: string[];
   sortedAllMarkets: MarketInfo[];
+  markets: Market[];
 };
 
 export function useAvailableTokenOptions(
   chainId: number,
   p: {
     marketsInfoData?: GlvAndGmMarketsInfoData;
+    marketsData?: MarketsData;
     tokensData?: TokensData;
     marketTokens?: TokensData;
   }
 ): AvailableTokenOptions {
-  const { marketsInfoData, tokensData, marketTokens } = p;
+  const { marketsInfoData, marketsData, tokensData, marketTokens } = p;
 
   return useMemo(() => {
     const marketsInfo = Object.values(marketsInfoData || {})
@@ -33,6 +35,19 @@ export function useAvailableTokenOptions(
         const tokenA = isGlvInfo(a) ? a.glvToken : a.indexToken;
         const tokenB = isGlvInfo(b) ? b.glvToken : b.indexToken;
         return tokenA?.symbol.localeCompare(tokenB?.symbol);
+      });
+
+    const markets = Object.values(marketsData || {})
+      .filter((market) => !market.isSpotOnly)
+      .sort((a, b) => {
+        const tokenA = getByKey(tokensData, a.indexTokenAddress);
+        const tokenB = getByKey(tokensData, b.indexTokenAddress);
+
+        if (!tokenA || !tokenB) {
+          return 0;
+        }
+
+        return tokenA.symbol.localeCompare(tokenB.symbol);
       });
 
     const allMarkets = new Set<MarketInfo>();
@@ -143,6 +158,7 @@ export function useAvailableTokenOptions(
       sortedIndexTokensWithPoolValue,
       sortedLongAndShortTokens: Array.from(new Set(sortedLongAndShortTokens)),
       sortedAllMarkets,
+      markets,
     };
-  }, [chainId, marketsInfoData, tokensData, marketTokens]);
+  }, [marketsInfoData, marketsData, chainId, tokensData, marketTokens]);
 }

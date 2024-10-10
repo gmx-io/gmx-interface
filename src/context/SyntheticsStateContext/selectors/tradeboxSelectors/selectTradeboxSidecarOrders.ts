@@ -18,6 +18,7 @@ import {
   selectTradeboxTradeFlags,
 } from "../tradeboxSelectors";
 import { selectSelectedMarketPriceDecimals } from "../statsSelectors";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
 export const selectTradeboxExistingSlOrders = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);
@@ -188,12 +189,20 @@ export const selectTradeboxMockPosition = createSelector((q) => {
     updatedAtBlock: 0n,
   });
 
+  const indexName = getMarketIndexName(marketInfo);
+  const poolName = getMarketPoolName(marketInfo);
+
   if (!mockPosition) return;
 
   return {
     ...mockPosition,
     marketInfo,
+    market: marketInfo,
     indexToken: marketInfo.indexToken,
+    indexName,
+    poolName,
+    longToken: marketInfo.longToken,
+    shortToken: marketInfo.shortToken,
     collateralToken,
     pnlToken: tradeFlags.isLong ? marketInfo.longToken : marketInfo.shortToken,
     markPrice: nextPositionValues.nextEntryPrice!,
@@ -215,5 +224,8 @@ export const selectTradeboxMockPosition = createSelector((q) => {
     uiFeeUsd: 0n,
     pendingFundingFeesUsd: 0n,
     pendingClaimableFundingFeesUsd: 0n,
+    positionFeeAmount: 0n,
+    traderDiscountAmount: 0n,
+    uiFeeAmount: 0n,
   };
 });

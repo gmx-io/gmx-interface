@@ -122,7 +122,8 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   /**
    * For debugging purposes, you can provide a name to the multicall request.
    */
-  name?: string
+  name?: string,
+  disableBatching?: boolean
 ): Promise<MulticallResult<TConfig>> {
   let groupNameMapping: {
     // Contract address
@@ -255,7 +256,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     return msg;
   });
 
-  if (isDevelopment() && getIsMulticallBatchingDisabled()) {
+  if (disableBatching || (isDevelopment() && getIsMulticallBatchingDisabled())) {
     debugLog(() => `Multicall batching disabled, executing immediately. Multicall name: ${name ?? "?"}`);
     executeChainsMulticalls() as any;
     return promise as any;

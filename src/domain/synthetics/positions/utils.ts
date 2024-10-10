@@ -10,7 +10,7 @@ import { applyFactor, expandDecimals, formatAmount, formatUsd, calculatePriceDec
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
-import { PositionInfo } from "./types";
+import { PositionInfo, PositionInfoLoaded } from "./types";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -101,7 +101,7 @@ export function getLiquidationPrice(p: {
   collateralAmount: bigint;
   collateralUsd: bigint;
   collateralToken: TokenData;
-  marketInfo: MarketInfo;
+  marketInfo: MarketInfo | undefined;
   pendingFundingFeesUsd: bigint;
   pendingBorrowingFeesUsd: bigint;
   minCollateralUsd: bigint;
@@ -124,7 +124,7 @@ export function getLiquidationPrice(p: {
     useMaxPriceImpact,
   } = p;
 
-  if (sizeInUsd <= 0 || sizeInTokens <= 0) {
+  if (sizeInUsd <= 0 || sizeInTokens <= 0 || !marketInfo) {
     return undefined;
   }
 
@@ -262,7 +262,7 @@ export function getEstimatedLiquidationTimeInHours(
 ): number | undefined {
   const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
 
-  if (isOpening || minCollateralUsd === undefined) return;
+  if (isOpening || minCollateralUsd === undefined || !marketInfo) return;
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (liquidationCollateralUsd < minCollateralUsd) {
@@ -376,8 +376,9 @@ export function willPositionCollateralBeSufficientForPosition(
   );
 }
 
-export function getMinCollateralFactorForPosition(position: PositionInfo, openInterestDelta: bigint) {
+export function getMinCollateralFactorForPosition(position: PositionInfoLoaded, openInterestDelta: bigint) {
   const marketInfo = position.marketInfo;
+
   const isLong = position.isLong;
   const openInterest = getOpenInterestUsd(marketInfo, isLong) + openInterestDelta;
   const minCollateralFactorMultiplier = isLong
@@ -391,6 +392,10 @@ export function getMinCollateralFactorForPosition(position: PositionInfo, openIn
   }
 
   return minCollateralFactor;
+}
+
+export function getIsPositionInfoLoaded(pos?: PositionInfo): pos is PositionInfoLoaded {
+  return Boolean(pos?.marketInfo);
 }
 
 // 1% slippage

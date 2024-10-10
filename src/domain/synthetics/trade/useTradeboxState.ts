@@ -23,7 +23,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 
-import { MarketsInfoData } from "../markets";
+import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
@@ -89,14 +89,15 @@ export function useTradeboxState(
   chainId: number,
   enabled: boolean,
   p: {
+    marketsData?: MarketsData;
     marketsInfoData?: MarketsInfoData;
     positionsInfoData?: PositionsInfoData;
     tokensData?: TokensData;
   }
 ) {
-  const { marketsInfoData, tokensData, positionsInfoData } = p;
+  const { marketsInfoData, marketsData, tokensData, positionsInfoData } = p;
 
-  const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
+  const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData, marketsData });
 
   const availableSwapTokenAddresses = useMemo(
     () => availableTokensOptions.swapTokens.map((t) => t.address),
