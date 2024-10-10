@@ -51,7 +51,8 @@ export default function Modal({
   setIsVisible,
   qa,
 }: ModalProps) {
-  const modalRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const modalBodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function close(e: KeyboardEvent) {
@@ -67,6 +68,21 @@ export default function Modal({
     if (typeof onAfterOpen === "function") onAfterOpen();
   }, [onAfterOpen]);
 
+  useEffect(
+    function blurOutsideOnVisible() {
+      if (isVisible) {
+        const focusedElement = document.activeElement;
+        const isNotBody = !document.body.isSameNode(focusedElement);
+        const isOutside = !modalRef.current?.contains(focusedElement);
+
+        if (focusedElement && isNotBody && isOutside) {
+          (focusedElement as HTMLElement).blur();
+        }
+      }
+    },
+    [isVisible]
+  );
+
   const style = useMemo(() => ({ zIndex }), [zIndex]);
 
   const stopPropagation = useCallback((e: React.MouseEvent) => {
@@ -79,6 +95,7 @@ export default function Modal({
       {isVisible && (
         <motion.div
           className={cx("Modal", className)}
+          ref={modalRef}
           style={style}
           initial="hidden"
           animate="visible"
@@ -103,7 +120,7 @@ export default function Modal({
             </div>
             {!noDivider && <div className="divider" />}
             <RemoveScroll className="overflow-auto">
-              <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalRef}>
+              <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalBodyRef}>
                 {children}
               </div>
             </RemoveScroll>

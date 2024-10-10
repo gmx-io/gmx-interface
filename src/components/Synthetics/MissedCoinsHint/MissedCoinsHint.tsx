@@ -25,8 +25,9 @@ export function MissedCoinsHint({
   return (
     <AlertInfo
       type="info"
-      className={cx(className, "!mb-0", "cursor-pointer", "underline")}
+      className={cx(className, "cursor-pointer", "underline")}
       onClick={() => setMissedCoinsModalPlace(place)}
+      noMargin
     >
       <div className="pl-4">{text}</div>
     </AlertInfo>

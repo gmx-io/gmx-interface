@@ -25,7 +25,7 @@
   padding-right: 1.5rem;
 }
 
-.Tab.Tab__block .Tab-option:not(.disabled):hover {
+.Tab.Tab__block .Tab-option:not(.disabled):not(.active):hover {
   color: var(--color-white);
   background: var(--color-cold-blue-700);
 }

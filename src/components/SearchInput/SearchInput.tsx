@@ -14,7 +14,7 @@ type Props = {
   placeholder?: string;
   size?: "s" | "m";
   /**
-   * If not provided, will be set to true on small screens
+   * If not provided, will be set to false on small screens
    */
   autoFocus?: boolean;
   qa?: string;

@@ -28,7 +28,6 @@ import { TokensFavoritesContextProvider } from "domain/synthetics/tokens/useToke
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
-import useScrollToTop from "lib/useScrollToTop";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { SWRConfigProp } from "./swrConfig";
@@ -105,8 +104,6 @@ function App() {
     }, 2 * 1000);
     return () => clearInterval(interval);
   }, [signer, pendingTxns, chainId]);
-
-  useScrollToTop();
 
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
