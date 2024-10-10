@@ -267,19 +267,21 @@ export function TVChart() {
     <div className="ExchangeChart tv">
       <TVChartHeader isMobile={isMobile} />
       <div className="ExchangeChart-bottom App-box App-box-border">
-        <TVChartContainer
-          chartLines={chartLines}
-          symbol={_chartToken?.symbol}
-          chainId={chainId}
-          onSelectToken={onSelectChartToken}
-          dataProvider={dataProvider}
-          datafeed={datafeed}
-          period={period}
-          setPeriod={setPeriod}
-          chartToken={chartTokenProp}
-          supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
-          oraclePriceDecimals={oraclePriceDecimals}
-        />
+        {_chartToken?.symbol && (
+          <TVChartContainer
+            chartLines={chartLines}
+            symbol={_chartToken?.symbol}
+            chainId={chainId}
+            onSelectToken={onSelectChartToken}
+            dataProvider={dataProvider}
+            datafeed={datafeed}
+            period={period}
+            setPeriod={setPeriod}
+            chartToken={chartTokenProp}
+            supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+            oraclePriceDecimals={oraclePriceDecimals}
+          />
+        )}
       </div>
     </div>
   );
