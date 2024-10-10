@@ -33,6 +33,22 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "eigen-sats-market-arbitrum",
+    title: "EIGEN and SATS markets added on Arbitrum",
+    isActive: true,
+    startDate: "10 Oct 2024, 00:00",
+    endDate: "24 Oct 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="EIGEN" />
+        /USD and <TokenSymbolWithIcon symbol="SATS" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by using{" "}
+        <TokenSymbolWithIcon symbol="WETH" />, <TokenSymbolWithIcon symbol="WBTC" /> or{" "}
+        <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "glv-wavax",
     title: "GLV [WAVAX-USDC] is live",
     isActive: true,
