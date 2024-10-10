@@ -5,7 +5,7 @@ import { CHAIN_NAMES_MAP } from "config/chains";
 import { getIsV1Supported } from "config/features";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import useSearchParams from "lib/useSearchParams";
-import useWallet from "lib/wallets/useWallet";
+import { useChainId } from "lib/chains";
 import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 
 import PageTitle from "components/PageTitle/PageTitle";
@@ -13,7 +13,7 @@ import ActionsPageV1 from "./ActionsV1/ActionsV1";
 import SyntheticsActions from "./SyntheticsActions";
 
 export function AccountsRouter() {
-  const { chainId } = useWallet();
+  const { chainId } = useChainId();
 
   // We must ensure v1 is not on unsupported chains
   const { [VERSION_QUERY_PARAM]: v } = useSearchParams<{ [VERSION_QUERY_PARAM]: string }>();
