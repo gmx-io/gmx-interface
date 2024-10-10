@@ -304,6 +304,24 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
       shortTokenAddress: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
     },
+    //  EIGEN/USD [WETH-USDC]
+    "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791": {
+      enabled: true,
+      listingDate: p("10 Oct 2024"),
+      marketTokenAddress: "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791",
+      indexTokenAddress: "0x606C3e5075e5555e79Aa15F1E9FACB776F96C248",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    //  SATS/USD [WBTC-USDC]
+    "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366": {
+      enabled: true,
+      listingDate: p("10 Oct 2024"),
+      marketTokenAddress: "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366",
+      indexTokenAddress: "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
