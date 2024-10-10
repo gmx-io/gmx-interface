@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+import { RpcTrackerRankingCounter } from "lib/metrics";
 
 const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
@@ -194,7 +195,7 @@ function setCurrentProvider(chainId: number, newProviderUrl: string, bestBlockGa
 
   window.dispatchEvent(new CustomEvent(RPC_TRACKER_UPDATE_EVENT));
 
-  emitMetricCounter({
+  emitMetricCounter<RpcTrackerRankingCounter>({
     event: "rpcTracker.ranking.setBestRpc",
     data: {
       rpcProvider: getProviderNameFromUrl(newProviderUrl),

@@ -8,7 +8,13 @@ import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 import CustomErrors from "abis/CustomErrors.json";
-import { MulticallErrorEvent, MulticallTimeoutEvent } from "lib/metrics";
+import {
+  MulticallErrorEvent,
+  MulticallFallbackRpcModeCounter,
+  MulticallRequestCounter,
+  MulticallRequestTiming,
+  MulticallTimeoutEvent,
+} from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { serializeMulticallErrors } from "./utils";
@@ -123,7 +129,7 @@ export class Multicall {
     restoreTimeout: 5 * 60 * 1000, // 5 minutes
     eventsThreshold: 3,
     onFallback: () => {
-      emitMetricCounter({
+      emitMetricCounter<MulticallFallbackRpcModeCounter>({
         event: "multicall.fallbackRpcMode.on",
         data: {
           isInMainThread: !isWebWorker,
@@ -131,7 +137,7 @@ export class Multicall {
       });
     },
     onRestore: () => {
-      emitMetricCounter({
+      emitMetricCounter<MulticallFallbackRpcModeCounter>({
         event: "multicall.fallbackRpcMode.off",
         data: {
           isInMainThread: !isWebWorker,
@@ -202,7 +208,7 @@ export class Multicall {
       event: "call" | "timeout" | "error",
       { requestType, rpcProvider }: { requestType: "initial" | "retry"; rpcProvider: string }
     ) => {
-      emitMetricCounter({
+      emitMetricCounter<MulticallRequestCounter>({
         event: `multicall.request.${event}`,
         data: {
           isInMainThread: !isWebWorker,
@@ -221,7 +227,7 @@ export class Multicall {
       requestType: "initial" | "retry";
       rpcProvider: string;
     }) => {
-      emitMetricTiming({
+      emitMetricTiming<MulticallRequestTiming>({
         event: "multicall.request.timing",
         time,
         data: {
