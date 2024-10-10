@@ -6,6 +6,7 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { getTotalSubscribersEventsCount } from "./subscribeToEvents";
+import { metrics, WsProviderConnected, WsProviderDisconnected, WsProviderHealthCheckFailed } from "lib/metrics";
 
 const WS_HEALTH_CHECK_INTERVAL = 1000 * 30;
 const WS_RECONNECT_INTERVAL = 1000 * 5;
@@ -45,6 +46,11 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         initializedTime.current = Date.now();
         // eslint-disable-next-line no-console
         console.log(`ws provider for chain ${chainId} initialized at ${initializedTime.current}`);
+        metrics.pushEvent<WsProviderConnected>({
+          event: "wsProvider.connected",
+          isError: false,
+          data: {},
+        });
       }
 
       return function cleanup() {
@@ -57,6 +63,11 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
 
         // eslint-disable-next-line no-console
         console.log(`ws provider for chain ${chainId} disconnected at ${Date.now()}`);
+        metrics.pushEvent<WsProviderDisconnected>({
+          event: "wsProvider.disconnected",
+          isError: false,
+          data: {},
+        });
       };
     },
     [active, chainId, hasPageLostFocus]
@@ -101,6 +112,14 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
           console.log("ws provider health check failed, reconnecting", initializedTime.current, {
             requiredListenerCount,
             listenerCount,
+          });
+          metrics.pushEvent<WsProviderHealthCheckFailed>({
+            event: "wsProvider.healthCheckFailed",
+            isError: false,
+            data: {
+              requiredListenerCount,
+              listenerCount,
+            },
           });
         } else {
           healthCheckTimerId.current = setTimeout(nextHealthCheck, WS_HEALTH_CHECK_INTERVAL);

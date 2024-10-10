@@ -354,6 +354,24 @@ export const TOKENS: { [chainId: number]: Token[] } = {
         "https://assets.coingecko.com/coins/images/11224/standard/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tbtc",
     },
+    {
+      name: "Eigen",
+      symbol: "EIGEN",
+      address: "0x606C3e5075e5555e79Aa15F1E9FACB776F96C248",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/37441/standard/eigen.jpg?1728023974",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/eigenlayer",
+    },
+    {
+      name: "Sats",
+      symbol: "SATS",
+      address: "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
+      decimals: 6,
+      priceDecimals: 9,
+      imageUrl: "https://assets.coingecko.com/coins/images/30666/standard/_dD8qr3M_400x400.png?1702913020",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/sats-ordinals",
+      isSynthetic: true,
+    },
     // TODO: Enable
     // {
     //   name: "APE",
@@ -1066,6 +1084,8 @@ export const TOKEN_COLOR_MAP = {
   STX: "#eb6230",
   ORDI: "#000000",
   MATIC: "#6f41d8",
+  EIGEN: "#1A0C6D",
+  SATS: "#F7931A",
   default: "#6062a6",
 };
 

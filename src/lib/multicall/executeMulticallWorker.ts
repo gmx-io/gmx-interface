@@ -24,7 +24,7 @@ executorWorker.onmessage = (event) => {
   }
 
   if ("isCounter" in event.data) {
-    emitMetricCounter({
+    emitMetricCounter<any>({
       event: event.data.detail.event,
       data: event.data.detail.data,
     });
@@ -32,7 +32,7 @@ executorWorker.onmessage = (event) => {
   }
 
   if ("isTiming" in event.data) {
-    emitMetricTiming({
+    emitMetricTiming<any>({
       event: event.data.detail.event,
       time: event.data.detail.time,
       data: event.data.detail.data,

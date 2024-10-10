@@ -18,7 +18,7 @@ import {
 } from "./emitMetricEvent";
 import { prepareErrorMetricData } from "./errorReporting";
 import { getStorageItem, setStorageItem } from "./storage";
-import { ErrorEvent, GlobalMetricData } from "./types";
+import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 
 export type MetricEventParams = {
   event: string;
@@ -110,7 +110,7 @@ export class Metrics {
     });
   };
 
-  pushCounter(event: string, data?: object) {
+  pushCounter<T extends { event: string; data?: object } = never>(event: T["event"], data?: T["data"]) {
     this.queue.push({
       type: "counter",
       payload: {
@@ -125,7 +125,7 @@ export class Metrics {
     });
   }
 
-  pushTiming(event: string, time: number, data?: object) {
+  pushTiming<T extends { event: string; data?: object } = never>(event: T["event"], time: number, data?: T["data"]) {
     this.queue.push({
       type: "timing",
       payload: {
@@ -257,7 +257,9 @@ export class Metrics {
         try {
           list.getEntries().forEach((entry) => {
             if (entry.name === "self") {
-              this.pushTiming(`longtasks.self.timing`, entry.duration);
+              this.pushTiming<LongTaskTiming>("longtasks.self.timing", entry.duration, {
+                isInitialLoad: performance.now() < 20000,
+              });
             }
           });
         } catch (error) {
@@ -280,12 +282,12 @@ export class Metrics {
 
   handleWindowCounter = (event: Event) => {
     const { detail } = event as CustomEvent;
-    this.pushCounter(detail.event, detail.data);
+    this.pushCounter<any>(detail.event, detail.data);
   };
 
   handleWindowTiming = (event: Event) => {
     const { detail } = event as CustomEvent;
-    this.pushTiming(detail.event, detail.time, detail.data);
+    this.pushTiming<any>(detail.event, detail.time, detail.data);
   };
 
   handleError = (event) => {

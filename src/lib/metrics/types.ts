@@ -35,6 +35,7 @@ export type MeasureMetricType =
   | "marketsInfoLoad"
   | "multicall"
   | "candlesLoad"
+  | "candlesDisplay"
   | "tradingDataLoad"
   | "accountInfo"
   | "syntheticsPage";
@@ -59,6 +60,43 @@ export type OrderMetricData =
   | EditCollateralMetricData
   | SwapGmMetricData
   | ShiftGmMetricData;
+
+// General metrics
+export type OpenAppEvent = {
+  event: "openApp";
+  isError: false;
+  data: {
+    isRefreshed: boolean;
+  };
+};
+
+export type AccountInitedEvent = {
+  event: "accountInited";
+  isError: false;
+  data: {};
+};
+
+// Websockets
+export type WsProviderConnected = {
+  event: "wsProvider.connected";
+  isError: false;
+  data: {};
+};
+
+export type WsProviderDisconnected = {
+  event: "wsProvider.disconnected";
+  isError: false;
+  data: {};
+};
+
+export type WsProviderHealthCheckFailed = {
+  event: "wsProvider.healthCheckFailed";
+  isError: false;
+  data: {
+    requiredListenerCount: number;
+    listenerCount: number;
+  };
+};
 
 // Loading measurements
 export type LoadingStartEvent = {
@@ -282,6 +320,20 @@ export type ShiftGmMetricData = {
   executionFee: number | undefined;
 };
 
+export type SwapGLVMetricData = {
+  metricId: `gm:${string}`;
+  metricType: "buyGLV" | "sellGLV";
+  requestId: string;
+  initialLongTokenAddress: string | undefined;
+  initialShortTokenAddress: string | undefined;
+  marketAddress: string | undefined;
+  marketName: string | undefined;
+  executionFee: number | undefined;
+  longTokenAmount: number | undefined;
+  shortTokenAmount: number | undefined;
+  marketTokenAmount: number | undefined;
+};
+
 export type ErrorMetricData = {
   errorContext?: string;
   errorMessage?: string;
@@ -309,4 +361,65 @@ export type MissedCoinEvent = {
     place: MissedCoinsPlace;
     account?: string;
   };
+};
+
+// Timings
+export type LongTaskTiming = { event: "longtasks.self.timing"; data: { isInitialLoad: boolean } };
+
+export type MulticallBatchedTiming = {
+  event: "multicall.batched.timing";
+  data: {
+    priority: string;
+  };
+};
+
+export type MulticallRequestTiming = {
+  event: "multicall.request.timing";
+  data: {
+    requestType: string;
+    rpcProvider: string;
+  };
+};
+
+// Counters
+export type MulticallBatchedCallCounter = {
+  event: "multicall.batched.call";
+  data: {
+    priority: string;
+  };
+};
+
+export type MulticallBatchedErrorCounter = {
+  event: "multicall.batched.error";
+  data: {
+    priority: string;
+  };
+};
+
+export type MulticallRequestCounter = {
+  event: `multicall.request.${"call" | "timeout" | "error"}`;
+  data: {
+    isInMainThread: boolean;
+    requestType: string;
+    rpcProvider: string;
+  };
+};
+
+export type MulticallFallbackRpcModeCounter = {
+  event: `multicall.fallbackRpcMode.${"on" | "off"}`;
+  data: {
+    isInMainThread: boolean;
+  };
+};
+
+export type RpcTrackerRankingCounter = {
+  event: "rpcTracker.ranking.setBestRpc";
+  data: {
+    rpcProvider: string;
+    bestBlockGap: number | "unknown";
+  };
+};
+
+export type GetFeeDataBlockError = {
+  event: "error.getFeeData.value.hash";
 };
