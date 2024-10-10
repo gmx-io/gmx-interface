@@ -20,7 +20,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { getMarketIndexName } from "domain/synthetics/markets";
 import { OrderErrors, PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -42,6 +42,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import Skeleton from "react-loading-skeleton";
 import "./PositionItem.scss";
 
 export type Props = {
@@ -74,7 +75,7 @@ export function PositionItem(p: Props) {
     currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
 
-  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.marketInfo.indexTokenAddress));
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
 
   function renderNetValue() {
     return (
@@ -152,18 +153,28 @@ export function PositionItem(p: Props) {
             className="PositionItem-collateral-tooltip"
             handleClassName={cx({ negative: p.position.hasLowCollateral })}
             renderContent={() => {
-              const fundingFeeRateUsd = getFundingFeeRateUsd(
-                p.position.marketInfo,
-                p.position.isLong,
-                p.position.sizeInUsd,
-                CHART_PERIODS["1d"]
-              );
-              const borrowingFeeRateUsd = getBorrowingFeeRateUsd(
-                p.position.marketInfo,
-                p.position.isLong,
-                p.position.sizeInUsd,
-                CHART_PERIODS["1d"]
-              );
+              if (!p.position.marketInfo) {
+                return null;
+              }
+
+              let fundingFeeRateUsd: bigint | undefined = undefined;
+              let borrowingFeeRateUsd: bigint | undefined = undefined;
+
+              if (p.position.marketInfo) {
+                fundingFeeRateUsd = getFundingFeeRateUsd(
+                  p.position.marketInfo,
+                  p.position.isLong,
+                  p.position.sizeInUsd,
+                  CHART_PERIODS["1d"]
+                );
+                borrowingFeeRateUsd = getBorrowingFeeRateUsd(
+                  p.position.marketInfo,
+                  p.position.isLong,
+                  p.position.sizeInUsd,
+                  CHART_PERIODS["1d"]
+                );
+              }
+
               return (
                 <>
                   {p.position.hasLowCollateral && (
@@ -224,9 +235,9 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Borrow Fee / Day`}
-                    value={formatUsd(-borrowingFeeRateUsd)}
+                    value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
                     textClassName={cx({
-                      "text-red-500": borrowingFeeRateUsd > 0,
+                      "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
                     })}
                   />
                   <StatsTooltipRow
@@ -273,13 +284,17 @@ export function PositionItem(p: Props) {
   }
 
   function renderLiquidationPrice() {
+    if (!p.position.marketInfo) {
+      return <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />;
+    }
+
     let liqPriceWarning: string | undefined;
     const estimatedLiquidationHours = getEstimatedLiquidationTimeInHours(p.position, minCollateralUsd);
 
     if (p.position.liquidationPrice === undefined) {
       if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
         const symbol = p.position.collateralToken.symbol;
-        const indexName = getMarketIndexName(p.position.marketInfo);
+        const indexName = getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false });
         liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price.`;
       } else if (
         p.position.isLong &&
@@ -287,7 +302,7 @@ export function PositionItem(p: Props) {
         p.position.collateralUsd >= p.position.sizeInUsd
       ) {
         const symbol = p.position.collateralToken.symbol;
-        const indexName = getMarketIndexName(p.position.marketInfo);
+        const indexName = getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false });
         liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price.`;
       }
     }
@@ -355,9 +370,7 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
-    const indexName = getMarketIndexName(p.position.marketInfo);
-    const poolName = getMarketPoolName(p.position.marketInfo);
-
+    const { indexName, poolName } = p.position;
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
@@ -376,11 +389,11 @@ export function PositionItem(p: Props) {
                 <>
                   <TokenIcon
                     className="PositionList-token-icon"
-                    symbol={p.position.marketInfo.indexToken.symbol}
+                    symbol={p.position.indexToken.symbol}
                     displaySize={20}
                     importSize={24}
                   />
-                  {p.position.marketInfo.indexToken.symbol}
+                  {p.position.indexToken.symbol}
                 </>
               }
               position="bottom-start"
@@ -511,8 +524,8 @@ export function PositionItem(p: Props) {
   }
 
   function renderSmall() {
-    const indexName = getMarketIndexName(p.position.marketInfo);
-    const poolName = getMarketPoolName(p.position.marketInfo);
+    const { indexName, poolName } = p.position;
+
     return (
       <div className="App-card flex flex-col justify-between" data-qa="position-item">
         <div className="flex flex-grow flex-col">
@@ -524,11 +537,11 @@ export function PositionItem(p: Props) {
               <span className="Exchange-list-title inline-flex">
                 <TokenIcon
                   className="PositionList-token-icon"
-                  symbol={p.position.marketInfo.indexToken?.symbol}
+                  symbol={p.position.indexToken?.symbol}
                   displaySize={20}
                   importSize={24}
                 />
-                {p.position.marketInfo.indexToken?.symbol}
+                {p.position.indexToken?.symbol}
               </span>
               <div>
                 <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>

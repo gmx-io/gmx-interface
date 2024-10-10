@@ -18,7 +18,7 @@ export function getLargestRelatedExistingPosition({
       continue;
     }
 
-    if (!isMarketIndexToken(position.marketInfo, indexTokenAddress)) {
+    if (!isMarketIndexToken({ indexToken: position.indexToken }, indexTokenAddress)) {
       continue;
     }
 
@@ -103,7 +103,7 @@ export function chooseSuitableMarket({
 
     return {
       indexTokenAddress,
-      marketTokenAddress: largestPosition.marketInfo.marketTokenAddress,
+      marketTokenAddress: largestPosition.market.marketTokenAddress,
       tradeType: largestPositionTradeType,
       collateralTokenAddress: largestPosition.collateralTokenAddress,
     };
@@ -127,7 +127,7 @@ export function chooseSuitableMarket({
       indexTokenAddress,
     });
 
-  const marketAddress = largestPosition?.marketInfo.marketTokenAddress ?? maxLiquidtyPool?.marketTokenAddress;
+  const marketAddress = largestPosition?.market.marketTokenAddress ?? maxLiquidtyPool?.marketTokenAddress;
 
   if (!marketAddress) {
     return undefined;

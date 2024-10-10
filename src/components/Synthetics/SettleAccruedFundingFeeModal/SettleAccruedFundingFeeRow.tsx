@@ -1,11 +1,10 @@
 import { t } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 type Props = {
   position: PositionInfo;
@@ -14,10 +13,8 @@ type Props = {
 };
 
 export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxChange }: Props) => {
-  const [indexName, poolName] = useMemo(
-    () => [getMarketIndexName(position.marketInfo), getMarketPoolName(position.marketInfo)],
-    [position.marketInfo]
-  );
+  const { indexName, poolName } = position;
+
   const label = (
     <div key={position.key} className="flex items-start">
       <span className="ClaimSettleModal-row-text">
@@ -31,8 +28,8 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
     [onCheckboxChange, position.key]
   );
 
-  const shortToken = position.marketInfo.shortToken;
-  const longToken = position.marketInfo.longToken;
+  const shortToken = position.shortToken;
+  const longToken = position.longToken;
 
   const renderTooltipContent = useCallback(
     () =>

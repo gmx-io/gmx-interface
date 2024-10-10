@@ -30,6 +30,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -361,7 +362,8 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           !marketInfo ||
           !collateralToken ||
           minCollateralUsd === undefined ||
-          minPositionSizeUsd === undefined
+          minPositionSizeUsd === undefined ||
+          (position && !getIsPositionInfoLoaded(position))
         ) {
           return undefined;
         }
