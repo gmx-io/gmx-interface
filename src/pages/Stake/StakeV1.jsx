@@ -309,7 +309,7 @@ function StakeModal(props) {
 
   const { tokensAllowanceData, refetchTokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: farmAddress,
-    tokenAddresses: [stakingTokenAddress],
+    tokenAddresses: [stakingTokenAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
 

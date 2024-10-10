@@ -258,7 +258,7 @@ export default function GlpSwap(props) {
   const tokenAllowanceAddress = swapTokenAddress === ZeroAddress ? nativeTokenAddress : swapTokenAddress;
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: glpManagerAddress,
-    tokenAddresses: [tokenAllowanceAddress],
+    tokenAddresses: [tokenAllowanceAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 

@@ -103,7 +103,7 @@ export default function PositionEditor(props) {
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
-    tokenAddresses: [collateralTokenAddress],
+    tokenAddresses: [collateralTokenAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[collateralTokenAddress];
 

@@ -15,11 +15,7 @@ export function useTokensAllowanceData(
   chainId: number,
   p: {
     spenderAddress?: string;
-    tokenAddresses: (
-      | string
-      // V1 sometimes passes undefined
-      | undefined
-    )[];
+    tokenAddresses: string[];
     skip?: boolean;
   }
 ): TokenAllowanceResult {
@@ -27,9 +23,7 @@ export function useTokensAllowanceData(
   const { account } = useWallet();
   const { approvalStatuses } = useSyntheticsEvents();
 
-  const validAddresses = tokenAddresses.filter(
-    (address): address is string => address !== undefined && address !== NATIVE_TOKEN_ADDRESS
-  );
+  const validAddresses = tokenAddresses.filter((address): address is string => address !== NATIVE_TOKEN_ADDRESS);
 
   const { data, mutate } = useMulticall(chainId, "useTokenAllowance", {
     key:
