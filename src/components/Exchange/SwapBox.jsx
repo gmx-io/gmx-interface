@@ -314,7 +314,7 @@ export default function SwapBox(props) {
   const tokenAllowanceAddress = fromTokenAddress === ZeroAddress ? nativeTokenAddress : fromTokenAddress;
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
-    tokenAddresses: [tokenAllowanceAddress],
+    tokenAddresses: [tokenAllowanceAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 

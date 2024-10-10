@@ -132,7 +132,7 @@ function StakeModal(props: {
   const icons = getIcons(chainId);
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: farmAddress,
-    tokenAddresses: [stakingTokenAddress],
+    tokenAddresses: [stakingTokenAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
 
