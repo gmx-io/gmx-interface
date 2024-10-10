@@ -9,7 +9,6 @@ import { PRECISION } from "lib/numbers";
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
 
 import Reader from "abis/Reader.json";
-import Token from "abis/Token.json";
 import YieldToken from "abis/YieldToken.json";
 import YieldFarm from "abis/YieldFarm.json";
 
@@ -30,6 +29,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { bigMath } from "lib/bigmath";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 
 const BASIS_POINTS_DIVISOR = 10000n;
 const HOURS_PER_YEAR = 8760n;
@@ -298,7 +298,6 @@ function StakeModal(props) {
     value,
     setValue,
     active,
-    account,
     signer,
     stakingTokenSymbol,
     stakingTokenAddress,
@@ -308,23 +307,22 @@ function StakeModal(props) {
   const [isStaking, setIsStaking] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
-    [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData, refetchTokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: farmAddress,
+    tokenAddresses: [stakingTokenAddress].filter(Boolean),
+  });
+  const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
 
   useEffect(() => {
     if (active) {
       signer.on("block", () => {
-        updateTokenAllowance(undefined, true);
+        refetchTokensAllowanceData();
       });
       return () => {
         signer.removeAllListeners("block");
       };
     }
-  }, [active, signer, updateTokenAllowance]);
+  }, [active, refetchTokensAllowanceData, signer]);
 
   let amount = parseValue(value, 18);
   const needApproval = tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;

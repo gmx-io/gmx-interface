@@ -32,7 +32,6 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
-    skip: false,
   });
 
   const { isSwap, isIncrease } = tradeFlags;
@@ -85,14 +84,13 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     <>
       <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
       {highExecutionFeeAcknowledgement}
-      {(needPayTokenApproval && fromToken && (
+      {needPayTokenApproval && fromToken && (
         <ApproveTokenButton
           tokenAddress={fromToken.address}
           tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
           spenderAddress={getContract(chainId, "SyntheticsRouter")}
         />
-      )) ||
-        null}
+      )}
     </>
   );
 
