@@ -15,6 +15,10 @@ import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
+import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+
+let metricsRequestId: string | undefined = undefined;
+let metricsIsFirstLoadTime = true;
 
 function getConfigurationData(supportedResolutions): DatafeedConfiguration {
   const config: DatafeedConfiguration = {
@@ -148,6 +152,20 @@ function buildFeeder({
       },
       onReady: (callback) => {
         window.setTimeout(() => callback(getConfigurationData(supportedResolutions)));
+
+        if (metricsIsFirstLoadTime) {
+          metricsRequestId = getRequestId();
+
+          metrics.pushEvent<LoadingStartEvent>({
+            event: "candlesDisplay.started",
+            isError: false,
+            time: metrics.getTime("candlesDisplay"),
+            data: {
+              requestId: metricsRequestId,
+              isFirstTimeLoad: metricsIsFirstLoadTime,
+            },
+          });
+        }
       },
       resolveSymbol(symbolName, onSymbolResolvedCallback) {
         if (!isChartAvailabeForToken(chainId, symbolName)) {
@@ -195,6 +213,23 @@ function buildFeeder({
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
           lastBarTimeRef.current = 0;
           const noData = !bars || bars.length === 0;
+
+          if (metricsIsFirstLoadTime) {
+            metricsRequestId = getRequestId();
+
+            metrics.pushEvent<LoadingSuccessEvent>({
+              event: "candlesDisplay.success",
+              isError: false,
+              time: metrics.getTime("candlesDisplay", true),
+              data: {
+                requestId: metricsRequestId!,
+                isFirstTimeLoad: metricsIsFirstLoadTime,
+              },
+            });
+
+            metricsIsFirstLoadTime = false;
+          }
+
           onHistoryCallback(bars, { noData });
         } catch {
           onErrorCallback("Unable to load historical data!");
