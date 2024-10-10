@@ -19,7 +19,7 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
     period: string,
     onFallback?: (ex: Error) => void
   ): Promise<FromOldToNewArray<Bar>> {
-    const limit = 5000;
+    const limit = 500;
 
     const bars: FromOldToNewArray<Bar> = await Promise.race([
       this.oracleKeeperFetcher.fetchOracleCandles(ticker, period, limit).then((bars) => bars.reverse()),

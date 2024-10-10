@@ -10,7 +10,7 @@ import {
   usePositionsInfoData,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { _selectChartToken, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -33,6 +33,7 @@ import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selecto
 import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
+import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 
 const DEFAULT_PERIOD = "5m";
 let metricsRequestId: string | undefined = undefined;
@@ -40,6 +41,7 @@ let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
   const chartToken = useSelector(selectChartToken);
+  const _chartToken = useSelector(_selectChartToken);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
@@ -59,6 +61,8 @@ export function TVChart() {
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
+
+  const { datafeed } = useTVDatafeed({ dataProvider });
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -242,13 +246,14 @@ export function TVChart() {
     <div className="ExchangeChart tv">
       <TVChartHeader isMobile={isMobile} />
       <div className="ExchangeChart-bottom App-box App-box-border">
-        {chartToken && (
+        {_chartToken?.symbol && (
           <TVChartContainer
             chartLines={chartLines}
-            symbol={chartToken.symbol}
+            symbol={_chartToken?.symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
             dataProvider={dataProvider}
+            datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
             chartToken={chartTokenProp}

@@ -38,6 +38,28 @@ export const selectChartToken = createSelector(function selectChartToken(q) {
   }
 });
 
+export const _selectChartToken = createSelector(function selectChartToken(q) {
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+
+  if (!fromTokenAddress || !toTokenAddress) {
+    return undefined;
+  }
+
+  const chainId = q(selectChainId);
+  const { isSwap } = q(selectTradeboxTradeFlags);
+
+  try {
+    const fromToken = getToken(chainId, fromTokenAddress);
+    const toToken = getToken(chainId, toTokenAddress);
+    const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
+
+    return chartToken;
+  } catch (e) {
+    return undefined;
+  }
+});
+
 export const selectAvailableChartTokens = createSelector(function selectChartToken(q) {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
