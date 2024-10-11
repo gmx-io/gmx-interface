@@ -20,7 +20,7 @@ export const selectChartToken = createSelector(function selectChartToken(q) {
   const toTokenAddress = q(selectTradeboxToTokenAddress);
 
   if (!fromTokenAddress || !toTokenAddress) {
-    return undefined;
+    return {};
   }
 
   const chainId = q(selectChainId);
@@ -32,31 +32,12 @@ export const selectChartToken = createSelector(function selectChartToken(q) {
     const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
     const tokensData = q(selectTokensData);
 
-    return getTokenData(tokensData, chartToken?.address);
+    const symbol = chartToken.symbol;
+    const tokenData = getTokenData(tokensData, chartToken?.address);
+
+    return { chartToken: tokenData, symbol };
   } catch (e) {
-    return undefined;
-  }
-});
-
-export const _selectChartToken = createSelector(function selectChartToken(q) {
-  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const toTokenAddress = q(selectTradeboxToTokenAddress);
-
-  if (!fromTokenAddress || !toTokenAddress) {
-    return undefined;
-  }
-
-  const chainId = q(selectChainId);
-  const { isSwap } = q(selectTradeboxTradeFlags);
-
-  try {
-    const fromToken = getToken(chainId, fromTokenAddress);
-    const toToken = getToken(chainId, toTokenAddress);
-    const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-
-    return chartToken;
-  } catch (e) {
-    return undefined;
+    return {};
   }
 });
 

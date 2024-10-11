@@ -33,13 +33,13 @@ export const selectIndexTokenStatsMap = createSelector((q) => {
 });
 
 export const selectSelectedMarketPriceDecimals = createSelector((q) => {
-  const token = q(selectChartToken);
+  const { chartToken } = q(selectChartToken);
 
-  if (!token) {
+  if (!chartToken) {
     return 2;
   }
 
-  return calculatePriceDecimals(token.prices.minPrice);
+  return calculatePriceDecimals(chartToken.prices.minPrice);
 });
 
 export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress?: string) =>

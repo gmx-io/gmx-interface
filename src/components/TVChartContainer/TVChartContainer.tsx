@@ -1,13 +1,13 @@
 import Loader from "components/Common/Loader";
+import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import useTVDatafeed, { TvDatafeed } from "domain/tradingview/useTVDatafeed";
-import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { USD_DECIMALS } from "config/factors";
+import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
+import { getInitialTvParamsFromCache, getObjectKeyFromValue } from "domain/tradingview/utils";
 import { formatAmount } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -37,6 +37,7 @@ type Props = {
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
   oraclePriceDecimals?: number;
+  isV2?: boolean;
 };
 
 export default function TVChartContainer({
@@ -51,6 +52,7 @@ export default function TVChartContainer({
   chartToken,
   supportedResolutions,
   oraclePriceDecimals,
+  isV2,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -82,7 +84,6 @@ export default function TVChartContainer({
         ticker: chartToken.symbol,
         isChartReady: chartReady,
       });
-      console.log("push event setCurrentChartToken");
     }
   }, [chartToken, chartReady, dataProvider, chainId, oraclePriceDecimals]);
 
@@ -136,18 +137,14 @@ export default function TVChartContainer({
     datafeed.setOraclePriceDecimals(oraclePriceDecimals);
 
     dataProvider?.resetCache();
-    const tvCache = localStorage.getItem("tv-cache");
 
-    if (tvCache) {
-      const tvc = JSON.parse(tvCache);
-      console.log("push event tvCache", tvc);
-      const period = SUPPORTED_RESOLUTIONS_V2[tvc.resolution];
-      const countBack = tvc.countBack;
-
-      const reso = period * countBack;
-      const to = Math.floor(Date.now() / 1000);
-      const from = to - reso;
-      dataProvider?.getBars(chainId, symbol!, "5", false, { from, to, countBack: countBack, firstDataRequest: true });
+    if (isV2) {
+      // Request and cache initial candles to not wait TV chart initialization
+      const requestParamsFromCache = getInitialTvParamsFromCache();
+      if (requestParamsFromCache) {
+        const { from, to, countBack } = requestParamsFromCache;
+        dataProvider?.getBars(chainId, symbol!, "5", false, { from, to, countBack: countBack, firstDataRequest: true });
+      }
     }
 
     const widgetOptions = {
@@ -213,7 +210,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, dataProvider]);
+  }, [chainId, dataProvider, isV2]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

@@ -10,7 +10,7 @@ import {
   usePositionsInfoData,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { _selectChartToken, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -30,18 +30,17 @@ import { formatAmount } from "lib/numbers";
 import { TVChartHeader } from "./TVChartHeader";
 
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
-import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 
 const DEFAULT_PERIOD = "5m";
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
-  const chartToken = useSelector(selectChartToken);
-  const _chartToken = useSelector(_selectChartToken);
+  const { chartToken, symbol } = useSelector(selectChartToken);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
@@ -62,7 +61,7 @@ export function TVChart() {
 
   const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
 
-  const { datafeed } = useTVDatafeed({ dataProvider });
+  const { datafeed } = useTVDatafeed({ dataProvider, isV2: true });
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -246,10 +245,10 @@ export function TVChart() {
     <div className="ExchangeChart tv">
       <TVChartHeader isMobile={isMobile} />
       <div className="ExchangeChart-bottom App-box App-box-border">
-        {_chartToken?.symbol && (
+        {symbol && (
           <TVChartContainer
             chartLines={chartLines}
-            symbol={_chartToken?.symbol}
+            symbol={symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
             dataProvider={dataProvider}

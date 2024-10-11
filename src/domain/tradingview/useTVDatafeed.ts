@@ -14,7 +14,7 @@ import { useChainId } from "lib/chains";
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
-import { formatTimeInBarToMs } from "./utils";
+import { formatTimeInBarToMs, saveTvParamsCache } from "./utils";
 import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 
 let metricsRequestId: string | undefined = undefined;
@@ -35,9 +35,10 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
 type Props = {
   dataProvider?: TVDataProvider;
   oraclePriceDecimals?: number;
+  isV2?: boolean;
 };
 
-export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Props) {
+export default function useTVDatafeed({ dataProvider, oraclePriceDecimals, isV2 }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
@@ -111,8 +112,9 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
       feedDataRef: feedData,
       lastBarTimeRef: lastBarTime,
       oraclePriceDecimals,
+      isV2,
     });
-  }, [chainId, stableTokens, supportedResolutions, oraclePriceDecimals]);
+  }, [chainId, stableTokens, supportedResolutions, oraclePriceDecimals, isV2]);
 }
 
 interface OracePriceDecimalsUpdater {
@@ -132,6 +134,7 @@ function buildFeeder({
   feedDataRef,
   lastBarTimeRef,
   oraclePriceDecimals,
+  isV2,
 }: {
   chainId: number;
   stableTokens: string[];
@@ -145,9 +148,8 @@ function buildFeeder({
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
   oraclePriceDecimals?: number;
+  isV2?: boolean;
 }): { datafeed: TvDatafeed } {
-  console.log("push event inited");
-
   return {
     datafeed: {
       oraclePriceDecimals,
@@ -155,7 +157,6 @@ function buildFeeder({
         this.oraclePriceDecimals = decimals;
       },
       onReady: (callback) => {
-        console.log("push event onReady");
         window.setTimeout(() => callback(getConfigurationData(supportedResolutions)));
 
         if (metricsIsFirstLoadTime) {
@@ -172,7 +173,6 @@ function buildFeeder({
         }
       },
       resolveSymbol(symbolName, onSymbolResolvedCallback) {
-        console.log("push event resolveSymbol");
         if (!isChartAvailabeForToken(chainId, symbolName)) {
           symbolName = getNativeToken(chainId).symbol;
         }
@@ -205,12 +205,13 @@ function buildFeeder({
         onHistoryCallback: HistoryCallback,
         onErrorCallback: (error: string) => void
       ) {
-        const reso = 60 * 5 * 300;
-        const to = Math.floor(Date.now() / 1000);
-        const from = to - reso;
-        console.log("push event getBars", resolution, periodParams, { from, to });
-        console.time("getBars");
-        localStorage.setItem("tv-cache", JSON.stringify({ countBack: periodParams.countBack, resolution }));
+        if (isV2) {
+          saveTvParamsCache({
+            resolution,
+            countBack: periodParams.countBack,
+          });
+        }
+
         if (!supportedResolutions[resolution]) {
           return onErrorCallback("[getBars] Invalid resolution");
         }
@@ -241,7 +242,6 @@ function buildFeeder({
           }
 
           onHistoryCallback(bars, { noData });
-          console.timeEnd("getBars");
         } catch {
           onErrorCallback("Unable to load historical data!");
         }
@@ -252,7 +252,6 @@ function buildFeeder({
         onRealtimeCallback: SubscribeBarsCallback,
         listenerGuid: string
       ) {
-        console.log("push event subscribeBars");
         await subscribeBars({
           symbolInfo,
           resolution,
@@ -268,7 +267,6 @@ function buildFeeder({
         });
       },
       unsubscribeBars: (id) => {
-        console.log("push event unsubscribeBars");
         // id is in the format ETH_#_USD_#_5
         const ticker = id.split("_")[0];
         const isStable = stableTokens.includes(ticker);

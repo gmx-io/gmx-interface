@@ -151,7 +151,6 @@ export class TVDataProvider {
     const barsInfo = this.barsInfo;
 
     if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
-      console.log("bragh reset");
       this.onBarsLoadStarted?.();
       try {
         this.liveBars = [];
