@@ -34,7 +34,7 @@ export function useCollectSyntheticsMetrics({
   useMeasureLoadTime({
     isLoaded: Boolean(marketsInfo.marketsInfoData),
     error: marketsInfo.error,
-    skip: pageType !== "trade",
+    skip: shouldSkipAccountMetrics || pageType !== "trade",
     metricType: "marketsInfoLoad",
   });
 
