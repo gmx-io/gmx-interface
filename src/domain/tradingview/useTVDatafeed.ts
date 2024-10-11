@@ -15,6 +15,10 @@ import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
+import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+
+let metricsRequestId: string | undefined = undefined;
+let metricsIsFirstLoadTime = true;
 
 function getConfigurationData(supportedResolutions): DatafeedConfiguration {
   const config: DatafeedConfiguration = {
@@ -153,6 +157,19 @@ function buildFeeder({
       onReady: (callback) => {
         console.log("push event onReady");
         window.setTimeout(() => callback(getConfigurationData(supportedResolutions)));
+
+        if (metricsIsFirstLoadTime) {
+          metricsRequestId = getRequestId();
+
+          metrics.pushEvent<LoadingStartEvent>({
+            event: "candlesDisplay.started",
+            isError: false,
+            time: metrics.getTime("candlesDisplay"),
+            data: {
+              requestId: metricsRequestId,
+            },
+          });
+        }
       },
       resolveSymbol(symbolName, onSymbolResolvedCallback) {
         console.log("push event resolveSymbol");
@@ -207,6 +224,22 @@ function buildFeeder({
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
           lastBarTimeRef.current = 0;
           const noData = !bars || bars.length === 0;
+
+          if (metricsIsFirstLoadTime) {
+            metricsRequestId = getRequestId();
+
+            metrics.pushEvent<LoadingSuccessEvent>({
+              event: "candlesDisplay.success",
+              isError: false,
+              time: metrics.getTime("candlesDisplay", true),
+              data: {
+                requestId: metricsRequestId!,
+              },
+            });
+
+            metricsIsFirstLoadTime = false;
+          }
+
           onHistoryCallback(bars, { noData });
           console.timeEnd("getBars");
         } catch {

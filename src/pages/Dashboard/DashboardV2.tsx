@@ -58,7 +58,9 @@ export default function DashboardV2() {
   const glpSupplyAvalanche = statsAvalanche?.reader.tokenBalancesWithSupplies?.glpSupply;
   const glpSupply = chainId === ARBITRUM ? glpSupplyArbitrum : glpSupplyAvalanche;
 
-  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
+  const { infoTokens: arbitrumInfoTokens } = useInfoTokens(signer, ARBITRUM, active, undefined, undefined);
+  const { infoTokens: avalancheInfoTokens } = useInfoTokens(signer, AVALANCHE, active, undefined, undefined);
+  const infoTokens = chainId === ARBITRUM ? arbitrumInfoTokens : avalancheInfoTokens;
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,

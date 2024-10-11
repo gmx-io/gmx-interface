@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { formatDistanceToNowStrict } from "date-fns";
 import { useMemo } from "react";
 import useSWR from "swr";
 
@@ -283,6 +282,23 @@ export function OverviewCard({
     [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees]
   );
 
+  const formattedDuration = useMemo(() => {
+    if (!feesSummary?.lastUpdatedAt) {
+      return "";
+    }
+
+    const now = Date.now() / 1000;
+    const days = Math.floor((now - feesSummary.lastUpdatedAt) / (3600 * 24));
+    let restHours = Math.round((now - feesSummary.lastUpdatedAt) / 3600) - days * 24;
+    if (days === 0) {
+      restHours = Math.max(restHours, 1);
+    }
+
+    const daysStr = days > 0 ? `${days}d` : "";
+    const hoursStr = restHours > 0 ? `${restHours}h` : "";
+    return [daysStr, hoursStr].filter(Boolean).join(" ");
+  }, [feesSummary?.lastUpdatedAt]);
+
   return (
     <div className="App-card">
       <div className="App-card-title">
@@ -420,7 +436,7 @@ export function OverviewCard({
         {feesSummary?.lastUpdatedAt ? (
           <div className="App-card-row">
             <div className="label">
-              <Trans>Fees for the past</Trans> {formatDistanceToNowStrict(feesSummary.lastUpdatedAt * 1000)}
+              <Trans>Fees for the past</Trans> {formattedDuration}
             </div>
             <div>
               <TooltipComponent

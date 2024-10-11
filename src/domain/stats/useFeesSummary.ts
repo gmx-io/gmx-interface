@@ -6,12 +6,12 @@ import useSWR from "swr";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 export function useFeesSummary(): {
-  data: {
+  data: Partial<{
     [chainId: string]: {
       lastUpdatedAt: number;
       totalFees: number;
     };
-  };
+  }>;
 } {
   const { data: feesSummary } = useSWR(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/fees_summary")),

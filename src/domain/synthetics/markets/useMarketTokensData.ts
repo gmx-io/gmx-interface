@@ -177,11 +177,13 @@ export function useMarketTokensDataRequest(
 
 export function useMarketTokensData(
   chainId: number,
-  p: { isDeposit: boolean; withGlv?: boolean }
+  p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData }
 ): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
-  const glvData = useSelector(selectGlvInfo);
+  const storedGlvData = useSelector(selectGlvInfo);
+
+  const glvData = p.glvData || storedGlvData;
 
   return useMarketTokensDataRequest(chainId, {
     isDeposit,

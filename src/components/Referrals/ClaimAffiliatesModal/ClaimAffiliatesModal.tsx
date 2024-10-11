@@ -44,16 +44,20 @@ export function ClaimAffiliatesModal(p: Props) {
       return null;
     }
 
-    const { longToken, shortToken } = marketInfo;
+    const { longToken, shortToken, isSameCollaterals } = marketInfo;
     const indexName = getMarketIndexName(marketInfo);
     const poolName = getMarketPoolName(marketInfo);
 
     const { longTokenAmount, shortTokenAmount } = reward;
 
     const longRewardUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
-    const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
 
-    const totalReward = longRewardUsd + shortRewardUsd;
+    let totalReward = longRewardUsd;
+
+    if (!isSameCollaterals) {
+      const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
+      totalReward += shortRewardUsd;
+    }
 
     if (totalReward <= 0) {
       return null;
@@ -65,7 +69,7 @@ export function ClaimAffiliatesModal(p: Props) {
       claimableAmountsItems.push(formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol)!);
     }
 
-    if (shortTokenAmount > 0) {
+    if (!isSameCollaterals && shortTokenAmount > 0) {
       claimableAmountsItems.push(formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol)!);
     }
 

@@ -168,16 +168,6 @@ export function TVChart() {
         },
       });
 
-      metrics.pushEvent<LoadingStartEvent>({
-        event: "candlesDisplay.started",
-        isError: false,
-        time: metrics.getTime("candlesDisplay"),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-        },
-      });
-
       metrics.startTimer("candlesLoad");
     });
 
@@ -186,16 +176,6 @@ export function TVChart() {
         event: "candlesLoad.success",
         isError: false,
         time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-        },
-      });
-
-      metrics.pushEvent<LoadingSuccessEvent>({
-        event: "candlesDisplay.success",
-        isError: false,
-        time: metrics.getTime("candlesDisplay", true),
         data: {
           requestId: metricsRequestId!,
           isFirstTimeLoad: metricsIsFirstLoadTime,
@@ -225,7 +205,6 @@ export function TVChart() {
         time: metrics.getTime("candlesDisplay", true),
         data: {
           requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
         },
       });
     });

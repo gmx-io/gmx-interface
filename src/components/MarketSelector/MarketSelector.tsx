@@ -132,6 +132,7 @@ export function MarketSelector({
   useMissedCoinsSearch({
     searchText: searchKeyword,
     isEmpty: !filteredOptions.length && tab === "all",
+    isLoaded: marketsOptions.length > 0,
     place: missedCoinsPlace,
     skip: !missedCoinsPlace,
   });
