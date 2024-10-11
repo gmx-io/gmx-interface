@@ -689,6 +689,14 @@ export default function Ecosystem() {
               );
             })}
           </div>
+          <div className="mt-16">
+            <Trans>
+              GMX uses TradingView to provide real-time cryptocurrency charts, so you can easily follow{" "}
+              <ExternalLink href="https://www.tradingview.com/symbols/BTCUSD/">BTCUSD</ExternalLink> price in real-time,
+              along with other currency pair rates. The interactive charts offer advanced tools and a user-friendly
+              interface for easier market analysis and decision-making.
+            </Trans>
+          </div>
           <PageTitle showNetworkIcon={false} title={t`Telegram Groups`} subtitle={t`Community-led Telegram groups.`} />
           <div className="Ecosystem-projects">
             {telegramGroups.map((item) => {
