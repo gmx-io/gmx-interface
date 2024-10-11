@@ -51,7 +51,8 @@ describe("formatUsdPrice", () => {
     expect(formatUsdPrice(ONE_USD * 10n)).toBe("$10.0000");
     expect(formatUsdPrice(ONE_USD / 10n)).toBe("$0.100000");
     expect(formatUsdPrice(ONE_USD / 1000n)).toBe("$0.0010000");
-    expect(formatUsdPrice(ONE_USD / 10000000000n)).toBe("< $0.00000001");
+    expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe("$0.000000001");
+    expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe("< $0.000000001");
   });
 });
 
