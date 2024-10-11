@@ -253,7 +253,7 @@ export default function Home({ showRedirectModal }) {
         <div className="Home-token-card-container default-container">
           <div className="Home-token-card-info">
             <div className="Home-token-card-info__title">
-              <Trans>Three tokens create our ecosystem</Trans>
+              <Trans>Protocol Tokens</Trans>
             </div>
           </div>
           <SyntheticsStateContextProvider pageType="home" skipLocalReferralCode={false}>
