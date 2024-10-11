@@ -829,10 +829,9 @@ export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
 });
 
 export const selectTradeboxMarketsSortMap = createSelector((q) => {
-  // const { sortedAllMarkets, } = q(selectTradeboxAvailableTokensOptions);
-  const { markets } = q(selectTradeboxAvailableTokensOptions);
+  const { sortedMarketConfigs } = q(selectTradeboxAvailableTokensOptions);
 
-  return markets.reduce((acc, market, idx) => {
+  return sortedMarketConfigs.reduce((acc, market, idx) => {
     acc[market.indexTokenAddress] = idx;
     return acc;
   }, {});

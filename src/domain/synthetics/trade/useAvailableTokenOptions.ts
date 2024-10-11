@@ -5,6 +5,8 @@ import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
+import { SORTED_MARKETS_KEY } from "config/localStorage";
+import { SORTED_MARKETS } from "config/static/sortedMarkets";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -14,8 +16,18 @@ export type AvailableTokenOptions = {
   sortedIndexTokensWithPoolValue: string[];
   sortedLongAndShortTokens: string[];
   sortedAllMarkets: MarketInfo[];
-  markets: Market[];
+  sortedMarketConfigs: Market[];
 };
+
+function getCachedSortedMarketAddresses(): string[] {
+  const cached = localStorage.getItem(SORTED_MARKETS_KEY);
+
+  if (cached) {
+    return JSON.parse(cached);
+  }
+
+  return SORTED_MARKETS;
+}
 
 export function useAvailableTokenOptions(
   chainId: number,
@@ -35,19 +47,6 @@ export function useAvailableTokenOptions(
         const tokenA = isGlvInfo(a) ? a.glvToken : a.indexToken;
         const tokenB = isGlvInfo(b) ? b.glvToken : b.indexToken;
         return tokenA?.symbol.localeCompare(tokenB?.symbol);
-      });
-
-    const markets = Object.values(marketsData || {})
-      .filter((market) => !market.isSpotOnly)
-      .sort((a, b) => {
-        const tokenA = getByKey(tokensData, a.indexTokenAddress);
-        const tokenB = getByKey(tokensData, b.indexTokenAddress);
-
-        if (!tokenA || !tokenB) {
-          return 0;
-        }
-
-        return tokenA.symbol.localeCompare(tokenB.symbol);
       });
 
     const allMarkets = new Set<MarketInfo>();
@@ -137,6 +136,18 @@ export function useAvailableTokenOptions(
       );
     });
 
+    if (sortedAllMarkets.length >= SORTED_MARKETS.length) {
+      localStorage.setItem(
+        SORTED_MARKETS_KEY,
+        JSON.stringify(sortedAllMarkets.map((market) => market.marketTokenAddress))
+      );
+    }
+
+    const sortedMarketAddresses = getCachedSortedMarketAddresses();
+    const sortedMarketConfigs = sortedMarketAddresses
+      .map((address) => marketsData?.[address])
+      .filter(Boolean) as Market[];
+
     const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
       return longTokensWithPoolValue[b] > longTokensWithPoolValue[a] ? 1 : -1;
     });
@@ -158,7 +169,7 @@ export function useAvailableTokenOptions(
       sortedIndexTokensWithPoolValue,
       sortedLongAndShortTokens: Array.from(new Set(sortedLongAndShortTokens)),
       sortedAllMarkets,
-      markets,
+      sortedMarketConfigs,
     };
   }, [marketsInfoData, marketsData, chainId, tokensData, marketTokens]);
 }
