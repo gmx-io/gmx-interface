@@ -10,6 +10,8 @@ export function useGmxPrice(chainId) {
   const gmxToken = getByKey(tokensData, getContract(chainIdForGmxPrice, "GMX"));
   const gmxPrice = gmxToken ? getMidPrice(gmxToken.prices) : undefined;
 
+  console.log("AShdASHD", tokensData, gmxToken, gmxPrice);
+
   return {
     gmxPrice,
   };

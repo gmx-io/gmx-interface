@@ -64,6 +64,7 @@ export default function DashboardV2() {
   const { gmxPrice } = useGmxPrice(chainId);
   const { gmxPrice: gmxPriceFromArbitrum } = useGmxPrice(ARBITRUM);
   const { gmxPrice: gmxPriceFromAvalanche } = useGmxPrice(AVALANCHE);
+  console.log("BRAA", gmxPriceFromAvalanche);
 
   let gmxMarketCap =
     gmxPrice !== undefined && totalGmxSupply !== undefined

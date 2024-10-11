@@ -46,6 +46,8 @@ export function GmxCard({
       : undefined;
   const totalStakedGmxUsd = sumBigInts(stakedGmxArbitrumUsd, stakedGmxAvalancheUsd);
 
+  console.log("asd", stakedGmxAvalancheUsd, gmxPriceFromAvalanche);
+
   let stakedPercent = 0;
 
   if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && totalStakedGmx !== 0n) {
