@@ -35,6 +35,7 @@ export type MeasureMetricType =
   | "marketsInfoLoad"
   | "multicall"
   | "candlesLoad"
+  | "candlesDisplay"
   | "tradingDataLoad"
   | "accountInfo"
   | "syntheticsPage";
@@ -89,7 +90,7 @@ export type WsProviderDisconnected = {
 };
 
 export type WsProviderHealthCheckFailed = {
-  event: "wsProvider.healthCheck";
+  event: "wsProvider.healthCheckFailed";
   isError: false;
   data: {
     requiredListenerCount: number;

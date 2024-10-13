@@ -4,17 +4,20 @@ import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCo
 export function WithMissedCoinsSearch({
   searchKeyword,
   isEmpty,
+  isLoaded,
   place,
   skip,
 }: {
   searchKeyword: string;
   isEmpty: boolean;
+  isLoaded: boolean;
   place?: MissedCoinsPlace;
   skip?: boolean;
 }) {
   useMissedCoinsSearch({
     searchText: searchKeyword,
     isEmpty,
+    isLoaded,
     place,
     skip,
   });

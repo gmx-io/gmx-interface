@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { OpenAppEvent, metrics } from ".";
-import { isPageRefreshsed } from "lib/isPageRefreshed";
+import { isPageRefreshed } from "lib/isPageRefreshed";
 
 let isOpenAppSent = false;
 
@@ -14,7 +14,7 @@ export function useOpenAppMetric() {
       event: "openApp",
       isError: false,
       data: {
-        isRefreshed: isPageRefreshsed,
+        isRefreshed: isPageRefreshed,
       },
     });
 

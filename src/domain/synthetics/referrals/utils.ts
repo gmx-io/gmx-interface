@@ -12,10 +12,14 @@ export function getTotalClaimableAffiliateRewardsUsd(
     if (!marketInfo) {
       return acc;
     }
-    const { longToken, shortToken } = marketInfo;
+    const { longToken, shortToken, isSameCollaterals } = marketInfo;
 
-    acc = acc + convertToUsd(rewardItem.longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
-    acc = acc + convertToUsd(rewardItem.shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
+    if (isSameCollaterals) {
+      acc = acc + convertToUsd(rewardItem.longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
+    } else {
+      acc = acc + convertToUsd(rewardItem.longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
+      acc = acc + convertToUsd(rewardItem.shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
+    }
 
     return acc;
   }, 0n);

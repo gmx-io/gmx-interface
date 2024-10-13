@@ -1,4 +1,4 @@
-export const isPageRefreshsed =
+export const isPageRefreshed =
   typeof window !== "undefined" &&
   window.performance &&
   ((window.performance.navigation && window.performance.navigation.type === 1) ||
