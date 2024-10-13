@@ -17,7 +17,7 @@ import Vester from "abis/Vester.json";
 import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { SetPendingTransactions, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -58,7 +58,7 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { useGmxPrice, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { approveTokens } from "domain/tokens";
 import useVestingData from "domain/vesting/useVestingData";
@@ -74,6 +74,7 @@ import {
   formatAmount,
   formatAmountFree,
   formatKeyAmount,
+  formatUsd,
   limitDecimals,
   parseValue,
 } from "lib/numbers";
@@ -1411,11 +1412,7 @@ export default function StakeV2() {
     }
   );
 
-  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
-    chainId,
-    { arbitrum: chainId === ARBITRUM ? signer : undefined },
-    active
-  );
+  const { gmxPrice } = useGmxPrice(chainId);
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
@@ -1430,7 +1427,7 @@ export default function StakeV2() {
   const isGmxTransferEnabled = true;
 
   let esGmxSupplyUsd;
-  if (esGmxSupply && gmxPrice) {
+  if (esGmxSupply && gmxPrice !== undefined) {
     esGmxSupplyUsd = bigMath.mulDiv(esGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
@@ -1483,12 +1480,12 @@ export default function StakeV2() {
   }
 
   let stakedGmxSupplyUsd;
-  if (totalGmxStaked !== 0n && gmxPrice) {
+  if (totalGmxStaked !== 0n && gmxPrice !== undefined) {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
-  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice) {
+  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice !== undefined) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
@@ -1842,28 +1839,7 @@ export default function StakeV2() {
                 <div className="label">
                   <Trans>Price</Trans>
                 </div>
-                <div>
-                  {!gmxPrice && "..."}
-                  {gmxPrice && (
-                    <Tooltip
-                      position="bottom-end"
-                      className="whitespace-nowrap"
-                      handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                      renderContent={() => (
-                        <>
-                          <StatsTooltipRow
-                            label={t`Price on Avalanche`}
-                            value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
-                          />
-                          <StatsTooltipRow
-                            label={t`Price on Arbitrum`}
-                            value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
-                          />
-                        </>
-                      )}
-                    />
-                  )}
-                </div>
+                <div>{gmxPrice === undefined ? "..." : formatUsd(gmxPrice)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">
