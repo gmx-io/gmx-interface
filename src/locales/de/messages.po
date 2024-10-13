@@ -857,6 +857,10 @@ msgid "There may not be sufficient liquidity to execute your order when the pric
 msgstr "Es kann sein, dass nicht genügend Liquidität vorhanden ist, um deinen Auftrag auszuführen, wenn die Preisbedingungen erfüllt sind."
 
 #: src/pages/Ecosystem/Ecosystem.jsx
+msgid "GMX uses TradingView to provide real-time cryptocurrency charts, so you can easily follow <0>BTCUSD</0> price in real-time, along with other currency pair rates. The interactive charts offer advanced tools and a user-friendly interface for easier market analysis and decision-making."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Simulate your hedge strategy"
 msgstr ""
 
@@ -3090,10 +3094,6 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Dein esGMX-Guthaben (IOU) verringert sich nach der Beanspruchung um deinen beanspruchten Betrag, dies ist ein zu erwartendes Verhalten."
-
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#~ msgid "TBTC LP incentives"
-#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -7166,10 +7166,6 @@ msgstr ""
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Give us your feedback on GMX."
 msgstr ""
-
-#: src/config/bridging.tsx
-#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
-#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
