@@ -20,7 +20,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { getMarketIndexName } from "domain/synthetics/markets";
 import { OrderErrors, PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -153,10 +152,6 @@ export function PositionItem(p: Props) {
             className="PositionItem-collateral-tooltip"
             handleClassName={cx({ negative: p.position.hasLowCollateral })}
             renderContent={() => {
-              if (!p.position.marketInfo) {
-                return null;
-              }
-
               let fundingFeeRateUsd: bigint | undefined = undefined;
               let borrowingFeeRateUsd: bigint | undefined = undefined;
 
@@ -294,7 +289,7 @@ export function PositionItem(p: Props) {
     if (p.position.liquidationPrice === undefined) {
       if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
         const symbol = p.position.collateralToken.symbol;
-        const indexName = getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false });
+        const indexName = p.position.indexName;
         liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price.`;
       } else if (
         p.position.isLong &&
@@ -302,7 +297,7 @@ export function PositionItem(p: Props) {
         p.position.collateralUsd >= p.position.sizeInUsd
       ) {
         const symbol = p.position.collateralToken.symbol;
-        const indexName = getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false });
+        const indexName = p.position.indexName;
         liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price.`;
       }
     }

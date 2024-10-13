@@ -187,7 +187,7 @@ export function SyntheticsStateContextProvider({
     positionsError: positionsResult.error,
     marketsData: markets.marketsData,
     skipLocalReferralCode,
-    tokensData: marketsInfo.tokensData,
+    tokensData,
   });
 
   const ordersInfo = useOrdersInfoRequest(chainId, {
