@@ -61,7 +61,7 @@ export function TVChart() {
 
   const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
 
-  const { datafeed } = useTVDatafeed({ dataProvider, isV2: true });
+  const { datafeed } = useTVDatafeed({ dataProvider });
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {

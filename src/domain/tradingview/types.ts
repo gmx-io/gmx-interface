@@ -1,4 +1,4 @@
-import { LibrarySymbolInfo, Bar as BarType } from "charting_library";
+import { Bar as BarType, LibrarySymbolInfo } from "charting_library";
 
 export type Bar = BarType & {
   ticker?: string;
@@ -7,6 +7,11 @@ export type Bar = BarType & {
 
 export type SymbolInfo = LibrarySymbolInfo & {
   isStable: boolean;
+};
+
+export type TvParamsCache = {
+  resolution: string;
+  countBack: number;
 };
 
 interface Flavoring<FlavorT> {

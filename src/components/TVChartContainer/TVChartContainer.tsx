@@ -7,7 +7,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
-import { getInitialTvParamsFromCache, getObjectKeyFromValue } from "domain/tradingview/utils";
+import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { formatAmount } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -37,7 +37,6 @@ type Props = {
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
   oraclePriceDecimals?: number;
-  isV2?: boolean;
 };
 
 export default function TVChartContainer({
@@ -52,7 +51,6 @@ export default function TVChartContainer({
   chartToken,
   supportedResolutions,
   oraclePriceDecimals,
-  isV2,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -137,14 +135,8 @@ export default function TVChartContainer({
     datafeed.setOraclePriceDecimals(oraclePriceDecimals);
 
     dataProvider?.resetCache();
-
-    if (isV2) {
-      // Request and cache initial candles to not wait TV chart initialization
-      const requestParamsFromCache = getInitialTvParamsFromCache();
-      if (requestParamsFromCache) {
-        const { from, to, countBack } = requestParamsFromCache;
-        dataProvider?.getBars(chainId, symbol!, "5", false, { from, to, countBack: countBack, firstDataRequest: true });
-      }
+    if (symbolRef.current) {
+      dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
     }
 
     const widgetOptions = {
@@ -210,7 +202,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, dataProvider, isV2]);
+  }, [chainId, dataProvider]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

@@ -76,7 +76,7 @@ export default function ExchangeTVChart(props) {
   const [currentSeries] = useState();
 
   const dataProvider = useRef();
-  const { datafeed } = useTVDatafeed({ dataProvider });
+  const { datafeed } = useTVDatafeed({ dataProvider: dataProvider.current });
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);

@@ -1,10 +1,12 @@
-import { LAST_BAR_FETCH_INTERVAL } from "config/tradingview";
+import { PeriodParams } from "charting_library";
+import { getTvParamsCacheKey } from "config/localStorage";
+import { getTokenBySymbol } from "config/tokens";
+import { LAST_BAR_FETCH_INTERVAL, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getLimitChartPricesFromStats, TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { CHART_PERIODS } from "lib/legacy";
-import { Bar, FromOldToNewArray } from "./types";
-import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
 import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests";
-import { PeriodParams } from "charting_library";
+import { Bar, FromOldToNewArray, TvParamsCache } from "./types";
+import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
 
 const initialState = {
   chainId: null,
@@ -38,6 +40,8 @@ export class TVDataProvider {
   shouldResetCache = false;
 
   updateInterval?: ReturnType<typeof setInterval>;
+  historyBarsPromise?: Promise<FromOldToNewArray<Bar>>;
+  isV2 = false;
 
   onBarsLoadStarted?: () => void;
   onBarsLoaded?: () => void;
@@ -140,8 +144,6 @@ export class TVDataProvider {
     return getTokenChartPrice(chainId, ticker, period, onFallback);
   }
 
-  promise?: Promise<any>;
-
   async getTokenHistoryBars(
     chainId: number,
     ticker: string,
@@ -151,21 +153,23 @@ export class TVDataProvider {
     const barsInfo = this.barsInfo;
 
     if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
-      this.onBarsLoadStarted?.();
+      const isAlreadyRunning = Boolean(this.historyBarsPromise);
+
+      if (!isAlreadyRunning) {
+        this.onBarsLoadStarted?.();
+      }
+
       try {
         this.liveBars = [];
 
-        let promise: any;
-
-        if (this.promise) {
-          promise = this.promise;
-        } else {
-          promise = this.getTokenChartPrice(chainId, ticker, period, this.onBarsLoadFailed);
-          this.promise = promise;
+        // Do not re-run request if it's already in progress
+        if (!this.historyBarsPromise) {
+          this.historyBarsPromise = this.getTokenChartPrice(chainId, ticker, period, this.onBarsLoadFailed);
         }
 
-        const bars = await promise;
-        this.promise = undefined;
+        const bars = await this.historyBarsPromise;
+        this.historyBarsPromise = undefined;
+
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
         const latestBar = bars[bars.length - 1];
 
@@ -177,7 +181,10 @@ export class TVDataProvider {
         this.barsInfo.ticker = ticker;
         this.barsInfo.period = period;
         this.shouldResetCache = false;
-        this.onBarsLoaded?.();
+
+        if (!isAlreadyRunning) {
+          this.onBarsLoaded?.();
+        }
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -277,6 +284,21 @@ export class TVDataProvider {
     return liveBars;
   }
 
+  initializeBarsRequest(chainId: number, symbol: string) {
+    const cachedParams = this.getInitialTVParamsFromCache(chainId);
+
+    if (cachedParams) {
+      const { from, to, countBack } = cachedParams;
+      const isStable = Boolean(getTokenBySymbol(chainId, symbol).isStable);
+      this.getBars(chainId, symbol, cachedParams.resolution, isStable, {
+        from,
+        to,
+        countBack: countBack,
+        firstDataRequest: true,
+      });
+    }
+  }
+
   setCurrentChartToken(chartTokenInfo: { price: number; ticker: string; isChartReady: boolean }) {
     this.chartTokenInfo = chartTokenInfo;
 
@@ -303,6 +325,36 @@ export class TVDataProvider {
 
   setOnBarsLoadFailed(cb: (error: Error) => void) {
     this.onBarsLoadFailed = cb;
+  }
+
+  saveTVParamsCache(chainId: number, { resolution, countBack }: TvParamsCache) {
+    localStorage.setItem(getTvParamsCacheKey(chainId, this.isV2), JSON.stringify({ resolution, countBack }));
+  }
+
+  getInitialTVParamsFromCache(chainId: number) {
+    const tvCache = localStorage.getItem(getTvParamsCacheKey(chainId, this.isV2));
+
+    if (!tvCache) {
+      return undefined;
+    }
+
+    const { countBack, resolution }: TvParamsCache = JSON.parse(tvCache);
+    const period = SUPPORTED_RESOLUTIONS_V2[resolution];
+
+    if (!period) {
+      return undefined;
+    }
+
+    const to = Math.floor(Date.now() / 1000);
+    const timeBetween = period * countBack;
+    const from = to - timeBetween;
+
+    return {
+      from,
+      to,
+      countBack,
+      resolution,
+    };
   }
 
   get currentPrice() {

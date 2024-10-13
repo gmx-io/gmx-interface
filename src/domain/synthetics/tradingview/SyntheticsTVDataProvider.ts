@@ -7,6 +7,7 @@ import { OracleFetcher } from "lib/oracleKeeperFetcher";
 export class SyntheticsTVDataProvider extends TVDataProvider {
   candlesTimeout = 5000;
   oracleKeeperFetcher: OracleFetcher;
+  isV2 = true;
 
   constructor(params: { resolutions: { [key: number]: string }; oracleFetcher: OracleFetcher; chainId: number }) {
     super(params);
@@ -19,7 +20,7 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
     period: string,
     onFallback?: (ex: Error) => void
   ): Promise<FromOldToNewArray<Bar>> {
-    const limit = 500;
+    const limit = 5000;
 
     const bars: FromOldToNewArray<Bar> = await Promise.race([
       this.oracleKeeperFetcher.fetchOracleCandles(ticker, period, limit).then((bars) => bars.reverse()),

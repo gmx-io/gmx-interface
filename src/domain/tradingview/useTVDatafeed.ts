@@ -11,11 +11,11 @@ import {
 import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
+import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
-import { formatTimeInBarToMs, saveTvParamsCache } from "./utils";
-import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import { formatTimeInBarToMs } from "./utils";
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
@@ -35,10 +35,9 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
 type Props = {
   dataProvider?: TVDataProvider;
   oraclePriceDecimals?: number;
-  isV2?: boolean;
 };
 
-export default function useTVDatafeed({ dataProvider, oraclePriceDecimals, isV2 }: Props) {
+export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
@@ -112,9 +111,8 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals, isV2 
       feedDataRef: feedData,
       lastBarTimeRef: lastBarTime,
       oraclePriceDecimals,
-      isV2,
     });
-  }, [chainId, stableTokens, supportedResolutions, oraclePriceDecimals, isV2]);
+  }, [chainId, stableTokens, supportedResolutions, oraclePriceDecimals]);
 }
 
 interface OracePriceDecimalsUpdater {
@@ -134,7 +132,6 @@ function buildFeeder({
   feedDataRef,
   lastBarTimeRef,
   oraclePriceDecimals,
-  isV2,
 }: {
   chainId: number;
   stableTokens: string[];
@@ -148,7 +145,6 @@ function buildFeeder({
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
   oraclePriceDecimals?: number;
-  isV2?: boolean;
 }): { datafeed: TvDatafeed } {
   return {
     datafeed: {
@@ -205,13 +201,6 @@ function buildFeeder({
         onHistoryCallback: HistoryCallback,
         onErrorCallback: (error: string) => void
       ) {
-        if (isV2) {
-          saveTvParamsCache({
-            resolution,
-            countBack: periodParams.countBack,
-          });
-        }
-
         if (!supportedResolutions[resolution]) {
           return onErrorCallback("[getBars] Invalid resolution");
         }
@@ -221,6 +210,12 @@ function buildFeeder({
             onErrorCallback("Invalid ticker!");
             return;
           }
+
+          tvDataProviderRef.current?.saveTVParamsCache(chainId, {
+            resolution,
+            countBack: periodParams.countBack,
+          });
+
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
           lastBarTimeRef.current = 0;
