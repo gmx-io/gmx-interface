@@ -4166,10 +4166,6 @@ msgstr "Traders Referred on Avalanche Fuji"
 msgid "Claim V2 Rebates from your referred Traders."
 msgstr "Claim V2 Rebates from your referred Traders."
 
-#: src/pages/Home/Home.tsx
-msgid "Three tokens create our ecosystem"
-msgstr "Three tokens create our ecosystem"
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr "Total value of tokens in GM Pools."
@@ -5252,6 +5248,7 @@ msgid "{0} {1} not supported"
 msgstr "{0} {1} not supported"
 
 #: src/pages/Buy/Buy.tsx
+#: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
 msgstr "Protocol Tokens"
 

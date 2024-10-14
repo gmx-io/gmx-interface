@@ -145,6 +145,7 @@ function ActionsV1({
           getTokenInfo={getTokenInfo}
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
+          shouldShowPaginationButtons
         />
       </div>
       <Footer />
@@ -380,6 +381,7 @@ export function AccountActionsV1({
           getTokenInfo={getTokenInfo}
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
+          shouldShowPaginationButtons
         />
       </div>
     </div>

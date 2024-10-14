@@ -4163,10 +4163,6 @@ msgstr ""
 msgid "Claim V2 Rebates from your referred Traders."
 msgstr ""
 
-#: src/pages/Home/Home.tsx
-msgid "Three tokens create our ecosystem"
-msgstr ""
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr ""
@@ -5249,6 +5245,7 @@ msgid "{0} {1} not supported"
 msgstr ""
 
 #: src/pages/Buy/Buy.tsx
+#: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
 msgstr ""
 

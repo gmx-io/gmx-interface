@@ -1,7 +1,8 @@
 import EventEmitter from "abis/EventEmitter.json";
 import { getContract } from "config/contracts";
+import { NATIVE_TOKEN_ADDRESS, getTokens } from "config/tokens";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
-import { AbiCoder, Contract, Provider, ProviderEvent, ZeroAddress, ethers } from "ethers";
+import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
 import { MutableRefObject } from "react";
 
 const vaultEvents = {
@@ -70,6 +71,8 @@ const GLV_WITHDRAWAL_CREATED_HASH = ethers.id("GlvWithdrawalCreated");
 const GLV_WITHDRAWAL_EXECUTED_HASH = ethers.id("GlvWithdrawalExecuted");
 const GLV_WITHDRAWAL_CANCELLED_HASH = ethers.id("GlvWithdrawalCancelled");
 
+const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
+
 export function subscribeToV2Events(
   chainId: number,
   provider: Provider,
@@ -133,6 +136,45 @@ export function subscribeToV2Events(
     filters.forEach((filter) => {
       provider.off(filter, handleCommonLog);
     });
+  };
+}
+
+export function subscribeToApprovalEvents(
+  chainId: number,
+  provider: Provider,
+  account: string,
+  onApprove: (tokenAddress: string, spender: string, value: bigint) => void
+) {
+  const spenders = [
+    getContract(chainId, "StakedGmxTracker"),
+    ZeroAddress,
+    getContract(chainId, "GlpManager"),
+    getContract(chainId, "SyntheticsRouter"),
+    getContract(chainId, "Router"),
+  ];
+  const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
+  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+  const tokenAddresses = getTokens(chainId)
+    .filter((token) => isAddress(token.address) && token.address !== NATIVE_TOKEN_ADDRESS)
+    .map((token) => token.address);
+
+  const approvalsFilter: ProviderEvent = {
+    address: tokenAddresses,
+    topics: [APPROVED_HASH, addressHash, spenderTopics],
+  };
+
+  const handleApprovalsLog = (log: LogParams) => {
+    const tokenAddress = log.address;
+    const spender = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[2])[0];
+    const value = ethers.AbiCoder.defaultAbiCoder().decode(["uint256"], log.data)[0];
+
+    onApprove(tokenAddress, spender, value);
+  };
+
+  provider.on(approvalsFilter, handleApprovalsLog);
+
+  return () => {
+    provider.off(approvalsFilter, handleApprovalsLog);
   };
 }
 
