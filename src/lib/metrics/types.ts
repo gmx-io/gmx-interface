@@ -380,6 +380,7 @@ export type MulticallRequestTiming = {
   data: {
     requestType: string;
     rpcProvider: string;
+    isLargeAccount: boolean;
   };
 };
 
@@ -404,6 +405,7 @@ export type MulticallRequestCounter = {
     isInMainThread: boolean;
     requestType: string;
     rpcProvider: string;
+    isLargeAccount: boolean;
   };
 };
 
@@ -419,6 +421,7 @@ export type RpcTrackerRankingCounter = {
   data: {
     rpcProvider: string;
     bestBlockGap: number | "unknown";
+    isLargeAccount: boolean;
   };
 };
 
