@@ -331,6 +331,7 @@ export function MarketStatsWithComposition(p: Props) {
           marketsInfoData={marketsInfoData}
           marketsTokensAPRData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
           currentMarketInfo={marketInfo}
           glvTokensApyData={glvTokensApyData}
         />
