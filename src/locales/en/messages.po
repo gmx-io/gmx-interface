@@ -3091,10 +3091,6 @@ msgstr "Enable withdraw sent."
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#~ msgid "TBTC LP incentives"
-#~ msgstr "TBTC LP incentives"
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -4165,10 +4161,6 @@ msgstr "Traders Referred on Avalanche Fuji"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claim V2 Rebates from your referred Traders."
 msgstr "Claim V2 Rebates from your referred Traders."
-
-#: src/pages/Home/Home.tsx
-msgid "Three tokens create our ecosystem"
-msgstr "Three tokens create our ecosystem"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
@@ -5252,6 +5244,7 @@ msgid "{0} {1} not supported"
 msgstr "{0} {1} not supported"
 
 #: src/pages/Buy/Buy.tsx
+#: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
 msgstr "Protocol Tokens"
 
@@ -7172,10 +7165,6 @@ msgstr "Open {0} {longOrShortText}"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Give us your feedback on GMX."
 msgstr "Give us your feedback on GMX."
-
-#: src/config/bridging.tsx
-#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
-#~ msgstr "Mint TBTC using BTC with <0>Threshold</0>"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
