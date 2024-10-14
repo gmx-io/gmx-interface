@@ -155,3 +155,7 @@ export function getIsMulticallBatchingDisabledKey() {
 export function getMulticallBatchingLoggingEnabledKey() {
   return [DEBUG_MULTICALL_BATCHING_KEY, "logging"];
 }
+
+export function getSortedMarketsAddressesKey(chainId: number) {
+  return [SORTED_MARKETS_KEY, chainId].join(":");
+}

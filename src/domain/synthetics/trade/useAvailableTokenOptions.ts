@@ -1,12 +1,12 @@
+import { getSortedMarketsAddressesKey } from "config/localStorage";
+import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
 import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
-import { SORTED_MARKETS_KEY } from "config/localStorage";
-import { SORTED_MARKETS } from "config/static/sortedMarkets";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -19,22 +19,40 @@ export type AvailableTokenOptions = {
   sortedMarketConfigs: Market[];
 };
 
-function getCachedSortedMarketAddresses(): string[] {
-  const cached = localStorage.getItem(SORTED_MARKETS_KEY);
+function getCachedSortedMarketAddresses(chainId: number): string[] {
+  const cached = localStorage.getItem(getSortedMarketsAddressesKey(chainId));
 
   if (cached) {
     return JSON.parse(cached);
   }
 
-  return SORTED_MARKETS;
+  return SORTED_MARKETS[chainId];
 }
 
-function saveCachedSortedMarketAddresses(sortedMarketsInfo: MarketInfo[]) {
+function saveCachedSortedMarketAddresses(chainId: number, sortedMarketsInfo: MarketInfo[]) {
   const addresses = sortedMarketsInfo.map((marketInfo) => marketInfo.marketTokenAddress);
 
-  localStorage.setItem(SORTED_MARKETS_KEY, JSON.stringify(addresses));
+  localStorage.setItem(getSortedMarketsAddressesKey(chainId), JSON.stringify(addresses));
 
   return addresses;
+}
+
+// Temporary solution until positions sorting implementation is updated
+function getSortedMarketsConfigs(marketsData?: MarketsData, sortedAddresses?: string[]) {
+  if (!marketsData || !sortedAddresses) {
+    return [];
+  }
+
+  let resultSortedAddresses = sortedAddresses;
+  const marketsAddresses = Object.keys(marketsData);
+
+  // If markets are not presented in cache, add them to the end
+  if (marketsAddresses.length > sortedAddresses.length) {
+    const newMarketsAddresses = marketsAddresses.filter((address) => !sortedAddresses.includes(address));
+    resultSortedAddresses = sortedAddresses.concat(newMarketsAddresses);
+  }
+
+  return resultSortedAddresses.map((address) => getByKey(marketsData, address)).filter(Boolean) as Market[];
 }
 
 export function useAvailableTokenOptions(
@@ -48,7 +66,21 @@ export function useAvailableTokenOptions(
 ): AvailableTokenOptions {
   const { marketsInfoData, marketsData, tokensData, marketTokens } = p;
 
-  const sortedMarketAddressesRef = useRef<string[]>(getCachedSortedMarketAddresses());
+  const sortedMarketAddressesRef = useRef<string[]>();
+
+  useEffect(
+    function updateSortedMarketAddresses() {
+      const sortedAddresses = getCachedSortedMarketAddresses(chainId);
+
+      if (marketsData && Object.keys(marketsData).length > sortedAddresses.length) {
+        const newMarketAddresses = Object.keys(marketsData).filter((address) => !sortedAddresses.includes(address));
+        sortedAddresses.push(...newMarketAddresses);
+      }
+
+      sortedMarketAddressesRef.current = sortedAddresses;
+    },
+    [chainId, marketsData]
+  );
 
   return useMemo(() => {
     const marketsInfo = Object.values(marketsInfoData || {})
@@ -147,12 +179,10 @@ export function useAvailableTokenOptions(
     });
 
     if (sortedAllMarkets.length) {
-      sortedMarketAddressesRef.current = saveCachedSortedMarketAddresses(sortedAllMarkets);
+      sortedMarketAddressesRef.current = saveCachedSortedMarketAddresses(chainId, sortedAllMarkets);
     }
 
-    const sortedMarketConfigs = marketsData
-      ? sortedMarketAddressesRef.current.map((address) => marketsData[address])
-      : [];
+    const sortedMarketConfigs = getSortedMarketsConfigs(marketsData, sortedMarketAddressesRef.current);
 
     const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
       return longTokensWithPoolValue[b] > longTokensWithPoolValue[a] ? 1 : -1;
