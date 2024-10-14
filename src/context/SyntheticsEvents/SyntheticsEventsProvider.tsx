@@ -19,7 +19,6 @@ import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { metrics } from "lib/metrics";
 import {
   getGMSwapMetricId,
   getPositionOrderMetricId,
