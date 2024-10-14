@@ -32,7 +32,7 @@ export function useChartHeaderFormattedValues() {
   const dailyVolumeValue = use24hVolume();
   const info = useSelector(selectChartHeaderInfo);
 
-  const chartToken = useSelector(selectChartToken);
+  const { chartToken } = useSelector(selectChartToken);
 
   const { chainId } = useChainId();
   const chartTokenAddress = chartToken?.address;

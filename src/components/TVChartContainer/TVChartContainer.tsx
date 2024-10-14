@@ -1,13 +1,13 @@
 import Loader from "components/Common/Loader";
+import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import useTVDatafeed from "domain/tradingview/useTVDatafeed";
+import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { USD_DECIMALS } from "config/factors";
 import { formatAmount } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -15,6 +15,7 @@ import { useLocalStorage, useMedia } from "react-use";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { getIsFlagEnabled } from "config/ab";
 
 export type ChartLine = {
   price: number;
@@ -22,13 +23,14 @@ export type ChartLine = {
 };
 
 type Props = {
-  symbol: string;
+  symbol?: string;
   chainId: number;
   chartLines: ChartLine[];
   onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
+  datafeed: TvDatafeed;
   chartToken:
     | ({
         symbol: string;
@@ -44,6 +46,7 @@ export default function TVChartContainer({
   chartLines,
   onSelectToken,
   dataProvider,
+  datafeed,
   period,
   setPeriod,
   chartToken,
@@ -59,7 +62,6 @@ export default function TVChartContainer({
 
   const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
-  const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
@@ -122,7 +124,7 @@ export default function TVChartContainer({
   );
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
+    if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
         tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
         datafeed.setOraclePriceDecimals(oraclePriceDecimals);
@@ -132,6 +134,12 @@ export default function TVChartContainer({
 
   useEffect(() => {
     datafeed.setOraclePriceDecimals(oraclePriceDecimals);
+
+    dataProvider?.resetCache();
+    if (symbolRef.current && getIsFlagEnabled("testCandlesPreload")) {
+      dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
+    }
+
     const widgetOptions = {
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
@@ -184,8 +192,6 @@ export default function TVChartContainer({
         setChartDataLoading(false);
       });
     });
-
-    dataProvider?.resetCache();
 
     return () => {
       if (tvWidgetRef.current) {

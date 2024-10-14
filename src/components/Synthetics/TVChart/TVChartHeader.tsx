@@ -26,7 +26,7 @@ const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
 const MIN_SCROLL_END_SPACE = 5; // px
 
 function TVChartHeaderInfoMobile() {
-  const chartToken = useSelector(selectChartToken);
+  const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const availableTokens = useSelector(selectAvailableChartTokens);
 
@@ -207,7 +207,7 @@ function TVChartHeaderInfoMobile() {
 }
 
 function TVChartHeaderInfoDesktop() {
-  const chartToken = useSelector(selectChartToken);
+  const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   const scrollableRef = useRef<HTMLDivElement | null>(null);
