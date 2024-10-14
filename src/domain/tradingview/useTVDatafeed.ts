@@ -16,6 +16,7 @@ import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
+import { getIsFlagEnabled } from "config/ab";
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
@@ -211,10 +212,12 @@ function buildFeeder({
             return;
           }
 
-          tvDataProviderRef.current?.saveTVParamsCache(chainId, {
-            resolution,
-            countBack: periodParams.countBack,
-          });
+          if (getIsFlagEnabled("testCandlesPreload")) {
+            tvDataProviderRef.current?.saveTVParamsCache(chainId, {
+              resolution,
+              countBack: periodParams.countBack,
+            });
+          }
 
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];

@@ -13,6 +13,7 @@ type AbStorage = {
 
 const abFlagsConfig: Record<Flag, number> = {
   // testExampleAb: 0.5,
+  testCandlesPreload: 0.5,
 };
 
 const flags: Flag[] = Object.keys(abFlagsConfig) as Flag[];
