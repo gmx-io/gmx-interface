@@ -129,12 +129,11 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const { data: gmxAllowance } = useSWR(
-    active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData: gmxAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: stakedGmxTrackerAddress,
+    tokenAddresses: [gmxAddress],
+  });
+  const gmxAllowance = gmxAllowanceData?.[gmxAddress];
 
   const { data: gmxStaked } = useSWR(
     active && [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
@@ -143,7 +142,7 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const needApproval = gmxAllowance && gmxStaked && gmxStaked > gmxAllowance;
+  const needApproval = gmxAllowance !== undefined && gmxStaked && gmxStaked > gmxAllowance;
 
   const hasVestedGmx = gmxVesterBalance > 0;
   const hasVestedGlp = glpVesterBalance > 0;
@@ -276,7 +275,7 @@ export default function BeginAccountTransfer() {
 
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData: feeGmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: parsedReceiver,
     tokenAddresses: [feeGmxTrackerAddress],
   });
@@ -289,10 +288,10 @@ export default function BeginAccountTransfer() {
         parsedReceiver &&
           feeGmxTrackerBalance !== undefined &&
           parsedReceiver !== zeroAddress &&
-          tokensAllowanceData &&
-          getNeedTokenApprove(tokensAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance)
+          feeGmxAllowanceData &&
+          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance)
       ),
-    [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, tokensAllowanceData]
+    [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, feeGmxAllowanceData]
   );
 
   return (
