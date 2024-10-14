@@ -72,7 +72,7 @@ export function useAvailableTokenOptions(
     function updateSortedMarketAddresses() {
       sortedMarketAddressesRef.current = getCachedSortedMarketAddresses(chainId);
     },
-    [chainId, marketsData]
+    [chainId]
   );
 
   return useMemo(() => {
