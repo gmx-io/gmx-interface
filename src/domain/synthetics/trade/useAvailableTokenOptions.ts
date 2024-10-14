@@ -70,14 +70,7 @@ export function useAvailableTokenOptions(
 
   useEffect(
     function updateSortedMarketAddresses() {
-      const sortedAddresses = getCachedSortedMarketAddresses(chainId);
-
-      if (marketsData && Object.keys(marketsData).length > sortedAddresses.length) {
-        const newMarketAddresses = Object.keys(marketsData).filter((address) => !sortedAddresses.includes(address));
-        sortedAddresses.push(...newMarketAddresses);
-      }
-
-      sortedMarketAddressesRef.current = sortedAddresses;
+      sortedMarketAddressesRef.current = getCachedSortedMarketAddresses(chainId);
     },
     [chainId, marketsData]
   );
