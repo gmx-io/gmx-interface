@@ -502,8 +502,8 @@ msgid "Don't show this message again for 30 days."
 msgstr "Не показывайте это сообщение снова в течение 30 дней."
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration Price"
-msgstr "Цена Переноса"
+#~ msgid "Migration Price"
+#~ msgstr "Цена Переноса"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
@@ -873,8 +873,8 @@ msgid "Open {0} in Coingecko"
 msgstr "Открыть {0} в Coingecko"
 
 #: src/components/Migration/Migration.jsx
-msgid "Total Assets Migrated"
-msgstr "Общая сумма Перенесенных Активов"
+#~ msgid "Total Assets Migrated"
+#~ msgstr "Общая сумма Перенесенных Активов"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
@@ -1877,7 +1877,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/JoinReferralCode.jsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
@@ -2050,16 +2049,16 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Покупка GLP приостановлена, ожидается {0} обновление"
 
 #: src/components/Migration/Migration.jsx
-msgid "Migrating..."
-msgstr "Перенесение..."
+#~ msgid "Migrating..."
+#~ msgstr "Перенесение..."
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Your wallet: {0}"
-msgstr "Ваш кошелёк: {0}"
+#~ msgid "Your wallet: {0}"
+#~ msgstr "Ваш кошелёк: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -3236,7 +3235,6 @@ msgstr "Не удалось обновить ордер."
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 msgid "Waiting for Approval"
 msgstr "Ожидайте одобрения"
 
@@ -4561,7 +4559,6 @@ msgstr "Выберите пул, содержащий {0}, чтобы испол
 msgid "Transaction completed!"
 msgstr "Транзакция завершена!"
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Одобрение..."
@@ -5194,7 +5191,6 @@ msgstr "Открыть приложение Binance"
 msgid "{0} selected in order form"
 msgstr "{0} выбран в форме ордера"
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5422,7 +5418,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 msgid "Approve {0}"
 msgstr "Одобрить {0}"
 
@@ -5760,7 +5755,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5886,8 +5880,8 @@ msgid "Switch to {0} collateral."
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "To Receive"
-msgstr "Получить"
+#~ msgid "To Receive"
+#~ msgstr "Получить"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5956,8 +5950,8 @@ msgid "Win Rate"
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Migrated"
-msgstr "Перенесено"
+#~ msgid "Migrated"
+#~ msgstr "Перенесено"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -6067,8 +6061,8 @@ msgid "You"
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration submitted! <0>View status.</0>"
-msgstr "Перенос завершен! <0> Просмотр статуса.</0>"
+#~ msgid "Migration submitted! <0>View status.</0>"
+#~ msgstr "Перенос завершен! <0> Просмотр статуса.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6465,8 +6459,8 @@ msgid "{col1}"
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration failed"
-msgstr "Перенос не удался"
+#~ msgid "Migration failed"
+#~ msgstr "Перенос не удался"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
@@ -7229,7 +7223,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
@@ -7382,7 +7375,6 @@ msgstr ""
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "Токены esGMX могут быть размещены или наделены правами в любое время."
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 msgid "Max: {0}"
@@ -7394,8 +7386,8 @@ msgstr ""
 
 #: src/components/Migration/Migration.jsx
 #: src/components/Migration/Migration.jsx
-msgid "Bonus Tokens"
-msgstr "Бонусные токены"
+#~ msgid "Bonus Tokens"
+#~ msgstr "Бонусные токены"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
@@ -7876,8 +7868,6 @@ msgstr "Запрос на депозит"
 msgid "Deposit not enough to cover fees"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
