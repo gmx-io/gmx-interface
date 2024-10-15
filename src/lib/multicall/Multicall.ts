@@ -206,7 +206,6 @@ export class Multicall {
 
     const providerUrl = this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.secondary : providerUrls.primary;
     const client = Multicall.getViemClient(this.chainId, providerUrl);
-    const isAlchemy = providerUrl === providerUrls.secondary;
     const rpcProviderName = getProviderNameFromUrl(providerUrl);
 
     const sendCounterEvent = (
@@ -306,7 +305,7 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.groupEnd();
 
-      if (!isAlchemy) {
+      if (!this.fallbackRpcSwitcher?.isFallbackMode) {
         this.fallbackRpcSwitcher?.trigger();
       }
 
@@ -423,7 +422,7 @@ export class Multicall {
       rpcProvider: rpcProviderName,
     });
 
-    if (!isAlchemy) {
+    if (!this.fallbackRpcSwitcher?.isFallbackMode) {
       this.fallbackRpcSwitcher?.trigger();
     }
 

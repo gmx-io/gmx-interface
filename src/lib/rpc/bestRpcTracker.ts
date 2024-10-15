@@ -8,7 +8,7 @@ import {
   AVALANCHE_FUJI,
   getFallbackRpcUrl,
 } from "config/chains";
-import { getRpcProviderKey, getIsLargeAccountKey } from "config/localStorage";
+import { getRpcProviderKey } from "config/localStorage";
 import { isDebugMode } from "lib/localStorage";
 import orderBy from "lodash/orderBy";
 import minBy from "lodash/minBy";
@@ -18,15 +18,12 @@ import { getMulticallContract, getDataStoreContract } from "config/contracts";
 import { getContract } from "config/contracts";
 import { HASHED_MARKET_CONFIG_KEYS } from "prebuilt";
 import { sleep } from "lib/sleep";
-import sample from "lodash/sample";
 import { useEffect, useState } from "react";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { zeroAddress } from "viem";
 
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { RpcTrackerRankingCounter } from "lib/metrics";
-import { useIsLargeAccount } from "domain/synthetics/accountStats/useIsLargeAccount";
+import { getIsLargeAccount } from "lib/account/isLargeAccount";
 
 const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
@@ -66,7 +63,8 @@ type RpcTrackerState = {
   [chainId: number]: {
     chainId: number;
     lastUsage: Date | null;
-    currentBestProviderUrl: string;
+    currentPrimaryUrl: string;
+    currentSecondaryUrl: string;
     providers: {
       [providerUrl: string]: ProviderData;
     };
@@ -74,7 +72,6 @@ type RpcTrackerState = {
 };
 
 let trackerTimeoutId: number | null = null;
-let isLargeAccount = false;
 
 const trackerState = initTrackerState();
 
@@ -93,19 +90,23 @@ function trackRpcProviders({ warmUp = false } = {}) {
         return;
       }
 
-      const { url: nextProviderUrl, bestBlockGap } = await getBestRpcProviderForChain(chainTrackerState).catch((e) => {
-        if (e.message !== "no-success-probes") {
-          // eslint-disable-next-line no-console
-          console.error(e);
-        }
+      await getBestRpcProvidersForChain(chainTrackerState)
+        .catch((e) => {
+          if (e.message !== "no-success-probes") {
+            // eslint-disable-next-line no-console
+            console.error(e);
+          }
 
-        return {
-          url: getFallbackRpcUrl(chainId),
-          bestBlockGap: undefined,
-        };
-      });
+          // Use fallback provider both as primary and secondary if no successful probes received
+          const fallbackRpcUrl = getFallbackRpcUrl(chainId);
 
-      setCurrentProvider(chainId, nextProviderUrl, bestBlockGap);
+          return {
+            primaryUrl: fallbackRpcUrl,
+            secondaryUrl: fallbackRpcUrl,
+            bestBestBlockGap: undefined,
+          };
+        })
+        .then((nextProviderUrls) => setCurrentProviders(chainId, nextProviderUrls));
     })
   ).finally(() => {
     if (trackerTimeoutId) {
@@ -116,10 +117,10 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function getBestRpcProviderForChain({ providers, chainId }: RpcTrackerState[number]) {
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[number]) {
   const providersList = Object.values(providers);
 
-  const providersToProbe = isLargeAccount ? providersList : providersList.filter(({ isPublic }) => isPublic);
+  const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
 
   const probePromises = providersToProbe.map((providerInfo) => {
     return probeRpc(chainId, providerInfo.provider, providerInfo.url, providerInfo.isPublic);
@@ -172,14 +173,19 @@ async function getBestRpcProviderForChain({ providers, chainId }: RpcTrackerStat
     throw new Error("no-success-probes");
   }
 
-  let nextBestRpc = bestResponseTimeValidProbe;
+  let nextPrimaryRpc = bestResponseTimeValidProbe;
+  let nextSecondaryRpc = {
+    url: getFallbackRpcUrl(chainId),
+  };
 
-  if (isLargeAccount) {
+  if (getIsLargeAccount()) {
     const privateRpcResult = validProbesStats.find((probe) => !probe.isPublic);
 
     if (privateRpcResult) {
-      nextBestRpc = privateRpcResult;
+      nextPrimaryRpc = privateRpcResult;
     }
+
+    nextSecondaryRpc = bestResponseTimeValidProbe;
   }
 
   if (isDebugMode()) {
@@ -188,7 +194,7 @@ async function getBestRpcProviderForChain({ providers, chainId }: RpcTrackerStat
       orderBy(
         probeStats.map((probe) => ({
           url: probe.url,
-          isSelected: probe.url === nextBestRpc.url ? "✅" : "",
+          isPrimary: probe.url === nextPrimaryRpc.url ? "✅" : "",
           isValid: probe.isValid ? "✅" : "❌",
           responseTime: probe.responseTime,
           blockNumber: probe.blockNumber,
@@ -200,28 +206,30 @@ async function getBestRpcProviderForChain({ providers, chainId }: RpcTrackerStat
     );
   }
 
-  const bestBlockGap =
-    bestBlockNumberValidProbe?.blockNumber && nextBestRpc.blockNumber
-      ? bestBlockNumberValidProbe.blockNumber - nextBestRpc.blockNumber
+  const bestBestBlockGap =
+    bestBlockNumberValidProbe?.blockNumber && nextPrimaryRpc.blockNumber
+      ? bestBlockNumberValidProbe.blockNumber - nextPrimaryRpc.blockNumber
       : undefined;
 
   return {
-    url: nextBestRpc.url,
-    bestBlockGap,
+    primaryUrl: nextPrimaryRpc.url,
+    secondaryUrl: nextSecondaryRpc.url,
+    bestBestBlockGap,
   };
 }
 
-function setCurrentProvider(chainId: number, newProviderUrl: string, bestBlockGap?: number) {
-  trackerState[chainId].currentBestProviderUrl = newProviderUrl;
+function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBestBlockGap }) {
+  trackerState[chainId].currentPrimaryUrl = primaryUrl;
+  trackerState[chainId].currentSecondaryUrl = secondaryUrl;
 
   window.dispatchEvent(new CustomEvent(RPC_TRACKER_UPDATE_EVENT));
 
   emitMetricCounter<RpcTrackerRankingCounter>({
     event: "rpcTracker.ranking.setBestRpc",
     data: {
-      rpcProvider: getProviderNameFromUrl(newProviderUrl),
-      bestBlockGap: bestBlockGap ?? "unknown",
-      isLargeAccount,
+      rpcProvider: getProviderNameFromUrl(primaryUrl),
+      bestBlockGap: bestBestBlockGap ?? "unknown",
+      isLargeAccount: getIsLargeAccount(),
     },
   });
 
@@ -230,7 +238,7 @@ function setCurrentProvider(chainId: number, newProviderUrl: string, bestBlockGa
   localStorage.setItem(
     storageKey,
     JSON.stringify({
-      rpcUrl: newProviderUrl,
+      rpcUrl: primaryUrl,
       timestamp: Date.now(),
     })
   );
@@ -363,7 +371,8 @@ function initTrackerState() {
       ...prepareProviders(FALLBACK_PROVIDERS[chainId], { isPublic: false }),
     };
 
-    let currentBestProviderUrl: string = isLargeAccount ? FALLBACK_PROVIDERS[chainId][0] : RPC_PROVIDERS[chainId][0];
+    let currentPrimaryUrl: string = getIsLargeAccount() ? FALLBACK_PROVIDERS[chainId][0] : RPC_PROVIDERS[chainId][0];
+    let currentSecondaryUrl: string = getIsLargeAccount() ? RPC_PROVIDERS[chainId][0] : FALLBACK_PROVIDERS[chainId][0];
 
     const storageKey = JSON.stringify(getRpcProviderKey(chainId));
     const storedProviderData = localStorage.getItem(storageKey);
@@ -383,14 +392,15 @@ function initTrackerState() {
       }
 
       if (rpcUrl && providers[rpcUrl] && timestamp && now - timestamp < STORAGE_EXPIRE_TIMEOUT) {
-        currentBestProviderUrl = rpcUrl;
+        currentPrimaryUrl = rpcUrl;
       }
     }
 
     acc[chainId] = {
       chainId,
       lastUsage: null,
-      currentBestProviderUrl,
+      currentPrimaryUrl,
+      currentSecondaryUrl,
       providers,
     };
 
@@ -398,40 +408,35 @@ function initTrackerState() {
   }, {});
 }
 
-export function getBestRpcUrl(chainId: number) {
-  if (isLargeAccount) {
-    return getFallbackRpcUrl(chainId);
-  }
-
-  if (!trackerState[chainId]) {
-    if (isLargeAccount) {
-      return getFallbackRpcUrl(chainId);
-    }
-
-    if (RPC_PROVIDERS[chainId]?.length) {
-      return sample(RPC_PROVIDERS[chainId]);
-    }
-
+export function getCurrentRpcUrls(chainId: number) {
+  if (!RPC_PROVIDERS[chainId]?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }
 
-  trackerState[chainId].lastUsage = new Date();
+  if (trackerState[chainId]) {
+    trackerState[chainId].lastUsage = new Date();
+  }
 
-  return trackerState[chainId].currentBestProviderUrl ?? RPC_PROVIDERS[chainId][0];
+  const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? RPC_PROVIDERS[chainId][0];
+  const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? FALLBACK_PROVIDERS?.[chainId]?.[0] ?? primary;
+
+  return { primary, secondary };
 }
 
-export function useBestRpcUrl(chainId: number) {
-  const [bestRpcUrl, setBestRpcUrl] = useState<string>(() => getBestRpcUrl(chainId));
+export function useCurrentRpcUrls(chainId: number) {
+  const [bestRpcUrls, setBestRpcUrls] = useState<{
+    primary: string;
+    secondary?: string;
+  }>(() => getCurrentRpcUrls(chainId));
 
   useEffect(() => {
     let isMounted = true;
 
-    setBestRpcUrl(getBestRpcUrl(chainId));
+    setBestRpcUrls(getCurrentRpcUrls(chainId));
 
     function handleRpcUpdate() {
       if (isMounted) {
-        const newRpcUrl = getBestRpcUrl(chainId);
-        setBestRpcUrl(newRpcUrl);
+        setBestRpcUrls(getCurrentRpcUrls(chainId));
       }
     }
 
@@ -443,32 +448,5 @@ export function useBestRpcUrl(chainId: number) {
     };
   }, [chainId]);
 
-  return bestRpcUrl;
-}
-
-export function useIsLargeAccountTracker(account?: string) {
-  const isLargeCurrentAccount = useIsLargeAccount(account);
-  const [isLargeAccountStoredValue, setIsLargeAccountStoredValue] = useLocalStorageSerializeKey<boolean>(
-    getIsLargeAccountKey(account ?? zeroAddress),
-    false
-  );
-
-  useEffect(() => {
-    if (!account) {
-      isLargeAccount = false;
-    } else if (isLargeCurrentAccount !== undefined) {
-      setIsLargeAccountStoredValue(isLargeCurrentAccount);
-      isLargeAccount = isLargeCurrentAccount;
-    } else if (isLargeAccountStoredValue) {
-      isLargeAccount = true;
-    } else {
-      isLargeAccount = false;
-    }
-  }, [account, isLargeCurrentAccount, isLargeAccountStoredValue, setIsLargeAccountStoredValue]);
-
-  return isLargeAccount;
-}
-
-export function getIsLargeAccount() {
-  return isLargeAccount;
+  return bestRpcUrls;
 }

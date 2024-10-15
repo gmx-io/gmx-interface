@@ -9,7 +9,7 @@ const MAX_DAILY_VOLUME = expandDecimals(220_000n, USD_DECIMALS);
 const AGG_14_DAYS_VOLUME = expandDecimals(1_200_000n, USD_DECIMALS);
 const AGG_ALL_TIME_VOLUME = expandDecimals(3_500_000n, USD_DECIMALS);
 
-export function useIsLargeAccount(account?: string) {
+export function useIsLargeAccountData(account?: string) {
   const { data, error, isLoading } = useAccountVolumeStats({ account });
 
   const isLargeAccount = useMemo(() => {
