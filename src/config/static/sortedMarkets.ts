@@ -1,5 +1,12 @@
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
+/*
+  A temporary solution before positions sorting logic is updated 
+  to not depend on marketInfo sorting.  
+
+  When adding new markets, add them to the end of the list 
+  or update arrays based on marketInfo sorting in runtime
+*/
 export const SORTED_MARKETS = {
   [ARBITRUM]: [
     "0x47c031236e19d024b42f8AE6780E44A573170703",

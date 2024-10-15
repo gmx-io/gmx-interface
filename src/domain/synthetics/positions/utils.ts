@@ -394,7 +394,7 @@ export function getMinCollateralFactorForPosition(position: PositionInfoLoaded, 
   return minCollateralFactor;
 }
 
-export function getIsPositionInfoLoaded(pos?: PositionInfo): pos is PositionInfoLoaded {
+export function getIsPositionInfoLoaded(pos: PositionInfo | PositionInfoLoaded | undefined): pos is PositionInfoLoaded {
   return Boolean(pos?.marketInfo);
 }
 
