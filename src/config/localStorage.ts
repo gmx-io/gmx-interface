@@ -12,6 +12,7 @@ export const HAS_OVERRIDDEN_DEFAULT_ARB_30_EXECUTION_FEE_BUFFER_BPS_KEY =
 export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
+export const IS_AUTO_CANCEL_TPSL_KEY = "is-auto-cancel-tpsl";
 export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
 export const REFERRAL_CODE_KEY = "GMX-referralCode";

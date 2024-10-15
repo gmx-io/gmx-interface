@@ -423,3 +423,7 @@ export type RpcTrackerRankingCounter = {
 export type GetFeeDataBlockError = {
   event: "error.getFeeData.value.hash";
 };
+
+export type SetAutoCloseOrdersAction = {
+  event: "announcement.autoCloseOrders.updateExistingOrders";
+};

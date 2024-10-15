@@ -51,6 +51,7 @@ import { useInterviewNotification } from "domain/synthetics/userFeedback/useInte
 import { useMedia } from "react-use";
 import { MissedCoinsModal } from "components/MissedCoinsModal/MissedCoinsModal";
 import { useMeasureComponentMountTime } from "lib/metrics";
+import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 
 export type Props = {
   openSettings: () => void;
@@ -87,6 +88,7 @@ export function SyntheticsPage(p: Props) {
   const setActivePosition = useSelector(selectTradeboxSetActivePosition);
 
   useTradeParamsProcessor();
+  useSetOrdersAutoCancelByQueryParams();
 
   const { isInterviewModalVisible, setIsInterviewModalVisible } = useInterviewNotification();
 
