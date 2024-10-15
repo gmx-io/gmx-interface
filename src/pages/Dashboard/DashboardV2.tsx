@@ -6,7 +6,7 @@ import { USD_DECIMALS } from "config/factors";
 import { getIsSyntheticsSupported } from "config/features";
 import { getWhitelistedV1Tokens } from "config/tokens";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
+import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
 import { useInfoTokens } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
@@ -30,7 +30,6 @@ import { OverviewCard } from "./OverviewCard";
 import { StatsCard } from "./StatsCard";
 
 import "./DashboardV2.css";
-import { useGmxPrice } from "domain/synthetics/tokens";
 
 export const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -63,9 +62,11 @@ export default function DashboardV2() {
   const { infoTokens: avalancheInfoTokens } = useInfoTokens(signer, AVALANCHE, active, undefined, undefined);
   const infoTokens = chainId === ARBITRUM ? arbitrumInfoTokens : avalancheInfoTokens;
 
-  const { gmxPrice } = useGmxPrice(chainId);
-  const { gmxPrice: gmxPriceFromArbitrum } = useGmxPrice(ARBITRUM);
-  const { gmxPrice: gmxPriceFromAvalanche } = useGmxPrice(AVALANCHE);
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
+    chainId,
+    { arbitrum: chainId === ARBITRUM ? signer : undefined },
+    active
+  );
 
   let gmxMarketCap =
     gmxPrice !== undefined && totalGmxSupply !== undefined

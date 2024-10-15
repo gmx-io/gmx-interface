@@ -14,13 +14,14 @@ import RewardReader from "abis/RewardReader.json";
 import Token from "abis/Token.json";
 import Vault from "abis/Vault.json";
 
+import { useGmxPrice } from "domain/legacy";
+
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
 import useVestingData from "domain/vesting/useVestingData";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { useGmxPrice } from "domain/synthetics/tokens";
 
 export default function APRLabel({ chainId, label }) {
   const { active } = useWallet();
@@ -107,7 +108,7 @@ export default function APRLabel({ chainId, label }) {
       fetcher: contractFetcher(undefined, Vault),
     }
   );
-  const { gmxPrice } = useGmxPrice(chainId);
+  const { gmxPrice } = useGmxPrice(chainId, {}, active);
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR(gmxSupplyUrl, {

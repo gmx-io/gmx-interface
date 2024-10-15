@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
+import { Token as UniToken } from "@uniswap/sdk-core";
+import { Pool } from "@uniswap/v3-sdk";
 import { ethers } from "ethers";
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import OrderBook from "abis/OrderBook.json";
@@ -8,6 +10,8 @@ import PositionManager from "abis/PositionManager.json";
 import PositionRouter from "abis/PositionRouter.json";
 import Router from "abis/Router.json";
 import Token from "abis/Token.json";
+import UniPool from "abis/UniPool.json";
+import UniswapV2 from "abis/UniswapV2.json";
 import Vault from "abis/Vault.json";
 
 import {
@@ -20,24 +24,25 @@ import {
   getHighExecutionFee,
 } from "config/chains";
 import { getContract } from "config/contracts";
-import { USD_DECIMALS } from "config/factors";
 import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 
 import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { UI_VERSION, isDevelopment } from "config/env";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
-import { bigMath } from "lib/bigmath";
+import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
-import { OrderMetricId } from "lib/metrics";
-import { BN_ZERO, bigNumberify, expandDecimals } from "lib/numbers";
+import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
-import useWallet from "lib/wallets/useWallet";
 import groupBy from "lodash/groupBy";
-import useSWRInfinite from "swr/infinite";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
+import useWallet from "lib/wallets/useWallet";
+import useSWRInfinite from "swr/infinite";
+import { bigMath } from "lib/bigmath";
+import { OrderMetricId } from "lib/metrics";
 
 export * from "./prices";
 
@@ -510,6 +515,25 @@ export function useHasOutdatedUi() {
   return { data: hasOutdatedUi, mutate };
 }
 
+export function useGmxPrice(chainId, libraries, active) {
+  const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;
+  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
+  const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
+
+  const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
+  const mutate = useCallback(() => {
+    mutateFromAvalanche();
+    mutateFromArbitrum();
+  }, [mutateFromAvalanche, mutateFromArbitrum]);
+
+  return {
+    gmxPrice,
+    gmxPriceFromArbitrum,
+    gmxPriceFromAvalanche,
+    mutate,
+  };
+}
+
 // use only the supply endpoint on arbitrum, it includes the supply on avalanche
 export function useTotalGmxSupply() {
   const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
@@ -604,6 +628,88 @@ export function useTotalGmxInLiquidity() {
     total: totalGMX.current,
     mutate,
   };
+}
+
+function useGmxPriceFromAvalanche() {
+  const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
+
+  const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
+    fetcher: contractFetcher(undefined, UniswapV2),
+  });
+  const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
+
+  const vaultAddress = getContract(AVALANCHE, "Vault");
+  const avaxAddress = getTokenBySymbol(AVALANCHE, "WAVAX").address;
+  const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
+    [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
+    {
+      fetcher: contractFetcher(undefined, Vault),
+    }
+  );
+
+  const PRECISION = 10n ** 18n;
+  let gmxPrice;
+  if (avaxReserve && gmxReserve && avaxPrice) {
+    gmxPrice = bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
+  }
+
+  const mutate = useCallback(() => {
+    updateReserves(undefined, true);
+    updateAvaxPrice(undefined, true);
+  }, [updateReserves, updateAvaxPrice]);
+
+  return { data: gmxPrice, mutate };
+}
+
+function useGmxPriceFromArbitrum(signer, active) {
+  const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool");
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
+    [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
+    {
+      fetcher: contractFetcher(signer, UniPool),
+    }
+  );
+
+  const vaultAddress = getContract(ARBITRUM, "Vault");
+  const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<bigint>(
+    [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
+    {
+      fetcher: contractFetcher(signer, Vault) as any,
+    }
+  );
+
+  const gmxPrice = useMemo(() => {
+    if (uniPoolSlot0 != undefined && ethPrice != undefined) {
+      const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME");
+
+      const gmxAddress = getContract(ARBITRUM, "GMX");
+      const tokenB = new UniToken(ARBITRUM, gmxAddress, 18, "SYMBOL", "NAME");
+
+      const pool = new Pool(
+        tokenA, // tokenA
+        tokenB, // tokenB
+        10000, // fee
+        uniPoolSlot0.sqrtPriceX96.toString(), // sqrtRatioX96
+        1, // liquidity
+        Number(uniPoolSlot0.tick), // tickCurrent
+        []
+      );
+
+      const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6);
+      const poolTokenPriceAmount = parseValue(poolTokenPrice, 18);
+      return poolTokenPriceAmount === undefined
+        ? undefined
+        : bigMath.mulDiv(poolTokenPriceAmount, ethPrice, expandDecimals(1, 18));
+    }
+  }, [ethPrice, uniPoolSlot0, ethAddress]);
+
+  const mutate = useCallback(() => {
+    updateUniPoolSlot0(undefined, true);
+    updateEthPrice(undefined, true);
+  }, [updateEthPrice, updateUniPoolSlot0]);
+
+  return { data: gmxPrice, mutate };
 }
 
 export async function approvePlugin(chainId, pluginAddress, { signer, setPendingTxns, sentMsg, failMsg }) {
