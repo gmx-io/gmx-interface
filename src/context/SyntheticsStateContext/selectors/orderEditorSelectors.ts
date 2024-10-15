@@ -57,6 +57,7 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -131,7 +132,13 @@ export const selectOrderEditorExistingPosition = createSelector((q) => {
 
   if (!positionKey) return undefined;
 
-  return q((s) => selectPositionsInfoData(s)?.[positionKey]);
+  const positionInfo = q((s) => selectPositionsInfoData(s)?.[positionKey]);
+
+  if (!getIsPositionInfoLoaded(positionInfo)) {
+    return undefined;
+  }
+
+  return positionInfo;
 });
 
 const selectOrderEditorNextPositionValuesForIncreaseArgs = createSelector((q) => {

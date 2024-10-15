@@ -24,10 +24,11 @@ import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthet
 import {
   PositionsConstantsResult,
   PositionsInfoResult,
+  usePositions,
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
-import { TokensData } from "domain/synthetics/tokens";
+import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
@@ -136,6 +137,13 @@ export function SyntheticsStateContextProvider({
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
 
   const markets = useMarkets(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
+
+  const positionsResult = usePositions(chainId, {
+    account,
+    marketsData: markets.marketsData,
+    tokensData,
+  });
   const marketsInfo = useMarketsInfoRequest(chainId);
 
   const shouldFetchGlvMarkets =
@@ -175,8 +183,11 @@ export function SyntheticsStateContextProvider({
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
+    positionsData: positionsResult.positionsData,
+    positionsError: positionsResult.error,
+    marketsData: markets.marketsData,
     skipLocalReferralCode,
-    tokensData: marketsInfo.tokensData,
+    tokensData,
   });
 
   const ordersInfo = useOrdersInfoRequest(chainId, {
@@ -187,6 +198,7 @@ export function SyntheticsStateContextProvider({
 
   const tradeboxState = useTradeboxState(chainId, isTradePage, {
     marketsInfoData: marketsInfo.marketsInfoData,
+    marketsData: markets.marketsData,
     tokensData: marketsInfo.tokensData,
     positionsInfoData,
   });
