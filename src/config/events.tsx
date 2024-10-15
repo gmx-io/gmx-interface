@@ -45,7 +45,7 @@ export const appEventsData: EventData[] = [
         <br />
         <br />
         You can enable Auto-Cancel for your existing TP/SL orders by clicking{" "}
-        <Link to="/pools/?market=0x901eE57f7118A7be56ac079cbCDa7F22663A3874&operation=buy&scroll=1">here</Link>
+        <Link to="/trade?setOrdersAutoCancel=1">here</Link>.
       </>
     ),
   },

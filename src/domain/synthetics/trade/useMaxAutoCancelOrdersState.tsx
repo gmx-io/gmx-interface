@@ -14,10 +14,10 @@ export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: str
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
 
-  const shouldCountSidecarOrders = positionKey === selectedPositionKey;
+  const shouldCountDraftSidecarOrders = positionKey === selectedPositionKey;
 
   let draftOrdersCount = 0;
-  if (shouldCountSidecarOrders) {
+  if (shouldCountDraftSidecarOrders) {
     draftOrdersCount = [...stopLoss.entries, ...takeProfit.entries].filter(
       (entry) => entry.txnType === "create"
     ).length;
