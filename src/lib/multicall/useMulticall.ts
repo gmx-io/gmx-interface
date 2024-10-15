@@ -28,7 +28,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   params: {
     key: CacheKey | SkipKey;
     refreshInterval?: number | null;
-    disableBatching?: boolean;
     clearUnusedKeys?: boolean;
     keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
@@ -109,7 +108,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
             startTime = Date.now();
           });
 
-          responseOrFailure = await executeMulticall(chainId, request, priority, name, params.disableBatching);
+          responseOrFailure = await executeMulticall(chainId, request, priority, name);
 
           debugLog(() => {
             const endTime = Date.now();

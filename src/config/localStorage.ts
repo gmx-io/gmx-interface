@@ -25,7 +25,6 @@ export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
 export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
-export const SORTED_MARKETS_KEY = "sorted-markets-key";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
@@ -154,8 +153,4 @@ export function getIsMulticallBatchingDisabledKey() {
 
 export function getMulticallBatchingLoggingEnabledKey() {
   return [DEBUG_MULTICALL_BATCHING_KEY, "logging"];
-}
-
-export function getSortedMarketsAddressesKey(chainId: number) {
-  return [SORTED_MARKETS_KEY, chainId].join(":");
 }

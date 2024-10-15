@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { ethers } from "ethers";
 import {
   adjustForDecimals,
@@ -14,10 +14,13 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
+import { USD_DECIMALS } from "config/factors";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
+
+import { useGmxPrice } from "domain/legacy";
 
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -38,7 +41,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import {
@@ -54,7 +57,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getFeeItem } from "domain/synthetics/fees";
-import { useGmxPrice } from "domain/synthetics/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { bigMath } from "lib/bigmath";
@@ -283,7 +285,7 @@ export default function GlpSwap(props) {
     }
   );
 
-  const { gmxPrice } = useGmxPrice(chainId);
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
   const { data: stakingInfo } = useSWR(
@@ -400,7 +402,7 @@ export default function GlpSwap(props) {
   let stakedGlpTrackerApr;
 
   if (
-    gmxPrice !== undefined &&
+    gmxPrice &&
     stakingData &&
     stakingData.stakedGlpTracker !== undefined &&
     stakingData.stakedGlpTracker.tokensPerInterval !== undefined &&

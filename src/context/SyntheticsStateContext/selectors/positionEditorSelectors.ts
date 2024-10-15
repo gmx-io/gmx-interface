@@ -1,7 +1,7 @@
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import { selectPositionsInfoData } from "./globalSelectors";
-import { getIsPositionInfoLoaded, getMinCollateralFactorForPosition } from "domain/synthetics/positions";
+import { getMinCollateralFactorForPosition } from "domain/synthetics/positions";
 
 export const selectPositionEditorEditingPositionKey = (state: SyntheticsState) =>
   state.positionEditor.editingPositionKey;
@@ -16,8 +16,6 @@ export const selectPositionEditorPosition = createSelector((q) => {
 
 export const selectPositionEditorMinCollateralFactor = createSelector((q) => {
   const position = q(selectPositionEditorPosition);
-
-  if (!getIsPositionInfoLoaded(position)) return undefined;
-
+  if (!position) return undefined;
   return getMinCollateralFactorForPosition(position, 0n);
 });

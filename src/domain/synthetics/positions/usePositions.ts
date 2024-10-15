@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
@@ -31,16 +31,15 @@ type PositionsResult = {
 export function usePositions(
   chainId: number,
   p: {
-    marketsData?: MarketsData;
+    marketsInfoData?: MarketsData;
     tokensData?: TokensData;
     account: string | null | undefined;
   }
 ): PositionsResult {
-  const { marketsData, tokensData, account } = p;
-  const [disableBatching, setDisableBatching] = useState(true);
+  const { marketsInfoData, tokensData, account } = p;
 
   const keysAndPrices = useKeysAndPricesParams({
-    marketsData,
+    marketsInfoData,
     tokensData,
     account,
   });
@@ -55,7 +54,6 @@ export function usePositions(
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
-    disableBatching,
 
     request: () => ({
       reader: {
@@ -83,7 +81,7 @@ export function usePositions(
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
-        const { position, fees, basePnlUsd } = positionInfo;
+        const { position, fees } = positionInfo;
         const { addresses, numbers, flags, data } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
@@ -111,10 +109,6 @@ export function usePositions(
           fundingFeeAmount: fees.funding.fundingFeeAmount,
           claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
           claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
-          pnl: basePnlUsd,
-          positionFeeAmount: fees.positionFeeAmount,
-          traderDiscountAmount: fees.referral.traderDiscountAmount,
-          uiFeeAmount: fees.ui.uiFeeAmount,
           data,
         };
 
@@ -122,12 +116,6 @@ export function usePositions(
       }, {} as PositionsData);
     },
   });
-
-  useEffect(() => {
-    if (positionsData && disableBatching) {
-      setDisableBatching(false);
-    }
-  }, [disableBatching, positionsData]);
 
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,
@@ -143,10 +131,10 @@ export function usePositions(
 
 function useKeysAndPricesParams(p: {
   account: string | null | undefined;
-  marketsData: MarketsData | undefined;
+  marketsInfoData: MarketsData | undefined;
   tokensData: TokensData | undefined;
 }) {
-  const { account, marketsData, tokensData } = p;
+  const { account, marketsInfoData, tokensData } = p;
 
   return useMemo(() => {
     const values = {
@@ -155,11 +143,11 @@ function useKeysAndPricesParams(p: {
       marketsKeys: [] as string[],
     };
 
-    if (!account || !marketsData || !tokensData) {
+    if (!account || !marketsInfoData || !tokensData) {
       return values;
     }
 
-    const markets = Object.values(marketsData);
+    const markets = Object.values(marketsInfoData);
 
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(tokensData, market);
@@ -184,7 +172,7 @@ function useKeysAndPricesParams(p: {
     }
 
     return values;
-  }, [account, marketsData, tokensData]);
+  }, [account, marketsInfoData, tokensData]);
 }
 
 export function useOptimisticPositions(p: {
@@ -308,10 +296,6 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     fundingFeeAmount: 0n,
     claimableLongTokenAmount: 0n,
     claimableShortTokenAmount: 0n,
-    positionFeeAmount: 0n,
-    uiFeeAmount: 0n,
-    pnl: 0n,
-    traderDiscountAmount: 0n,
     data: "0x",
 
     isOpening: true,
