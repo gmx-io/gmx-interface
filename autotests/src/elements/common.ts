@@ -16,9 +16,11 @@ export class Tabs<T extends string> extends BasePage {
       return window.getComputedStyle(el).pointerEvents;
     });
 
-    if (style !== "none") {
-      await tab.click();
+    if (style === "none") {
+      return;
     }
+
+    await tab.click();
   }
 }
 

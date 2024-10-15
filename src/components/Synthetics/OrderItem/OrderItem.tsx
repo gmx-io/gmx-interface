@@ -403,8 +403,16 @@ function OrderItemLarge({
     [order.key, setRef]
   );
 
+  const qa = useMemo(() => {
+    if ("marketInfo" in order) {
+      return `order-market-${order.marketInfo.name}-${order.isLong ? "Long" : "Short"}`;
+    }
+
+    return `order-swap-${order.initialCollateralToken.symbol}-${order.targetCollateralToken.symbol}`;
+  }, [order]);
+
   return (
-    <ExchangeTr ref={handleSetRef}>
+    <ExchangeTr ref={handleSetRef} qa={qa}>
       {!hideActions && onToggleOrder && (
         <ExchangeTd className="cursor-pointer" onClick={onToggleOrder}>
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
@@ -475,7 +483,11 @@ function OrderItemLarge({
       {!hideActions && (
         <ExchangeTd>
           <div className="flex items-center">
-            <button className="cursor-pointer p-6 text-gray-300 hover:text-white" onClick={setEditingOrderKey}>
+            <button
+              className="cursor-pointer p-6 text-gray-300 hover:text-white"
+              onClick={setEditingOrderKey}
+              data-qa="edit-order"
+            >
               <AiOutlineEdit title={t`Edit order`} fontSize={16} />
             </button>
             {onCancelOrder && (
@@ -483,6 +495,7 @@ function OrderItemLarge({
                 className="cursor-pointer p-6 text-gray-300 hover:text-white disabled:cursor-wait"
                 disabled={isCanceling}
                 onClick={onCancelOrder}
+                data-qa="close-order"
               >
                 <MdClose title={t`Close order`} fontSize={16} />
               </button>

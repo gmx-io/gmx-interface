@@ -14,3 +14,4 @@ export type GmxNavigation =
   | "/referrals";
 export type EditOperation = "Deposit" | "Withdraw";
 export type CloseOperation = "Market" | "TP/SL";
+export type ExchangeListTab = "Positions" | "Orders" | "Trades" | "Claims";

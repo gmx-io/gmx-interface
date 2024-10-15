@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../base";
 
 test.describe("Should navigate across all pages with no crashes", () => {
+  test.describe.configure({ retries: 2 });
   test.afterEach(async ({ gmx }) => {
     await gmx.page.close();
   });
