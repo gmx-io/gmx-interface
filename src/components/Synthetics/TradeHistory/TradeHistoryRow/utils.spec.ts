@@ -99,171 +99,171 @@ describe("TradeHistoryRow helpers", () => {
 `);
 
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": ">  $29,700.00",
-  "action": "Create Take-Profit Order",
-  "executionPrice": undefined,
-  "fullMarket": "BTC/USD [BTC-USDC]",
-  "indexName": "BTC/USD",
-  "indexTokenSymbol": "BTC",
-  "isLong": true,
-  "market": "Long BTC/USD",
-  "marketPrice": undefined,
-  "poolName": "BTC-USDC",
-  "price": ">  $30,000.00",
-  "priceComment": [
-    "Trigger price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": ">  $29,700.00",
-    },
-  ],
-  "priceImpact": undefined,
-  "size": "-$266.23",
-  "timestamp": "15 Sep 2023, 13:29",
-  "timestampISO": "2023-09-15T13:29:36+04:00",
-  "triggerPrice": ">  $30,000.00",
-}
-`);
+      {
+        "acceptablePrice": ">  $29,700.00",
+        "action": "Create Take-Profit",
+        "executionPrice": undefined,
+        "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
+        "indexTokenSymbol": "BTC",
+        "isLong": true,
+        "market": "Long BTC/USD",
+        "marketPrice": undefined,
+        "poolName": "BTC-USDC",
+        "price": ">  $30,000.00",
+        "priceComment": [
+          "Trigger price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": ">  $29,700.00",
+          },
+        ],
+        "priceImpact": undefined,
+        "size": "-$266.23",
+        "timestamp": "15 Sep 2023, 13:29",
+        "timestampISO": "2023-09-15T13:29:36+04:00",
+        "triggerPrice": ">  $30,000.00",
+      }
+    `);
 
     expect(formatPositionMessage(cancelOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  $1,645.69",
-  "action": "Cancel Limit Order",
-  "executionPrice": undefined,
-  "fullMarket": "ETH/USD [WETH-USDC]",
-  "indexName": "ETH/USD",
-  "indexTokenSymbol": "ETH",
-  "isLong": true,
-  "market": "Long ETH/USD",
-  "marketPrice": undefined,
-  "poolName": "WETH-USDC",
-  "price": "<  $1,629.40",
-  "priceComment": [
-    "Trigger price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  $1,645.69",
-    },
-  ],
-  "priceImpact": undefined,
-  "size": "+$4.11",
-  "timestamp": "15 Sep 2023, 13:37",
-  "timestampISO": "2023-09-15T13:37:13+04:00",
-  "triggerPrice": "<  $1,629.40",
-}
-`);
+      {
+        "acceptablePrice": "<  $1,645.69",
+        "action": "Cancel Limit",
+        "executionPrice": undefined,
+        "fullMarket": "ETH/USD [WETH-USDC]",
+        "indexName": "ETH/USD",
+        "indexTokenSymbol": "ETH",
+        "isLong": true,
+        "market": "Long ETH/USD",
+        "marketPrice": undefined,
+        "poolName": "WETH-USDC",
+        "price": "<  $1,629.40",
+        "priceComment": [
+          "Trigger price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  $1,645.69",
+          },
+        ],
+        "priceImpact": undefined,
+        "size": "+$4.11",
+        "timestamp": "15 Sep 2023, 13:37",
+        "timestampISO": "2023-09-15T13:37:13+04:00",
+        "triggerPrice": "<  $1,629.40",
+      }
+    `);
 
     expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  $1.01",
-  "action": "Create Limit Order",
-  "executionPrice": undefined,
-  "fullMarket": "BTC/USD [BTC-USDC]",
-  "indexName": "BTC/USD",
-  "indexTokenSymbol": "BTC",
-  "isLong": true,
-  "market": "Long BTC/USD",
-  "marketPrice": undefined,
-  "poolName": "BTC-USDC",
-  "price": "<  $1.00",
-  "priceComment": [
-    "Trigger price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  $1.01",
-    },
-  ],
-  "priceImpact": undefined,
-  "size": "+$2.64",
-  "timestamp": "15 Sep 2023, 14:54",
-  "timestampISO": "2023-09-15T14:54:04+04:00",
-  "triggerPrice": "<  $1.00",
-}
-`);
+      {
+        "acceptablePrice": "<  $1.01",
+        "action": "Create Limit",
+        "executionPrice": undefined,
+        "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
+        "indexTokenSymbol": "BTC",
+        "isLong": true,
+        "market": "Long BTC/USD",
+        "marketPrice": undefined,
+        "poolName": "BTC-USDC",
+        "price": "<  $1.00",
+        "priceComment": [
+          "Trigger price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  $1.01",
+          },
+        ],
+        "priceImpact": undefined,
+        "size": "+$2.64",
+        "timestamp": "15 Sep 2023, 14:54",
+        "timestampISO": "2023-09-15T14:54:04+04:00",
+        "triggerPrice": "<  $1.00",
+      }
+    `);
 
     expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": ">  $0.82764",
-  "action": "Execute Limit Order",
-  "executionPrice": "$0.837",
-  "fullMarket": "ARB/USD [ARB-USDC]",
-  "indexName": "ARB/USD",
-  "indexTokenSymbol": "ARB",
-  "isLong": false,
-  "market": "Short ARB/USD",
-  "marketPrice": "< $0.00001",
-  "poolName": "ARB-USDC",
-  "price": "< $0.00001",
-  "priceComment": [
-    "Mark price for the order.",
-    "",
-    {
-      "key": "Order Trigger Price",
-      "value": ">  $0.83600",
-    },
-    {
-      "key": "Order Acceptable Price",
-      "value": ">  $0.82764",
-    },
-    {
-      "key": "Order Execution Price",
-      "value": "$0.837",
-    },
-    {
-      "key": "Price Impact",
-      "value": {
-        "state": "error",
-        "text": "-$16.82",
-      },
-    },
-    "",
-    "Order execution price takes into account price impact.",
-  ],
-  "priceImpact": "-$16.82",
-  "size": "+$2,070.187",
-  "timestamp": "18 Sep 2023, 16:43",
-  "timestampISO": "2023-09-18T16:43:18+04:00",
-}
-`);
+      {
+        "acceptablePrice": ">  $0.82764",
+        "action": "Execute Limit",
+        "executionPrice": "$0.837",
+        "fullMarket": "ARB/USD [ARB-USDC]",
+        "indexName": "ARB/USD",
+        "indexTokenSymbol": "ARB",
+        "isLong": false,
+        "market": "Short ARB/USD",
+        "marketPrice": "< $0.00001",
+        "poolName": "ARB-USDC",
+        "price": "< $0.00001",
+        "priceComment": [
+          "Mark price for the order.",
+          "",
+          {
+            "key": "Order Trigger Price",
+            "value": ">  $0.83600",
+          },
+          {
+            "key": "Order Acceptable Price",
+            "value": ">  $0.82764",
+          },
+          {
+            "key": "Order Execution Price",
+            "value": "$0.837",
+          },
+          {
+            "key": "Price Impact",
+            "value": {
+              "state": "error",
+              "text": "-$16.82",
+            },
+          },
+          "",
+          "Order execution price takes into account price impact.",
+        ],
+        "priceImpact": "-$16.82",
+        "size": "+$2,070.187",
+        "timestamp": "18 Sep 2023, 16:43",
+        "timestampISO": "2023-09-18T16:43:18+04:00",
+      }
+    `);
 
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": ">  $26,937.90",
-  "action": "Failed Limit Order",
-  "actionComment": undefined,
-  "executionPrice": undefined,
-  "fullMarket": "BTC/USD [BTC-USDC]",
-  "indexName": "BTC/USD",
-  "indexTokenSymbol": "BTC",
-  "isActionError": true,
-  "isLong": false,
-  "market": "Short BTC/USD",
-  "marketPrice": undefined,
-  "poolName": "BTC-USDC",
-  "price": "",
-  "priceComment": [
-    "Mark price for the order.",
-    "",
-    {
-      "key": "Order Trigger Price",
-      "value": ">  $27,210.00",
-    },
-    {
-      "key": "Order Acceptable Price",
-      "value": ">  $26,937.90",
-    },
-    undefined,
-  ],
-  "priceImpact": "-$9,488.98",
-  "size": "+$1,348.82",
-  "timestamp": "18 Sep 2023, 15:14",
-  "timestampISO": "2023-09-18T15:14:09+04:00",
-}
-`);
+      {
+        "acceptablePrice": ">  $26,937.90",
+        "action": "Failed Limit",
+        "actionComment": undefined,
+        "executionPrice": undefined,
+        "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
+        "indexTokenSymbol": "BTC",
+        "isActionError": true,
+        "isLong": false,
+        "market": "Short BTC/USD",
+        "marketPrice": undefined,
+        "poolName": "BTC-USDC",
+        "price": "",
+        "priceComment": [
+          "Mark price for the order.",
+          "",
+          {
+            "key": "Order Trigger Price",
+            "value": ">  $27,210.00",
+          },
+          {
+            "key": "Order Acceptable Price",
+            "value": ">  $26,937.90",
+          },
+          undefined,
+        ],
+        "priceImpact": "-$9,488.98",
+        "size": "+$1,348.82",
+        "timestamp": "18 Sep 2023, 15:14",
+        "timestampISO": "2023-09-18T15:14:09+04:00",
+      }
+    `);
 
     expect(formatPositionMessage(undefinedOrder, minCollateralUsd)).toMatchInlineSnapshot(`
 {
