@@ -22,7 +22,6 @@ import {
   selectSwapGraph,
 } from "./tradeSelectors";
 import {
-  getIsPositionInfoLoaded,
   getMinCollateralFactorForPosition,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
@@ -87,7 +86,7 @@ const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const orderOption = q(selectPositionSellerOrderOption);
   const tradeType = position.isLong ? TradeType.Long : TradeType.Short;
   const collateralTokenAddress = position.collateralTokenAddress;
-  const marketAddress = position.market.marketTokenAddress;
+  const marketAddress = position.marketInfo.marketTokenAddress;
   const triggerPriceInputValue = q(selectPositionSellerTriggerPriceInputValue);
   const closeSizeInputValue = q(selectPositionSellerCloseUsdInputValue);
   const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
@@ -153,7 +152,7 @@ export const selectPositionSellerKeepLeverage = createSelector((q) => {
 export const selectPositionSellerLeverageDisabledByCollateral = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
-  if (!getIsPositionInfoLoaded(position)) return false;
+  if (!position) return false;
 
   const decreaseAmountsWithKeepLeverage = q(selectPositionSellerDecreaseAmountsWithKeepLeverage);
 

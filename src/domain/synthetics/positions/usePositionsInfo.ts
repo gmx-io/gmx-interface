@@ -3,11 +3,13 @@ import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
+import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
-import { getMarketIndexName, getMarketPoolName, MarketsData, MarketsInfoData } from "../markets";
+import { MarketsInfoData, getMaxAllowedLeverageByMinCollateralFactor } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
-import { PositionsData, PositionsInfoData } from "./types";
+import { PositionsInfoData } from "./types";
+import { usePositions } from "./usePositions";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
 import {
   getEntryPrice,
@@ -15,6 +17,7 @@ import {
   getLiquidationPrice,
   getPositionNetValue,
   getPositionPendingFeesUsd,
+  getPositionPnlUsd,
 } from "./utils";
 
 export type PositionsInfoResult = {
@@ -28,31 +31,20 @@ export function usePositionsInfoRequest(
   p: {
     account: string | null | undefined;
     marketsInfoData?: MarketsInfoData;
-    marketsData?: MarketsData;
     tokensData?: TokensData;
-    positionsData?: PositionsData;
-    positionsError?: Error;
     showPnlInLeverage: boolean;
     skipLocalReferralCode?: boolean;
   }
 ): PositionsInfoResult {
-  const {
-    showPnlInLeverage,
-    marketsData,
-    marketsInfoData,
-    tokensData,
-    account,
-    skipLocalReferralCode = false,
-    positionsData,
-    positionsError,
-  } = p;
+  const { showPnlInLeverage, marketsInfoData, tokensData, account, skipLocalReferralCode = false } = p;
 
   const { signer } = useWallet();
+  const { positionsData, error: positionsError } = usePositions(chainId, p);
   const {
     positionsConstants: { minCollateralUsd },
     error: positionsConstantsError,
   } = usePositionsConstantsRequest(chainId);
-  const { error: uiFeeFactorError } = useUiFeeFactorRequest(chainId);
+  const { uiFeeFactor, error: uiFeeFactorError } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
   const error = positionsError || positionsConstantsError || uiFeeFactorError || userReferralInfo?.error;
@@ -65,7 +57,7 @@ export function usePositionsInfoRequest(
       };
     }
 
-    if (!marketsData || !tokensData || !positionsData || minCollateralUsd === undefined) {
+    if (!marketsInfoData || !tokensData || !positionsData || minCollateralUsd === undefined) {
       return {
         isLoading: true,
       };
@@ -75,14 +67,11 @@ export function usePositionsInfoRequest(
       const position = getByKey(positionsData, positionKey)!;
 
       const marketInfo = getByKey(marketsInfoData, position.marketAddress);
-      const market = getByKey(marketsData, position.marketAddress);
-      const indexToken = getByKey(tokensData, market?.indexTokenAddress);
-      const longToken = getByKey(tokensData, market?.longTokenAddress);
-      const shortToken = getByKey(tokensData, market?.shortTokenAddress);
-      const pnlToken = position.isLong ? longToken : shortToken;
+      const indexToken = marketInfo?.indexToken;
+      const pnlToken = position.isLong ? marketInfo?.longToken : marketInfo?.shortToken;
       const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
 
-      if (!market || !indexToken || !longToken || !shortToken || !pnlToken || !collateralToken) {
+      if (!marketInfo || !indexToken || !pnlToken || !collateralToken) {
         return acc;
       }
 
@@ -103,13 +92,13 @@ export function usePositionsInfoRequest(
 
       const pendingClaimableFundingFeesLongUsd = convertToUsd(
         position.claimableLongTokenAmount,
-        longToken.decimals,
-        longToken.prices.minPrice
+        marketInfo.longToken.decimals,
+        marketInfo.longToken.prices.minPrice
       )!;
       const pendingClaimableFundingFeesShortUsd = convertToUsd(
         position.claimableShortTokenAmount,
-        shortToken.decimals,
-        shortToken.prices.minPrice
+        marketInfo.shortToken.decimals,
+        marketInfo.shortToken.prices.minPrice
       )!;
 
       const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd + pendingClaimableFundingFeesShortUsd;
@@ -119,9 +108,23 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd,
       });
 
-      const closingFeeAmount = position.positionFeeAmount - position.traderDiscountAmount;
-      const closingFeeUsd = convertToUsd(closingFeeAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
-      const uiFeeUsd = convertToUsd(position.uiFeeAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
+      const closingPriceImpactDeltaUsd = getPriceImpactForPosition(
+        marketInfo,
+        position.sizeInUsd * -1n,
+        position.isLong,
+        { fallbackToZero: true }
+      );
+
+      const positionFeeInfo = getPositionFee(
+        marketInfo,
+        position.sizeInUsd,
+        closingPriceImpactDeltaUsd > 0,
+        userReferralInfo,
+        uiFeeFactor
+      );
+
+      const closingFeeUsd = positionFeeInfo.positionFeeUsd;
+      const uiFeeUsd = positionFeeInfo.uiFeeUsd ?? 0n;
 
       const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
 
@@ -133,7 +136,13 @@ export function usePositionsInfoRequest(
         collateralMinPrice
       )!;
 
-      const pnl = position.pnl;
+      const pnl = getPositionPnlUsd({
+        marketInfo: marketInfo,
+        sizeInUsd: position.sizeInUsd,
+        sizeInTokens: position.sizeInTokens,
+        markPrice,
+        isLong: position.isLong,
+      });
 
       const pnlPercentage =
         collateralUsd !== undefined && collateralUsd != 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
@@ -167,40 +176,30 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
-      const maxAllowedLeverage = 0n;
+      const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
 
       const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
 
-      const liquidationPrice = marketInfo
-        ? getLiquidationPrice({
-            marketInfo,
-            collateralToken,
-            sizeInUsd: position.sizeInUsd,
-            sizeInTokens: position.sizeInTokens,
-            collateralUsd,
-            collateralAmount: position.collateralAmount,
-            userReferralInfo,
-            minCollateralUsd,
-            pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-            pendingFundingFeesUsd,
-            isLong: position.isLong,
-          })
-        : undefined;
-
-      const indexName = getMarketIndexName({ indexToken, isSpotOnly: false });
-      const poolName = getMarketPoolName({ longToken, shortToken });
+      const liquidationPrice = getLiquidationPrice({
+        marketInfo,
+        collateralToken,
+        sizeInUsd: position.sizeInUsd,
+        sizeInTokens: position.sizeInTokens,
+        collateralUsd,
+        collateralAmount: position.collateralAmount,
+        userReferralInfo,
+        minCollateralUsd,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd,
+        isLong: position.isLong,
+      });
 
       acc[positionKey] = {
         ...position,
-        market,
         marketInfo,
-        indexName,
-        poolName,
         indexToken,
         collateralToken,
         pnlToken,
-        longToken,
-        shortToken,
         markPrice,
         entryPrice,
         liquidationPrice,
@@ -230,12 +229,12 @@ export function usePositionsInfoRequest(
     };
   }, [
     error,
-    marketsData,
+    marketsInfoData,
     tokensData,
     positionsData,
     minCollateralUsd,
-    marketsInfoData,
-    showPnlInLeverage,
     userReferralInfo,
+    uiFeeFactor,
+    showPnlInLeverage,
   ]);
 }

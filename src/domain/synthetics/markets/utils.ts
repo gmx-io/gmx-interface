@@ -124,8 +124,11 @@ function isMarketCollateral(marketInfo: MarketInfo, tokenAddress: string) {
   return getTokenPoolType(marketInfo, tokenAddress) !== undefined;
 }
 
-export function isMarketIndexToken({ indexToken }: { indexToken: TokenData }, tokenAddress: string) {
-  return tokenAddress === indexToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && indexToken.isWrapped);
+export function isMarketIndexToken(marketInfo: MarketInfo, tokenAddress: string) {
+  return (
+    tokenAddress === marketInfo.indexToken.address ||
+    (tokenAddress === NATIVE_TOKEN_ADDRESS && marketInfo.indexToken.isWrapped)
+  );
 }
 
 export function getPoolUsdWithoutPnl(

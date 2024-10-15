@@ -5,5 +5,4 @@ export * from "./useTokenRecentPricesData";
 export * from "./useTokensDataRequest";
 export * from "./use24PriceDelta";
 export * from "./useOracleKeeperFetcher";
-export * from "./useGmxPrice";
 export * from "./utils";

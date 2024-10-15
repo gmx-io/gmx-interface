@@ -595,7 +595,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       isPlatformToken: true,
-      isPlatformTradingToken: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/gmx",
       explorerUrl: "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661",
     },

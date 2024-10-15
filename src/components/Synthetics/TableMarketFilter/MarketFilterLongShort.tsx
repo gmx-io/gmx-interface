@@ -60,9 +60,10 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
     if (withPositions !== undefined) {
       const positions = withPositions === "all" ? allPositions : filteredPositions;
       strippedOpenPositions = positions.map((position) => ({
-        text: (position.isLong ? "long" : "short") + " " + position.market.name + " " + position.collateralToken.symbol,
+        text:
+          (position.isLong ? "long" : "short") + " " + position.marketInfo.name + " " + position.collateralToken.symbol,
         data: {
-          marketAddress: position.market.marketTokenAddress as Address,
+          marketAddress: position.marketInfo.marketTokenAddress as Address,
           direction: position.isLong ? "long" : "short",
           collateralAddress: position.collateralTokenAddress as Address,
         },

@@ -1,10 +1,8 @@
-import { getSortedMarketsAddressesKey } from "config/localStorage";
-import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
-import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
+import { GlvAndGmMarketsInfoData, MarketInfo, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
 
@@ -16,64 +14,17 @@ export type AvailableTokenOptions = {
   sortedIndexTokensWithPoolValue: string[];
   sortedLongAndShortTokens: string[];
   sortedAllMarkets: MarketInfo[];
-  sortedMarketConfigs: Market[];
 };
-
-function getCachedSortedMarketAddresses(chainId: number): string[] {
-  const cached = localStorage.getItem(getSortedMarketsAddressesKey(chainId));
-
-  if (cached) {
-    return JSON.parse(cached);
-  }
-
-  return SORTED_MARKETS[chainId];
-}
-
-function saveCachedSortedMarketAddresses(chainId: number, sortedMarketsInfo: MarketInfo[]) {
-  const addresses = sortedMarketsInfo.map((marketInfo) => marketInfo.marketTokenAddress);
-
-  localStorage.setItem(getSortedMarketsAddressesKey(chainId), JSON.stringify(addresses));
-
-  return addresses;
-}
-
-// Temporary solution until positions sorting implementation is updated
-function getSortedMarketsConfigs(marketsData?: MarketsData, sortedAddresses?: string[]) {
-  if (!marketsData || !sortedAddresses) {
-    return [];
-  }
-
-  let resultSortedAddresses = sortedAddresses;
-  const marketsAddresses = Object.keys(marketsData);
-
-  // If markets are not presented in cache, add them to the end
-  if (marketsAddresses.length > sortedAddresses.length) {
-    const newMarketsAddresses = marketsAddresses.filter((address) => !sortedAddresses.includes(address));
-    resultSortedAddresses = sortedAddresses.concat(newMarketsAddresses);
-  }
-
-  return resultSortedAddresses.map((address) => getByKey(marketsData, address)).filter(Boolean) as Market[];
-}
 
 export function useAvailableTokenOptions(
   chainId: number,
   p: {
     marketsInfoData?: GlvAndGmMarketsInfoData;
-    marketsData?: MarketsData;
     tokensData?: TokensData;
     marketTokens?: TokensData;
   }
 ): AvailableTokenOptions {
-  const { marketsInfoData, marketsData, tokensData, marketTokens } = p;
-
-  const sortedMarketAddressesRef = useRef<string[]>();
-
-  useEffect(
-    function updateSortedMarketAddresses() {
-      sortedMarketAddressesRef.current = getCachedSortedMarketAddresses(chainId);
-    },
-    [chainId]
-  );
+  const { marketsInfoData, tokensData, marketTokens } = p;
 
   return useMemo(() => {
     const marketsInfo = Object.values(marketsInfoData || {})
@@ -171,12 +122,6 @@ export function useAvailableTokenOptions(
       );
     });
 
-    if (sortedAllMarkets.length) {
-      sortedMarketAddressesRef.current = saveCachedSortedMarketAddresses(chainId, sortedAllMarkets);
-    }
-
-    const sortedMarketConfigs = getSortedMarketsConfigs(marketsData, sortedMarketAddressesRef.current);
-
     const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
       return longTokensWithPoolValue[b] > longTokensWithPoolValue[a] ? 1 : -1;
     });
@@ -198,7 +143,6 @@ export function useAvailableTokenOptions(
       sortedIndexTokensWithPoolValue,
       sortedLongAndShortTokens: Array.from(new Set(sortedLongAndShortTokens)),
       sortedAllMarkets,
-      sortedMarketConfigs,
     };
-  }, [marketsInfoData, marketsData, chainId, tokensData, marketTokens]);
+  }, [chainId, marketsInfoData, tokensData, marketTokens]);
 }

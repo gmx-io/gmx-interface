@@ -1,10 +1,10 @@
-import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
-import { PositionInfoLoaded } from "domain/synthetics/positions";
+import { getDecreasePositionAmounts } from "./decrease";
 import { TokenData } from "domain/synthetics/tokens";
 import { expandDecimals } from "lib/numbers";
+import { MarketInfo } from "domain/synthetics/markets";
+import { PositionInfo } from "domain/synthetics/positions";
+import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { describe, expect, it } from "vitest";
-import { getDecreasePositionAmounts } from "./decrease";
 
 const closeSizeUsd = BigInt(99);
 
@@ -131,7 +131,7 @@ const marketInfo: MarketInfo = {
   virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
 };
 
-const position: PositionInfoLoaded = {
+const position: PositionInfo = {
   data: "",
   key: "0xc9e1CE91d3f782499cFe787b6F1d2AF0Ca76C049:0x70d95587d40A2caf56bd97485aB3Eec10Bee6336:0xaf88d065e77c8cC2239327C5EDb3A432268e5831:true",
   contractKey: "0x45d022785433e1ce4bab9bda22a300cc960432ba5e8bf00788efbd6bde90b85c",
@@ -149,11 +149,6 @@ const position: PositionInfoLoaded = {
   claimableLongTokenAmount: BigInt("0x00"),
   claimableShortTokenAmount: BigInt("0x00"),
   marketInfo,
-  market: marketInfo,
-  longToken: marketInfo.longToken,
-  shortToken: marketInfo.shortToken,
-  indexName: getMarketIndexName(marketInfo),
-  poolName: getMarketPoolName(marketInfo),
   indexToken: ethToken,
   collateralToken: usdcToken,
   pnlToken: wethToken,
@@ -175,9 +170,6 @@ const position: PositionInfoLoaded = {
   uiFeeUsd: BigInt("0x00"),
   pendingFundingFeesUsd: BigInt("0x049eecdc452f50fdb590580000"),
   pendingClaimableFundingFeesUsd: BigInt("0x00"),
-  positionFeeAmount: 0n,
-  traderDiscountAmount: 0n,
-  uiFeeAmount: 0n,
 };
 
 const keepLeverage = false;

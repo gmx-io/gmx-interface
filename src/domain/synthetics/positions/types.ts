@@ -1,6 +1,6 @@
 import { TokenData } from "domain/synthetics/tokens";
 import { PendingPositionUpdate } from "context/SyntheticsEvents";
-import { Market, MarketInfo } from "../markets";
+import { MarketInfo } from "../markets";
 
 export type Position = {
   key: string;
@@ -20,21 +20,12 @@ export type Position = {
   claimableShortTokenAmount: bigint;
   isOpening?: boolean;
   pendingUpdate?: PendingPositionUpdate;
-  pnl: bigint;
-  positionFeeAmount: bigint;
-  traderDiscountAmount: bigint;
-  uiFeeAmount: bigint;
   data: string;
 };
 
 export type PositionInfo = Position & {
-  marketInfo: MarketInfo | undefined;
-  market: Market;
+  marketInfo: MarketInfo;
   indexToken: TokenData;
-  longToken: TokenData;
-  shortToken: TokenData;
-  indexName: string;
-  poolName: string;
   collateralToken: TokenData;
   pnlToken: TokenData;
   markPrice: bigint;
@@ -56,8 +47,6 @@ export type PositionInfo = Position & {
   pendingFundingFeesUsd: bigint;
   pendingClaimableFundingFeesUsd: bigint;
 };
-
-export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };
 
 export type PositionsData = {
   [positionKey: string]: Position;

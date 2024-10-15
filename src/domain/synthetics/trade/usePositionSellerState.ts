@@ -39,7 +39,7 @@ export function usePositionSellerState(chainId: number, closingPosition: Positio
   const closingPositionKey = useMemo(() => {
     return getSyntheticsReceiveMoneyTokenKey(
       chainId,
-      closingPosition?.market.name,
+      closingPosition?.marketInfo.name,
       closingPosition?.isLong ? "long" : "short",
       closingPosition?.collateralTokenAddress
     );

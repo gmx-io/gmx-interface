@@ -5,7 +5,6 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
-  PositionInfoLoaded,
   getLeverage,
   getLiquidationPrice,
   getMinCollateralFactorForPosition,
@@ -30,7 +29,7 @@ export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
   isLong: boolean;
-  position: PositionInfoLoaded | undefined;
+  position: PositionInfo | undefined;
   closeSizeUsd: bigint;
   keepLeverage: boolean;
   triggerPrice?: bigint;
@@ -371,7 +370,7 @@ export function getDecreasePositionAmounts(p: {
 }
 
 export function getIsFullClose(p: {
-  position: PositionInfoLoaded;
+  position: PositionInfo;
   sizeDeltaUsd: bigint;
   indexPrice: bigint;
   remainingCollateralUsd: bigint;
@@ -426,7 +425,7 @@ export function getIsFullClose(p: {
   return false;
 }
 
-export function getMinCollateralUsdForLeverage(position: PositionInfoLoaded, openInterestDelta: bigint) {
+export function getMinCollateralUsdForLeverage(position: PositionInfo, openInterestDelta: bigint) {
   const minCollateralFactor = getMinCollateralFactorForPosition(position, openInterestDelta);
   return applyFactor(position.sizeInUsd, minCollateralFactor);
 }
