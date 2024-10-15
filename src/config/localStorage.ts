@@ -18,6 +18,7 @@ export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
 export const TV_CHART_RELOAD_TIMESTAMP_KEY = "tv-chart-reload-timestamp";
+export const TV_PARAMS_CACHE_KEY = "tv-params-cache-key";
 export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 export const LEVERAGE_OPTION_KEY = "leverage-option";
 export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
@@ -158,4 +159,8 @@ export function getMulticallBatchingLoggingEnabledKey() {
 
 export function getSortedMarketsAddressesKey(chainId: number) {
   return [SORTED_MARKETS_KEY, chainId].join(":");
+}
+
+export function getTvParamsCacheKey(chainId: number, isV2: boolean) {
+  return [TV_PARAMS_CACHE_KEY, chainId, isV2].join(":");
 }

@@ -28,7 +28,6 @@ import ReaderV2 from "abis/ReaderV2.json";
 import RewardReader from "abis/RewardReader.json";
 import RewardRouter from "abis/RewardRouter.json";
 import RewardTracker from "abis/RewardTracker.json";
-import Token from "abis/Token.json";
 import VaultV2 from "abis/VaultV2.json";
 import Vester from "abis/Vester.json";
 
@@ -83,6 +82,7 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 
 const { ZeroAddress } = ethers;
 
@@ -254,12 +254,11 @@ export default function GlpSwap(props) {
   );
 
   const tokenAllowanceAddress = swapTokenAddress === ZeroAddress ? nativeTokenAddress : swapTokenAddress;
-  const { data: tokenAllowance } = useSWR(
-    [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: glpManagerAddress,
+    tokenAddresses: [tokenAllowanceAddress].filter(Boolean),
+  });
+  const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 
   const { data: lastPurchaseTime } = useSWR(
     [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],

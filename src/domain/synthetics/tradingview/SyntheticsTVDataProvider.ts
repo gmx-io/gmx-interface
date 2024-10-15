@@ -7,6 +7,7 @@ import { OracleFetcher } from "lib/oracleKeeperFetcher";
 export class SyntheticsTVDataProvider extends TVDataProvider {
   candlesTimeout = 5000;
   oracleKeeperFetcher: OracleFetcher;
+  isV2 = true;
 
   constructor(params: { resolutions: { [key: number]: string }; oracleFetcher: OracleFetcher; chainId: number }) {
     super(params);

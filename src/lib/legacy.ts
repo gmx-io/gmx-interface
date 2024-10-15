@@ -1,8 +1,8 @@
 import { getContract } from "config/contracts";
 import { ethers } from "ethers";
+import mapKeys from "lodash/mapKeys";
 import useSWR from "swr";
 import { useEnsName } from "wagmi";
-import mapKeys from "lodash/mapKeys";
 
 import OrderBook from "abis/OrderBook.json";
 import OrderBookReader from "abis/OrderBookReader.json";
@@ -11,19 +11,18 @@ import { t } from "@lingui/macro";
 import { getServerBaseUrl } from "config/backend";
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { isValidToken } from "config/tokens";
-import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
+import { getMostAbundantStableToken, TokenInfo } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
-import { USD_DECIMALS } from "config/factors";
 import {
   bigNumberify,
+  calculatePriceDecimals,
   deserializeBigIntsInObject,
   expandDecimals,
   formatAmount,
-  calculatePriceDecimals,
   PRECISION,
 } from "./numbers";
 import { getProvider } from "./rpc";
@@ -759,11 +758,11 @@ export function shortenAddress(address, length, padStart = 1) {
 }
 
 export function useENS(address) {
-  const ensNameQuery = useEnsName({
+  const { data } = useEnsName({
     address,
     chainId: ETH_MAINNET,
   });
-  const ensName = ensNameQuery.data || undefined;
+  const ensName = data || undefined;
 
   return { ensName };
 }

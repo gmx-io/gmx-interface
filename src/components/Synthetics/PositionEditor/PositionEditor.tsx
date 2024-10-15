@@ -1,6 +1,5 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import Token from "abis/Token.json";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -36,7 +35,12 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import {
+  adaptToV1InfoTokens,
+  convertToTokenAmount,
+  convertToUsd,
+  useTokensAllowanceData,
+} from "domain/synthetics/tokens";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
@@ -44,7 +48,6 @@ import { getMinResidualAmount } from "domain/tokens";
 import { ethers } from "ethers";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   expandDecimals,
@@ -60,7 +63,6 @@ import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import useSWR from "swr";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
@@ -110,7 +112,7 @@ export function PositionEditor(p: Props) {
   const { chainId } = useChainId();
   const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
-  const { account, signer, active } = useWallet();
+  const { account, signer } = useWallet();
   const { openConnectModal } = useConnectModal();
   const isMetamaskMobile = useIsMetamaskMobile();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
@@ -136,12 +138,11 @@ export function PositionEditor(p: Props) {
     return adaptToV1InfoTokens(tokensData);
   }, [tokensData]);
 
-  const { data: tokenAllowance } = useSWR<bigint>(
-    position ? [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress] : null,
-    {
-      fetcher: contractFetcher(signer, Token) as any,
-    }
-  );
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: routerAddress,
+    tokenAddresses: position ? [position.collateralTokenAddress] : [],
+  });
+  const tokenAllowance = position ? tokensAllowanceData?.[position.collateralTokenAddress] : undefined;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -669,14 +670,13 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                {(needCollateralApproval && collateralToken && (
+                {needCollateralApproval && collateralToken && (
                   <ApproveTokenButton
                     tokenAddress={collateralToken.address}
                     tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
                     spenderAddress={routerAddress}
                   />
-                )) ||
-                  null}
+                )}
                 {highExecutionFeeAcknowledgement}
               </ExchangeInfo.Group>
             </ExchangeInfo>

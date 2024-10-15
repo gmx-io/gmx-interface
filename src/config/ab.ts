@@ -1,7 +1,7 @@
 import mapValues from "lodash/mapValues";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
-type Flag = string; // "testExampleAb";
+type Flag = "testApprovalWebSocketsEvents" | "testCandlesPreload";
 
 type AbFlag = {
   enabled: boolean;
@@ -13,6 +13,8 @@ type AbStorage = {
 
 const abFlagsConfig: Record<Flag, number> = {
   // testExampleAb: 0.5,
+  testCandlesPreload: 0.5,
+  testApprovalWebSocketsEvents: 0.1,
 };
 
 const flags: Flag[] = Object.keys(abFlagsConfig) as Flag[];
