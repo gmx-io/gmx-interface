@@ -4,7 +4,13 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
-import { getMarketIndexName, getMarketPoolName, MarketsData, MarketsInfoData } from "../markets";
+import {
+  getMarketIndexName,
+  getMarketPoolName,
+  getMaxAllowedLeverageByMinCollateralFactor,
+  MarketsData,
+  MarketsInfoData,
+} from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsData, PositionsInfoData } from "./types";
@@ -167,9 +173,12 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
-      const maxAllowedLeverage = 0n;
+      const maxAllowedLeverage = marketInfo
+        ? getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor)
+        : undefined;
 
-      const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
+      const hasLowCollateral =
+        (leverage !== undefined && maxAllowedLeverage !== undefined && leverage > maxAllowedLeverage) || false;
 
       const liquidationPrice = marketInfo
         ? getLiquidationPrice({
