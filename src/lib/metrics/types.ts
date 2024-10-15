@@ -6,6 +6,7 @@ export type GlobalMetricData = {
   isMobileMetamask: boolean;
   isWindowVisible: boolean;
   isAuthorised: boolean;
+  isLargeAccount: boolean;
   abFlags: Record<string, boolean>;
   isMobile: boolean;
   isHomeSite: boolean;

@@ -344,7 +344,6 @@ export class Multicall {
               rpcProvider: fallbackProviderName,
               isInMainThread: !isWebWorker,
               errorMessage: _viemError.message,
-              isLargeAccount,
             },
           });
 
@@ -388,7 +387,6 @@ export class Multicall {
             isInMainThread: !isWebWorker,
             requestType: "initial",
             rpcProvider: rpcProviderName,
-            isLargeAccount,
             errorMessage: _viemError.message.slice(0, 150),
           },
         });
@@ -412,7 +410,6 @@ export class Multicall {
         requestType: "initial",
         rpcProvider: rpcProviderName,
         isInMainThread: !isWebWorker,
-        isLargeAccount,
         errorMessage: serializeMulticallErrors(result.errors),
       },
     });

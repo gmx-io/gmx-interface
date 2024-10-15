@@ -7,7 +7,7 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
-import { useIsLargeAccountTracker } from "lib/account/isLargeAccount";
+import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";

@@ -11,7 +11,7 @@ import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { getAbFlags } from "config/ab";
 import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
-import { getIsLargeAccount } from "lib/account/isLargeAccount";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
 

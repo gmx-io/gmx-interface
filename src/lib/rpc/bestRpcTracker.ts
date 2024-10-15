@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { RpcTrackerRankingCounter } from "lib/metrics";
-import { getIsLargeAccount } from "lib/account/isLargeAccount";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 
 const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
 const PROBE_FAIL_TIMEOUT = 10 * 1000; // 10 seconds / Abort RPC probe if it takes longer
