@@ -3091,10 +3091,6 @@ msgstr ""
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#~ msgid "TBTC LP incentives"
-#~ msgstr ""
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
@@ -5105,10 +5101,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "취소"
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Remove Row"
-msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Bid Price (Entry)"
@@ -7167,10 +7159,6 @@ msgstr ""
 msgid "Give us your feedback on GMX."
 msgstr ""
 
-#: src/config/bridging.tsx
-#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
 msgstr ""
@@ -7857,10 +7845,6 @@ msgstr "주문 체결 가격"
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Add Row"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx

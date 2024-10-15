@@ -3091,10 +3091,6 @@ msgstr "Enable withdraw sent."
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#~ msgid "TBTC LP incentives"
-#~ msgstr "TBTC LP incentives"
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -5108,10 +5104,6 @@ msgstr "Governance"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Cancel"
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Remove Row"
-msgstr "Remove Row"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Bid Price (Entry)"
@@ -7173,10 +7165,6 @@ msgstr "Open {0} {longOrShortText}"
 msgid "Give us your feedback on GMX."
 msgstr "Give us your feedback on GMX."
 
-#: src/config/bridging.tsx
-#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
-#~ msgstr "Mint TBTC using BTC with <0>Threshold</0>"
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
 msgstr "Current Borrow Fee / Day"
@@ -7864,10 +7852,6 @@ msgstr "Order Execution Price"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "Slippage is too high"
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Add Row"
-msgstr "Add Row"
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Net rate combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."

@@ -3091,10 +3091,6 @@ msgstr ""
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Dein esGMX-Guthaben (IOU) verringert sich nach der Beanspruchung um deinen beanspruchten Betrag, dies ist ein zu erwartendes Verhalten."
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#~ msgid "TBTC LP incentives"
-#~ msgstr ""
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
@@ -5105,10 +5101,6 @@ msgstr "Governance"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Abbruch"
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Remove Row"
-msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Bid Price (Entry)"
@@ -7167,10 +7159,6 @@ msgstr ""
 msgid "Give us your feedback on GMX."
 msgstr ""
 
-#: src/config/bridging.tsx
-#~ msgid "Mint TBTC using BTC with <0>Threshold</0>"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Borrow Fee / Day"
 msgstr ""
@@ -7857,10 +7845,6 @@ msgstr "Orderausführungspreis"
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Add Row"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx

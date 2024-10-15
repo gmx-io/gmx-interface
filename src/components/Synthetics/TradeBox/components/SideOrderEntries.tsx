@@ -1,9 +1,7 @@
-import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -185,35 +183,17 @@ function SideOrderEntry({
 
       <div className="flex h-full items-center gap-5">
         {canAddEntry && (
-          <TooltipWithPortal
-            handle={
-              <EntryButton onClick={handleAddEntry} disabled={!allowAddEntry} className="bg-green-500/15">
-                <FaPlus color="#5EC989" />
-              </EntryButton>
-            }
-            tooltipClassName="nowrap min-w-min whitespace-nowrap"
-            handleClassName="leading-1"
-            position="top"
-            content={<Trans>Add Row</Trans>}
-            openDelay={1500}
-          />
+          <EntryButton onClick={handleAddEntry} disabled={!allowAddEntry} className="bg-green-500/15">
+            <FaPlus color="#5EC989" />
+          </EntryButton>
         )}
-        <TooltipWithPortal
-          handle={
-            <EntryButton
-              onClick={onDeleteEntry}
-              disabled={entriesCount === 1 && !entry.percentage && !entry.price}
-              className="bg-red-500/15"
-            >
-              <FaPlus color="#E74E5D" className="rotate-45" />
-            </EntryButton>
-          }
-          tooltipClassName="nowrap min-w-min whitespace-nowrap"
-          handleClassName="leading-1"
-          position="top"
-          content={<Trans>Remove Row</Trans>}
-          openDelay={1500}
-        />
+        <EntryButton
+          onClick={onDeleteEntry}
+          disabled={entriesCount === 1 && !entry.percentage && !entry.price}
+          className="bg-red-500/15"
+        >
+          <FaPlus color="#E74E5D" className="rotate-45" />
+        </EntryButton>
       </div>
     </div>
   );
