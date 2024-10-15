@@ -5105,10 +5105,6 @@ msgstr "Governance"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Remove Row"
-msgstr "Remove Row"
-
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Bid Price (Entry)"
 msgstr "Bid Price (Entry)"
@@ -7857,10 +7853,6 @@ msgstr "Order Execution Price"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "Slippage is too high"
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Add Row"
-msgstr "Add Row"
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Net rate combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."

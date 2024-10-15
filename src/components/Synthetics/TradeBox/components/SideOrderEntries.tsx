@@ -1,9 +1,8 @@
-import { t } from "@lingui/macro";
 import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
@@ -12,12 +11,9 @@ import { TokenData } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
 import { useCallback, useMemo, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useMedia } from "react-use";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
-const ADD_BUTTON_STYLE = { backgroundColor: "color-mix(in srgb,var(--color-green-500) 15%,#0000)" };
-const REMOVE_BUTTON_STYLE = { backgroundColor: "color-mix(in srgb,var(--color-red-500) 15%,#0000)" };
 
 interface SidecarEntryProps {
   entry: SidecarOrderEntry;
@@ -105,9 +101,6 @@ function SideOrderEntry({
 
   const onDeleteEntry = useCallback(() => deleteEntry(entry.id), [deleteEntry, entry.id]);
 
-  const addRowTooltip = useMemo(() => <span>{t`Add Row`}</span>, []);
-  const removeRowTooltip = useMemo(() => <span>{t`Remove Row`}</span>, []);
-
   const isSmallMobile = useMedia("(max-width: 375px)");
 
   return (
@@ -133,7 +126,7 @@ function SideOrderEntry({
           value={entry.price.input}
           onValueChange={onPriceValueChange}
           placeholder="Price"
-          className={cx("rounded-4 py-2 pr-5 text-right text-14", {
+          className={cx("SideOrderInput rounded-4 py-2 pr-5 text-right text-14", {
             "max-w-60": isSmallMobile,
             "max-w-90": !isSmallMobile,
           })}
@@ -188,49 +181,34 @@ function SideOrderEntry({
         </div>
       )}
 
-      <div className="flex h-full items-center">
+      <div className="flex h-full items-center gap-5">
         {canAddEntry && (
-          <TooltipWithPortal
-            handle={
-              <EntryButton onClick={handleAddEntry} disabled={!allowAddEntry} style={ADD_BUTTON_STYLE}>
-                <FaPlus color="#5EC989" />
-              </EntryButton>
-            }
-            tooltipClassName="min-w-min whitespace-nowrap"
-            handleClassName="mr-5 leading-1"
-            position="right"
-            content={addRowTooltip}
-            openDelay={1500}
-          />
+          <EntryButton onClick={handleAddEntry} disabled={!allowAddEntry} className="bg-green-500/15">
+            <FaPlus color="#5EC989" />
+          </EntryButton>
         )}
-        <TooltipWithPortal
-          handle={
-            <EntryButton
-              onClick={onDeleteEntry}
-              disabled={entriesCount === 1 && !entry.percentage && !entry.price}
-              style={REMOVE_BUTTON_STYLE}
-            >
-              <FaPlus color="#E74E5D" className="rotate-45" />
-            </EntryButton>
-          }
-          tooltipClassName="min-w-min whitespace-nowrap"
-          handleClassName="leading-1"
-          position="right"
-          content={removeRowTooltip}
-          openDelay={1500}
-        />
+        <EntryButton
+          onClick={onDeleteEntry}
+          disabled={entriesCount === 1 && !entry.percentage && !entry.price}
+          className="bg-red-500/15"
+        >
+          <FaPlus color="#E74E5D" className="rotate-45" />
+        </EntryButton>
       </div>
     </div>
   );
 }
 
-function EntryButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function EntryButton({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className="
-        inline-flex items-center justify-center rounded-4 border-none
-        p-5 opacity-70 hover:opacity-100 disabled:hover:opacity-70
-      "
+      type="button"
+      className={cx(
+        "inline-flex items-center justify-center rounded-4 border-none p-5 opacity-70",
+        "hover:opacity-100 disabled:hover:opacity-70",
+        "disabled:cursor-not-allowed",
+        className
+      )}
       {...props}
     />
   );
@@ -249,7 +227,7 @@ export function SideOrderEntries({ entriesInfo, displayMode }: SidecarEntriesPro
   const handleAddEntry = useCallback(() => {
     addEntry();
     requestAnimationFrame(() => {
-      const inputs = containerRef.current?.querySelectorAll(".Sidecar-price input");
+      const inputs = containerRef.current?.querySelectorAll(".SideOrderInput");
       (inputs && (inputs[inputs.length - 1] as HTMLInputElement))?.focus();
     });
   }, [addEntry, containerRef]);

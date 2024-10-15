@@ -5102,10 +5102,6 @@ msgstr ""
 msgid "Cancel"
 msgstr "취소"
 
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Remove Row"
-msgstr ""
-
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Bid Price (Entry)"
 msgstr ""
@@ -7850,10 +7846,6 @@ msgstr "주문 체결 가격"
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Add Row"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
