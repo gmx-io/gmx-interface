@@ -191,9 +191,9 @@ function SideOrderEntry({
                 <FaPlus color="#5EC989" />
               </EntryButton>
             }
-            tooltipClassName="min-w-min whitespace-nowrap"
+            tooltipClassName="nowrap min-w-min whitespace-nowrap"
             handleClassName="leading-1"
-            position="right"
+            position="top"
             content={<Trans>Add Row</Trans>}
             openDelay={1500}
           />
@@ -208,9 +208,9 @@ function SideOrderEntry({
               <FaPlus color="#E74E5D" className="rotate-45" />
             </EntryButton>
           }
-          tooltipClassName="min-w-min whitespace-nowrap"
+          tooltipClassName="nowrap min-w-min whitespace-nowrap"
           handleClassName="leading-1"
-          position="right"
+          position="top"
           content={<Trans>Remove Row</Trans>}
           openDelay={1500}
         />

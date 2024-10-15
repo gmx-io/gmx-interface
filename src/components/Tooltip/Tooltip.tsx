@@ -106,7 +106,9 @@ export default function Tooltip<T extends ElementType>({
     middleware: [
       offset(10),
       flip(),
-      shift(),
+      shift({
+        padding: 10,
+      }),
       size({
         apply: (state) => {
           Object.assign(state.elements.floating.style, {
