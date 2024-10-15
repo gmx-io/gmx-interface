@@ -490,7 +490,7 @@ export function PositionItem(p: Props) {
           {renderLiquidationPrice()}
         </TableTd>
         {/* Close */}
-        {!p.position.isOpening && !p.hideActions && (
+        {!p.position.isOpening && !p.hideActions ? (
           <>
             <TableTd>
               <button
@@ -512,6 +512,11 @@ export function PositionItem(p: Props) {
                 handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
               />
             </TableTd>
+          </>
+        ) : (
+          <>
+            <TableTd />
+            <TableTd />
           </>
         )}
       </TableTr>

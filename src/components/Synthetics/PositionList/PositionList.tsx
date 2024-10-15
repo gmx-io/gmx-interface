@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -43,8 +43,6 @@ export function PositionList(p: Props) {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
   const isMobile = useMedia("(max-width: 1300px)");
-
-  const isAnyPositionOpening = useMemo(() => positions.some((position) => position.isOpening), [positions]);
 
   return (
     <div>
@@ -99,7 +97,7 @@ export function PositionList(p: Props) {
               <TableTh>
                 <Trans>Liq. Price</Trans>
               </TableTh>
-              {!isLoading && !isAnyPositionOpening && !p.hideActions && (
+              {!isLoading && !p.hideActions && (
                 <>
                   <TableTh></TableTh>
                   <TableTh></TableTh>
