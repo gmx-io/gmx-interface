@@ -58,7 +58,7 @@
   font-size: var(--font-base);
 }
 
-.Tab.Tab__inline .Tab-option:not(.disabled):hover {
+.Tab.Tab__inline .Tab-option:not(.disabled):not(.active):hover {
   opacity: 0.8;
 }
 
