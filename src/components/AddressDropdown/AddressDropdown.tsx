@@ -1,4 +1,3 @@
-import Davatar from "@davatar/react";
 import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import { useCallback } from "react";
@@ -7,11 +6,9 @@ import { Link } from "react-router-dom";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
-import { ETH_MAINNET } from "config/chains";
 import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountContext";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
-import { useJsonRpcProvider } from "lib/rpc";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
 
@@ -19,10 +16,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
+import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import disconnect from "img/ic_sign_out_20.svg";
 import oneClickTradingIcon from "img/one_click_trading_20.svg";
-import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 
+import { Avatar } from "components/Avatar/Avatar";
 import "./AddressDropdown.scss";
 
 type Props = {
@@ -37,7 +35,6 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
-  const { provider: ethereumProvider } = useJsonRpcProvider(ETH_MAINNET);
   const displayAddressLength = breakpoint === "S" ? 9 : 13;
   const [, setOneClickModalOpen] = useSubaccountModalOpen();
   const handleSubaccountClick = useCallback(() => {
@@ -49,7 +46,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
           <div className="user-avatar">
-            {ethereumProvider && <Davatar size={20} address={account} provider={ethereumProvider} />}
+            <Avatar size={20} ensName={ensName} address={account} />
           </div>
           <span className="user-address">{shortenAddressOrEns(ensName || account, displayAddressLength)}</span>
           <FaChevronDown />

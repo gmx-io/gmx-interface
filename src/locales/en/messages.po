@@ -502,8 +502,8 @@ msgid "Don't show this message again for 30 days."
 msgstr "Don't show this message again for 30 days."
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration Price"
-msgstr "Migration Price"
+#~ msgid "Migration Price"
+#~ msgstr "Migration Price"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
@@ -873,8 +873,8 @@ msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"
 
 #: src/components/Migration/Migration.jsx
-msgid "Total Assets Migrated"
-msgstr "Total Assets Migrated"
+#~ msgid "Total Assets Migrated"
+#~ msgstr "Total Assets Migrated"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
@@ -1877,7 +1877,6 @@ msgstr "We value your experience and insights and invite you to participate in a
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/JoinReferralCode.jsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
@@ -2050,16 +2049,16 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
 #: src/components/Migration/Migration.jsx
-msgid "Migrating..."
-msgstr "Migrating..."
+#~ msgid "Migrating..."
+#~ msgstr "Migrating..."
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 
 #: src/components/Migration/Migration.jsx
-msgid "Your wallet: {0}"
-msgstr "Your wallet: {0}"
+#~ msgid "Your wallet: {0}"
+#~ msgstr "Your wallet: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -3236,7 +3235,6 @@ msgstr "Order update failed."
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 msgid "Waiting for Approval"
 msgstr "Waiting for Approval"
 
@@ -4564,7 +4562,6 @@ msgstr "Select a pool containing {0} to use it as collateral."
 msgid "Transaction completed!"
 msgstr "Transaction completed!"
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Approving..."
@@ -5193,7 +5190,6 @@ msgstr "Open Binance app"
 msgid "{0} selected in order form"
 msgstr "{0} selected in order form"
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5421,7 +5417,6 @@ msgstr "The base APY estimate will be available {0} to ensure accurate data disp
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 msgid "Approve {0}"
 msgstr "Approve {0}"
 
@@ -5759,7 +5754,6 @@ msgstr "Max Out"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5885,8 +5879,8 @@ msgid "Switch to {0} collateral."
 msgstr "Switch to {0} collateral."
 
 #: src/components/Migration/Migration.jsx
-msgid "To Receive"
-msgstr "To Receive"
+#~ msgid "To Receive"
+#~ msgstr "To Receive"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5958,8 +5952,8 @@ msgid "Win Rate"
 msgstr "Win Rate"
 
 #: src/components/Migration/Migration.jsx
-msgid "Migrated"
-msgstr "Migrated"
+#~ msgid "Migrated"
+#~ msgstr "Migrated"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -6069,8 +6063,8 @@ msgid "You"
 msgstr "You"
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration submitted! <0>View status.</0>"
-msgstr "Migration submitted! <0>View status.</0>"
+#~ msgid "Migration submitted! <0>View status.</0>"
+#~ msgstr "Migration submitted! <0>View status.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6467,8 +6461,8 @@ msgid "{col1}"
 msgstr "{col1}"
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration failed"
-msgstr "Migration failed"
+#~ msgid "Migration failed"
+#~ msgstr "Migration failed"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
@@ -7231,7 +7225,6 @@ msgstr "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read 
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
@@ -7384,7 +7377,6 @@ msgstr "Daily Profit"
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "The esGMX tokens can be staked or vested at any time."
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 msgid "Max: {0}"
@@ -7396,8 +7388,8 @@ msgstr "Buy ETH directly on Arbitrum or transfer it there."
 
 #: src/components/Migration/Migration.jsx
 #: src/components/Migration/Migration.jsx
-msgid "Bonus Tokens"
-msgstr "Bonus Tokens"
+#~ msgid "Bonus Tokens"
+#~ msgstr "Bonus Tokens"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
@@ -7874,8 +7866,6 @@ msgstr "Request Deposit"
 msgid "Deposit not enough to cover fees"
 msgstr "Deposit not enough to cover fees"
 
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
