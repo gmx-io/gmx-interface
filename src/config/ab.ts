@@ -1,23 +1,24 @@
 import mapValues from "lodash/mapValues";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
-type Flag = "testApprovalWebSocketsEvents" | "testCandlesPreload";
-
-type AbFlag = {
+type AbFlagValue = {
   enabled: boolean;
 };
 
 type AbStorage = {
-  [key in Flag]: AbFlag;
+  [key in AbFlag]: AbFlagValue;
 };
 
-const abFlagsConfig: Record<Flag, number> = {
+const abFlagsConfig = {
   // testExampleAb: 0.5,
   testCandlesPreload: 0.5,
+  testExecuteChainMulticallFix: 0.3,
   testApprovalWebSocketsEvents: 0.1,
 };
 
-const flags: Flag[] = Object.keys(abFlagsConfig) as Flag[];
+export type AbFlag = keyof typeof abFlagsConfig;
+
+const flags: AbFlag[] = Object.keys(abFlagsConfig) as AbFlag[];
 
 let abStorage: AbStorage;
 
@@ -54,7 +55,7 @@ function loadAbStorage(): void {
       }
 
       for (const flag of Object.keys(abStorage)) {
-        if (!flags.includes(flag as Flag)) {
+        if (!flags.includes(flag as AbFlag)) {
           // @ts-ignore
           delete abStorage[flag];
           changed = true;
@@ -72,10 +73,22 @@ function loadAbStorage(): void {
 
 loadAbStorage();
 
-export function getIsFlagEnabled(flag: Flag): boolean {
+export function getAbStorage() {
+  return abStorage;
+}
+
+export function setAbFlagEnabled(flag: AbFlag, enabled: boolean) {
+  abStorage[flag] = {
+    enabled,
+  };
+
+  localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
+}
+
+export function getIsFlagEnabled(flag: AbFlag): boolean {
   return Boolean(abStorage[flag]?.enabled);
 }
 
-export function getAbFlags(): Record<Flag, boolean> {
+export function getAbFlags(): Record<AbFlag, boolean> {
   return mapValues(abStorage, ({ enabled }) => enabled);
 }
