@@ -2,6 +2,7 @@ import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -111,51 +112,54 @@ function SideOrderEntry({
       })}
       key={entry.id}
     >
-      <div
-        className={cx("group relative rounded-4 border border-solid bg-slate-700 pl-5 leading-1 ", {
-          "border-red-500": !!priceError,
-          "border-slate-700": !priceError,
-          "focus-within:border-cold-blue-500": !priceError,
-          "hover:border-cold-blue-700": !priceError,
-          "hover:focus-within:border-cold-blue-500": !priceError,
-        })}
+      <TooltipWithPortal
+        disabled={!priceError}
+        content={priceError}
+        tooltipClassName="!min-w-[25rem]"
+        position="top-end"
+        disableHandleStyle
       >
-        <span className="cursor-pointer opacity-70">$</span>
-
-        <NumberInput
-          value={entry.price.input}
-          onValueChange={onPriceValueChange}
-          placeholder="Price"
-          className={cx("SideOrderInput rounded-4 py-2 pr-5 text-right text-14", {
-            "max-w-60": isSmallMobile,
-            "max-w-90": !isSmallMobile,
+        <div
+          className={cx("group relative rounded-4 border border-solid bg-slate-700 pl-5 leading-1 ", {
+            "border-red-500": !!priceError,
+            "border-slate-700": !priceError,
+            "focus-within:border-cold-blue-500": !priceError,
+            "hover:border-cold-blue-700": !priceError,
+            "hover:focus-within:border-cold-blue-500": !priceError,
           })}
-        />
+        >
+          <span className="cursor-pointer opacity-70">$</span>
 
-        {priceError && (
-          <div
-            className={cx("absolute z-[1001] hidden w-max !min-w-[25rem] group-hover:block", "Tooltip-popup bottom")}
-          >
-            {priceError}
-          </div>
-        )}
-      </div>
+          <NumberInput
+            value={entry.price.input}
+            onValueChange={onPriceValueChange}
+            placeholder="Price"
+            className={cx("SideOrderInput rounded-4 py-2 pr-5 text-right text-14", {
+              "max-w-60": isSmallMobile,
+              "max-w-90": !isSmallMobile,
+            })}
+          />
+        </div>
+      </TooltipWithPortal>
       {displayMode === "percentage" && (
         <div className="group relative">
-          <SuggestionInput
-            isError={!!percentageError}
-            inputClassName="w-48"
-            value={entry.percentage?.input ?? ""}
-            setValue={onPercentageSetValue}
-            placeholder="Size"
-            suggestionList={SUGGESTION_PERCENTAGE_LIST}
-            symbol="%"
-          />
-          {sizeTooltipMsg && (
-            <div className={cx("absolute z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
-              {sizeTooltipMsg}
-            </div>
-          )}
+          <TooltipWithPortal
+            disabled={!sizeTooltipMsg}
+            content={sizeTooltipMsg}
+            tooltipClassName="!min-w-[25rem]"
+            position="top-end"
+            disableHandleStyle
+          >
+            <SuggestionInput
+              isError={!!percentageError}
+              inputClassName="w-48"
+              value={entry.percentage?.input ?? ""}
+              setValue={onPercentageSetValue}
+              placeholder="Size"
+              suggestionList={SUGGESTION_PERCENTAGE_LIST}
+              symbol="%"
+            />
+          </TooltipWithPortal>
         </div>
       )}
       {displayMode === "sizeUsd" && (
@@ -169,17 +173,20 @@ function SideOrderEntry({
           })}
         >
           <span className="cursor-pointer opacity-70">$</span>
-          <NumberInput
-            value={entry.sizeUsd.input ?? ""}
-            onValueChange={onSizeUsdValueChange}
-            placeholder="Size"
-            className="w-81 rounded-4 py-2 pr-5 text-right text-14"
-          />
-          {sizeTooltipMsg && (
-            <div className={cx("absolute z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
-              {sizeTooltipMsg}
-            </div>
-          )}
+          <TooltipWithPortal
+            disabled={!sizeTooltipMsg}
+            content={sizeTooltipMsg}
+            tooltipClassName="!min-w-[25rem]"
+            position="top-end"
+            disableHandleStyle
+          >
+            <NumberInput
+              value={entry.sizeUsd.input ?? ""}
+              onValueChange={onSizeUsdValueChange}
+              placeholder="Size"
+              className="w-81 rounded-4 py-2 pr-5 text-right text-14"
+            />
+          </TooltipWithPortal>
         </div>
       )}
 
