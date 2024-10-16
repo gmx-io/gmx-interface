@@ -7,6 +7,7 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
+import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -88,6 +89,7 @@ export type SyntheticsState = {
     accountStats?: AccountStats;
     isCandlesLoaded: boolean;
     setIsCandlesLoaded: (isLoaded: boolean) => void;
+    isLargeAccount?: boolean;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -207,6 +209,8 @@ export function SyntheticsStateContextProvider({
 
   const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
 
+  const isLargeAccount = useIsLargeAccountTracker(walletAccount);
+
   const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
     account,
     from: timePerios.week[0],
@@ -280,6 +284,7 @@ export function SyntheticsStateContextProvider({
         accountStats,
         isCandlesLoaded,
         setIsCandlesLoaded,
+        isLargeAccount,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -325,6 +330,7 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
+    isLargeAccount,
   ]);
 
   latestState = state;

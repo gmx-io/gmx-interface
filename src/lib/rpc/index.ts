@@ -11,7 +11,7 @@ import {
 import { Signer, ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { isDevelopment } from "config/env";
-import { getBestRpcUrl, useBestRpcUrl } from "lib/rpc/bestRpcTracker";
+import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
@@ -23,7 +23,7 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
     return signer;
   }
 
-  url = getBestRpcUrl(chainId);
+  url = getCurrentRpcUrls(chainId).primary;
 
   const network = Network.from(chainId);
 
@@ -48,7 +48,7 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   }
 
   if (chainId === AVALANCHE_FUJI) {
-    const provider = new ethers.JsonRpcProvider(getBestRpcUrl(AVALANCHE_FUJI), network, {
+    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(AVALANCHE_FUJI).primary, network, {
       staticNetwork: network,
     });
     provider.pollingInterval = 2000;
@@ -71,13 +71,13 @@ export function getFallbackProvider(chainId: number) {
 export function useJsonRpcProvider(chainId: number) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
-  const rpcUrl = useBestRpcUrl(chainId);
+  const { primary: primaryRpcUrl } = useCurrentRpcUrls(chainId);
 
   useEffect(() => {
     async function initializeProvider() {
-      if (!rpcUrl) return;
+      if (!primaryRpcUrl) return;
 
-      const provider = new ethers.JsonRpcProvider(rpcUrl, chainId);
+      const provider = new ethers.JsonRpcProvider(primaryRpcUrl, chainId);
 
       provider._start();
       await provider._waitUntilReady();
@@ -86,7 +86,7 @@ export function useJsonRpcProvider(chainId: number) {
     }
 
     initializeProvider();
-  }, [chainId, rpcUrl]);
+  }, [chainId, primaryRpcUrl]);
 
   return { provider };
 }

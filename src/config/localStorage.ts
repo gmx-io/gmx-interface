@@ -74,7 +74,8 @@ export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
-export const RPC_PROVIDER = "rpc-provider";
+export const RPC_PROVIDER_KEY = "rpc-provider";
+export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
@@ -127,7 +128,7 @@ export function getExecutionFeeBufferBpsKey(chainId: number) {
 }
 
 export function getRpcProviderKey(chainId: number | string) {
-  return [chainId, RPC_PROVIDER];
+  return [chainId, RPC_PROVIDER_KEY];
 }
 
 // TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then

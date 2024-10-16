@@ -10,6 +10,7 @@ import Bowser from "bowser";
 import { useEffect } from "react";
 import { metrics } from "./Metrics";
 import { isHomeSite } from "../legacy";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 
 export function useConfigureMetrics() {
   const { chainId } = useChainId();
@@ -18,6 +19,7 @@ export function useConfigureMetrics() {
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const isMobileMetamask = useIsMetamaskMobile();
   const isWindowVisible = useIsWindowVisible();
+  const isLargeAccount = getIsLargeAccount();
 
   useEffect(() => {
     metrics.subscribeToEvents();
@@ -44,11 +46,12 @@ export function useConfigureMetrics() {
       abFlags: getAbFlags(),
       isMobile: getIsMobileUserAgent(),
       isHomeSite: isHomeSite(),
+      isLargeAccount,
       browserName: bowser.browser.name,
       browserVersion: bowser.browser.version,
       platform: bowser.platform.type,
     });
-  }, [active, isMobileMetamask, isWindowVisible]);
+  }, [active, isMobileMetamask, isWindowVisible, isLargeAccount]);
 
   useEffect(() => {
     metrics.updateWalletNames();
