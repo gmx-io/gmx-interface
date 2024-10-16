@@ -22,6 +22,7 @@ import {
   getPositionNetValue,
   getPositionPendingFeesUsd,
 } from "./utils";
+import { convertTokenAddress } from "config/tokens";
 
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -82,7 +83,9 @@ export function usePositionsInfoRequest(
 
       const marketInfo = getByKey(marketsInfoData, position.marketAddress);
       const market = getByKey(marketsData, position.marketAddress);
-      const indexToken = getByKey(tokensData, market?.indexTokenAddress);
+      const indexToken = market
+        ? getByKey(tokensData, convertTokenAddress(chainId, market.indexTokenAddress, "native"))
+        : undefined;
       const longToken = getByKey(tokensData, market?.longTokenAddress);
       const shortToken = getByKey(tokensData, market?.shortTokenAddress);
       const pnlToken = position.isLong ? longToken : shortToken;
@@ -244,6 +247,7 @@ export function usePositionsInfoRequest(
     positionsData,
     minCollateralUsd,
     marketsInfoData,
+    chainId,
     showPnlInLeverage,
     userReferralInfo,
   ]);
