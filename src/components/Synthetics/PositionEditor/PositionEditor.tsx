@@ -31,6 +31,7 @@ import {
 } from "domain/synthetics/orders";
 import {
   formatLiquidationPrice,
+  getIsPositionInfoLoaded,
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
@@ -179,7 +180,7 @@ export function PositionEditor(p: Props) {
   const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
   const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
 
-  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.marketInfo.indexTokenAddress));
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.market.indexTokenAddress));
 
   const needCollateralApproval =
     isDeposit &&
@@ -189,7 +190,7 @@ export function PositionEditor(p: Props) {
     collateralDeltaAmount > tokenAllowance;
 
   const maxWithdrawAmount = useMemo(() => {
-    if (!position) return 0n;
+    if (!getIsPositionInfoLoaded(position)) return 0n;
 
     const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
     let _minCollateralUsd = minCollateralUsdForLeverage;

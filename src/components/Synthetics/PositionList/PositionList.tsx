@@ -35,6 +35,7 @@ export function PositionList(p: Props) {
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
   const positions = useSelector(selectPositionsInfoDataSortedByMarket);
+
   const handleSharePositionClick = useCallback((positionKey: string) => {
     setPositionToShareKey(positionKey);
     setIsPositionShareModalOpen(true);

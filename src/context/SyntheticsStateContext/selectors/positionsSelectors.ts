@@ -8,8 +8,8 @@ export const selectPositionsInfoDataSortedByMarket = createSelector((q) => {
 
   const positions = Object.values(positionsInfoData || {});
   const sortedPositions = positions.sort((a, b) => {
-    const aMarketIdx = marketsSortMap[a.marketInfo.indexTokenAddress];
-    const bMarketIdx = marketsSortMap[b.marketInfo.indexTokenAddress];
+    const aMarketIdx = marketsSortMap[a.market.indexTokenAddress];
+    const bMarketIdx = marketsSortMap[b.market.indexTokenAddress];
 
     if (aMarketIdx === bMarketIdx) {
       return b.sizeInUsd - a.sizeInUsd > 0n ? 1 : -1;
