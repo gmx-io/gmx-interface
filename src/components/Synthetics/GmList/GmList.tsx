@@ -280,11 +280,17 @@ function useFilterSortPools({
         let name = "";
         let symbol = "";
         if (isGlvInfo(market)) {
-          symbol = market.glvToken.symbol;
+          const longTokenSymbol = market.longToken.symbol;
+          symbol = `${market.glvToken.symbol} ${longTokenSymbol}`;
+
           const displayName = getGlvDisplayName(market);
           const subtitle = getGlvMarketSubtitle(chainId, market.glvTokenAddress);
+          const longTokenName = market.longToken.name;
 
-          name = [displayName, subtitle].filter(Boolean).join(" ");
+          name = [displayName, subtitle, longTokenName].filter(Boolean).join(" ");
+        } else if (market.isSpotOnly) {
+          symbol = "SWAP-ONLY";
+          name = getMarketPoolName(market);
         } else {
           symbol = market.indexToken.symbol;
           name = market.indexToken.name;
