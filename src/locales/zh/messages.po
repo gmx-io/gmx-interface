@@ -370,10 +370,6 @@ msgstr ""
 msgid "Main Account Balance"
 msgstr ""
 
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral code added!"
 msgstr "添加了推荐代码"
@@ -501,10 +497,6 @@ msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要�
 msgid "Don't show this message again for 30 days."
 msgstr "30天内不要再显示此信息"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration Price"
-#~ msgstr "转移价格"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 msgstr ""
@@ -571,6 +563,10 @@ msgstr ""
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "点击[创建钱包]开始使用您的Web3钱包"
+
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
+msgid "GMX {versionName} {networkName} actions for all accounts."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Cancel submitted"
@@ -848,6 +844,10 @@ msgstr "以{0}购买"
 msgid "Adding..."
 msgstr "添加中"
 
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} {networkName} actions for all accounts."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Short {0}"
 msgstr "做空{0}"
@@ -872,10 +872,6 @@ msgstr "在1inch上交易"
 msgid "Open {0} in Coingecko"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Total Assets Migrated"
-#~ msgstr "迁移的资产总额"
-
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
 msgstr ""
@@ -897,10 +893,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
 msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "GMX Rewards"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -1240,10 +1232,6 @@ msgstr ""
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What issues did you encounter that led to your rating?"
 msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "No PnLs found"
-msgstr "未发现PnLs"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leverage disabled, pending {0} upgrade"
@@ -2064,17 +2052,9 @@ msgstr "去中心化金融仪表板"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP购买已禁止，等待{0}升级"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrating..."
-#~ msgstr "转移中"
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Your wallet: {0}"
-#~ msgstr "你的钱包: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -2454,10 +2434,6 @@ msgstr ""
 msgid "Enter up to 10 coins"
 msgstr ""
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-msgstr ""
-
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating..."
 msgstr "创建中..."
@@ -2496,10 +2472,6 @@ msgstr "无效的价格，请参阅警告"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
-msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "GMX V1 {networkName} actions for all accounts."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -2770,10 +2742,6 @@ msgstr "没收收益并做空"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
 msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Profit"
-msgstr "盈利"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
@@ -3297,10 +3265,6 @@ msgstr "存取失败"
 msgid "Request Market Swap"
 msgstr "要求市场交换"
 
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Loss"
-msgstr "亏损"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr ""
@@ -3341,10 +3305,6 @@ msgstr ""
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr ""
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} actions for all accounts."
-msgstr ""
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
@@ -3370,7 +3330,6 @@ msgstr "交易送出"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -3434,10 +3393,6 @@ msgstr ""
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX目前没有积极寻找新员工。但是，如果你认为你能为项目做出贡献，请发电子邮件到<0>jobs@gmx.io</0>"
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX V2 Account"
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
@@ -3778,8 +3733,6 @@ msgstr "订单的触发价格"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -4258,7 +4211,7 @@ msgstr "编辑推荐代码"
 msgid "GMX APR"
 msgstr ""
 
-#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
 msgid "Switch to:"
 msgstr ""
 
@@ -4659,6 +4612,7 @@ msgstr "交易订单送出"
 #: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
+#: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5745,6 +5699,7 @@ msgid "Claim"
 msgstr "领取"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX {versionName} Account"
 msgstr ""
 
@@ -5903,10 +5858,6 @@ msgstr ""
 msgid "Switch to {0} collateral."
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "To Receive"
-#~ msgstr "收取"
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GMX Vault"
@@ -5972,10 +5923,6 @@ msgstr "{0}低于其目标重量。<0/><1/>获取较低的费用，以<2>用{1}�
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrated"
-#~ msgstr "已转移"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -6075,10 +6022,6 @@ msgstr "限制价格"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration submitted! <0>View status.</0>"
-#~ msgstr "转移已送出! <0>查看状态</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6482,10 +6425,6 @@ msgstr "下载"
 msgid "{col1}"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration failed"
-#~ msgstr "转移失败"
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
 msgstr ""
@@ -6770,8 +6709,6 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -7406,11 +7343,6 @@ msgstr "最高: {0}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
-#~ msgid "Bonus Tokens"
-#~ msgstr "奖励代币"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
