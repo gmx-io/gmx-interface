@@ -159,11 +159,7 @@ export function LimitAndTPSLGroup() {
   return (
     <ExpandableRow
       open={isTpSlVisible}
-      title={
-        <span className="flex flex-row justify-between align-middle">
-          <Trans>Limit / TP / SL</Trans>
-        </span>
-      }
+      title={<Trans>Limit / TP / SL</Trans>}
       hasError={hasError}
       disableCollapseOnError
       autoExpandOnError
