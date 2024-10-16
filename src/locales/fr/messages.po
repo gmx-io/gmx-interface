@@ -497,10 +497,6 @@ msgstr "Vous devrez être sur cette page pour accepter le transfert, <0>cliquez 
 msgid "Don't show this message again for 30 days."
 msgstr "Ne montrez plus ce message pendant 30 jours."
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration Price"
-#~ msgstr "Prix de migration"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 msgstr ""
@@ -875,10 +871,6 @@ msgstr "Échanger sur 1inch"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Total Assets Migrated"
-#~ msgstr "Actifs totaux migrés"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
@@ -2052,17 +2044,9 @@ msgstr "Tableau de bord de finance décentralisée"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Achat GLP désactivé, en attente de {0} actualisations"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrating..."
-#~ msgstr "Migration..."
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Your wallet: {0}"
-#~ msgstr "Votre portefeuille: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -4065,11 +4049,6 @@ msgstr "Créateur"
 msgid "Create Limit"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "Transfert déjà initié"
@@ -5858,10 +5837,6 @@ msgstr ""
 msgid "Switch to {0} collateral."
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "To Receive"
-#~ msgstr "Pour recevoir"
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GMX Vault"
@@ -5927,10 +5902,6 @@ msgstr "{0} est en dessous de son poids cible.<0/><1/>Obtenez une réduction des
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrated"
-#~ msgstr "Migré"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -6030,10 +6001,6 @@ msgstr "Prix de limite"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration submitted! <0>View status.</0>"
-#~ msgstr "Migration soumise! <0> Voir statut.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6437,10 +6404,6 @@ msgstr "Télécharger"
 msgid "{col1}"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration failed"
-#~ msgstr "Migration échouée"
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
 msgstr ""
@@ -6611,6 +6574,11 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap {0} submitted!"
 msgstr "Échanger {0} soumis!"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral Code does not exist"
@@ -6821,6 +6789,11 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Voting Power"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -7189,11 +7162,6 @@ msgstr ""
 msgid "Initial collateral"
 msgstr "Collatéral initial"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
-msgstr ""
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
@@ -7360,11 +7328,6 @@ msgstr "Max: {0}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
-#~ msgid "Bonus Tokens"
-#~ msgstr "Tokens Bonus"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"

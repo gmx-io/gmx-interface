@@ -497,10 +497,6 @@ msgstr "You will need to be on this page to accept the transfer, <0>click here</
 msgid "Don't show this message again for 30 days."
 msgstr "Don't show this message again for 30 days."
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration Price"
-#~ msgstr "Migration Price"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
@@ -875,10 +871,6 @@ msgstr "Swap on 1inch"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Total Assets Migrated"
-#~ msgstr "Total Assets Migrated"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
@@ -2052,17 +2044,9 @@ msgstr "Decentralized Finance Dashboard"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrating..."
-#~ msgstr "Migrating..."
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Your wallet: {0}"
-#~ msgstr "Your wallet: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -4068,11 +4052,6 @@ msgstr "Creator"
 msgid "Create Limit"
 msgstr "Create Limit"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
-msgstr "Reserve considers the PnL of Open Positions, while Open Interest does not."
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "Transfer already initiated"
@@ -5861,10 +5840,6 @@ msgstr "Acknowledge very high network Fees"
 msgid "Switch to {0} collateral."
 msgstr "Switch to {0} collateral."
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "To Receive"
-#~ msgstr "To Receive"
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GMX Vault"
@@ -5933,10 +5908,6 @@ msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
 msgstr "Win Rate"
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrated"
-#~ msgstr "Migrated"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -6036,10 +6007,6 @@ msgstr "Limit Price"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr "You"
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration submitted! <0>View status.</0>"
-#~ msgstr "Migration submitted! <0>View status.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6443,10 +6410,6 @@ msgstr "Download"
 msgid "{col1}"
 msgstr "{col1}"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration failed"
-#~ msgstr "Migration failed"
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
 msgstr "Max auto top-up amount"
@@ -6617,6 +6580,11 @@ msgstr "Select a Pay token"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap {0} submitted!"
 msgstr "Swap {0} submitted!"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
+msgstr "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral Code does not exist"
@@ -6828,6 +6796,11 @@ msgstr "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>
 #: src/pages/Stake/StakeV2.tsx
 msgid "Voting Power"
 msgstr "Voting Power"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
+msgstr "The long reserve accounts for the PnL of open positions, while the open interest does not."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -7195,11 +7168,6 @@ msgstr "Compound completed!"
 msgid "Initial collateral"
 msgstr "Initial collateral"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
-msgstr "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
@@ -7366,11 +7334,6 @@ msgstr "Max: {0}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr "Buy ETH directly on Arbitrum or transfer it there."
-
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
-#~ msgid "Bonus Tokens"
-#~ msgstr "Bonus Tokens"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
