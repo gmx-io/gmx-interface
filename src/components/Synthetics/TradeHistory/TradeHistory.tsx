@@ -19,7 +19,7 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";

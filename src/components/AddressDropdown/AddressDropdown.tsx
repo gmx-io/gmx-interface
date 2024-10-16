@@ -10,7 +10,7 @@ import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountCont
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { shortenAddressOrEns } from "lib/wallets";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 

@@ -77,6 +77,8 @@ export function useDownloadAsCsv({
         tokensData,
       });
 
+      definedOrThrow(tradeActions);
+
       const fullFormattedData = tradeActions
         .map((tradeAction) => {
           const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transaction.hash}`;

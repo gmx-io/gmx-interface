@@ -370,10 +370,6 @@ msgstr "Subaccount Balance"
 msgid "Main Account Balance"
 msgstr "Main Account Balance"
 
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-msgstr "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral code added!"
 msgstr "Referral code added!"
@@ -571,6 +567,11 @@ msgstr "Select a Pool"
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "Tap [Create Wallet] to start using your Web3 Wallet."
+
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {versionName} {networkName} actions for all accounts."
+msgstr "GMX {versionName} {networkName} actions for all accounts."
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Cancel submitted"
@@ -1232,10 +1233,6 @@ msgstr "Swap Price Impact"
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What issues did you encounter that led to your rating?"
 msgstr "What issues did you encounter that led to your rating?"
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "No PnLs found"
-msgstr "No PnLs found"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leverage disabled, pending {0} upgrade"
@@ -2442,10 +2439,6 @@ msgstr "You have an existing position in the {0} market pool, but it lacks liqui
 msgid "Enter up to 10 coins"
 msgstr "Enter up to 10 coins"
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-msgstr "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating..."
 msgstr "Creating..."
@@ -2485,10 +2478,6 @@ msgstr "Invalid price, see warning"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "You will be short {indexSymbol} only from your short position."
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "GMX V1 {networkName} actions for all accounts."
-msgstr "GMX V1 {networkName} actions for all accounts."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
@@ -2758,10 +2747,6 @@ msgstr "Forfeit profit and Short"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
 msgstr "Staked on Arbitrum"
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Profit"
-msgstr "Profit"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
@@ -3285,10 +3270,6 @@ msgstr "Failed Deposit"
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
 
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Loss"
-msgstr "Loss"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr "App disabled, pending {0} upgrade"
@@ -3329,10 +3310,6 @@ msgstr "GLV is the liquidity provider token for GMX V2 vaults. Consist of severa
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} actions for all accounts."
-msgstr "GMX V2 {networkName} actions for all accounts."
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -3358,7 +3335,6 @@ msgstr "Swap submitted."
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -3418,10 +3394,6 @@ msgstr "Shift request sent"
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX V2 Account"
-msgstr "GMX V2 Account"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
@@ -3765,8 +3737,6 @@ msgstr "Trigger price for the order."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -4241,7 +4211,7 @@ msgstr "No markets found."
 msgid "Edit Referral Code"
 msgstr "Edit Referral Code"
 
-#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
 msgid "Switch to:"
 msgstr "Switch to:"
 
@@ -4642,6 +4612,7 @@ msgstr "Swap Order submitted!"
 #: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
+#: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5728,6 +5699,7 @@ msgid "Claim"
 msgstr "Claim"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX {versionName} Account"
 msgstr "GMX {versionName} Account"
 
@@ -6756,8 +6728,6 @@ msgstr "Shift error."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
