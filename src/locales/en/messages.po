@@ -4064,11 +4064,6 @@ msgstr "Creator"
 msgid "Create Limit"
 msgstr "Create Limit"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
-msgstr "Reserve considers the PnL of Open Positions, while Open Interest does not."
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "Transfer already initiated"
@@ -6602,6 +6597,11 @@ msgstr "Select a Pay token"
 msgid "Swap {0} submitted!"
 msgstr "Swap {0} submitted!"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
+msgstr "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
+
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral Code does not exist"
 msgstr "Referral Code does not exist"
@@ -6811,6 +6811,11 @@ msgstr "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>
 #: src/pages/Stake/StakeV2.tsx
 msgid "Voting Power"
 msgstr "Voting Power"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
+msgstr "The long reserve accounts for the PnL of open positions, while the open interest does not."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -7177,11 +7182,6 @@ msgstr "Compound completed!"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Initial collateral"
 msgstr "Initial collateral"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
-msgstr "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
