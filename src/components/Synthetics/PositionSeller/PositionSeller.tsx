@@ -114,7 +114,7 @@ export function PositionSeller(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
-  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.marketInfo.indexTokenAddress));
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.market.indexTokenAddress));
 
   const {
     allowedSlippage,
