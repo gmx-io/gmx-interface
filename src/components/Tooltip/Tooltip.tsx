@@ -167,6 +167,24 @@ export default function Tooltip<T extends ElementType>({
     [shouldStopPropagation]
   );
 
+  useEffect(
+    function handleFocusWithin() {
+      if (disabled || visible) {
+        return;
+      }
+
+      // If element was blurred, allow some time so that activeElement is updated
+      requestAnimationFrame(() => {
+        const focusWithin = (refs.reference.current as HTMLElement)?.contains(document.activeElement);
+
+        if (focusWithin) {
+          setVisible(true);
+        }
+      });
+    },
+    [disabled, refs.reference, visible]
+  );
+
   const color = middlewareData?.color?.color ?? DEFAULT_ARROW_COLOR;
 
   const finalContent = visible ? content ?? renderContent?.() : undefined;
