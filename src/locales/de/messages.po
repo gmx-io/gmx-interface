@@ -569,7 +569,6 @@ msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "Tippe auf [Wallet erstellen], um dein Web3 Wallet zu verwenden."
 
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {versionName} {networkName} actions for all accounts."
 msgstr ""
 
@@ -848,6 +847,10 @@ msgstr "Kaufe mit {0}"
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Adding..."
 msgstr "Hinzufügen..."
+
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} {networkName} actions for all accounts."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Short {0}"
