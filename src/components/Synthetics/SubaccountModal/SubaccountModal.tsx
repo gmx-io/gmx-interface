@@ -872,7 +872,9 @@ const InputBase = forwardRef<HTMLInputElement, InputProp>(
           </label>
         </div>
         {tooltip && (
-          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "z-[1001]", "top-end")}>{tooltip}</div>
+          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "top-end absolute z-[1001]")}>
+            {tooltip}
+          </div>
         )}
       </div>
     );

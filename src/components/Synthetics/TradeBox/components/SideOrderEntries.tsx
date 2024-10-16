@@ -133,7 +133,9 @@ function SideOrderEntry({
         />
 
         {priceError && (
-          <div className={cx("z-[1001] hidden w-max !min-w-[25rem] group-hover:block", "Tooltip-popup bottom")}>
+          <div
+            className={cx("absolute z-[1001] hidden w-max !min-w-[25rem] group-hover:block", "Tooltip-popup bottom")}
+          >
             {priceError}
           </div>
         )}
@@ -150,7 +152,7 @@ function SideOrderEntry({
             symbol="%"
           />
           {sizeTooltipMsg && (
-            <div className={cx("z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
+            <div className={cx("absolute z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
               {sizeTooltipMsg}
             </div>
           )}
@@ -174,7 +176,7 @@ function SideOrderEntry({
             className="w-81 rounded-4 py-2 pr-5 text-right text-14"
           />
           {sizeTooltipMsg && (
-            <div className={cx("z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
+            <div className={cx("absolute z-[1001] hidden !min-w-[25rem] group-hover:block", "Tooltip-popup top-end")}>
               {sizeTooltipMsg}
             </div>
           )}
