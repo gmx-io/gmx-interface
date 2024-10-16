@@ -260,6 +260,10 @@ export class Metrics {
               this.pushTiming<LongTaskTiming>("longtasks.self.timing", entry.duration, {
                 isInitialLoad: performance.now() < 20000,
               });
+              if (this.debug) {
+                // eslint-disable-next-line no-console
+                console.debug("Metrics: longTask duration", entry.duration);
+              }
             }
           });
         } catch (error) {

@@ -1,46 +1,30 @@
-import chunk from "lodash/chunk";
 import entries from "lodash/entries";
 import throttle from "lodash/throttle";
 import values from "lodash/values";
+import { stableHash } from "swr/_internal";
+import chunk from "lodash/chunk";
 
 import { isDevelopment } from "config/env";
-import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { promiseWithResolvers } from "lib/utils";
+import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 
+import { debugLog, getIsMulticallBatchingDisabled } from "lib/multicall/debug";
+import { executeMulticallMainThread } from "lib/multicall/executeMulticallMainThread";
+import { executeMulticallWorker } from "lib/multicall/executeMulticallWorker";
+import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
 import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
-import uniqueId from "lodash/uniqueId";
-import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
-import { executeMulticallMainThread } from "./executeMulticallMainThread";
-import { executeMulticallWorker } from "./executeMulticallWorker";
-import type { ContractCallResult, MulticallError, MulticallRequestConfig, MulticallResult } from "./types";
-import { getCallId } from "./utils";
-
-type CallResultHandler = (
-  destination: {
-    callGroupName: string;
-    callName: string;
-  },
-  callResult?: ContractCallResult,
-  error?: MulticallError
-) => void;
 
 type MulticallFetcherConfig = {
   [chainId: number]: {
-    [callId: string]: {
+    [callDataId: string]: {
       callData: {
         contractAddress: string;
-        callId: string;
         abi: any;
         methodName: string;
         params: any[];
       };
-      handlers: {
-        [requestId: string]: {
-          handler: CallResultHandler;
-          destinations: { callGroupName: string; callName: string }[];
-        };
-      };
+      hooks: ((data: MulticallResult<any>) => void)[];
     };
   };
 };
@@ -112,13 +96,8 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
   if (combinedResults) {
     for (const call of values(calls)) {
-      const callResult = combinedResults.data[call.callData.contractAddress]?.[call.callData.callId];
-      const callError = combinedResults.errors[call.callData.contractAddress]?.[call.callData.callId];
-
-      for (const handler of Object.values(call.handlers)) {
-        for (const destination of handler.destinations) {
-          handler.handler(destination, callResult, callError);
-        }
+      for (const hook of call.hooks) {
+        hook(combinedResults);
       }
     }
   }
@@ -136,62 +115,107 @@ const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMultica
   trailing: true,
 });
 
-export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
+export function oldExecuteMulticall<TConfig extends MulticallRequestConfig<any>>(
   chainId: number,
   request: TConfig,
   priority: "urgent" | "background" = "urgent",
   /**
    * For debugging purposes, you can provide a name to the multicall request.
    */
-  name?: string,
-  disableBatching?: boolean
+  name?: string
 ): Promise<MulticallResult<TConfig>> {
-  const requestResult: MulticallResult<any> = {
-    success: true,
-    errors: {},
-    data: {},
-  };
-
-  const requestId = uniqueId("executeMulticall-");
-  let requestCallsCount = 0;
-  let resolvedCallsCount = 0;
+  let groupNameMapping: {
+    // Contract address
+    [address: string]: {
+      // Unique call id based on contract address, method name and params
+      [callId: string]: {
+        // Human readable call group name
+        callGroupName: string;
+        // Human readable call name
+        callName: string;
+      }[];
+    };
+  } = {};
 
   const { promise, resolve } = promiseWithResolvers<MulticallResult<any>>();
 
-  const callResultHandler: CallResultHandler = (destination, callResult, callError) => {
-    resolvedCallsCount++;
+  const hook = (data: MulticallResult<any>) => {
+    const strippedRenamedData: MulticallResult<any> = {
+      success: data.success,
+      errors: {},
+      data: {},
+    };
 
-    const { callGroupName, callName } = destination;
+    for (const [contractAddress, contractResult] of entries(data.data)) {
+      if (!groupNameMapping[contractAddress]) {
+        continue;
+      }
 
-    if (callResult) {
-      requestResult.data[callGroupName] = requestResult.data[callGroupName] || {};
-      requestResult.data[callGroupName][callName] = callResult;
+      for (const [callId, callResult] of entries(contractResult)) {
+        if (!groupNameMapping[contractAddress][callId]) {
+          continue;
+        }
+
+        const destinations = groupNameMapping[contractAddress][callId];
+
+        for (const { callGroupName, callName } of destinations) {
+          if (!strippedRenamedData.data[callGroupName]) {
+            strippedRenamedData.data[callGroupName] = {};
+          }
+
+          strippedRenamedData.data[callGroupName][callName] = callResult;
+        }
+      }
     }
 
-    if (callError) {
-      requestResult.success = false;
-      requestResult.errors[callGroupName] = requestResult.errors[callGroupName] || {};
-      requestResult.errors[callGroupName][callName] = callError;
+    for (const [contractAddress, contractErrors] of entries(data.errors)) {
+      if (!groupNameMapping[contractAddress]) {
+        continue;
+      }
+
+      for (const [callId, error] of entries(contractErrors)) {
+        if (!groupNameMapping[contractAddress][callId]) {
+          continue;
+        }
+
+        const destinations = groupNameMapping[contractAddress][callId];
+
+        for (const { callGroupName, callName } of destinations) {
+          if (!strippedRenamedData.errors[callGroupName]) {
+            strippedRenamedData.errors[callGroupName] = {};
+          }
+
+          strippedRenamedData.errors[callGroupName][callName] = error;
+        }
+      }
     }
 
-    if (resolvedCallsCount === requestCallsCount) {
-      return resolve(requestResult);
-    }
+    resolve(strippedRenamedData);
   };
 
   for (const [callGroupName, callGroup] of entries(request)) {
+    if (!groupNameMapping[callGroup.contractAddress]) {
+      groupNameMapping[callGroup.contractAddress] = {};
+    }
     for (const [callName, call] of entries(callGroup.calls)) {
       if (!call) {
         continue;
       }
 
-      requestCallsCount++;
-
       // To reduce duplicate calls, we hash the call data and use it as a unique identifier.
       // There are two main reasons for this:
       // 1. Single token backed pools have many pairs with the same method signatures
       // 2. The majority of pools have USDC as the short token, which means they all have some common calls
-      const callId = getCallId(callGroup.contractAddress, call.methodName, call.params);
+
+      const callId = stableHash([callGroup.contractAddress, call.methodName, call.params]);
+
+      if (!groupNameMapping[callGroup.contractAddress][callId]) {
+        groupNameMapping[callGroup.contractAddress][callId] = [];
+      }
+      groupNameMapping[callGroup.contractAddress][callId].push({
+        callGroupName,
+        callName,
+      });
 
       if (!store.current[chainId]) {
         store.current[chainId] = {};
@@ -201,30 +225,37 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
         store.current[chainId][callId] = {
           callData: {
             contractAddress: callGroup.contractAddress,
-            callId,
             abi: callGroup.abi,
             methodName: call.methodName,
             params: call.params,
           },
-          handlers: {},
+          hooks: [hook],
         };
+      } else {
+        store.current[chainId][callId].hooks.push(hook);
       }
-
-      if (!store.current[chainId][callId].handlers[requestId]) {
-        store.current[chainId][callId].handlers[requestId] = {
-          handler: callResultHandler,
-          destinations: [],
-        };
-      }
-
-      store.current[chainId][callId].handlers[requestId].destinations.push({
-        callGroupName,
-        callName,
-      });
     }
   }
 
-  if (disableBatching || (isDevelopment() && getIsMulticallBatchingDisabled())) {
+  debugLog(() => {
+    let msg = "";
+    for (const [callId, call] of entries(store.current[chainId])) {
+      if (call.hooks.length === 1) {
+        continue;
+      }
+
+      const names =
+        groupNameMapping[call.callData.contractAddress]?.[callId]
+          ?.map(({ callGroupName, callName }) => `${callGroupName}.${callName}`)
+          .join("\n") ?? callId;
+
+      msg += `Multicall with names:\n${names}\nhas ${call.hooks.length} duplicate calls. Contract address: ${call.callData.contractAddress}. Method name: ${call.callData.methodName}.\n\n`;
+    }
+
+    return msg;
+  });
+
+  if (isDevelopment() && getIsMulticallBatchingDisabled()) {
     debugLog(() => `Multicall batching disabled, executing immediately. Multicall name: ${name ?? "?"}`);
     executeChainsMulticalls() as any;
     return promise as any;

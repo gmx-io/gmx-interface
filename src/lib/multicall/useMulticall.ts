@@ -8,11 +8,15 @@ import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { debugLog } from "./debug";
-import { executeMulticall } from "./executeMulticall";
+import { executeMulticall as newExecuteMulticall } from "./executeMulticall";
+import { oldExecuteMulticall } from "ab/testExecuteChainMulticallFix/disabled/oldExecuteMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { serializeMulticallErrors } from "./utils";
+import { getIsFlagEnabled } from "config/ab";
 
 const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
+
+const executeMulticall = getIsFlagEnabled("testExecuteChainMulticallFix") ? newExecuteMulticall : oldExecuteMulticall;
 
 /**
  * A hook to fetch data from contracts via multicall.

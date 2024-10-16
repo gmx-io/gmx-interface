@@ -10,5 +10,10 @@ declare global {
     msSaveBlob?: (blob: any, defaultName?: string) => boolean;
   }
 
+  interface BigInt {
+    /** Convert to BigInt to string form in JSON.stringify */
+    toJSON: () => string;
+  }
+
   type FilterOutFalsy = <T>(x: T | false | null | undefined | 0 | "") => x is T;
 }
