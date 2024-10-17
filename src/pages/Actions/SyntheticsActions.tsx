@@ -1,28 +1,22 @@
 import { Trans, t } from "@lingui/macro";
-import { useCallback } from "react";
-import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
-import { getIsV1Supported } from "config/features";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getChainName } from "config/chains";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { switchNetwork } from "lib/wallets";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 
+import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
+
 import "./SyntheticsActions.scss";
+
+const VERSION_NAME = "V2";
 
 export default function SyntheticsActions() {
   const chainId = useSelector(selectChainId);
-  const { isConnected } = useAccount();
   const networkName = getChainName(chainId);
-  const toggleNetwork = useCallback(
-    () => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, isConnected),
-    [isConnected, chainId]
-  );
 
   return (
     <div className="default-container page-layout">
@@ -31,29 +25,18 @@ export default function SyntheticsActions() {
           <PageTitle
             isTop
             title={t`GMX V2 Actions`}
+            chainId={chainId}
             subtitle={
               <>
-                <Trans>GMX V2 {networkName} actions for all accounts.</Trans>
-
-                {getIsV1Supported(chainId) && (
-                  <Trans>
-                    <div>
-                      <ExternalLink newTab={false} href="/#/actions/v1">
-                        Check on GMX V1 {networkName}
-                      </ExternalLink>{" "}
-                      or{" "}
-                      <span className="cursor-pointer underline" onClick={toggleNetwork}>
-                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
-                      </span>
-                      .
-                    </div>
-                  </Trans>
-                )}
+                <Trans>
+                  GMX {VERSION_NAME} {networkName} actions for all accounts.
+                </Trans>
+                <VersionNetworkSwitcherRow chainId={chainId} version={2} />
               </>
             }
           />
         </div>
-        <TradeHistory account={undefined} forAllAccounts={true} />
+        <TradeHistory account={undefined} forAllAccounts />
       </div>
       <Footer />
     </div>

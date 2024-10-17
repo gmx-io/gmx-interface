@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { ReactNode, useCallback } from "react";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
@@ -28,11 +29,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
-import closeIcon from "img/navbutton-close.svg";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { useRequiredActions } from "../hooks/useRequiredActions";
+
+import CrossIconComponent from "img/cross.svg?react";
 
 export function TradeBoxOneClickTrading() {
   const executionFee = useSelector(selectTradeboxExecutionFee);
@@ -162,17 +164,21 @@ export function TradeBoxOneClickTrading() {
         label={content}
         className="!items-center"
         value={
-          <span className="flex flex-row justify-center gap-4 whitespace-nowrap align-middle">
+          <span className="flex flex-row items-center justify-center gap-4 whitespace-nowrap">
             <Button variant="link" type="button" disabled={!clickable} onClick={jumpToSubaccount}>
               {buttonText}
             </Button>
             {onCloseClick && (
-              <img
-                src={closeIcon}
+              <button
+                className={cx(
+                  "-my-4 rounded-4 p-4 text-gray-500",
+                  "hover:bg-[#50577e99] hover:text-slate-100 focus:bg-[#50577e99] focus:text-slate-100",
+                  "active:bg-[#50577eb3] active:text-gray-300"
+                )}
                 onClick={onCloseClick}
-                alt="close"
-                className="TradeBox-close-icon relative top-2 h-18 w-18 cursor-pointer"
-              />
+              >
+                <CrossIconComponent className="w-16" />
+              </button>
             )}
           </span>
         }
