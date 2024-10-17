@@ -17,7 +17,7 @@ import { getContractMarketPrices } from "./utils";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
 import { useMemo } from "react";
-import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
 
@@ -182,6 +182,7 @@ export function useMarketTokensData(
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
   const storedGlvData = useSelector(selectGlvInfo);
+  const glvs = useSelector(selectGlvs);
 
   const glvData = p.glvData || storedGlvData;
 
@@ -189,6 +190,6 @@ export function useMarketTokensData(
     isDeposit,
     account,
     glvData: glvData,
-    withGlv: p.withGlv,
+    withGlv: glvs?.length ? p.withGlv : false,
   });
 }
