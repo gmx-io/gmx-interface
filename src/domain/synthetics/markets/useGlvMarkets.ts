@@ -19,6 +19,7 @@ import { expandDecimals } from "lib/numbers";
 import { getContractMarketPrices, getGlvMarketName, GlvInfoData, MarketsInfoData } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
+import { useMemo } from "react";
 
 export type GlvList = {
   glv: {
@@ -54,7 +55,7 @@ export function useGlvMarketsInfo(
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
   const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
 
-  const { data: glvs, isLoading: isLoadingGlvs } = useMulticall<GlvsRequestConfig, GlvList>(
+  const { data: glvList, isLoading: isLoadingGlvs } = useMulticall<GlvsRequestConfig, GlvList>(
     chainId,
     "useGlvTokenMarkets",
     {
@@ -80,6 +81,10 @@ export function useGlvMarketsInfo(
       },
     }
   );
+
+  const glvs = useMemo(() => {
+    return glvList?.filter(({ markets }) => markets.length > 0 && markets.every((market) => marketsInfoData?.[market]));
+  }, [glvList, marketsInfoData]);
 
   const shouldRequest = enabled && marketsInfoData && tokensData && glvs && glvs.length > 0;
 
