@@ -27,7 +27,7 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
 
   const network = Network.from(chainId);
 
-  return new ethers.JsonRpcProvider(url, chainId, { staticNetwork: network });
+  return new ethers.JsonRpcProvider(url, chainId, { staticNetwork: network, batchMaxSize: 1 });
 }
 
 export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvider | undefined {
