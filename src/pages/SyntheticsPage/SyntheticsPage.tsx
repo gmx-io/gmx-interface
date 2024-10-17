@@ -90,7 +90,7 @@ export function SyntheticsPage(p: Props) {
 
   const { isInterviewModalVisible, setIsInterviewModalVisible } = useInterviewNotification();
 
-  const chartToken = useSelector(selectChartToken);
+  const { chartToken } = useSelector(selectChartToken);
 
   const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
   const ordersCount = useSelector(selectOrdersCount);

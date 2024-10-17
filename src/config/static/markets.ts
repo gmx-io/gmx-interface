@@ -22,6 +22,10 @@ type MarketUiConfig = {
   shortTokenAddress: string;
 };
 
+/*
+  ATTENTION
+  When adding new markets, please add them also to the end of the list in ./sortedMarkets.ts
+*/
 export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]

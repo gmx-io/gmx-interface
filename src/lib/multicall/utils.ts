@@ -23,3 +23,7 @@ export function serializeMulticallErrors(errors: MulticallErrors<any>) {
 
   return errorString;
 }
+
+export function getCallId(contractAddress: string, methodName: string, params: any[]) {
+  return JSON.stringify([contractAddress, methodName, params]);
+}

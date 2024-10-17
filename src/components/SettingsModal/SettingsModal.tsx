@@ -19,6 +19,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { useKey } from "react-use";
 
 import "./SettingsModal.scss";
+import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 
 export function SettingsModal({
   isSettingsVisible,
@@ -220,6 +221,8 @@ export function SettingsModal({
           </Checkbox>
         </div>
       )}
+
+      {isDevelopment() && <AbFlagSettings />}
 
       {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
 

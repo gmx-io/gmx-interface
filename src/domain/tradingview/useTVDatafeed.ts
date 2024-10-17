@@ -11,11 +11,12 @@ import {
 import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
+import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
-import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import { getIsFlagEnabled } from "config/ab";
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
@@ -120,6 +121,8 @@ interface OracePriceDecimalsUpdater {
   setOraclePriceDecimals: (decimals?: number) => void;
 }
 
+export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi> & OracePriceDecimalsUpdater;
+
 function buildFeeder({
   chainId,
   stableTokens,
@@ -143,7 +146,7 @@ function buildFeeder({
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
   oraclePriceDecimals?: number;
-}): { datafeed: Partial<IExternalDatafeed & IDatafeedChartApi> & OracePriceDecimalsUpdater } {
+}): { datafeed: TvDatafeed } {
   return {
     datafeed: {
       oraclePriceDecimals,
@@ -208,6 +211,14 @@ function buildFeeder({
             onErrorCallback("Invalid ticker!");
             return;
           }
+
+          if (getIsFlagEnabled("testCandlesPreload")) {
+            tvDataProviderRef.current?.saveTVParamsCache(chainId, {
+              resolution,
+              countBack: periodParams.countBack,
+            });
+          }
+
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
           lastBarTimeRef.current = 0;

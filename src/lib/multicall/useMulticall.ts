@@ -1,16 +1,22 @@
-import { useRef } from "react";
-import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 import cryptoJs from "crypto-js";
-import { stableHash } from "swr/_internal";
+import { useCallback, useRef } from "react";
+import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
+import { KeyedMutator, stableHash } from "swr/_internal";
 
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
+import type { ErrorEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { debugLog } from "./debug";
-import { executeMulticall } from "./executeMulticall";
+import { executeMulticall as newExecuteMulticall } from "./executeMulticall";
+import { oldExecuteMulticall } from "ab/testExecuteChainMulticallFix/disabled/oldExecuteMulticall";
 import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { serializeMulticallErrors } from "./utils";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { ErrorEvent } from "lib/metrics";
+import { getIsFlagEnabled } from "config/ab";
+
+const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
+
+const executeMulticall = getIsFlagEnabled("testExecuteChainMulticallFix") ? newExecuteMulticall : oldExecuteMulticall;
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -28,6 +34,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   params: {
     key: CacheKey | SkipKey;
     refreshInterval?: number | null;
+    disableBatching?: boolean;
     clearUnusedKeys?: boolean;
     keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig | Promise<TConfig>);
@@ -48,6 +55,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   }
 
   const successDataByChainIdRef = useRef<Record<number, MulticallResult<any>>>({});
+
+  const hashedFullKey = stableHash(swrFullKey);
 
   const { data, mutate, error } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
@@ -84,7 +93,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         let priority: "urgent" | "background" = "urgent";
 
-        const hasData = defaultConfig.cache.get(stableHash(swrFullKey))?.isLoading === false;
+        const hasData = defaultConfig.cache.get(hashedFullKey)?.isLoading === false;
 
         let isInterval = false;
         if (typeof params.refreshInterval === "number") {
@@ -97,7 +106,10 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           }
         }
 
-        if (hasData && isInterval) {
+        if (mutateFlagsRef.current[hashedFullKey]) {
+          priority = "urgent";
+          delete mutateFlagsRef.current[hashedFullKey];
+        } else if (hasData && isInterval) {
           priority = "background";
         }
 
@@ -108,7 +120,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
             startTime = Date.now();
           });
 
-          responseOrFailure = await executeMulticall(chainId, request, priority, name);
+          responseOrFailure = await executeMulticall(chainId, request, priority, name, params.disableBatching);
 
           debugLog(() => {
             const endTime = Date.now();
@@ -138,15 +150,14 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         return result as TResult;
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error(`Multicall request failed`, e);
-        e.message = `Multicall request failed ${e.message}`;
+        console.error(`Multicall request failed: ${name}`, e);
+        e.message = `Multicall request failed: ${name} ${e.message}`;
 
         emitMetricEvent<ErrorEvent>({
           event: "error",
           isError: true,
           data: {
             errorName: e.name,
-            errorGroup: `Multicall request failed`,
             errorMessage: e.message,
             errorStack: e.stack,
             errorStackHash: cryptoJs.SHA256(e.stack).toString(cryptoJs.enc.Hex),
@@ -163,9 +174,29 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     },
   });
 
+  const handleMutate: KeyedMutator<TResult | undefined> = useCallback(
+    (...args) => {
+      const opts = args[1];
+      let shouldRevalidate: boolean | undefined;
+
+      if (opts === false) {
+        shouldRevalidate = false;
+      } else if (typeof opts !== "boolean" && opts) {
+        const isRevalidateExplicitlyDisabled = opts.revalidate === false;
+        shouldRevalidate = !isRevalidateExplicitlyDisabled;
+      }
+
+      if (shouldRevalidate) {
+        mutateFlagsRef.current[hashedFullKey] = true;
+      }
+      return mutate(...args);
+    },
+    [mutate, hashedFullKey]
+  );
+
   return {
     data,
-    mutate,
+    mutate: handleMutate,
     isLoading: Boolean(swrFullKey) && !data,
     error: error as Error | undefined,
   };

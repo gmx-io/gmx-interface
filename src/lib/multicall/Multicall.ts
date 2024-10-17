@@ -153,7 +153,12 @@ export class Multicall {
     private abFlags: Record<string, boolean>
   ) {}
 
-  async call(providerUrls: MulticallProviderUrls, request: MulticallRequestConfig<any>, maxTimeout: number) {
+  async call(
+    providerUrls: MulticallProviderUrls,
+    request: MulticallRequestConfig<any>,
+    maxTimeout: number,
+    isLargeAccount: boolean
+  ) {
     const originalKeys: {
       contractKey: string;
       callKey: string;
@@ -201,7 +206,6 @@ export class Multicall {
 
     const providerUrl = this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.secondary : providerUrls.primary;
     const client = Multicall.getViemClient(this.chainId, providerUrl);
-    const isAlchemy = providerUrl === providerUrls.secondary;
     const rpcProviderName = getProviderNameFromUrl(providerUrl);
 
     const sendCounterEvent = (
@@ -214,6 +218,7 @@ export class Multicall {
           isInMainThread: !isWebWorker,
           requestType,
           rpcProvider,
+          isLargeAccount,
         },
       });
     };
@@ -233,6 +238,7 @@ export class Multicall {
         data: {
           requestType,
           rpcProvider,
+          isLargeAccount,
         },
       });
     };
@@ -299,7 +305,7 @@ export class Multicall {
       // eslint-disable-next-line no-console
       console.groupEnd();
 
-      if (!isAlchemy) {
+      if (!this.fallbackRpcSwitcher?.isFallbackMode) {
         this.fallbackRpcSwitcher?.trigger();
       }
 
@@ -413,7 +419,7 @@ export class Multicall {
       rpcProvider: rpcProviderName,
     });
 
-    if (!isAlchemy) {
+    if (!this.fallbackRpcSwitcher?.isFallbackMode) {
       this.fallbackRpcSwitcher?.trigger();
     }
 

@@ -18,6 +18,7 @@ export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
 export const TV_CHART_RELOAD_TIMESTAMP_KEY = "tv-chart-reload-timestamp";
+export const TV_PARAMS_CACHE_KEY = "tv-params-cache-key";
 export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 export const LEVERAGE_OPTION_KEY = "leverage-option";
 export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
@@ -25,6 +26,7 @@ export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
 export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
+export const SORTED_MARKETS_KEY = "sorted-markets-key";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
@@ -72,7 +74,8 @@ export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
-export const RPC_PROVIDER = "rpc-provider";
+export const RPC_PROVIDER_KEY = "rpc-provider";
+export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
@@ -125,7 +128,7 @@ export function getExecutionFeeBufferBpsKey(chainId: number) {
 }
 
 export function getRpcProviderKey(chainId: number | string) {
-  return [chainId, RPC_PROVIDER];
+  return [chainId, RPC_PROVIDER_KEY];
 }
 
 // TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then
@@ -153,4 +156,12 @@ export function getIsMulticallBatchingDisabledKey() {
 
 export function getMulticallBatchingLoggingEnabledKey() {
   return [DEBUG_MULTICALL_BATCHING_KEY, "logging"];
+}
+
+export function getSortedMarketsAddressesKey(chainId: number) {
+  return [SORTED_MARKETS_KEY, chainId].join(":");
+}
+
+export function getTvParamsCacheKey(chainId: number, isV2: boolean) {
+  return [TV_PARAMS_CACHE_KEY, chainId, isV2].join(":");
 }

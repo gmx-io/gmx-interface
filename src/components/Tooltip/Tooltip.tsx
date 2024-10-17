@@ -9,6 +9,7 @@ import {
   shift,
   size,
   useClick,
+  useDismiss,
   useFloating,
   useHover,
   useInteractions,
@@ -34,7 +35,7 @@ import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
 
-type InnerTooltipProps<T extends ElementType> = {
+type InnerTooltipProps<T extends ElementType | undefined> = {
   /**
    * Takes precedence over `children`
    */
@@ -72,8 +73,8 @@ type InnerTooltipProps<T extends ElementType> = {
   closeOnDoubleClick?: boolean;
 };
 
-export type TooltipProps<T extends ElementType> = InnerTooltipProps<T> &
-  Omit<ComponentPropsWithoutRef<T>, keyof InnerTooltipProps<T>>;
+export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
+  (T extends undefined ? {} : Omit<ComponentPropsWithoutRef<Exclude<T, undefined>>, keyof InnerTooltipProps<T>>);
 
 export default function Tooltip<T extends ElementType>({
   handle,
@@ -105,7 +106,9 @@ export default function Tooltip<T extends ElementType>({
     middleware: [
       offset(10),
       flip(),
-      shift(),
+      shift({
+        padding: 10,
+      }),
       size({
         apply: (state) => {
           Object.assign(state.elements.floating.style, {
@@ -148,8 +151,11 @@ export default function Tooltip<T extends ElementType>({
     enabled: !disabled && closeOnDoubleClick,
     toggle: closeOnDoubleClick,
   });
+  const dismiss = useDismiss(context, {
+    enabled: !disabled,
+  });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
 
   const preventClick = useCallback(
     (event: MouseEvent) => {
@@ -159,6 +165,24 @@ export default function Tooltip<T extends ElementType>({
       }
     },
     [shouldStopPropagation]
+  );
+
+  useEffect(
+    function handleFocusWithin() {
+      if (disabled || visible) {
+        return;
+      }
+
+      // If element was blurred, allow some time so that activeElement is updated
+      requestAnimationFrame(() => {
+        const focusWithin = (refs.reference.current as HTMLElement)?.contains(document.activeElement);
+
+        if (focusWithin) {
+          setVisible(true);
+        }
+      });
+    },
+    [disabled, refs.reference, visible]
   );
 
   const color = middlewareData?.color?.color ?? DEFAULT_ARROW_COLOR;

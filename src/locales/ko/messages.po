@@ -502,8 +502,8 @@ msgid "Don't show this message again for 30 days."
 msgstr "30일 동안 해당 메시지 다시보지 않기"
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration Price"
-msgstr "이전 가격"
+#~ msgid "Migration Price"
+#~ msgstr "이전 가격"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
@@ -873,8 +873,8 @@ msgid "Open {0} in Coingecko"
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Total Assets Migrated"
-msgstr "총 이전된 자산"
+#~ msgid "Total Assets Migrated"
+#~ msgstr "총 이전된 자산"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
@@ -1877,7 +1877,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/JoinReferralCode.jsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
@@ -2050,16 +2049,16 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 GLP 구매가 비활성화되었습니다"
 
 #: src/components/Migration/Migration.jsx
-msgid "Migrating..."
-msgstr "이전중..."
+#~ msgid "Migrating..."
+#~ msgstr "이전중..."
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Your wallet: {0}"
-msgstr "귀하의 지갑: {0}"
+#~ msgid "Your wallet: {0}"
+#~ msgstr "귀하의 지갑: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -3236,7 +3235,6 @@ msgstr "주문 업데이트 실패됨."
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
@@ -4163,10 +4161,6 @@ msgstr ""
 msgid "Claim V2 Rebates from your referred Traders."
 msgstr ""
 
-#: src/pages/Home/Home.tsx
-msgid "Three tokens create our ecosystem"
-msgstr ""
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr ""
@@ -4565,7 +4559,6 @@ msgstr "담보로 사용할 {0}이 포함된 풀을 선택하세요."
 msgid "Transaction completed!"
 msgstr "트랜잭션 완료!"
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "승인중..."
@@ -5106,10 +5099,6 @@ msgstr ""
 msgid "Cancel"
 msgstr "취소"
 
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Remove Row"
-msgstr ""
-
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Bid Price (Entry)"
 msgstr ""
@@ -5198,7 +5187,6 @@ msgstr "Binance 앱 열기"
 msgid "{0} selected in order form"
 msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5249,6 +5237,7 @@ msgid "{0} {1} not supported"
 msgstr ""
 
 #: src/pages/Buy/Buy.tsx
+#: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
 msgstr ""
 
@@ -5425,7 +5414,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 msgid "Approve {0}"
 msgstr "{0} 승인"
 
@@ -5763,7 +5751,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5889,8 +5876,8 @@ msgid "Switch to {0} collateral."
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "To Receive"
-msgstr "수취하기"
+#~ msgid "To Receive"
+#~ msgstr "수취하기"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -5959,8 +5946,8 @@ msgid "Win Rate"
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Migrated"
-msgstr "이전완료"
+#~ msgid "Migrated"
+#~ msgstr "이전완료"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -6070,8 +6057,8 @@ msgid "You"
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration submitted! <0>View status.</0>"
-msgstr "이전 제출완료! <0>상태 보기.</0>"
+#~ msgid "Migration submitted! <0>View status.</0>"
+#~ msgstr "이전 제출완료! <0>상태 보기.</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6468,8 +6455,8 @@ msgid "{col1}"
 msgstr ""
 
 #: src/components/Migration/Migration.jsx
-msgid "Migration failed"
-msgstr "이전 실패"
+#~ msgid "Migration failed"
+#~ msgstr "이전 실패"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
@@ -7232,7 +7219,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/components/Migration/Migration.jsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
@@ -7385,7 +7371,6 @@ msgstr ""
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "esGMX는 언제든지 스테이킹하거나 베스팅 할 수 있습니다."
 
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 msgid "Max: {0}"
@@ -7397,8 +7382,8 @@ msgstr ""
 
 #: src/components/Migration/Migration.jsx
 #: src/components/Migration/Migration.jsx
-msgid "Bonus Tokens"
-msgstr "보너스 토큰"
+#~ msgid "Bonus Tokens"
+#~ msgstr "보너스 토큰"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
@@ -7855,10 +7840,6 @@ msgstr "주문 체결 가격"
 msgid "Slippage is too high"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
-msgid "Add Row"
-msgstr ""
-
 #: src/components/Synthetics/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Net rate combines funding and borrowing fees but excludes open, swap or impact fees.<0/><1/>Funding fees help to balance longs and shorts and are exchanged between both sides. <2>Read more</2>.<3/><4/>Borrowing fees help ensure available liquidity. <5>Read more</5>."
 msgstr "순 수수료율은 자금 조달 및 대출 수수료를 결합하지만 오픈, 스왑 또는 영향 수수료는 제외합니다.<0/><1/>자금 조달 수수료는 롱과 숏을 균형있게 유지하고 양쪽 사이에서 교환됩니다. <2>더 읽기</2>.<3/><4/>대출 수수료는 사용 가능한 유동성을 보장합니다. <5>더 읽기</5>."
@@ -7879,8 +7860,6 @@ msgstr "보증금 요청"
 msgid "Deposit not enough to cover fees"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx
 #: src/pages/Stake/StakeV1.jsx

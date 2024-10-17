@@ -1,9 +1,10 @@
 import cx from "classnames";
-import Slider, { SliderTooltip, Handle } from "rc-slider";
+import range from "lodash/range";
+import Slider, { Handle, SliderTooltip } from "rc-slider";
+import { forwardRef, useCallback, useEffect, useMemo } from "react";
+
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";
-import range from "lodash/range";
-import { forwardRef, useCallback, useEffect, useMemo } from "react";
 
 const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
 const DEFAULT_LEVERAGE_KEY = 20;

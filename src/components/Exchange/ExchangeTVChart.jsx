@@ -17,6 +17,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import ChartTokenSelector from "./ChartTokenSelector";
+import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -75,6 +76,7 @@ export default function ExchangeTVChart(props) {
   const [currentSeries] = useState();
 
   const dataProvider = useRef();
+  const { datafeed } = useTVDatafeed({ dataProvider: dataProvider.current });
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
@@ -377,6 +379,7 @@ export default function ExchangeTVChart(props) {
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
+            datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
             chartToken={chartToken}

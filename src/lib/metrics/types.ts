@@ -6,6 +6,7 @@ export type GlobalMetricData = {
   isMobileMetamask: boolean;
   isWindowVisible: boolean;
   isAuthorised: boolean;
+  isLargeAccount: boolean;
   abFlags: Record<string, boolean>;
   isMobile: boolean;
   isHomeSite: boolean;
@@ -202,6 +203,7 @@ export type MulticallTimeoutEvent = {
     isInMainThread: boolean;
     requestType?: "initial" | "retry";
     rpcProvider?: string;
+    isLargeAccount?: boolean;
     errorMessage: string;
   };
 };
@@ -213,6 +215,7 @@ export type MulticallErrorEvent = {
     isInMainThread: boolean;
     rpcProvider?: string;
     requestType?: "initial" | "retry";
+    isLargeAccount?: boolean;
     errorMessage: string;
   };
 };
@@ -378,6 +381,7 @@ export type MulticallRequestTiming = {
   data: {
     requestType: string;
     rpcProvider: string;
+    isLargeAccount: boolean;
   };
 };
 
@@ -402,6 +406,7 @@ export type MulticallRequestCounter = {
     isInMainThread: boolean;
     requestType: string;
     rpcProvider: string;
+    isLargeAccount: boolean;
   };
 };
 
@@ -417,6 +422,7 @@ export type RpcTrackerRankingCounter = {
   data: {
     rpcProvider: string;
     bestBlockGap: number | "unknown";
+    isLargeAccount: boolean;
   };
 };
 

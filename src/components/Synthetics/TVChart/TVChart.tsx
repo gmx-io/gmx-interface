@@ -30,6 +30,7 @@ import { formatAmount } from "lib/numbers";
 import { TVChartHeader } from "./TVChartHeader";
 
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
@@ -39,7 +40,7 @@ let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
-  const chartToken = useSelector(selectChartToken);
+  const { chartToken, symbol } = useSelector(selectChartToken);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
@@ -59,6 +60,8 @@ export function TVChart() {
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
+
+  const { datafeed } = useTVDatafeed({ dataProvider });
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -242,13 +245,14 @@ export function TVChart() {
     <div className="ExchangeChart tv">
       <TVChartHeader isMobile={isMobile} />
       <div className="ExchangeChart-bottom App-box App-box-border">
-        {chartToken && (
+        {symbol && (
           <TVChartContainer
             chartLines={chartLines}
-            symbol={chartToken.symbol}
+            symbol={symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
             dataProvider={dataProvider}
+            datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
             chartToken={chartTokenProp}

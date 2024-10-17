@@ -30,14 +30,16 @@ export type ContractCallResult = {
   error?: string;
 };
 
+export type MulticallError = {
+  message: string;
+  shortMessage?: string;
+  functionName: string;
+  contractAddress: string;
+};
+
 export type MulticallErrors<T extends MulticallRequestConfig<any>> = {
   [contractKey in keyof T]: {
-    [callKey in keyof T[contractKey]["calls"]]: {
-      message: string;
-      shortMessage: string;
-      functionName: string;
-      contractAddress: string;
-    };
+    [callKey in keyof T[contractKey]["calls"]]: MulticallError;
   };
 };
 
