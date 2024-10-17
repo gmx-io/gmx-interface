@@ -372,6 +372,16 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/sats-ordinals",
       isSynthetic: true,
     },
+    {
+      name: "Polygon",
+      symbol: "POL",
+      decimals: 18,
+      priceDecimals: 4,
+      address: "0x9c74772b713a1B032aEB173E28683D937E51921c",
+      imageUrl: "https://assets.coingecko.com/coins/images/32440/standard/polygon.png?1698233684",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/polygon",
+      isSynthetic: true,
+    },
     // TODO: Enable
     // {
     //   name: "APE",
