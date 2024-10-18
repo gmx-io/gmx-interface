@@ -165,7 +165,7 @@ export function SettingsModal({
                   </Trans>
                   <br />
                   <br />
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
                 </div>
               )}
             />
@@ -215,7 +215,7 @@ export function SettingsModal({
                 </Trans>
                 <br />
                 <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2">Read more</ExternalLink>
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
               </div>
             )}
           />

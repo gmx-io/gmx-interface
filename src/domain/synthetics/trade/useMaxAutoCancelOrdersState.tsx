@@ -48,7 +48,7 @@ export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: str
           You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be
           canceled manually, while existing ones will still close automatically with their related position.
         </Trans>{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
           <Trans>Read more.</Trans>
         </ExternalLink>
       </AlertInfo>
