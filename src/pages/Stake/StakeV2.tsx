@@ -2073,15 +2073,6 @@ export default function StakeV2() {
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
-                <div className="label">
-                  {nativeTokenSymbol} ({wrappedTokenSymbol})
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "totalNativeTokenRewards", 18, 4, true)} ($
-                  {formatKeyAmount(processedData, "totalNativeTokenRewardsUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-row">
                 <div className="label">GMX</div>
                 <div>
                   {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} ($
@@ -2097,6 +2088,17 @@ export default function StakeV2() {
                   {formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
+              {(processedData?.totalNativeTokenRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n ? (
+                <div className="App-card-row">
+                  <div className="label">
+                    {nativeTokenSymbol} ({wrappedTokenSymbol})
+                  </div>
+                  <div>
+                    {formatKeyAmount(processedData, "totalNativeTokenRewards", 18, 4, true)} ($
+                    {formatKeyAmount(processedData, "totalNativeTokenRewardsUsd", USD_DECIMALS, 2, true)})
+                  </div>
+                </div>
+              ) : null}
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Total</Trans>
