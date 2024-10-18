@@ -38,7 +38,6 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <div id="container" className="TVChartContainer ExchangeChart-bottom-content" />
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -48,6 +47,6 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script type="module" src="/src/index.tsx"></script>
-    <script async src="/charting_library/charting_library.standalone.js"></script>
+    <script id="tsScript" async src="/charting_library/charting_library.standalone.js"></script>
   </body>
 </html>

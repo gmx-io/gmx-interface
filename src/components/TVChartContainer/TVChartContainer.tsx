@@ -127,13 +127,20 @@ const widgetOptions = {
   // ),
 };
 
-const widget = new window.TradingView.widget(widgetOptions);
-
-console.log("widget", widgetOptions.interval, widget);
-
 const tvWidgetRef = {
-  current: widget,
+  current: undefined as any,
 };
+
+const tvScript = document.getElementById("tsScript");
+
+if (window.TradingView) {
+  tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+} else if (tvScript) {
+  tvScript.addEventListener("load", function () {
+    console.log("tv script loaded");
+    tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+  });
+}
 
 let inited = false;
 
@@ -308,16 +315,11 @@ export default function TVChartContainer({
           return;
         }
 
-        setTimeout(() => {
-          if (!chartContainerRef.current) {
-            return;
-          }
-          const rect = chartContainerRef.current.getBoundingClientRect();
-          element.style.top = (rect.y + 0).toString() + "px";
-          element.style.left = rect.x.toString() + "px";
-          element.style.width = rect.width.toString() + "px";
-          element.style.height = (rect.height - 0).toString() + "px";
-        }, 0);
+        const rect = chartContainerRef.current.getBoundingClientRect();
+        element.style.top = (rect.y + 0).toString() + "px";
+        element.style.left = rect.x.toString() + "px";
+        element.style.width = rect.width.toString() + "px";
+        element.style.height = (rect.height - 0).toString() + "px";
       });
 
       // element.style.width = rect.width.toString() + "px";
