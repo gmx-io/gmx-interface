@@ -303,9 +303,20 @@ export default function TVChartContainer({
     if (chartContainerRef.current) {
       // chartContainerRef.current.appendChild(element);
       const rect = chartContainerRef.current.getBoundingClientRect();
+      const chart = chartContainerRef.current;
+      const body = document.body;
+      const docEl = document.documentElement;
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+      const clientTop = docEl.clientTop || body.clientTop || 0;
+      const clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+      const top = rect.top + scrollTop - clientTop;
+      const left = rect.left + scrollLeft - clientLeft;
+
       element.style.display = "block";
-      element.style.top = (rect.y + 0).toString() + "px";
-      element.style.left = rect.x.toString() + "px";
+      element.style.top = (top + 0).toString() + "px";
+      element.style.left = left.toString() + "px";
 
       element.style.width = rect.width.toString() + "px";
       element.style.height = (rect.height - 0).toString() + "px";
@@ -316,10 +327,44 @@ export default function TVChartContainer({
         }
 
         const rect = chartContainerRef.current.getBoundingClientRect();
-        element.style.top = (rect.y + 0).toString() + "px";
-        element.style.left = rect.x.toString() + "px";
+        const chart = chartContainerRef.current;
+        const body = document.body;
+        const docEl = document.documentElement;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+        const clientTop = docEl.clientTop || body.clientTop || 0;
+        const clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+        const top = rect.top + scrollTop - clientTop;
+        const left = rect.left + scrollLeft - clientLeft;
+
+        element.style.top = (top + 0).toString() + "px";
+        element.style.left = left.toString() + "px";
         element.style.width = rect.width.toString() + "px";
         element.style.height = (rect.height - 0).toString() + "px";
+
+        setTimeout(() => {
+          if (!chartContainerRef.current) {
+            return;
+          }
+
+          const rect = chartContainerRef.current.getBoundingClientRect();
+          const chart = chartContainerRef.current;
+          const body = document.body;
+          const docEl = document.documentElement;
+          const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+          const clientTop = docEl.clientTop || body.clientTop || 0;
+          const clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+          const top = rect.top + scrollTop - clientTop;
+          const left = rect.left + scrollLeft - clientLeft;
+
+          element.style.top = (top + 0).toString() + "px";
+          element.style.left = left.toString() + "px";
+          element.style.width = rect.width.toString() + "px";
+          element.style.height = (rect.height - 0).toString() + "px";
+        }, 1);
       });
 
       // element.style.width = rect.width.toString() + "px";
