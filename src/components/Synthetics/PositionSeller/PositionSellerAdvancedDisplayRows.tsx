@@ -160,7 +160,7 @@ export function PositionSellerAdvancedRows(p: Props) {
   }
 
   return (
-    <ExpandableRow title={t`Advanced display`} open={open} onToggle={setOpen}>
+    <ExpandableRow className="-my-15" title={t`Advanced display`} open={open} onToggle={setOpen}>
       {isTrigger && acceptablePriceImpactInputRow}
       {!isTrigger && <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />}
       <div className="App-card-divider" />

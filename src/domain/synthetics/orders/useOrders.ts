@@ -208,6 +208,7 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         isFrozen: order.flags.isFrozen as boolean,
         orderType: order.numbers.orderType as OrderType,
         decreasePositionSwapType: order.numbers.decreasePositionSwapType as DecreasePositionSwapType,
+        autoCancel: order.flags.autoCancel as boolean,
         data,
       };
     }),

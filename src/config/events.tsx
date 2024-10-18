@@ -33,6 +33,23 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "auto-cancel",
+    title: "TP/SL Orders Automatically Cancelled with Position Closure",
+    isActive: true,
+    startDate: "01 Oct 2024, 00:00",
+    endDate: "15 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        New Take-Profit and Stop-Loss orders will now be automatically cancelled when the associated position is fully
+        closed. You can disable this feature in the settings.
+        <br />
+        <br />
+        You can enable Auto-Cancel for your existing TP/SL orders by clicking{" "}
+        <Link to="/trade?setOrdersAutoCancel=1">here</Link>.
+      </>
+    ),
+  },
+  {
     id: "pol-aave-pepe-uni-markets-arbitrum",
     title: "POL, AAVE, PEPE, and UNI markets added on Arbitrum",
     isActive: true,
