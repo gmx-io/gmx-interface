@@ -1293,6 +1293,7 @@ export default function StakeV2() {
 
   const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
+  const extendedGmxTrackerAddress = getContract(chainId, "ExtendedGmxTracker");
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -1331,6 +1332,7 @@ export default function StakeV2() {
     feeGmxTrackerAddress,
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress,
+    extendedGmxTrackerAddress,
   ];
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -1959,7 +1961,7 @@ export default function StakeV2() {
                 </div>
                 <div>
                   <Tooltip
-                    handle={`$${formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)}`}
+                    handle={`$${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
                     position="bottom-end"
                     renderContent={() => {
                       return (
@@ -2075,8 +2077,8 @@ export default function StakeV2() {
               <div className="App-card-row">
                 <div className="label">GMX</div>
                 <div>
-                  {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} ($
-                  {formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)})
+                  {formatKeyAmount(processedData, "totalGmxRewards", 18, 4, true)} ($
+                  {formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
               <div className="App-card-row">

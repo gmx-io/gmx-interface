@@ -1137,7 +1137,14 @@ export function getStakingData(stakingInfo) {
     return;
   }
 
-  const keys = ["stakedGmxTracker", "bonusGmxTracker", "feeGmxTracker", "stakedGlpTracker", "feeGlpTracker"];
+  const keys = [
+    "stakedGmxTracker",
+    "bonusGmxTracker",
+    "feeGmxTracker",
+    "stakedGlpTracker",
+    "feeGlpTracker",
+    "extendedGmxTracker",
+  ];
   const data = {};
   const propsLength = 5;
 
@@ -1182,7 +1189,7 @@ export type ProcessedData = Partial<{
   stakedGmxTrackerAnnualRewardsUsd: bigint;
   feeGmxTrackerAnnualRewardsUsd: bigint;
   gmxAprTotal: bigint;
-  totalGmxRewardsUsd: bigint;
+  totalStakingRewardsUsd: bigint;
   glpSupply: bigint;
   glpPrice: bigint;
   glpSupplyUsd: bigint;
@@ -1200,6 +1207,8 @@ export type ProcessedData = Partial<{
   totalGlpRewardsUsd: bigint;
   totalEsGmxRewards: bigint;
   totalEsGmxRewardsUsd: bigint;
+  totalGmxRewards: bigint;
+  totalGmxRewardsUsd: bigint;
   gmxVesterRewards: bigint;
   glpVesterRewards: bigint;
   totalVesterRewards: bigint;
@@ -1272,6 +1281,13 @@ export function getProcessedData(
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
   data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
+  data.extendedGmxTrackerRewards = stakingData.extendedGmxTracker.claimable;
+  data.extendedGmxTrackerRewardsUsd = mulDiv(
+    stakingData.extendedGmxTracker.claimable,
+    nativeTokenPrice,
+    expandDecimals(1, 18)
+  );
+
   data.stakedGmxTrackerAnnualRewardsUsd =
     (stakingData.stakedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
   data.gmxAprForEsGmx =
@@ -1287,7 +1303,7 @@ export function getProcessedData(
 
   data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
 
-  data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
+  data.totalStakingRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
 
   data.glpSupply = supplyData.glp;
   data.glpPrice =
@@ -1333,6 +1349,9 @@ export function getProcessedData(
   data.glpVesterRewards = vestingData.glpVester.claimable;
   data.totalVesterRewards = data.gmxVesterRewards + data.glpVesterRewards;
   data.totalVesterRewardsUsd = mulDiv(data.totalVesterRewards, gmxPrice, expandDecimals(1, 18));
+
+  data.totalGmxRewards = data.totalVesterRewards + data.extendedGmxTrackerRewards;
+  data.totalGmxRewardsUsd = data.totalVesterRewardsUsd + data.extendedGmxTrackerRewardsUsd;
 
   data.totalNativeTokenRewards = data.feeGmxTrackerRewards + data.feeGlpTrackerRewards;
   data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd + data.feeGlpTrackerRewardsUsd;
