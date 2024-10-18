@@ -72,8 +72,7 @@ export function ExpandableRow({
     >
       {!hideExpand && (
         <ExchangeInfo.Row
-          className={cx("!items-center", {
-            "!mb-12": open,
+          className={cx("!items-center", open ? "!mb-12" : "!mb-0", {
             "cursor-not-allowed": disabled,
           })}
           onClick={disabled ? undefined : handleOnClick}
