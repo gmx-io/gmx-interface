@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
@@ -11,9 +10,9 @@ import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
 
 import { TokensData, useTokensDataRequest } from "../../tokens";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "../types";
+import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
 import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
-import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
