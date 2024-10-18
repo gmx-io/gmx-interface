@@ -45,6 +45,11 @@ type MulticallFetcherConfig = {
   };
 };
 
+const timings = [];
+function median() {
+  return timings.sort((a, b) => a - b)[Math.ceil(timings.length / 2)];
+}
+
 const CALL_COUNT_MAIN_THREAD_THRESHOLD = 10;
 
 const store: {
@@ -224,7 +229,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     }
   }
 
-  if (disableBatching || (isDevelopment() && getIsMulticallBatchingDisabled())) {
+  if (isDevelopment() && getIsMulticallBatchingDisabled()) {
     debugLog(() => `Multicall batching disabled, executing immediately. Multicall name: ${name ?? "?"}`);
     executeChainsMulticalls() as any;
     return promise as any;
@@ -249,6 +254,10 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
 
   return promise.then((result) => {
     const duration = performance.now() - durationStart;
+    // @ts-ignore
+    timings.push(duration);
+
+    console.log("batched timing", duration, median());
 
     if (result.success) {
       emitMetricTiming<MulticallBatchedTiming>({

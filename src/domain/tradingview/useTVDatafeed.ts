@@ -118,7 +118,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
 
 export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi>;
 
-function buildFeeder({
+export function buildFeeder({
   chainId,
   stableTokens,
   supportedResolutions,
@@ -206,12 +206,10 @@ function buildFeeder({
             return;
           }
 
-          if (getIsFlagEnabled("testCandlesPreload")) {
-            tvDataProviderRef.current?.saveTVParamsCache(chainId, {
-              resolution,
-              countBack: periodParams.countBack,
-            });
-          }
+          tvDataProviderRef.current?.saveTVParamsCache(chainId, {
+            resolution,
+            countBack: periodParams.countBack,
+          });
 
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
@@ -234,7 +232,8 @@ function buildFeeder({
           }
 
           onHistoryCallback(bars, { noData });
-        } catch {
+        } catch (e) {
+          console.error(e);
           onErrorCallback("Unable to load historical data!");
         }
       },

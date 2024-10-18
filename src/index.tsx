@@ -11,13 +11,11 @@ import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 
 createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Router>
-      <WalletProvider>
-        <App />
-      </WalletProvider>
-    </Router>
-  </React.StrictMode>
+  <Router>
+    <WalletProvider>
+      <App />
+    </WalletProvider>
+  </Router>
 );
 
 // If you want to start measuring performance in your app, pass a function
