@@ -1,19 +1,19 @@
+import chunk from "lodash/chunk";
 import entries from "lodash/entries";
 import throttle from "lodash/throttle";
 import values from "lodash/values";
 import { stableHash } from "swr/_internal";
-import chunk from "lodash/chunk";
 
 import { isDevelopment } from "config/env";
+import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { promiseWithResolvers } from "lib/utils";
-import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 
+import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import { debugLog, getIsMulticallBatchingDisabled } from "lib/multicall/debug";
 import { executeMulticallMainThread } from "lib/multicall/executeMulticallMainThread";
 import { executeMulticallWorker } from "lib/multicall/executeMulticallWorker";
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
-import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 
 type MulticallFetcherConfig = {
   [chainId: number]: {
@@ -122,7 +122,8 @@ export function oldExecuteMulticall<TConfig extends MulticallRequestConfig<any>>
   /**
    * For debugging purposes, you can provide a name to the multicall request.
    */
-  name?: string
+  name?: string,
+  disableBatching?: boolean
 ): Promise<MulticallResult<TConfig>> {
   let groupNameMapping: {
     // Contract address
@@ -255,7 +256,7 @@ export function oldExecuteMulticall<TConfig extends MulticallRequestConfig<any>>
     return msg;
   });
 
-  if (isDevelopment() && getIsMulticallBatchingDisabled()) {
+  if (disableBatching || (isDevelopment() && getIsMulticallBatchingDisabled())) {
     debugLog(() => `Multicall batching disabled, executing immediately. Multicall name: ${name ?? "?"}`);
     executeChainsMulticalls() as any;
     return promise as any;
