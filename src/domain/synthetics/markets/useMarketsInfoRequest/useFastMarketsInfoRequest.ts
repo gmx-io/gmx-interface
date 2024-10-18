@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { metrics } from "lib/metrics";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
@@ -116,234 +117,239 @@ export function useFastMarketsInfoRequest(chainId: number) {
     data: fastMarketInfoData,
     error,
     isLoading,
-  } = useSWR<FastMarketInfoData>(["useFastMarketsInfoRequest", chainId], {
+  } = useSWR<FastMarketInfoData>([chainId, "useFastMarketsInfoRequest"], {
     refreshInterval: undefined,
     fetcher: async () => {
-      const client = getSubsquidGraphClient(chainId);
-      const res = await client?.query({
-        query: gql`
-            query MarketsInfo() {
-                marketInfos {
-                    marketTokenAddress,
-                    indexTokenAddress,
-                    longTokenAddress,
-                    shortTokenAddress,
+      try {
+        const client = getSubsquidGraphClient(chainId);
+        const res = await client?.query({
+          query: gql`
+            query MarketsInfo {
+              marketInfos {
+                marketTokenAddress
+                indexTokenAddress
+                longTokenAddress
+                shortTokenAddress
 
-                    isDisabled,
+                isDisabled
 
-                    longPoolAmount,
-                    shortPoolAmount,
+                longPoolAmount
+                shortPoolAmount
 
-                    maxLongPoolAmount,
-                    maxShortPoolAmount,
-                    maxLongPoolUsdForDeposit,
-                    maxShortPoolUsdForDeposit,
+                maxLongPoolAmount
+                maxShortPoolAmount
+                maxLongPoolUsdForDeposit
+                maxShortPoolUsdForDeposit
 
-                    longPoolAmountAdjustment,
-                    shortPoolAmountAdjustment,
+                longPoolAmountAdjustment
+                shortPoolAmountAdjustment
 
-                    poolValueMax,
-                    poolValueMin,
+                poolValueMax
+                poolValueMin
 
-                    reserveFactorLong,
-                    reserveFactorShort,
+                reserveFactorLong
+                reserveFactorShort
 
-                    openInterestReserveFactorLong,
-                    openInterestReserveFactorShort,
+                openInterestReserveFactorLong
+                openInterestReserveFactorShort
 
-                    maxOpenInterestLong,
-                    maxOpenInterestShort,
+                maxOpenInterestLong
+                maxOpenInterestShort
 
-                    borrowingFactorLong,
-                    borrowingFactorShort,
-                    borrowingExponentFactorLong,
-                    borrowingExponentFactorShort,
+                borrowingFactorLong
+                borrowingFactorShort
+                borrowingExponentFactorLong
+                borrowingExponentFactorShort
 
-                    fundingFactor,
-                    fundingExponentFactor,
-                    fundingIncreaseFactorPerSecond,
-                    fundingDecreaseFactorPerSecond,
-                    thresholdForStableFunding,
-                    thresholdForDecreaseFunding,
-                    minFundingFactorPerSecond,
-                    maxFundingFactorPerSecond,
+                fundingFactor
+                fundingExponentFactor
+                fundingIncreaseFactorPerSecond
+                fundingDecreaseFactorPerSecond
+                thresholdForStableFunding
+                thresholdForDecreaseFunding
+                minFundingFactorPerSecond
+                maxFundingFactorPerSecond
 
-                    totalBorrowingFees,
+                totalBorrowingFees
 
-                    positionImpactPoolAmount,
-                    minPositionImpactPoolAmount,
-                    positionImpactPoolDistributionRate,
+                positionImpactPoolAmount
+                minPositionImpactPoolAmount
+                positionImpactPoolDistributionRate
 
-                    minCollateralFactor,
-                    minCollateralFactorForOpenInterestLong,
-                    minCollateralFactorForOpenInterestShort,
+                minCollateralFactor
+                minCollateralFactorForOpenInterestLong
+                minCollateralFactorForOpenInterestShort
 
-                    swapImpactPoolAmountLong,
-                    swapImpactPoolAmountShort,
+                swapImpactPoolAmountLong
+                swapImpactPoolAmountShort
 
-                    maxPnlFactorForTradersLong,
-                    maxPnlFactorForTradersShort,
+                maxPnlFactorForTradersLong
+                maxPnlFactorForTradersShort
 
-                    pnlLongMin,
-                    pnlLongMax,
-                    pnlShortMin,
-                    pnlShortMax,
+                pnlLongMin
+                pnlLongMax
+                pnlShortMin
+                pnlShortMax
 
-                    netPnlMin,
-                    netPnlMax,
+                netPnlMin
+                netPnlMax
 
-                    longInterestUsd,
-                    shortInterestUsd,
-                    longInterestInTokens,
-                    shortInterestInTokens,
+                longInterestUsd
+                shortInterestUsd
+                longInterestInTokens
+                shortInterestInTokens
 
-                    positionFeeFactorForPositiveImpact,
-                    positionFeeFactorForNegativeImpact,
-                    positionImpactFactorPositive,
-                    positionImpactFactorNegative,
-                    maxPositionImpactFactorPositive,
-                    maxPositionImpactFactorNegative,
-                    maxPositionImpactFactorForLiquidations,
-                    positionImpactExponentFactor,
+                positionFeeFactorForPositiveImpact
+                positionFeeFactorForNegativeImpact
+                positionImpactFactorPositive
+                positionImpactFactorNegative
+                maxPositionImpactFactorPositive
+                maxPositionImpactFactorNegative
+                maxPositionImpactFactorForLiquidations
+                positionImpactExponentFactor
 
-                    swapFeeFactorForPositiveImpact,
-                    swapFeeFactorForNegativeImpact,
-                    swapImpactFactorPositive,
-                    swapImpactFactorNegative,
-                    swapImpactExponentFactor,
+                swapFeeFactorForPositiveImpact
+                swapFeeFactorForNegativeImpact
+                swapImpactFactorPositive
+                swapImpactFactorNegative
+                swapImpactExponentFactor
 
-                    borrowingFactorPerSecondForLongs,
-                    borrowingFactorPerSecondForShorts,
+                borrowingFactorPerSecondForLongs
+                borrowingFactorPerSecondForShorts
 
-                    fundingFactorPerSecond,
-                    longsPayShorts,
+                fundingFactorPerSecond
+                longsPayShorts
 
-                    virtualPoolAmountForLongToken,
-                    virtualPoolAmountForShortToken,
-                    virtualInventoryForPositions,
+                virtualPoolAmountForLongToken
+                virtualPoolAmountForShortToken
+                virtualInventoryForPositions
 
-                    virtualMarketId,
-                    virtualLongTokenId,
-                    virtualShortTokenId,
-                }
+                virtualMarketId
+                virtualLongTokenId
+                virtualShortTokenId
+              }
             }
           `,
-        fetchPolicy: "no-cache",
-      });
+          fetchPolicy: "no-cache",
+        });
 
-      const marketInfos = res?.data?.marketInfos;
+        const marketInfos = res?.data?.marketInfos;
 
-      if (!marketInfos) {
-        return undefined;
+        if (!marketInfos) {
+          return undefined;
+        }
+
+        return marketInfos.reduce((acc, mInfo) => {
+          acc[mInfo.marketTokenAddress] = {
+            marketTokenAddress: mInfo.marketTokenAddress,
+            indexTokenAddress: mInfo.indexTokenAddress,
+            longTokenAddress: mInfo.longTokenAddress,
+            shortTokenAddress: mInfo.shortTokenAddress,
+
+            isDisabled: mInfo.isDisabled,
+
+            longPoolAmount: BigInt(mInfo.longPoolAmount),
+            shortPoolAmount: BigInt(mInfo.shortPoolAmount),
+
+            maxLongPoolAmount: BigInt(mInfo.maxLongPoolAmount),
+            maxShortPoolAmount: BigInt(mInfo.maxShortPoolAmount),
+            maxLongPoolUsdForDeposit: BigInt(mInfo.maxLongPoolUsdForDeposit),
+            maxShortPoolUsdForDeposit: BigInt(mInfo.maxShortPoolUsdForDeposit),
+
+            longPoolAmountAdjustment: BigInt(mInfo.longPoolAmountAdjustment),
+            shortPoolAmountAdjustment: BigInt(mInfo.shortPoolAmountAdjustment),
+
+            poolValueMax: BigInt(mInfo.poolValueMax),
+            poolValueMin: BigInt(mInfo.poolValueMin),
+
+            reserveFactorLong: BigInt(mInfo.reserveFactorLong),
+            reserveFactorShort: BigInt(mInfo.reserveFactorShort),
+
+            openInterestReserveFactorLong: BigInt(mInfo.openInterestReserveFactorLong),
+            openInterestReserveFactorShort: BigInt(mInfo.openInterestReserveFactorShort),
+
+            maxOpenInterestLong: BigInt(mInfo.maxOpenInterestLong),
+            maxOpenInterestShort: BigInt(mInfo.maxOpenInterestShort),
+
+            borrowingFactorLong: BigInt(mInfo.borrowingFactorLong),
+            borrowingFactorShort: BigInt(mInfo.borrowingFactorShort),
+            borrowingExponentFactorLong: BigInt(mInfo.borrowingExponentFactorLong),
+            borrowingExponentFactorShort: BigInt(mInfo.borrowingExponentFactorShort),
+
+            fundingFactor: BigInt(mInfo.fundingFactor),
+            fundingExponentFactor: BigInt(mInfo.fundingExponentFactor),
+            fundingIncreaseFactorPerSecond: BigInt(mInfo.fundingIncreaseFactorPerSecond),
+            fundingDecreaseFactorPerSecond: BigInt(mInfo.fundingDecreaseFactorPerSecond),
+            thresholdForStableFunding: BigInt(mInfo.thresholdForStableFunding),
+            thresholdForDecreaseFunding: BigInt(mInfo.thresholdForDecreaseFunding),
+            minFundingFactorPerSecond: BigInt(mInfo.minFundingFactorPerSecond),
+            maxFundingFactorPerSecond: BigInt(mInfo.maxFundingFactorPerSecond),
+
+            totalBorrowingFees: BigInt(mInfo.totalBorrowingFees),
+
+            positionImpactPoolAmount: BigInt(mInfo.positionImpactPoolAmount),
+            minPositionImpactPoolAmount: BigInt(mInfo.minPositionImpactPoolAmount),
+            positionImpactPoolDistributionRate: BigInt(mInfo.positionImpactPoolDistributionRate),
+
+            minCollateralFactor: BigInt(mInfo.minCollateralFactor),
+            minCollateralFactorForOpenInterestLong: BigInt(mInfo.minCollateralFactorForOpenInterestLong),
+            minCollateralFactorForOpenInterestShort: BigInt(mInfo.minCollateralFactorForOpenInterestShort),
+
+            swapImpactPoolAmountLong: BigInt(mInfo.swapImpactPoolAmountLong),
+            swapImpactPoolAmountShort: BigInt(mInfo.swapImpactPoolAmountShort),
+
+            maxPnlFactorForTradersLong: BigInt(mInfo.maxPnlFactorForTradersLong),
+            maxPnlFactorForTradersShort: BigInt(mInfo.maxPnlFactorForTradersShort),
+
+            pnlLongMin: BigInt(mInfo.pnlLongMin),
+            pnlLongMax: BigInt(mInfo.pnlLongMax),
+            pnlShortMin: BigInt(mInfo.pnlShortMin),
+            pnlShortMax: BigInt(mInfo.pnlShortMax),
+
+            netPnlMin: BigInt(mInfo.netPnlMin),
+            netPnlMax: BigInt(mInfo.netPnlMax),
+
+            longInterestUsd: BigInt(mInfo.longInterestUsd),
+            shortInterestUsd: BigInt(mInfo.shortInterestUsd),
+            longInterestInTokens: BigInt(mInfo.longInterestInTokens),
+            shortInterestInTokens: BigInt(mInfo.shortInterestInTokens),
+
+            positionFeeFactorForPositiveImpact: BigInt(mInfo.positionFeeFactorForPositiveImpact),
+            positionFeeFactorForNegativeImpact: BigInt(mInfo.positionFeeFactorForNegativeImpact),
+            positionImpactFactorPositive: BigInt(mInfo.positionImpactFactorPositive),
+            positionImpactFactorNegative: BigInt(mInfo.positionImpactFactorNegative),
+            maxPositionImpactFactorPositive: BigInt(mInfo.maxPositionImpactFactorPositive),
+            maxPositionImpactFactorNegative: BigInt(mInfo.maxPositionImpactFactorNegative),
+            maxPositionImpactFactorForLiquidations: BigInt(mInfo.maxPositionImpactFactorForLiquidations),
+            positionImpactExponentFactor: BigInt(mInfo.positionImpactExponentFactor),
+
+            swapFeeFactorForPositiveImpact: BigInt(mInfo.swapFeeFactorForPositiveImpact),
+            swapFeeFactorForNegativeImpact: BigInt(mInfo.swapFeeFactorForNegativeImpact),
+            swapImpactFactorPositive: BigInt(mInfo.swapImpactFactorPositive),
+            swapImpactFactorNegative: BigInt(mInfo.swapImpactFactorNegative),
+            swapImpactExponentFactor: BigInt(mInfo.swapImpactExponentFactor),
+
+            borrowingFactorPerSecondForLongs: BigInt(mInfo.borrowingFactorPerSecondForLongs),
+            borrowingFactorPerSecondForShorts: BigInt(mInfo.borrowingFactorPerSecondForShorts),
+
+            fundingFactorPerSecond: BigInt(mInfo.fundingFactorPerSecond),
+            longsPayShorts: mInfo.longsPayShorts,
+
+            virtualPoolAmountForLongToken: BigInt(mInfo.virtualPoolAmountForLongToken),
+            virtualPoolAmountForShortToken: BigInt(mInfo.virtualPoolAmountForShortToken),
+            virtualInventoryForPositions: BigInt(mInfo.virtualInventoryForPositions),
+
+            virtualMarketId: mInfo.virtualMarketId,
+            virtualLongTokenId: mInfo.virtualLongTokenId,
+            virtualShortTokenId: mInfo.virtualShortTokenId,
+          };
+
+          return acc;
+        });
+      } catch (e) {
+        metrics.pushError(e, "useFastMarketsInfoRequest");
+        throw e;
       }
-
-      return marketInfos.reduce((acc, mInfo) => {
-        acc[mInfo.marketTokenAddress] = {
-          marketTokenAddress: mInfo.marketTokenAddress,
-          indexTokenAddress: mInfo.indexTokenAddress,
-          longTokenAddress: mInfo.longTokenAddress,
-          shortTokenAddress: mInfo.shortTokenAddress,
-
-          isDisabled: mInfo.isDisabled,
-
-          longPoolAmount: BigInt(mInfo.longPoolAmount),
-          shortPoolAmount: BigInt(mInfo.shortPoolAmount),
-
-          maxLongPoolAmount: BigInt(mInfo.maxLongPoolAmount),
-          maxShortPoolAmount: BigInt(mInfo.maxShortPoolAmount),
-          maxLongPoolUsdForDeposit: BigInt(mInfo.maxLongPoolUsdForDeposit),
-          maxShortPoolUsdForDeposit: BigInt(mInfo.maxShortPoolUsdForDeposit),
-
-          longPoolAmountAdjustment: BigInt(mInfo.longPoolAmountAdjustment),
-          shortPoolAmountAdjustment: BigInt(mInfo.shortPoolAmountAdjustment),
-
-          poolValueMax: BigInt(mInfo.poolValueMax),
-          poolValueMin: BigInt(mInfo.poolValueMin),
-
-          reserveFactorLong: BigInt(mInfo.reserveFactorLong),
-          reserveFactorShort: BigInt(mInfo.reserveFactorShor),
-
-          openInterestReserveFactorLong: BigInt(mInfo.openInterestReserveFactorLong),
-          openInterestReserveFactorShort: BigInt(mInfo.openInterestReserveFactorShort),
-
-          maxOpenInterestLong: BigInt(mInfo.maxOpenInterestLong),
-          maxOpenInterestShort: BigInt(mInfo.maxOpenInterestShort),
-
-          borrowingFactorLong: BigInt(mInfo.borrowingFactorLong),
-          borrowingFactorShort: BigInt(mInfo.borrowingFactorShort),
-          borrowingExponentFactorLong: BigInt(mInfo.borrowingExponentFactorLong),
-          borrowingExponentFactorShort: BigInt(mInfo.borrowingExponentFactorShort),
-
-          fundingFactor: BigInt(mInfo.fundingFactor),
-          fundingExponentFactor: BigInt(mInfo.fundingExponentFactor),
-          fundingIncreaseFactorPerSecond: BigInt(mInfo.fundingIncreaseFactorPerSecond),
-          fundingDecreaseFactorPerSecond: BigInt(mInfo.fundingDecreaseFactorPerSecond),
-          thresholdForStableFunding: BigInt(mInfo.thresholdForStableFunding),
-          thresholdForDecreaseFunding: BigInt(mInfo.thresholdForDecreaseFunding),
-          minFundingFactorPerSecond: BigInt(mInfo.minFundingFactorPerSecond),
-          maxFundingFactorPerSecond: BigInt(mInfo.maxFundingFactorPerSecond),
-
-          totalBorrowingFees: BigInt(mInfo.totalBorrowingFees),
-
-          positionImpactPoolAmount: BigInt(mInfo.positionImpactPoolAmount),
-          minPositionImpactPoolAmount: BigInt(mInfo.minPositionImpactPoolAmount),
-          positionImpactPoolDistributionRate: BigInt(mInfo.positionImpactPoolDistributionRate),
-
-          minCollateralFactor: BigInt(mInfo.minCollateralFactor),
-          minCollateralFactorForOpenInterestLong: BigInt(mInfo.minCollateralFactorForOpenInterestLong),
-          minCollateralFactorForOpenInterestShort: BigInt(mInfo.minCollateralFactorForOpenInterestShort),
-
-          swapImpactPoolAmountLong: BigInt(mInfo.swapImpactPoolAmountLong),
-          swapImpactPoolAmountShort: BigInt(mInfo.swapImpactPoolAmountShort),
-
-          maxPnlFactorForTradersLong: BigInt(mInfo.maxPnlFactorForTradersLong),
-          maxPnlFactorForTradersShort: BigInt(mInfo.maxPnlFactorForTradersShort),
-
-          pnlLongMin: BigInt(mInfo.pnlLongMin),
-          pnlLongMax: BigInt(mInfo.pnlLongMax),
-          pnlShortMin: BigInt(mInfo.pnlShortMin),
-          pnlShortMax: BigInt(mInfo.pnlShortMax),
-
-          netPnlMin: BigInt(mInfo.netPnlMin),
-          netPnlMax: BigInt(mInfo.netPnlMax),
-
-          longInterestUsd: BigInt(mInfo.longInterestUsd),
-          shortInterestUsd: BigInt(mInfo.shortInterestUsd),
-          longInterestInTokens: BigInt(mInfo.longInterestInTokens),
-          shortInterestInTokens: BigInt(mInfo.shortInterestInTokens),
-
-          positionFeeFactorForPositiveImpact: BigInt(mInfo.positionFeeFactorForPositiveImpact),
-          positionFeeFactorForNegativeImpact: BigInt(mInfo.positionFeeFactorForNegativeImpact),
-          positionImpactFactorPositive: BigInt(mInfo.positionImpactFactorPositive),
-          positionImpactFactorNegative: BigInt(mInfo.positionImpactFactorNegative),
-          maxPositionImpactFactorPositive: BigInt(mInfo.maxPositionImpactFactorPositive),
-          maxPositionImpactFactorNegative: BigInt(mInfo.maxPositionImpactFactorNegative),
-          maxPositionImpactFactorForLiquidations: BigInt(mInfo.maxPositionImpactFactorForLiquidations),
-          positionImpactExponentFactor: BigInt(mInfo.positionImpactExponentFactor),
-
-          swapFeeFactorForPositiveImpact: BigInt(mInfo.swapFeeFactorForPositiveImpact),
-          swapFeeFactorForNegativeImpact: BigInt(mInfo.swapFeeFactorForNegativeImpact),
-          swapImpactFactorPositive: BigInt(mInfo.swapImpactFactorPositive),
-          swapImpactFactorNegative: BigInt(mInfo.swapImpactFactorNegative),
-          swapImpactExponentFactor: BigInt(mInfo.swapImpactExponentFactor),
-
-          borrowingFactorPerSecondForLongs: BigInt(mInfo.borrowingFactorPerSecondForLongs),
-          borrowingFactorPerSecondForShorts: BigInt(mInfo.borrowingFactorPerSecondForShorts),
-
-          fundingFactorPerSecond: BigInt(mInfo.fundingFactorPerSecond),
-          longsPayShorts: mInfo.longsPayShorts,
-
-          virtualPoolAmountForLongToken: BigInt(mInfo.virtualPoolAmountForLongToken),
-          virtualPoolAmountForShortToken: BigInt(mInfo.virtualPoolAmountForShortToken),
-          virtualInventoryForPositions: BigInt(mInfo.virtualInventoryForPositions),
-
-          virtualMarketId: mInfo.virtualMarketId,
-          virtualLongTokenId: mInfo.virtualLongTokenId,
-          virtualShortTokenId: mInfo.virtualShortTokenId,
-        };
-
-        return acc;
-      });
     },
   });
 
