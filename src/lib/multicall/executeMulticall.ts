@@ -157,6 +157,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   let resolvedCallsCount = 0;
 
   const { promise, resolve } = promiseWithResolvers<MulticallResult<any>>();
+  console.time(`req ${name}`);
 
   const callResultHandler: CallResultHandler = (destination, callResult, callError) => {
     resolvedCallsCount++;
@@ -175,6 +176,8 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     }
 
     if (resolvedCallsCount === requestCallsCount) {
+      console.timeEnd(`req ${name}`);
+      console.log("resolve", resolvedCallsCount);
       return resolve(requestResult);
     }
   };

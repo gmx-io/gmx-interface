@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { Token } from "domain/tokens";
+import { getIsEquivalentTokens, Token } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { USD_DECIMALS } from "config/factors";
 import { applyFactor, expandDecimals, PRECISION } from "lib/numbers";
@@ -165,6 +165,60 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   } else {
     return marketInfo.shortInterestUsd;
   }
+}
+
+export function getMarketDivisor({
+  longTokenAddress,
+  shortTokenAddress,
+}: {
+  longTokenAddress: string;
+  shortTokenAddress: string;
+}) {
+  return longTokenAddress === shortTokenAddress ? 2n : 1n;
+}
+
+export function calculateTotalOpenInterestUsd(p: {
+  longInterestUsingLongToken: bigint;
+  longInterestUsingShortToken: bigint;
+  shortInterestUsingLongToken: bigint;
+  shortInterestUsingShortToken: bigint;
+}) {
+  const {
+    longInterestUsingLongToken,
+    longInterestUsingShortToken,
+    shortInterestUsingLongToken,
+    shortInterestUsingShortToken,
+  } = p;
+
+  const longInterestUsd = longInterestUsingLongToken + longInterestUsingShortToken;
+  const shortInterestUsd = shortInterestUsingLongToken + shortInterestUsingShortToken;
+
+  return {
+    longInterestUsd,
+    shortInterestUsd,
+  };
+}
+
+export function calculateTotalOpenInterestInTokens(p: {
+  longInterestInTokensUsingLongToken: bigint;
+  longInterestInTokensUsingShortToken: bigint;
+  shortInterestInTokensUsingLongToken: bigint;
+  shortInterestInTokensUsingShortToken: bigint;
+}) {
+  const {
+    longInterestInTokensUsingLongToken,
+    longInterestInTokensUsingShortToken,
+    shortInterestInTokensUsingLongToken,
+    shortInterestInTokensUsingShortToken,
+  } = p;
+
+  const longInterestInTokens = longInterestInTokensUsingLongToken + longInterestInTokensUsingShortToken;
+  const shortInterestInTokens = shortInterestInTokensUsingLongToken + shortInterestInTokensUsingShortToken;
+
+  return {
+    longInterestInTokens,
+    shortInterestInTokens,
+  };
 }
 
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {

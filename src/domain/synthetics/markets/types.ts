@@ -205,3 +205,12 @@ export interface GlvMarket {
   glvMaxMarketTokenBalanceAmount: bigint;
   gmBalance: bigint;
 }
+
+export type ClaimableFunding = {
+  claimableFundingAmountLong: bigint;
+  claimableFundingAmountShort: bigint;
+};
+
+export type ClaimableFundingData = {
+  [marketAddress: string]: ClaimableFunding;
+};

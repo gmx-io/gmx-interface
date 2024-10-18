@@ -46,6 +46,7 @@ const BATCH_CONFIGS: Record<
     http: {
       batchSize: 0, // disable batches, here batchSize is the number of eth_calls in a batch
       wait: 0, // keep this setting in case batches are enabled in future
+      // @ts-ignore
     },
     client: {
       multicall: {
