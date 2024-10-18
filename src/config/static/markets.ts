@@ -326,6 +326,42 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // POL/USD [ETH-USDC]
+    "0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4": {
+      enabled: true,
+      listingDate: p("17 Oct 2024"),
+      marketTokenAddress: "0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4",
+      indexTokenAddress: "0x9c74772b713a1B032aEB173E28683D937E51921c",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // AAVE/USD [ETH-USDC]
+    "0x77B2eC357b56c7d05a87971dB0188DBb0C7836a5": {
+      enabled: true,
+      listingDate: p("17 Oct 2024"),
+      marketTokenAddress: "0x77B2eC357b56c7d05a87971dB0188DBb0C7836a5",
+      indexTokenAddress: "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // PEPE/USD [ETH-USDC]
+    "0x0Bb2a83F995E1E1eae9D7fDCE68Ab1ac55b2cc85": {
+      enabled: true,
+      listingDate: p("17 Oct 2024"),
+      marketTokenAddress: "0x0Bb2a83F995E1E1eae9D7fDCE68Ab1ac55b2cc85",
+      indexTokenAddress: "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // UNI/USD [ETH-USDC]
+    "0xD8471b9Ea126272E6d32B5e4782Ed76DB7E554a4": {
+      enabled: true,
+      listingDate: p("17 Oct 2024"),
+      marketTokenAddress: "0xD8471b9Ea126272E6d32B5e4782Ed76DB7E554a4",
+      indexTokenAddress: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

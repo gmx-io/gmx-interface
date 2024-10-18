@@ -20,59 +20,65 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
   return (
-    <div className={cx("Footer-wrapper", { home: isHome })}>
-      <div className="Footer-logo">
-        <img src={logoImg} alt="MetaMask" />
-      </div>
-      <div className="Footer-social-link-block">
-        {SOCIAL_LINKS.map((platform) => {
-          return (
-            <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
-              <img src={platform.icon} alt={platform.name} />
-            </ExternalLink>
-          );
-        })}
-      </div>
-      <div className="Footer-links">
-        {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
-          if (external) {
+    <>
+      <div className={cx("Footer-wrapper", { home: isHome })}>
+        <div className="Footer-logo">
+          <img src={logoImg} alt="MetaMask" />
+        </div>
+        <div className="Footer-social-link-block">
+          {SOCIAL_LINKS.map((platform) => {
             return (
-              <ExternalLink key={label} href={link} className="Footer-link">
-                {label}
+              <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
+                <img src={platform.icon} alt={platform.name} />
               </ExternalLink>
             );
-          }
-          if (isAppLink) {
-            if (shouldShowRedirectModal(redirectPopupTimestamp)) {
+          })}
+        </div>
+        <div className="Footer-links">
+          {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
+            if (external) {
               return (
-                <div key={label} className="Footer-link a" onClick={() => showRedirectModal && showRedirectModal(link)}>
+                <ExternalLink key={label} href={link} className="Footer-link">
                   {label}
-                </div>
-              );
-            } else {
-              const baseUrl = getAppBaseUrl();
-              return (
-                <a key={label} href={baseUrl + link} className="Footer-link">
-                  {label}
-                </a>
+                </ExternalLink>
               );
             }
-          }
-          return (
-            <NavLink key={link} to={link} className="Footer-link" activeClassName="active">
-              {label}
-            </NavLink>
-          );
-        })}
-        {!isHome && (
-          <div className="Footer-link" onClick={() => setIsUserFeedbackModalVisible(true)}>
-            <Trans>Leave feedback</Trans>
-          </div>
-        )}
+            if (isAppLink) {
+              if (shouldShowRedirectModal(redirectPopupTimestamp)) {
+                return (
+                  <div
+                    key={label}
+                    className="Footer-link a"
+                    onClick={() => showRedirectModal && showRedirectModal(link)}
+                  >
+                    {label}
+                  </div>
+                );
+              } else {
+                const baseUrl = getAppBaseUrl();
+                return (
+                  <a key={label} href={baseUrl + link} className="Footer-link">
+                    {label}
+                  </a>
+                );
+              }
+            }
+            return (
+              <NavLink key={link} to={link} className="Footer-link" activeClassName="active">
+                {label}
+              </NavLink>
+            );
+          })}
+          {!isHome && (
+            <div className="Footer-link" onClick={() => setIsUserFeedbackModalVisible(true)}>
+              <Trans>Leave feedback</Trans>
+            </div>
+          )}
+        </div>
       </div>
       {!isHome && (
         <UserFeedbackModal isVisible={isUserFeedbackModalVisible} setIsVisible={setIsUserFeedbackModalVisible} />
       )}
-    </div>
+    </>
   );
 }
