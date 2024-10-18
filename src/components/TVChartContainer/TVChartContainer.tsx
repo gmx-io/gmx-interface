@@ -127,14 +127,11 @@ export default function TVChartContainer({
     if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
         tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
-        datafeed.setOraclePriceDecimals(oraclePriceDecimals);
       }
     }
-  }, [symbol, chartReady, period, chainId, oraclePriceDecimals, datafeed]);
+  }, [symbol, chartReady, period, chainId, datafeed]);
 
   useEffect(() => {
-    datafeed.setOraclePriceDecimals(oraclePriceDecimals);
-
     dataProvider?.resetCache();
     if (symbolRef.current && getIsFlagEnabled("testCandlesPreload")) {
       dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
