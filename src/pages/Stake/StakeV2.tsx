@@ -781,6 +781,7 @@ function CompoundModal(props: {
   totalVesterRewards: bigint | undefined;
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
+  isNativeTokenToClaim?: boolean;
 }) {
   const {
     isVisible,
@@ -792,6 +793,7 @@ function CompoundModal(props: {
     totalVesterRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
+    isNativeTokenToClaim,
   } = props;
   const [isCompounding, setIsCompounding] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -882,8 +884,8 @@ function CompoundModal(props: {
         shouldClaimEsGmx || shouldStakeEsGmx,
         shouldStakeEsGmx,
         true,
-        shouldClaimWeth || shouldConvertWeth,
-        shouldConvertWeth,
+        isNativeTokenToClaim ? shouldClaimWeth || shouldConvertWeth : false,
+        isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
         sentMsg: t`Compound submitted!`,
@@ -955,18 +957,22 @@ function CompoundModal(props: {
               <Trans>Stake esGMX Rewards</Trans>
             </Checkbox>
           </div>
-          <div>
-            <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
-              <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
-            </Checkbox>
-          </div>
-          <div>
-            <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
-              <Trans>
-                Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
-              </Trans>
-            </Checkbox>
-          </div>
+          {isNativeTokenToClaim && (
+            <>
+              <div>
+                <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
+                  <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
+                </Checkbox>
+              </div>
+              <div>
+                <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
+                  <Trans>
+                    Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
+                  </Trans>
+                </Checkbox>
+              </div>
+            </>
+          )}
         </div>
         {(needApproval || isApproving) && (
           <div className="mb-12">
@@ -997,6 +1003,7 @@ function ClaimModal(props: {
   setPendingTxns: SetPendingTransactions;
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
+  isNativeTokenToClaim?: boolean;
 }) {
   const {
     isVisible,
@@ -1007,6 +1014,7 @@ function ClaimModal(props: {
     setPendingTxns,
     nativeTokenSymbol,
     wrappedTokenSymbol,
+    isNativeTokenToClaim,
   } = props;
   const [isClaiming, setIsClaiming] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -1056,8 +1064,8 @@ function ClaimModal(props: {
         shouldClaimEsGmx,
         false, // shouldStakeEsGmx
         false, // shouldStakeMultiplierPoints
-        shouldClaimWeth,
-        shouldConvertWeth,
+        isNativeTokenToClaim ? shouldClaimWeth : false,
+        isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
         sentMsg: t`Claim submitted.`,
@@ -1105,18 +1113,22 @@ function ClaimModal(props: {
               <Trans>Claim esGMX Rewards</Trans>
             </Checkbox>
           </div>
-          <div>
-            <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
-              <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
-            </Checkbox>
-          </div>
-          <div>
-            <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
-              <Trans>
-                Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
-              </Trans>
-            </Checkbox>
-          </div>
+          {isNativeTokenToClaim && (
+            <>
+              <div>
+                <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
+                  <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
+                </Checkbox>
+              </div>
+              <div>
+                <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
+                  <Trans>
+                    Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
+                  </Trans>
+                </Checkbox>
+              </div>
+            </>
+          )}
         </div>
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -1463,6 +1475,9 @@ export default function StakeV2() {
     gmxSupply
   );
 
+  const isNativeTokenRewardsToClaim =
+    (processedData?.totalNativeTokenRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n;
+
   const reservedAmount =
     (processedData?.gmxInStakedGmx !== undefined &&
       processedData?.esGmxInStakedGmx !== undefined &&
@@ -1793,6 +1808,7 @@ export default function StakeV2() {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
+        isNativeTokenToClaim={isNativeTokenRewardsToClaim}
       />
       <ClaimModal
         setPendingTxns={setPendingTxns}
@@ -1803,6 +1819,7 @@ export default function StakeV2() {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
+        isNativeTokenToClaim={isNativeTokenRewardsToClaim}
       />
       <AffiliateClaimModal
         signer={signer}
@@ -2090,7 +2107,7 @@ export default function StakeV2() {
                   {formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
-              {(processedData?.totalNativeTokenRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n ? (
+              {isNativeTokenRewardsToClaim ? (
                 <div className="App-card-row">
                   <div className="label">
                     {nativeTokenSymbol} ({wrappedTokenSymbol})
