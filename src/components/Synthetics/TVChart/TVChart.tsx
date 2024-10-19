@@ -39,6 +39,8 @@ const DEFAULT_PERIOD = "5m";
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 
+console.log("TVChart");
+
 export function TVChart() {
   const { chartToken, symbol } = useSelector(selectChartToken);
   const ordersInfo = useOrdersInfoData();
