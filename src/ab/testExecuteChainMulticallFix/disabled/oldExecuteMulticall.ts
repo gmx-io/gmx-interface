@@ -103,6 +103,11 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
   }
 }
 
+const timings = [];
+function median() {
+  return timings.sort((a, b) => a - b)[Math.ceil(timings.length / 2)];
+}
+
 const URGENT_WINDOW_MS = 50;
 const BACKGROUND_WINDOW_MS = FREQUENT_UPDATE_INTERVAL - FREQUENT_MULTICALL_REFRESH_INTERVAL;
 
@@ -280,6 +285,10 @@ export function oldExecuteMulticall<TConfig extends MulticallRequestConfig<any>>
 
   return promise.then((result) => {
     const duration = performance.now() - durationStart;
+    // @ts-ignore
+    timings.push(duration);
+
+    console.log("batched timing", duration, median());
 
     if (result.success) {
       emitMetricTiming<MulticallBatchedTiming>({

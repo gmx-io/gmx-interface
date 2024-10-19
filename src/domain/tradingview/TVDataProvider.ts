@@ -328,6 +328,7 @@ export class TVDataProvider {
   }
 
   saveTVParamsCache(chainId: number, { resolution, countBack }: TvParamsCache) {
+    console.log("UPD RESOLUTION", resolution);
     localStorage.setItem(getTvParamsCacheKey(chainId, this.isV2), JSON.stringify({ resolution, countBack }));
   }
 
