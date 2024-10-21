@@ -1184,6 +1184,7 @@ export type ProcessedData = Partial<{
   feeGmxSupplyUsd: bigint;
   stakedGmxTrackerRewards: bigint;
   stakedGmxTrackerRewardsUsd: bigint;
+  extendedGmxTrackerRewards: bigint;
   extendedGmxTrackerRewardsUsd: bigint;
   feeGmxTrackerRewards: bigint;
   feeGmxTrackerRewardsUsd: bigint;
@@ -1285,11 +1286,7 @@ export function getProcessedData(
   data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
   data.extendedGmxTrackerRewards = stakingData.extendedGmxTracker.claimable;
-  data.extendedGmxTrackerRewardsUsd = mulDiv(
-    stakingData.extendedGmxTracker.claimable,
-    nativeTokenPrice,
-    expandDecimals(1, 18)
-  );
+  data.extendedGmxTrackerRewardsUsd = mulDiv(stakingData.extendedGmxTracker.claimable, gmxPrice, expandDecimals(1, 18));
   data.extendedGmxTrackerAnnualRewardsUsd =
     (stakingData.extendedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
 

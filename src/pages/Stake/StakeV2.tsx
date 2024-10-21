@@ -1475,8 +1475,9 @@ export default function StakeV2() {
     gmxSupply
   );
 
-  const isNativeTokenRewardsToClaim =
+  const isAnyNativeTokenRewards =
     (processedData?.totalNativeTokenRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n;
+  const isAnyFeeGmxTrackerRewards = (processedData?.feeGmxTrackerRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n;
 
   const reservedAmount =
     (processedData?.gmxInStakedGmx !== undefined &&
@@ -1808,7 +1809,7 @@ export default function StakeV2() {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
-        isNativeTokenToClaim={isNativeTokenRewardsToClaim}
+        isNativeTokenToClaim={isAnyNativeTokenRewards}
       />
       <ClaimModal
         setPendingTxns={setPendingTxns}
@@ -1819,7 +1820,7 @@ export default function StakeV2() {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
-        isNativeTokenToClaim={isNativeTokenRewardsToClaim}
+        isNativeTokenToClaim={isAnyNativeTokenRewards}
       />
       <AffiliateClaimModal
         signer={signer}
@@ -1984,13 +1985,13 @@ export default function StakeV2() {
                       return (
                         <>
                           <StatsTooltipRow
-                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                            label={t`GMX`}
                             value={`${formatKeyAmount(
                               processedData,
-                              "feeGmxTrackerRewards",
+                              "extendedGmxTrackerRewards",
                               18,
                               4
-                            )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                            )} ($${formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
                             showDollar={false}
                           />
                           <StatsTooltipRow
@@ -2009,6 +2010,18 @@ export default function StakeV2() {
                             )})`}
                             showDollar={false}
                           />
+                          {isAnyFeeGmxTrackerRewards && (
+                            <StatsTooltipRow
+                              label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                              value={`${formatKeyAmount(
+                                processedData,
+                                "feeGmxTrackerRewards",
+                                18,
+                                4
+                              )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                              showDollar={false}
+                            />
+                          )}
                         </>
                       );
                     }}
@@ -2105,13 +2118,23 @@ export default function StakeV2() {
                     <>
                       <StatsTooltipRow
                         label={t`GMX Rewards`}
-                        showDollar={true}
-                        value={formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)}
+                        showDollar={false}
+                        value={
+                          <>
+                            {formatKeyAmount(processedData, "extendedGmxTrackerRewards", 18, 4, true)} ($
+                            {formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})
+                          </>
+                        }
                       />
                       <StatsTooltipRow
                         label={t`Vested Claimable GMX`}
-                        showDollar={true}
-                        value={formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)}
+                        showDollar={false}
+                        value={
+                          <>
+                            {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} ($
+                            {formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)})
+                          </>
+                        }
                       />
                     </>
                   }
@@ -2126,7 +2149,7 @@ export default function StakeV2() {
                   {formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
-              {isNativeTokenRewardsToClaim ? (
+              {isAnyNativeTokenRewards ? (
                 <div className="App-card-row">
                   <div className="label">
                     {nativeTokenSymbol} ({wrappedTokenSymbol})

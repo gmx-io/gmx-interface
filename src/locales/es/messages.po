@@ -1611,6 +1611,10 @@ msgstr ""
 msgid "V1 Airdrop"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "GMX"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 msgstr ""
