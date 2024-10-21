@@ -158,6 +158,7 @@ export function LimitAndTPSLGroup() {
 
   return (
     <ExpandableRow
+      className="-my-[1.05rem]"
       open={isTpSlVisible}
       title={
         <span className="flex flex-row justify-between align-middle">
