@@ -513,9 +513,9 @@ export function numberToBigint(value: number, decimals: number) {
   return negative ? -res : res;
 }
 
-export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS) {
+export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1n) {
   if (price === undefined || price === 0n) return 2;
-  const priceNumber = Number(price.toString()) / Math.pow(10, decimals);
+  const priceNumber = bigintToNumber(price * visualMultiplier, decimals);
 
   if (isNaN(priceNumber)) return 2;
   if (priceNumber >= 1000) return 2;

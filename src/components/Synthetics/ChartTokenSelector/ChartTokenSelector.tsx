@@ -77,8 +77,8 @@ export default function ChartTokenSelector(props: Props) {
               })}
             >
               <span>
-                {selectedToken.visualMultiplier}
-                {selectedToken.symbol} {"/ USD"}
+                {!isSwap && <>{selectedToken.visualMultiplier}</>}
+                {selectedToken.symbol} / USD
               </span>
               {poolName && (
                 <span
@@ -419,7 +419,6 @@ function MarketListItem({
               displaySize={16}
               importSize={24}
             />
-            {token.visualMultiplier}
             {token.symbol}
           </span>
         </td>
