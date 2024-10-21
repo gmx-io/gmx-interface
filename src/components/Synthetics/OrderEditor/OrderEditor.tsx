@@ -483,7 +483,11 @@ export function OrderEditor(p: Props) {
 
         setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
         setTriggerPriceInputValue(
-          formatAmount(positionOrder.triggerPrice ?? 0n, USD_DECIMALS, indexPriceDecimals || 2)
+          formatAmount(
+            (positionOrder.triggerPrice ?? 0n) * BigInt(toToken?.visualMultiplier ?? 1),
+            USD_DECIMALS,
+            indexPriceDecimals || 2
+          )
         );
       }
 
@@ -549,9 +553,18 @@ export function OrderEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark`}
-              topRightValue={formatUsd(markPrice, { displayDecimals: indexPriceDecimals })}
+              topRightValue={formatUsd(markPrice, {
+                displayDecimals: indexPriceDecimals,
+                visualMultiplier: toToken?.visualMultiplier,
+              })}
               onClickTopRightLabel={() =>
-                setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, indexPriceDecimals || 2))
+                setTriggerPriceInputValue(
+                  formatAmount(
+                    markPrice !== undefined ? markPrice * BigInt(toToken?.visualMultiplier ?? 1) : undefined,
+                    USD_DECIMALS,
+                    indexPriceDecimals || 2
+                  )
+                )
               }
               inputValue={triggerPriceInputValue}
               onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
@@ -610,7 +623,10 @@ export function OrderEditor(p: Props) {
             <ExchangeInfo.Group>
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
-                value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
+                value={formatAcceptablePrice(acceptablePrice, {
+                  displayDecimals: indexPriceDecimals,
+                  visualMultiplier: toToken?.visualMultiplier,
+                })}
               />
 
               {existingPosition && (
@@ -618,6 +634,7 @@ export function OrderEditor(p: Props) {
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     displayDecimals: marketPriceDecimals,
+                    visualMultiplier: toToken?.visualMultiplier,
                   })}
                 />
               )}

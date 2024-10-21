@@ -16,11 +16,15 @@ import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 import { SideOrderEntries } from "../components/SideOrderEntries";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import {
+  selectSelectedMarketPriceDecimals,
+  selectSelectedMarketVisualMultiplier,
+} from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 export function LimitAndTPSLRows() {
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
   const marketDecimals = useSelector(selectSelectedMarketPriceDecimals);
+  const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
 
   function renderSideOrders(type: "stopLoss" | "takeProfit" | "limit") {
     const isStopLoss = type === "stopLoss";
@@ -71,7 +75,9 @@ export function LimitAndTPSLRows() {
                   entriesInfo?.entries?.map((entry, index) => {
                     if (!entry || !entry.decreaseAmounts || entry.txnType === "cancel") return;
 
-                    const price = entry.price?.value && formatAmount(entry.price.value, USD_DECIMALS, marketDecimals);
+                    const price =
+                      entry.price?.value &&
+                      formatAmount(entry.price.value * visualMultiplier, USD_DECIMALS, marketDecimals);
                     const percentage =
                       entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
 

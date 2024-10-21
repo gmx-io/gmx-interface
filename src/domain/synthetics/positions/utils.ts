@@ -213,7 +213,10 @@ export function getLiquidationPrice(p: {
   return liquidationPrice;
 }
 
-export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displayDecimals?: number } = {}) {
+export function formatLiquidationPrice(
+  liquidationPrice?: bigint,
+  opts: { displayDecimals?: number; visualMultiplier?: number } = {}
+) {
   if (liquidationPrice === undefined || liquidationPrice < 0) {
     return "NA";
   }
@@ -226,14 +229,20 @@ export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displa
   });
 }
 
-export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayDecimals?: number } = {}) {
+export function formatAcceptablePrice(
+  acceptablePrice?: bigint,
+  opts: { displayDecimals?: number; visualMultiplier?: number } = {}
+) {
   if (acceptablePrice !== undefined && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
     return "NA";
   }
 
   const priceDecimalPlaces = calculatePriceDecimals(acceptablePrice);
 
-  return formatUsd(acceptablePrice, { ...opts, displayDecimals: opts.displayDecimals ?? priceDecimalPlaces });
+  return formatUsd(acceptablePrice, {
+    ...opts,
+    displayDecimals: opts.displayDecimals ?? priceDecimalPlaces,
+  });
 }
 
 export function getLeverage(p: {

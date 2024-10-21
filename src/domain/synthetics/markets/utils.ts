@@ -65,7 +65,8 @@ export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token
     return `SWAP-ONLY`;
   }
 
-  return `${firstToken.baseSymbol || firstToken.symbol}/USD`;
+  // maybe ? firstToken.visualMultiplier || ""
+  return `${firstToken.visualMultiplier || ""}${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {

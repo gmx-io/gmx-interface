@@ -8,6 +8,7 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
+  selectTradeboxToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatUsd } from "lib/numbers";
@@ -17,7 +18,7 @@ export function EntryPriceRow() {
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const markPrice = useSelector(selectTradeboxMarkPrice);
-
+  const toToken = useSelector(selectTradeboxToToken);
   const marketDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   if (!advancedDisplay || !selectedPosition) {
@@ -32,14 +33,17 @@ export function EntryPriceRow() {
           <ValueTransition
             from={formatUsd(selectedPosition?.entryPrice, {
               displayDecimals: marketDecimals,
+              visualMultiplier: toToken?.visualMultiplier,
             })}
             to={formatUsd(nextPositionValues?.nextEntryPrice, {
               displayDecimals: marketDecimals,
+              visualMultiplier: toToken?.visualMultiplier,
             })}
           />
         ) : (
           formatUsd(markPrice, {
             displayDecimals: marketDecimals,
+            visualMultiplier: toToken?.visualMultiplier,
           })
         )
       }

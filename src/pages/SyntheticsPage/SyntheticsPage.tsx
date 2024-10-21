@@ -138,6 +138,7 @@ export function SyntheticsPage(p: Props) {
     const currentTokenPriceStr =
       formatUsd(averagePrice, {
         displayDecimals: chartToken.priceDecimals,
+        visualMultiplier: chartToken.visualMultiplier,
       }) || "...";
 
     const title = getPageTitle(

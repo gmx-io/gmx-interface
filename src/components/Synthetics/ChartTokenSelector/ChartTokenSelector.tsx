@@ -78,6 +78,7 @@ export default function ChartTokenSelector(props: Props) {
               })}
             >
               <span>
+                {selectedToken.visualMultiplier}
                 {selectedToken.symbol} {"/ USD"}
               </span>
               {poolName && (
@@ -145,11 +146,16 @@ function MarketsList(props: { options: Token[] | undefined }) {
         if (marketInfo) {
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
+          const indexTokenVisualMultiplier = marketInfo.indexToken.visualMultiplier;
+
           helperToast.success(
             <Trans>
               <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
               <div className="inline-flex">
-                <span>{indexName}</span>
+                <span>
+                  {indexTokenVisualMultiplier}
+                  {indexName}
+                </span>
                 <span className="subtext gm-toast leading-1">[{poolName}]</span>
               </div>{" "}
               <span>market selected</span>
@@ -416,6 +422,7 @@ function MarketListItem({
               displaySize={16}
               importSize={24}
             />
+            {token.visualMultiplier}
             {token.symbol}
           </span>
         </td>
@@ -446,7 +453,8 @@ function MarketListItem({
             displaySize={16}
             importSize={24}
           />
-          {token.symbol} {!isSwap && "/ USD"}
+          {token.visualMultiplier}
+          {token.symbol} / USD
         </span>
       </td>
 

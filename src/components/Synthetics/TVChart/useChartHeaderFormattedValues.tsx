@@ -40,6 +40,7 @@ export function useChartHeaderFormattedValues() {
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
+  const visualMultiplier = selectedTokenOption?.visualMultiplier ?? 1;
 
   const priceTokenSymbol = useMemo(() => {
     if (selectedTokenOption?.isWrapped) {
@@ -54,12 +55,18 @@ export function useChartHeaderFormattedValues() {
   const avgPriceValue = bigMath.avg(chartToken?.prices?.maxPrice, chartToken?.prices?.minPrice);
 
   const high24 = useMemo(
-    () => (dayPriceDeltaData?.high ? numberWithCommas(dayPriceDeltaData.high.toFixed(oraclePriceDecimals)) : "-"),
-    [dayPriceDeltaData, oraclePriceDecimals]
+    () =>
+      dayPriceDeltaData?.high
+        ? numberWithCommas((dayPriceDeltaData.high * visualMultiplier).toFixed(oraclePriceDecimals))
+        : "-",
+    [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier]
   );
   const low24 = useMemo(
-    () => (dayPriceDeltaData?.low ? numberWithCommas(dayPriceDeltaData?.low.toFixed(oraclePriceDecimals)) : "-"),
-    [dayPriceDeltaData, oraclePriceDecimals]
+    () =>
+      dayPriceDeltaData?.low
+        ? numberWithCommas((dayPriceDeltaData.low * visualMultiplier).toFixed(oraclePriceDecimals))
+        : "-",
+    [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier]
   );
 
   const dayPriceDelta = useMemo(() => {
@@ -79,9 +86,10 @@ export function useChartHeaderFormattedValues() {
     return (
       formatUsd(avgPriceValue, {
         displayDecimals: oraclePriceDecimals,
+        visualMultiplier: selectedTokenOption?.visualMultiplier,
       }) || "..."
     );
-  }, [avgPriceValue, oraclePriceDecimals]);
+  }, [avgPriceValue, oraclePriceDecimals, selectedTokenOption?.visualMultiplier]);
 
   const [longOIValue, longOIPercentage] = useMemo(() => {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {

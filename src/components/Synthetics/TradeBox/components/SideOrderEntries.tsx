@@ -57,10 +57,11 @@ function SideOrderEntry({
     indexToken &&
     entry.price?.value &&
     entry.sizeUsd?.value &&
-    `${isIncrease ? "Increase" : "Decrease"} ${indexToken?.symbol} ${isLong ? "Long" : "Short"} by ${formatUsd(
+    `${isIncrease ? "Increase" : "Decrease"} ${indexToken.visualMultiplier || ""}${indexToken.symbol} ${isLong ? "Long" : "Short"} by ${formatUsd(
       entry.sizeUsd.value
     )} at ${formatUsd(entry.price.value ?? undefined, {
       displayDecimals: marketPricesDecimals,
+      visualMultiplier: indexToken.visualMultiplier,
     })}.`;
 
   const sizeTooltipMsg =

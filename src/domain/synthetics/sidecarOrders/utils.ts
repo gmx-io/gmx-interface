@@ -12,7 +12,8 @@ export const PERCENTAGE_DECEMALS = 0;
 export function getDefaultEntryField(
   decimals: number | undefined,
   { input, value, error }: Partial<EntryField> = {},
-  priceDecimals?: number
+  priceDecimals?: number,
+  visualMultiplier?: bigint
 ): EntryField {
   let nextInput = "";
   let nextValue: bigint | null = null;
@@ -23,9 +24,14 @@ export function getDefaultEntryField(
   if (input) {
     nextInput = input;
     nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
+    if (nextValue !== null && visualMultiplier !== undefined) {
+      nextValue = nextValue / visualMultiplier;
+    }
   } else if (value) {
     nextInput =
-      decimals !== undefined ? String(removeTrailingZeros(formatAmount(value, decimals, displayPercentage))) : "";
+      decimals !== undefined
+        ? String(removeTrailingZeros(formatAmount(value * BigInt(visualMultiplier ?? 1n), decimals, displayPercentage)))
+        : "";
     nextValue = value;
   }
 
@@ -52,10 +58,12 @@ export function prepareInitialEntries({
   positionOrders,
   sort = "desc",
   priceDecimals,
+  visualMultiplier,
 }: {
   positionOrders: PositionOrderInfo[] | undefined;
   sort: "desc" | "asc";
   priceDecimals?: number;
+  visualMultiplier?: bigint;
 }): undefined | InitialEntry[] {
   if (!positionOrders) return;
 
@@ -70,7 +78,7 @@ export function prepareInitialEntries({
     .map((order) => {
       const entry: InitialEntry = {
         sizeUsd: getDefaultEntryField(USD_DECIMALS, { value: order.sizeDeltaUsd }),
-        price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }, priceDecimals),
+        price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }, priceDecimals, visualMultiplier),
         order,
       };
 

@@ -53,6 +53,7 @@ import {
   selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
+  selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
@@ -105,6 +106,7 @@ export function PositionSeller(p: Props) {
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = useSelector(selectPositionSellerPosition);
+  const toToken = position?.indexToken;
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
@@ -145,7 +147,7 @@ export function PositionSeller(p: Props) {
     triggerPriceInputValueRaw,
     setTriggerPriceInputValueRaw
   );
-  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isTrigger = orderOption === OrderOption.Trigger;
 
@@ -418,8 +420,6 @@ export function PositionSeller(p: Props) {
     setSelectedTriggerAcceptablePriceImpactBps,
   ]);
 
-  const toToken = position?.indexToken;
-
   const executionPriceFlags = useMemo(
     () => ({
       isLimit: false,
@@ -448,6 +448,7 @@ export function PositionSeller(p: Props) {
       executionPrice={executionPrice ?? undefined}
       acceptablePrice={acceptablePrice}
       triggerOrderType={decreaseAmounts?.triggerOrderType}
+      visualMultiplier={toToken?.visualMultiplier}
     />
   );
 
@@ -456,6 +457,7 @@ export function PositionSeller(p: Props) {
   if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
     formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
       displayDecimals: marketDecimals ?? toToken?.priceDecimals,
+      visualMultiplier: toToken?.visualMultiplier,
     })}`;
   }
 
@@ -472,6 +474,7 @@ export function PositionSeller(p: Props) {
           from={
             formatLiquidationPrice(position.liquidationPrice, {
               displayDecimals: marketDecimals,
+              visualMultiplier: toToken?.visualMultiplier,
             })!
           }
           to={
@@ -480,6 +483,7 @@ export function PositionSeller(p: Props) {
               : decreaseAmounts?.sizeDeltaUsd
                 ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                     displayDecimals: marketDecimals,
+                    visualMultiplier: toToken?.visualMultiplier,
                   })
                 : undefined
           }
@@ -545,7 +549,8 @@ export function PositionSeller(p: Props) {
         setIsVisible={onClose}
         label={
           <Trans>
-            Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
+            Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.visualMultiplier}
+            {position?.indexToken?.symbol}
           </Trans>
         }
         qa="position-close-modal"
@@ -585,9 +590,16 @@ export function PositionSeller(p: Props) {
                 topRightLabel={t`Mark`}
                 topRightValue={formatUsd(markPrice, {
                   displayDecimals: marketDecimals,
+                  visualMultiplier: toToken?.visualMultiplier,
                 })}
                 onClickTopRightLabel={() => {
-                  setTriggerPriceInputValueRaw(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
+                  setTriggerPriceInputValueRaw(
+                    formatAmount(
+                      markPrice !== undefined ? markPrice * BigInt(toToken?.visualMultiplier ?? 1) : undefined,
+                      USD_DECIMALS,
+                      toToken?.priceDecimals || 2
+                    )
+                  );
                 }}
                 inputValue={triggerPriceInputValue}
                 onInputValueChange={(e) => {

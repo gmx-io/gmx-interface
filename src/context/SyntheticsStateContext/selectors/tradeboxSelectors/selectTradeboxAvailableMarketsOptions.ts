@@ -1,5 +1,8 @@
 import { QueryFunction } from "@taskworld.com/rereselect";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import keyBy from "lodash/keyBy";
+import values from "lodash/values";
+
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   selectMarketsInfoData,
@@ -24,7 +27,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTradeType,
-  selectTradeboxTriggerPriceInputValue,
+  selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees/utils";
@@ -37,18 +40,15 @@ import {
 import { getLargestRelatedExistingPosition } from "domain/synthetics/markets/chooseSuitableMarket";
 import { PositionOrderInfo } from "domain/synthetics/orders/types";
 import { isIncreaseOrderType } from "domain/synthetics/orders/utils";
-import { TokenData } from "domain/synthetics/tokens";
-import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
-import { USD_DECIMALS } from "config/factors";
-import { expandDecimals, parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import {
   IndexTokenStat,
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import keyBy from "lodash/keyBy";
-import values from "lodash/values";
+import { TokenData } from "domain/synthetics/tokens";
+import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
+import { expandDecimals, parseValue } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
 export type AvailableMarketsOptions = {
@@ -246,7 +246,7 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const focusedInput = q(selectTradeboxFocusedInput);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
-  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+  const triggerPrice = q(selectTradeboxTriggerPrice);
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
@@ -254,7 +254,6 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
   const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
-  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
   const positionKey = q(selectTradeboxSelectedPositionKey);
 
   const selector = makeSelectIncreasePositionAmounts({

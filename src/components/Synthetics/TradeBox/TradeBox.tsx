@@ -396,8 +396,10 @@ export function TradeBox(p: Props) {
 
         setLeverageOption(resultLeverage);
       } else {
+        const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+
         setToTokenInputValue(
-          formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens), toToken.decimals, 8),
+          formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens / visualMultiplier), toToken.decimals, 8),
           true
         );
       }
@@ -689,17 +691,18 @@ export function TradeBox(p: Props) {
       }
 
       if (isIncrease && increaseAmounts) {
+        const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
         if (focusedInput === "from") {
           setToTokenInputValue(
             increaseAmounts.indexTokenAmount > 0
-              ? formatAmountFree(increaseAmounts.indexTokenAmount, toToken.decimals)
+              ? formatAmountFree(increaseAmounts.indexTokenAmount / visualMultiplier, toToken.decimals)
               : "",
             false
           );
         } else {
           setFromTokenInputValue(
             increaseAmounts.initialCollateralAmount > 0
-              ? formatAmountFree(increaseAmounts.initialCollateralAmount, fromToken.decimals)
+              ? formatAmountFree(increaseAmounts.initialCollateralAmount * visualMultiplier, fromToken.decimals)
               : "",
             false
           );
@@ -892,8 +895,15 @@ export function TradeBox(p: Props) {
     [setTriggerPriceInputValue]
   );
   const setMarkPriceAsTriggerPrice = useCallback(
-    () => setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2)),
-    [markPrice, setTriggerPriceInputValue, toToken?.priceDecimals]
+    () =>
+      setTriggerPriceInputValue(
+        formatAmount(
+          markPrice ? markPrice * BigInt(toToken?.visualMultiplier ?? 1) : undefined,
+          USD_DECIMALS,
+          toToken?.priceDecimals || 2
+        )
+      ),
+    [markPrice, setTriggerPriceInputValue, toToken?.priceDecimals, toToken?.visualMultiplier]
   );
 
   const handleTriggerMarkPriceClick = useCallback(
@@ -1060,7 +1070,10 @@ export function TradeBox(p: Props) {
                     <>
                       <span className="inline-flex items-center">
                         <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
-                        <span className="Token-symbol-text">{toToken.symbol}</span>
+                        <span className="Token-symbol-text">
+                          {toToken.visualMultiplier}
+                          {toToken.symbol}
+                        </span>
                       </span>
                     </>
                   )
@@ -1109,6 +1122,7 @@ export function TradeBox(p: Props) {
         topRightLabel={t`Mark`}
         topRightValue={formatUsd(markPrice, {
           displayDecimals: marketDecimals,
+          visualMultiplier: toToken?.visualMultiplier,
         })}
         onClickTopRightLabel={setMarkPriceAsTriggerPrice}
         inputValue={triggerPriceInputValue}
@@ -1226,6 +1240,7 @@ export function TradeBox(p: Props) {
           fees={fees}
           acceptablePrice={acceptablePrice}
           executionPrice={executionPrice ?? undefined}
+          visualMultiplier={toToken?.visualMultiplier}
         />
         <ExchangeInfoRow
           label={t`Liq. Price`}
@@ -1235,6 +1250,7 @@ export function TradeBox(p: Props) {
                 selectedPosition
                   ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
                       displayDecimals: marketDecimals,
+                      visualMultiplier: toToken?.visualMultiplier,
                     })
                   : undefined
               }
@@ -1242,6 +1258,7 @@ export function TradeBox(p: Props) {
                 increaseAmounts?.sizeDeltaUsd && increaseAmounts.sizeDeltaUsd > 0
                   ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                       displayDecimals: marketDecimals,
+                      visualMultiplier: toToken?.visualMultiplier,
                     })
                   : selectedPosition
                     ? undefined
@@ -1260,6 +1277,7 @@ export function TradeBox(p: Props) {
     if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
       formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
         displayDecimals: marketDecimals,
+        visualMultiplier: toToken?.visualMultiplier,
       })}`;
     }
 
@@ -1274,6 +1292,7 @@ export function TradeBox(p: Props) {
           executionPrice={executionPrice ?? undefined}
           triggerOrderType={decreaseAmounts?.triggerOrderType}
           acceptablePrice={decreaseAmounts?.acceptablePrice}
+          visualMultiplier={toToken?.visualMultiplier}
         />
 
         {selectedPosition && (
@@ -1285,6 +1304,7 @@ export function TradeBox(p: Props) {
                   selectedPosition
                     ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
                         displayDecimals: marketDecimals,
+                        visualMultiplier: toToken?.visualMultiplier,
                       })
                     : undefined
                 }
@@ -1294,6 +1314,7 @@ export function TradeBox(p: Props) {
                     : decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0
                       ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                           displayDecimals: marketDecimals,
+                          visualMultiplier: toToken?.visualMultiplier,
                         })
                       : undefined
                 }

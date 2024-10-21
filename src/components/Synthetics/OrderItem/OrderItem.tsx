@@ -264,8 +264,11 @@ function MarkPrice({ order }: { order: OrderInfo }) {
   const priceDecimals = useSelector(makeSelectMarketPriceDecimals(positionOrder.marketInfo?.indexTokenAddress));
 
   const markPriceFormatted = useMemo(() => {
-    return formatUsd(markPrice, { displayDecimals: priceDecimals });
-  }, [markPrice, priceDecimals]);
+    return formatUsd(markPrice, {
+      displayDecimals: priceDecimals,
+      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+    });
+  }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
   if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
@@ -283,7 +286,11 @@ function MarkPrice({ order }: { order: OrderInfo }) {
             <Trans>
               <p>
                 The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
-                {formatUsd(positionOrder.triggerPrice, { displayDecimals: priceDecimals })}.
+                {formatUsd(positionOrder.triggerPrice, {
+                  displayDecimals: priceDecimals,
+                  visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+                })}
+                .
               </p>
               <br />
               <p>
@@ -329,6 +336,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
       <Tooltip
         handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
           displayDecimals: priceDecimals,
+          visualMultiplier: positionOrder.indexToken?.visualMultiplier,
         })}`}
         position="bottom-end"
         renderContent={() => (
@@ -340,6 +348,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
                   ? "NA"
                   : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                       displayDecimals: priceDecimals,
+                      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
                     })}`
               }
               showDollar={false}

@@ -290,6 +290,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 8,
       imageUrl: "https://assets.coingecko.com/coins/images/29850/standard/pepe-token.jpeg?1696528776",
       coingeckoUrl: "https://www.coingecko.com/en/coins/pepe",
+      visualMultiplier: 1000,
     },
     {
       name: "dogwifhat",
@@ -344,6 +345,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/11939/standard/shiba.png?1696511800",
       coingeckoUrl: "https://www.coingecko.com/en/coins/shiba-inu",
       isSynthetic: true,
+      visualMultiplier: 1000,
     },
     {
       name: "tBTC",
@@ -371,6 +373,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/30666/standard/_dD8qr3M_400x400.png?1702913020",
       coingeckoUrl: "https://www.coingecko.com/en/coins/sats-ordinals",
       isSynthetic: true,
+      visualMultiplier: 1000_000,
     },
     {
       name: "Polygon",
@@ -978,6 +981,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x42DD131E1086FFCc59bAE9498D71E20E0C889B14",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+      visualMultiplier: 1000,
     },
     {
       name: "BNB",

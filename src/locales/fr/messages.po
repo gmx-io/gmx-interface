@@ -3841,10 +3841,6 @@ msgstr "Prix de liquidation"
 msgid "Trading Pair Price Alerts"
 msgstr ""
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
-msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>marché sélectionné</4>"
-
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 msgstr "Vous recevrez au moins {0} {1}, si cet ordre est exécuté. Le prix d'exécution exact peut varier en fonction des frais au moment de l'exécution de l'ordre."
@@ -4988,6 +4984,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "Pas de position ouverte"
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Close {0} {1}{2}"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GLV"
 msgstr ""
@@ -5427,6 +5427,10 @@ msgstr ""
 msgid "3rd Place"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "<0>{0}</0> <1><2>{indexTokenVisualMultiplier}{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
@@ -5717,6 +5721,10 @@ msgstr "Somme"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Edit {0} {1}{2}"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -6210,10 +6218,6 @@ msgstr "Votre transfert a été effectué."
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Leftover Collateral Excluding Impact"
 msgstr "Collatéral restant sans impact"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Edit {0} {1}"
-msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
@@ -7647,10 +7651,6 @@ msgstr "Tableaux de bords"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
-msgstr ""
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}"
 msgstr ""
 
 #: src/pages/Home/Home.tsx

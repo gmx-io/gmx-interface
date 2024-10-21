@@ -38,6 +38,7 @@ export function LimitPriceRow() {
       return (
         formatUsd(triggerPrice, {
           displayDecimals: toToken?.priceDecimals,
+          visualMultiplier: toToken?.visualMultiplier,
         }) || "-"
       );
     }
