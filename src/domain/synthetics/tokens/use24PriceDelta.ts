@@ -2,10 +2,32 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
 
-export function use24hPriceDelta(chainId: number, tokenSymbol?: string) {
+export function use24hPriceDelta(
+  chainId: number,
+  tokenSymbol?: string
+):
+  | {
+      close: number;
+      deltaPercentage: number;
+      deltaPercentageStr: string;
+      deltaPrice: number;
+      high: number;
+      low: number;
+      open: number;
+      tokenSymbol: string;
+    }
+  | undefined {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
-  const { data } = useSWR([chainId, oracleKeeperFetcher.url, "use24PriceDelta"], {
+  const { data } = useSWR<
+    {
+      close: number;
+      high: number;
+      low: number;
+      open: number;
+      tokenSymbol: string;
+    }[]
+  >([chainId, oracleKeeperFetcher.url, "use24PriceDelta"], {
     fetcher: () => oracleKeeperFetcher.fetch24hPrices(),
   });
 

@@ -174,6 +174,7 @@ export function formatUsd(
     maxThreshold?: string | null;
     minThreshold?: string;
     displayPlus?: boolean;
+    visualMultiplier?: number;
   } = {}
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
@@ -184,6 +185,10 @@ export function formatUsd(
     } else {
       return undefined;
     }
+  }
+
+  if (opts.visualMultiplier) {
+    usd *= BigInt(opts.visualMultiplier);
   }
 
   const defaultMinThreshold = displayDecimals > 1 ? "0." + "0".repeat(displayDecimals - 1) + "1" : undefined;

@@ -7,6 +7,7 @@ export type Bar = BarType & {
 
 export type SymbolInfo = LibrarySymbolInfo & {
   isStable: boolean;
+  visualMultiplier?: number;
 };
 
 export type TvParamsCache = {

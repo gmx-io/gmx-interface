@@ -217,7 +217,11 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           </div>
         </div>
       </TableTd>
-      <TableTd>{formatUsdPrice(stats.token.prices?.minPrice)}</TableTd>
+      <TableTd>
+        {formatUsdPrice(stats.token.prices?.minPrice, {
+          visualMultiplier: stats.token.visualMultiplier,
+        })}
+      </TableTd>
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
