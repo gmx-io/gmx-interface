@@ -96,7 +96,7 @@ export default function ChartTokenSelector(props: Props) {
       }
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
-      footerContent={<MissedCoinsHint place={MissedCoinsPlace.marketDropdown} withIcon />}
+      footerContent={<MissedCoinsHint place={MissedCoinsPlace.marketDropdown} className="!my-12 mx-15" withIcon />}
     >
       <MarketsList options={options} />
     </SelectorBase>
@@ -188,7 +188,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
+        <div className="mt-16 flex flex-row items-end items-center gap-16">
           <SearchInput className="w-full" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={handleKeyDown} />
           {!isSwap && <FavoriteTabs favoritesKey="chart-token-selector" />}
         </div>
