@@ -54,3 +54,13 @@ export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress
     return calculatePriceDecimals(token.prices.minPrice);
   })
 );
+
+export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
+  const { chartToken } = q(selectChartToken);
+
+  if (!chartToken || !chartToken.visualMultiplier) {
+    return 1n;
+  }
+
+  return BigInt(chartToken.visualMultiplier);
+});

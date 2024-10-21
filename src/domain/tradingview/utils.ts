@@ -26,3 +26,15 @@ export function getMax(...values: (number | undefined)[]): number {
 export function getMin(...values: (number | undefined)[]): number {
   return Math.min(...(values.filter((value) => Boolean(value) && typeof value === "number") as number[]));
 }
+
+export function multiplyBarValues(bar: Bar, visualMultiplier: number | undefined): Bar {
+  if (!visualMultiplier) return bar;
+
+  return {
+    ...bar,
+    open: bar.open * visualMultiplier,
+    close: bar.close * visualMultiplier,
+    high: bar.high * visualMultiplier,
+    low: bar.low * visualMultiplier,
+  };
+}

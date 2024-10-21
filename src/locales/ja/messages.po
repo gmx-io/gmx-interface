@@ -501,10 +501,6 @@ msgstr "移転を受け入れるにはこのページを開いておく必要が
 msgid "Don't show this message again for 30 days."
 msgstr "30日間このメッセージを表示しない"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration Price"
-#~ msgstr "移行価格"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 msgstr ""
@@ -871,10 +867,6 @@ msgstr "1inchでスワップする"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Total Assets Migrated"
-#~ msgstr "移行された全アセット"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
@@ -2060,17 +2052,9 @@ msgstr "DeFiダッシュボード"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrating..."
-#~ msgstr "移行中..."
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Your wallet: {0}"
-#~ msgstr "あなたのウォレット: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -3848,10 +3832,6 @@ msgstr "清算価格"
 msgid "Trading Pair Price Alerts"
 msgstr ""
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
-msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>マーケットが選択されました</4>"
-
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 msgstr "この注文が執行された場合、少なくとも{0} {1}を受け取ることになります。正確な執行価格は注文執行時の手数料によって異なります。"
@@ -4991,6 +4971,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "オープンのポジションはありません"
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Close {0} {1}{2}"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GLV"
 msgstr ""
@@ -5422,6 +5406,10 @@ msgstr ""
 msgid "3rd Place"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "<0>{0}</0> <1><2>{indexTokenVisualMultiplier}{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
@@ -5710,6 +5698,10 @@ msgstr "額"
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 msgstr ""
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Edit {0} {1}{2}"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -5895,10 +5887,6 @@ msgstr ""
 msgid "Switch to {0} collateral."
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "To Receive"
-#~ msgstr "受け取り"
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GMX Vault"
@@ -5964,10 +5952,6 @@ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrated"
-#~ msgstr "移行済"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -6075,10 +6059,6 @@ msgstr "指値"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration submitted! <0>View status.</0>"
-#~ msgstr "移行申し込み済! <0>状況を確認する</0>"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
@@ -6212,10 +6192,6 @@ msgstr "移転は完了しました。"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Leftover Collateral Excluding Impact"
 msgstr "影響なしの残りの担保"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Edit {0} {1}"
-msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
@@ -6473,10 +6449,6 @@ msgstr "ダウンロード"
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "{col1}"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration failed"
-#~ msgstr "移行できませんでした"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
@@ -7399,11 +7371,6 @@ msgstr "最大: {0}"
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
-#~ msgid "Bonus Tokens"
-#~ msgstr "ボーナストークン"
-
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
 msgstr ""
@@ -7647,10 +7614,6 @@ msgstr "ダッシュボード"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
-msgstr ""
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}"
 msgstr ""
 
 #: src/pages/Home/Home.tsx

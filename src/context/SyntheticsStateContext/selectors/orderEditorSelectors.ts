@@ -30,7 +30,7 @@ import { getPositionKey } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector } from "../utils";
+import { createSelector, useSelector } from "../utils";
 import {
   selectChainId,
   selectGasLimits,
@@ -85,7 +85,20 @@ export const selectOrderEditorSizeDeltaUsd = createSelector((q) => {
 });
 
 export const selectOrderEditorTriggerPrice = createSelector((q) => {
-  return parseValue(q(selectOrderEditorTriggerPriceInputValue) || "0", USD_DECIMALS);
+  const triggerPriceInputValue = q(selectOrderEditorTriggerPriceInputValue);
+  const toToken = useSelector(selectOrderEditorToToken);
+
+  if (!triggerPriceInputValue || !toToken) return undefined;
+
+  let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+
+  if (triggerPrice === 0n) {
+    triggerPrice = undefined;
+  } else if (triggerPrice !== undefined && toToken?.visualMultiplier) {
+    triggerPrice = triggerPrice / BigInt(toToken?.visualMultiplier ?? 1);
+  }
+
+  return triggerPrice;
 });
 
 export const selectOrdersList = createSelector((q) => {

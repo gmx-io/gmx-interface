@@ -345,6 +345,7 @@ export function PositionItem(p: Props) {
           handle={
             formatLiquidationPrice(p.position.liquidationPrice, {
               displayDecimals: marketDecimals,
+              visualMultiplier: p.position.indexToken.visualMultiplier,
             }) || "..."
           }
           position="bottom-end"
@@ -360,6 +361,7 @@ export function PositionItem(p: Props) {
     return (
       formatLiquidationPrice(p.position.liquidationPrice, {
         displayDecimals: marketDecimals,
+        visualMultiplier: p.position.indexToken.visualMultiplier,
       }) || "..."
     );
   }
@@ -388,6 +390,7 @@ export function PositionItem(p: Props) {
                     displaySize={20}
                     importSize={24}
                   />
+                  {p.position.indexToken.visualMultiplier}
                   {p.position.indexToken.symbol}
                 </>
               }
@@ -477,12 +480,14 @@ export function PositionItem(p: Props) {
             ? t`Opening...`
             : formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
+                visualMultiplier: p.position.indexToken.visualMultiplier,
               })}
         </TableTd>
         <TableTd>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
             displayDecimals: marketDecimals,
+            visualMultiplier: p.position.indexToken.visualMultiplier,
           })}
         </TableTd>
         <TableTd>
@@ -536,6 +541,7 @@ export function PositionItem(p: Props) {
                   displaySize={20}
                   importSize={24}
                 />
+                {p.position.indexToken?.visualMultiplier}
                 {p.position.indexToken?.symbol}
               </span>
               <div>
@@ -616,6 +622,7 @@ export function PositionItem(p: Props) {
                 <div>
                   {formatUsd(p.position.entryPrice, {
                     displayDecimals: marketDecimals,
+                    visualMultiplier: p.position.indexToken.visualMultiplier,
                   })}
                 </div>
               </div>
@@ -626,6 +633,7 @@ export function PositionItem(p: Props) {
                 <div>
                   {formatUsd(p.position.markPrice, {
                     displayDecimals: marketDecimals,
+                    visualMultiplier: p.position.indexToken.visualMultiplier,
                   })}
                 </div>
               </div>
