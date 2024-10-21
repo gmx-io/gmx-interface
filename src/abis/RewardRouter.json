@@ -92,6 +92,19 @@
       "type": "event"
     },
     {
+      "inputs": [],
+      "name": "BASIS_POINTS_DIVISOR",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -123,6 +136,19 @@
           "internalType": "address[]",
           "name": "_accounts",
           "type": "address[]"
+        }
+      ],
+      "name": "batchRestakeForAccounts",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_accounts",
+          "type": "address[]"
         },
         {
           "internalType": "uint256[]",
@@ -130,7 +156,7 @@
           "type": "uint256[]"
         }
       ],
-      "name": "batchStakeGmxForAccount",
+      "name": "batchStakeGmxForAccounts",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -190,21 +216,34 @@
       "type": "function"
     },
     {
-      "inputs": [
+      "inputs": [],
+      "name": "esGmx",
+      "outputs": [
         {
           "internalType": "address",
-          "name": "_account",
+          "name": "",
           "type": "address"
         }
       ],
-      "name": "compoundForAccount",
-      "outputs": [],
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "esGmx",
+      "name": "extendedGmxTracker",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "externalHandler",
       "outputs": [
         {
           "internalType": "address",
@@ -282,19 +321,6 @@
     },
     {
       "inputs": [],
-      "name": "maxBoostBasisPoints",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
       "name": "gmx",
       "outputs": [
         {
@@ -322,6 +348,19 @@
     {
       "inputs": [],
       "name": "gov",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "govToken",
       "outputs": [
         {
           "internalType": "address",
@@ -379,68 +418,164 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_weth",
+          "name": "_gmxReceiver",
           "type": "address"
         },
         {
-          "internalType": "address",
-          "name": "_gmx",
-          "type": "address"
+          "internalType": "bool",
+          "name": "_shouldClaimGmx",
+          "type": "bool"
         },
         {
-          "internalType": "address",
-          "name": "_esGmx",
-          "type": "address"
+          "internalType": "bool",
+          "name": "_shouldStakeGmx",
+          "type": "bool"
         },
         {
-          "internalType": "address",
-          "name": "_bnGmx",
-          "type": "address"
+          "internalType": "bool",
+          "name": "_shouldClaimEsGmx",
+          "type": "bool"
         },
         {
-          "internalType": "address",
-          "name": "_glp",
-          "type": "address"
+          "internalType": "bool",
+          "name": "_shouldStakeEsGmx",
+          "type": "bool"
         },
         {
-          "internalType": "address",
-          "name": "_stakedGmxTracker",
-          "type": "address"
+          "internalType": "bool",
+          "name": "_shouldStakeMultiplierPoints",
+          "type": "bool"
         },
         {
-          "internalType": "address",
-          "name": "_bonusGmxTracker",
-          "type": "address"
+          "internalType": "bool",
+          "name": "_shouldClaimWeth",
+          "type": "bool"
         },
         {
-          "internalType": "address",
-          "name": "_feeGmxTracker",
-          "type": "address"
-        },
+          "internalType": "bool",
+          "name": "_shouldConvertWethToEth",
+          "type": "bool"
+        }
+      ],
+      "name": "handleRewardsV2",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "inRestakingMode",
+      "outputs": [
         {
-          "internalType": "address",
-          "name": "_feeGlpTracker",
-          "type": "address"
-        },
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "inStrictTransferMode",
+      "outputs": [
         {
-          "internalType": "address",
-          "name": "_stakedGlpTracker",
-          "type": "address"
-        },
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
         {
-          "internalType": "address",
-          "name": "_glpManager",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_gmxVester",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_glpVester",
-          "type": "address"
+          "components": [
+            {
+              "internalType": "address",
+              "name": "weth",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "gmx",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "esGmx",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "bnGmx",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "glp",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "stakedGmxTracker",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "bonusGmxTracker",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "extendedGmxTracker",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "feeGmxTracker",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "feeGlpTracker",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "stakedGlpTracker",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "glpManager",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "gmxVester",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "glpVester",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "externalHandler",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "govToken",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct RewardRouterV2.InitializeParams",
+          "name": "_initializeParams",
+          "type": "tuple"
         }
       ],
       "name": "initialize",
@@ -456,6 +591,47 @@
           "internalType": "bool",
           "name": "",
           "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "externalCallTargets",
+          "type": "address[]"
+        },
+        {
+          "internalType": "bytes[]",
+          "name": "externalCallDataList",
+          "type": "bytes[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "refundTokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "address[]",
+          "name": "refundReceivers",
+          "type": "address[]"
+        }
+      ],
+      "name": "makeExternalCalls",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maxBoostBasisPoints",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -522,6 +698,25 @@
     {
       "inputs": [
         {
+          "internalType": "bytes[]",
+          "name": "data",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "multicall",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "results",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "",
           "type": "address"
@@ -547,6 +742,71 @@
         }
       ],
       "name": "setGov",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_govToken",
+          "type": "address"
+        }
+      ],
+      "name": "setGovToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "_inRestakingMode",
+          "type": "bool"
+        }
+      ],
+      "name": "setInRestakingMode",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "_inStrictTransferMode",
+          "type": "bool"
+        }
+      ],
+      "name": "setInStrictTransferMode",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_maxBoostBasisPoints",
+          "type": "uint256"
+        }
+      ],
+      "name": "setMaxBoostBasisPoints",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum RewardRouterV2.VotingPowerType",
+          "name": "_votingPowerType",
+          "type": "uint8"
+        }
+      ],
+      "name": "setVotingPowerType",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -586,24 +846,6 @@
         }
       ],
       "name": "stakeGmx",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_account",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "stakeGmxForAccount",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -721,6 +963,19 @@
       "name": "unstakeGmx",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "votingPowerType",
+      "outputs": [
+        {
+          "internalType": "enum RewardRouterV2.VotingPowerType",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {

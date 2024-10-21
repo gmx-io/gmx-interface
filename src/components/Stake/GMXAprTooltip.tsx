@@ -22,28 +22,29 @@ function renderEscrowedGMXApr(processedData) {
 
 export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUserConnected = false }: Props) {
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
-  const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
-  const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
+  const gmxAprForNativeTokenPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
+  const gmxAprForGmxPercentage = formatKeyAmount(processedData, "gmxAprForGmx", 2, 2, true);
 
-  if (!isUserConnected) {
-    return (
-      <>
-        <StatsTooltipRow label={t`${nativeTokenSymbol} APR`} showDollar={false} value={`${gmxAprPercentage}%`} />
-        <br />
-        {aprUpdateMsg}
-      </>
-    );
-  }
+  const shouldShowNativeTokenApr = processedData?.gmxAprForNativeToken && processedData.gmxAprForNativeToken > 0;
+
+  const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
 
   return (
     <>
       <div>
-        <StatsTooltipRow label={t`${nativeTokenSymbol} APR`} showDollar={false} value={`${gmxAprPercentage}%`} />
-        {escrowedGMXApr && (
+        <StatsTooltipRow label={t`GMX APR`} showDollar={false} value={`${gmxAprForGmxPercentage}%`} />
+        {isUserConnected && escrowedGMXApr && (
           <>
             <br /> {escrowedGMXApr}
           </>
         )}
+        {shouldShowNativeTokenApr ? (
+          <StatsTooltipRow
+            label={t`${nativeTokenSymbol} APR`}
+            showDollar={false}
+            value={`${gmxAprForNativeTokenPercentage}%`}
+          />
+        ) : null}
       </div>
       <div>
         <br />
