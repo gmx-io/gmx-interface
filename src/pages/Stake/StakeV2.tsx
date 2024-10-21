@@ -1681,8 +1681,8 @@ export default function StakeV2() {
   }
 
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.gmxAprForNativeToken, 2, 2, true)}%`;
-  }, [processedData?.gmxAprForNativeToken]);
+    return `${formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%`;
+  }, [processedData?.gmxAprTotal]);
 
   let earnMsg;
   if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
@@ -2093,10 +2093,29 @@ export default function StakeV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">GMX</div>
-                <div>
-                  {formatKeyAmount(processedData, "totalGmxRewards", 18, 4, true)} ($
-                  {formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)})
-                </div>
+                <Tooltip
+                  handle={
+                    <div>
+                      {formatKeyAmount(processedData, "totalGmxRewards", 18, 4, true)} ($
+                      {formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)})
+                    </div>
+                  }
+                  position="bottom-end"
+                  content={
+                    <>
+                      <StatsTooltipRow
+                        label={t`GMX Rewards`}
+                        showDollar={true}
+                        value={formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)}
+                      />
+                      <StatsTooltipRow
+                        label={t`Vested Claimable GMX`}
+                        showDollar={true}
+                        value={formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)}
+                      />
+                    </>
+                  }
+                />
               </div>
               <div className="App-card-row">
                 <div className="label">

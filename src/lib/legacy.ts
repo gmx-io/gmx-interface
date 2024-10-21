@@ -1184,9 +1184,11 @@ export type ProcessedData = Partial<{
   feeGmxSupplyUsd: bigint;
   stakedGmxTrackerRewards: bigint;
   stakedGmxTrackerRewardsUsd: bigint;
+  extendedGmxTrackerRewardsUsd: bigint;
   feeGmxTrackerRewards: bigint;
   feeGmxTrackerRewardsUsd: bigint;
   stakedGmxTrackerAnnualRewardsUsd: bigint;
+  extendedGmxTrackerAnnualRewardsUsd: bigint;
   feeGmxTrackerAnnualRewardsUsd: bigint;
   gmxAprTotal: bigint;
   totalStakingRewardsUsd: bigint;
@@ -1203,6 +1205,7 @@ export type ProcessedData = Partial<{
   glpAprForEsGmx: bigint;
   feeGlpTrackerAnnualRewardsUsd: bigint;
   glpAprForNativeToken: bigint;
+  gmxAprForGmx: bigint;
   glpAprTotal: bigint;
   totalGlpRewardsUsd: bigint;
   totalEsGmxRewards: bigint;
@@ -1287,6 +1290,8 @@ export function getProcessedData(
     nativeTokenPrice,
     expandDecimals(1, 18)
   );
+  data.extendedGmxTrackerAnnualRewardsUsd =
+    (stakingData.extendedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
 
   data.stakedGmxTrackerAnnualRewardsUsd =
     (stakingData.stakedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
@@ -1296,12 +1301,18 @@ export function getProcessedData(
       : 0n;
   data.feeGmxTrackerAnnualRewardsUsd =
     (stakingData.feeGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * nativeTokenPrice) / expandDecimals(1, 18);
+
   data.gmxAprForNativeToken =
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
       ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
       : 0n;
 
-  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
+  data.gmxAprForGmx =
+    data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
+      ? mulDiv(data.extendedGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
+      : 0n;
+
+  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForGmx;
 
   data.totalStakingRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
 
@@ -1358,9 +1369,7 @@ export function getProcessedData(
 
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalVesterRewardsUsd;
 
-  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken
-    ? data.gmxAprForNativeToken + (data.avgBoostAprForNativeToken ?? 0n)
-    : undefined;
+  data.avgGMXAprTotal = data.gmxAprTotal ? data.gmxAprTotal + (data.avgBoostAprForNativeToken ?? 0n) : undefined;
 
   return data;
 }

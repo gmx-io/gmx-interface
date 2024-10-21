@@ -899,6 +899,10 @@ msgid "Average leverage used."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
+msgid "GMX Rewards"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Escrowed GMX"
 msgstr ""
@@ -3388,6 +3392,10 @@ msgstr ""
 msgid "Withdraw"
 msgstr "Retirer"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Vested Claimable GMX"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
@@ -4237,6 +4245,10 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
 msgstr "Modifier le code de parrainage"
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "GMX APR"
+msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Switch to:"
@@ -6821,7 +6833,6 @@ msgstr ""
 msgid "Avalanche LP incentives"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr ""
