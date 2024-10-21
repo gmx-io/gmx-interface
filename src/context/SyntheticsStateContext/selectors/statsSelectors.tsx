@@ -51,7 +51,9 @@ export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress
       return;
     }
 
-    return calculatePriceDecimals(token.prices.minPrice);
+    const visualMultiplier = token.visualMultiplier ? BigInt(token.visualMultiplier) : undefined;
+
+    return calculatePriceDecimals(token.prices.minPrice, undefined, visualMultiplier);
   })
 );
 
