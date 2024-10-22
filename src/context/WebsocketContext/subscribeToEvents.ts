@@ -1,5 +1,5 @@
 import EventEmitter from "abis/EventEmitter.json";
-import { getContract } from "config/contracts";
+import { getContract, tryGetContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, getTokens } from "config/tokens";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
@@ -146,13 +146,13 @@ export function subscribeToApprovalEvents(
   onApprove: (tokenAddress: string, spender: string, value: bigint) => void
 ) {
   const spenders = [
-    getContract(chainId, "StakedGmxTracker"),
     ZeroAddress,
-    getContract(chainId, "GlpManager"),
-    getContract(chainId, "SyntheticsRouter"),
-    getContract(chainId, "Router"),
-    getContract(chainId, "AUTO_USDG_FARM"),
-  ];
+    tryGetContract(chainId, "StakedGmxTracker"),
+    tryGetContract(chainId, "GlpManager"),
+    tryGetContract(chainId, "SyntheticsRouter"),
+    tryGetContract(chainId, "Router"),
+  ].filter(Boolean);
+
   const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
   const tokenAddresses = getTokens(chainId)
