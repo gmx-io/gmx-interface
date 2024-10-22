@@ -284,6 +284,7 @@ const CONTRACTS = {
     FeeGmxTracker: ZeroAddress,
     StakedGlpTracker: ZeroAddress,
     FeeGlpTracker: ZeroAddress,
+    ExtendedGmxTracker: ZeroAddress,
 
     StakedGmxDistributor: ZeroAddress,
     StakedGlpDistributor: ZeroAddress,
