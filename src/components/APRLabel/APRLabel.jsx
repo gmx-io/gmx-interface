@@ -42,6 +42,7 @@ export default function APRLabel({ chainId, label }) {
 
   const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
+  const extendedGmxTrackerAddress = getContract(chainId, "ExtendedGmxTracker");
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -68,6 +69,7 @@ export default function APRLabel({ chainId, label }) {
     feeGmxTrackerAddress,
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress,
+    extendedGmxTrackerAddress,
   ];
 
   const { data: walletBalances } = useSWR(

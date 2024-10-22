@@ -1,3 +1,7 @@
+/* 
+  This is a legacy way to retrieve V1 total fees data. 
+  Should be replaced with useV1FeesInfo after resolving sorce data discrepancy issue.
+*/
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { arrayURLFetcher } from "lib/fetcher";
@@ -5,7 +9,7 @@ import useSWR from "swr";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
-export function useFeesSummary(): {
+export function useV1TotalFeesLegacy(): {
   data: Partial<{
     [chainId: string]: {
       lastUpdatedAt: number;

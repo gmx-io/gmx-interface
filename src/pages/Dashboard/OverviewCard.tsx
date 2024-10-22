@@ -6,9 +6,8 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
-import { useFeesSummary, useVolumeInfo } from "domain/stats";
+import { getCurrentEpochStartedTimestamp, useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { useInfoTokens } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
@@ -17,9 +16,7 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
-import { getCurrentFeesUsd } from "./getCurrentFeesUsd";
 import { getPositionStats } from "./getPositionStats";
-import { getWhitelistedTokenAddresses } from "./getWhitelistedTokenAddresses";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
@@ -57,33 +54,10 @@ export function OverviewCard({
 
   const positionStatsInfo = getPositionStats(positionStats);
 
-  const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
-  const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
+  const v1ArbitrumFees = useV1FeesInfo(ARBITRUM);
+  const v1AvalancheFees = useV1FeesInfo(AVALANCHE);
 
-  const v1Fees = useMemo(() => {
-    if (!statsArbitrum?.reader?.fees || !statsAvalanche?.reader?.fees) {
-      return undefined;
-    }
-    const feeUsdArbitrum = getCurrentFeesUsd(
-      getWhitelistedTokenAddresses(ARBITRUM),
-      statsArbitrum.reader.fees,
-      infoTokensArbitrum
-    );
-
-    const feeUsdAvalanche = getCurrentFeesUsd(
-      getWhitelistedTokenAddresses(AVALANCHE),
-      statsAvalanche.reader.fees,
-      infoTokensAvax
-    );
-
-    return {
-      total: feeUsdArbitrum + feeUsdAvalanche,
-      [ARBITRUM]: feeUsdArbitrum,
-      [AVALANCHE]: feeUsdAvalanche,
-    };
-  }, [statsArbitrum?.reader.fees, statsAvalanche?.reader.fees, infoTokensArbitrum, infoTokensAvax]);
-
-  const { data: feesSummaryByChain } = useFeesSummary();
+  const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
@@ -161,8 +135,6 @@ export function OverviewCard({
   );
   // #endregion Daily Volume
 
-  const feesSummary = feesSummaryByChain[chainId];
-
   // #region Open Interest
   const v1ArbitrumOpenInterest = positionStatsInfo?.[ARBITRUM]?.openInterest;
   const v1AvalancheOpenInterest = positionStatsInfo?.[AVALANCHE]?.openInterest;
@@ -208,8 +180,8 @@ export function OverviewCard({
   // #endregion Short Position Sizes
 
   // #region Fees
-  const v1ArbitrumWeeklyFees = v1Fees?.[ARBITRUM];
-  const v1AvalancheWeeklyFees = v1Fees?.[AVALANCHE];
+  const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
+  const v1AvalancheWeeklyFees = v1AvalancheFees?.weeklyFees;
 
   const v2ArbitrumWeeklyFees = v2ArbitrumOverview?.weeklyFees;
   const v2AvalancheWeeklyFees = v2AvalancheOverview?.weeklyFees;
@@ -283,13 +255,9 @@ export function OverviewCard({
   );
 
   const formattedDuration = useMemo(() => {
-    if (!feesSummary?.lastUpdatedAt) {
-      return "";
-    }
-
     const now = Date.now() / 1000;
-    const days = Math.floor((now - feesSummary.lastUpdatedAt) / (3600 * 24));
-    let restHours = Math.round((now - feesSummary.lastUpdatedAt) / 3600) - days * 24;
+    const days = Math.floor((now - epochStartedTimestamp) / (3600 * 24));
+    let restHours = Math.round((now - epochStartedTimestamp) / 3600) - days * 24;
     if (days === 0) {
       restHours = Math.max(restHours, 1);
     }
@@ -297,7 +265,7 @@ export function OverviewCard({
     const daysStr = days > 0 ? `${days}d` : "";
     const hoursStr = restHours > 0 ? `${restHours}h` : "";
     return [daysStr, hoursStr].filter(Boolean).join(" ");
-  }, [feesSummary?.lastUpdatedAt]);
+  }, [epochStartedTimestamp]);
 
   return (
     <div className="App-card">
@@ -433,21 +401,19 @@ export function OverviewCard({
             />
           </div>
         </div>
-        {feesSummary?.lastUpdatedAt ? (
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Fees for the past</Trans> {formattedDuration}
-            </div>
-            <div>
-              <TooltipComponent
-                position="bottom-end"
-                className="whitespace-nowrap"
-                handle={`$${formatAmount(totalWeeklyFeesUsd, USD_DECIMALS, 2, true)}`}
-                content={<ChainsStatsTooltipRow entries={weeklyFeesEntries} />}
-              />
-            </div>
+        <div className="App-card-row">
+          <div className="label">
+            <Trans>Fees for the past</Trans> {formattedDuration}
           </div>
-        ) : null}
+          <div>
+            <TooltipComponent
+              position="bottom-end"
+              className="whitespace-nowrap"
+              handle={`$${formatAmount(totalWeeklyFeesUsd, USD_DECIMALS, 2, true)}`}
+              content={<ChainsStatsTooltipRow entries={weeklyFeesEntries} />}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

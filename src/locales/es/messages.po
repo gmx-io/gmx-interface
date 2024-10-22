@@ -899,6 +899,10 @@ msgid "Average leverage used."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
+#~ msgid "GMX Rewards"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Escrowed GMX"
 msgstr ""
@@ -953,6 +957,10 @@ msgstr "Código de Referido"
 
 #: src/components/Footer/constants.ts
 msgid "Charts by TradingView"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "GMX Staked Rewards"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -1605,6 +1613,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "GMX"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -3388,6 +3400,10 @@ msgstr ""
 msgid "Withdraw"
 msgstr "Retirar"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Vested Claimable GMX"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
@@ -4237,6 +4253,10 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
 msgstr "Editar Código de Referido"
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "GMX APR"
+msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Switch to:"
@@ -6821,7 +6841,6 @@ msgstr ""
 msgid "Avalanche LP incentives"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr ""

@@ -1137,7 +1137,14 @@ export function getStakingData(stakingInfo) {
     return;
   }
 
-  const keys = ["stakedGmxTracker", "bonusGmxTracker", "feeGmxTracker", "stakedGlpTracker", "feeGlpTracker"];
+  const keys = [
+    "stakedGmxTracker",
+    "bonusGmxTracker",
+    "feeGmxTracker",
+    "stakedGlpTracker",
+    "feeGlpTracker",
+    "extendedGmxTracker",
+  ];
   const data = {};
   const propsLength = 5;
 
@@ -1177,12 +1184,15 @@ export type ProcessedData = Partial<{
   feeGmxSupplyUsd: bigint;
   stakedGmxTrackerRewards: bigint;
   stakedGmxTrackerRewardsUsd: bigint;
+  extendedGmxTrackerRewards: bigint;
+  extendedGmxTrackerRewardsUsd: bigint;
   feeGmxTrackerRewards: bigint;
   feeGmxTrackerRewardsUsd: bigint;
   stakedGmxTrackerAnnualRewardsUsd: bigint;
+  extendedGmxTrackerAnnualRewardsUsd: bigint;
   feeGmxTrackerAnnualRewardsUsd: bigint;
   gmxAprTotal: bigint;
-  totalGmxRewardsUsd: bigint;
+  totalStakingRewardsUsd: bigint;
   glpSupply: bigint;
   glpPrice: bigint;
   glpSupplyUsd: bigint;
@@ -1196,10 +1206,13 @@ export type ProcessedData = Partial<{
   glpAprForEsGmx: bigint;
   feeGlpTrackerAnnualRewardsUsd: bigint;
   glpAprForNativeToken: bigint;
+  gmxAprForGmx: bigint;
   glpAprTotal: bigint;
   totalGlpRewardsUsd: bigint;
   totalEsGmxRewards: bigint;
   totalEsGmxRewardsUsd: bigint;
+  totalGmxRewards: bigint;
+  totalGmxRewardsUsd: bigint;
   gmxVesterRewards: bigint;
   glpVesterRewards: bigint;
   totalVesterRewards: bigint;
@@ -1272,6 +1285,13 @@ export function getProcessedData(
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
   data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
+  data.extendedGmxTrackerRewards = stakingData.extendedGmxTracker.claimable;
+  data.extendedGmxTrackerSupply = stakingData.extendedGmxTracker.totalSupply;
+  data.extendedGmxTrackerSupplyUsd = mulDiv(data.extendedGmxTrackerSupply, gmxPrice, expandDecimals(1, 18));
+  data.extendedGmxTrackerRewardsUsd = mulDiv(stakingData.extendedGmxTracker.claimable, gmxPrice, expandDecimals(1, 18));
+  data.extendedGmxTrackerAnnualRewardsUsd =
+    (stakingData.extendedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
+
   data.stakedGmxTrackerAnnualRewardsUsd =
     (stakingData.stakedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
   data.gmxAprForEsGmx =
@@ -1280,14 +1300,21 @@ export function getProcessedData(
       : 0n;
   data.feeGmxTrackerAnnualRewardsUsd =
     (stakingData.feeGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * nativeTokenPrice) / expandDecimals(1, 18);
+
   data.gmxAprForNativeToken =
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
       ? mulDiv(data.feeGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
       : 0n;
 
-  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForEsGmx;
+  data.gmxAprForGmx =
+    data.feeGmxSupplyUsd && data.feeGmxSupplyUsd > 0
+      ? mulDiv(data.extendedGmxTrackerAnnualRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, data.feeGmxSupplyUsd)
+      : 0n;
 
-  data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
+  data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForGmx;
+
+  data.totalStakingRewardsUsd =
+    data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd + data.extendedGmxTrackerRewardsUsd;
 
   data.glpSupply = supplyData.glp;
   data.glpPrice =
@@ -1334,14 +1361,15 @@ export function getProcessedData(
   data.totalVesterRewards = data.gmxVesterRewards + data.glpVesterRewards;
   data.totalVesterRewardsUsd = mulDiv(data.totalVesterRewards, gmxPrice, expandDecimals(1, 18));
 
+  data.totalGmxRewards = data.totalVesterRewards + data.extendedGmxTrackerRewards;
+  data.totalGmxRewardsUsd = data.totalVesterRewardsUsd + data.extendedGmxTrackerRewardsUsd;
+
   data.totalNativeTokenRewards = data.feeGmxTrackerRewards + data.feeGlpTrackerRewards;
   data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd + data.feeGlpTrackerRewardsUsd;
 
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalVesterRewardsUsd;
+  data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalGmxRewardsUsd;
 
-  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken
-    ? data.gmxAprForNativeToken + (data.avgBoostAprForNativeToken ?? 0n)
-    : undefined;
+  data.avgGMXAprTotal = data.gmxAprTotal ? data.gmxAprTotal + (data.avgBoostAprForNativeToken ?? 0n) : undefined;
 
   return data;
 }

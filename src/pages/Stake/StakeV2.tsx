@@ -781,6 +781,7 @@ function CompoundModal(props: {
   totalVesterRewards: bigint | undefined;
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
+  isNativeTokenToClaim?: boolean;
 }) {
   const {
     isVisible,
@@ -792,6 +793,7 @@ function CompoundModal(props: {
     totalVesterRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
+    isNativeTokenToClaim,
   } = props;
   const [isCompounding, setIsCompounding] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -882,8 +884,8 @@ function CompoundModal(props: {
         shouldClaimEsGmx || shouldStakeEsGmx,
         shouldStakeEsGmx,
         true,
-        shouldClaimWeth || shouldConvertWeth,
-        shouldConvertWeth,
+        isNativeTokenToClaim ? shouldClaimWeth || shouldConvertWeth : false,
+        isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
         sentMsg: t`Compound submitted!`,
@@ -955,18 +957,22 @@ function CompoundModal(props: {
               <Trans>Stake esGMX Rewards</Trans>
             </Checkbox>
           </div>
-          <div>
-            <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
-              <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
-            </Checkbox>
-          </div>
-          <div>
-            <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
-              <Trans>
-                Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
-              </Trans>
-            </Checkbox>
-          </div>
+          {isNativeTokenToClaim && (
+            <>
+              <div>
+                <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
+                  <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
+                </Checkbox>
+              </div>
+              <div>
+                <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
+                  <Trans>
+                    Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
+                  </Trans>
+                </Checkbox>
+              </div>
+            </>
+          )}
         </div>
         {(needApproval || isApproving) && (
           <div className="mb-12">
@@ -997,6 +1003,7 @@ function ClaimModal(props: {
   setPendingTxns: SetPendingTransactions;
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
+  isNativeTokenToClaim?: boolean;
 }) {
   const {
     isVisible,
@@ -1007,6 +1014,7 @@ function ClaimModal(props: {
     setPendingTxns,
     nativeTokenSymbol,
     wrappedTokenSymbol,
+    isNativeTokenToClaim,
   } = props;
   const [isClaiming, setIsClaiming] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -1056,8 +1064,8 @@ function ClaimModal(props: {
         shouldClaimEsGmx,
         false, // shouldStakeEsGmx
         false, // shouldStakeMultiplierPoints
-        shouldClaimWeth,
-        shouldConvertWeth,
+        isNativeTokenToClaim ? shouldClaimWeth : false,
+        isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
         sentMsg: t`Claim submitted.`,
@@ -1105,18 +1113,22 @@ function ClaimModal(props: {
               <Trans>Claim esGMX Rewards</Trans>
             </Checkbox>
           </div>
-          <div>
-            <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
-              <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
-            </Checkbox>
-          </div>
-          <div>
-            <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
-              <Trans>
-                Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
-              </Trans>
-            </Checkbox>
-          </div>
+          {isNativeTokenToClaim && (
+            <>
+              <div>
+                <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
+                  <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
+                </Checkbox>
+              </div>
+              <div>
+                <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
+                  <Trans>
+                    Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
+                  </Trans>
+                </Checkbox>
+              </div>
+            </>
+          )}
         </div>
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -1293,6 +1305,7 @@ export default function StakeV2() {
 
   const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
+  const extendedGmxTrackerAddress = getContract(chainId, "ExtendedGmxTracker");
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -1331,6 +1344,7 @@ export default function StakeV2() {
     feeGmxTrackerAddress,
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress,
+    extendedGmxTrackerAddress,
   ];
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -1460,6 +1474,10 @@ export default function StakeV2() {
     gmxPrice,
     gmxSupply
   );
+
+  const isAnyNativeTokenRewards =
+    (processedData?.totalNativeTokenRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n;
+  const isAnyFeeGmxTrackerRewards = (processedData?.feeGmxTrackerRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n;
 
   const reservedAmount =
     (processedData?.gmxInStakedGmx !== undefined &&
@@ -1664,8 +1682,8 @@ export default function StakeV2() {
   }
 
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.gmxAprForNativeToken, 2, 2, true)}%`;
-  }, [processedData?.gmxAprForNativeToken]);
+    return `${formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%`;
+  }, [processedData?.gmxAprTotal]);
 
   let earnMsg;
   if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
@@ -1791,6 +1809,7 @@ export default function StakeV2() {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
+        isNativeTokenToClaim={isAnyNativeTokenRewards}
       />
       <ClaimModal
         setPendingTxns={setPendingTxns}
@@ -1801,6 +1820,7 @@ export default function StakeV2() {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
+        isNativeTokenToClaim={isAnyNativeTokenRewards}
       />
       <AffiliateClaimModal
         signer={signer}
@@ -1959,19 +1979,19 @@ export default function StakeV2() {
                 </div>
                 <div>
                   <Tooltip
-                    handle={`$${formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)}`}
+                    handle={`$${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
                     position="bottom-end"
                     renderContent={() => {
                       return (
                         <>
                           <StatsTooltipRow
-                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                            label={t`GMX`}
                             value={`${formatKeyAmount(
                               processedData,
-                              "feeGmxTrackerRewards",
+                              "extendedGmxTrackerRewards",
                               18,
                               4
-                            )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                            )} ($${formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
                             showDollar={false}
                           />
                           <StatsTooltipRow
@@ -1990,6 +2010,18 @@ export default function StakeV2() {
                             )})`}
                             showDollar={false}
                           />
+                          {isAnyFeeGmxTrackerRewards && (
+                            <StatsTooltipRow
+                              label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                              value={`${formatKeyAmount(
+                                processedData,
+                                "feeGmxTrackerRewards",
+                                18,
+                                4
+                              )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                              showDollar={false}
+                            />
+                          )}
                         </>
                       );
                     }}
@@ -2073,20 +2105,50 @@ export default function StakeV2() {
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
-                <div className="label">
-                  {nativeTokenSymbol} ({wrappedTokenSymbol})
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "totalNativeTokenRewards", 18, 4, true)} ($
-                  {formatKeyAmount(processedData, "totalNativeTokenRewardsUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-row">
                 <div className="label">GMX</div>
-                <div>
-                  {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} ($
-                  {formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)})
-                </div>
+                <Tooltip
+                  handle={
+                    <div>
+                      {formatKeyAmount(processedData, "totalGmxRewards", 18, 4, true)} ($
+                      {formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)})
+                    </div>
+                  }
+                  position="bottom-end"
+                  content={
+                    <>
+                      <StatsTooltipRow
+                        label={
+                          <>
+                            {t`GMX Staked Rewards`}
+                            <div className="mx-4 inline" />
+                          </>
+                        }
+                        showDollar={false}
+                        value={
+                          <>
+                            {formatKeyAmount(processedData, "extendedGmxTrackerRewards", 18, 4, true)} ($
+                            {formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})
+                          </>
+                        }
+                      />
+                      <StatsTooltipRow
+                        label={
+                          <>
+                            {t`Vested Claimable GMX`}
+                            <div className="mx-4 inline" />
+                          </>
+                        }
+                        showDollar={false}
+                        value={
+                          <>
+                            {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} ($
+                            {formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)})
+                          </>
+                        }
+                      />
+                    </>
+                  }
+                />
               </div>
               <div className="App-card-row">
                 <div className="label">
@@ -2097,6 +2159,17 @@ export default function StakeV2() {
                   {formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
+              {isAnyNativeTokenRewards ? (
+                <div className="App-card-row">
+                  <div className="label">
+                    {nativeTokenSymbol} ({wrappedTokenSymbol})
+                  </div>
+                  <div>
+                    {formatKeyAmount(processedData, "totalNativeTokenRewards", 18, 4, true)} ($
+                    {formatKeyAmount(processedData, "totalNativeTokenRewardsUsd", USD_DECIMALS, 2, true)})
+                  </div>
+                </div>
+              ) : null}
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Total</Trans>
