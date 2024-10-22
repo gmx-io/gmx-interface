@@ -1,17 +1,16 @@
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { GLV_MARKETS } from "config/markets";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
-import { USD_DECIMALS } from "config/factors";
 import { applyFactor, expandDecimals, PRECISION } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
-import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
-import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
-import { GLV_MARKETS } from "config/markets";
+import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { isGlvInfo } from "./glv";
+import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -165,6 +164,16 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   } else {
     return marketInfo.shortInterestUsd;
   }
+}
+
+export function getMarketDivisor({
+  longTokenAddress,
+  shortTokenAddress,
+}: {
+  longTokenAddress: string;
+  shortTokenAddress: string;
+}) {
+  return longTokenAddress === shortTokenAddress ? 2n : 1n;
 }
 
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
