@@ -1286,6 +1286,8 @@ export function getProcessedData(
   data.feeGmxTrackerRewardsUsd = mulDiv(stakingData.feeGmxTracker.claimable, nativeTokenPrice, expandDecimals(1, 18));
 
   data.extendedGmxTrackerRewards = stakingData.extendedGmxTracker.claimable;
+  data.extendedGmxTrackerSupply = stakingData.extendedGmxTracker.totalSupply;
+  data.extendedGmxTrackerSupplyUsd = mulDiv(data.extendedGmxTrackerSupply, gmxPrice, expandDecimals(1, 18));
   data.extendedGmxTrackerRewardsUsd = mulDiv(stakingData.extendedGmxTracker.claimable, gmxPrice, expandDecimals(1, 18));
   data.extendedGmxTrackerAnnualRewardsUsd =
     (stakingData.extendedGmxTracker.tokensPerInterval * SECONDS_PER_YEAR * gmxPrice) / expandDecimals(1, 18);
@@ -1311,7 +1313,8 @@ export function getProcessedData(
 
   data.gmxAprTotal = data.gmxAprForNativeToken + data.gmxAprForGmx;
 
-  data.totalStakingRewardsUsd = data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd;
+  data.totalStakingRewardsUsd =
+    data.stakedGmxTrackerRewardsUsd + data.feeGmxTrackerRewardsUsd + data.extendedGmxTrackerRewardsUsd;
 
   data.glpSupply = supplyData.glp;
   data.glpPrice =
@@ -1364,7 +1367,7 @@ export function getProcessedData(
   data.totalNativeTokenRewards = data.feeGmxTrackerRewards + data.feeGlpTrackerRewards;
   data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd + data.feeGlpTrackerRewardsUsd;
 
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalVesterRewardsUsd;
+  data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalGmxRewardsUsd;
 
   data.avgGMXAprTotal = data.gmxAprTotal ? data.gmxAprTotal + (data.avgBoostAprForNativeToken ?? 0n) : undefined;
 

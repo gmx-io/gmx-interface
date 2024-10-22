@@ -899,8 +899,8 @@ msgid "Average leverage used."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "GMX Rewards"
-msgstr ""
+#~ msgid "GMX Rewards"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -957,6 +957,10 @@ msgstr "Code de parrainage"
 
 #: src/components/Footer/constants.ts
 msgid "Charts by TradingView"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "GMX Staked Rewards"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx

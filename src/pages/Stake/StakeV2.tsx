@@ -2117,7 +2117,12 @@ export default function StakeV2() {
                   content={
                     <>
                       <StatsTooltipRow
-                        label={t`GMX Rewards`}
+                        label={
+                          <>
+                            {t`GMX Staked Rewards`}
+                            <div className="mx-4 inline" />
+                          </>
+                        }
                         showDollar={false}
                         value={
                           <>
@@ -2127,7 +2132,12 @@ export default function StakeV2() {
                         }
                       />
                       <StatsTooltipRow
-                        label={t`Vested Claimable GMX`}
+                        label={
+                          <>
+                            {t`Vested Claimable GMX`}
+                            <div className="mx-4 inline" />
+                          </>
+                        }
                         showDollar={false}
                         value={
                           <>
