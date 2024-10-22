@@ -10,10 +10,10 @@ import {
   trustWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import once from "lodash/once";
 import { isDevelopment } from "config/env";
+import once from "lodash/once";
 import { http } from "viem";
-import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji, mainnet } from "viem/chains";
+import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 
@@ -47,13 +47,12 @@ export const getRainbowKitConfig = once(() =>
   getDefaultConfig({
     appName: APP_NAME,
     projectId: WALLET_CONNECT_PROJECT_ID,
-    chains: [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : []), mainnet],
+    chains: [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
     transports: {
       [arbitrum.id]: http(),
       [avalanche.id]: http(),
       [arbitrumGoerli.id]: http(),
       [avalancheFuji.id]: http(),
-      [mainnet.id]: http(),
     },
     wallets: [...popularWalletList, ...othersWalletList],
   })
