@@ -11,8 +11,6 @@ type AbStorage = {
 
 const abFlagsConfig = {
   // testExampleAb: 0.5,
-  testCandlesPreload: 0.5,
-  testExecuteChainMulticallFix: 0.3,
   testApprovalWebSocketsEvents: 0.1,
 };
 

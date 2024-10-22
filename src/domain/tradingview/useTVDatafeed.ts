@@ -8,17 +8,16 @@ import {
   ResolutionString,
   SubscribeBarsCallback,
 } from "charting_library";
+import { USD_DECIMALS } from "config/factors";
 import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
 import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import { calculatePriceDecimals, numberToBigint } from "lib/numbers";
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
-import { getIsFlagEnabled } from "config/ab";
-import { calculatePriceDecimals, numberToBigint } from "lib/numbers";
-import { USD_DECIMALS } from "config/factors";
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
@@ -206,12 +205,10 @@ function buildFeeder({
             return;
           }
 
-          if (getIsFlagEnabled("testCandlesPreload")) {
-            tvDataProviderRef.current?.saveTVParamsCache(chainId, {
-              resolution,
-              countBack: periodParams.countBack,
-            });
-          }
+          tvDataProviderRef.current?.saveTVParamsCache(chainId, {
+            resolution,
+            countBack: periodParams.countBack,
+          });
 
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
