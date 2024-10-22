@@ -48,9 +48,10 @@ export function useGlvMarketsInfo(
     tokensData: TokensData | undefined;
     chainId: number;
     account: string | undefined;
+    filterIncorrectMarkets?: boolean;
   }
 ) {
-  const { marketsInfoData, tokensData, chainId, account } = deps;
+  const { marketsInfoData, tokensData, chainId, account, filterIncorrectMarkets } = deps;
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
   const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
@@ -83,8 +84,11 @@ export function useGlvMarketsInfo(
   );
 
   const glvs = useMemo(() => {
+    if (filterIncorrectMarkets === false) {
+      return glvList;
+    }
     return glvList?.filter(({ markets }) => markets.length > 0 && markets.every((market) => marketsInfoData?.[market]));
-  }, [glvList, marketsInfoData]);
+  }, [glvList, marketsInfoData, filterIncorrectMarkets]);
 
   const shouldRequest = enabled && marketsInfoData && tokensData && glvs && glvs.length > 0;
 

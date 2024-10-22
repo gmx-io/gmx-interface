@@ -129,6 +129,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
     account,
     marketsInfoData: undefined,
     tokensData: undefined,
+    filterIncorrectMarkets: false,
   });
 
   const { glvs: glvAvax } = useGlvMarketsInfo(isGlvEnabled(AVALANCHE), {
@@ -136,6 +137,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
     marketsInfoData: undefined,
     tokensData: undefined,
     account,
+    filterIncorrectMarkets: false,
   });
 
   const {
