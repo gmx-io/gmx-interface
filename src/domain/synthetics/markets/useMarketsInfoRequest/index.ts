@@ -13,6 +13,7 @@ import type { MarketInfo, MarketsData, MarketsInfoData } from "../types";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
 import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
+import { getMarketDivisor } from "../utils";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -337,7 +338,7 @@ function useMarketsValuesRequest({
             return acc;
           }
           const market = getByKey(marketsData, marketAddress)!;
-          const marketDivisor = market.isSameCollaterals ? 2n : 1n;
+          const marketDivisor = getMarketDivisor(market);
 
           const longInterestUsingLongToken =
             BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]) / marketDivisor;

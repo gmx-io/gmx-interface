@@ -176,50 +176,6 @@ export function getMarketDivisor({
   return longTokenAddress === shortTokenAddress ? 2n : 1n;
 }
 
-export function calculateTotalOpenInterestUsd(p: {
-  longInterestUsingLongToken: bigint;
-  longInterestUsingShortToken: bigint;
-  shortInterestUsingLongToken: bigint;
-  shortInterestUsingShortToken: bigint;
-}) {
-  const {
-    longInterestUsingLongToken,
-    longInterestUsingShortToken,
-    shortInterestUsingLongToken,
-    shortInterestUsingShortToken,
-  } = p;
-
-  const longInterestUsd = longInterestUsingLongToken + longInterestUsingShortToken;
-  const shortInterestUsd = shortInterestUsingLongToken + shortInterestUsingShortToken;
-
-  return {
-    longInterestUsd,
-    shortInterestUsd,
-  };
-}
-
-export function calculateTotalOpenInterestInTokens(p: {
-  longInterestInTokensUsingLongToken: bigint;
-  longInterestInTokensUsingShortToken: bigint;
-  shortInterestInTokensUsingLongToken: bigint;
-  shortInterestInTokensUsingShortToken: bigint;
-}) {
-  const {
-    longInterestInTokensUsingLongToken,
-    longInterestInTokensUsingShortToken,
-    shortInterestInTokensUsingLongToken,
-    shortInterestInTokensUsingShortToken,
-  } = p;
-
-  const longInterestInTokens = longInterestInTokensUsingLongToken + longInterestInTokensUsingShortToken;
-  const shortInterestInTokens = shortInterestInTokensUsingLongToken + shortInterestInTokensUsingShortToken;
-
-  return {
-    longInterestInTokens,
-    shortInterestInTokens,
-  };
-}
-
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
