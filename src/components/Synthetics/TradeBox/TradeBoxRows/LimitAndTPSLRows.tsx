@@ -77,7 +77,14 @@ export function LimitAndTPSLRows() {
 
                     const price =
                       entry.price?.value &&
-                      formatAmount(entry.price.value * visualMultiplier, USD_DECIMALS, marketDecimals);
+                      formatAmount(
+                        entry.price.value,
+                        USD_DECIMALS,
+                        marketDecimals,
+                        undefined,
+                        undefined,
+                        visualMultiplier
+                      );
                     const percentage =
                       entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
 

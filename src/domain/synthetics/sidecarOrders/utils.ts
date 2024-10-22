@@ -13,7 +13,7 @@ export function getDefaultEntryField(
   decimals: number | undefined,
   { input, value, error }: Partial<EntryField> = {},
   priceDecimals?: number,
-  visualMultiplier?: bigint
+  visualMultiplier?: number
 ): EntryField {
   let nextInput = "";
   let nextValue: bigint | null = null;
@@ -25,7 +25,7 @@ export function getDefaultEntryField(
     nextInput = input;
     nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
     if (nextValue !== null && visualMultiplier !== undefined) {
-      nextValue = nextValue / visualMultiplier;
+      nextValue = nextValue / BigInt(visualMultiplier);
     }
   } else if (value) {
     nextInput =
@@ -63,7 +63,7 @@ export function prepareInitialEntries({
   positionOrders: PositionOrderInfo[] | undefined;
   sort: "desc" | "asc";
   priceDecimals?: number;
-  visualMultiplier?: bigint;
+  visualMultiplier?: number;
 }): undefined | InitialEntry[] {
   if (!positionOrders) return;
 

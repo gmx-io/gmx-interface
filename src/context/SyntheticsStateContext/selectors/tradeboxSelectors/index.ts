@@ -572,7 +572,7 @@ export const selectTradeboxTriggerPrice = createSelector((q) => {
 
   if (parsedValue === undefined || parsedValue === 0n) return undefined;
 
-  return parsedValue / visualMultiplier;
+  return parsedValue / BigInt(visualMultiplier);
 });
 
 const selectNextValuesDecreaseArgs = createSelector((q) => {

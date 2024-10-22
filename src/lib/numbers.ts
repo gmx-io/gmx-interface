@@ -106,7 +106,8 @@ export const formatAmount = (
   tokenDecimals: number,
   displayDecimals?: number,
   useCommas?: boolean,
-  defaultValue?: string
+  defaultValue?: string,
+  visualMultiplier?: number
 ) => {
   if (defaultValue === undefined || defaultValue === null) {
     defaultValue = "...";
@@ -117,7 +118,7 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  let amountStr = ethers.formatUnits(amount, tokenDecimals);
+  let amountStr = ethers.formatUnits(BigInt(amount) * BigInt(visualMultiplier ?? 1), tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);
@@ -513,9 +514,9 @@ export function numberToBigint(value: number, decimals: number) {
   return negative ? -res : res;
 }
 
-export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1n) {
+export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
   if (price === undefined || price === 0n) return 2;
-  const priceNumber = bigintToNumber(price * visualMultiplier, decimals);
+  const priceNumber = bigintToNumber(price * BigInt(visualMultiplier), decimals);
 
   if (isNaN(priceNumber)) return 2;
   if (priceNumber >= 1000) return 2;
