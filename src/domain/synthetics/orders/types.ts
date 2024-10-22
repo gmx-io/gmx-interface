@@ -63,6 +63,7 @@ export type Order = {
   isLong: boolean;
   orderType: OrderType;
   shouldUnwrapNativeToken: boolean;
+  autoCancel: boolean;
   data: string;
 };
 

@@ -44,7 +44,7 @@ export function PositionEditorAdvancedRows({ selectedCollateralAddress, collater
   }
 
   return (
-    <ExpandableRow title={t`Advanced display`} open={open} onToggle={setOpen}>
+    <ExpandableRow className="-my-15" title={t`Advanced display`} open={open} onToggle={setOpen}>
       <ExchangeInfo.Group>
         <ExchangeInfoRow
           label={t`Leverage`}
