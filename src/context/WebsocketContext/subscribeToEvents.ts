@@ -151,6 +151,7 @@ export function subscribeToApprovalEvents(
     getContract(chainId, "GlpManager"),
     getContract(chainId, "SyntheticsRouter"),
     getContract(chainId, "Router"),
+    getContract(chainId, "AUTO_USDG_FARM"),
   ];
   const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);

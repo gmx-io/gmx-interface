@@ -59,7 +59,6 @@ import {
 } from "./types";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { getIsFlagEnabled } from "config/ab";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -732,9 +731,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribeApproval() {
-      const isEnabled = getIsFlagEnabled("testApprovalWebSocketsEvents");
-
-      if (!wsProvider || !currentAccount || !isEnabled) {
+      if (!wsProvider || !currentAccount) {
         return;
       }
 

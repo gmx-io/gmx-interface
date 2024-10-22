@@ -11,10 +11,9 @@ type AbStorage = {
 
 const abFlagsConfig = {
   // testExampleAb: 0.5,
-  testApprovalWebSocketsEvents: 0.1,
 };
 
-export type AbFlag = keyof typeof abFlagsConfig;
+export type AbFlag = string; // keyof typeof abFlagsConfig;
 
 const flags: AbFlag[] = Object.keys(abFlagsConfig) as AbFlag[];
 
