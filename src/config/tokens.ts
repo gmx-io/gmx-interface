@@ -374,6 +374,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/sats-ordinals",
       isSynthetic: true,
       visualMultiplier: 1000_000,
+      visualPrefix: "1M",
     },
     {
       name: "Polygon",
@@ -1360,4 +1361,8 @@ export function isSimilarToken(tokenA: Token, tokenB: Token) {
   }
 
   return false;
+}
+
+export function getTokenVisualMultiplier(token: Token): string {
+  return token.visualPrefix || token.visualMultiplier?.toString() || "";
 }

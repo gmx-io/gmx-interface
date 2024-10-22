@@ -13,7 +13,7 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { USD_DECIMALS } from "config/factors";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress, getTokenVisualMultiplier } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
@@ -549,7 +549,8 @@ export function PositionSeller(p: Props) {
         setIsVisible={onClose}
         label={
           <Trans>
-            Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.visualMultiplier}
+            Close {position?.isLong ? t`Long` : t`Short`}{" "}
+            {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
             {position?.indexToken?.symbol}
           </Trans>
         }

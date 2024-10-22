@@ -39,7 +39,6 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./OrderItem.scss";
 
 type Props = {
@@ -261,7 +260,11 @@ function MarkPrice({ order }: { order: OrderInfo }) {
   }, [order]);
 
   const positionOrder = order as PositionOrderInfo;
-  const priceDecimals = useSelector(makeSelectMarketPriceDecimals(positionOrder.marketInfo?.indexTokenAddress));
+  const priceDecimals = calculatePriceDecimals(
+    positionOrder.indexToken?.prices?.minPrice,
+    undefined,
+    positionOrder.indexToken?.visualMultiplier
+  );
 
   const markPriceFormatted = useMemo(() => {
     return formatUsd(markPrice, {
@@ -330,8 +333,11 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     );
   } else {
     const positionOrder = order as PositionOrderInfo;
-    const priceDecimals =
-      calculatePriceDecimals(positionOrder?.indexToken?.prices?.minPrice) || positionOrder?.indexToken?.priceDecimals;
+    const priceDecimals = calculatePriceDecimals(
+      positionOrder?.indexToken?.prices?.minPrice,
+      undefined,
+      positionOrder?.indexToken?.visualMultiplier
+    );
     return (
       <Tooltip
         handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {

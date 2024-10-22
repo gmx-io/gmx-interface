@@ -30,6 +30,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getTokenVisualMultiplier } from "config/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
@@ -78,7 +79,7 @@ export default function ChartTokenSelector(props: Props) {
               })}
             >
               <span>
-                {!isSwap && <>{selectedToken.visualMultiplier}</>}
+                {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                 {selectedToken.symbol} / USD
               </span>
               {poolName && (
@@ -146,16 +147,12 @@ function MarketsList(props: { options: Token[] | undefined }) {
         if (marketInfo) {
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
-          const indexTokenVisualMultiplier = marketInfo.indexToken.visualMultiplier;
 
           helperToast.success(
             <Trans>
               <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
               <div className="inline-flex">
-                <span>
-                  {indexTokenVisualMultiplier}
-                  {indexName}
-                </span>
+                <span>{indexName}</span>
                 <span className="subtext gm-toast leading-1">[{poolName}]</span>
               </div>{" "}
               <span>market selected</span>
@@ -452,7 +449,7 @@ function MarketListItem({
             displaySize={16}
             importSize={24}
           />
-          {token.visualMultiplier}
+          {getTokenVisualMultiplier(token)}
           {token.symbol} / USD
         </span>
       </td>

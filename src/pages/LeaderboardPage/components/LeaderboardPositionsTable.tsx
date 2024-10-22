@@ -32,6 +32,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getTokenVisualMultiplier } from "config/tokens";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -366,7 +367,7 @@ const TableRow = memo(
                   />
                 ) : null}
                 <span>
-                  {marketInfo?.indexToken.visualMultiplier}
+                  {marketInfo?.indexToken && getTokenVisualMultiplier(marketInfo.indexToken)}
                   {marketInfo?.indexToken.symbol}
                 </span>
                 <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>

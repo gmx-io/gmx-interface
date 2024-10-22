@@ -1,4 +1,5 @@
 import Loader from "components/Common/Loader";
+import { getIsFlagEnabled } from "config/ab";
 import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
@@ -37,6 +38,7 @@ type Props = {
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
   oraclePriceDecimals?: number;
+  visualMultiplier?: number | bigint;
 };
 
 export default function TVChartContainer({
@@ -51,6 +53,7 @@ export default function TVChartContainer({
   chartToken,
   supportedResolutions,
   oraclePriceDecimals,
+  visualMultiplier,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -199,7 +202,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, dataProvider]);
+  }, [chainId, dataProvider, visualMultiplier]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

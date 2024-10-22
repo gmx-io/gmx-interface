@@ -3844,6 +3844,10 @@ msgstr "Liq. Price"
 msgid "Trading Pair Price Alerts"
 msgstr "Trading Pair Price Alerts"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 msgstr "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
@@ -5429,10 +5433,6 @@ msgstr "Yield Trading"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr "3rd Place"
-
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "<0>{0}</0> <1><2>{indexTokenVisualMultiplier}{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
-msgstr "<0>{0}</0> <1><2>{indexTokenVisualMultiplier}{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts

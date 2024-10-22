@@ -1,9 +1,9 @@
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "config/tokens";
 import { Token, TokenPrices } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
-import { applyFactor, expandDecimals, PRECISION } from "lib/numbers";
+import { PRECISION, applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
@@ -65,8 +65,9 @@ export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token
     return `SWAP-ONLY`;
   }
 
-  // maybe ? firstToken.visualMultiplier || ""
-  return `${firstToken.visualMultiplier || ""}${firstToken.baseSymbol || firstToken.symbol}/USD`;
+  const prefix = getTokenVisualMultiplier(firstToken);
+
+  return `${prefix}${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {

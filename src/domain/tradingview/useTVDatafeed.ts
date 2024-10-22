@@ -38,9 +38,10 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
 
 type Props = {
   dataProvider?: TVDataProvider;
+  visualMultiplier?: number;
 };
 
-export default function useTVDatafeed({ dataProvider }: Props) {
+export default function useTVDatafeed({ dataProvider, visualMultiplier }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
@@ -113,8 +114,9 @@ export default function useTVDatafeed({ dataProvider }: Props) {
       missingBarsInfoRef: missingBarsInfo,
       feedDataRef: feedData,
       lastBarTimeRef: lastBarTime,
+      visualMultiplier,
     });
-  }, [chainId, stableTokens, supportedResolutions]);
+  }, [chainId, stableTokens, supportedResolutions, visualMultiplier]);
 }
 
 export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi>;
@@ -128,6 +130,7 @@ function buildFeeder({
   missingBarsInfoRef,
   feedDataRef,
   lastBarTimeRef,
+  visualMultiplier: maybeVisualMultiplier,
 }: {
   chainId: number;
   stableTokens: string[];
@@ -140,6 +143,7 @@ function buildFeeder({
   }>;
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
+  visualMultiplier?: number;
 }): { datafeed: TvDatafeed } {
   return {
     datafeed: {
@@ -160,27 +164,30 @@ function buildFeeder({
         }
       },
       resolveSymbol(symbolName, onSymbolResolvedCallback) {
-        const token = getTokenBySymbol(chainId, symbolName);
-
         if (!isChartAvailabeForToken(chainId, symbolName)) {
           symbolName = getNativeToken(chainId).symbol;
         }
 
+        const visualMultiplier = maybeVisualMultiplier ?? 1;
+        const prefix = maybeVisualMultiplier
+          ? getTokenBySymbol(chainId, symbolName)?.visualPrefix ?? String(visualMultiplier)
+          : "";
+
         let pricescale = Math.pow(
           10,
           tvDataProviderRef.current?.currentPrice
-            ? calculatePriceDecimals(numberToBigint(tvDataProviderRef.current.currentPrice, USD_DECIMALS), USD_DECIMALS)
+            ? calculatePriceDecimals(
+                numberToBigint(tvDataProviderRef.current.currentPrice, USD_DECIMALS),
+                USD_DECIMALS,
+                visualMultiplier
+              )
             : getPriceDecimals(chainId, symbolName)
         );
-
-        if (token.visualMultiplier) {
-          pricescale = pricescale / token.visualMultiplier;
-        }
 
         const symbolInfo = {
           name: symbolName,
           type: "crypto",
-          description: `${token.visualMultiplier || ""}${symbolName} / USD`,
+          description: `${prefix}${symbolName} / USD`,
           ticker: symbolName,
           session: "24x7",
           minmov: 1,
@@ -191,7 +198,7 @@ function buildFeeder({
           currency_code: "USD",
           data_status: "streaming",
           isStable: stableTokens.includes(symbolName),
-          visualMultiplier: token.visualMultiplier,
+          visualMultiplier,
           // @ts-ignore
           visible_plots_set: "ohlc",
         } satisfies Partial<SymbolInfo> as unknown as LibrarySymbolInfo;

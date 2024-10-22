@@ -10,7 +10,7 @@ import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "config/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
@@ -1071,7 +1071,7 @@ export function TradeBox(p: Props) {
                       <span className="inline-flex items-center">
                         <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
                         <span className="Token-symbol-text">
-                          {toToken.visualMultiplier}
+                          {getTokenVisualMultiplier(toToken)}
                           {toToken.symbol}
                         </span>
                       </span>

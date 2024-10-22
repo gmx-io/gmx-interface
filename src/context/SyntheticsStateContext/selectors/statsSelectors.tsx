@@ -1,9 +1,10 @@
-import { calculatePriceDecimals } from "lib/numbers";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { calculatePriceDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { createSelector, createSelectorFactory } from "../utils";
 import { selectChartToken } from "./chartSelectors";
+import { selectTradeboxTradeFlags } from "./tradeboxSelectors";
 
 export const selectIndexTokenStats = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
@@ -46,12 +47,13 @@ export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress
   createSelector(function selectSelectedMarketPriceDecimals(q) {
     const tokensData = q(selectTokensData);
     const token = getByKey(tokensData, tokenAddress);
+    const { isSwap } = q(selectTradeboxTradeFlags);
 
     if (!token) {
       return;
     }
 
-    const visualMultiplier = token.visualMultiplier ? BigInt(token.visualMultiplier) : undefined;
+    const visualMultiplier = isSwap ? 1 : token.visualMultiplier;
 
     return calculatePriceDecimals(token.prices.minPrice, undefined, visualMultiplier);
   })
@@ -59,10 +61,11 @@ export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress
 
 export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
   const { chartToken } = q(selectChartToken);
+  const { isSwap } = q(selectTradeboxTradeFlags);
 
-  if (!chartToken || !chartToken.visualMultiplier) {
-    return 1n;
+  if (!chartToken || !chartToken.visualMultiplier || isSwap) {
+    return 1;
   }
 
-  return BigInt(chartToken.visualMultiplier);
+  return chartToken.visualMultiplier;
 });

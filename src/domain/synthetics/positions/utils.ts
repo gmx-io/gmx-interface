@@ -220,7 +220,7 @@ export function formatLiquidationPrice(
   if (liquidationPrice === undefined || liquidationPrice < 0) {
     return "NA";
   }
-  const priceDecimalPlaces = calculatePriceDecimals(liquidationPrice);
+  const priceDecimalPlaces = calculatePriceDecimals(liquidationPrice, undefined, opts.visualMultiplier);
 
   return formatUsd(liquidationPrice, {
     ...opts,

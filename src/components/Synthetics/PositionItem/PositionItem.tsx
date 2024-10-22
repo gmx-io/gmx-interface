@@ -7,6 +7,7 @@ import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import { useMedia } from "react-use";
 
+import { getTokenVisualMultiplier } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -31,7 +32,7 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculatePriceDecimals, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
@@ -390,7 +391,7 @@ export function PositionItem(p: Props) {
                     displaySize={20}
                     importSize={24}
                   />
-                  {p.position.indexToken.visualMultiplier}
+                  {getTokenVisualMultiplier(p.position.indexToken)}
                   {p.position.indexToken.symbol}
                 </>
               }
@@ -550,7 +551,7 @@ export function PositionItem(p: Props) {
                   displaySize={20}
                   importSize={24}
                 />
-                {p.position.indexToken?.visualMultiplier}
+                {p.position.indexToken && getTokenVisualMultiplier(p.position.indexToken)}
                 {p.position.indexToken?.symbol}
               </span>
               <div>
@@ -865,7 +866,8 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
       {triggerThresholdType}{" "}
       {formatUsd(order.triggerPrice, {
-        displayDecimals: order.indexToken?.priceDecimals,
+        displayDecimals: calculatePriceDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier),
+        visualMultiplier: order.indexToken?.visualMultiplier,
       })}
       :{" "}
       <span>

@@ -13,7 +13,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import { getSyntheticsCollateralEditAddressKey } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, getToken } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -530,7 +530,8 @@ export function PositionEditor(p: Props) {
         setIsVisible={onClose}
         label={
           <Trans>
-            Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.visualMultiplier}
+            Edit {position?.isLong ? t`Long` : t`Short`}{" "}
+            {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
             {position?.indexToken?.symbol}
           </Trans>
         }

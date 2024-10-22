@@ -3841,6 +3841,10 @@ msgstr "청산가"
 msgid "Trading Pair Price Alerts"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습니다. 정확한 실행가격은 주문이 실행된 수수료에 의해 상이합니다."
@@ -5425,10 +5429,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
-msgstr ""
-
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "<0>{0}</0> <1><2>{indexTokenVisualMultiplier}{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
