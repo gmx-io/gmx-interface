@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getTokenBySymbol } from "config/tokens";
-import { useV1FeesInfo, useTotalVolume } from "domain/stats";
+import { useV1TotalFeesLegacy, useTotalVolume } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useInfoTokens } from "domain/tokens";
@@ -15,6 +15,8 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
+import { getCurrentFeesUsd } from "./getCurrentFeesUsd";
+import { getWhitelistedTokenAddresses } from "./getWhitelistedTokenAddresses";
 
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
@@ -47,12 +49,32 @@ export function StatsCard({
   const infoTokens = chainId === ARBITRUM ? infoTokensArbitrum : infoTokensAvax;
   const eth = infoTokens[getTokenBySymbol(chainId === ARBITRUM ? ARBITRUM : AVALANCHE, "ETH").address];
 
-  const v1ArbitrumFeesInfo = useV1FeesInfo(ARBITRUM);
-  const v1AvalancheFeesInfo = useV1FeesInfo(AVALANCHE);
+  const v1TotalFees = useV1TotalFeesLegacy();
+
+  const v1ArbitrumOldFeesUsd = useMemo(() => {
+    if (!statsArbitrum?.reader?.fees || !infoTokensArbitrum) {
+      return undefined;
+    }
+
+    return getCurrentFeesUsd(getWhitelistedTokenAddresses(ARBITRUM), statsArbitrum.reader.fees, infoTokensArbitrum);
+  }, [statsArbitrum?.reader?.fees, infoTokensArbitrum]);
+
+  const v1AvalancheOldFees = useMemo(() => {
+    if (!statsAvalanche?.reader?.fees || !infoTokensAvax) {
+      return undefined;
+    }
+
+    return getCurrentFeesUsd(getWhitelistedTokenAddresses(AVALANCHE), statsAvalanche.reader.fees, infoTokensAvax);
+  }, [statsAvalanche?.reader?.fees, infoTokensAvax]);
+
+  const arbitrumV1TotalFees =
+    BigInt(v1TotalFees?.data?.[ARBITRUM]?.totalFees ?? 0) * 10n ** BigInt(USD_DECIMALS) + (v1ArbitrumOldFeesUsd ?? 0n);
+  const avalancheV1TotalFees =
+    BigInt(v1TotalFees?.data?.[AVALANCHE]?.totalFees ?? 0) * 10n ** BigInt(USD_DECIMALS) + (v1AvalancheOldFees ?? 0n);
 
   const totalFeesUsd = sumBigInts(
-    v1ArbitrumFeesInfo?.totalFees,
-    v1AvalancheFeesInfo?.totalFees,
+    arbitrumV1TotalFees,
+    avalancheV1TotalFees,
     v2ArbitrumOverview.totalFees,
     v2AvalancheOverview.totalFees
   );
@@ -89,17 +111,12 @@ export function StatsCard({
 
   const totalFeesEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumFeesInfo?.totalFees,
+      "V1 Arbitrum": arbitrumV1TotalFees,
       "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
-      "V1 Avalanche": v1AvalancheFeesInfo?.totalFees,
+      "V1 Avalanche": avalancheV1TotalFees,
       "V2 Avalanche": v2AvalancheOverview?.totalFees,
     }),
-    [
-      v1ArbitrumFeesInfo?.totalFees,
-      v1AvalancheFeesInfo?.totalFees,
-      v2ArbitrumOverview?.totalFees,
-      v2AvalancheOverview?.totalFees,
-    ]
+    [arbitrumV1TotalFees, avalancheV1TotalFees, v2ArbitrumOverview?.totalFees, v2AvalancheOverview?.totalFees]
   );
 
   const totalVolumeEntries = useMemo(
