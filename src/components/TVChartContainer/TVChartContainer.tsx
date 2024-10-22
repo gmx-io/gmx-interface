@@ -15,7 +15,6 @@ import { useLocalStorage, useMedia } from "react-use";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
-import { getIsFlagEnabled } from "config/ab";
 
 export type ChartLine = {
   price: number;
@@ -133,7 +132,7 @@ export default function TVChartContainer({
 
   useEffect(() => {
     dataProvider?.resetCache();
-    if (symbolRef.current && getIsFlagEnabled("testCandlesPreload")) {
+    if (symbolRef.current) {
       dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
     }
 
