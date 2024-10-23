@@ -132,6 +132,10 @@
     &.disabled {
       text-decoration: none;
     }
+
+    &:not([disabled], .disabled):hover {
+      color: var(--color-white);
+    }
   }
 
   &.disabled,

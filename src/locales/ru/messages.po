@@ -118,10 +118,6 @@ msgstr "В настоящее время GMX работает на Arbitrum и A
 msgid "Max Pool Capacity"
 msgstr "Максимальная Вместимость Пула"
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed Take-Profit Order"
-msgstr "Тейк-профит ордер не удался"
-
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Yield Optimizer on Avalanche"
 msgstr "Оптимизатор доходности xранилища на Avalanche"
@@ -161,6 +157,10 @@ msgstr "{0} превышает целевой вес.<0/><1/>Получите м
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed Limit"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -341,8 +341,8 @@ msgid "Insufficient GM balance"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Stop-Loss Order"
-msgstr "Отмена стоп-лосс ордера"
+msgid "Failed Take-Profit"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -368,10 +368,6 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Main Account Balance"
-msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.jsx
@@ -501,10 +497,6 @@ msgstr "Вам нужно будет находиться на этой стра
 msgid "Don't show this message again for 30 days."
 msgstr "Не показывайте это сообщение снова в течение 30 дней."
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration Price"
-#~ msgstr "Цена Переноса"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 msgstr ""
@@ -571,6 +563,10 @@ msgstr ""
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "Нажмите [Создать кошелек], чтобы начать использовать ваш Web3 кошелек."
+
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
+msgid "GMX {versionName} {networkName} actions for all accounts."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Cancel submitted"
@@ -848,6 +844,10 @@ msgstr "Купить с {0}"
 msgid "Adding..."
 msgstr "Добавление..."
 
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} {networkName} actions for all accounts."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Short {0}"
 msgstr "Шорт {0}"
@@ -872,10 +872,6 @@ msgstr "Обмен на 1inch"
 msgid "Open {0} in Coingecko"
 msgstr "Открыть {0} в Coingecko"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Total Assets Migrated"
-#~ msgstr "Общая сумма Перенесенных Активов"
-
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
 msgstr ""
@@ -897,10 +893,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
 msgstr ""
-
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "GMX Rewards"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -1021,6 +1013,10 @@ msgstr ""
 msgid "Collateral"
 msgstr "Залог"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Limit"
+msgstr ""
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
 msgstr ""
@@ -1082,10 +1078,6 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid network fee buffer value"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Create Limit Order"
-msgstr "Создание лимитный ордера"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request deposit into {0} {longOrShortText}"
@@ -1240,10 +1232,6 @@ msgstr ""
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What issues did you encounter that led to your rating?"
 msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "No PnLs found"
-msgstr "PnLs не найдены"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leverage disabled, pending {0} upgrade"
@@ -1580,13 +1568,13 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "Отправитель вывел все токены из Хранилища GLP Vault"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Stop-Loss"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Take-Profit Order"
-msgstr "Отмена тейк-профит ордера"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Max {0} long capacity"
@@ -2022,6 +2010,10 @@ msgstr "Лонг {0}"
 msgid "Address"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Take-Profit"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "Winner:"
 msgstr ""
@@ -2060,17 +2052,9 @@ msgstr "Децентрализованная Финансовая Панель"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Покупка GLP приостановлена, ожидается {0} обновление"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrating..."
-#~ msgstr "Перенесение..."
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Your wallet: {0}"
-#~ msgstr "Ваш кошелёк: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -2195,10 +2179,6 @@ msgstr ""
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Limit Order"
-msgstr "Отмена лимитного ордера"
 
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
@@ -2454,10 +2434,6 @@ msgstr ""
 msgid "Enter up to 10 coins"
 msgstr ""
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-msgstr ""
-
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating..."
 msgstr "Создание..."
@@ -2496,10 +2472,6 @@ msgstr "Недопустимая цена, смотрите предупрежд
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
-msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "GMX V1 {networkName} actions for all accounts."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -2592,10 +2564,6 @@ msgstr ""
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Create Stop-Loss Order"
-msgstr "Создание стоп-лосс ордера"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
@@ -2774,10 +2742,6 @@ msgstr "Утрата прибыли и Шорта"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
 msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Profit"
-msgstr "Прибыль"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
@@ -3039,8 +3003,8 @@ msgid "Select Language"
 msgstr "Выбрать Язык"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Create Take-Profit Order"
-msgstr "Создание тейк-профит ордера"
+msgid "Create Stop-Loss"
+msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
@@ -3207,6 +3171,10 @@ msgstr "Ордера отменены"
 msgid "Last Rebalance"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Limit"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 Claim"
 msgstr ""
@@ -3297,10 +3265,6 @@ msgstr "Депозит не удался"
 msgid "Request Market Swap"
 msgstr "Запрос на рыночный обмен"
 
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Loss"
-msgstr "Убыток"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr ""
@@ -3341,10 +3305,6 @@ msgstr ""
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr ""
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} actions for all accounts."
-msgstr ""
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
@@ -3370,9 +3330,12 @@ msgstr "Обмен подан."
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "PnL"
 msgstr "PnL"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Take-Profit"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3430,10 +3393,6 @@ msgstr ""
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "В настоящее время GMX не ведет активного поиска новых сотрудников. Однако, если вы считаете, что можете внести свой вклад в проект, пожалуйста, напишите <0>jobs@gmx.io</0>."
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX V2 Account"
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
@@ -3513,10 +3472,6 @@ msgstr ""
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUYABLE"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute Limit Order"
-msgstr "Исполнение лимитного ордера"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enabling Leverage"
@@ -3778,8 +3733,6 @@ msgstr "Цена триггера для ордера."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -3897,6 +3850,10 @@ msgstr "Комиссии за финансирование"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed Stop-Loss"
 msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.jsx
@@ -4100,9 +4057,8 @@ msgstr ""
 msgid "Creator"
 msgstr "Создатель"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create Limit"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -4119,17 +4075,9 @@ msgstr ""
 msgid "Enter a code"
 msgstr "Введите код"
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute Take-Profit Order"
-msgstr "Исполнение тейк-профит ордера"
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute Stop-Loss Order"
-msgstr "Исполнение стоп-лосс ордера"
 
 #: src/components/Exchange/OrdersList.jsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -4258,7 +4206,7 @@ msgstr "Редактирование Реферального Кода"
 msgid "GMX APR"
 msgstr ""
 
-#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
 msgid "Switch to:"
 msgstr ""
 
@@ -4659,6 +4607,7 @@ msgstr "Обменный Ордер подан!"
 #: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
+#: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5199,6 +5148,10 @@ msgstr ""
 msgid "Wins and losses for fully closed positions."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Stop-Loss"
+msgstr ""
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
 msgstr "Открыть приложение Binance"
@@ -5487,6 +5440,10 @@ msgstr "Утрата прибыли и {action}"
 msgid "Win/Loss"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Stop-Loss"
+msgstr ""
+
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Names could be separated by commas or spaces"
 msgstr ""
@@ -5737,6 +5694,7 @@ msgid "Claim"
 msgstr "Запрос"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX {versionName} Account"
 msgstr ""
 
@@ -5895,10 +5853,6 @@ msgstr ""
 msgid "Switch to {0} collateral."
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "To Receive"
-#~ msgstr "Получить"
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GMX Vault"
@@ -5965,10 +5919,6 @@ msgstr "{0} liegt unter der Zielgewichtung.<0/><1/>Erhalte niedrigere Gebühren,
 msgid "Win Rate"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrated"
-#~ msgstr "Перенесено"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
@@ -6011,17 +5961,9 @@ msgstr "Txn не удался. <0> Просмотр</0>"
 msgid "Volume traded by this account with an active referral code."
 msgstr "Объем, торгуемый данным счетом с активным реферальным кодом."
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update Take-Profit Order"
-msgstr "Обновление тейк-профит ордера"
-
 #: src/pages/Stake/StakeV1.jsx
 msgid "Unstake failed"
 msgstr "Снятие стакинга не прошло"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update Limit Order"
-msgstr "Обновление лимитного ордера"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -6076,10 +6018,6 @@ msgstr "Предельная Цена"
 msgid "You"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration submitted! <0>View status.</0>"
-#~ msgstr "Перенос завершен! <0> Просмотр статуса.</0>"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr ""
@@ -6126,6 +6064,10 @@ msgstr "Создание Леверидж..."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create Take-Profit"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
@@ -6359,6 +6301,10 @@ msgstr ""
 msgid "Price above Liq. Price."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Limit"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -6473,10 +6419,6 @@ msgstr "Загрузить"
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "{col1}"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration failed"
-#~ msgstr "Перенос не удался"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
@@ -6649,6 +6591,11 @@ msgstr ""
 msgid "Swap {0} submitted!"
 msgstr "Обмен {0} подан!"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral Code does not exist"
 msgstr "Реферальный Код не существует"
@@ -6762,8 +6709,6 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6861,6 +6806,11 @@ msgstr ""
 msgid "Voting Power"
 msgstr ""
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr ""
@@ -6890,10 +6840,6 @@ msgstr "Оплата Суммы"
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed Limit Order"
-msgstr "Лимитный ордер не удался"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
@@ -7051,6 +6997,10 @@ msgstr "Комиссионные будут показаны после того
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GLP Vault"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Take-Profit"
 msgstr ""
 
 #: src/components/Footer/constants.ts
@@ -7227,11 +7177,6 @@ msgstr ""
 msgid "Initial collateral"
 msgstr "Первоначальный залог"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
-msgstr ""
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
@@ -7398,11 +7343,6 @@ msgstr "Максимально: {0}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
-#~ msgid "Bonus Tokens"
-#~ msgstr "Бонусные токены"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
@@ -7771,10 +7711,6 @@ msgstr ""
 msgid "Top Addresses"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update Stop-Loss Order"
-msgstr "Обновление стоп-лосс ордера"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Continue"
@@ -8014,10 +7950,6 @@ msgstr "{0} требуется для обеспечения залога."
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Decentralized Options Protocol"
 msgstr "Децентрализованный Протокол Опционов"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed Stop-Loss Order"
-msgstr "Стоп-лосс ордер не удался"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx

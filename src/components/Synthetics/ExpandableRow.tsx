@@ -66,12 +66,12 @@ export function ExpandableRow({
     <>
       {!hideExpand && (
         <ExchangeInfo.Row
-          className={cx("!items-center", {
+          className={cx("group !items-center hover:text-blue-300", {
             "!mb-12": open,
             "cursor-not-allowed": disabled,
           })}
           onClick={disabled ? undefined : handleOnClick}
-          label={<span className="flex flex-row justify-between align-middle">{label}</span>}
+          label={<span className="flex flex-row justify-between align-middle group-hover:text-blue-300">{label}</span>}
           value={
             open ? (
               <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 opacity-70" />

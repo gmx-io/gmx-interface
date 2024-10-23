@@ -1,42 +1,34 @@
+import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import useSWR from "swr";
 import type { Address } from "viem";
 
-import "./ActionsV1.css";
-
+import { getChainName } from "config/chains";
 import { getContract } from "config/contracts";
-import { useAccountOrders } from "lib/legacy";
-
-import { getPositionQuery, getPositions } from "../../Exchange/Exchange";
-
-import OrdersList from "components/Exchange/OrdersList";
-import PositionsList from "components/Exchange/PositionsList";
-
-import Reader from "abis/Reader.json";
-import TradeHistory from "components/Exchange/TradeHistory";
-
-import { Trans, t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
-import PageTitle from "components/PageTitle/PageTitle";
-import { getServerBaseUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
-import { getIsSyntheticsSupported } from "config/features";
-import { getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
-import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { formatAmount } from "lib/numbers";
-import { switchNetwork } from "lib/wallets";
+import { useAccountOrders } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
+import { getPositionQuery, getPositions } from "pages/Exchange/Exchange";
 
-const USD_DECIMALS = 30;
+import OrdersList from "components/Exchange/OrdersList";
+import PositionsList from "components/Exchange/PositionsList";
+import TradeHistory from "components/Exchange/TradeHistory";
+import Footer from "components/Footer/Footer";
+import PageTitle from "components/PageTitle/PageTitle";
+import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
-export default function ActionsPageV1() {
+import Reader from "abis/Reader.json";
+
+import "./ActionsV1.css";
+
+const versionName = "V1";
+
+export default function ActionsPageV1({ chainId }: { chainId: number }) {
   const { active, signer } = useWallet();
-  const { chainId } = useChainId();
 
   return <ActionsV1 chainId={chainId} signer={signer} active={active} />;
 }
@@ -56,13 +48,6 @@ function ActionsV1({
 
   const networkName = getChainName(chainId);
 
-  const shouldShowPnl = false;
-
-  const pnlUrl = `${getServerBaseUrl(chainId)}/pnl`;
-  const { data: pnlData } = useSWR(pnlUrl, {
-    fetcher: (url) => fetch(url).then((res) => res.json()),
-  });
-
   const tokens = getV1Tokens(chainId);
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
 
@@ -80,61 +65,18 @@ function ActionsV1({
 
   return (
     <div className="default-container page-layout">
-      {shouldShowPnl && (
-        <div className="Actions-section">
-          <div className="Actions-title">
-            <Trans>PnL</Trans>
-          </div>
-          {(!pnlData || pnlData.length === 0) && (
-            <div>
-              <Trans>No PnLs found</Trans>
-            </div>
-          )}
-          {pnlData &&
-            pnlData.length > 0 &&
-            pnlData.map((pnlRow, index) => {
-              const token = getToken(chainId, pnlRow.data.indexToken);
-              return (
-                <div className="TradeHistory-row App-box App-box-border" key={index}>
-                  <div>
-                    {token.symbol} {pnlRow.data.isLong ? t`Long` : t`Short`} <Trans>Profit</Trans>:{" "}
-                    {formatAmount(pnlRow.data.profit, USD_DECIMALS, 2, true)} USD
-                  </div>
-                  <div>
-                    {token.symbol} {pnlRow.data.isLong ? t`Long` : t`Short`} <Trans>Loss</Trans>:{" "}
-                    {formatAmount(pnlRow.data.loss, USD_DECIMALS, 2, true)} USD
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-      )}
-
       <div className="Actions-section">
         <div className="Actions-title">
           <PageTitle
             isTop
             title={t`GMX V1 Actions`}
+            chainId={chainId}
             subtitle={
               <>
-                <Trans>GMX V1 {networkName} actions for all accounts.</Trans>
-                {getIsSyntheticsSupported(chainId) && (
-                  <Trans>
-                    <div>
-                      <ExternalLink newTab={false} href="/#/accounts">
-                        Check on GMX V2 {networkName}
-                      </ExternalLink>{" "}
-                      or{" "}
-                      <span
-                        className="cursor-pointer underline"
-                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                      >
-                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
-                      </span>
-                      .
-                    </div>
-                  </Trans>
-                )}
+                <Trans>
+                  GMX {versionName} {networkName} actions for all accounts.
+                </Trans>
+                <VersionNetworkSwitcherRow chainId={chainId} version={1} />
               </>
             }
           />

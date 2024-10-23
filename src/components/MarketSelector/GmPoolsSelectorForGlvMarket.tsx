@@ -23,6 +23,7 @@ import {
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
+import { stripBlacklistedWords } from "domain/tokens/utils";
 
 import Modal from "../Modal/Modal";
 import { PoolListItem } from "./PoolListItem";
@@ -116,7 +117,7 @@ export function GmPoolsSelectorForGlvMarket({
   const fuse = useFuse(
     () =>
       marketsOptions.map((item, index) => {
-        const indexTokenName = (item.marketInfo as MarketInfo).indexToken.name;
+        const indexTokenName = stripBlacklistedWords((item.marketInfo as MarketInfo).indexToken.name);
         const indexTokenSymbol = (item.marketInfo as MarketInfo).indexToken.symbol;
 
         return {

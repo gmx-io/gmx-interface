@@ -9,7 +9,8 @@ import { getToken } from "config/tokens";
 import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import { stripBlacklistedWords } from "domain/tokens/utils";
 import dropDownIcon from "img/DROP_DOWN.svg";
 import { bigMath } from "lib/bigmath";
 import { expandDecimals, formatAmount } from "lib/numbers";
@@ -108,10 +109,11 @@ export default function TokenSelector(props: Props) {
       visibleTokens.map((token, index) => {
         let name = token.name;
         if (token.isMarketToken) {
-          const indexTokenAdress = getMarketUiConfig(props.chainId, token.address)?.indexTokenAddress;
-          const indexToken = getToken(props.chainId, indexTokenAdress);
+          const indexTokenAddress = getMarketUiConfig(props.chainId, token.address)?.indexTokenAddress;
+          const indexToken = getToken(props.chainId, indexTokenAddress);
           name = indexToken.name ? `GM ${indexToken.name}` : name;
         }
+        name = stripBlacklistedWords(name);
 
         return { id: index, name, symbol: token.symbol };
       }),
