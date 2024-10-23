@@ -7,6 +7,9 @@ import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
+import { stripBlacklistedWords } from "domain/tokens/utils";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -20,8 +23,6 @@ import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 import "./MarketSelector.scss";
-import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 
 type Props = {
   label?: string;
@@ -108,7 +109,7 @@ export function MarketSelector({
       marketsOptions.map((item, index) => ({
         id: index,
         name: item.indexName,
-        indexTokenName: item.marketInfo.isSpotOnly ? "" : item.marketInfo.indexToken.name,
+        indexTokenName: item.marketInfo.isSpotOnly ? "" : stripBlacklistedWords(item.marketInfo.indexToken.name),
       })),
     marketsOptions?.map((item) => item.marketInfo.indexToken.address)
   );

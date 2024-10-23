@@ -118,10 +118,6 @@ msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 msgid "Max Pool Capacity"
 msgstr "풀 최대 수용량"
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed Take-Profit Order"
-msgstr "이익 실현 주문 실패"
-
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 일드 옵티마이저"
@@ -161,6 +157,10 @@ msgstr "{0}은 목표 가중치를 초과 했습니다.<0/><1/>토큰을 {1}로 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed Limit"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -341,8 +341,8 @@ msgid "Insufficient GM balance"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Stop-Loss Order"
-msgstr "손절 주문 취소"
+msgid "Failed Take-Profit"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -368,10 +368,6 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Main Account Balance"
-msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.jsx
@@ -501,10 +497,6 @@ msgstr "이전을 수락하려면 이 페이지에 있어야 합니다. 필요�
 msgid "Don't show this message again for 30 days."
 msgstr "30일 동안 해당 메시지 다시보지 않기"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration Price"
-#~ msgstr "이전 가격"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 msgstr ""
@@ -571,6 +563,10 @@ msgstr ""
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
+
+#: src/pages/Actions/ActionsV1/ActionsV1.tsx
+msgid "GMX {versionName} {networkName} actions for all accounts."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Cancel submitted"
@@ -848,6 +844,10 @@ msgstr "{0}로 구매"
 msgid "Adding..."
 msgstr "추가중..."
 
+#: src/pages/Actions/SyntheticsActions.tsx
+msgid "GMX {VERSION_NAME} {networkName} actions for all accounts."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Short {0}"
 msgstr "{0} 숏"
@@ -871,10 +871,6 @@ msgstr "1inch에서 스왑하기"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Total Assets Migrated"
-#~ msgstr "총 이전된 자산"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
@@ -956,6 +952,10 @@ msgid "Charts by TradingView"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
+msgid "GMX Staked Rewards"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Staked Tokens"
 msgstr ""
@@ -1012,6 +1012,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "담보"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Limit"
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
@@ -1074,10 +1078,6 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid network fee buffer value"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Create Limit Order"
-msgstr "지정가 주문 생성"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request deposit into {0} {longOrShortText}"
@@ -1232,10 +1232,6 @@ msgstr ""
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What issues did you encounter that led to your rating?"
 msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "No PnLs found"
-msgstr "손익을 찾지 못했습니다."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leverage disabled, pending {0} upgrade"
@@ -1572,13 +1568,13 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Stop-Loss"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Take-Profit Order"
-msgstr "이익 실현 주문 취소"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Max {0} long capacity"
@@ -1605,6 +1601,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "GMX"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -2010,6 +2010,10 @@ msgstr "롱 {0}"
 msgid "Address"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Take-Profit"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "Winner:"
 msgstr ""
@@ -2048,17 +2052,9 @@ msgstr "탈중앙화 금융 대시보드"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 GLP 구매가 비활성화되었습니다"
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrating..."
-#~ msgstr "이전중..."
-
 #: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Your wallet: {0}"
-#~ msgstr "귀하의 지갑: {0}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
@@ -2183,10 +2179,6 @@ msgstr ""
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Limit Order"
-msgstr "지정가 주문 취소"
 
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
@@ -2442,10 +2434,6 @@ msgstr ""
 msgid "Enter up to 10 coins"
 msgstr ""
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
-msgstr ""
-
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating..."
 msgstr "생성중..."
@@ -2484,10 +2472,6 @@ msgstr "유효하지 않은 가격, 경고문을 보세요"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
-msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "GMX V1 {networkName} actions for all accounts."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -2580,10 +2564,6 @@ msgstr ""
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Create Stop-Loss Order"
-msgstr "손절 주문 생성"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
@@ -2762,10 +2742,6 @@ msgstr "이익 상실 및 숏"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
 msgstr ""
-
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Profit"
-msgstr "수익"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order creation failed."
@@ -3027,8 +3003,8 @@ msgid "Select Language"
 msgstr "언어 선택"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Create Take-Profit Order"
-msgstr "이익 실현 주문 생성"
+msgid "Create Stop-Loss"
+msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
@@ -3195,6 +3171,10 @@ msgstr "주문 취소"
 msgid "Last Rebalance"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Limit"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 Claim"
 msgstr ""
@@ -3285,10 +3265,6 @@ msgstr "입금 실패"
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
 
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-msgid "Loss"
-msgstr "손실"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr ""
@@ -3329,10 +3305,6 @@ msgstr ""
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr ""
 
-#: src/pages/Actions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} actions for all accounts."
-msgstr ""
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
@@ -3358,9 +3330,12 @@ msgstr "스왑 제출 완료."
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "PnL"
 msgstr "PnL"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Take-Profit"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3388,6 +3363,10 @@ msgstr ""
 msgid "Withdraw"
 msgstr "인출"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "Vested Claimable GMX"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
@@ -3414,10 +3393,6 @@ msgstr ""
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX V2 Account"
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
@@ -3497,10 +3472,6 @@ msgstr ""
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUYABLE"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute Limit Order"
-msgstr "지정가 주문 실행"
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enabling Leverage"
@@ -3762,8 +3733,6 @@ msgstr "주문의 트리거 가격입니다."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -3881,6 +3850,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed Stop-Loss"
 msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.jsx
@@ -4084,9 +4057,8 @@ msgstr ""
 msgid "Creator"
 msgstr "제작자"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create Limit"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -4103,17 +4075,9 @@ msgstr ""
 msgid "Enter a code"
 msgstr "코드 입력"
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute Take-Profit Order"
-msgstr "이익 실현 주문 실행"
-
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute Stop-Loss Order"
-msgstr "손절 주문 실행"
 
 #: src/components/Exchange/OrdersList.jsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -4238,7 +4202,11 @@ msgstr ""
 msgid "Edit Referral Code"
 msgstr "추천 코드 수정"
 
-#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "GMX APR"
+msgstr ""
+
+#: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
 msgid "Switch to:"
 msgstr ""
 
@@ -4639,6 +4607,7 @@ msgstr "스왑 주문 제출 완료!"
 #: src/App/MainRoutes.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
+#: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5179,6 +5148,10 @@ msgstr ""
 msgid "Wins and losses for fully closed positions."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Stop-Loss"
+msgstr ""
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
 msgstr "Binance 앱 열기"
@@ -5467,6 +5440,10 @@ msgstr "이익 상실 및 {action}"
 msgid "Win/Loss"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Stop-Loss"
+msgstr ""
+
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Names could be separated by commas or spaces"
 msgstr ""
@@ -5717,6 +5694,7 @@ msgid "Claim"
 msgstr "수령하기"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX {versionName} Account"
 msgstr ""
 
@@ -5875,10 +5853,6 @@ msgstr ""
 msgid "Switch to {0} collateral."
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "To Receive"
-#~ msgstr "수취하기"
-
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GMX Vault"
@@ -5945,10 +5919,6 @@ msgstr "{0}은 목표 가중치를 미달합니다.<0/><1/>{1}로 <2>GLP 구매<
 msgid "Win Rate"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migrated"
-#~ msgstr "이전완료"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
@@ -5991,17 +5961,9 @@ msgstr "트랜잭션 실패됨. <0>보기</0>"
 msgid "Volume traded by this account with an active referral code."
 msgstr "유효한 추천인 코드를 사용하여 이 계정으로 트레이드된 거래량"
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update Take-Profit Order"
-msgstr "익절 주문 업데이트"
-
 #: src/pages/Stake/StakeV1.jsx
 msgid "Unstake failed"
 msgstr "스테이킹 실패"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update Limit Order"
-msgstr "지정가 주문 업데이트"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -6056,10 +6018,6 @@ msgstr "지정가"
 msgid "You"
 msgstr ""
 
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration submitted! <0>View status.</0>"
-#~ msgstr "이전 제출완료! <0>상태 보기.</0>"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr ""
@@ -6106,6 +6064,10 @@ msgstr "레버리지 유효화중"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create Take-Profit"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
@@ -6339,6 +6301,10 @@ msgstr ""
 msgid "Price above Liq. Price."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Limit"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -6453,10 +6419,6 @@ msgstr "다운로드"
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "{col1}"
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#~ msgid "Migration failed"
-#~ msgstr "이전 실패"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
@@ -6629,6 +6591,11 @@ msgstr ""
 msgid "Swap {0} submitted!"
 msgstr "{0} 스왑 제출완료!"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral Code does not exist"
 msgstr "추천인 코드가 존재하지 않습니다"
@@ -6742,8 +6709,6 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
-#: src/pages/Actions/ActionsV1/ActionsV1.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6822,7 +6787,6 @@ msgid "Avalanche LP incentives"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
-#: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr ""
 
@@ -6840,6 +6804,11 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Voting Power"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
+msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -6871,10 +6840,6 @@ msgstr "지불액"
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed Limit Order"
-msgstr "지정가 주문 실패"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
@@ -7032,6 +6997,10 @@ msgstr "입력란에 수량을 입력하면 수수료가 표시됩니다."
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "GLP Vault"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Take-Profit"
 msgstr ""
 
 #: src/components/Footer/constants.ts
@@ -7208,11 +7177,6 @@ msgstr ""
 msgid "Initial collateral"
 msgstr "최초 담보"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
-msgstr ""
-
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
@@ -7379,11 +7343,6 @@ msgstr "최대: {0}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
-
-#: src/components/Migration/Migration.jsx
-#: src/components/Migration/Migration.jsx
-#~ msgid "Bonus Tokens"
-#~ msgstr "보너스 토큰"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
@@ -7752,10 +7711,6 @@ msgstr ""
 msgid "Top Addresses"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update Stop-Loss Order"
-msgstr "손절 주문 업데이트"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Continue"
@@ -7995,10 +7950,6 @@ msgstr "담보를 위해 {0}이 필요합니다."
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Decentralized Options Protocol"
 msgstr "탈중앙화 옵션 프로토콜"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed Stop-Loss Order"
-msgstr "손절 주문 실패"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx

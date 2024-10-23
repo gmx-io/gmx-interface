@@ -105,7 +105,8 @@ export function useTradeHistory(
     },
   });
 
-  const isLoading = (!error && !data) || !marketsInfoData || !tokensData;
+  const hasPopulatedData = data !== undefined && data.every((p) => p !== undefined);
+  const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
   const tradeActions = useMemo(() => {
     const allData = data?.flat().filter(Boolean) as TradeAction[];
@@ -284,7 +285,7 @@ export async function fetchTradeActions({
     | undefined;
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
-}): Promise<TradeAction[]> {
+}): Promise<TradeAction[] | undefined> {
   const client = getSyntheticsGraphClient(chainId);
   definedOrThrow(client);
 
@@ -473,7 +474,7 @@ export async function fetchTradeActions({
   const rawTradeActions = (result.data?.tradeActions || []) as RawTradeAction[];
 
   if (!marketsInfoData || !tokensData) {
-    return [];
+    return undefined;
   }
 
   const wrappedToken = getWrappedToken(chainId);

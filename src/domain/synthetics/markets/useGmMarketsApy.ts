@@ -187,8 +187,13 @@ function useIncentivesBonusApr(
     return undefined;
   }, [marketToken, regularToken]);
 
-  const marketTokensAPRData = useMemo(() => {
-    if (!liquidityProvidersIncentives || !token) return {};
+  const marketAndGlvTokensAPRData = useMemo(() => {
+    if (!liquidityProvidersIncentives || !token) {
+      return {
+        marketTokensAPRData: {},
+        glvTokensAPRData: {},
+      };
+    }
 
     const marketTokensAPRData: MarketTokensAPRData = {};
     const glvTokensAPRData: MarketTokensAPRData = {};
@@ -240,7 +245,7 @@ function useIncentivesBonusApr(
     marketTokensData,
   ]);
 
-  return marketTokensAPRData;
+  return marketAndGlvTokensAPRData;
 }
 
 export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {

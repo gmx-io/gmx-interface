@@ -129,6 +129,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
     account,
     marketsInfoData: undefined,
     tokensData: undefined,
+    filterIncorrectMarkets: false,
   });
 
   const { glvs: glvAvax } = useGlvMarketsInfo(isGlvEnabled(AVALANCHE), {
@@ -136,6 +137,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
     marketsInfoData: undefined,
     tokensData: undefined,
     account,
+    filterIncorrectMarkets: false,
   });
 
   const {
@@ -242,8 +244,8 @@ export default function TokenCard({ showRedirectModal }: Props) {
               </Trans>
             </div>
             <div className="Home-token-card-option-apr">
-              <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="avgGMXAprForNativeToken" />,{" "}
-              <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="avgGMXAprForNativeToken" />
+              <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />,{" "}
+              <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />
             </div>
           </div>
         </div>

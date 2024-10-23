@@ -288,3 +288,8 @@ export function getMinResidualAmount(decimals?: number, price?: bigint) {
   const MIN_NATIVE_CURRENCY_FOR_GAS = expandDecimals(10, USD_DECIMALS);
   return convertToTokenAmount(MIN_NATIVE_CURRENCY_FOR_GAS, decimals, price);
 }
+
+const BLACKLISTED_REGEX = /Wrapped|\(Wormhole\)|\(LayerZero\)/gim;
+export function stripBlacklistedWords(name: string): string {
+  return name.replace(BLACKLISTED_REGEX, "").trim();
+}

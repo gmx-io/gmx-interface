@@ -6,6 +6,7 @@ import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { stripBlacklistedWords } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
@@ -143,7 +144,7 @@ function useFilterSortMarkets({
     () =>
       indexTokensStats.map((indexTokenStat, index) => ({
         id: index,
-        name: indexTokenStat.token.name,
+        name: stripBlacklistedWords(indexTokenStat.token.name),
         symbol: indexTokenStat.token.symbol,
         address: indexTokenStat.token.address,
       })),

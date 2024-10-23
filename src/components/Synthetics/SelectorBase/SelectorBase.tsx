@@ -209,7 +209,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
                 {props.footerContent && (
                   <>
                     <div className="divider" />
-                    <div className="px-15 py-12">{props.footerContent}</div>
+                    {props.footerContent}
                   </>
                 )}
               </Popover.Panel>
@@ -254,16 +254,11 @@ function SelectorBaseMobile(props: Props) {
         headerContent={<div ref={headerContentRef} />}
         contentPadding={props.mobileModalContentPadding}
         noDivider
+        footerContent={props.footerContent}
       >
         <SelectorContextProvider close={toggleVisibility} mobileHeader={headerContent}>
           {props.children}
         </SelectorContextProvider>
-        {props.footerContent && (
-          <div className="absolute bottom-0 left-0 right-0 bg-slate-800">
-            <div className="divider" />
-            <div className="px-15 py-12">{props.footerContent}</div>
-          </div>
-        )}
       </Modal>
     </>
   );
