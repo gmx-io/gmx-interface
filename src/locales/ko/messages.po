@@ -695,8 +695,8 @@ msgid "Total value locked takes into account:"
 msgstr ""
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
-msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
-msgstr ""
+#~ msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -4852,6 +4852,10 @@ msgstr ""
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선택할 수 있습니다."
 
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr ""
@@ -5155,6 +5159,10 @@ msgstr "현재 네트워크 수수료가 매우 높습니다. 이는 {0} 네트�
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
 msgstr "현재 {0} 롱"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "{0} orders were not updated as max order limit reached"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -5925,8 +5933,8 @@ msgid "Protocol analytics"
 msgstr "프로토콜 분석"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-msgid "{updateOrdersCount} orders were not updated as max order limit reached"
-msgstr ""
+#~ msgid "{updateOrdersCount} orders were not updated as max order limit reached"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx

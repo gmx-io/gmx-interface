@@ -6,9 +6,11 @@ import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/select
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMemo } from "react";
 
 export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: string }) {
+  const { isAutoCancelTPSL } = useSettings();
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const { stopLoss, takeProfit } = useSidecarOrders();
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
@@ -37,16 +39,16 @@ export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: str
     };
   }
 
-  const allowedAutoCancelOrders = Number(maxAutoCancelOrders) - 1;
-  autoCancelOrdersLimit = allowedAutoCancelOrders - existingAutoCancelOrders.length;
-  const canAddAutoCancelOrder = autoCancelOrdersLimit - draftOrdersCount > 0;
+  const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders) - 1;
+  autoCancelOrdersLimit = isAutoCancelTPSL ? allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length : 0;
+  const isAllowedAddAutoCancelOrder = autoCancelOrdersLimit && autoCancelOrdersLimit - draftOrdersCount > 0;
 
-  if (!canAddAutoCancelOrder) {
+  if (!isAllowedAddAutoCancelOrder && isAutoCancelTPSL) {
     warning = (
       <AlertInfo type="info">
         <Trans>
-          You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be
-          canceled manually, while existing ones will still close automatically with their related position.
+          You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must
+          be canceled manually, while existing ones will still close automatically with their related position.
         </Trans>{" "}
         <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
           <Trans>Read more.</Trans>

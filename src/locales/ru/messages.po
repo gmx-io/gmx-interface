@@ -695,8 +695,8 @@ msgid "Total value locked takes into account:"
 msgstr ""
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
-msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
-msgstr ""
+#~ msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -4852,6 +4852,10 @@ msgstr ""
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "При закрытии позиции вы можете выбрать, в каком токене вы хотели бы получить прибыль."
 
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr ""
@@ -5155,6 +5159,10 @@ msgstr "Комиссии сети в настоящее время очень в
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
 msgstr "Текущий {0} лонгшезам"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "{0} orders were not updated as max order limit reached"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -5925,8 +5933,8 @@ msgid "Protocol analytics"
 msgstr "Аналитика протоколов"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-msgid "{updateOrdersCount} orders were not updated as max order limit reached"
-msgstr ""
+#~ msgid "{updateOrdersCount} orders were not updated as max order limit reached"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
