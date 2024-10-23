@@ -6,6 +6,8 @@ export type Token = {
   decimals: number;
   address: string;
   priceDecimals?: number;
+  visualMultiplier?: number;
+  visualPrefix?: string;
   wrappedAddress?: string;
   coingeckoUrl?: string;
   coingeckoSymbol?: string;

@@ -29,6 +29,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getTokenVisualMultiplier } from "config/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
@@ -77,7 +78,8 @@ export default function ChartTokenSelector(props: Props) {
               })}
             >
               <span>
-                {selectedToken.symbol} {"/ USD"}
+                {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                {selectedToken.symbol} / USD
               </span>
               {poolName && (
                 <span
@@ -144,6 +146,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
         if (marketInfo) {
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
+
           helperToast.success(
             <Trans>
               <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
@@ -443,7 +446,8 @@ function MarketListItem({
             displaySize={16}
             importSize={24}
           />
-          {token.symbol} {!isSwap && "/ USD"}
+          {getTokenVisualMultiplier(token)}
+          {token.symbol} / USD
         </span>
       </td>
 

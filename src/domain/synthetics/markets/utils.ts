@@ -1,17 +1,16 @@
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { GLV_MARKETS } from "config/markets";
+import { getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
-import { USD_DECIMALS } from "config/factors";
 import { applyFactor, expandDecimals, PRECISION } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
-import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
-import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
-import { GLV_MARKETS } from "config/markets";
+import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { isGlvInfo } from "./glv";
+import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -66,7 +65,9 @@ export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token
     return `SWAP-ONLY`;
   }
 
-  return `${firstToken.baseSymbol || firstToken.symbol}/USD`;
+  const prefix = getTokenVisualMultiplier(firstToken);
+
+  return `${prefix}${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {

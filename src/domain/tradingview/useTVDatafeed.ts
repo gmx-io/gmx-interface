@@ -1,3 +1,5 @@
+import { MutableRefObject, useEffect, useMemo, useRef } from "react";
+
 import {
   DatafeedConfiguration,
   HistoryCallback,
@@ -9,15 +11,15 @@ import {
   SubscribeBarsCallback,
 } from "charting_library";
 import { USD_DECIMALS } from "config/factors";
-import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
+import { getNativeToken, getPriceDecimals, getTokenBySymbol, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
-import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import { LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
 import { calculatePriceDecimals, numberToBigint } from "lib/numbers";
-import { MutableRefObject, useEffect, useMemo, useRef } from "react";
+
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
-import { formatTimeInBarToMs } from "./utils";
+import { formatTimeInBarToMs, multiplyBarValues } from "./utils";
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
@@ -36,9 +38,10 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
 
 type Props = {
   dataProvider?: TVDataProvider;
+  visualMultiplier?: number;
 };
 
-export default function useTVDatafeed({ dataProvider }: Props) {
+export default function useTVDatafeed({ dataProvider, visualMultiplier }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
@@ -111,8 +114,9 @@ export default function useTVDatafeed({ dataProvider }: Props) {
       missingBarsInfoRef: missingBarsInfo,
       feedDataRef: feedData,
       lastBarTimeRef: lastBarTime,
+      visualMultiplier,
     });
-  }, [chainId, stableTokens, supportedResolutions]);
+  }, [chainId, stableTokens, supportedResolutions, visualMultiplier]);
 }
 
 export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi>;
@@ -126,6 +130,7 @@ function buildFeeder({
   missingBarsInfoRef,
   feedDataRef,
   lastBarTimeRef,
+  visualMultiplier: maybeVisualMultiplier,
 }: {
   chainId: number;
   stableTokens: string[];
@@ -138,6 +143,7 @@ function buildFeeder({
   }>;
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
+  visualMultiplier?: number;
 }): { datafeed: TvDatafeed } {
   return {
     datafeed: {
@@ -162,17 +168,26 @@ function buildFeeder({
           symbolName = getNativeToken(chainId).symbol;
         }
 
+        const visualMultiplier = maybeVisualMultiplier ?? 1;
+        const prefix = maybeVisualMultiplier
+          ? getTokenBySymbol(chainId, symbolName)?.visualPrefix ?? String(visualMultiplier)
+          : "";
+
         let pricescale = Math.pow(
           10,
           tvDataProviderRef.current?.currentPrice
-            ? calculatePriceDecimals(numberToBigint(tvDataProviderRef.current.currentPrice, USD_DECIMALS), USD_DECIMALS)
+            ? calculatePriceDecimals(
+                numberToBigint(tvDataProviderRef.current.currentPrice, USD_DECIMALS),
+                USD_DECIMALS,
+                visualMultiplier
+              )
             : getPriceDecimals(chainId, symbolName)
         );
 
         const symbolInfo = {
           name: symbolName,
           type: "crypto",
-          description: symbolName + " / USD",
+          description: `${prefix}${symbolName} / USD`,
           ticker: symbolName,
           session: "24x7",
           minmov: 1,
@@ -181,10 +196,12 @@ function buildFeeder({
           has_intraday: true,
           has_daily: true,
           currency_code: "USD",
-          visible_plots_set: "ohlc",
           data_status: "streaming",
           isStable: stableTokens.includes(symbolName),
-        } as unknown as LibrarySymbolInfo;
+          visualMultiplier,
+          // @ts-ignore
+          visible_plots_set: "ohlc",
+        } satisfies Partial<SymbolInfo> as unknown as LibrarySymbolInfo;
         setTimeout(() => onSymbolResolvedCallback(symbolInfo));
       },
 
@@ -210,8 +227,15 @@ function buildFeeder({
             countBack: periodParams.countBack,
           });
 
-          const bars =
+          let bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];
+
+          const visualMultiplier = symbolInfo.visualMultiplier;
+
+          if (bars.length > 0 && visualMultiplier !== undefined) {
+            bars = bars.map((bar) => multiplyBarValues(bar, visualMultiplier));
+          }
+
           lastBarTimeRef.current = 0;
           const noData = !bars || bars.length === 0;
 
@@ -241,7 +265,7 @@ function buildFeeder({
         onRealtimeCallback: SubscribeBarsCallback,
         listenerGuid: string
       ) {
-        await subscribeBars({
+        subscribeBars({
           symbolInfo,
           resolution,
           onRealtimeCallback,
@@ -280,7 +304,7 @@ export function subscribeBars({
   missingBarsInfoRef,
   listenerGuid,
 }: {
-  symbolInfo: Pick<SymbolInfo, "ticker" | "isStable">;
+  symbolInfo: Pick<SymbolInfo, "ticker" | "isStable" | "visualMultiplier">;
   resolution: ResolutionString;
   onRealtimeCallback: SubscribeBarsCallback;
   chainId: number;
@@ -320,7 +344,7 @@ export function subscribeBars({
           );
         }
 
-        onRealtimeCallback(formatTimeInBarToMs(bar));
+        onRealtimeCallback(multiplyBarValues(formatTimeInBarToMs(bar), symbolInfo.visualMultiplier));
         processedBarTimes.push(bar.time);
       });
       missingBarsInfoRef.current.bars = [];
@@ -333,7 +357,8 @@ export function subscribeBars({
           (!lastBarTimeRef.current || bar.time >= lastBarTimeRef.current)
         ) {
           lastBarTimeRef.current = bar.time;
-          onRealtimeCallback(formatTimeInBarToMs(bar));
+
+          onRealtimeCallback(multiplyBarValues(formatTimeInBarToMs(bar), symbolInfo.visualMultiplier));
         }
       });
     }

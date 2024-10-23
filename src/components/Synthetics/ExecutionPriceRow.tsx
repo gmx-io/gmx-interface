@@ -18,6 +18,7 @@ interface Props {
   fees?: TradeFees;
   executionPrice?: bigint;
   acceptablePrice?: bigint;
+  visualMultiplier?: number;
   triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
 }
 
@@ -28,6 +29,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   acceptablePrice,
   triggerOrderType,
   displayDecimals,
+  visualMultiplier,
 }: Props) {
   const { isLimit, isMarket, isIncrease, isLong, isTrigger } = tradeFlags;
 
@@ -99,6 +101,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
 
   const acceptablePriceFormatted = formatAcceptablePrice(acceptablePrice, {
     displayDecimals,
+    visualMultiplier,
   });
 
   const handleClassName = useMemo(() => {
@@ -126,6 +129,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
           handleClassName={handleClassName}
           handle={formatUsd(executionPrice, {
             displayDecimals,
+            visualMultiplier,
           })}
           content={
             <>
