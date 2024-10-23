@@ -8,17 +8,15 @@ import { sumBigInts } from "lib/sumBigInts";
 const feeStatsQuery = gql`
   query feesInfo($epochStartedTimestamp: Int!) {
     total: feeStat(id: "total") {
-      margin
+      marginAndLiquidation
       swap
-      liquidation
       mint
       burn
     }
     daily: feeStats(where: { period: daily, id_gte: $epochStartedTimestamp }) {
       id
-      margin
+      marginAndLiquidation
       swap
-      liquidation
       mint
       burn
     }
@@ -27,17 +25,15 @@ const feeStatsQuery = gql`
 
 type FeeStatsData = {
   total: {
-    margin: string;
     swap: string;
-    liquidation: string;
+    marginAndLiquidation: string;
     mint: string;
     burn: string;
   };
   daily: {
     id: string;
-    margin: string;
     swap: string;
-    liquidation: string;
+    marginAndLiquidation: string;
     mint: string;
     burn: string;
   }[];
@@ -59,16 +55,15 @@ export function useV1FeesInfo(chainId: number) {
 
       const totalFees = sumBigInts(
         ...[
-          feeStatsData.total.margin,
           feeStatsData.total.swap,
-          feeStatsData.total.liquidation,
+          feeStatsData.total.marginAndLiquidation,
           feeStatsData.total.mint,
           feeStatsData.total.burn,
         ].map(BigInt)
       );
 
       const weeklyFees = feeStatsData.daily.reduce((acc, h) => {
-        return sumBigInts(...[acc, h.margin, h.swap, h.liquidation, h.mint, h.burn].map(BigInt));
+        return sumBigInts(...[acc, h.swap, h.marginAndLiquidation, h.mint, h.burn].map(BigInt));
       }, 0n);
 
       return { weeklyFees, totalFees };
