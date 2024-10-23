@@ -481,7 +481,7 @@ export function useHasOutdatedUi() {
     hasOutdatedUi = true;
   }
 
-  return { data: hasOutdatedUi, mutate };
+  return { data: false, mutate };
 }
 
 export function useGmxPrice(chainId, libraries, active) {
