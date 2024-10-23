@@ -14,6 +14,7 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
+import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { useFuse } from "lib/useFuse";
 
@@ -101,8 +102,8 @@ export function PoolSelector({
       marketsOptions.map((item, index) => ({
         id: index,
         name: isGlvInfo(item.marketInfo) ? getGlvDisplayName(item.marketInfo) : item.name,
-        longTokenName: item.marketInfo.longToken.name,
-        shortTokenName: item.marketInfo.shortToken.name,
+        longTokenName: stripBlacklistedWords(item.marketInfo.longToken.name),
+        shortTokenName: stripBlacklistedWords(item.marketInfo.shortToken.name),
       })),
     marketsOptions?.map((item) => item.indexName)
   );
