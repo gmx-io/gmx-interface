@@ -33,6 +33,22 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "ape-sui-sei-markets-arbitrum",
+    title: "APE, SUI, and SEI markets added on Arbitrum",
+    isActive: true,
+    startDate: "24 Oct 2024, 00:00",
+    endDate: "7 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="APE" />
+        /USD, <TokenSymbolWithIcon symbol="SUI" />
+        /USD and <TokenSymbolWithIcon symbol="SEI" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="APE" />,{" "}
+        <TokenSymbolWithIcon symbol="WETH" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "pol-aave-pepe-uni-markets-arbitrum",
     title: "POL, AAVE, PEPE, and UNI markets added on Arbitrum",
     isActive: true,

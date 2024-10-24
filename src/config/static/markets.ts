@@ -271,16 +271,6 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
-    // APE/USD [APE-USDC]
-    // "0xdf034cd3df9a80eABFA0556232a91E03Ca67D5Cb": {
-    //   // TODO: Enable
-    //   enabled: false,
-    //   listingDate: DEFAULT_LISTING,
-    //   marketTokenAddress: "0xdf034cd3df9a80eABFA0556232a91E03Ca67D5Cb",
-    //   indexTokenAddress: "0x74885b4D524d497261259B38900f54e6dbAd2210",
-    //   longTokenAddress: "0x74885b4D524d497261259B38900f54e6dbAd2210",
-    //   shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    // },
     // STX/USD [wBTC-USDC]
     "0xD9377d9B9a2327C7778867203deeA73AB8a68b6B": {
       enabled: true,
@@ -359,6 +349,33 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       listingDate: p("17 Oct 2024"),
       marketTokenAddress: "0xD8471b9Ea126272E6d32B5e4782Ed76DB7E554a4",
       indexTokenAddress: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // APE/USD [APE-USDC]
+    "0xdAB21c4d1F569486334C93685Da2b3F9b0A078e8": {
+      enabled: true,
+      listingDate: p("24 Oct 2024"),
+      marketTokenAddress: "0xdAB21c4d1F569486334C93685Da2b3F9b0A078e8",
+      indexTokenAddress: "0x7f9FBf9bDd3F4105C478b996B648FE6e828a1e98",
+      longTokenAddress: "0x7f9FBf9bDd3F4105C478b996B648FE6e828a1e98",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // SUI/USD [WETH-USDC]
+    "0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797": {
+      enabled: true,
+      listingDate: p("24 Oct 2024"),
+      marketTokenAddress: "0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797",
+      indexTokenAddress: "0x197aa2DE1313c7AD50184234490E12409B2a1f95",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // SEI/USD [WETH-USDC]
+    "0xB489711B1cB86afDA48924730084e23310EB4883": {
+      enabled: true,
+      listingDate: p("24 Oct 2024"),
+      marketTokenAddress: "0xB489711B1cB86afDA48924730084e23310EB4883",
+      indexTokenAddress: "0x55e85A147a1029b985384822c0B2262dF8023452",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },

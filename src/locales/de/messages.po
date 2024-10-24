@@ -489,6 +489,10 @@ msgstr "Handelshistorie"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr ""
 
+#: src/config/bridging.tsx
+msgid "Buy APE on Arbitrum with <0>Camelot</0>."
+msgstr ""
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "Du musst auf dieser Seite sein, um den Transfer zu akzeptieren. <0>Klicke hier</0>, um den Link zu dieser Seite zu kopieren, falls nötig."
@@ -1224,6 +1228,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Dashboard"
 msgstr "Dashboard"
+
+#: src/config/bridging.tsx
+msgid "Mint tBTC using BTC with <0>Threshold</0>."
+msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
@@ -2483,8 +2491,8 @@ msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
 #: src/config/bridging.tsx
-msgid "Mint tBTC using BTC with <0>Threshold</0>"
-msgstr ""
+#~ msgid "Mint tBTC using BTC with <0>Threshold</0>"
+#~ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
