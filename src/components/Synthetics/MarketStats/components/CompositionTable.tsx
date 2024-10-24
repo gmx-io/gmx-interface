@@ -110,7 +110,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
 
         return (
           <TableTr key={`comp-data-${market.longTokenAddress}-${index}`} hoverable={false} bordered={false}>
-            <TableTd>
+            <TableTd className="!py-8">
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
@@ -121,10 +121,10 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                 <span>{getMarketIndexName(market)}</span>
               </span>
             </TableTd>
-            <TableTd>
+            <TableTd className="!py-8">
               {formatAmountHuman(tvl[0], USD_DECIMALS, true, 1)}/{formatAmountHuman(tvl[1], USD_DECIMALS, true, 1)}
             </TableTd>
-            <TableTd>{composition.toFixed(2)}%</TableTd>
+            <TableTd className="!py-8">{composition.toFixed(2)}%</TableTd>
           </TableTr>
         );
       });
@@ -138,7 +138,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
 
         return (
           <TableTr key={`comp-data-${token.address}-${index}`} hoverable={false} bordered={false}>
-            <TableTd>
+            <TableTd className="!py-8">
               <span className="flex flex-row items-center gap-8">
                 <span
                   className="inline-block h-10 w-10 rounded-10"
@@ -151,8 +151,8 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                 </span>
               </span>
             </TableTd>
-            <TableTd>{formatAmountHuman(amount, token.decimals, false, 3)}</TableTd>
-            <TableTd>{composition.toFixed(2)}%</TableTd>
+            <TableTd className="!py-8">{formatAmountHuman(amount, token.decimals, false, 3)}</TableTd>
+            <TableTd className="!py-8">{composition.toFixed(2)}%</TableTd>
           </TableTr>
         );
       });
