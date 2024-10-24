@@ -489,6 +489,10 @@ msgstr "Trade History"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 
+#: src/config/bridging.tsx
+msgid "Buy APE on Arbitrum with <0>Camelot</0>."
+msgstr "Buy APE on Arbitrum with <0>Camelot</0>."
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
@@ -1224,6 +1228,10 @@ msgstr "Leftover position below 10 USD"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Dashboard"
 msgstr "Dashboard"
+
+#: src/config/bridging.tsx
+msgid "Mint tBTC using BTC with <0>Threshold</0>."
+msgstr "Mint tBTC using BTC with <0>Threshold</0>."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
@@ -2483,8 +2491,8 @@ msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 
 #: src/config/bridging.tsx
-msgid "Mint tBTC using BTC with <0>Threshold</0>"
-msgstr "Mint tBTC using BTC with <0>Threshold</0>"
+#~ msgid "Mint tBTC using BTC with <0>Threshold</0>"
+#~ msgstr "Mint tBTC using BTC with <0>Threshold</0>"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
