@@ -79,14 +79,6 @@ export type MarketInfo = Market & {
   maxPnlFactorForTradersLong: bigint;
   maxPnlFactorForTradersShort: bigint;
 
-  pnlLongMin: bigint;
-  pnlLongMax: bigint;
-  pnlShortMin: bigint;
-  pnlShortMax: bigint;
-
-  netPnlMin: bigint;
-  netPnlMax: bigint;
-
   claimableFundingAmountLong?: bigint;
   claimableFundingAmountShort?: bigint;
 
@@ -120,9 +112,9 @@ export type MarketInfo = Market & {
   virtualPoolAmountForShortToken: bigint;
   virtualInventoryForPositions: bigint;
 
-  virtualMarketId?: string;
-  virtualLongTokenId?: string;
-  virtualShortTokenId?: string;
+  virtualMarketId: string;
+  virtualLongTokenId: string;
+  virtualShortTokenId: string;
 };
 
 export type MarketsData = {

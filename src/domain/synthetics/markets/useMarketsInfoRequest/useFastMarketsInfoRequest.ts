@@ -65,14 +65,6 @@ type FastMarketInfo = {
   maxPnlFactorForTradersLong: bigint;
   maxPnlFactorForTradersShort: bigint;
 
-  pnlLongMin: bigint;
-  pnlLongMax: bigint;
-  pnlShortMin: bigint;
-  pnlShortMax: bigint;
-
-  netPnlMin: bigint;
-  netPnlMax: bigint;
-
   longInterestUsd: bigint;
   shortInterestUsd: bigint;
   longInterestInTokens: bigint;
@@ -103,9 +95,9 @@ type FastMarketInfo = {
   virtualPoolAmountForShortToken: bigint;
   virtualInventoryForPositions: bigint;
 
-  virtualMarketId?: string;
-  virtualLongTokenId?: string;
-  virtualShortTokenId?: string;
+  virtualMarketId: string;
+  virtualLongTokenId: string;
+  virtualShortTokenId: string;
 };
 
 type FastMarketInfoData = {
@@ -185,14 +177,6 @@ export function useFastMarketsInfoRequest(chainId: number) {
 
                 maxPnlFactorForTradersLong
                 maxPnlFactorForTradersShort
-
-                pnlLongMin
-                pnlLongMax
-                pnlShortMin
-                pnlShortMax
-
-                netPnlMin
-                netPnlMax
 
                 longInterestUsd
                 shortInterestUsd
@@ -300,14 +284,6 @@ export function useFastMarketsInfoRequest(chainId: number) {
 
             maxPnlFactorForTradersLong: BigInt(mInfo.maxPnlFactorForTradersLong),
             maxPnlFactorForTradersShort: BigInt(mInfo.maxPnlFactorForTradersShort),
-
-            pnlLongMin: BigInt(mInfo.pnlLongMin),
-            pnlLongMax: BigInt(mInfo.pnlLongMax),
-            pnlShortMin: BigInt(mInfo.pnlShortMin),
-            pnlShortMax: BigInt(mInfo.pnlShortMax),
-
-            netPnlMin: BigInt(mInfo.netPnlMin),
-            netPnlMax: BigInt(mInfo.netPnlMax),
 
             longInterestUsd: BigInt(mInfo.longInterestUsd),
             shortInterestUsd: BigInt(mInfo.shortInterestUsd),
