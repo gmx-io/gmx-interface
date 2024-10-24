@@ -1326,7 +1326,7 @@ export default function StakeV2() {
     gmxAddress,
     esGmxAddress,
     stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
+    extendedGmxTrackerAddress,
     bnGmxAddress,
     glpAddress,
   ];
