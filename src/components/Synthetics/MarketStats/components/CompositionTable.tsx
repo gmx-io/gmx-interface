@@ -163,13 +163,13 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
     <table className="w-full">
       <thead>
         <TableTheadTr bordered>
-          <TableTh>
+          <TableTh className="sticky top-0 bg-slate-800">
             <Trans>{col1}</Trans>
           </TableTh>
-          <TableTh>
+          <TableTh className="sticky top-0 bg-slate-800">
             <Trans>{col2}</Trans>
           </TableTh>
-          <TableTh>
+          <TableTh className="sticky top-0 bg-slate-800">
             <Trans>{col3}</Trans>
           </TableTh>
         </TableTheadTr>
