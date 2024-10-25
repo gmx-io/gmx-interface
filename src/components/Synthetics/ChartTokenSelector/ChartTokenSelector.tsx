@@ -17,7 +17,8 @@ import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/choose
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { TradeType } from "domain/synthetics/trade";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
+import { stripBlacklistedWords } from "domain/tokens/utils";
 import { helperToast } from "lib/helperToast";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -96,7 +97,7 @@ export default function ChartTokenSelector(props: Props) {
       }
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
-      footerContent={<MissedCoinsHint place={MissedCoinsPlace.marketDropdown} withIcon />}
+      footerContent={<MissedCoinsHint place={MissedCoinsPlace.marketDropdown} className="!my-12 mx-15" withIcon />}
     >
       <MarketsList options={options} />
     </SelectorBase>
@@ -188,7 +189,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
+        <div className="mt-16 flex flex-row items-center gap-16">
           <SearchInput className="w-full" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={handleKeyDown} />
           {!isSwap && <FavoriteTabs favoritesKey="chart-token-selector" />}
         </div>
@@ -288,7 +289,9 @@ function useFilterSortTokens({
   orderBy: SortField;
 }) {
   const fuse = useFuse(
-    () => options?.map((item, index) => ({ id: index, name: item.name, symbol: item.symbol })) || EMPTY_ARRAY,
+    () =>
+      options?.map((item, index) => ({ id: index, name: stripBlacklistedWords(item.name), symbol: item.symbol })) ||
+      EMPTY_ARRAY,
     options?.map((item) => item.address)
   );
 

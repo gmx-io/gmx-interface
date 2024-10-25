@@ -213,7 +213,14 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   const triggerPrice = q(selectOrderEditorTriggerPrice);
   const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
 
-  if (!market || sizeDeltaUsd === undefined || minCollateralUsd === undefined || minPositionSizeUsd === undefined) {
+  if (
+    !market ||
+    sizeDeltaUsd === undefined ||
+    minCollateralUsd === undefined ||
+    minPositionSizeUsd === undefined ||
+    triggerPrice === undefined ||
+    triggerPrice === 0n
+  ) {
     return undefined;
   }
 

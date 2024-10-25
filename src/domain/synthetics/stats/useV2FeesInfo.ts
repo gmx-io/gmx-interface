@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { useFeesSummary } from "domain/stats";
+import { getCurrentEpochStartedTimestamp } from "domain/stats";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -19,30 +19,29 @@ const totalFeeQuery = gql`
 `;
 
 const weeklyFeeQuery = gql`
-  query weeklyFeesInfo($lastTimestamp: Int!) {
-    position: positionFeesInfoWithPeriods(where: { id_gte: $lastTimestamp, period: "1d" }) {
+  query weeklyFeesInfo($epochStartedTimestamp: Int!) {
+    position: positionFeesInfoWithPeriods(where: { id_gte: $epochStartedTimestamp, period: "1d" }) {
       totalBorrowingFeeUsd
       totalPositionFeeUsd
     }
 
-    swap: swapFeesInfoWithPeriods(where: { id_gte: $lastTimestamp, period: "1d" }) {
+    swap: swapFeesInfoWithPeriods(where: { id_gte: $epochStartedTimestamp, period: "1d" }) {
       totalFeeReceiverUsd
       totalFeeUsdForPool
     }
   }
 `;
 
-export default function useFeesInfo(chainId: number) {
-  const { data: feesSummaryByChain } = useFeesSummary();
-  const lastUpdatedAt = feesSummaryByChain[chainId]?.lastUpdatedAt;
-
-  async function fetchFeesInfo(chainId: number, lastFeesUpdatedTimestamp: number) {
+export default function useV2FeesInfo(chainId: number) {
+  async function fetcher() {
     try {
       const client = getSyntheticsGraphClient(chainId);
+      const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
+
       const { data: weeklyFeesInfo } = await client!.query({
         query: weeklyFeeQuery,
         variables: {
-          lastTimestamp: lastFeesUpdatedTimestamp,
+          epochStartedTimestamp,
         },
         fetchPolicy: "no-cache",
       });
@@ -80,23 +79,7 @@ export default function useFeesInfo(chainId: number) {
     }
   }
 
-  async function fetcher(args) {
-    const [, lastFeesUpdatedTimestamp] = args;
-    if (!lastFeesUpdatedTimestamp) return;
-    try {
-      const { weeklyFees, totalFees } = await fetchFeesInfo(chainId, lastFeesUpdatedTimestamp);
-      return {
-        weeklyFees,
-        totalFees,
-      };
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error("Error fetching feesInfo data:", error);
-      return {};
-    }
-  }
-
-  const { data: feesInfo } = useSWR([`useFeesInfo-${chainId}`, lastUpdatedAt], fetcher, {
+  const { data: feesInfo } = useSWR([`useV2FeesInfo-${chainId}`], fetcher, {
     refreshInterval: CONFIG_UPDATE_INTERVAL,
   });
 

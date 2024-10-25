@@ -375,19 +375,23 @@ export function SyntheticsStats() {
 
               function renderBorrowingRateCell() {
                 const maxBorrowingRateLong =
-                  bigMath.mulDiv(
-                    pow(maxLiquidityLong, market.borrowingExponentFactorLong),
-                    market.borrowingFactorLong,
-                    longPoolUsd!
-                  ) *
-                  (3600n * 100n);
+                  longPoolUsd! > 0
+                    ? bigMath.mulDiv(
+                        pow(maxLiquidityLong, market.borrowingExponentFactorLong),
+                        market.borrowingFactorLong,
+                        longPoolUsd!
+                      ) *
+                      (3600n * 100n)
+                    : undefined;
                 const maxBorrowingRateShort =
-                  bigMath.mulDiv(
-                    pow(maxLiquidityShort, market.borrowingExponentFactorShort),
-                    market.borrowingFactorShort,
-                    shortPoolUsd!
-                  ) *
-                  (3600n * 100n);
+                  shortPoolUsd! > 0
+                    ? bigMath.mulDiv(
+                        pow(maxLiquidityShort, market.borrowingExponentFactorShort),
+                        market.borrowingFactorShort,
+                        shortPoolUsd!
+                      ) *
+                      (3600n * 100n)
+                    : undefined;
 
                 return (
                   <div className="cell">
@@ -434,12 +438,16 @@ export function SyntheticsStats() {
                             />
                             <StatsTooltipRow
                               label="Max Rate Long"
-                              value={`-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h`}
+                              value={
+                                maxBorrowingRateLong ? `-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h` : "N/A"
+                              }
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Max Rate Short"
-                              value={`-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h`}
+                              value={
+                                maxBorrowingRateShort ? `-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h` : "N/A"
+                              }
                               showDollar={false}
                             />
                           </>
@@ -674,12 +682,16 @@ export function SyntheticsStats() {
               }
 
               function renderPositionImpactCell() {
+                const summaryPoolUsd = (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n);
+
                 const bonusApr =
-                  bigMath.mulDiv(
-                    market.positionImpactPoolDistributionRate * 86400n * 365n,
-                    market.indexToken.prices.minPrice,
-                    (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n)
-                  ) * 100n;
+                  summaryPoolUsd > 0n
+                    ? bigMath.mulDiv(
+                        market.positionImpactPoolDistributionRate * 86400n * 365n,
+                        market.indexToken.prices.minPrice,
+                        summaryPoolUsd
+                      ) * 100n
+                    : undefined;
 
                 const reservedPositivePriceImpactUsd = getPriceImpactUsd({
                   currentLongUsd: market.longInterestUsd - market.shortInterestUsd,

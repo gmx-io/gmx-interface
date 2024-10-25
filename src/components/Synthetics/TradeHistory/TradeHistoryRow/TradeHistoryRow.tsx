@@ -12,7 +12,7 @@ import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globals
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { formatPositionMessage } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";

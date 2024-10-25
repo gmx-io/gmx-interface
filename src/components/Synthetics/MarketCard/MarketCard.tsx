@@ -237,12 +237,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   <br />
                   {isLong && (
                     <>
-                      <Trans>Reserve considers the PnL of Open Positions, while Open Interest does not.</Trans>{" "}
+                      <Trans>
+                        The long reserve accounts for the PnL of open positions, while the open interest does not.
+                      </Trans>{" "}
                     </>
                   )}
                   <Trans>
-                    The Available Liquidity will be the lesser of the difference between the maximum value and the
-                    current value for the Reserve and Open Interest.
+                    The available liquidity will be the lesser of the difference between the maximum value and the
+                    current value for both the reserve and open interest.
                   </Trans>
                 </div>
               )}

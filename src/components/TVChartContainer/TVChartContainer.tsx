@@ -15,7 +15,6 @@ import { useLocalStorage, useMedia } from "react-use";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
-import { getIsFlagEnabled } from "config/ab";
 
 export type ChartLine = {
   price: number;
@@ -127,16 +126,13 @@ export default function TVChartContainer({
     if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
         tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
-        datafeed.setOraclePriceDecimals(oraclePriceDecimals);
       }
     }
-  }, [symbol, chartReady, period, chainId, oraclePriceDecimals, datafeed]);
+  }, [symbol, chartReady, period, chainId, datafeed]);
 
   useEffect(() => {
-    datafeed.setOraclePriceDecimals(oraclePriceDecimals);
-
     dataProvider?.resetCache();
-    if (symbolRef.current && getIsFlagEnabled("testCandlesPreload")) {
+    if (symbolRef.current) {
       dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
     }
 

@@ -143,7 +143,7 @@ const CONTRACTS = {
     VaultReader: "0xfebB9f4CAC4cD523598fE1C5771181440143F24A",
     Reader: "0x2b43c90D1B727cEe1Df34925bcd5Ace52Ec37694",
     GlpManager: "0x3963FfC9dff443c2A94f21b129D429891E32ec18",
-    RewardRouter: "0x159854e14A862Df9E39E1D128b8e5F70B4A3cE9B",
+    RewardRouter: "0x5E4766F932ce00aA4a1A82d3Da85adf15C5694A1",
     GlpRewardRouter: "0xB95DB5B167D75e6d04227CfFFA61069348d271F5",
     RewardReader: "0x8BFb8e82Ee4569aee78D03235ff465Bd436D40E0",
     GovToken: "0x2A29D3a792000750807cc401806d6fd539928481",
@@ -159,6 +159,7 @@ const CONTRACTS = {
     FeeGmxTracker: "0xd2D1162512F927a7e282Ef43a362659E4F2a728F",
     StakedGlpTracker: "0x1aDDD80E6039594eE970E5872D247bf0414C8903",
     FeeGlpTracker: "0x4e971a87900b931fF39d1Aad67697F49835400b6",
+    ExtendedGmxTracker: "0x0755D33e45eD2B874c9ebF5B279023c8Bd1e5E93",
 
     StakedGmxDistributor: "0x23208B91A98c7C1CD9FE63085BFf68311494F193",
     StakedGlpDistributor: "0x60519b48ec4183a61ca2B8e37869E675FD203b34",
@@ -204,7 +205,7 @@ const CONTRACTS = {
     VaultReader: "0x66eC8fc33A26feAEAe156afA3Cb46923651F6f0D",
     Reader: "0x2eFEE1950ededC65De687b40Fd30a7B5f4544aBd",
     GlpManager: "0xD152c7F25db7F4B95b7658323c5F33d176818EE4",
-    RewardRouter: "0xa192D0681E2b9484d1fA48083D36B8A2D0Da1809",
+    RewardRouter: "0x091eD806490Cc58Fd514441499e58984cCce0630",
     GlpRewardRouter: "0xB70B91CE0771d3f4c81D87660f71Da31d48eB3B3",
     RewardReader: "0x04Fc11Bd28763872d143637a7c768bD96E44c1b6",
     GovToken: "0x0ff183E29f1924ad10475506D7722169010CecCb",
@@ -221,6 +222,7 @@ const CONTRACTS = {
     FeeGmxTracker: "0x4d268a7d4C16ceB5a606c173Bd974984343fea13",
     StakedGlpTracker: "0x9e295B5B976a184B14aD8cd72413aD846C299660",
     FeeGlpTracker: "0xd2D1162512F927a7e282Ef43a362659E4F2a728F",
+    ExtendedGmxTracker: "0xB0D12Bf95CC1341d6C845C978daaf36F70b5910d",
 
     StakedGmxDistributor: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
     StakedGlpDistributor: "0xDd593Cf40734199afc9207eBe9ffF23dA4Bf7720",
@@ -282,6 +284,7 @@ const CONTRACTS = {
     FeeGmxTracker: ZeroAddress,
     StakedGlpTracker: ZeroAddress,
     FeeGlpTracker: ZeroAddress,
+    ExtendedGmxTracker: ZeroAddress,
 
     StakedGmxDistributor: ZeroAddress,
     StakedGlpDistributor: ZeroAddress,
@@ -348,3 +351,7 @@ export const getExchangeRouterContract = makeGetContract("ExchangeRouter", Excha
 export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__factory);
 
 export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, [], provider);
+
+export function tryGetContract(chainId: number, name: string): string | undefined {
+  return CONTRACTS[chainId]?.[name];
+}

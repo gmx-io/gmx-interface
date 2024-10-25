@@ -490,28 +490,37 @@ export function PositionItem(p: Props) {
           {renderLiquidationPrice()}
         </TableTd>
         {/* Close */}
-        {!p.position.isOpening && !p.hideActions && (
+        {!p.hideActions && (
           <>
-            <TableTd>
-              <button
-                className="Exchange-list-action"
-                onClick={p.onClosePositionClick}
-                disabled={p.position.sizeInUsd == 0n}
-                data-qa="position-close-button"
-              >
-                <Trans>Close</Trans>
-              </button>
-            </TableTd>
-            <TableTd>
-              <PositionDropdown
-                handleEditCollateral={p.onEditCollateralClick}
-                handleMarketSelect={() => p.onSelectPositionClick?.()}
-                handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
-                handleShare={p.onShareClick}
-                handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
-                handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
-              />
-            </TableTd>
+            {!p.position.isOpening ? (
+              <>
+                <TableTd>
+                  <button
+                    className="Exchange-list-action"
+                    onClick={p.onClosePositionClick}
+                    disabled={p.position.sizeInUsd == 0n}
+                    data-qa="position-close-button"
+                  >
+                    <Trans>Close</Trans>
+                  </button>
+                </TableTd>
+                <TableTd>
+                  <PositionDropdown
+                    handleEditCollateral={p.onEditCollateralClick}
+                    handleMarketSelect={() => p.onSelectPositionClick?.()}
+                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                    handleShare={p.onShareClick}
+                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                    handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
+                  />
+                </TableTd>
+              </>
+            ) : (
+              <>
+                <TableTd />
+                <TableTd />
+              </>
+            )}
           </>
         )}
       </TableTr>

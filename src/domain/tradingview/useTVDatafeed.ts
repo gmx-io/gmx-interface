@@ -8,15 +8,16 @@ import {
   ResolutionString,
   SubscribeBarsCallback,
 } from "charting_library";
+import { USD_DECIMALS } from "config/factors";
 import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
 import { getRequestId, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import { calculatePriceDecimals, numberToBigint } from "lib/numbers";
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
-import { getIsFlagEnabled } from "config/ab";
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
@@ -35,10 +36,9 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
 
 type Props = {
   dataProvider?: TVDataProvider;
-  oraclePriceDecimals?: number;
 };
 
-export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Props) {
+export default function useTVDatafeed({ dataProvider }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
@@ -111,17 +111,11 @@ export default function useTVDatafeed({ dataProvider, oraclePriceDecimals }: Pro
       missingBarsInfoRef: missingBarsInfo,
       feedDataRef: feedData,
       lastBarTimeRef: lastBarTime,
-      oraclePriceDecimals,
     });
-  }, [chainId, stableTokens, supportedResolutions, oraclePriceDecimals]);
+  }, [chainId, stableTokens, supportedResolutions]);
 }
 
-interface OracePriceDecimalsUpdater {
-  oraclePriceDecimals?: number;
-  setOraclePriceDecimals: (decimals?: number) => void;
-}
-
-export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi> & OracePriceDecimalsUpdater;
+export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi>;
 
 function buildFeeder({
   chainId,
@@ -132,7 +126,6 @@ function buildFeeder({
   missingBarsInfoRef,
   feedDataRef,
   lastBarTimeRef,
-  oraclePriceDecimals,
 }: {
   chainId: number;
   stableTokens: string[];
@@ -145,14 +138,9 @@ function buildFeeder({
   }>;
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
-  oraclePriceDecimals?: number;
 }): { datafeed: TvDatafeed } {
   return {
     datafeed: {
-      oraclePriceDecimals,
-      setOraclePriceDecimals(decimals?: number) {
-        this.oraclePriceDecimals = decimals;
-      },
       onReady: (callback) => {
         window.setTimeout(() => callback(getConfigurationData(supportedResolutions)));
 
@@ -174,7 +162,12 @@ function buildFeeder({
           symbolName = getNativeToken(chainId).symbol;
         }
 
-        const pricescale = Math.pow(10, this.oraclePriceDecimals ?? getPriceDecimals(chainId, symbolName));
+        let pricescale = Math.pow(
+          10,
+          tvDataProviderRef.current?.currentPrice
+            ? calculatePriceDecimals(numberToBigint(tvDataProviderRef.current.currentPrice, USD_DECIMALS), USD_DECIMALS)
+            : getPriceDecimals(chainId, symbolName)
+        );
 
         const symbolInfo = {
           name: symbolName,
@@ -212,12 +205,10 @@ function buildFeeder({
             return;
           }
 
-          if (getIsFlagEnabled("testCandlesPreload")) {
-            tvDataProviderRef.current?.saveTVParamsCache(chainId, {
-              resolution,
-              countBack: periodParams.countBack,
-            });
-          }
+          tvDataProviderRef.current?.saveTVParamsCache(chainId, {
+            resolution,
+            countBack: periodParams.countBack,
+          });
 
           const bars =
             (await tvDataProviderRef.current?.getBars(chainId, ticker, resolution, isStable, periodParams)) || [];

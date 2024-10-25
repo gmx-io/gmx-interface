@@ -6,7 +6,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getGlvOrMarketAddress, type GlvAndGmMarketsInfoData, type GlvOrMarketInfo } from "../markets";
 import { isGlvInfo } from "../markets/glv";
 
-import { type TokenData, type TokensData, convertToUsd } from "../tokens";
+import { convertToUsd, type TokenData, type TokensData } from "../tokens";
 
 const DEFAULT_VALUE = {
   markets: EMPTY_ARRAY,
@@ -35,8 +35,9 @@ export function sortMarketsWithIndexToken(
         })
         .map((market) => ({
           isGlv: isGlvInfo(market),
-          token: getByKey(marketTokensData, getGlvOrMarketAddress(market))!,
-        }));
+          token: getByKey(marketTokensData, getGlvOrMarketAddress(market)),
+        }))
+        .filter((market): market is { isGlv: boolean; token: TokenData } => market.token !== undefined);
     })
     .filter((markets) => markets.length > 0);
 

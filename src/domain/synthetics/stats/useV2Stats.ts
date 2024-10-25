@@ -1,6 +1,7 @@
+// current v2
 import { useMemo } from "react";
 import useVolumeInfo from "../stats/useVolumeInfo";
-import useFeesInfo from "../stats/useFeesInfo";
+import useV2FeesInfo from "./useV2FeesInfo";
 import useUsers from "../stats/useUsers";
 import { useMarketsInfoRequest } from "../markets";
 
@@ -18,7 +19,7 @@ type DashboardOverview = {
 
 export default function useV2Stats(chainId: number): DashboardOverview {
   const volumeInfo = useVolumeInfo(chainId);
-  const feesInfo = useFeesInfo(chainId);
+  const feesInfo = useV2FeesInfo(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const usersInfo = useUsers(chainId);
 
