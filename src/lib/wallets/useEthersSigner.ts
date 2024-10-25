@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import type { Account, Chain, Client, Transport } from "viem";
 
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { metrics } from "lib/metrics";
 
 export function clientToSigner(client: Client<Transport, Chain, Account>) {
   const { account, chain, transport } = client;
@@ -26,6 +27,11 @@ export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
       return undefined;
     }
 
-    return clientToSigner(client);
+    try {
+      return clientToSigner(client);
+    } catch (error) {
+      metrics.pushError(error, "useEthersSigner");
+      return undefined;
+    }
   }, [client]);
 }
