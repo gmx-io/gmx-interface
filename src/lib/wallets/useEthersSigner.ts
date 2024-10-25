@@ -1,8 +1,10 @@
 import { ethers } from "ethers";
-import { Config, useConnectorClient } from "wagmi";
 import { useMemo } from "react";
 import type { Account, Chain, Client, Transport } from "viem";
+import { Config, useConnectorClient } from "wagmi";
 
+import { ErrorEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 export function clientToSigner(client: Client<Transport, Chain, Account>) {
@@ -29,6 +31,13 @@ export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
     try {
       return clientToSigner(client);
     } catch (error) {
+      emitMetricEvent<ErrorEvent>({
+        event: "error",
+        isError: true,
+        data: {
+          errorGroup: `useEthersSigner: ${String(error)}`,
+        },
+      });
       return undefined;
     }
   }, [client]);
