@@ -1372,7 +1372,7 @@ export function TradeBox(p: Props) {
 
             <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
               <ExchangeInfo.Group>
-                {isTrigger && maxAutoCancelOrdersWarning}
+                {maxAutoCancelOrdersWarning}
                 {isSwap && isLimit && (
                   <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact>
                     <Trans>
