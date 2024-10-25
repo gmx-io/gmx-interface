@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext", "WebWorker"],
+    "outDir": "./build",
+    "lib": ["esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -15,17 +16,16 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
+    "declaration": true,
     "moduleResolution": "node",
+    "composite": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
     "baseUrl": "./src",
-    "paths": {
-      "sdk": ["../sdk/src/index.ts"],
-      "sdk/*": ["../sdk/src/*"]
-    }
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
   },
-  "references": [{ "path": "./sdk" }],
-  "include": ["src", "scripts"]
+  "include": ["./src"]
 }

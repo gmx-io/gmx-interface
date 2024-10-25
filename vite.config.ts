@@ -42,6 +42,7 @@ export default defineConfig({
       styles: path.resolve(__dirname, "src/styles"),
       "typechain-types": path.resolve(__dirname, "src/typechain-types"),
       prebuilt: path.resolve(__dirname, "src/prebuilt"),
+      sdk: path.resolve(__dirname, "sdk/src"),
     },
   },
   build: {
