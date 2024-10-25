@@ -45,7 +45,7 @@ import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
-import { TVChart } from "components/Synthetics/TVChart/TVChart";
+import { Chart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
@@ -241,7 +241,7 @@ export function SyntheticsPage(p: Props) {
     <div className="Exchange page-layout">
       <div className="Exchange-content">
         <div className="Exchange-left">
-          <TVChart />
+          <Chart />
           {!isMobile && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
               <div className="Exchange-list-tab-container">
