@@ -3,106 +3,7 @@ import { metrics } from "lib/metrics";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-
-type FastMarketInfo = {
-  marketTokenAddress: string;
-  indexTokenAddress: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-
-  isDisabled: boolean;
-
-  longPoolAmount: bigint;
-  shortPoolAmount: bigint;
-
-  maxLongPoolAmount: bigint;
-  maxShortPoolAmount: bigint;
-  maxLongPoolUsdForDeposit: bigint;
-  maxShortPoolUsdForDeposit: bigint;
-
-  longPoolAmountAdjustment: bigint;
-  shortPoolAmountAdjustment: bigint;
-
-  poolValueMax: bigint;
-  poolValueMin: bigint;
-
-  reserveFactorLong: bigint;
-  reserveFactorShort: bigint;
-
-  openInterestReserveFactorLong: bigint;
-  openInterestReserveFactorShort: bigint;
-
-  maxOpenInterestLong: bigint;
-  maxOpenInterestShort: bigint;
-
-  borrowingFactorLong: bigint;
-  borrowingFactorShort: bigint;
-  borrowingExponentFactorLong: bigint;
-  borrowingExponentFactorShort: bigint;
-
-  fundingFactor: bigint;
-  fundingExponentFactor: bigint;
-  fundingIncreaseFactorPerSecond: bigint;
-  fundingDecreaseFactorPerSecond: bigint;
-  thresholdForStableFunding: bigint;
-  thresholdForDecreaseFunding: bigint;
-  minFundingFactorPerSecond: bigint;
-  maxFundingFactorPerSecond: bigint;
-
-  totalBorrowingFees: bigint;
-
-  positionImpactPoolAmount: bigint;
-  minPositionImpactPoolAmount: bigint;
-  positionImpactPoolDistributionRate: bigint;
-
-  minCollateralFactor: bigint;
-  minCollateralFactorForOpenInterestLong: bigint;
-  minCollateralFactorForOpenInterestShort: bigint;
-
-  swapImpactPoolAmountLong: bigint;
-  swapImpactPoolAmountShort: bigint;
-
-  maxPnlFactorForTradersLong: bigint;
-  maxPnlFactorForTradersShort: bigint;
-
-  longInterestUsd: bigint;
-  shortInterestUsd: bigint;
-  longInterestInTokens: bigint;
-  shortInterestInTokens: bigint;
-
-  positionFeeFactorForPositiveImpact: bigint;
-  positionFeeFactorForNegativeImpact: bigint;
-  positionImpactFactorPositive: bigint;
-  positionImpactFactorNegative: bigint;
-  maxPositionImpactFactorPositive: bigint;
-  maxPositionImpactFactorNegative: bigint;
-  maxPositionImpactFactorForLiquidations: bigint;
-  positionImpactExponentFactor: bigint;
-
-  swapFeeFactorForPositiveImpact: bigint;
-  swapFeeFactorForNegativeImpact: bigint;
-  swapImpactFactorPositive: bigint;
-  swapImpactFactorNegative: bigint;
-  swapImpactExponentFactor: bigint;
-
-  borrowingFactorPerSecondForLongs: bigint;
-  borrowingFactorPerSecondForShorts: bigint;
-
-  fundingFactorPerSecond: bigint;
-  longsPayShorts: boolean;
-
-  virtualPoolAmountForLongToken: bigint;
-  virtualPoolAmountForShortToken: bigint;
-  virtualInventoryForPositions: bigint;
-
-  virtualMarketId: string;
-  virtualLongTokenId: string;
-  virtualShortTokenId: string;
-};
-
-type FastMarketInfoData = {
-  [address: string]: FastMarketInfo;
-};
+import { FastMarketInfoData } from "..";
 
 export function useFastMarketsInfoRequest(chainId: number) {
   const {
@@ -217,13 +118,13 @@ export function useFastMarketsInfoRequest(chainId: number) {
           fetchPolicy: "no-cache",
         });
 
-        const marketInfos = res?.data?.marketInfos;
+        const rawMarketsInfo = res?.data?.marketInfos;
 
-        if (!marketInfos) {
+        if (!rawMarketsInfo) {
           return undefined;
         }
 
-        return marketInfos.reduce((acc, mInfo) => {
+        return rawMarketsInfo.reduce((acc: FastMarketInfoData, mInfo) => {
           acc[mInfo.marketTokenAddress] = {
             marketTokenAddress: mInfo.marketTokenAddress,
             indexTokenAddress: mInfo.indexTokenAddress,
@@ -321,7 +222,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
           };
 
           return acc;
-        });
+        }, {} as FastMarketInfoData);
       } catch (e) {
         metrics.pushError(e, "useFastMarketsInfoRequest");
         throw e;
