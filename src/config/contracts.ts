@@ -284,6 +284,7 @@ const CONTRACTS = {
     FeeGmxTracker: ZeroAddress,
     StakedGlpTracker: ZeroAddress,
     FeeGlpTracker: ZeroAddress,
+    ExtendedGmxTracker: ZeroAddress,
 
     StakedGmxDistributor: ZeroAddress,
     StakedGlpDistributor: ZeroAddress,
@@ -350,3 +351,7 @@ export const getExchangeRouterContract = makeGetContract("ExchangeRouter", Excha
 export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__factory);
 
 export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, [], provider);
+
+export function tryGetContract(chainId: number, name: string): string | undefined {
+  return CONTRACTS[chainId]?.[name];
+}

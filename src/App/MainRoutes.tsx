@@ -14,7 +14,8 @@ import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents"
 import { useChainId } from "lib/chains";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 
-import { AccountDashboard, buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";

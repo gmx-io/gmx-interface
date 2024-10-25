@@ -73,7 +73,21 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       render: () => (
         <Trans>
           Mint tBTC using BTC with{" "}
-          <ExternalLink href="https://arbitrum.threshold.network/minting">Threshold</ExternalLink>
+          <ExternalLink href="https://arbitrum.threshold.network/minting">Threshold</ExternalLink>.
+        </Trans>
+      ),
+    },
+  ],
+  APE: [
+    {
+      name: "Stargate",
+      generateLink: () => "https://stargate.finance/bridge",
+    },
+    {
+      name: "Camelot",
+      render: () => (
+        <Trans>
+          Buy APE on Arbitrum with <ExternalLink href="https://app.camelot.exchange">Camelot</ExternalLink>.
         </Trans>
       ),
     },

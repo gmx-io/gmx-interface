@@ -9,7 +9,7 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 import type { TokensAllowanceData } from "./types";
 
-type TokenAllowanceResult = { tokensAllowanceData: TokensAllowanceData; refetchTokensAllowanceData: () => void };
+type TokenAllowanceResult = { tokensAllowanceData: TokensAllowanceData };
 
 export function useTokensAllowanceData(
   chainId: number,
@@ -25,7 +25,7 @@ export function useTokensAllowanceData(
 
   const validAddresses = tokenAddresses.filter((address): address is string => address !== NATIVE_TOKEN_ADDRESS);
 
-  const { data, mutate } = useMulticall(chainId, "useTokenAllowance", {
+  const { data } = useMulticall(chainId, "useTokenAllowance", {
     key:
       !skip && account && spenderAddress && validAddresses.length > 0
         ? [account, spenderAddress, validAddresses]
@@ -89,6 +89,5 @@ export function useTokensAllowanceData(
 
   return {
     tokensAllowanceData: mergedData,
-    refetchTokensAllowanceData: mutate,
   };
 }

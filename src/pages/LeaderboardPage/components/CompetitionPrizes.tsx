@@ -13,7 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType, LeaderboardAccount, LeaderboardPageKey } from "domain/synthetics/leaderboard";
 import { shortenAddress } from "lib/legacy";
 import { mustNeverExist } from "lib/types";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

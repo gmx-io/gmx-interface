@@ -11,7 +11,7 @@ import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { expandDecimals, formatAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { RebateGroup, usePriceImpactRebateGroups } from "./hooks/usePriceImpactRebatesStats";
 
 import Checkbox from "components/Checkbox/Checkbox";

@@ -8,7 +8,6 @@ import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/
 import { useTrades, useLiquidationsData } from "domain/legacy";
 import { getContract } from "config/contracts";
 
-import "./TradeHistory.css";
 import { getExplorerUrl } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { formatDateTime } from "lib/dates";
@@ -20,6 +19,9 @@ import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { bigMath } from "lib/bigmath";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+
+import "./TradeHistory.css";
 
 const { ZeroAddress } = ethers;
 
@@ -104,12 +106,12 @@ export default function TradeHistory(props) {
 
   const { trades, setSize, size } = useTrades(chainId, account);
 
-  const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
-    account,
-    trades,
-    TRADE_HISTORY_PER_PAGE
-  );
-  const currentPageData = getCurrentData();
+  const {
+    currentPage,
+    setCurrentPage,
+    currentData: currentPageData,
+    pageCount,
+  } = usePagination(account, trades, TRADE_HISTORY_PER_PAGE);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -511,10 +513,16 @@ export default function TradeHistory(props) {
 
   return (
     <div className="TradeHistory">
-      {tradesWithMessages.length === 0 && (
+      {trades === undefined ? (
         <div className="TradeHistory-row App-box">
-          <Trans>No trades yet</Trans>
+          <Trans>Loading...</Trans>
         </div>
+      ) : (
+        tradesWithMessages.length === 0 && (
+          <div className="TradeHistory-row App-box">
+            <Trans>No trades yet</Trans>
+          </div>
+        )
       )}
       {tradesWithMessages.length > 0 &&
         tradesWithMessages.map((trade, index) => {
@@ -535,7 +543,7 @@ export default function TradeHistory(props) {
                   {(!account || account.length === 0) && (
                     <span>
                       {" "}
-                      (<Link to={`/actions/v1/${tradeData.account}`}>{tradeData.account}</Link>)
+                      <Link to={buildAccountDashboardUrl(tradeData.account, chainId, 1)}>{tradeData.account}</Link>)
                     </span>
                   )}
                 </div>

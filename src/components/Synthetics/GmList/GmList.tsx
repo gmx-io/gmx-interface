@@ -34,6 +34,7 @@ import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDays
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
+import { stripBlacklistedWords } from "domain/tokens/utils";
 import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useFuse } from "lib/useFuse";
@@ -280,14 +281,20 @@ function useFilterSortPools({
         let name = "";
         let symbol = "";
         if (isGlvInfo(market)) {
-          symbol = market.glvToken.symbol;
+          const longTokenSymbol = market.longToken.symbol;
+          symbol = `${market.glvToken.symbol} ${longTokenSymbol}`;
+
           const displayName = getGlvDisplayName(market);
           const subtitle = getGlvMarketSubtitle(chainId, market.glvTokenAddress);
+          const longTokenName = stripBlacklistedWords(market.longToken.name);
 
-          name = [displayName, subtitle].filter(Boolean).join(" ");
+          name = [displayName, subtitle, longTokenName].filter(Boolean).join(" ");
+        } else if (market.isSpotOnly) {
+          symbol = "SWAP-ONLY";
+          name = getMarketPoolName(market);
         } else {
           symbol = market.indexToken.symbol;
-          name = market.indexToken.name;
+          name = stripBlacklistedWords(market.indexToken.name);
         }
 
         return {

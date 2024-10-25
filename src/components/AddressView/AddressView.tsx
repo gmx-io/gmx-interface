@@ -6,7 +6,7 @@ import type { Address } from "viem";
 
 import { shortenAddress } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/AccountDashboard";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import "./AddressView.scss";
 

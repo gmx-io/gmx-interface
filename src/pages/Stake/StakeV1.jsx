@@ -297,7 +297,6 @@ function StakeModal(props) {
     maxAmount,
     value,
     setValue,
-    active,
     signer,
     stakingTokenSymbol,
     stakingTokenAddress,
@@ -307,22 +306,11 @@ function StakeModal(props) {
   const [isStaking, setIsStaking] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
 
-  const { tokensAllowanceData, refetchTokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: farmAddress,
     tokenAddresses: [stakingTokenAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
-
-  useEffect(() => {
-    if (active) {
-      signer.on("block", () => {
-        refetchTokensAllowanceData();
-      });
-      return () => {
-        signer.removeAllListeners("block");
-      };
-    }
-  }, [active, refetchTokensAllowanceData, signer]);
 
   let amount = parseValue(value, 18);
   const needApproval = tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
