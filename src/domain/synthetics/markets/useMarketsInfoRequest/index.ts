@@ -302,7 +302,8 @@ function useMarketsValuesRequest({
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
   const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
-    key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses],
+    key:
+      !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? [...marketsAddresses] : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,

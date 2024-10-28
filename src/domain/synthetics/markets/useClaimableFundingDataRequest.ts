@@ -18,7 +18,7 @@ export function useClaimableFundingDataRequest(chainId: number) {
     isLoading,
     error,
   } = useMulticall(chainId, "useClaimableFundingDataRequest", {
-    key: account && marketsAddresses?.length ? [account, marketsAddresses] : null,
+    key: account && marketsAddresses?.length ? [account, ...marketsAddresses] : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
