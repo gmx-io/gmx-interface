@@ -482,22 +482,27 @@ export function MarketStatsWithComposition(p: Props) {
         </div>
       </div>
       <div
-        className={cx("relative flex-grow", {
+        className={cx("flex-grow", {
           "w-[100%] border-l border-l-slate-700": canFitCompositionOnRow,
           "mt-20 border-t border-t-slate-700": !canFitCompositionOnRow,
           "min-h-[498px]": largeMarketsTableEntries && canFitCompositionOnRow,
         })}
       >
-        <div className="h-[52px] px-16 pt-16">
-          <p>Composition</p>
-          <CompositionBar
-            marketInfo={marketInfo}
-            marketsInfoData={marketsInfoData}
-            marketTokensData={marketTokensData}
-          />
-        </div>
-        <div className={cx({ "absolute h-[calc(100%-52px)] w-[100%] overflow-y-scroll": canFitCompositionOnRow })}>
-          <CompositionTableGm marketInfo={marketInfo} />
+        <div className="flex size-full flex-col">
+          <div className="px-16 pt-16">
+            <p>Composition</p>
+            <CompositionBar
+              marketInfo={marketInfo}
+              marketsInfoData={marketsInfoData}
+              marketTokensData={marketTokensData}
+            />
+          </div>
+
+          <div className="relative flex-grow overflow-y-scroll">
+            <div className={cx({ absolute: canFitCompositionOnRow })}>
+              <CompositionTableGm marketInfo={marketInfo} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
