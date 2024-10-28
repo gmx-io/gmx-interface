@@ -206,7 +206,7 @@ export function SettingsModal({
       <div className="Exchange-settings-row">
         <Checkbox isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
           <Tooltip
-            handle={<Trans>Auto-Cancel TP/SL</Trans>}
+            handle={t`Auto-Cancel TP/SL`}
             renderContent={() => (
               <div>
                 <Trans>

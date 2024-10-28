@@ -2506,6 +2506,10 @@ msgstr "無効な価格につき、警告を確認してください"
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Auto-Cancel TP/SL"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
 msgstr ""
