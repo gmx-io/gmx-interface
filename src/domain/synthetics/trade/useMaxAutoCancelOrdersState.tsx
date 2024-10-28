@@ -10,7 +10,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMemo } from "react";
 
 export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: string }) {
-  const { isAutoCancelTPSL } = useSettings();
+  const { isAutoCancelTPSL: isEnabledAutoCancel } = useSettings();
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const { stopLoss, takeProfit } = useSidecarOrders();
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
@@ -29,21 +29,20 @@ export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: str
     return positionOrders.filter((order) => order.autoCancel);
   }, [positionOrders]);
 
-  let warning: React.ReactNode = null;
-  let autoCancelOrdersLimit = 0;
-
-  if (maxAutoCancelOrders === undefined) {
+  if (maxAutoCancelOrders === undefined || !isEnabledAutoCancel) {
     return {
-      warning,
-      autoCancelOrdersLimit,
+      warning: null,
+      autoCancelOrdersLimit: 0,
     };
   }
 
   const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders) - 1;
-  autoCancelOrdersLimit = isAutoCancelTPSL ? allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length : 0;
-  const isAllowedAddAutoCancelOrder = autoCancelOrdersLimit && autoCancelOrdersLimit - draftOrdersCount > 0;
+  const autoCancelOrdersLimit = allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length;
+  const showWarning = autoCancelOrdersLimit < draftOrdersCount;
 
-  if (!isAllowedAddAutoCancelOrder && isAutoCancelTPSL) {
+  let warning: React.ReactNode = null;
+
+  if (showWarning) {
     warning = (
       <AlertInfo type="info">
         <Trans>
