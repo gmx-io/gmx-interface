@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { USD_DECIMALS } from "config/factors";
@@ -23,58 +23,11 @@ import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 
-import { TVChartHeader } from "./TVChartHeader";
-
 import "./TVChart.scss";
-
-import { DepthChart } from "./DepthChart";
-
-import Tab from "components/Tab/Tab";
-import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useMedia } from "react-use";
-
-import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
-import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
 
 const DEFAULT_PERIOD = "5m";
 
-const OPTIONS = ["PRICE", "DEPTH"];
-const OPTIONS_LABELS = {
-  PRICE: (
-    <div className="flex items-center gap-8">
-      <AntennaBarsIcon />
-      PRICE
-    </div>
-  ),
-  DEPTH: (
-    <div className="flex items-center gap-8">
-      <CandlestickChartIcon />
-      DEPTH
-    </div>
-  ),
-};
-
-export function Chart() {
-  const isMobile = useMedia("(max-width: 700px)");
-
-  const [tab, setTab] = useState("PRICE");
-
-  return (
-    <div className="ExchangeChart tv">
-      <TVChartHeader isMobile={isMobile} />
-
-      <div className="flex h-[49.6rem] flex-col overflow-hidden rounded-4 bg-slate-800 text-15">
-        <div className="px-20 py-10">
-          <Tab type="inline" options={OPTIONS} option={tab} optionLabels={OPTIONS_LABELS} onChange={setTab} />
-        </div>
-
-        {tab === "PRICE" ? <TVChart /> : <DepthChartContainer />}
-      </div>
-    </div>
-  );
-}
-
-function TVChart() {
+export function TVChart() {
   const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
   const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
@@ -222,14 +175,4 @@ function TVChart() {
       />
     </div>
   );
-}
-
-function DepthChartContainer() {
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-
-  if (!marketInfo) {
-    return null;
-  }
-
-  return <DepthChart marketInfo={marketInfo} />;
 }

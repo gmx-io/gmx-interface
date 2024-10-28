@@ -6,7 +6,6 @@ import upperFirst from "lodash/upperFirst";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { ChartPlayground } from "./ChartPlayground";
 
 const iconsContext = mapKeys(
   import.meta.glob("img/ic_*.svg", {
@@ -113,11 +112,6 @@ const colors = {
 };
 
 export default function UiPage() {
-  return (
-    <div className="mx-auto max-w-[900px]">
-      <ChartPlayground />
-    </div>
-  );
   return (
     <main className="mx-auto max-w-prose p-20">
       <h1 className="text-34 font-bold">UI Page</h1>

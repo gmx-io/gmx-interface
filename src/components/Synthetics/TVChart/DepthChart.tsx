@@ -1,10 +1,22 @@
-import { PRECISION, bigintToNumber, expandDecimals, formatUsd, numberWithCommas } from "lib/numbers";
+import { t } from "@lingui/macro";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { USD_DECIMALS } from "config/factors";
+import { getPriceImpactForPosition } from "domain/synthetics/fees/utils/priceImpact";
+import type { MarketInfo } from "domain/synthetics/markets/types";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
+import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
+import { getMidPrice } from "domain/tokens/utils";
+import { bigMath } from "lib/bigmath";
+import { bigintToNumber, expandDecimals, numberWithCommas } from "lib/numbers";
 import {
   Area,
   CartesianGrid,
   ComposedChart,
   LabelProps,
+  Line,
   Tooltip as RechartsTooltip,
+  ReferenceDot,
+  ReferenceDotProps,
   ReferenceLine,
   ResponsiveContainer,
   Text,
@@ -13,18 +25,8 @@ import {
   YAxis,
 } from "recharts";
 import { useOffset } from "recharts/es6/context/chartLayoutContext";
-
-import { t } from "@lingui/macro";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import React from "react";
 import type { ImplicitLabelType, LabelPosition } from "recharts/types/component/Label";
-import { executionPrice, priceImpact } from "../../../pages/UiPage/depthChartMath";
-import { USD_DECIMALS } from "config/factors";
-import { getPriceImpactForPosition } from "domain/synthetics/fees/utils/priceImpact";
-import { MarketInfo } from "domain/synthetics/markets/types";
-import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
-import { getMarkPrice } from "domain/synthetics/trade";
-import { getMidPrice } from "domain/tokens";
+import type { AxisDomainItem } from "recharts/types/util/types";
 
 const GREEN = "#0ECC83";
 const RED = "#FF506A";
@@ -35,12 +37,10 @@ const Y_AXIS_LABEL = {
   offset: 10,
   fill: "#ffffff",
   opacity: 0.7,
-  // startOffset: 100,
   dx: 1,
   fontSize: 12,
 } satisfies LabelProps;
-const Y_AXIS_DOMAIN = ["auto", "auto"];
-const X_AXIS_DOMAIN = ["dataMin", "dataMax"];
+const Y_AXIS_DOMAIN: [AxisDomainItem, AxisDomainItem] = [0, "auto"] as const;
 
 const ORACLE_PRICE_LABEL: ImplicitLabelType = {
   position: "bottom",
@@ -51,93 +51,218 @@ const ORACLE_PRICE_LABEL: ImplicitLabelType = {
   fontSize: 10,
 };
 
-// console.log(
-//   executionPrice(
-//     // long open interest
-//     10_000_000_000_000_000_000n,
-//     // short open interest
-//     10_000_000_000_000_000_000n,
-//     // size
-//     -1_000_000_000_000_000n,
-//     // impact exponent
-//     2n * 10n ** 30n,
-//     // positive impact factor
-//     30n * 10n ** 30n,
-//     // negative impact factor
-//     90n * 10n ** 30n,
-//     // min price
-//     200100000n,
-//     // max price
-//     200400000n,
-//     // precision
-//     10n ** 30n
-//   )
-// );
+const DOLLAR = expandDecimals(1n, USD_DECIMALS);
 
-export const DepthChart = React.memo(function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
+const CHART_MARGIN = { bottom: 10, top: 20 };
+const Y_AXIS_TICK = { fill: "#ffffff", opacity: 0.7, fontSize: 12 };
+
+export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
   let data: {
     size: number;
     longIncreaseAndShortDecreaseSize: number | null;
     longDecreaseAndShortIncreaseSize: number | null;
+    longIncreaseXorShortDecreaseSize: number | null;
+    longDecreaseXorShortIncreaseSize: number | null;
     executionPrice: number;
     priceImpact: number;
+    // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
   }[] = [];
 
-  const inc = marketInfo.longInterestUsd / 30n;
+  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+  const rightMax = bigMath.max(marketInfo.shortInterestUsd, longLiquidity);
+  const rightMin = bigMath.min(marketInfo.shortInterestUsd, longLiquidity);
+  const leftMax = bigMath.max(marketInfo.longInterestUsd, shortLiquidity);
+  const leftMin = bigMath.min(marketInfo.longInterestUsd, shortLiquidity);
 
-  console.log(
-    bigintToNumber(marketInfo.indexToken.prices.minPrice, USD_DECIMALS),
-    bigintToNumber(marketInfo.indexToken.prices.maxPrice, USD_DECIMALS)
-  );
+  const rightInc = (rightMax - DOLLAR) / 30n;
+  const leftInc = (leftMax - DOLLAR) / 30n;
 
-  for (let i = expandDecimals(1n, USD_DECIMALS); i < marketInfo.longInterestUsd; i += inc) {
+  let leftMinExecutionPrice = 0;
+  let rightMinExecutionPrice = 0;
+
+  // open long
+  for (let i = DOLLAR; i < rightMax; i += rightInc) {
+    const priceImpactUsd = getPriceImpactForPosition(marketInfo, i, true, { fallbackToZero: false });
+
+    const executionPrice = getNextPositionExecutionPrice({
+      isIncrease: true,
+      isLong: true,
+      priceImpactUsd,
+      sizeDeltaUsd: i,
+      triggerPrice: marketInfo.indexToken.prices.maxPrice,
+    })!;
+
+    if (priceImpactUsd == 0n) {
+      data.push({
+        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+        longIncreaseAndShortDecreaseSize: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
+        size: Math.abs(bigintToNumber(rightMax, USD_DECIMALS)),
+        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+        longDecreaseAndShortIncreaseSize: null,
+        longIncreaseXorShortDecreaseSize: Math.abs(bigintToNumber(rightMax, USD_DECIMALS)),
+        longDecreaseXorShortIncreaseSize: null,
+      });
+
+      break;
+    }
+
     data.push({
-      executionPrice: bigintToNumber(
-        getNextPositionExecutionPrice({
-          isIncrease: true,
-          isLong: true,
-          priceImpactUsd: getPriceImpactForPosition(marketInfo, i, true),
-          sizeDeltaUsd: i,
-          triggerPrice: marketInfo.indexToken.prices.maxPrice,
-        })!,
-        USD_DECIMALS
-      ),
-      longIncreaseAndShortDecreaseSize: Math.abs(bigintToNumber(i, USD_DECIMALS)),
+      executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+      longIncreaseAndShortDecreaseSize: i < rightMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
       size: Math.abs(bigintToNumber(i, USD_DECIMALS)),
-      priceImpact: bigintToNumber(getPriceImpactForPosition(marketInfo, i, true), USD_DECIMALS),
+      priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
       longDecreaseAndShortIncreaseSize: null,
+      longIncreaseXorShortDecreaseSize: i > rightMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
+      longDecreaseXorShortIncreaseSize: null,
     });
+
+    if (i + rightInc > rightMin) {
+      const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, { fallbackToZero: true });
+
+      const executionPrice = getNextPositionExecutionPrice({
+        isIncrease: true,
+        isLong: true,
+        priceImpactUsd,
+        sizeDeltaUsd: rightMin,
+        triggerPrice: marketInfo.indexToken.prices.maxPrice,
+      })!;
+
+      rightMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
+
+      data.push({
+        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+        longIncreaseAndShortDecreaseSize: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
+        size: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
+        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+        longDecreaseAndShortIncreaseSize: null,
+        longIncreaseXorShortDecreaseSize: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
+        longDecreaseXorShortIncreaseSize: null,
+      });
+    }
+
+    if (i + rightInc > rightMax) {
+      const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMax, true, { fallbackToZero: true });
+
+      const executionPrice = getNextPositionExecutionPrice({
+        isIncrease: true,
+        isLong: true,
+        priceImpactUsd,
+        sizeDeltaUsd: rightMax,
+        triggerPrice: marketInfo.indexToken.prices.maxPrice,
+      })!;
+
+      data.push({
+        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+        longIncreaseAndShortDecreaseSize: rightMax > rightMin ? null : Math.abs(bigintToNumber(rightMax, USD_DECIMALS)),
+        size: Math.abs(bigintToNumber(rightMax, USD_DECIMALS)),
+        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+        longDecreaseAndShortIncreaseSize: null,
+        longIncreaseXorShortDecreaseSize: rightMax > rightMin ? Math.abs(bigintToNumber(rightMax, USD_DECIMALS)) : null,
+        longDecreaseXorShortIncreaseSize: null,
+      });
+    }
   }
 
-  for (let i = expandDecimals(1n, USD_DECIMALS); i <= marketInfo.shortInterestUsd; i += inc) {
+  // open short
+  for (let i = DOLLAR; i <= leftMax; i += leftInc) {
+    const priceImpactUsd = getPriceImpactForPosition(marketInfo, i, false, { fallbackToZero: true });
+
+    const executionPrice = getNextPositionExecutionPrice({
+      isIncrease: true,
+      isLong: false,
+      priceImpactUsd,
+      sizeDeltaUsd: i,
+      triggerPrice: marketInfo.indexToken.prices.minPrice,
+    })!;
+
+    if (priceImpactUsd == 0n) {
+      data.unshift({
+        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+        longDecreaseAndShortIncreaseSize: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
+        size: Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
+        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+        longIncreaseAndShortDecreaseSize: null,
+        longIncreaseXorShortDecreaseSize: null,
+        longDecreaseXorShortIncreaseSize: Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
+      });
+
+      break;
+    }
+
     data.unshift({
-      longDecreaseAndShortIncreaseSize: Math.abs(bigintToNumber(i, USD_DECIMALS)),
-      executionPrice: bigintToNumber(
-        getNextPositionExecutionPrice({
-          isIncrease: false,
-          isLong: true,
-          priceImpactUsd: getPriceImpactForPosition(marketInfo, i, true),
-          sizeDeltaUsd: -i,
-          triggerPrice: marketInfo.indexToken.prices.minPrice,
-        })!,
-        USD_DECIMALS
-      ),
+      longDecreaseAndShortIncreaseSize: i < leftMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
+      executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
       size: Math.abs(bigintToNumber(i, USD_DECIMALS)),
-      priceImpact: bigintToNumber(getPriceImpactForPosition(marketInfo, i, true), USD_DECIMALS),
+      priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
       longIncreaseAndShortDecreaseSize: null,
+      longIncreaseXorShortDecreaseSize: null,
+      longDecreaseXorShortIncreaseSize: i > leftMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
     });
+
+    if (i + leftInc > leftMin && i < leftMin) {
+      const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, { fallbackToZero: true });
+      const executionPrice = getNextPositionExecutionPrice({
+        isIncrease: true,
+        isLong: false,
+        priceImpactUsd,
+        sizeDeltaUsd: leftMin,
+        triggerPrice: marketInfo.indexToken.prices.minPrice,
+      })!;
+      leftMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
+      data.unshift({
+        executionPrice: leftMinExecutionPrice,
+        longDecreaseAndShortIncreaseSize: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
+        size: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
+        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+        longIncreaseAndShortDecreaseSize: null,
+        longIncreaseXorShortDecreaseSize: null,
+        longDecreaseXorShortIncreaseSize: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
+      });
+    }
+
+    if (i + leftInc > leftMax) {
+      const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMax, false, { fallbackToZero: true });
+
+      const executionPrice = getNextPositionExecutionPrice({
+        isIncrease: true,
+        isLong: false,
+        priceImpactUsd,
+        sizeDeltaUsd: leftMax,
+        triggerPrice: marketInfo.indexToken.prices.minPrice,
+      })!;
+
+      data.unshift({
+        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+        longDecreaseAndShortIncreaseSize: leftMax > leftMin ? null : Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
+        size: Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
+        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+        longIncreaseAndShortDecreaseSize: null,
+        longIncreaseXorShortDecreaseSize: null,
+        longDecreaseXorShortIncreaseSize: leftMax > leftMin ? Math.abs(bigintToNumber(leftMax, USD_DECIMALS)) : null,
+      });
+    }
   }
 
-  let lowPrice = Math.ceil(data[0].executionPrice);
-  let highPrice = Math.floor(data[data.length - 1].executionPrice);
+  const isZeroPriceImpact = data.length === 2;
+
+  const minPrice = bigintToNumber(marketInfo.indexToken.prices.minPrice, USD_DECIMALS);
+  const midPrice = bigintToNumber(getMidPrice(marketInfo.indexToken.prices), USD_DECIMALS);
+  const maxPrice = bigintToNumber(marketInfo.indexToken.prices.maxPrice, USD_DECIMALS);
+  const xAxisDomain: [AxisDomainItem, AxisDomainItem] = isZeroPriceImpact
+    ? [minPrice * 0.999, maxPrice * 1.001]
+    : ["dataMin", "dataMax"];
+
+  let lowPrice = isZeroPriceImpact ? (xAxisDomain[0] as number) : Math.ceil(data[0].executionPrice);
+  let highPrice = isZeroPriceImpact ? (xAxisDomain[1] as number) : Math.floor(data[data.length - 1].executionPrice);
   let marketPriceIndex;
 
+  // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
   let ticks: number[] = [];
 
   const step = Math.round((highPrice - lowPrice) / 5);
-  const midPrice = bigintToNumber(getMidPrice(marketInfo.indexToken.prices), USD_DECIMALS);
-  const leftStart = Math.floor(midPrice / 10) * 10;
-  const rightStart = Math.ceil(midPrice / 10) * 10;
+  const leftStart = Math.floor((midPrice - step) / 10) * 10;
+  const rightStart = Math.ceil((midPrice + step) / 10) * 10;
 
   for (let i = leftStart; i > lowPrice; i -= step) {
     ticks.push(i);
@@ -152,7 +277,7 @@ export const DepthChart = React.memo(function DepthChart({ marketInfo }: { marke
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <ComposedChart data={data} margin={{ bottom: 10, top: 20 }}>
+      <ComposedChart data={data} margin={CHART_MARGIN}>
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
             <stop offset="50%" stopColor={GREEN} stopOpacity={0.5} />
@@ -165,35 +290,65 @@ export const DepthChart = React.memo(function DepthChart({ marketInfo }: { marke
             <stop offset="100%" stopColor={RED} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="2 2" stroke="#ffffff" opacity={0.07} />
-        <RechartsTooltip content={ChartTooltip} cursor={false} />
 
+        <CartesianGrid strokeDasharray="2 2" stroke="#ffffff" opacity={0.07} />
+        <Line
+          dataKey="longDecreaseXorShortIncreaseSize"
+          stroke={GREEN}
+          opacity={0.3}
+          strokeWidth={2}
+          dot={isZeroPriceImpact ? renderLeftLineDot : false}
+          isAnimationActive={false}
+          activeDot={renderActiveDotSemiTransparent}
+        />
+        <ReferenceDot
+          x={leftMinExecutionPrice}
+          y={bigintToNumber(leftMin, USD_DECIMALS)}
+          fill={GREEN}
+          shape={<EdgeTick />}
+        />
         <Area
           dataKey="longDecreaseAndShortIncreaseSize"
           stroke={GREEN}
-          strokeWidth={2}
-          dot={false}
+          strokeWidth={isZeroPriceImpact ? 0 : 2}
+          dot={isZeroPriceImpact ? renderLeftAreaDot : false}
           fill="url(#colorGreen)"
           isAnimationActive={false}
-          activeDot={renderCustomizedActiveDot}
+          activeDot={renderActiveDot}
         />
         <Area
           dataKey="longIncreaseAndShortDecreaseSize"
           stroke={RED}
-          strokeWidth={2}
-          dot={false}
+          strokeWidth={isZeroPriceImpact ? 0 : 2}
+          dot={isZeroPriceImpact ? renderRightAreaDot : false}
           fill="url(#colorRed)"
           isAnimationActive={false}
-          activeDot={renderCustomizedActiveDot}
+          activeDot={renderActiveDot}
+        />
+        <ReferenceDot
+          x={rightMinExecutionPrice}
+          y={bigintToNumber(rightMin, USD_DECIMALS)}
+          fill={RED}
+          shape={<EdgeTick />}
+        />
+        <Line
+          dataKey="longIncreaseXorShortDecreaseSize"
+          stroke={RED}
+          opacity={0.3}
+          strokeWidth={2}
+          dot={isZeroPriceImpact ? renderRightLineDot : false}
+          isAnimationActive={false}
+          activeDot={renderActiveDotSemiTransparent}
         />
 
+        <RechartsTooltip cursor={false} content={ChartTooltip} />
         <YAxis
           orientation="right"
           dataKey="size"
           axisLine={false}
           tickLine={false}
           tickMargin={2}
-          tick={{ fill: "#ffffff", opacity: 0.7, fontSize: 12 }}
+          tick={Y_AXIS_TICK}
           label={Y_AXIS_LABEL}
           domain={Y_AXIS_DOMAIN}
           tickFormatter={(value) => numberWithCommas(value / 1000)}
@@ -203,18 +358,13 @@ export const DepthChart = React.memo(function DepthChart({ marketInfo }: { marke
           type="number"
           axisLine={false}
           tickLine={false}
-          domain={X_AXIS_DOMAIN}
+          domain={xAxisDomain}
+          allowDataOverflow
           allowDecimals={true}
           ticks={ticks}
           interval={0}
-          // tickFormatter={(value) => }
-          // padding={{}}
           tickMargin={7}
-          // fontFamily="Relative"
           tick={<Tick marketPriceIndex={marketPriceIndex} />}
-          // tickFormatter={}
-          // tickCount={5}
-          // minTickGap={70}
         />
         <ReferenceLine
           x={bigintToNumber(getMidPrice(marketInfo.indexToken.prices), USD_DECIMALS)}
@@ -222,14 +372,12 @@ export const DepthChart = React.memo(function DepthChart({ marketInfo }: { marke
           stroke="#ffffff"
           opacity={0.6}
           strokeDasharray="2 2"
-          alwaysShow
           ifOverflow="extendDomain"
         />
-        {/* <ReferenceLine label="Flip size" stroke="blue" alwaysShow ifOverflow="extendDomain" /> */}
       </ComposedChart>
     </ResponsiveContainer>
   );
-});
+}
 
 function ChartTooltip({
   active,
@@ -258,12 +406,90 @@ function ChartTooltip({
   );
 }
 
-const renderCustomizedActiveDot = (props: any) => {
-  return <CustomizedActiveDot {...props} />;
+const renderActiveDot = (props: any) => {
+  return <ActiveDot {...props} />;
 };
 
-function CustomizedActiveDot(props: any) {
-  const { cx, cy, dataKey, fill } = props;
+const renderActiveDotSemiTransparent = (props: any) => {
+  return <ActiveDot {...props} opacity={0.5} />;
+};
+
+const renderLeftAreaDot = (props: any) => {
+  return <AreaDot {...props} side="left" />;
+};
+
+const renderRightAreaDot = (props: any) => {
+  return <AreaDot {...props} side="right" />;
+};
+
+const renderLeftLineDot = (props: any) => {
+  return <LineDot {...props} side="left" />;
+};
+
+const renderRightLineDot = (props: any) => {
+  return <LineDot {...props} side="right" />;
+};
+
+function AreaDot(props: {
+  cx: number;
+  cy: number;
+  stroke: string;
+  fill: string;
+  opacity: number;
+  side: "left" | "right";
+}) {
+  const { side, cx, cy, stroke, fill, opacity } = props;
+
+  const { top, height, width } = useOffset();
+
+  if (cy === null) {
+    return null;
+  }
+
+  return (
+    <>
+      <rect
+        x={side === "left" ? 0 : cx}
+        y={cy}
+        width={side === "left" ? cx : width - cx}
+        height={top + height - cy}
+        fill={fill}
+      />
+
+      <path d={`M${cx},${cy}L${cx},${top + height}`} stroke={stroke} strokeWidth={2} opacity={opacity} />
+
+      <path
+        d={`M${side === "left" ? 0 : cx},${cy}L${side === "left" ? cx : width},${cy}`}
+        stroke={stroke}
+        strokeWidth={2}
+        opacity={opacity}
+      />
+    </>
+  );
+}
+
+function LineDot(props: { cx: number; cy: number; stroke: string; opacity: number; side: "left" | "right" }) {
+  const { side, cx, cy, stroke, opacity } = props;
+
+  const { top, height, width } = useOffset();
+
+  if (cy === null) {
+    return null;
+  }
+
+  const path = side === "left" ? `M${0},${cy}L${cx},${cy}` : `M${cx},${cy}L${width},${cy}`;
+
+  return (
+    <>
+      <path d={`M${cx},${cy}L${cx},${top + height}`} stroke={stroke} strokeWidth={2} opacity={opacity} />
+
+      <path d={path} stroke={stroke} strokeWidth={2} opacity={opacity} />
+    </>
+  );
+}
+
+function ActiveDot(props: any) {
+  const { cx, cy, dataKey, fill, opacity } = props;
 
   const { top, height } = useOffset();
 
@@ -273,9 +499,15 @@ function CustomizedActiveDot(props: any) {
 
   return (
     <>
-      <path d={`M${cx},${cy}L${cx},${top + height}`} stroke={fill} strokeDasharray="2 2" key={`dot-${dataKey}`} />;
-      <circle cx={cx} cy={cy} r={4} fill={fill} />
-      <circle cx={cx} cy={cy} r={6} stroke={fill} strokeWidth={1} fill="none" />
+      <path
+        d={`M${cx},${cy}L${cx},${top + height}`}
+        stroke={fill}
+        strokeDasharray="2 2"
+        key={`dot-${dataKey}`}
+        opacity={opacity}
+      />
+      <circle cx={cx} cy={cy} r={4} fill={fill} opacity={opacity} />
+      <circle cx={cx} cy={cy} r={6} stroke={fill} strokeWidth={1} fill="none" opacity={opacity} />
     </>
   );
 }
@@ -295,7 +527,21 @@ function Tick(props: any) {
       verticalAnchor={verticalAnchor}
       fontSize={12}
     >
-      {payload.value}
+      {index === marketPriceIndex ? (payload.value as number).toFixed(2) : payload.value}
     </Text>
+  );
+}
+
+function EdgeTick(props: ReferenceDotProps) {
+  const { cx, cy, fill } = props;
+
+  if (cy === undefined || cy === undefined) {
+    return null;
+  }
+
+  return (
+    <g>
+      <line x1={cx} y1={cy - 8} x2={cx} y2={cy + 8} stroke={fill} strokeWidth={2} strokeLinecap="round" />
+    </g>
   );
 }
