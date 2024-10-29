@@ -1,5 +1,4 @@
 import Loader from "components/Common/Loader";
-import { getIsFlagEnabled } from "config/ab";
 import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";

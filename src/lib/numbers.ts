@@ -539,7 +539,7 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
     throw new Error("formatUsdPrice accept only non-negative bigints");
   }
 
-  const decimals = calculatePriceDecimals(price);
+  const decimals = calculatePriceDecimals(price, undefined, opts.visualMultiplier);
 
   return formatUsd(price, {
     ...opts,

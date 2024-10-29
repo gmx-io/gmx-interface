@@ -199,7 +199,7 @@ function buildFeeder({
           data_status: "streaming",
           isStable: stableTokens.includes(symbolName),
           visualMultiplier,
-          // @ts-ignore
+          // @ts-ignore Untyped field, fixme when updating TradingView
           visible_plots_set: "ohlc",
         } satisfies Partial<SymbolInfo> as unknown as LibrarySymbolInfo;
         setTimeout(() => onSymbolResolvedCallback(symbolInfo));
