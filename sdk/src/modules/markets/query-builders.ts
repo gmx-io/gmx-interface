@@ -11,6 +11,7 @@ import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "prebuilt";
 import { MarketConfigMulticallRequestConfig, MarketValuesMulticallRequestConfig } from "./types";
 import { hashDataMap } from "utils/hash";
 import { getContract } from "configs/contracts";
+import { hashMarketConfigKeys, hashMarketValuesKeys } from "utils/marketKeysAndConfigs";
 
 export function buildClaimableFundingDataRequest({
   marketsAddresses,
@@ -134,12 +135,18 @@ export async function buildMarketsValuesRequest(
       },
     };
 
-    const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
+    let prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
-      throw new Error(
+      console.warn(
         `No pre-built hashed market keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
       );
+
+      if (!marketsData?.[marketAddress]) {
+        throw new Error(`No market data found for the market ${marketAddress}`);
+      }
+
+      prebuiltHashedKeys = hashMarketValuesKeys(marketsData[marketAddress]);
     }
 
     const keys = {
@@ -212,21 +219,29 @@ export async function buildMarketsValuesRequest(
 export async function buildMarketsConfigsRequest(
   chainId: number,
   {
+    marketsData,
     marketsAddresses,
     dataStoreAddress,
   }: {
+    marketsData: MarketsData | undefined;
     marketsAddresses: string[] | undefined;
     dataStoreAddress: string;
   }
 ) {
   const request: MarketConfigMulticallRequestConfig = {};
   for (const marketAddress of marketsAddresses || []) {
-    const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
+    let prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
-      throw new Error(
+      console.warn(
         `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
       );
+
+      if (!marketsData?.[marketAddress]) {
+        throw new Error(`No market data found for the market ${marketAddress}`);
+      }
+
+      prebuiltHashedKeys = hashMarketConfigKeys(marketsData[marketAddress]);
     }
 
     request[`${marketAddress}-dataStore`] = {

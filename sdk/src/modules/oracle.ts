@@ -43,7 +43,7 @@ export class Oracle {
           throw new Error("Invalid markets response");
         }
 
-        return res;
+        return res.markets;
       })
       .catch((e) => {
         // eslint-disable-next-line no-console

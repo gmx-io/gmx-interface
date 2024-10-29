@@ -4,7 +4,7 @@ import { Module } from "../base";
 import GovToken from "abis/GovToken.json";
 
 export class Accounts extends Module {
-  getGovTokenDelegates(account?: string) {
+  get govTokenAddress() {
     let govTokenAddress;
 
     try {
@@ -13,14 +13,18 @@ export class Accounts extends Module {
       govTokenAddress = null;
     }
 
-    if (!govTokenAddress) {
+    return govTokenAddress;
+  }
+
+  getGovTokenDelegates(account?: string) {
+    if (!this.govTokenAddress) {
       return Promise.resolve([]);
     }
 
     return this.sdk
       .executeMulticall({
         govToken: {
-          contractAddress: govTokenAddress,
+          contractAddress: this.govTokenAddress,
           abi: GovToken.abi,
           calls: {
             delegates: {

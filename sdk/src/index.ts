@@ -332,15 +332,6 @@ export class GmxSdk {
       gasPrice = gasPrice + maxPriorityFeePerGas;
     }
 
-    // if (settings.executionFeeBufferBps) {
-    //   const buffer = bigMath.mulDiv(
-    //     gasPrice,
-    //     BigInt(settings.executionFeeBufferBps),
-    //     BASIS_POINTS_DIVISOR_BIGINT
-    //   );
-    //   gasPrice = gasPrice + buffer;
-    // }
-
     const premium = GAS_PRICE_PREMIUM_MAP[this.chainId] ?? 0n;
     const price = gasPrice + premium;
 

@@ -37,7 +37,9 @@ jobs:
           auth-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install Yarn
-        run: npm install --global yarn@3.1.0
+        run: |
+          npm install --global yarn;
+          yarn set version 3.1.0 --yarn-path
 
       - name: Install dependencies
         working-directory: ./sdk

@@ -1,4 +1,4 @@
-import type { GmxSdk } from "index";
+import type { GmxSdk } from "..";
 
 export type SubgraphType = "stats" | "referrals" | "nissohVault" | "syntheticsStats" | "subsquid";
 

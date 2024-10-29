@@ -24,13 +24,6 @@ import {
 } from "./query-builders";
 import { MarketConfig, MarketsInfoResult, MarketsResult, MarketValues } from "./types";
 
-type Market = {
-  marketToken: string;
-  indexToken: string;
-  longToken: string;
-  shortToken: string;
-};
-
 export class Markets extends Module {
   private _marketsData: MarketsResult | undefined;
   async getMarkets(offset = 0n, limit = 100n): Promise<MarketsResult> {
@@ -67,14 +60,16 @@ export class Markets extends Module {
         },
       })
       .then((res) => {
-        return res.data.markets.markets.returnValues.map((market: Market) => {
-          return {
-            marketTokenAddress: market.marketToken,
-            indexTokenAddress: market.indexToken,
-            longTokenAddress: market.longToken,
-            shortTokenAddress: market.shortToken,
-          };
-        });
+        return res.data.markets.markets.returnValues.map(
+          (market: { marketToken: string; indexToken: string; longToken: string; shortToken: string }) => {
+            return {
+              marketTokenAddress: market.marketToken,
+              indexTokenAddress: market.indexToken,
+              longTokenAddress: market.longToken,
+              shortTokenAddress: market.shortToken,
+            };
+          }
+        );
       });
 
     const chainId = this.chainId;
@@ -281,10 +276,17 @@ export class Markets extends Module {
   /**
    * Fetch market configs from the blockchain
    */
-  async getMarketsConfigs({ marketsAddresses }: { marketsAddresses: string[] | undefined }) {
+  async getMarketsConfigs({
+    marketsAddresses,
+    marketsData,
+  }: {
+    marketsAddresses: string[] | undefined;
+    marketsData: MarketsData | undefined;
+  }) {
     const dataStoreAddress = getContract(this.chainId, "DataStore");
 
     const request = await buildMarketsConfigsRequest(this.chainId, {
+      marketsData,
       marketsAddresses,
       dataStoreAddress,
     });
@@ -391,6 +393,7 @@ export class Markets extends Module {
       }),
       this.getMarketsConfigs({
         marketsAddresses,
+        marketsData,
       }),
 
       this.getClaimableFundingData(),
@@ -464,9 +467,11 @@ export class Markets extends Module {
 
     return graphqlFetcher<PositionVolumeInfosResponse>(endpoint, POSITIONS_VOLUME_INFOS_QUERY, variables).then(
       (data) => {
-        return (data?.positionsVolume ?? []).reduce((acc, { market, volume }) => {
-          return { ...acc, [market]: BigInt(volume) };
-        });
+        return data?.positionsVolume.length
+          ? data?.positionsVolume.reduce((acc, { market, volume }) => {
+              return { ...acc, [market]: BigInt(volume) };
+            })
+          : {};
       }
     );
   }
