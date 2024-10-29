@@ -84,13 +84,13 @@ export function useSetOrdersAutoCancelByQueryParams() {
             totalUpdatableOrdersCount,
           }
         );
-
-        emitMetricCounter<SetAutoCloseOrdersAction>({
-          event: "announcement.autoCloseOrders.updateExistingOrders",
-        });
       } else {
         helperToast.success(t`No orders eligble for conversion`);
       }
+
+      emitMetricCounter<SetAutoCloseOrdersAction>({
+        event: "announcement.autoCloseOrders.updateExistingOrders",
+      });
 
       if (history.location.search) {
         history.replace({ search: "" });
