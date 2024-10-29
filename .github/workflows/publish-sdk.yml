@@ -42,7 +42,9 @@ jobs:
 
       - name: Build package
         working-directory: ./sdk
-        run: yarn build
+        run: |
+          yarn prebuild
+          yarn build
 
       - name: Bump version
         working-directory: ./sdk
