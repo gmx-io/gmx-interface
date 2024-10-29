@@ -1,3 +1,5 @@
+import { Abi, Address, encodeFunctionData, PublicClient, withRetry } from "viem";
+
 import {
   GAS_PRICE_BUFFER_MAP,
   GAS_PRICE_PREMIUM_MAP,
@@ -6,9 +8,9 @@ import {
   MAX_PRIORITY_FEE_PER_GAS_MAP,
 } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import { Abi, Address, encodeFunctionData, PublicClient, WalletClient, withRetry } from "viem";
-import { bigMath } from "./bigmath";
+
 import type { GmxSdk } from "../index";
+import { bigMath } from "./bigmath";
 
 export async function getGasPrice(client: PublicClient, chainId: number) {
   let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
@@ -179,7 +181,6 @@ export async function callContract(
       }
     });
 
-    debugger; // eslint-disable-line
     await Promise.all([gasLimitPromise, gasPriceDataPromise]);
 
     return sdk.walletClient.sendTransaction({

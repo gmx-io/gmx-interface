@@ -8,8 +8,61 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 
 import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
 import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "prebuilt";
+import { MarketConfigMulticallRequestConfig, MarketValuesMulticallRequestConfig } from "./types";
 import { hashDataMap } from "utils/hash";
-import { MarketValuesMulticallRequestConfig, MarketConfigMulticallRequestConfig } from "./types";
+import { getContract } from "configs/contracts";
+
+export function buildClaimableFundingDataRequest({
+  marketsAddresses,
+  marketsData,
+  chainId,
+  account,
+}: {
+  marketsAddresses: string[] | undefined;
+  marketsData: MarketsData | undefined;
+  account: string;
+  chainId: number;
+}) {
+  if (!marketsAddresses) {
+    return {};
+  }
+
+  return marketsAddresses.reduce((request, marketAddress) => {
+    const market = getByKey(marketsData, marketAddress);
+
+    if (!market) {
+      return request;
+    }
+
+    const keys = hashDataMap({
+      claimableFundingAmountLong: [
+        ["bytes32", "address", "address", "address"],
+        [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
+      ],
+      claimableFundingAmountShort: [
+        ["bytes32", "address", "address", "address"],
+        [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
+      ],
+    });
+
+    request[marketAddress] = {
+      contractAddress: getContract(chainId, "DataStore"),
+      abi: DataStore.abi,
+      calls: {
+        claimableFundingAmountLong: {
+          methodName: "getUint",
+          params: [keys.claimableFundingAmountLong],
+        },
+        claimableFundingAmountShort: {
+          methodName: "getUint",
+          params: [keys.claimableFundingAmountShort],
+        },
+      },
+    };
+
+    return request;
+  }, {});
+}
 
 export async function buildMarketsValuesRequest(
   chainId: number,
@@ -17,14 +70,12 @@ export async function buildMarketsValuesRequest(
     marketsAddresses,
     marketsData,
     tokensData,
-    account,
     dataStoreAddress,
     syntheticsReaderAddress,
   }: {
     marketsAddresses: string[] | undefined;
     marketsData: MarketsData | undefined;
     tokensData: TokensData | undefined;
-    account?: string;
     dataStoreAddress: string;
     syntheticsReaderAddress: string;
   }
@@ -93,18 +144,6 @@ export async function buildMarketsValuesRequest(
 
     const keys = {
       ...prebuiltHashedKeys,
-      ...(account
-        ? hashDataMap({
-            claimableFundingAmountLong: [
-              ["bytes32", "address", "address", "address"],
-              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
-            ],
-            claimableFundingAmountShort: [
-              ["bytes32", "address", "address", "address"],
-              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
-            ],
-          })
-        : {}),
     };
 
     request[`${marketAddress}-dataStore`] = {
@@ -131,18 +170,6 @@ export async function buildMarketsValuesRequest(
           methodName: "getUint",
           params: [keys.swapImpactPoolAmountShort],
         },
-        claimableFundingAmountLong: account
-          ? {
-              methodName: "getUint",
-              params: [keys.claimableFundingAmountLong],
-            }
-          : undefined,
-        claimableFundingAmountShort: account
-          ? {
-              methodName: "getUint",
-              params: [keys.claimableFundingAmountShort],
-            }
-          : undefined,
         longInterestUsingLongToken: {
           methodName: "getUint",
           params: [keys.longInterestUsingLongToken],

@@ -13,6 +13,7 @@ import { getSwapPathOutputAddresses } from "utils/swapStats";
 import { parseContractPrice } from "utils/tokens";
 import { Address, getAddress } from "viem";
 import { Module } from "../base";
+import { GmxSdk } from "index";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {
@@ -53,7 +54,7 @@ export class Trades extends Module {
     } = p;
 
     const data = await fetchTradeActions({
-      chainId,
+      sdk: this.sdk,
       pageIndex,
       pageSize,
       marketsDirectionsFilter,
@@ -71,7 +72,7 @@ export class Trades extends Module {
 }
 
 export async function fetchTradeActions({
-  chainId,
+  sdk,
   pageIndex,
   pageSize,
   marketsDirectionsFilter = [],
@@ -83,7 +84,7 @@ export async function fetchTradeActions({
   marketsInfoData,
   tokensData,
 }: {
-  chainId: number;
+  sdk: GmxSdk;
   pageIndex: number;
   pageSize: number;
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
@@ -101,7 +102,8 @@ export async function fetchTradeActions({
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
 }): Promise<TradeAction[]> {
-  const endpoint = getSubgraphUrl(chainId, "syntheticsStats");
+  const endpoint = getSubgraphUrl(sdk, "syntheticsStats");
+  const chainId = sdk.chainId;
 
   if (!endpoint) {
     return [];

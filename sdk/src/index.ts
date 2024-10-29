@@ -1,13 +1,3 @@
-import { Markets } from "modules/markets";
-import { Tokens } from "modules/tokens/tokens";
-import { Accounts } from "modules/accounts/accounts";
-import { Orders } from "modules/orders/orders";
-import { Positions } from "modules/positions/positions";
-import { Trades } from "modules/trades/trades";
-
-import type { GmxSdkConfig } from "types/sdk";
-import { MAX_TIMEOUT, Multicall, MulticallRequestConfig } from "./utils/multicall";
-import { Oracle } from "modules/oracle";
 import {
   Abi,
   Address,
@@ -18,11 +8,18 @@ import {
   WalletClient,
   withRetry,
 } from "viem";
-import { BATCH_CONFIGS } from "configs/batch";
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, getChain, MAX_PRIORITY_FEE_PER_GAS_MAP } from "configs/chains";
 
-import DataStore from "abis/DataStore.json";
+import { Accounts } from "modules/accounts/accounts";
+import { Markets } from "modules/markets";
+import { Orders } from "modules/orders/orders";
+import { Positions } from "modules/positions/positions";
+import { Tokens } from "modules/tokens/tokens";
+import { Trades } from "modules/trades/trades";
+import { Oracle } from "modules/oracle";
+
+import { BATCH_CONFIGS } from "configs/batch";
 import { getContract } from "configs/contracts";
+import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, getChain, MAX_PRIORITY_FEE_PER_GAS_MAP } from "configs/chains";
 import {
   decreaseOrderGasLimitKey,
   depositGasLimitKey,
@@ -38,19 +35,25 @@ import {
   swapOrderGasLimitKey,
   withdrawalGasLimitKey,
 } from "configs/dataStore";
-import { GasLimitsConfig } from "types/fees";
+
+import DataStore from "abis/DataStore.json";
+
+import type { GmxSdkConfig } from "types/sdk";
+import type { IncreasePositionAmounts } from "types/amounts";
+import type { GasLimitsConfig } from "types/fees";
+import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
+
 import { bigMath } from "utils/bigmath";
 import { callContract, CallContractOpts } from "utils/callContract";
-import { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
+import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
 } from "utils/fees/executionFee";
-import { IncreasePositionAmounts } from "types/amounts";
-import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
-import { DecreasePositionSwapType } from "types/orders";
+import { getSwapCount } from "utils/trade";
+import { MAX_TIMEOUT, Multicall, MulticallRequestConfig } from "utils/multicall";
 
 export class GmxSdk {
   public readonly markets = new Markets(this);
@@ -238,7 +241,7 @@ export class GmxSdk {
         });
       }
       case "increase": {
-        if (!increaseAmounts || !increaseAmounts.swapPathStats) return null;
+        if (!increaseAmounts) return null;
 
         return estimateExecuteIncreaseOrderGasLimit(gasLimits, {
           swapsCount: increaseAmounts.swapPathStats?.swapPath.length,
@@ -255,31 +258,6 @@ export class GmxSdk {
       }
       case "edit":
         return null;
-    }
-  }
-
-  getTradeboxSwapCount({
-    isSwap,
-    isIncrease,
-    increaseAmounts,
-    decreaseAmounts,
-    swapAmounts,
-  }: {
-    isSwap: boolean;
-    isIncrease: boolean;
-    swapAmounts?: SwapAmounts;
-    decreaseAmounts?: DecreasePositionAmounts;
-    increaseAmounts?: IncreasePositionAmounts;
-  }) {
-    if (isSwap) {
-      if (!swapAmounts) return undefined;
-      return swapAmounts.swapPathStats?.swapPath.length ?? 0;
-    } else if (isIncrease) {
-      if (!increaseAmounts) return undefined;
-      return increaseAmounts.swapPathStats?.swapPath.length ?? 0;
-    } else {
-      if (decreaseAmounts?.decreaseSwapType === undefined) return undefined;
-      return decreaseAmounts.decreaseSwapType !== DecreasePositionSwapType.NoSwap ? 1 : 0;
     }
   }
 
@@ -307,7 +285,7 @@ export class GmxSdk {
 
     if (estimatedGas === null || estimatedGas === undefined) return undefined;
 
-    const swapsCount = this.getTradeboxSwapCount({
+    const swapsCount = getSwapCount({
       isSwap: tradeFeesType === "swap",
       isIncrease: tradeFeesType === "increase",
       increaseAmounts,
@@ -321,7 +299,7 @@ export class GmxSdk {
 
     const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-    return getExecutionFee(this.chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+    return getExecutionFee(this, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
   }
 
   async getGasPrice() {

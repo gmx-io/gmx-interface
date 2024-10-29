@@ -6,6 +6,13 @@ export interface GmxSdkConfig {
   account: string;
   oracleUrl: string;
   rpcUrl: string;
+  subgraph: {
+    stats?: string;
+    referrals?: string;
+    nissohVault?: string;
+    syntheticsStats?: string;
+    subsquid?: string;
+  };
 
   publicClient?: PublicClient;
   walletClient?: WalletClient;

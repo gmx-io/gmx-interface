@@ -167,10 +167,6 @@ export class Orders extends Module {
       throw new Error("Execution fee is not available");
     }
 
-    if (!marketsInfoData || !tokensData) {
-      throw new Error("Tokens data or markets info is not available");
-    }
-
     const { ordersInfoData } = await this.sdk.orders.getOrders({
       marketsInfoData,
       tokensData,
@@ -235,7 +231,7 @@ export class Orders extends Module {
           decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
           orderType: entry.decreaseAmounts.triggerOrderType!,
           referralCode: referralCodeForTxn,
-          executionFee: getExecutionFeeAmountForEntry(entry, this.chainId, gasLimits, tokensData, gasPrice) ?? 0n,
+          executionFee: getExecutionFeeAmountForEntry(this.sdk, entry, gasLimits, tokensData, gasPrice) ?? 0n,
           tokensData,
           txnType: entry.txnType!,
           skipSimulation: isLimit,
@@ -258,7 +254,7 @@ export class Orders extends Module {
         sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
         acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
         triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
-        executionFee: getExecutionFeeAmountForEntry(entry, this.chainId, gasLimits, tokensData, gasPrice) ?? 0n,
+        executionFee: getExecutionFeeAmountForEntry(this.sdk, entry, gasLimits, tokensData, gasPrice) ?? 0n,
         minOutputAmount: 0n,
         txnType: entry.txnType!,
         initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,

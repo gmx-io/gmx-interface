@@ -1,6 +1,6 @@
 {
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
-  "plugins": ["eslint-plugin-local-rules"],
+  "plugins": [],
   "rules": {
     "no-undef": "error",
     "no-console": "warn",
@@ -48,7 +48,6 @@
   "globals": {
     "TradingView": true
   },
-  "settings": {},
   "overrides": [
     {
       // Disable no-undef for TypeScript files as it's already checked by the TypeScript compiler
@@ -58,7 +57,7 @@
       }
     },
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["*.ts"],
       "rules": {
         "local-rules/no-bigint-negation": "error",
         "local-rules/no-logical-bigint": "error"

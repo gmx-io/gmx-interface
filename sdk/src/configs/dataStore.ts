@@ -1,4 +1,4 @@
-import { hashData, hashString } from "../utils/hash";
+import { hashData, hashString } from "utils/hash";
 
 export const POSITION_IMPACT_FACTOR_KEY = hashString("POSITION_IMPACT_FACTOR");
 export const MAX_POSITION_IMPACT_FACTOR_KEY = hashString("MAX_POSITION_IMPACT_FACTOR");

@@ -19,11 +19,37 @@ export type TokensResponse = {
   synthetic: boolean;
 }[];
 
+export type ApiMarket = {
+  marketToken: string;
+  indexToken: string;
+  longToken: string;
+  shortToken: string;
+  isListed: boolean;
+};
+export type MarketsResponse = ApiMarket[];
+
 export class Oracle {
   private url: string;
 
   constructor(public sdk: GmxSdk) {
     this.url = sdk.config.oracleUrl;
+  }
+
+  getMarkets(): Promise<MarketsResponse> {
+    return fetch(buildUrl(this.url!, "/markets"))
+      .then((res) => res.json())
+      .then((res) => {
+        if (!res.markets || !res.markets.length) {
+          throw new Error("Invalid markets response");
+        }
+
+        return res;
+      })
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        throw e;
+      });
   }
 
   getTokens(): Promise<TokensResponse> {

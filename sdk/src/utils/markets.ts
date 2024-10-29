@@ -173,3 +173,13 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
     return marketInfo.shortInterestUsd;
   }
 }
+
+export function getMarketDivisor({
+  longTokenAddress,
+  shortTokenAddress,
+}: {
+  longTokenAddress: string;
+  shortTokenAddress: string;
+}) {
+  return longTokenAddress === shortTokenAddress ? 2n : 1n;
+}

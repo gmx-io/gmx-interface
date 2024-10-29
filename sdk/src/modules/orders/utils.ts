@@ -4,6 +4,7 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
+import type { GmxSdk } from "../../index";
 import { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "modules/trades/trades";
 
 import { GasLimitsConfig } from "types/fees";
@@ -20,7 +21,7 @@ import { getSwapPathOutputAddresses } from "utils/swapStats";
 import { Address, isAddressEqual } from "viem";
 
 export const getOrderExecutionFee = (
-  chainId: number,
+  sdk: GmxSdk,
   swapsCount: number,
   decreasePositionSwapType: DecreasePositionSwapType | undefined,
   gasLimits: GasLimitsConfig | undefined,
@@ -36,12 +37,12 @@ export const getOrderExecutionFee = (
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+  return getExecutionFee(sdk, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 };
 
 export const getExecutionFeeAmountForEntry = (
+  sdk: GmxSdk,
   entry: SidecarSlTpOrderEntry | SidecarLimitOrderEntry,
-  chainId: number,
   gasLimits: GasLimitsConfig,
   tokensData: TokensData,
   gasPrice: bigint | undefined
@@ -52,7 +53,7 @@ export const getExecutionFeeAmountForEntry = (
   let swapsCount = 0;
 
   const executionFee = getOrderExecutionFee(
-    chainId,
+    sdk,
     swapsCount,
     entry.decreaseAmounts?.decreaseSwapType,
     gasLimits,

@@ -130,17 +130,26 @@ export class Tokens extends Module {
       });
   }
 
+  getNativeToken(): TToken {
+    return this.tokensConfig[NATIVE_TOKEN_ADDRESS];
+  }
+
   async getTokensData(): Promise<TokensDataResult> {
     const tokenConfigs = this.tokensConfig;
-    const tokens = await this.oracle.getTokens();
+
+    const [apiTokens, { pricesData, updatedAt: pricesUpdatedAt }] = await Promise.all([
+      this.sdk.oracle.getTokens(),
+      this.getTokenRecentPrices(),
+    ]);
+
+    const nativeToken = this.getNativeToken();
+    const tokens = [nativeToken, ...apiTokens];
 
     const { balancesData } = this.account
       ? await this.getTokensBalances(this.account, tokens)
       : {
           balancesData: {},
         };
-
-    const { pricesData, updatedAt: pricesUpdatedAt } = await this.getTokenRecentPrices();
 
     if (!pricesData) {
       return {

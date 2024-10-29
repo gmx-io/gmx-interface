@@ -1,18 +1,28 @@
-import { getContract } from "configs/contracts";
-import { convertTokenAddress, getToken } from "configs/tokens";
-import { MarketInfo, MarketsData, MarketsInfoData } from "types/markets";
-import { TokensData } from "types/tokens";
-import { getMarketFullName } from "utils/markets";
-import { getByKey } from "utils/objects";
 import { zeroAddress } from "viem";
-import { Module } from "../base";
-import { MarketConfig, MarketsInfoResult, MarketsResult, MarketValues } from "./types";
-import { buildMarketsConfigsRequest, buildMarketsValuesRequest } from "./query-builders";
+
+import type { ApiMarket } from "modules/oracle";
+
+import { getContract } from "configs/contracts";
 import { getSubgraphUrl } from "configs/subgraph";
-import { TIMEZONE_OFFSET_SEC } from "utils/common";
-import graphqlFetcher from "utils/graphqlFetcher";
+import { convertTokenAddress, getToken } from "configs/tokens";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
+
+import { ClaimableFundingData, MarketInfo, MarketsData, MarketsInfoData } from "types/markets";
+import { TokensData } from "types/tokens";
+
+import { TIMEZONE_OFFSET_SEC } from "utils/common";
+import graphqlFetcher from "utils/graphqlFetcher";
+import { getMarketDivisor, getMarketFullName } from "utils/markets";
+import { getByKey } from "utils/objects";
+
+import { Module } from "../base";
+import {
+  buildClaimableFundingDataRequest,
+  buildMarketsConfigsRequest,
+  buildMarketsValuesRequest,
+} from "./query-builders";
+import { MarketConfig, MarketsInfoResult, MarketsResult, MarketValues } from "./types";
 
 type Market = {
   marketToken: string;
@@ -23,13 +33,25 @@ type Market = {
 
 export class Markets extends Module {
   private _marketsData: MarketsResult | undefined;
-  async getMarkets(offset = 0n, limit = 100n) {
+  async getMarkets(offset = 0n, limit = 100n): Promise<MarketsResult> {
     if (this._marketsData) {
       return this._marketsData;
     }
 
     const readerAddress = getContract(this.chainId, "SyntheticsReader");
     const dataStoreAddress = getContract(this.chainId, "DataStore");
+
+    const apiMarkets = await this.sdk.oracle.getMarkets();
+
+    const marketsMap = apiMarkets.reduce(
+      (acc, market) => {
+        return {
+          ...acc,
+          [market.marketToken]: market,
+        };
+      },
+      {} as { [marketToken: string]: ApiMarket }
+    );
 
     const markets = await this.sdk
       .executeMulticall({
@@ -60,6 +82,10 @@ export class Markets extends Module {
     const marketsResult = markets.reduce(
       (acc: MarketsResult, market) => {
         try {
+          if (!marketsMap[market.marketTokenAddress]?.isListed) {
+            return acc;
+          }
+
           const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
           const longToken = getToken(chainId, market.longTokenAddress);
           const shortToken = getToken(chainId, market.shortTokenAddress);
@@ -91,8 +117,45 @@ export class Markets extends Module {
     return marketsResult;
   }
 
+  async getClaimableFundingData() {
+    const chainId = this.chainId;
+    const account = this.account;
+
+    const { marketsAddresses, marketsData } = await this.getMarkets();
+
+    return this.sdk
+      .executeMulticall(
+        buildClaimableFundingDataRequest({
+          chainId,
+          account,
+          marketsAddresses,
+          marketsData,
+        })
+      )
+      .then((result) => {
+        return Object.entries(result.data).reduce(
+          (claimableFundingData, [marketAddress, callsResult]: [string, any]) => {
+            const market = getByKey(marketsData, marketAddress);
+
+            if (!market) {
+              return claimableFundingData;
+            }
+
+            const marketDivisor = getMarketDivisor(market);
+
+            claimableFundingData[marketAddress] = {
+              claimableFundingAmountLong: callsResult.claimableFundingAmountLong.returnValues[0] / marketDivisor,
+              claimableFundingAmountShort: callsResult.claimableFundingAmountShort.returnValues[0] / marketDivisor,
+            };
+
+            return claimableFundingData;
+          },
+          {} as ClaimableFundingData
+        );
+      });
+  }
+
   async getMarketsValues({
-    account,
     marketsAddresses,
     marketsData,
     tokensData,
@@ -109,7 +172,6 @@ export class Markets extends Module {
       marketsAddresses,
       marketsData,
       tokensData,
-      account,
       dataStoreAddress,
       syntheticsReaderAddress,
     });
@@ -193,14 +255,6 @@ export class Markets extends Module {
             pnlShortMin: poolValueInfoMin.shortPnl,
             netPnlMax: poolValueInfoMax.netPnl,
             netPnlMin: poolValueInfoMin.netPnl,
-
-            claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong
-              ? dataStoreValues.claimableFundingAmountLong?.returnValues[0] / marketDivisor
-              : undefined,
-
-            claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort
-              ? dataStoreValues.claimableFundingAmountShort?.returnValues[0] / marketDivisor
-              : undefined,
 
             borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
             borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
@@ -328,18 +382,21 @@ export class Markets extends Module {
       isBalancesLoaded,
     } = await this.sdk.tokens.getTokensData();
 
-    const marketsValues = await this.getMarketsValues({
-      account: this.sdk.config.account,
-      marketsAddresses,
-      marketsData,
-      tokensData,
-    });
+    const [marketsValues, marketsConfigs, claimableFundingData] = await Promise.all([
+      this.getMarketsValues({
+        account: this.sdk.config.account,
+        marketsAddresses,
+        marketsData,
+        tokensData,
+      }),
+      this.getMarketsConfigs({
+        marketsAddresses,
+      }),
 
-    const marketsConfigs = await this.getMarketsConfigs({
-      marketsAddresses,
-    });
+      this.getClaimableFundingData(),
+    ]);
 
-    if (!marketsValues || !marketsConfigs || !marketsAddresses) {
+    if (!marketsValues || !marketsConfigs || !marketsAddresses || !claimableFundingData) {
       return {
         marketsInfoData: {},
         tokensData,
@@ -369,6 +426,7 @@ export class Markets extends Module {
       const fullMarketInfo: MarketInfo = {
         ...marketValues,
         ...marketConfig,
+        ...claimableFundingData,
         ...market,
         longToken,
         shortToken,
@@ -392,7 +450,7 @@ export class Markets extends Module {
   async getDailyVolumes() {
     const { marketsAddresses } = await this.getMarkets();
 
-    const endpoint = getSubgraphUrl(this.chainId, "subsquid");
+    const endpoint = getSubgraphUrl(this.sdk, "subsquid");
 
     if (!marketsAddresses || !endpoint) {
       return;

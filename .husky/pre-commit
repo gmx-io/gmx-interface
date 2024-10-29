@@ -5,3 +5,7 @@ yarn lingui:generate
 yarn lint-staged
 yarn test:ci
 yarn tscheck
+
+cd "$(dirname "$0")/../sdk"
+yarn lint-staged
+yarn tscheck

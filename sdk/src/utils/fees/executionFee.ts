@@ -6,9 +6,10 @@ import { DecreasePositionSwapType } from "types/orders";
 import { TokensData } from "types/tokens";
 import { applyFactor, expandDecimals } from "utils/numbers";
 import { convertToUsd, getTokenData } from "utils/tokens";
+import type { GmxSdk } from "../../index";
 
 export function getExecutionFee(
-  chainId: number,
+  sdk: GmxSdk,
   gasLimits: GasLimitsConfig,
   tokensData: TokensData,
   estimatedGasLimit: bigint,
@@ -16,6 +17,7 @@ export function getExecutionFee(
   oraclePriceCount: bigint
 ): ExecutionFee | undefined {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
+  const chainId = sdk.chainId;
 
   if (!nativeToken) return undefined;
 
