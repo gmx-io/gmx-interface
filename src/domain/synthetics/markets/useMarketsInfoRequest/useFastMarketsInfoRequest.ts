@@ -10,7 +10,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
     data: fastMarketInfoData,
     error,
     isLoading,
-  } = useSWR<FastMarketInfoData>([chainId, "useFastMarketsInfoRequest"], {
+  } = useSWR<FastMarketInfoData>(null, {
     refreshInterval: undefined,
     fetcher: async () => {
       try {
@@ -49,11 +49,6 @@ export function useFastMarketsInfoRequest(chainId: number) {
                 maxOpenInterestLong
                 maxOpenInterestShort
 
-                borrowingFactorLong
-                borrowingFactorShort
-                borrowingExponentFactorLong
-                borrowingExponentFactorShort
-
                 fundingFactor
                 fundingExponentFactor
                 fundingIncreaseFactorPerSecond
@@ -79,10 +74,10 @@ export function useFastMarketsInfoRequest(chainId: number) {
                 maxPnlFactorForTradersLong
                 maxPnlFactorForTradersShort
 
-                longInterestUsd
-                shortInterestUsd
-                longInterestInTokens
-                shortInterestInTokens
+                longOpenInterestUsd
+                shortOpenInterestUsd
+                longOpenInterestInTokens
+                shortOpenInterestInTokens
 
                 positionFeeFactorForPositiveImpact
                 positionFeeFactorForNegativeImpact
@@ -156,10 +151,10 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxOpenInterestLong: BigInt(mInfo.maxOpenInterestLong),
             maxOpenInterestShort: BigInt(mInfo.maxOpenInterestShort),
 
-            borrowingFactorLong: BigInt(mInfo.borrowingFactorLong),
-            borrowingFactorShort: BigInt(mInfo.borrowingFactorShort),
-            borrowingExponentFactorLong: BigInt(mInfo.borrowingExponentFactorLong),
-            borrowingExponentFactorShort: BigInt(mInfo.borrowingExponentFactorShort),
+            borrowingFactorLong: 0n,
+            borrowingFactorShort: 0n,
+            borrowingExponentFactorLong: 0n,
+            borrowingExponentFactorShort: 0n,
 
             fundingFactor: BigInt(mInfo.fundingFactor),
             fundingExponentFactor: BigInt(mInfo.fundingExponentFactor),
@@ -186,10 +181,10 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxPnlFactorForTradersLong: BigInt(mInfo.maxPnlFactorForTradersLong),
             maxPnlFactorForTradersShort: BigInt(mInfo.maxPnlFactorForTradersShort),
 
-            longInterestUsd: BigInt(mInfo.longInterestUsd),
-            shortInterestUsd: BigInt(mInfo.shortInterestUsd),
-            longInterestInTokens: BigInt(mInfo.longInterestInTokens),
-            shortInterestInTokens: BigInt(mInfo.shortInterestInTokens),
+            longInterestUsd: BigInt(mInfo.longOpenInterestUsd),
+            shortInterestUsd: BigInt(mInfo.shortOpenInterestUsd),
+            longInterestInTokens: BigInt(mInfo.longOpenInterestInTokens),
+            shortInterestInTokens: BigInt(mInfo.shortOpenInterestInTokens),
 
             positionFeeFactorForPositiveImpact: BigInt(mInfo.positionFeeFactorForPositiveImpact),
             positionFeeFactorForNegativeImpact: BigInt(mInfo.positionFeeFactorForNegativeImpact),
