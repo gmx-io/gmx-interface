@@ -34,7 +34,7 @@ export const homeEventsData: EventData[] = [];
 export const appEventsData: EventData[] = [
   {
     id: "auto-cancel",
-    title: "TP/SL Orders Automatically Cancelled with Position Closure",
+    title: "TP/SL orders automatically cancelled with position closure",
     isActive: true,
     startDate: "01 Oct 2024, 00:00",
     endDate: "15 Nov 2024, 00:00",
