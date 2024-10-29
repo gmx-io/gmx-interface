@@ -49,14 +49,17 @@ jobs:
       - name: Bump version
         working-directory: ./sdk
         run: |
+          yarn plugin import version
+
           if [ "${{ github.event.inputs.version_type }}" == "custom" ]; then
             if [ -z "${{ github.event.inputs.custom_version }}" ]; then
               echo "Custom version not specified"
               exit 1
             fi
-            yarn version --new-version "${{ github.event.inputs.custom_version }}" --no-git-tag-version
+            yarn version "${{ github.event.inputs.custom_version }}" --no-git-tag-version
           else
-            yarn version --${{ github.event.inputs.version_type }} --no-git-tag-version
+            yarn version ${{ github.event.inputs.version_type }} --no-git-tag-version
+          fi
 
       - name: Commit version bump
         working-directory: ./sdk
