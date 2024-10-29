@@ -7428,6 +7428,10 @@ msgstr ""
 msgid "Net Rate"
 msgstr "순 수수료율"
 
+#: src/domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams.ts
+msgid "No orders eligble for conversion"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"

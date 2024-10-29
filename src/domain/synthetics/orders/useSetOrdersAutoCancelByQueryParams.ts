@@ -13,6 +13,8 @@ import { usePendingTxns } from "lib/usePendingTxns";
 import { PositionOrderInfo } from "domain/synthetics/orders";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { SetAutoCloseOrdersAction } from "lib/metrics";
+import { t } from "@lingui/macro";
+import { helperToast } from "lib/helperToast";
 
 import useSearchParams from "lib/useSearchParams";
 
@@ -86,6 +88,8 @@ export function useSetOrdersAutoCancelByQueryParams() {
         emitMetricCounter<SetAutoCloseOrdersAction>({
           event: "announcement.autoCloseOrders.updateExistingOrders",
         });
+      } else {
+        helperToast.success(t`No orders eligble for conversion`);
       }
 
       if (history.location.search) {
