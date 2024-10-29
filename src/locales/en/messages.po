@@ -7435,8 +7435,8 @@ msgid "Net Rate"
 msgstr "Net Rate"
 
 #: src/domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams.ts
-msgid "No orders eligble for conversion"
-msgstr "No orders eligble for conversion"
+#~ msgid "No orders eligble for conversion"
+#~ msgstr "No orders eligble for conversion"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx

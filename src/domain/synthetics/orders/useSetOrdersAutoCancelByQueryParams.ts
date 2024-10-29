@@ -13,7 +13,6 @@ import { usePendingTxns } from "lib/usePendingTxns";
 import { PositionOrderInfo } from "domain/synthetics/orders";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { SetAutoCloseOrdersAction } from "lib/metrics";
-import { t } from "@lingui/macro";
 import { helperToast } from "lib/helperToast";
 
 import useSearchParams from "lib/useSearchParams";
@@ -36,7 +35,12 @@ export function useSetOrdersAutoCancelByQueryParams() {
 
   useEffect(
     function setOrdersAutoCloseByQueryParams() {
-      if (!setOrdersAutoCancel || !signer || maxAutoCancelOrders === undefined) return;
+      if (!setOrdersAutoCancel || maxAutoCancelOrders === undefined) return;
+
+      if (!signer) {
+        helperToast.info("Connect your wallet to proceed with orders conversion.");
+        return;
+      }
 
       const allowedAutoCancelOrders = Number(maxAutoCancelOrders) - 1;
 
@@ -85,7 +89,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
           }
         );
       } else {
-        helperToast.success(t`No orders eligble for conversion`);
+        helperToast.success("No orders eligble for conversion.");
       }
 
       emitMetricCounter<SetAutoCloseOrdersAction>({
