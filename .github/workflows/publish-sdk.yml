@@ -1,0 +1,76 @@
+name: Publish SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: "Version increment type"
+        required: false
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - custom
+      custom_version:
+        description: "Custom version (if version_type is custom)"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for accurate versioning
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org/"
+          always-auth: true
+          auth-token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install Yarn
+        run: npm install --global yarn@3.1.0
+
+      - name: Install dependencies
+        working-directory: ./sdk
+        run: yarn install --frozen-lockfile
+
+      - name: Build package
+        working-directory: ./sdk
+        run: yarn build
+
+      - name: Bump version
+        working-directory: ./sdk
+        run: |
+          if [ "${{ github.event.inputs.version_type }}" == "custom" ]; then
+            if [ -z "${{ github.event.inputs.custom_version }}" ]; then
+              echo "Custom version not specified"
+              exit 1
+            fi
+            yarn version --new-version "${{ github.event.inputs.custom_version }}" --no-git-tag-version
+          else
+            yarn version --${{ github.event.inputs.version_type }} --no-git-tag-version
+
+      - name: Commit version bump
+        working-directory: ./sdk
+        run: |
+          git config user.name "GMX Release Bot"
+          git config user.email "release-bot@gmx.io"
+          git add package.json
+          git commit -m "Bump SDK version to $(jq -r .version package.json)"
+
+      - name: Publish package
+        working-directory: ./sdk
+        run: yarn publish --non-interactive
+
+      - name: Push changes
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
