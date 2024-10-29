@@ -38,7 +38,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
       if (!setOrdersAutoCancel || maxAutoCancelOrders === undefined) return;
 
       if (!signer) {
-        helperToast.info("Connect your wallet to proceed with orders conversion.");
+        helperToast.error("Connect your wallet to proceed with orders conversion.");
         return;
       }
 
