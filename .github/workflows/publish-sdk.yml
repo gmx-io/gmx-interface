@@ -35,6 +35,7 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
           always-auth: true
           auth-token: ${{ secrets.NPM_TOKEN }}
+          cache: "yarn"
 
       - name: Install dependencies
         working-directory: ./sdk
@@ -70,6 +71,8 @@ jobs:
       - name: Publish package
         working-directory: ./sdk
         run: yarn npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push changes
         run: |
