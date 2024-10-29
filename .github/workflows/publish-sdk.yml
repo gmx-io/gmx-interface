@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for accurate versioning
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -35,11 +35,6 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
           always-auth: true
           auth-token: ${{ secrets.NPM_TOKEN }}
-
-      - name: Install Yarn
-        run: |
-          npm install --global yarn;
-          yarn set version 3.1.0 --yarn-path
 
       - name: Install dependencies
         working-directory: ./sdk

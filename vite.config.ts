@@ -60,7 +60,7 @@ export default defineConfig({
   test: {
     environment: "happy-dom",
     globalSetup: "./vitest.global-setup.js",
-    exclude: ["./autotests", "node_modules"],
+    exclude: ["./autotests", "node_modules", "./sdk"],
     setupFiles: ["@vitest/web-worker"],
   },
 });
