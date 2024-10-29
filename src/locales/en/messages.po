@@ -150,6 +150,10 @@ msgstr "Close order"
 msgid "Order submitted!"
 msgstr "Order submitted!"
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Updating {updateOrdersCount} TP/SL order(s)"
+msgstr "Updating {updateOrdersCount} TP/SL order(s)"
+
 #: src/pages/Dashboard/WeightText.tsx
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
@@ -309,6 +313,10 @@ msgstr "Deposit error."
 #: src/pages/Exchange/Exchange.tsx
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "{updateOrdersCount} TP/SL order(s) updated"
+msgstr "{updateOrdersCount} TP/SL order(s) updated"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Pending {stakingTokenSymbol} approval"
@@ -480,6 +488,10 @@ msgstr "Max Capacity"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "Setting auto-cancel order(s)"
+#~ msgstr "Setting auto-cancel order(s)"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
@@ -681,6 +693,10 @@ msgstr "How can we address your concerns and improve your experience?"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value locked takes into account:"
 msgstr "Total value locked takes into account:"
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+#~ msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+#~ msgstr "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -1117,6 +1133,10 @@ msgstr "Total value of tokens in the GLP pools."
 msgid "Generating and activating Subaccount"
 msgstr "Generating and activating Subaccount"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+msgstr "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
 msgstr "Select pool"
@@ -1403,6 +1423,10 @@ msgstr "Select Positions"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Failed to update order(s)"
+msgstr "Failed to update order(s)"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -2481,6 +2505,10 @@ msgstr "Invalid price, see warning"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "You will be short {indexSymbol} only from your short position."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Auto-Cancel TP/SL"
+msgstr "Auto-Cancel TP/SL"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
@@ -3597,6 +3625,10 @@ msgstr "You will be short {indexSymbol} from your short position, while being lo
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "Auto-cancel order(s) set"
+#~ msgstr "Auto-cancel order(s) set"
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3883,6 +3915,10 @@ msgstr "You are leaving GMX.io and will be redirected to a third party, independ
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
 msgstr "Accrued Borrow Fee"
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "Read more."
+msgstr "Read more."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
@@ -4823,6 +4859,10 @@ msgstr "Winners:"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "When closing the position, you can select which token you would like to receive the profits in."
 
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+msgstr "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr "Top PnL (%)"
@@ -5126,6 +5166,10 @@ msgstr "The network Fees are very high currently, which may be due to a temporar
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
 msgstr "Current {0} long"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "{0} orders were not updated as max order limit reached"
+msgstr "{0} orders were not updated as max order limit reached"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -5894,6 +5938,10 @@ msgstr "Accept terms to enable orders"
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol analytics"
 msgstr "Protocol analytics"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "{updateOrdersCount} orders were not updated as max order limit reached"
+#~ msgstr "{updateOrdersCount} orders were not updated as max order limit reached"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -7386,6 +7434,10 @@ msgstr "Expected Available Actions"
 msgid "Net Rate"
 msgstr "Net Rate"
 
+#: src/domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams.ts
+#~ msgid "No orders eligble for conversion"
+#~ msgstr "No orders eligble for conversion"
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
@@ -8013,6 +8065,10 @@ msgstr "Price conditions are met"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
 msgstr "Unstake GMX"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "Failed to set auto-cancel order(s)"
+#~ msgstr "Failed to set auto-cancel order(s)"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"

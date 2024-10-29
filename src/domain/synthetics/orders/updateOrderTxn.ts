@@ -16,6 +16,7 @@ export type UpdateOrderParams = {
   triggerPrice: bigint;
   acceptablePrice: bigint;
   minOutputAmount: bigint;
+  autoCancel: boolean;
   // used to top-up execution fee for frozen orders
   executionFee?: bigint;
   setPendingTxns: (txns: any) => void;
@@ -36,6 +37,7 @@ export function updateOrderTxn(
     executionFee,
     setPendingTxns,
     indexToken,
+    autoCancel,
   } = p;
 
   const router = subaccount
@@ -52,6 +54,7 @@ export function updateOrderTxn(
     acceptablePrice,
     triggerPrice,
     minOutputAmount,
+    autoCancel,
   });
 
   return callContract(chainId, router, "multicall", [encodedPayload], {
@@ -75,6 +78,7 @@ export function createUpdateEncodedPayload({
   acceptablePrice,
   triggerPrice,
   minOutputAmount,
+  autoCancel,
 }: {
   chainId: number;
   router: ethers.Contract;
@@ -85,6 +89,7 @@ export function createUpdateEncodedPayload({
   acceptablePrice: bigint;
   triggerPrice: bigint;
   minOutputAmount: bigint;
+  autoCancel: boolean;
 }) {
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
@@ -101,7 +106,7 @@ export function createUpdateEncodedPayload({
       convertToContractPrice(acceptablePrice, indexToken?.decimals || 0),
       convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
       minOutputAmount,
-      false, // autoCancel
+      autoCancel,
     ],
   });
 
