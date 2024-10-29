@@ -68,9 +68,11 @@ jobs:
           git add package.json
           git commit -m "Bump SDK version to $(jq -r .version package.json)"
 
-      - name: Publish package
+      - run: |
+          yarn --version
+          echo "npmAuthToken: "${{ secrets.NPM_TOKEN}}" >> .yarnrc.yml"
+          yarn npm publish --access public
         working-directory: ./sdk
-        run: yarn npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
