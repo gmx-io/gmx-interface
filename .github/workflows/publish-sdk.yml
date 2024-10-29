@@ -69,7 +69,7 @@ jobs:
 
       - name: Publish package
         working-directory: ./sdk
-        run: yarn publish --non-interactive
+        run: yarn npm publish
 
       - name: Push changes
         run: |
