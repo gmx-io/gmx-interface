@@ -38,6 +38,9 @@ import { CompositionTableGm } from "./components/CompositionTable";
 import { MarketDescription } from "./components/MarketDescription";
 import { useMarketMintableTokens } from "./hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "./hooks/useMarketSellableToken";
+import { useGlvGmMarketsWithComposition } from "./hooks/useMarketGlvGmMarketsCompositions";
+
+const MIN_MARKETS_FOR_SCROLL = 10;
 
 import "./MarketStats.scss";
 
@@ -310,7 +313,11 @@ export function MarketStatsWithComposition(p: Props) {
     isGlv,
   ]);
 
+  const marketsComposition = useGlvGmMarketsWithComposition(true, marketInfo && getGlvOrMarketAddress(marketInfo));
   const canFitCompositionOnRow = useMedia("(min-width: 1200px)");
+  const largeMarketsTableEntries = useMemo(() => {
+    return marketsComposition.length >= MIN_MARKETS_FOR_SCROLL;
+  }, [marketsComposition]);
 
   return (
     <div
@@ -478,17 +485,25 @@ export function MarketStatsWithComposition(p: Props) {
         className={cx("flex-grow", {
           "w-[100%] border-l border-l-slate-700": canFitCompositionOnRow,
           "mt-20 border-t border-t-slate-700": !canFitCompositionOnRow,
+          "min-h-[498px]": largeMarketsTableEntries && canFitCompositionOnRow,
         })}
       >
-        <div className="px-16 pt-16">
-          <p>Composition</p>
-          <CompositionBar
-            marketInfo={marketInfo}
-            marketsInfoData={marketsInfoData}
-            marketTokensData={marketTokensData}
-          />
+        <div className="flex size-full flex-col">
+          <div className="px-16 pt-16">
+            <p>Composition</p>
+            <CompositionBar
+              marketInfo={marketInfo}
+              marketsInfoData={marketsInfoData}
+              marketTokensData={marketTokensData}
+            />
+          </div>
+
+          <div className="relative flex-grow overflow-y-scroll">
+            <div className={cx({ absolute: canFitCompositionOnRow })}>
+              <CompositionTableGm marketInfo={marketInfo} />
+            </div>
+          </div>
         </div>
-        <CompositionTableGm marketInfo={marketInfo} />
       </div>
     </div>
   );
