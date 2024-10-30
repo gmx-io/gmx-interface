@@ -65,7 +65,7 @@ export const appEventsData: EventData[] = [
   {
     id: "ape-sui-sei-markets-arbitrum",
     title: "APE, SUI, and SEI markets added on Arbitrum",
-    isActive: true,
+    isActive: false,
     startDate: "24 Oct 2024, 00:00",
     endDate: "7 Nov 2024, 00:00",
     bodyText: (
@@ -81,7 +81,7 @@ export const appEventsData: EventData[] = [
   {
     id: "pol-aave-pepe-uni-markets-arbitrum",
     title: "POL, AAVE, PEPE, and UNI markets added on Arbitrum",
-    isActive: true,
+    isActive: false,
     startDate: "17 Oct 2024, 00:00",
     endDate: "31 Oct 2024, 00:00",
     bodyText: (
