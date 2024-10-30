@@ -17,13 +17,14 @@ export function useTradeboxTPSLReset(setTriggerConsent: (value: boolean) => void
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketAddress = useSelector(selectTradeboxMarketAddress);
   const collateralToken = useSelector(selectTradeboxCollateralTokenAddress);
-  const { isLong } = useSelector(selectTradeboxTradeFlags);
+  const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
 
   const previouseFromTokenAddress = usePrevious(fromTokenAddress);
   const previousToTokenAddress = usePrevious(toTokenAddress);
   const previousIsLong = usePrevious(isLong);
   const previousMarketAddress = usePrevious(marketAddress);
   const previousCollateralToken = usePrevious(collateralToken);
+  const previousIsIncrease = usePrevious(isIncrease);
 
   const { reset } = useSidecarOrders();
 
@@ -32,7 +33,8 @@ export function useTradeboxTPSLReset(setTriggerConsent: (value: boolean) => void
     toTokenAddress !== previousToTokenAddress ||
     isLong !== previousIsLong ||
     marketAddress !== previousMarketAddress ||
-    collateralToken !== previousCollateralToken;
+    collateralToken !== previousCollateralToken ||
+    isIncrease !== previousIsIncrease;
 
   useEffect(() => {
     if (shouldResetLimitOrTPSL) {

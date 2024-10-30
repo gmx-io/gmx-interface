@@ -27,6 +27,7 @@ interface Props {
    * error message to show in the tooltip when disableCollapseOnError=true
    */
   errorMessage?: ReactNode;
+  className?: string;
 }
 
 export function ExpandableRow({
@@ -39,6 +40,7 @@ export function ExpandableRow({
   autoExpandOnError = true,
   hideExpand = false,
   errorMessage,
+  className,
 }: Props) {
   const previousHasError = usePrevious(hasError);
 
@@ -63,11 +65,14 @@ export function ExpandableRow({
   const disabled = disableCollapseOnError && hasError;
 
   return (
-    <>
+    <div
+      className={cx("-mx-15 px-15 py-[1.05rem]", className, {
+        "bg-slate-900": open && !hideExpand,
+      })}
+    >
       {!hideExpand && (
         <ExchangeInfo.Row
-          className={cx("group !items-center hover:text-blue-300", {
-            "!mb-12": open,
+          className={cx("group !items-center hover:text-blue-300", open ? "!mb-12" : "!mb-0", {
             "cursor-not-allowed": disabled,
           })}
           onClick={disabled ? undefined : handleOnClick}
@@ -88,6 +93,6 @@ export function ExpandableRow({
       >
         {children}
       </div>
-    </>
+    </div>
   );
 }

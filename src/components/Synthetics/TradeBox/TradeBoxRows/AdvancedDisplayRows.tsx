@@ -143,6 +143,8 @@ function LeverageInfoRows() {
       </>
     );
   }
+
+  return null;
 }
 
 function ExistingPositionInfoRows() {
@@ -204,7 +206,7 @@ function ExistingPositionInfoRows() {
   );
 }
 
-export function TradeBoxAdvancedGroups() {
+export function TradeBoxAdvancedGroups({ className }: { className?: string }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
@@ -236,13 +238,18 @@ export function TradeBoxAdvancedGroups() {
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
+      className={className}
     >
-      <AdvancedDisplayRows />
-      <div className="App-card-divider" />
-      <LeverageInfoRows />
-      <EntryPriceRow />
-      <ExistingPositionInfoRows />
-      {!isSwap && <div className="App-card-divider" />}
+      <ExchangeInfo dividerClassName="App-card-divider">
+        <ExchangeInfo.Group>
+          <AdvancedDisplayRows />
+        </ExchangeInfo.Group>
+        <ExchangeInfo.Group>
+          <LeverageInfoRows />
+          <EntryPriceRow />
+          <ExistingPositionInfoRows />
+        </ExchangeInfo.Group>
+      </ExchangeInfo>
     </ExpandableRow>
   );
 }
