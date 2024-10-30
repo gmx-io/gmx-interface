@@ -778,7 +778,7 @@ function CompoundModal(props: {
   signer: UncheckedJsonRpcSigner | undefined;
   chainId: number;
   setPendingTxns: SetPendingTransactions;
-  totalVesterRewards: bigint | undefined;
+  totalGmxRewards: bigint | undefined;
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
   isNativeTokenToClaim?: boolean;
@@ -790,7 +790,7 @@ function CompoundModal(props: {
     signer,
     chainId,
     setPendingTxns,
-    totalVesterRewards,
+    totalGmxRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
     isNativeTokenToClaim,
@@ -831,18 +831,18 @@ function CompoundModal(props: {
 
   const [isApproving, setIsApproving] = useState(false);
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData: gmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: stakedGmxTrackerAddress,
     tokenAddresses: [gmxAddress],
   });
 
-  const tokenAllowance = tokensAllowanceData?.[gmxAddress];
+  const gmxTokenAllowance = gmxAllowanceData?.[gmxAddress];
 
   const needApproval =
     shouldStakeGmx &&
-    totalVesterRewards !== undefined &&
-    ((tokenAllowance !== undefined && totalVesterRewards > tokenAllowance) ||
-      (totalVesterRewards > 0n && tokenAllowance === undefined));
+    totalGmxRewards !== undefined &&
+    ((gmxTokenAllowance !== undefined && totalGmxRewards > gmxTokenAllowance) ||
+      (totalGmxRewards > 0n && gmxTokenAllowance === undefined));
 
   const isPrimaryEnabled = () => {
     return !isCompounding && !isApproving && !needApproval && !isCompounding && !isUndelegatedGovToken;
@@ -1804,7 +1804,7 @@ export default function StakeV2() {
         isVisible={isCompoundModalVisible}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
-        totalVesterRewards={processedData?.totalVesterRewards}
+        totalGmxRewards={processedData?.totalGmxRewards}
         wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
@@ -2119,7 +2119,7 @@ export default function StakeV2() {
                       <StatsTooltipRow
                         label={
                           <>
-                            {t`GMX Staked Rewards`}
+                            {t`GMX Staked Rewards`}:
                             <div className="mx-4 inline" />
                           </>
                         }
@@ -2134,7 +2134,7 @@ export default function StakeV2() {
                       <StatsTooltipRow
                         label={
                           <>
-                            {t`Vested Claimable GMX`}
+                            {t`Vested Claimable GMX`}:
                             <div className="mx-4 inline" />
                           </>
                         }
