@@ -7,7 +7,15 @@ import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/u
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
 import { bigMath } from "lib/bigmath";
-import { bigintToNumber, expandDecimals, numberWithCommas } from "lib/numbers";
+import {
+  bigintToNumber,
+  calculatePriceDecimals,
+  expandDecimals,
+  formatAmount,
+  numberToBigint,
+  numberWithCommas,
+} from "lib/numbers";
+import { useState } from "react";
 import {
   Area,
   CartesianGrid,
@@ -75,11 +83,14 @@ export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
   const leftMax = bigMath.max(marketInfo.longInterestUsd, shortLiquidity);
   const leftMin = bigMath.min(marketInfo.longInterestUsd, shortLiquidity);
 
-  const rightInc = (rightMax - DOLLAR) / 30n;
-  const leftInc = (leftMax - DOLLAR) / 30n;
+  const rightInc = (rightMax - DOLLAR) / 60n;
+  const leftInc = (leftMax - DOLLAR) / 60n;
 
   let leftMinExecutionPrice = 0;
   let rightMinExecutionPrice = 0;
+
+  let leftMaxExecutionPriceBigInt = 0n;
+  let rightMaxExecutionPriceBigInt = 0n;
 
   // open long
   for (let i = DOLLAR; i < rightMax; i += rightInc) {
@@ -104,6 +115,8 @@ export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
         longDecreaseXorShortIncreaseSize: null,
       });
 
+      rightMaxExecutionPriceBigInt = executionPrice;
+
       break;
     }
 
@@ -117,7 +130,7 @@ export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
       longDecreaseXorShortIncreaseSize: null,
     });
 
-    if (i + rightInc > rightMin) {
+    if (i + rightInc > rightMin && i < rightMin) {
       const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, { fallbackToZero: true });
 
       const executionPrice = getNextPositionExecutionPrice({
@@ -151,6 +164,8 @@ export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
         sizeDeltaUsd: rightMax,
         triggerPrice: marketInfo.indexToken.prices.maxPrice,
       })!;
+
+      rightMaxExecutionPriceBigInt = executionPrice;
 
       data.push({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
@@ -186,6 +201,8 @@ export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
         longIncreaseXorShortDecreaseSize: null,
         longDecreaseXorShortIncreaseSize: Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
       });
+
+      leftMaxExecutionPriceBigInt = executionPrice;
 
       break;
     }
@@ -232,6 +249,8 @@ export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
         triggerPrice: marketInfo.indexToken.prices.minPrice,
       })!;
 
+      leftMaxExecutionPriceBigInt = executionPrice;
+
       data.unshift({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
         longDecreaseAndShortIncreaseSize: leftMax > leftMin ? null : Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
@@ -246,37 +265,66 @@ export function DepthChart({ marketInfo }: { marketInfo: MarketInfo }) {
 
   const isZeroPriceImpact = data.length === 2;
 
-  const minPrice = bigintToNumber(marketInfo.indexToken.prices.minPrice, USD_DECIMALS);
-  const midPrice = bigintToNumber(getMidPrice(marketInfo.indexToken.prices), USD_DECIMALS);
-  const maxPrice = bigintToNumber(marketInfo.indexToken.prices.maxPrice, USD_DECIMALS);
+  const minPriceBigInt = marketInfo.indexToken.prices.minPrice;
+  const midPriceBigInt = getMidPrice(marketInfo.indexToken.prices);
+  const maxPriceBigInt = marketInfo.indexToken.prices.maxPrice;
+
+  const minPrice = bigintToNumber(minPriceBigInt, USD_DECIMALS);
+  const midPrice = bigintToNumber(midPriceBigInt, USD_DECIMALS);
+  const maxPrice = bigintToNumber(maxPriceBigInt, USD_DECIMALS);
+
   const xAxisDomain: [AxisDomainItem, AxisDomainItem] = isZeroPriceImpact
     ? [minPrice * 0.999, maxPrice * 1.001]
     : ["dataMin", "dataMax"];
 
-  let lowPrice = isZeroPriceImpact ? (xAxisDomain[0] as number) : Math.ceil(data[0].executionPrice);
-  let highPrice = isZeroPriceImpact ? (xAxisDomain[1] as number) : Math.floor(data[data.length - 1].executionPrice);
+  let lowPrice = isZeroPriceImpact
+    ? bigMath.mulDiv(leftMaxExecutionPriceBigInt, 999n, 1000n)
+    : leftMaxExecutionPriceBigInt;
+  let highPrice = isZeroPriceImpact
+    ? bigMath.mulDiv(rightMaxExecutionPriceBigInt, 1001n, 1000n)
+    : rightMaxExecutionPriceBigInt;
   let marketPriceIndex;
 
   // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
   let ticks: number[] = [];
 
-  const step = Math.round((highPrice - lowPrice) / 5);
-  const leftStart = Math.floor((midPrice - step) / 10) * 10;
-  const rightStart = Math.ceil((midPrice + step) / 10) * 10;
+  const decimals = USD_DECIMALS;
+  const span = highPrice - lowPrice;
+  // span 0.6 -> scale 1/10
+  // span 6 -> scale 1
+  // span 60 -> scale 10
+  const spanScale = numberToBigint(Math.pow(10, Math.floor(Math.log10(bigintToNumber(span, decimals)))), decimals);
+
+  const [tickCount, setTickCount] = useState(9n);
+
+  const stepRaw = bigMath.divRound(span, tickCount);
+  const stepScale = numberToBigint(Math.pow(10, Math.floor(Math.log10(bigintToNumber(stepRaw, decimals)))), decimals);
+  const step = bigMath.divRound(stepRaw, stepScale) * stepScale;
+  // console.log(step);
+  // return null;
+
+  const leftStart = bigMath.divRound(midPriceBigInt, spanScale) * spanScale - step;
+  const rightStart = bigMath.divRound(midPriceBigInt, spanScale) * spanScale + step;
 
   for (let i = leftStart; i > lowPrice; i -= step) {
-    ticks.push(i);
+    ticks.push(bigintToNumber(i, decimals));
   }
 
   ticks.push(midPrice);
   marketPriceIndex = ticks.length - 1;
 
   for (let i = rightStart; i < highPrice; i += step) {
-    ticks.push(i);
+    ticks.push(bigintToNumber(i, decimals));
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer
+      onResize={(width) => {
+        setTickCount(BigInt(Math.round(width / 120)));
+      }}
+      width="100%"
+      height="100%"
+    >
       <ComposedChart data={data} margin={CHART_MARGIN}>
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
@@ -515,6 +563,9 @@ function ActiveDot(props: any) {
 function Tick(props: any) {
   const { x, y, height, textAnchor, payload, verticalAnchor, index, marketPriceIndex } = props;
 
+  const value = numberToBigint(payload.value as number, USD_DECIMALS);
+  const visual = formatAmount(value, USD_DECIMALS, calculatePriceDecimals(value), false);
+
   return (
     <Text
       x={x}
@@ -527,7 +578,7 @@ function Tick(props: any) {
       verticalAnchor={verticalAnchor}
       fontSize={12}
     >
-      {index === marketPriceIndex ? (payload.value as number).toFixed(2) : payload.value}
+      {visual}
     </Text>
   );
 }
