@@ -33,6 +33,19 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "gmx-buyback",
+    title: "GMX buybacks are now enabled",
+    isActive: true,
+    startDate: "29 Oct 2024, 00:00",
+    endDate: "15 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        Corresponding fees from V1 and V2 will be used to buy GMX tokens, which will be distributed as GMX staking
+        rewards instead of ETH from October 30.
+      </>
+    ),
+  },
+  {
     id: "auto-cancel",
     title: "TP/SL orders automatically cancelled with position closure",
     isActive: true,
