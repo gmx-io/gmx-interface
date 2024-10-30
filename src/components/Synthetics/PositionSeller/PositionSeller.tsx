@@ -444,7 +444,6 @@ export function PositionSeller(p: Props) {
     <ExecutionPriceRow
       tradeFlags={executionPriceFlags}
       fees={fees}
-      displayDecimals={marketDecimals ?? toToken?.priceDecimals}
       executionPrice={executionPrice ?? undefined}
       acceptablePrice={acceptablePrice}
       triggerOrderType={decreaseAmounts?.triggerOrderType}

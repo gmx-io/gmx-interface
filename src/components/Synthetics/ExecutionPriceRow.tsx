@@ -3,18 +3,17 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { HIGH_COLLATERAL_IMPACT_BPS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders/types";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { TradeFees, TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
 import { bigMath } from "lib/bigmath";
-import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { memo, useMemo } from "react";
-import { HIGH_COLLATERAL_IMPACT_BPS } from "config/factors";
 
 interface Props {
   tradeFlags: TradeFlags;
-  displayDecimals?: number;
   fees?: TradeFees;
   executionPrice?: bigint;
   acceptablePrice?: bigint;
@@ -28,7 +27,6 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   tradeFlags,
   acceptablePrice,
   triggerOrderType,
-  displayDecimals,
   visualMultiplier,
 }: Props) {
   const { isLimit, isMarket, isIncrease, isLong, isTrigger } = tradeFlags;
@@ -100,7 +98,6 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   }, [isMarket, isLimit, isTrigger, triggerOrderType, isLong]);
 
   const acceptablePriceFormatted = formatAcceptablePrice(acceptablePrice, {
-    displayDecimals,
     visualMultiplier,
   });
 
@@ -127,8 +124,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
           maxAllowedWidth={350}
           position="bottom-end"
           handleClassName={handleClassName}
-          handle={formatUsd(executionPrice, {
-            displayDecimals,
+          handle={formatUsdPrice(executionPrice, {
             visualMultiplier,
           })}
           content={

@@ -11,7 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatTokensRatio } from "domain/synthetics/tokens";
-import { formatUsd } from "lib/numbers";
+import { formatUsdPrice } from "lib/numbers";
 import { useMemo } from "react";
 
 export function LimitPriceRow() {
@@ -36,8 +36,7 @@ export function LimitPriceRow() {
 
     if (isIncrease) {
       return (
-        formatUsd(triggerPrice, {
-          displayDecimals: toToken?.priceDecimals,
+        formatUsdPrice(triggerPrice, {
           visualMultiplier: toToken?.visualMultiplier,
         }) || "-"
       );

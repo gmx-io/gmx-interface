@@ -3,13 +3,13 @@ import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { getTokenVisualMultiplier } from "config/tokens";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
 import { SidecarOrderEntry, SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { TokenData } from "domain/synthetics/tokens";
-import { formatUsd } from "lib/numbers";
+import { formatUsd, formatUsdPrice } from "lib/numbers";
 import { useCallback, useMemo, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useMedia } from "react-use";
@@ -51,18 +51,18 @@ function SideOrderEntry({
   const isIncrease = entry.order && isIncreaseOrderType(entry.order.orderType);
   const isLong = entry.order?.isLong;
 
-  const marketPricesDecimals = useSelector(selectSelectedMarketPriceDecimals);
-
   const priceTooltipMsg =
     indexToken &&
     entry.price?.value &&
     entry.sizeUsd?.value &&
-    `${isIncrease ? "Increase" : "Decrease"} ${indexToken.visualMultiplier || ""}${indexToken.symbol} ${isLong ? "Long" : "Short"} by ${formatUsd(
-      entry.sizeUsd.value
-    )} at ${formatUsd(entry.price.value ?? undefined, {
-      displayDecimals: marketPricesDecimals,
-      visualMultiplier: indexToken.visualMultiplier,
-    })}.`;
+    `${isIncrease ? "Increase" : "Decrease"} ${getTokenVisualMultiplier(indexToken)}${
+      indexToken.baseSymbol || indexToken.symbol
+    } ${isLong ? "Long" : "Short"} by ${formatUsd(entry.sizeUsd.value)} at ${formatUsdPrice(
+      entry.price.value ?? undefined,
+      {
+        visualMultiplier: indexToken.visualMultiplier,
+      }
+    )}.`;
 
   const sizeTooltipMsg =
     sizeError || priceTooltipMsg ? (

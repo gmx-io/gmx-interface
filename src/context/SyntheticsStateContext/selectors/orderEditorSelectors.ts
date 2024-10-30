@@ -30,7 +30,7 @@ import { getPositionKey } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, useSelector } from "../utils";
+import { createSelector } from "../utils";
 import {
   selectChainId,
   selectGasLimits,
@@ -86,7 +86,7 @@ export const selectOrderEditorSizeDeltaUsd = createSelector((q) => {
 
 export const selectOrderEditorTriggerPrice = createSelector((q) => {
   const triggerPriceInputValue = q(selectOrderEditorTriggerPriceInputValue);
-  const toToken = useSelector(selectOrderEditorToToken);
+  const toToken = q(selectOrderEditorToToken);
 
   if (!triggerPriceInputValue || !toToken) return undefined;
 

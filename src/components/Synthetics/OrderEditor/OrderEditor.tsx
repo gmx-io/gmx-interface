@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
+import { USD_DECIMALS } from "config/factors";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   OrderInfo,
@@ -21,14 +22,14 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "config/factors";
 import {
+  calculatePriceDecimals,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
-  formatUsd,
+  formatUsdPrice,
 } from "lib/numbers";
 
 import Button from "components/Button/Button";
@@ -482,27 +483,23 @@ export function OrderEditor(p: Props) {
         const positionOrder = p.order as PositionOrderInfo;
 
         setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        const price = positionOrder.triggerPrice ?? 0n;
+        const decimals = calculatePriceDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
+
         setTriggerPriceInputValue(
-          formatAmount(
-            (positionOrder.triggerPrice ?? 0n) * BigInt(toToken?.visualMultiplier ?? 1),
-            USD_DECIMALS,
-            indexPriceDecimals || 2
-          )
+          formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
         );
       }
 
       setIsInited(true);
     },
     [
-      fromToken,
-      indexPriceDecimals,
+      indexToken?.visualMultiplier,
       isInited,
       p.order,
       setSizeInputValue,
       setTriggerPriceInputValue,
       setTriggerRatioInputValue,
-      sizeInputValue,
-      toToken,
     ]
   );
 
@@ -553,14 +550,13 @@ export function OrderEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark`}
-              topRightValue={formatUsd(markPrice, {
-                displayDecimals: indexPriceDecimals,
-                visualMultiplier: toToken?.visualMultiplier,
+              topRightValue={formatUsdPrice(markPrice, {
+                visualMultiplier: indexToken?.visualMultiplier,
               })}
               onClickTopRightLabel={() =>
                 setTriggerPriceInputValue(
                   formatAmount(
-                    markPrice !== undefined ? markPrice * BigInt(toToken?.visualMultiplier ?? 1) : undefined,
+                    markPrice !== undefined ? markPrice * BigInt(indexToken?.visualMultiplier ?? 1) : undefined,
                     USD_DECIMALS,
                     indexPriceDecimals || 2
                   )

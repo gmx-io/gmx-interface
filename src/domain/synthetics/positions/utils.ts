@@ -12,7 +12,15 @@ import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
-import { applyFactor, expandDecimals, formatAmount, formatUsd, calculatePriceDecimals, PRECISION } from "lib/numbers";
+import {
+  applyFactor,
+  expandDecimals,
+  formatAmount,
+  formatUsd,
+  calculatePriceDecimals,
+  PRECISION,
+  formatUsdPrice,
+} from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
@@ -237,11 +245,8 @@ export function formatAcceptablePrice(
     return "NA";
   }
 
-  const priceDecimalPlaces = calculatePriceDecimals(acceptablePrice);
-
-  return formatUsd(acceptablePrice, {
+  return formatUsdPrice(acceptablePrice, {
     ...opts,
-    displayDecimals: opts.displayDecimals ?? priceDecimalPlaces,
   });
 }
 
