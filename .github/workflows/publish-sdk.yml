@@ -69,9 +69,8 @@ jobs:
           git commit -m "Bump SDK version to $(jq -r .version package.json)"
 
       - run: |
-          yarn --version
-          echo "npmAuthToken: "${{ secrets.NPM_TOKEN}}" >> .yarnrc.yml"
-          yarn npm publish --access public
+          npm login --registry=https://registry.npmjs.org/ --scope=@gmx
+          npm publish --access public
         working-directory: ./sdk
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
