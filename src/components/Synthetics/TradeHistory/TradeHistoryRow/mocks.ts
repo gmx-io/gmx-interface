@@ -249,30 +249,7 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "0x4c02e020d1ee78ba803cfa652840",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "0x4c02e020d1ee78ba803cfa652840",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "0xd1a92c3d3e1a249d4868cb5c00",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "0xd1a92c3d3e1a249d4868cb5c00",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "0x4cd4894d0f2c92df1d8563308440",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "0x4cd4894d0f2c92df1d8563308440",
-    },
+
     maxPnlFactorForTradersLong: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
@@ -729,30 +706,6 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "0x4c2ab94c3b2bafa77f9fbb2c9240",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "0x4c2ab94c3b2bafa77f9fbb2c9240",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "0xc8a43921bd0685c4a68da7bc00",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "0xc8a43921bd0685c4a68da7bc00",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "0x4cf35d855ce8b62d444648d44e40",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "0x4cf35d855ce8b62d444648d44e40",
-    },
     maxPnlFactorForTradersLong: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
@@ -1205,30 +1158,6 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "0x0db03251a3cfee703fe0a91a8000",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "0x0db03251a3cfee703fe0a91a8000",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "-0x1116c903466f9180acf04eb20000",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "-0x1116c903466f9180acf04eb20000",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "-0x036696b1a29fa3106d0fa5978000",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "-0x036696b1a29fa3106d0fa5978000",
-    },
     maxPnlFactorForTradersLong: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
@@ -1639,30 +1568,6 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "-0x0129050a86888f42898acca00000",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "-0x0129050a86888f42898acca00000",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "-0x04f4a7ccaa4afb166f9abd500000",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "-0x04f4a7ccaa4afb166f9abd500000",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "-0x061dacd730d38a58f92589f00000",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "-0x061dacd730d38a58f92589f00000",
-    },
     maxPnlFactorForTradersLong: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
@@ -2064,30 +1969,6 @@ export const cancelOrderIncreaseLong = prepare({
     fundingExponentFactor: {
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "-0x22a70bd0cc2ed790633ce7fcae00",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "-0x22a70bd0cc2ed790633ce7fcae00",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "0x066c4d4124589682210623a8ee00",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "0x066c4d4124589682210623a8ee00",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "-0x1c3abe8fa7d6410e4236c453c000",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "-0x1c3abe8fa7d6410e4236c453c000",
     },
     maxPnlFactorForTradersLong: {
       type: "bigint",
@@ -2498,30 +2379,6 @@ export const createOrderIncreaseLong = prepare({
     fundingExponentFactor: {
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "-0x01ffca092d94fa2717b7a0a00000",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "-0x01ffca092d94fa2717b7a0a00000",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "-0x039b8a08124928501ec8b9500000",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "-0x039b8a08124928501ec8b9500000",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "-0x059b54113fde2277368059f00000",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "-0x059b54113fde2277368059f00000",
     },
     maxPnlFactorForTradersLong: {
       type: "bigint",
@@ -2943,30 +2800,6 @@ export const executeOrderDecreaseShort = prepare({
     fundingExponentFactor: {
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "0x685a4545982cc3893a2e417fdb00",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "0x685a4545982cc3893a2e417fdb00",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "-0x7355793375f831c65e6a0b75f800",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "-0x7355793375f831c65e6a0b75f800",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "-0x0afb33edddcb6e3d243bc9f61d00",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "-0x0afb33edddcb6e3d243bc9f61d00",
     },
     maxPnlFactorForTradersLong: {
       type: "bigint",
@@ -3398,26 +3231,6 @@ export const executeOrderIncreaseLong = prepare({
     fundingExponentFactor: {
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "0x01c7883325390bc260591381f5baaa",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "0x01c7883325390bc260591381f5baaa",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "0x0434a1bb1c825f0f96ba9d3987ebe8",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "0x0434a1bb1c825f0f96ba9d3987ebe8",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "0x05fc29ee41bb6ad1f713b0bb7da692",
     },
     netPnlMin: {
       type: "bigint",
@@ -3856,30 +3669,6 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "0x0cca4b45e60210d3ed1b31e8e2c000",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "0x0cca4b45e60210d3ed1b31e8e2c000",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "-0x04678730574b3b59d575ef508ad000",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "-0x04678730574b3b59d575ef508ad000",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "0x0862c4158eb6d57a17a5429857f000",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "0x0862c4158eb6d57a17a5429857f000",
-    },
     maxPnlFactorForTradersLong: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
@@ -4284,30 +4073,6 @@ export const undefinedOrder = prepare({
     fundingExponentFactor: {
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "0x519f7d5c9b1e829892a22232c700",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "0x519f7d5c9b1e829892a22232c700",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "0x03c3fb5d86a80ab621deb5cfb62c",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "0x03c3fb5d86a80ab621deb5cfb62c",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "0x556378ba21c68d4eb480d8027d2c",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "0x556378ba21c68d4eb480d8027d2c",
     },
     maxPnlFactorForTradersLong: {
       type: "bigint",
@@ -4726,30 +4491,6 @@ export const liquidated = prepare({
     fundingExponentFactor: {
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "-0x01103cee4de90a234debf87eeffdb2",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "-0x01103cee4de90a234debf87eeffdb2",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "-0x0278dde3d87441296f0d64e75c5230",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "-0x0278dde3d87441296f0d64e75c5230",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "-0x03891ad2265d4b4cbcf95d664c4fe2",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "-0x03891ad2265d4b4cbcf95d664c4fe2",
     },
     maxPnlFactorForTradersLong: {
       type: "bigint",
@@ -5226,30 +4967,7 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
-    pnlLongMax: {
-      type: "bigint",
-      hex: "-0x32801d13baa4d40ad650dcab6100",
-    },
-    pnlLongMin: {
-      type: "bigint",
-      hex: "-0x32801d13baa4d40ad650dcab6100",
-    },
-    pnlShortMax: {
-      type: "bigint",
-      hex: "0x084815843f012fa793c3d4754e00",
-    },
-    pnlShortMin: {
-      type: "bigint",
-      hex: "0x084815843f012fa793c3d4754e00",
-    },
-    netPnlMax: {
-      type: "bigint",
-      hex: "-0x2a38078f7ba3a463428d08361300",
-    },
-    netPnlMin: {
-      type: "bigint",
-      hex: "-0x2a38078f7ba3a463428d08361300",
-    },
+
     maxPnlFactorForTradersLong: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",

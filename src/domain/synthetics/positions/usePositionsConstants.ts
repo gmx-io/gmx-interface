@@ -1,5 +1,5 @@
 import { getContract } from "config/contracts";
-import { MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
+import { MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY, MAX_AUTO_CANCEL_ORDERS_KEY } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -10,6 +10,7 @@ export type PositionsConstantsResult = {
   positionsConstants: {
     minCollateralUsd?: bigint;
     minPositionSizeUsd?: bigint;
+    maxAutoCancelOrders?: bigint;
   };
   error?: Error;
 };
@@ -33,6 +34,10 @@ export function usePositionsConstantsRequest(chainId: number): PositionsConstant
             methodName: "getUint",
             params: [MIN_POSITION_SIZE_USD_KEY],
           },
+          maxAutoCancelOrders: {
+            methodName: "getUint",
+            params: [MAX_AUTO_CANCEL_ORDERS_KEY],
+          },
         },
       },
     },
@@ -40,6 +45,7 @@ export function usePositionsConstantsRequest(chainId: number): PositionsConstant
       return {
         minCollateralUsd: res.data.dataStore.minCollateralUsd.returnValues[0],
         minPositionSizeUsd: res.data.dataStore.minPositionSizeUsd.returnValues[0],
+        maxAutoCancelOrders: res.data.dataStore.maxAutoCancelOrders.returnValues[0],
       };
     },
   });

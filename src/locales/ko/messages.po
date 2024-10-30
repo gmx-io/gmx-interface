@@ -150,6 +150,10 @@ msgstr ""
 msgid "Order submitted!"
 msgstr ""
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Updating {updateOrdersCount} TP/SL order(s)"
+msgstr ""
+
 #: src/pages/Dashboard/WeightText.tsx
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0}은 목표 가중치를 초과 했습니다.<0/><1/>토큰을 {1}로 <2>스왑</2>하는 수수료가 감소합니다."
@@ -309,6 +313,10 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "{tokenSymbol} {longOrShortText} 증가 완료, +{0} USD."
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "{updateOrdersCount} TP/SL order(s) updated"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Pending {stakingTokenSymbol} approval"
@@ -480,6 +488,10 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "시장 스왑"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "Setting auto-cancel order(s)"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
@@ -681,6 +693,10 @@ msgstr ""
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value locked takes into account:"
 msgstr ""
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+#~ msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -1117,6 +1133,10 @@ msgstr ""
 msgid "Generating and activating Subaccount"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+msgstr ""
+
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
 msgstr "풀 선택"
@@ -1402,6 +1422,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+msgstr ""
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "Failed to update order(s)"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -2480,6 +2504,10 @@ msgstr "유효하지 않은 가격, 경고문을 보세요"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Auto-Cancel TP/SL"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -3597,6 +3625,10 @@ msgstr ""
 msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "Auto-cancel order(s) set"
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3879,6 +3911,10 @@ msgstr "귀하는 GMX.io 페이지를 벗어나, 써드파티 웹사이트로 �
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
+msgstr ""
+
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "Read more."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -4820,6 +4856,10 @@ msgstr ""
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선택할 수 있습니다."
 
+#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
+msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr ""
@@ -5123,6 +5163,10 @@ msgstr "현재 네트워크 수수료가 매우 높습니다. 이는 {0} 네트�
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
 msgstr "현재 {0} 롱"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+msgid "{0} orders were not updated as max order limit reached"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -5891,6 +5935,10 @@ msgstr "주문을 활성화하기 위해 약관에 동의해주세요"
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "{updateOrdersCount} orders were not updated as max order limit reached"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -7380,6 +7428,10 @@ msgstr ""
 msgid "Net Rate"
 msgstr "순 수수료율"
 
+#: src/domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams.ts
+#~ msgid "No orders eligble for conversion"
+#~ msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
@@ -8007,6 +8059,10 @@ msgstr "가격 조건에 충족되었습니다"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
 msgstr ""
+
+#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
+#~ msgid "Failed to set auto-cancel order(s)"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"

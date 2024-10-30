@@ -426,6 +426,7 @@ export function PositionEditor(p: Props) {
           indexToken: position.indexToken,
           tokensData,
           skipSimulation: shouldDisableValidationForTesting,
+          autoCancel: false,
         },
         {
           setPendingTxns,
@@ -622,7 +623,7 @@ export function PositionEditor(p: Props) {
               )}
             </BuyInputSection>
 
-            <ExchangeInfo className="PositionEditor-info-box">
+            <ExchangeInfo className="PositionEditor-info-box" dividerClassName="my-15 -mx-15 h-1 bg-slate-700">
               <ExchangeInfo.Group>
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
