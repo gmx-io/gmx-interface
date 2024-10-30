@@ -40,8 +40,8 @@ export const appEventsData: EventData[] = [
     endDate: "15 Nov 2024, 00:00",
     bodyText: (
       <>
-        Corresponding fees from V1 and V2 will be used to buy GMX tokens, which will be distributed as GMX staking
-        rewards instead of ETH from October 30.
+        Starting October 30, GMX fees from V1 (30%) and V2 (27%) will fund GMX token buybacks, distributed as GMX
+        staking rewards instead of ETH/AVAX.
       </>
     ),
   },
