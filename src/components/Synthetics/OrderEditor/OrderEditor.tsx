@@ -79,11 +79,9 @@ import {
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorToToken,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { bigMath } from "lib/bigmath";
@@ -114,7 +112,6 @@ export function OrderEditor(p: Props) {
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const fromToken = useSelector(selectOrderEditorFromToken);
-  const toToken = useSelector(selectOrderEditorToToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
   const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
@@ -527,8 +524,6 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const marketPriceDecimals = useSelector(makeSelectMarketPriceDecimals(p.order.marketAddress));
-
   return (
     <div className="PositionEditor">
       <Modal
@@ -620,8 +615,7 @@ export function OrderEditor(p: Props) {
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
                 value={formatAcceptablePrice(acceptablePrice, {
-                  displayDecimals: indexPriceDecimals,
-                  visualMultiplier: toToken?.visualMultiplier,
+                  visualMultiplier: indexToken?.visualMultiplier,
                 })}
               />
 
@@ -629,8 +623,7 @@ export function OrderEditor(p: Props) {
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                    displayDecimals: marketPriceDecimals,
-                    visualMultiplier: toToken?.visualMultiplier,
+                    visualMultiplier: indexToken?.visualMultiplier,
                   })}
                 />
               )}
