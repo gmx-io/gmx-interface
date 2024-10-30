@@ -17,6 +17,7 @@ import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
 import Tooltip from "components/Tooltip/Tooltip";
 import { useKey } from "react-use";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./SettingsModal.scss";
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
@@ -205,17 +206,17 @@ export function SettingsModal({
       </div>
       <div className="Exchange-settings-row">
         <Checkbox isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
-          <Tooltip
+          <TooltipWithPortal
             handle={t`Auto-Cancel TP/SL`}
             renderContent={() => (
-              <div>
+              <div onClick={(e) => e.stopPropagation()}>
                 <Trans>
                   Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is
                   completely closed. This will only affect newly created TP/SL orders.
                 </Trans>
                 <br />
                 <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>.
               </div>
             )}
           />
