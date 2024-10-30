@@ -114,6 +114,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [, setPendingTxns] = usePendingTxns();
 
   const updateNativeTokenBalance = useCallback(() => {
+    if (!getIsFlagEnabled("testWebsocketBalances")) {
+      return;
+    }
+
     if (!currentAccount) {
       return;
     }
