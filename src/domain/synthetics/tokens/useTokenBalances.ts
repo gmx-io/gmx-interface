@@ -8,6 +8,9 @@ import { TokenBalancesData } from "./types";
 
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useMemo } from "react";
+import { getIsFlagEnabled } from "config/ab";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -23,6 +26,8 @@ export function useTokenBalances(
   }[],
   refreshInterval?: number
 ): BalancesDataResult {
+  const { tokensBalancesUpdates, resetTokensBalancesUpdates } = useSyntheticsEvents();
+
   const { address: currentAccount } = useAccount();
 
   const account = overrideAccount ?? currentAccount;
@@ -65,16 +70,51 @@ export function useTokenBalances(
 
         return acc;
       }, {}),
-    parseResponse: (res) =>
-      Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
-        tokenBalances[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
+    parseResponse: (res) => {
+      const result: TokenBalancesData = {};
 
-        return tokenBalances;
-      }, {} as TokenBalancesData),
+      Object.keys(res.data).forEach((tokenAddress) => {
+        result[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
+      });
+
+      if (getIsFlagEnabled("testWebsocketBalances")) {
+        resetTokensBalancesUpdates?.();
+      }
+
+      return result;
+    },
   });
 
+  const balancesData = useMemo(() => {
+    if (!getIsFlagEnabled("testWebsocketBalances")) {
+      return data;
+    }
+
+    if (!data) return undefined;
+
+    const balancesData: TokenBalancesData = { ...data };
+
+    if (tokensBalancesUpdates) {
+      Object.keys(tokensBalancesUpdates).forEach((tokenAddress) => {
+        if (balancesData[tokenAddress] === undefined) {
+          return;
+        }
+
+        const balanceUpdate = tokensBalancesUpdates[tokenAddress];
+
+        if (balanceUpdate?.diff !== undefined) {
+          balancesData[tokenAddress] = balancesData[tokenAddress] + balanceUpdate.diff;
+        } else if (balanceUpdate?.balance !== undefined) {
+          balancesData[tokenAddress] = balanceUpdate.balance;
+        }
+      });
+    }
+
+    return balancesData;
+  }, [data, tokensBalancesUpdates]);
+
   return {
-    balancesData: data,
+    balancesData,
     error,
   };
 }

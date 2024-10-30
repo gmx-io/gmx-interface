@@ -6,6 +6,7 @@ export type SyntheticsEventsContextType = {
   withdrawalStatuses: WithdrawalStatuses;
   shiftStatuses: ShiftStatuses;
   approvalStatuses: ApprovalStatuses;
+  tokensBalancesUpdates?: TokensBalancesUpdates;
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
@@ -19,6 +20,7 @@ export type SyntheticsEventsContextType = {
   setDepositStatusViewed: (key: string) => void;
   setWithdrawalStatusViewed: (key: string) => void;
   setShiftStatusViewed: (key: string) => void;
+  resetTokensBalancesUpdates?: () => void;
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
@@ -31,6 +33,11 @@ export type SetPendingFundingFeeSettlement = (data: PendingFundingFeeSettlementD
 export type PendingFundingFeeSettlementData = {
   orders: PendingOrderData[];
   positions: PendingPositionUpdate[];
+};
+
+export type TokenBalanceUpdate = {
+  balance?: bigint;
+  diff?: bigint;
 };
 
 export type OrderCreatedEventData = {
@@ -228,6 +235,10 @@ export type PendingPositionUpdate = {
   collateralDeltaAmount: bigint;
   updatedAt: number;
   updatedAtBlock: bigint;
+};
+
+export type TokensBalancesUpdates = {
+  [tokenAddress: string]: TokenBalanceUpdate | undefined;
 };
 
 export type OrderStatuses = {
