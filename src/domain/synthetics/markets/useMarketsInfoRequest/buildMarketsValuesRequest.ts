@@ -1,6 +1,5 @@
-import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config/dataStore";
+import { MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config/dataStore";
 import { getByKey } from "lib/objects";
-import { hashDataMap } from "lib/multicall/hashDataMap";
 
 import { MarketsData } from "domain/synthetics/markets/types";
 import { MarketValuesMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
@@ -18,7 +17,6 @@ export async function buildMarketsValuesRequest(
     marketsAddresses,
     marketsData,
     tokensData,
-    account,
     dataStoreAddress,
     syntheticsReaderAddress,
   }: {
@@ -94,18 +92,6 @@ export async function buildMarketsValuesRequest(
 
     const keys = {
       ...prebuiltHashedKeys,
-      ...(account
-        ? hashDataMap({
-            claimableFundingAmountLong: [
-              ["bytes32", "address", "address", "address"],
-              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account],
-            ],
-            claimableFundingAmountShort: [
-              ["bytes32", "address", "address", "address"],
-              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account],
-            ],
-          })
-        : {}),
     };
 
     request[`${marketAddress}-dataStore`] = {
@@ -132,18 +118,6 @@ export async function buildMarketsValuesRequest(
           methodName: "getUint",
           params: [keys.swapImpactPoolAmountShort],
         },
-        claimableFundingAmountLong: account
-          ? {
-              methodName: "getUint",
-              params: [keys.claimableFundingAmountLong],
-            }
-          : undefined,
-        claimableFundingAmountShort: account
-          ? {
-              methodName: "getUint",
-              params: [keys.claimableFundingAmountShort],
-            }
-          : undefined,
         longInterestUsingLongToken: {
           methodName: "getUint",
           params: [keys.longInterestUsingLongToken],

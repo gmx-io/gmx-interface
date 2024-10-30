@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
-import { Config, useConnectorClient } from "wagmi";
 import { useMemo } from "react";
 import type { Account, Chain, Client, Transport } from "viem";
+import { Config, useConnectorClient } from "wagmi";
 
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
@@ -26,6 +26,10 @@ export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
       return undefined;
     }
 
-    return clientToSigner(client);
+    try {
+      return clientToSigner(client);
+    } catch (error) {
+      return undefined;
+    }
   }, [client]);
 }

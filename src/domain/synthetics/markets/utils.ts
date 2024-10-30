@@ -1,17 +1,16 @@
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { GLV_MARKETS } from "config/markets";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { Token } from "domain/tokens";
+import { Token, TokenPrices } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
-import { USD_DECIMALS } from "config/factors";
 import { applyFactor, expandDecimals, PRECISION } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
-import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { TokenData, TokensData } from "../tokens/types";
-import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
-import { GLV_MARKETS } from "config/markets";
+import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { isGlvInfo } from "./glv";
+import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -157,6 +156,10 @@ export function getOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
 }
 
+export function getOpenInterestInTokens(marketInfo: MarketInfo, isLong: boolean) {
+  return isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
+}
+
 export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   const { indexToken } = marketInfo;
 
@@ -165,6 +168,16 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   } else {
     return marketInfo.shortInterestUsd;
   }
+}
+
+export function getMarketDivisor({
+  longTokenAddress,
+  shortTokenAddress,
+}: {
+  longTokenAddress: string;
+  shortTokenAddress: string;
+}) {
+  return longTokenAddress === shortTokenAddress ? 2n : 1n;
 }
 
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
@@ -242,16 +255,55 @@ export function getUsedLiquidity(marketInfo: MarketInfo, isLong: boolean): [bigi
   return isReserveSmaller ? [reservedUsd, maxReservedUsd] : [openInterestUsd, maxOpenInterestUsd];
 }
 
-export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; isLong: boolean; maximize: boolean }) {
-  const { marketInfo, poolUsd, isLong, maximize } = p;
-
-  let poolPnl: bigint;
-
+export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: boolean) {
+  // for long positions, pick the larger price to maximize pnl
+  // for short positions, pick the smaller price to maximize pnl
   if (isLong) {
-    poolPnl = maximize ? marketInfo.pnlLongMax : marketInfo.pnlLongMin;
-  } else {
-    poolPnl = maximize ? marketInfo.pnlShortMax : marketInfo.pnlShortMin;
+    return maximize ? prices.maxPrice : prices.minPrice;
   }
+
+  return maximize ? prices.minPrice : prices.maxPrice;
+}
+
+export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, maximize: boolean) {
+  const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
+  const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
+
+  if (openInterestUsd === 0n && openInterestInTokens === 0n) {
+    return 0n;
+  }
+
+  const price = getPriceForPnl(marketInfo.indexToken.prices, isLong, maximize);
+
+  const openInterestValue = (openInterestInTokens * price) / PRECISION;
+  const pnl = isLong ? openInterestValue - openInterestUsd : openInterestUsd - openInterestValue;
+
+  return pnl;
+}
+
+export function getMarketNetPnl(marketInfo: MarketInfo, maximize: boolean) {
+  const longPnl = getMarketPnl(marketInfo, true, maximize);
+  const shortPnl = getMarketPnl(marketInfo, false, maximize);
+
+  const cappedLongPnl = getCappedPoolPnl({
+    marketInfo,
+    poolUsd: getPoolUsdWithoutPnl(marketInfo, true, maximize ? "maxPrice" : "minPrice"),
+    poolPnl: longPnl,
+    isLong: true,
+  });
+
+  const cappedShortPnl = getCappedPoolPnl({
+    marketInfo,
+    poolUsd: getPoolUsdWithoutPnl(marketInfo, false, maximize ? "maxPrice" : "minPrice"),
+    poolPnl: shortPnl,
+    isLong: false,
+  });
+
+  return cappedLongPnl + cappedShortPnl;
+}
+
+export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; poolPnl: bigint; isLong: boolean }) {
+  const { marketInfo, poolUsd, poolPnl, isLong } = p;
 
   if (poolPnl < 0) {
     return poolPnl;

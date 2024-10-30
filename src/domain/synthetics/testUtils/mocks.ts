@@ -3,6 +3,7 @@ import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens/uti
 import type { TokenData, TokensData } from "domain/synthetics/tokens";
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
+import { zeroAddress } from "viem";
 
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, 30), token.decimals, token.prices?.minPrice)!;
@@ -177,14 +178,6 @@ export function mockMarketsInfoData(
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
       swapImpactPoolAmountShort: usdToToken(1000, shortToken),
 
-      netPnlMax: expandDecimals(10000, USD_DECIMALS),
-      netPnlMin: expandDecimals(10000, USD_DECIMALS),
-
-      pnlLongMax: expandDecimals(5000, USD_DECIMALS),
-      pnlLongMin: expandDecimals(5000, USD_DECIMALS),
-      pnlShortMax: expandDecimals(-5000, USD_DECIMALS),
-      pnlShortMin: expandDecimals(-5000, USD_DECIMALS),
-
       positionFeeFactorForPositiveImpact: expandDecimals(5, 26),
       positionFeeFactorForNegativeImpact: expandDecimals(5, 26),
       positionImpactFactorPositive: expandDecimals(2, 23),
@@ -243,6 +236,10 @@ export function mockMarketsInfoData(
       virtualPoolAmountForLongToken: 0n,
       virtualPoolAmountForShortToken: 0n,
       virtualInventoryForPositions: 0n,
+
+      virtualMarketId: zeroAddress,
+      virtualLongTokenId: zeroAddress,
+      virtualShortTokenId: zeroAddress,
 
       ...(overrides[key] || {}),
     };

@@ -50,6 +50,6 @@ export function use24hVolume() {
   );
 
   return useMemo(() => {
-    return data?.positionsVolume24hByMarket ? BigInt(data?.positionsVolume24hByMarket) : 0n;
+    return data?.positionsVolume24hByMarket ? BigInt(data?.positionsVolume24hByMarket) : undefined;
   }, [data]);
 }

@@ -1,7 +1,13 @@
 import { t } from "@lingui/macro";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
-import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  getCappedPoolPnl,
+  getMarketPnl,
+  getOpenInterestUsd,
+  getPoolUsdWithoutPnl,
+} from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
@@ -76,14 +82,14 @@ export function getPositionPnlUsd(p: {
     return totalPnl;
   }
 
-  const poolPnl = isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
+  const poolPnl = getMarketPnl(marketInfo, isLong, true);
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({
     marketInfo,
     poolUsd,
+    poolPnl,
     isLong,
-    maximize: true,
   });
 
   const WEI_PRECISION = expandDecimals(1, 18);
