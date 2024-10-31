@@ -3,7 +3,7 @@ import { Token } from "./tokens";
 
 export interface GmxSdkConfig {
   chainId: number;
-  account: string;
+  account?: string;
   oracleUrl: string;
   rpcUrl: string;
   subgraph: {

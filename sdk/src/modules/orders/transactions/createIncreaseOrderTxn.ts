@@ -2,6 +2,7 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 
+import type { GmxSdk } from "index";
 import concat from "lodash/concat";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "types/orders";
 import { TokenData, TokenPrices, TokensData } from "types/tokens";
@@ -9,10 +10,10 @@ import { isMarketOrderType } from "utils/orders";
 import { convertToContractPrice } from "utils/tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
-import { createDecreaseEncodedPayload, DecreaseOrderParams } from "./createDecreaseOrderTxn";
-import type { GmxSdk } from "index";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
+import { createDecreaseEncodedPayload, DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
+import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -166,16 +167,14 @@ export async function createIncreaseOrderTxn({
     };
   }
 
-  // if (!p.skipSimulation) {
-  //   await simulateExecuteTxn(chainId, {
-  //     account: p.account,
-  //     tokensData: p.tokensData,
-  //     primaryPriceOverrides,
-  //     createMulticallPayload: simulationEncodedPayload,
-  //     value: totalWntAmount,
-  //     errorTitle: t`Order error.`,
-  //   });
-  // }
+  if (!p.skipSimulation) {
+    await simulateExecuteOrder(sdk, {
+      tokensData: p.tokensData,
+      primaryPriceOverrides,
+      createMulticallPayload: simulationEncodedPayload,
+      value: totalWntAmount,
+    });
+  }
 
   const finalPayload = [...encodedPayload, ...decreaseEncodedPayload, ...cancelEncodedPayload, ...updateEncodedPayload];
 

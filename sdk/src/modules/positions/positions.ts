@@ -252,6 +252,10 @@ export class Positions extends Module {
   }
 
   private getUiFeeFactorRequest(): Promise<bigint> {
+    if (!this.account) {
+      return Promise.resolve(0n);
+    }
+
     return this.sdk
       .executeMulticall({
         dataStore: {

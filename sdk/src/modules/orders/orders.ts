@@ -32,6 +32,13 @@ export class Orders extends Module {
     orderTypesFilter?: OrderType[];
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
   }) {
+    if (!this.account) {
+      return {
+        count: 0,
+        ordersInfoData: {},
+      };
+    }
+
     const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
       .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
       .map((filter) => ({
@@ -114,7 +121,6 @@ export class Orders extends Module {
     return {
       count: orders.count,
       ordersInfoData,
-      isLoading: false,
     };
   }
 
@@ -157,6 +163,12 @@ export class Orders extends Module {
     indexToken: TokenData;
     increaseAmounts: IncreasePositionAmounts;
   }) {
+    const account = this.account;
+
+    if (!account) {
+      throw new Error("Account is not defined");
+    }
+
     const gasLimits = await this.sdk.getGasLimits();
     const gasPrice = await this.sdk.getGasPrice();
     const executionFee = await this.sdk.getExecutionFee("increase", {
@@ -176,7 +188,7 @@ export class Orders extends Module {
       isOrderForPositionByData(order, {
         isLong,
         marketAddress,
-        account: this.account,
+        account,
         collateralAddress: collateralToken.address,
       })
     ) as PositionOrderInfo[];
@@ -186,7 +198,7 @@ export class Orders extends Module {
     });
 
     const commonSecondaryOrderParams = {
-      account: this.account,
+      account,
       marketAddress,
       swapPath: [],
       allowedSlippage,
@@ -199,7 +211,7 @@ export class Orders extends Module {
     return createIncreaseOrderTxn({
       sdk: this.sdk,
       createIncreaseOrderParams: {
-        account: this.account,
+        account,
         marketAddress: marketInfo.marketTokenAddress,
         initialCollateralAddress: fromToken?.address,
         initialCollateralAmount: increaseAmounts.initialCollateralAmount,
@@ -282,6 +294,11 @@ export class Orders extends Module {
     collateralToken: TokenData;
     referralCode?: string;
   }) {
+    const account = this.account;
+    if (!account) {
+      throw new Error("Account is not defined");
+    }
+
     const executionFee = await this.sdk.getExecutionFee("decrease", {
       decreaseAmounts,
     });
@@ -303,7 +320,7 @@ export class Orders extends Module {
       isOrderForPositionByData(order, {
         isLong,
         marketAddress: marketInfo.marketTokenAddress,
-        account: this.account,
+        account,
         collateralAddress: collateralToken.address,
       })
     ) as PositionOrderInfo[];
@@ -313,7 +330,7 @@ export class Orders extends Module {
     });
 
     return createDecreaseOrderTxn(this.sdk, {
-      account: this.sdk.config.account,
+      account,
       marketAddress: marketInfo.marketTokenAddress,
       swapPath: [],
       initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,

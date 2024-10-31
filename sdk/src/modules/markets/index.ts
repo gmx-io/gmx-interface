@@ -116,6 +116,10 @@ export class Markets extends Module {
     const chainId = this.chainId;
     const account = this.account;
 
+    if (!account) {
+      return {};
+    }
+
     const { marketsAddresses, marketsData } = await this.getMarkets();
 
     return this.sdk

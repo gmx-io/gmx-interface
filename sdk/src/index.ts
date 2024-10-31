@@ -98,6 +98,10 @@ export class GmxSdk {
       });
   }
 
+  setAccount(account: Address) {
+    this.config.account = account;
+  }
+
   async executeMulticall<T = any>(request: MulticallRequestConfig<any>) {
     const multicall = await Multicall.getInstance(this);
     const promise: Promise<T> & { request?: MulticallRequestConfig<any> } = multicall?.call(

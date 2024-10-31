@@ -11,6 +11,7 @@ import { isMarketOrderType } from "utils/orders";
 import { convertToContractPrice } from "utils/tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
+import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
 
 export type DecreaseOrderParams = {
   account: string;
@@ -41,18 +42,18 @@ export async function createDecreaseOrderTxn(sdk: GmxSdk, params: DecreaseOrderP
   const ps = Array.isArray(params) ? params : [params];
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const totalWntAmount = ps.reduce((acc, p) => acc + p.executionFee, 0n);
-  // const account = ps[0].account;
+
   const encodedPayload = createDecreaseEncodedPayload({
     sdk,
     orderVaultAddress,
     ps,
   });
 
-  // const simulationEncodedPayload = createDecreaseEncodedPayload({
-  //   sdk,
-  //   orderVaultAddress,
-  //   ps,
-  // });
+  const simulationEncodedPayload = createDecreaseEncodedPayload({
+    sdk,
+    orderVaultAddress,
+    ps,
+  });
 
   await Promise.all(
     ps.map(async (p) => {
@@ -64,13 +65,12 @@ export async function createDecreaseOrderTxn(sdk: GmxSdk, params: DecreaseOrderP
             maxPrice: p.triggerPrice,
           };
         }
-        // await simulateExecuteTxn(chainId, {
-        //   account,
-        //   primaryPriceOverrides,
-        //   createMulticallPayload: simulationEncodedPayload,
-        //   value: totalWntAmount,
-        //   tokensData: p.tokensData,
-        // });
+        await simulateExecuteOrder(sdk, {
+          primaryPriceOverrides,
+          createMulticallPayload: simulationEncodedPayload,
+          value: totalWntAmount,
+          tokensData: p.tokensData,
+        });
       }
     })
   );

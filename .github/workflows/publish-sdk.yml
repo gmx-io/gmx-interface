@@ -34,6 +34,7 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org/"
           always-auth: true
+          scope: "@gmx"
           auth-token: ${{ secrets.NPM_TOKEN }}
           cache: "yarn"
 
@@ -68,9 +69,7 @@ jobs:
           git add package.json
           git commit -m "Bump SDK version to $(jq -r .version package.json)"
 
-      - run: |
-          npm login --registry=https://registry.npmjs.org/ --scope=@gmx
-          npm publish --access public
+      - run: npm publish --access public
         working-directory: ./sdk
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
