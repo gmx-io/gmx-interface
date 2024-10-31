@@ -34,9 +34,8 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org/"
           always-auth: true
-          scope: "@gmx"
+          scope: "@gmx-io"
           auth-token: ${{ secrets.NPM_TOKEN }}
-          cache: "yarn"
 
       - name: Install dependencies
         working-directory: ./sdk
