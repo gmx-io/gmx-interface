@@ -11,7 +11,14 @@ import {
   SubscribeBarsCallback,
 } from "charting_library";
 import { USD_DECIMALS } from "config/factors";
-import { getNativeToken, getPriceDecimals, getTokenBySymbol, getTokens, isChartAvailabeForToken } from "config/tokens";
+import {
+  getNativeToken,
+  getPriceDecimals,
+  getTokenBySymbol,
+  getTokenVisualMultiplier,
+  getTokens,
+  isChartAvailabeForToken,
+} from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
 import { LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
@@ -169,9 +176,10 @@ function buildFeeder({
         }
 
         const visualMultiplier = maybeVisualMultiplier ?? 1;
-        const prefix = maybeVisualMultiplier
-          ? getTokenBySymbol(chainId, symbolName)?.visualPrefix ?? String(visualMultiplier)
-          : "";
+        const prefix =
+          maybeVisualMultiplier && maybeVisualMultiplier !== 1
+            ? getTokenVisualMultiplier(getTokenBySymbol(chainId, symbolName))
+            : "";
 
         let pricescale = Math.pow(
           10,
