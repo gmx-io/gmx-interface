@@ -16,7 +16,10 @@ import { selectChartToken } from "context/SyntheticsStateContext/selectors/chart
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
-import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxSetActivePosition,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -132,21 +135,25 @@ export function SyntheticsPage(p: Props) {
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+
   useEffect(() => {
     if (!chartToken) return;
 
     const averagePrice = getMidPrice(chartToken.prices);
     const currentTokenPriceStr =
       formatUsdPrice(averagePrice, {
-        visualMultiplier: chartToken.visualMultiplier,
+        visualMultiplier: isSwap ? 1 : chartToken.visualMultiplier,
       }) || "...";
+
+    const prefix = isSwap ? "" : getTokenVisualMultiplier(chartToken);
 
     const title = getPageTitle(
       currentTokenPriceStr +
-        ` | ${getTokenVisualMultiplier(chartToken)}${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
+        ` | ${prefix}${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
     );
     document.title = title;
-  }, [chartToken, chartToken?.address, chartToken?.isStable, chartToken?.symbol]);
+  }, [chartToken, isSwap]);
 
   const onSelectPositionClick = useCallback(
     (key: string, tradeMode?: TradeMode) => {
