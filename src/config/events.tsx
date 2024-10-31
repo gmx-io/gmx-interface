@@ -36,7 +36,7 @@ export const appEventsData: EventData[] = [
     id: "apt-tia-listing",
     title: "TIA and APT markets added on Arbitrum",
     isActive: true,
-    startDate: "31 Oct 2024, 00:00",
+    startDate: "31 Oct 2024, 18:00",
     endDate: "6 Nov 2024, 00:00",
     bodyText: (
       <>
