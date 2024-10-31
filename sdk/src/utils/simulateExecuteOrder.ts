@@ -108,7 +108,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
       }
     );
   } catch (txnError) {
-    let msg: React.ReactNode = undefined;
+    let msg: string | undefined = undefined;
 
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
