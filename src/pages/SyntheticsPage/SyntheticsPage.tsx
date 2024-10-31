@@ -52,6 +52,7 @@ import { useMedia } from "react-use";
 import { MissedCoinsModal } from "components/MissedCoinsModal/MissedCoinsModal";
 import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
+import { getTokenVisualMultiplier } from "config/tokens";
 
 export type Props = {
   openSettings: () => void;
@@ -142,7 +143,7 @@ export function SyntheticsPage(p: Props) {
 
     const title = getPageTitle(
       currentTokenPriceStr +
-        ` | ${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
+        ` | ${getTokenVisualMultiplier(chartToken)}${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
     );
     document.title = title;
   }, [chartToken, chartToken?.address, chartToken?.isStable, chartToken?.symbol]);
