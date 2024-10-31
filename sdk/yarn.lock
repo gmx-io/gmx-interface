@@ -704,9 +704,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gmx/sdk@workspace:.":
+"@gmx-io/sdk@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@gmx/sdk@workspace:."
+  resolution: "@gmx-io/sdk@workspace:."
   dependencies:
     "@babel/plugin-proposal-private-property-in-object": 7.21.11
     "@types/jest": 29.5.13
