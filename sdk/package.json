@@ -1,5 +1,5 @@
 {
-    "name": "@gmx/sdk",
+    "name": "@gmx-io/sdk",
     "version": "0.0.1",
     "type": "module",
     "main": "build/index.js",
