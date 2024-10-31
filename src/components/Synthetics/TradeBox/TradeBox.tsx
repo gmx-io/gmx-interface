@@ -45,6 +45,7 @@ import {
   selectTradeboxSelectedPositionKey,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
+  selectTradeboxToTokenAmount,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
@@ -82,6 +83,7 @@ import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import {
+  calculatePriceDecimals,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
@@ -247,7 +249,7 @@ export function TradeBox(p: Props) {
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
+  const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
   const isNotMatchAvailableBalance = useMemo(
@@ -892,17 +894,23 @@ export function TradeBox(p: Props) {
     (e) => setTriggerPriceInputValue(e.target.value),
     [setTriggerPriceInputValue]
   );
-  const setMarkPriceAsTriggerPrice = useCallback(
-    () =>
-      setTriggerPriceInputValue(
-        formatAmount(
-          markPrice ? markPrice * BigInt(toToken?.visualMultiplier ?? 1) : undefined,
-          USD_DECIMALS,
-          toToken?.priceDecimals || 2
-        )
-      ),
-    [markPrice, setTriggerPriceInputValue, toToken?.priceDecimals, toToken?.visualMultiplier]
-  );
+
+  const setMarkPriceAsTriggerPrice = useCallback(() => {
+    if (markPrice === undefined) {
+      return;
+    }
+
+    setTriggerPriceInputValue(
+      formatAmount(
+        markPrice,
+        USD_DECIMALS,
+        calculatePriceDecimals(markPrice, undefined, toToken?.visualMultiplier),
+        undefined,
+        undefined,
+        toToken?.visualMultiplier
+      )
+    );
+  }, [markPrice, setTriggerPriceInputValue, toToken?.visualMultiplier]);
 
   const handleTriggerMarkPriceClick = useCallback(
     () => setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10)),

@@ -86,7 +86,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         });
       } else if (field === "price") {
         if (nextField) {
-          price = getDefaultEntryField(USD_DECIMALS, nextField, undefined, visualMultiplier);
+          price = getDefaultEntryField(USD_DECIMALS, nextField, visualMultiplier);
         }
       }
 

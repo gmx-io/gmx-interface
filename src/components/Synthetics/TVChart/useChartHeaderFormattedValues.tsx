@@ -16,7 +16,7 @@ import {
   formatAmountHuman,
   formatPercentageDisplay,
   formatRatePercentage,
-  formatUsd,
+  formatUsdPrice,
   numberWithCommas,
 } from "lib/numbers";
 
@@ -94,12 +94,11 @@ export function useChartHeaderFormattedValues() {
 
   const avgPrice = useMemo(() => {
     return (
-      formatUsd(avgPriceValue, {
-        displayDecimals: oraclePriceDecimals,
+      formatUsdPrice(avgPriceValue, {
         visualMultiplier,
       }) || "..."
     );
-  }, [avgPriceValue, oraclePriceDecimals, visualMultiplier]);
+  }, [avgPriceValue, visualMultiplier]);
 
   const [longOIValue, longOIPercentage] = useMemo(() => {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {

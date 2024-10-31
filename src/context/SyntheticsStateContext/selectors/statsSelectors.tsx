@@ -59,6 +59,9 @@ export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress
   })
 );
 
+/**
+ * Returns 1 if swap or no visual multiplier
+ */
 export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
   const { chartToken } = q(selectChartToken);
   const { isSwap } = q(selectTradeboxTradeFlags);

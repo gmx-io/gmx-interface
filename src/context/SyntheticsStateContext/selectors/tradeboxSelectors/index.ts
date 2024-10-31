@@ -224,7 +224,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
-  const toTokenInputValue = q(selectTradeboxToTokenInputValue);
+  const toTokenAmount = q(selectTradeboxToTokenAmount);
   const amountBy = q(selectTradeboxFocusedInput);
   const uiFeeFactor = q(selectUiFeeFactor);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -232,7 +232,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
 
@@ -514,7 +513,7 @@ const selectNextValuesForIncrease = createSelector(
     const fromTokenAddress = q(selectTradeboxFromTokenAddress);
     const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
     const toTokenAddress = q(selectTradeboxToTokenAddress);
-    const toTokenInputValue = q(selectTradeboxToTokenInputValue);
+    const toTokenAmount = q(selectTradeboxToTokenAmount);
     const marketAddress = q(selectTradeboxMarketAddress);
     const leverageOption = q(selectTradeboxLeverageOption);
     const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
@@ -527,8 +526,6 @@ const selectNextValuesForIncrease = createSelector(
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
     const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
     const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
-    const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
     const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
     const isPnlInLeverage = q(selectIsPnlInLeverage);
 

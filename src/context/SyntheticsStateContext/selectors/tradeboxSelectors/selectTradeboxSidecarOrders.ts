@@ -17,7 +17,7 @@ import {
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
 } from "../tradeboxSelectors";
-import { selectSelectedMarketPriceDecimals, selectSelectedMarketVisualMultiplier } from "../statsSelectors";
+import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
 export const selectTradeboxExistingSlOrders = createSelector((q) => {
@@ -133,13 +133,11 @@ export const selectTradeboxSidecarOrdersExistingSlEntries = createSelector((q) =
   const existingSlOrders = q(selectTradeboxExistingSlOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
 
-  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
   const visualMultiplier = q(selectSelectedMarketVisualMultiplier);
 
   return prepareInitialEntries({
     positionOrders: existingSlOrders,
     sort: isLong ? "desc" : "asc",
-    priceDecimals: selectedMarketDecimals,
     visualMultiplier,
   });
 });
@@ -148,13 +146,11 @@ export const selectTradeboxSidecarOrdersExistingTpEntries = createSelector((q) =
   const existingTpOrders = q(selectTradeboxExistingTpOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
 
-  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
   const visualMultiplier = q(selectSelectedMarketVisualMultiplier);
 
   return prepareInitialEntries({
     positionOrders: existingTpOrders,
     sort: isLong ? "asc" : "desc",
-    priceDecimals: selectedMarketDecimals,
     visualMultiplier,
   });
 });
@@ -162,13 +158,11 @@ export const selectTradeboxSidecarOrdersExistingTpEntries = createSelector((q) =
 export const selectTradeboxSidecarOrdersExistingLimitEntries = createSelector((q) => {
   const existingLimitOrders = q(selectTradeboxExistingLimitOrders);
 
-  const selectedMarketDecimals = q(selectSelectedMarketPriceDecimals);
   const visualMultiplier = q(selectSelectedMarketVisualMultiplier);
 
   return prepareInitialEntries({
     positionOrders: existingLimitOrders,
     sort: "desc",
-    priceDecimals: selectedMarketDecimals,
     visualMultiplier,
   });
 });

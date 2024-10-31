@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxMarkPrice,
@@ -11,7 +10,7 @@ import {
   selectTradeboxToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatUsd } from "lib/numbers";
+import { formatUsdPrice } from "lib/numbers";
 
 export function EntryPriceRow() {
   const { advancedDisplay } = useSelector(selectTradeboxAdvancedOptions);
@@ -19,7 +18,6 @@ export function EntryPriceRow() {
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const toToken = useSelector(selectTradeboxToToken);
-  const marketDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   if (!advancedDisplay || !selectedPosition) {
     return null;
@@ -31,18 +29,15 @@ export function EntryPriceRow() {
       value={
         nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
           <ValueTransition
-            from={formatUsd(selectedPosition?.entryPrice, {
-              displayDecimals: marketDecimals,
+            from={formatUsdPrice(selectedPosition?.entryPrice, {
               visualMultiplier: toToken?.visualMultiplier,
             })}
-            to={formatUsd(nextPositionValues?.nextEntryPrice, {
-              displayDecimals: marketDecimals,
+            to={formatUsdPrice(nextPositionValues?.nextEntryPrice, {
               visualMultiplier: toToken?.visualMultiplier,
             })}
           />
         ) : (
-          formatUsd(markPrice, {
-            displayDecimals: marketDecimals,
+          formatUsdPrice(markPrice, {
             visualMultiplier: toToken?.visualMultiplier,
           })
         )

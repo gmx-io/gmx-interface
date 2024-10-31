@@ -23,7 +23,7 @@ import {
   selectTradeboxSelectedPositionKey,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxToTokenAddress,
-  selectTradeboxToTokenInputValue,
+  selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTradeType,
@@ -240,7 +240,6 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
-  const toTokenInputValue = q(selectTradeboxToTokenInputValue);
   const leverageOption = q(selectTradeboxLeverageOption);
   const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
@@ -251,8 +250,7 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
-  const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : 0n;
+  const toTokenAmount = q(selectTradeboxToTokenAmount);
   const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const positionKey = q(selectTradeboxSelectedPositionKey);
 
