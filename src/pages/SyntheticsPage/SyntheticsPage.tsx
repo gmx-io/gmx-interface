@@ -28,7 +28,7 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
+import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -136,8 +136,7 @@ export function SyntheticsPage(p: Props) {
 
     const averagePrice = getMidPrice(chartToken.prices);
     const currentTokenPriceStr =
-      formatUsd(averagePrice, {
-        displayDecimals: chartToken.priceDecimals,
+      formatUsdPrice(averagePrice, {
         visualMultiplier: chartToken.visualMultiplier,
       }) || "...";
 
