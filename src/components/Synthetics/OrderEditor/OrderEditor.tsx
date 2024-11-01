@@ -119,7 +119,6 @@ export function OrderEditor(p: Props) {
 
   const market = useMarketInfo(p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-  const indexPriceDecimals = indexToken?.priceDecimals;
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
 
@@ -551,9 +550,12 @@ export function OrderEditor(p: Props) {
               onClickTopRightLabel={() =>
                 setTriggerPriceInputValue(
                   formatAmount(
-                    markPrice !== undefined ? markPrice * BigInt(indexToken?.visualMultiplier ?? 1) : undefined,
+                    markPrice,
                     USD_DECIMALS,
-                    indexPriceDecimals || 2
+                    calculatePriceDecimals(markPrice, USD_DECIMALS, indexToken?.visualMultiplier),
+                    undefined,
+                    undefined,
+                    indexToken?.visualMultiplier
                   )
                 )
               }

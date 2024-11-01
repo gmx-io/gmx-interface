@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-import { getWrappedToken } from "config/tokens";
+import { getTokenVisualMultiplier, getWrappedToken } from "config/tokens";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -110,7 +110,8 @@ export function OrderStatusNotification({
       } = orderData;
 
       const longShortText = isLong ? t`Long` : t`Short`;
-      const positionText = `${marketInfo?.indexToken.symbol} ${longShortText}`;
+      const visualMultiplierPrefix = marketInfo?.indexToken ? getTokenVisualMultiplier(marketInfo.indexToken) : "";
+      const positionText = `${visualMultiplierPrefix}${marketInfo?.indexToken.symbol} ${longShortText}`;
 
       if (sizeDeltaUsd == 0n) {
         const symbol = orderData.shouldUnwrapNativeToken
@@ -151,7 +152,7 @@ export function OrderStatusNotification({
 
         const sign = isIncreaseOrderType(orderType) ? "+" : "-";
 
-        return t`${orderTypeText} ${marketInfo?.indexToken?.symbol} ${longShortText}: ${sign}${formatUsd(
+        return t`${orderTypeText} ${visualMultiplierPrefix}${marketInfo?.indexToken?.symbol} ${longShortText}: ${sign}${formatUsd(
           sizeDeltaUsd
         )}`;
       }

@@ -489,10 +489,6 @@ msgstr "Max Capacity"
 msgid "Market Swap"
 msgstr "Market Swap"
 
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Setting auto-cancel order(s)"
-#~ msgstr "Setting auto-cancel order(s)"
-
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "Trade History"
@@ -693,10 +689,6 @@ msgstr "How can we address your concerns and improve your experience?"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value locked takes into account:"
 msgstr "Total value locked takes into account:"
-
-#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
-#~ msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
-#~ msgstr "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -2518,10 +2510,6 @@ msgstr "Funding Fee Rate"
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 
-#: src/config/bridging.tsx
-#~ msgid "Mint tBTC using BTC with <0>Threshold</0>"
-#~ msgstr "Mint tBTC using BTC with <0>Threshold</0>"
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -3625,10 +3613,6 @@ msgstr "You will be short {indexSymbol} from your short position, while being lo
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
 
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Auto-cancel order(s) set"
-#~ msgstr "Auto-cancel order(s) set"
-
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -4256,6 +4240,10 @@ msgstr "GMX APR"
 #: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
 msgid "Switch to:"
 msgstr "Switch to:"
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
+msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} limit order for"
@@ -5362,10 +5350,6 @@ msgid "This order using {collateralSymbol} as collateral will not be valid for t
 msgstr "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
-msgstr "{orderTypeText} {0} {longShortText}: {sign}{1}"
-
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "Order request sent"
 
@@ -5946,10 +5930,6 @@ msgstr "Accept terms to enable orders"
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol analytics"
 msgstr "Protocol analytics"
-
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "{updateOrdersCount} orders were not updated as max order limit reached"
-#~ msgstr "{updateOrdersCount} orders were not updated as max order limit reached"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -7438,10 +7418,6 @@ msgstr "Expected Available Actions"
 msgid "Net Rate"
 msgstr "Net Rate"
 
-#: src/domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams.ts
-#~ msgid "No orders eligble for conversion"
-#~ msgstr "No orders eligble for conversion"
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
@@ -8065,10 +8041,6 @@ msgstr "Price conditions are met"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
 msgstr "Unstake GMX"
-
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Failed to set auto-cancel order(s)"
-#~ msgstr "Failed to set auto-cancel order(s)"
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"

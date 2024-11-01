@@ -33,7 +33,14 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
-import { formatAmount, formatAmountFree, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
+import {
+  calculatePriceDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatTokenAmountWithUsd,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
@@ -595,9 +602,12 @@ export function PositionSeller(p: Props) {
                 onClickTopRightLabel={() => {
                   setTriggerPriceInputValueRaw(
                     formatAmount(
-                      markPrice !== undefined ? markPrice * BigInt(toToken?.visualMultiplier ?? 1) : undefined,
+                      markPrice,
                       USD_DECIMALS,
-                      toToken?.priceDecimals || 2
+                      calculatePriceDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
+                      undefined,
+                      undefined,
+                      toToken?.visualMultiplier
                     )
                   );
                 }}

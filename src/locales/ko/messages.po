@@ -489,10 +489,6 @@ msgstr ""
 msgid "Market Swap"
 msgstr "시장 스왑"
 
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Setting auto-cancel order(s)"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "트레이딩 히스토리"
@@ -693,10 +689,6 @@ msgstr ""
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value locked takes into account:"
 msgstr ""
-
-#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
-#~ msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
-#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
@@ -2518,10 +2510,6 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
-#: src/config/bridging.tsx
-#~ msgid "Mint tBTC using BTC with <0>Threshold</0>"
-#~ msgstr ""
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "해당 트레이드를 시작하기위해 담보로 {swapTokenSymbol}을 \"지불\" 토큰으로서 선택할 필요가 있습니다."
@@ -3625,10 +3613,6 @@ msgstr ""
 msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Auto-cancel order(s) set"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -4252,6 +4236,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
 msgid "Switch to:"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -5359,10 +5347,6 @@ msgid "This order using {collateralSymbol} as collateral will not be valid for t
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr ""
 
@@ -5943,10 +5927,6 @@ msgstr "주문을 활성화하기 위해 약관에 동의해주세요"
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
-
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "{updateOrdersCount} orders were not updated as max order limit reached"
-#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -7432,10 +7412,6 @@ msgstr ""
 msgid "Net Rate"
 msgstr "순 수수료율"
 
-#: src/domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams.ts
-#~ msgid "No orders eligble for conversion"
-#~ msgstr ""
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
@@ -8059,10 +8035,6 @@ msgstr "가격 조건에 충족되었습니다"
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
 msgstr ""
-
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Failed to set auto-cancel order(s)"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"
