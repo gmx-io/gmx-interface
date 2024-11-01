@@ -143,6 +143,7 @@ export class Orders extends Module {
     indexToken,
     marketsInfoData,
     tokensData,
+    skipSimulation,
   }: {
     marketsInfoData: MarketsInfoData;
     tokensData: TokensData;
@@ -162,6 +163,7 @@ export class Orders extends Module {
     marketInfo: MarketInfo;
     indexToken: TokenData;
     increaseAmounts: IncreasePositionAmounts;
+    skipSimulation?: boolean;
   }) {
     const account = this.account;
 
@@ -229,7 +231,7 @@ export class Orders extends Module {
         referralCode: referralCodeForTxn,
         indexToken: marketInfo.indexToken,
         tokensData,
-        skipSimulation: isLimit,
+        skipSimulation: skipSimulation || isLimit,
       },
       createDecreaseOrderParams: createSltpEntries?.map((entry, i) => {
         return {

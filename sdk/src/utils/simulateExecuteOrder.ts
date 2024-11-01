@@ -14,6 +14,7 @@ import { TokenPrices, TokensData } from "types/tokens";
 import { convertToContractPrice, getTokenData } from "./tokens";
 
 import type { GmxSdk } from "..";
+import { extractError } from "./contracts";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -88,28 +89,27 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
   try {
     await withRetry(
       async () => {
-        const encodedMulticallData = encodeFunctionData({
+        return await client.simulateContract({
+          address: routerAddress,
           abi: routerAbi,
           functionName: "multicall",
           args: [simulationPayloadData],
-        });
-
-        return await client.call({
-          to: routerAddress,
-          data: encodedMulticallData,
           value: p.value,
-          blockNumber,
           account: account as Address,
+          blockNumber,
         });
       },
       {
         retryCount: 2,
         delay: 200,
+        shouldRetry: (error) => {
+          const [message] = extractError(error);
+          return message?.toLocaleLowerCase()?.includes("unsupported block number") ?? false;
+        },
       }
     );
   } catch (txnError) {
     let msg: string | undefined = undefined;
-
     try {
       const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
 
@@ -149,7 +149,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 export function extractDataFromError(errorMessage: unknown) {
   if (typeof errorMessage !== "string") return null;
 
-  const pattern = /data="([^"]+)"/;
+  const pattern = /Unable to decode signature "([^"]+)"/;
   const match = errorMessage.match(pattern);
 
   if (match && match[1]) {
