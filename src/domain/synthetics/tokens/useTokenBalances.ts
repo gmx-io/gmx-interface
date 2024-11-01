@@ -78,7 +78,7 @@ export function useTokenBalances(
       });
 
       if (getIsFlagEnabled("testWebsocketBalances")) {
-        resetTokensBalancesUpdates?.();
+        resetTokensBalancesUpdates();
       }
 
       return result;
@@ -94,21 +94,19 @@ export function useTokenBalances(
 
     const balancesData: TokenBalancesData = { ...data };
 
-    if (tokensBalancesUpdates) {
-      Object.keys(tokensBalancesUpdates).forEach((tokenAddress) => {
-        if (balancesData[tokenAddress] === undefined) {
-          return;
-        }
+    Object.keys(tokensBalancesUpdates).forEach((tokenAddress) => {
+      if (balancesData[tokenAddress] === undefined) {
+        return;
+      }
 
-        const balanceUpdate = tokensBalancesUpdates[tokenAddress];
+      const balanceUpdate = tokensBalancesUpdates[tokenAddress];
 
-        if (balanceUpdate?.diff !== undefined) {
-          balancesData[tokenAddress] = balancesData[tokenAddress] + balanceUpdate.diff;
-        } else if (balanceUpdate?.balance !== undefined) {
-          balancesData[tokenAddress] = balanceUpdate.balance;
-        }
-      });
-    }
+      if (balanceUpdate?.diff !== undefined) {
+        balancesData[tokenAddress] = balancesData[tokenAddress] + balanceUpdate.diff;
+      } else if (balanceUpdate?.balance !== undefined) {
+        balancesData[tokenAddress] = balanceUpdate.balance;
+      }
+    });
 
     return balancesData;
   }, [data, tokensBalancesUpdates]);
