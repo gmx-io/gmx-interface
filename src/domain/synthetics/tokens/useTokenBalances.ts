@@ -8,9 +8,9 @@ import { TokenBalancesData } from "./types";
 
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useMemo } from "react";
 import { getIsFlagEnabled } from "config/ab";
+import { useTokensBalancesContext } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { useMemo } from "react";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -26,7 +26,7 @@ export function useTokenBalances(
   }[],
   refreshInterval?: number
 ): BalancesDataResult {
-  const { tokensBalancesUpdates, resetTokensBalancesUpdates } = useSyntheticsEvents();
+  const { tokensBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesContext();
 
   const { address: currentAccount } = useAccount();
 

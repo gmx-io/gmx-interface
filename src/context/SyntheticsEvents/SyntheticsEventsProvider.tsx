@@ -2,7 +2,9 @@ import { t } from "@lingui/macro";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
+import { getIsFlagEnabled } from "config/ab";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { useTokensBalancesContext } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import {
   subscribeToApprovalEvents,
@@ -36,6 +38,7 @@ import {
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
+import { getProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
@@ -60,12 +63,9 @@ import {
   ShiftCreatedEventData,
   ShiftStatuses,
   SyntheticsEventsContextType,
-  TokensBalancesUpdates,
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { getProvider } from "lib/rpc";
-import { getIsFlagEnabled } from "config/ab";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -102,7 +102,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
-  const [tokensBalancesUpdates, setTokensBalancesUpdates] = useState<TokensBalancesUpdates>({});
+  const { tokensBalancesUpdates, setTokensBalancesUpdates } = useTokensBalancesContext();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
@@ -129,15 +129,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         })
       );
     });
-  }, [currentAccount, provider]);
-
-  const resetTokensBalancesUpdates = useCallback(() => {
-    setTokensBalancesUpdates({});
-  }, []);
-
-  useEffect(() => {
-    setTokensBalancesUpdates({});
-  }, [chainId]);
+  }, [currentAccount, provider, setTokensBalancesUpdates]);
 
   // use ref to avoid re-subscribing on state changes
   eventLogHandlers.current = {
@@ -827,7 +819,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         unsubscribeFromTokenEvents();
       };
     },
-    [chainId, currentAccount, hasPageLostFocus, wsProvider]
+    [chainId, currentAccount, hasPageLostFocus, setTokensBalancesUpdates, wsProvider]
   );
 
   useEffect(
@@ -969,7 +961,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setShiftStatusViewed(key: string) {
         setShiftStatuses((old) => updateByKey(old, key, { isViewed: true }));
       },
-      resetTokensBalancesUpdates,
     };
   }, [
     orderStatuses,
@@ -981,7 +972,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,
-    resetTokensBalancesUpdates,
     marketsInfoData,
     tokensData,
     setPendingTxns,

@@ -6,7 +6,6 @@ export type SyntheticsEventsContextType = {
   withdrawalStatuses: WithdrawalStatuses;
   shiftStatuses: ShiftStatuses;
   approvalStatuses: ApprovalStatuses;
-  tokensBalancesUpdates?: TokensBalancesUpdates;
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
@@ -20,7 +19,6 @@ export type SyntheticsEventsContextType = {
   setDepositStatusViewed: (key: string) => void;
   setWithdrawalStatusViewed: (key: string) => void;
   setShiftStatusViewed: (key: string) => void;
-  resetTokensBalancesUpdates?: () => void;
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
