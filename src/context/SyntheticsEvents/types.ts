@@ -33,11 +33,6 @@ export type PendingFundingFeeSettlementData = {
   positions: PendingPositionUpdate[];
 };
 
-export type TokenBalanceUpdate = {
-  balance?: bigint;
-  diff?: bigint;
-};
-
 export type OrderCreatedEventData = {
   key: string;
   account: string;
@@ -233,10 +228,6 @@ export type PendingPositionUpdate = {
   collateralDeltaAmount: bigint;
   updatedAt: number;
   updatedAtBlock: bigint;
-};
-
-export type TokensBalancesUpdates = {
-  [tokenAddress: string]: TokenBalanceUpdate | undefined;
 };
 
 export type OrderStatuses = {
