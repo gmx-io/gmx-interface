@@ -1,6 +1,6 @@
 {
     "name": "@gmx-io/sdk",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "type": "module",
     "main": "build/index.js",
     "exports": {
