@@ -102,6 +102,11 @@ export type MarketInfo = Market &
     borrowingFactorPerSecondForLongs: bigint;
     borrowingFactorPerSecondForShorts: bigint;
 
+    pnlLongMax?: bigint;
+    pnlShortMax?: bigint;
+    pnlLongMin?: bigint;
+    pnlShortMin?: bigint;
+
     fundingFactorPerSecond: bigint;
     longsPayShorts: boolean;
 
