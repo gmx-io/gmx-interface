@@ -269,13 +269,13 @@ export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, maximize: 
   const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
   const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
 
-  if (openInterestUsd === 0n && openInterestInTokens === 0n) {
+  if (openInterestUsd === 0n || openInterestInTokens === 0n) {
     return 0n;
   }
 
   const price = getPriceForPnl(marketInfo.indexToken.prices, isLong, maximize);
 
-  const openInterestValue = (openInterestInTokens * price) / PRECISION;
+  const openInterestValue = convertToUsd(openInterestInTokens, marketInfo.indexToken.decimals, price)!;
   const pnl = isLong ? openInterestValue - openInterestUsd : openInterestUsd - openInterestValue;
 
   return pnl;

@@ -19,6 +19,8 @@ import {
   useMarketsInfoRequest,
   getMarketNetPnl,
   getMarketPnl,
+  getCappedPoolPnl,
+  getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
@@ -792,8 +794,22 @@ export function SyntheticsStats() {
               }
 
               const netPnlMax = getMarketNetPnl(market, true);
-              const longPnlMax = getMarketPnl(market, true, true);
-              const shortPnlMax = getMarketPnl(market, false, true);
+              let longPnlMax = getMarketPnl(market, true, true);
+              let shortPnlMax = getMarketPnl(market, false, true);
+
+              longPnlMax = getCappedPoolPnl({
+                marketInfo: market,
+                poolUsd: getPoolUsdWithoutPnl(market, true, "maxPrice"),
+                poolPnl: longPnlMax,
+                isLong: true,
+              });
+
+              shortPnlMax = getCappedPoolPnl({
+                marketInfo: market,
+                poolUsd: getPoolUsdWithoutPnl(market, false, "minPrice"),
+                poolPnl: shortPnlMax,
+                isLong: false,
+              });
 
               return (
                 <tr key={market.marketTokenAddress}>
