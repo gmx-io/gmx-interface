@@ -44,6 +44,7 @@ jobs:
       - name: Build package
         working-directory: ./sdk
         run: |
+          yarn prepare
           yarn prebuild
           yarn build
 
