@@ -22,6 +22,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "baseUrl": "./src",
+    "paths": {
+      "utils/*": ["utils/*"],
+      "modules/*": ["modules/*"],
+      "configs/*": ["configs/*"],
+      "types/*": ["types/*"],
+      "abis/*": ["abis/*"],
+      "prebuilt/*": ["prebuilt/*"]
+    },
     "plugins": [
       { "transform": "typescript-transform-paths" },
       { "transform": "typescript-transform-paths", "afterDeclarations": true }

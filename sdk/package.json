@@ -17,7 +17,7 @@
   "scripts": {
     "prebuild": "yarn tsx scripts/prebuild",
     "prepare": "ts-patch install -s",
-    "copy:jsons": "cp -r src/abis build && cp -r src/prebuilt build",
+    "copy:jsons": "cp -r src/abis build/src && cp -r src/prebuilt build/src",
     "test": "jest",
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "build": "rm -rf build && tsc -p tsconfig.json && yarn copy:jsons"
