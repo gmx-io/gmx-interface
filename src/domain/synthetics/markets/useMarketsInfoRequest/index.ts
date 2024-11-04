@@ -47,10 +47,6 @@ type MarketValues = Pick<
   | "virtualPoolAmountForLongToken"
   | "virtualPoolAmountForShortToken"
   | "virtualInventoryForPositions"
-  | "pnlLongMax"
-  | "pnlShortMax"
-  | "pnlLongMin"
-  | "pnlShortMin"
 >;
 
 /**
@@ -396,11 +392,6 @@ function useMarketsValuesRequest({
             swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
             borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
             borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
-
-            pnlLongMax: poolValueInfoMax.longPnl,
-            pnlShortMax: poolValueInfoMax.shortPnl,
-            pnlLongMin: poolValueInfoMin.longPnl,
-            pnlShortMin: poolValueInfoMin.shortPnl,
 
             fundingFactorPerSecond: nextFunding.fundingFactorPerSecond,
             longsPayShorts: nextFunding.longsPayShorts,
