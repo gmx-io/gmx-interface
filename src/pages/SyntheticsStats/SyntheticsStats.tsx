@@ -794,17 +794,17 @@ export function SyntheticsStats() {
               }
 
               const netPnlMax = getMarketNetPnl(market, true);
-              let longPnlMax = getMarketPnl(market, true, true);
-              let shortPnlMax = getMarketPnl(market, false, true);
+              const longPnlMax = getMarketPnl(market, true, true);
+              const shortPnlMax = getMarketPnl(market, false, true);
 
-              longPnlMax = getCappedPoolPnl({
+              const cappedLongPnlMax = getCappedPoolPnl({
                 marketInfo: market,
                 poolUsd: getPoolUsdWithoutPnl(market, true, "maxPrice"),
                 poolPnl: longPnlMax,
                 isLong: true,
               });
 
-              shortPnlMax = getCappedPoolPnl({
+              const cappedShortPnlMax = getCappedPoolPnl({
                 marketInfo: market,
                 poolUsd: getPoolUsdWithoutPnl(market, false, "minPrice"),
                 poolPnl: shortPnlMax,
@@ -834,9 +834,9 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Long"
-                                textClassName={getPositiveOrNegativeClass(longPnlMax)}
-                                value={`${getPlusOrMinusSymbol(longPnlMax)}${formatAmountHuman(
-                                  bigMath.abs(longPnlMax),
+                                textClassName={getPositiveOrNegativeClass(cappedLongPnlMax)}
+                                value={`${getPlusOrMinusSymbol(cappedLongPnlMax)}${formatAmountHuman(
+                                  bigMath.abs(cappedLongPnlMax),
                                   30,
                                   true
                                 )}`}
@@ -845,8 +845,8 @@ export function SyntheticsStats() {
                                 showDollar={false}
                                 label="PnL Short"
                                 textClassName={getPositiveOrNegativeClass(shortPnlMax)}
-                                value={`${getPlusOrMinusSymbol(shortPnlMax)}${formatAmountHuman(
-                                  bigMath.abs(shortPnlMax),
+                                value={`${getPlusOrMinusSymbol(cappedShortPnlMax)}${formatAmountHuman(
+                                  bigMath.abs(cappedShortPnlMax),
                                   30,
                                   true
                                 )}`}
