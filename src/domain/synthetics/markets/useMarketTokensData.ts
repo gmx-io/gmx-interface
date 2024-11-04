@@ -3,9 +3,9 @@ import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
 // Warning: do not import through reexport, it will break jest
+import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { USD_DECIMALS } from "config/factors";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -16,8 +16,13 @@ import { getContractMarketPrices } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
-import { useMemo } from "react";
+import { getIsFlagEnabled } from "config/ab";
 import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  useTokensBalancesContext,
+  useUpdatedTokensBalances,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { useMemo } from "react";
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
 
@@ -40,6 +45,7 @@ export function useMarketTokensDataRequest(
   const { isDeposit, account, glvData = {}, withGlv = true } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
+  const { resetTokensBalancesUpdates } = useTokensBalancesContext();
 
   let isGlvTokensLoaded;
 
@@ -153,11 +159,15 @@ export function useMarketTokensDataRequest(
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 
+        if (getIsFlagEnabled("testWebsocketBalances")) {
+          resetTokensBalancesUpdates(Object.keys(marketTokensMap));
+        }
+
         return marketTokensMap;
       }, {} as TokensData),
   });
 
-  const gmAndGlvMarketTokensData = useMemo(() => {
+  let gmAndGlvMarketTokensData = useMemo(() => {
     if (!marketTokensData || !glvData || Object.values(glvData).length === 0) {
       return marketTokensData;
     }
@@ -169,6 +179,8 @@ export function useMarketTokensDataRequest(
 
     return result;
   }, [marketTokensData, glvData]);
+
+  gmAndGlvMarketTokensData = useUpdatedTokensBalances(gmAndGlvMarketTokensData);
 
   return {
     marketTokensData: gmAndGlvMarketTokensData,

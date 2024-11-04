@@ -9,8 +9,10 @@ import { TokenBalancesData } from "./types";
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
 import { getIsFlagEnabled } from "config/ab";
-import { useTokensBalancesContext } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { useMemo } from "react";
+import {
+  useTokensBalancesContext,
+  useUpdatedTokensBalances,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -26,7 +28,7 @@ export function useTokenBalances(
   }[],
   refreshInterval?: number
 ): BalancesDataResult {
-  const { tokensBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesContext();
+  const { resetTokensBalancesUpdates } = useTokensBalancesContext();
 
   const { address: currentAccount } = useAccount();
 
@@ -78,38 +80,14 @@ export function useTokenBalances(
       });
 
       if (getIsFlagEnabled("testWebsocketBalances")) {
-        resetTokensBalancesUpdates();
+        resetTokensBalancesUpdates(Object.keys(result));
       }
 
       return result;
     },
   });
 
-  const balancesData = useMemo(() => {
-    if (!getIsFlagEnabled("testWebsocketBalances")) {
-      return data;
-    }
-
-    if (!data) return undefined;
-
-    const balancesData: TokenBalancesData = { ...data };
-
-    Object.keys(tokensBalancesUpdates).forEach((tokenAddress) => {
-      if (balancesData[tokenAddress] === undefined) {
-        return;
-      }
-
-      const balanceUpdate = tokensBalancesUpdates[tokenAddress];
-
-      if (balanceUpdate?.diff !== undefined) {
-        balancesData[tokenAddress] = balancesData[tokenAddress] + balanceUpdate.diff;
-      } else if (balanceUpdate?.balance !== undefined) {
-        balancesData[tokenAddress] = balanceUpdate.balance;
-      }
-    });
-
-    return balancesData;
-  }, [data, tokensBalancesUpdates]);
+  const balancesData = useUpdatedTokensBalances(data);
 
   return {
     balancesData,

@@ -2,6 +2,7 @@ import DataStore from "abis/DataStore.json";
 import GlvReader from "abis/GlvReader.json";
 import TokenAbi from "abis/Token.json";
 
+import { getIsFlagEnabled } from "config/ab";
 import { getContract } from "config/contracts";
 import {
   glvMaxMarketTokenBalanceAmountKey,
@@ -13,13 +14,14 @@ import {
 import { USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
 import { getTokenBySymbol } from "config/tokens";
+import { useTokensBalancesContext } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
+import { useMemo } from "react";
 import { getContractMarketPrices, getGlvMarketName, GlvInfoData, MarketsInfoData } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
-import { useMemo } from "react";
 
 export type GlvList = {
   glv: {
@@ -51,6 +53,7 @@ export function useGlvMarketsInfo(
     filterIncorrectMarkets?: boolean;
   }
 ) {
+  const { resetTokensBalancesUpdates } = useTokensBalancesContext();
   const { marketsInfoData, tokensData, chainId, account, filterIncorrectMarkets } = deps;
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
@@ -312,6 +315,11 @@ export function useGlvMarketsInfo(
               }),
           };
         });
+
+        if (getIsFlagEnabled("testWebsocketBalances")) {
+          resetTokensBalancesUpdates(Object.keys(result));
+        }
+
         return result;
       },
     }

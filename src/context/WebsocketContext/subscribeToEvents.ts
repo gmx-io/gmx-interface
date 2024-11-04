@@ -1,7 +1,6 @@
 import EventEmitter from "abis/EventEmitter.json";
 import Token from "abis/Token.json";
 import { getContract, tryGetContract } from "config/contracts";
-import { MARKETS } from "config/markets";
 import { NATIVE_TOKEN_ADDRESS, getTokens } from "config/tokens";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
@@ -149,6 +148,7 @@ export function subscribeToTransferEvents(
   chainId: number,
   provider: Provider,
   account: string,
+  marketTokensAddresses: string[],
   onTransfer: (tokenAddress: string, amount: bigint) => void
 ) {
   const vaults = [
@@ -160,25 +160,25 @@ export function subscribeToTransferEvents(
   ].filter(Boolean);
   const vaultHashes = vaults.map((vault) => coder.encode(["address"], [vault]));
 
-  const marketsAddresses = Object.keys(MARKETS[chainId]);
-  const marketsHashes = marketsAddresses.map((address) => coder.encode(["address"], [address]));
+  const senderHashes = [ZeroAddress, ...marketTokensAddresses].map((address) => coder.encode(["address"], [address]));
 
   const accountHash = coder.encode(["address"], [account]);
 
   const tokenAddresses = getTokens(chainId)
     .filter((token) => !token.isSynthetic && isAddress(token.address) && token.address !== NATIVE_TOKEN_ADDRESS)
     .map((token) => token.address);
+  const allTokenAddresses = [...marketTokensAddresses, ...tokenAddresses];
 
   const tokenContract = new ethers.Contract(ZeroAddress, Token.abi, provider);
 
   const sendFilters: ProviderEvent = {
-    address: tokenAddresses,
+    address: allTokenAddresses,
     topics: [TRANSFER_HASH, accountHash, vaultHashes],
   };
 
   const receiveFilters: ProviderEvent = {
-    address: tokenAddresses,
-    topics: [TRANSFER_HASH, marketsHashes, accountHash],
+    address: allTokenAddresses,
+    topics: [TRANSFER_HASH, senderHashes, accountHash],
   };
 
   const handleSend = (log: LogParams) => {

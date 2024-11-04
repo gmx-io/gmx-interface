@@ -90,10 +90,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     account: currentAccount,
   });
 
-  const GlvAndGmMarketsData = useMemo(() => {
-    return {
+  const { glvAndGmMarketsData, marketTokensAddressesString } = useMemo(() => {
+    const glvAndGmMarketsData = {
       ...marketsInfoData,
       ...glvData,
+    };
+
+    const marketTokensAddressesString = Object.keys(glvAndGmMarketsData).join("-");
+
+    return {
+      glvAndGmMarketsData,
+      marketTokensAddressesString,
     };
   }, [marketsInfoData, glvData]);
 
@@ -796,7 +803,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      if (hasPageLostFocus || !wsProvider || !currentAccount) {
+      if (hasPageLostFocus || !wsProvider || !currentAccount || !marketTokensAddressesString) {
         return;
       }
 
@@ -804,6 +811,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         chainId,
         wsProvider,
         currentAccount,
+        marketTokensAddressesString.split("-"),
         (tokenAddress, amount) => {
           setTokensBalancesUpdates((old) => {
             const oldDiff = old[tokenAddress]?.diff || 0n;
@@ -819,7 +827,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         unsubscribeFromTokenEvents();
       };
     },
-    [chainId, currentAccount, hasPageLostFocus, setTokensBalancesUpdates, wsProvider]
+
+    [chainId, currentAccount, hasPageLostFocus, marketTokensAddressesString, setTokensBalancesUpdates, wsProvider]
   );
 
   useEffect(
@@ -900,7 +909,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingDepositData={data}
-            marketsInfoData={GlvAndGmMarketsData}
+            marketsInfoData={glvAndGmMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,
@@ -916,7 +925,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingWithdrawalData={data}
-            marketsInfoData={GlvAndGmMarketsData}
+            marketsInfoData={glvAndGmMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,
@@ -975,7 +984,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     marketsInfoData,
     tokensData,
     setPendingTxns,
-    GlvAndGmMarketsData,
+    glvAndGmMarketsData,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
