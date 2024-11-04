@@ -6,12 +6,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { TVChartHeader } from "./TVChartHeader";
 
+import { DepthChart } from "components/DepthChart/DepthChart";
 import Tab from "components/Tab/Tab";
+import { TVChart } from "./TVChart";
 
 import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
 import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
-import { DepthChart } from "./DepthChart";
-import { TVChart } from "./TVChart";
 
 import "./TVChart.scss";
 
