@@ -28,7 +28,7 @@
       "configs/*": ["configs/*"],
       "types/*": ["types/*"],
       "abis/*": ["abis/*"],
-      "prebuilt/*": ["prebuilt/*"]
+      "prebuilt": ["prebuild/index"]
     },
     "plugins": [
       { "transform": "typescript-transform-paths" },

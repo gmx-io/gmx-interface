@@ -7,7 +7,7 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
 import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
-import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "prebuilt";
+import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "../../prebuilt";
 import { MarketConfigMulticallRequestConfig, MarketValuesMulticallRequestConfig } from "./types";
 import { hashDataMap } from "utils/hash";
 import { getContract } from "configs/contracts";
