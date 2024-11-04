@@ -1,6 +1,5 @@
-import { hashDataMap } from "../../src/utils/hash";
+import { hashDataMap } from "utils/hash";
 
-import { Market } from "types/markets";
 import {
   BORROWING_EXPONENT_FACTOR_KEY,
   BORROWING_FACTOR_KEY,
@@ -40,9 +39,10 @@ import {
   THRESHOLD_FOR_STABLE_FUNDING,
   VIRTUAL_MARKET_ID_KEY,
   VIRTUAL_TOKEN_ID_KEY,
-} from "../../src/configs/dataStore";
+} from "configs/dataStore";
+import { MarketConfig } from "configs/markets";
 
-export function hashMarketConfigKeys(market: Market) {
+export function hashMarketConfigKeys(market: MarketConfig) {
   const marketAddress = market.marketTokenAddress;
   return hashDataMap({
     isDisabled: [
@@ -240,7 +240,7 @@ export function hashMarketConfigKeys(market: Market) {
   });
 }
 
-export function hashMarketValuesKeys(market: Market) {
+export function hashMarketValuesKeys(market: MarketConfig) {
   const marketAddress = market.marketTokenAddress;
   const marketKeys = hashDataMap({
     longPoolAmount: [

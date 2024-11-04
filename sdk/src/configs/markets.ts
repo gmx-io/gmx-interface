@@ -4,7 +4,7 @@
 */
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
-type MarketConfig = {
+export type MarketConfig = {
   marketTokenAddress: string;
   indexTokenAddress: string;
   longTokenAddress: string;
