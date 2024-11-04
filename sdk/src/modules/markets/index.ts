@@ -442,7 +442,7 @@ export class Markets extends Module {
     };
   }
 
-  async getDailyVolumes() {
+  async getDailyVolumes(): Promise<Record<string, bigint> | undefined> {
     const { marketsAddresses } = await this.getMarkets();
 
     const endpoint = getSubgraphUrl(this.sdk, "subsquid");
