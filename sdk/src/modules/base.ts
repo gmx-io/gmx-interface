@@ -1,5 +1,4 @@
-import type { GmxSdk } from "index";
-import { Oracle } from "./oracle";
+import type { GmxSdk } from "..";
 
 export class Module {
   constructor(public sdk: GmxSdk) {
@@ -15,6 +14,6 @@ export class Module {
   }
 
   get account() {
-    return this.sdk.config.account;
+    return this.sdk.account;
   }
 }

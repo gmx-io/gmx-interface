@@ -145,6 +145,7 @@ export class Multicall {
       .catch((_viemError) => {
         const e = new Error(_viemError.message.slice(0, 150));
 
+        /* eslint-disable-next-line */
         console.error(e);
 
         throw e;
@@ -154,6 +155,7 @@ export class Multicall {
       return result;
     }
 
+    /* eslint-disable-next-line */
     console.error(result.errors);
 
     return result;

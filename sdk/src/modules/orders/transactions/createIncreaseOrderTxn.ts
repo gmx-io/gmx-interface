@@ -114,13 +114,6 @@ export async function createIncreaseOrderTxn({
     initialCollateralTokenAddress,
   });
 
-  const orders =
-    concat<SecondaryDecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams>(
-      createDecreaseOrderParams ?? [],
-      cancelOrderParams ?? [],
-      updateOrderParams ?? []
-    ).map((p) => getPendingOrderFromParams(chainId, p.txnType, p)) || [];
-
   const simulationEncodedPayload = await createEncodedPayload({
     routerAbi: ExchangeRouter.abi as Abi,
     orderVaultAddress,

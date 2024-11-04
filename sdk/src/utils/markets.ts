@@ -1,10 +1,12 @@
-import { Token, TokensData } from "types/tokens";
-import { applyFactor, expandDecimals, PRECISION } from "./numbers";
+import { BASIS_POINTS_DIVISOR } from "configs/factors";
+import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+
 import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
+import { Token, TokensData } from "types/tokens";
+
+import { applyFactor, PRECISION } from "./numbers";
 import { getByKey } from "./objects";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "./tokens";
-import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { BASIS_POINTS_DIVISOR } from "configs/factors";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;

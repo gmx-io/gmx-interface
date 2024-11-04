@@ -38,7 +38,6 @@ export class Trades extends Module {
       isDepositOrWithdraw?: boolean;
     }[];
   }): Promise<TradeAction[]> {
-    const chainId = this.chainId;
     const account = this.account;
 
     const {
@@ -389,8 +388,6 @@ function createRawTradeActionTransformer(
   return (rawAction) => {
     const orderType = Number(rawAction.orderType);
 
-    console.log("-----------> ORDER TYPE", orderType);
-
     if (isSwapOrderType(orderType)) {
       const initialCollateralTokenAddress = getAddress(rawAction.initialCollateralTokenAddress!);
       const swapPath = rawAction.swapPath!.map((address) => getAddress(address));
@@ -449,13 +446,6 @@ function createRawTradeActionTransformer(
       const targetCollateralToken = getByKey(tokensData, swapPathOutputAddresses.outTokenAddress);
 
       if (!marketInfo || !indexToken || !initialCollateralToken || !targetCollateralToken) {
-        console.log(
-          "VI UU VII VUUU----------->",
-          marketInfo,
-          indexToken,
-          initialCollateralToken,
-          targetCollateralToken
-        );
         return undefined;
       }
 

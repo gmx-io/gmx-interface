@@ -1,4 +1,4 @@
-import { arbitrumSdk } from "utils/test";
+import { arbitrumSdk } from "utils/testUtil";
 
 describe("Positions", () => {
   describe("getPositions", () => {

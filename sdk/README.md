@@ -1,14 +1,15 @@
-# GMX SDK
+# <img src="https://app.gmx.io/favicon/apple-icon-144x144.png" width="28" height="28"> GMX SDK
 
 ## Install
 
 ```bash
-yarn add @gmx/sdk
+yarn add @gmx-io/sdk # or
+npm install --save @gmx-io/sdk
 ```
 
 ## Usage
 
-```javascript
+```typescript
 import { GmxSdk } from "@gmx/sdk";
 import { useWallet } from "wagmi";
 
@@ -17,6 +18,9 @@ const sdk = new GmxSdk({
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   walletClient: useWallet().walletClient,
+  subgraph: {
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
+  },
 });
 
 const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
@@ -54,26 +58,100 @@ sdk.positions.getPositions().then((positions) => {
 
 - `getTradeHistory(p: Parameters): Promise<TradeAction[]>` - returns a list of trades
 
-#### Parameters:
-
-```typescript
-forAllAccounts?: boolean;
-pageSize: number;
-fromTxTimestamp?: number;
-toTxTimestamp?: number;
-marketsInfoData: MarketsInfoData | undefined;
-tokensData: TokensData | undefined;
-pageIndex: number;
-marketsDirectionsFilter?: MarketFilterLongShortItemData[];
-orderEventCombinations?: {
-    eventName?: TradeActionType;
-    orderType?: OrderType;
-    isDepositOrWithdraw?: boolean;
-}[];
-```
-
 ### Write methods
 
 ### Orders
 
-- `cancelOrders(orderKeys: string[])` - creates an order
+- `cancelOrders(orderKeys: string[])` - cancels orders by order keys
+- `createIncreaseOrder(p: Parameters)` - creates an increase order (see [examples](#examples))
+- `createDecreaseOrder(p: Parameters)` - creates a decrease order (see [examples](#examples))
+- `createSwapOrder(p: Parameters)` - creates a swap order (see [examples](#examples))
+
+## Configuration
+
+```typescript
+interface GmxSdkConfig {
+  chainId: number;
+  rpcUrl: string;
+  oracleUrl: string;
+  subgraph: {
+    subsquid?: string;
+  };
+  account?: string;
+  publicClient: PublicClient;
+  walletClient: WalletClient;
+  tokens?: Record<string, Partial<Token>>;
+  markets?: Record<
+    string,
+    {
+      isListed: boolean;
+    }
+  >;
+}
+```
+
+### Tokens customization
+
+If you need to override some field in tokens, just pass extension object in SDK config:
+
+```typescript
+const sdk = new GmxSdk({
+  ...arbitrumSdkConfig,
+  tokens: {
+    "0x912CE59144191C1204E64559FE8253a0e49E6548": {
+      name: "My Custom Name for ARB",
+    },
+  },
+});
+```
+
+Here and further, `name` field in tokens data object will be taken from the extension object.
+
+### Markets customization
+
+To enable/disable market in SDK use config field `markets
+
+```typescript
+const sdk = new GmxSdk({
+  ...arbitrumSdkConfig,
+  markets: {
+    "0x47c031236e19d024b42f8AE6780E44A573170703": {
+      isListed: false,
+    },
+  },
+});
+```
+
+## Examples
+
+### Open long position
+
+```typescript
+import type { IncreasePositionAmounts } from "@gmx-io/sdk/types/orders";
+
+const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
+
+if (!marketsInfoData || !tokensData) {
+  throw new Error("No markets or tokens info data");
+}
+
+const marketInfo = marketsInfo["0x47c031236e19d024b42f8AE6780E44A573170703"];
+const collateralToken = tokensData["0x912CE59144191C1204E64559FE8253a0e49E6548"];
+sdk.orders.createIncreaseOrder({
+  marketsInfoData: marketsInfoData!,
+  tokensData,
+  isLimit: false,
+  isLong: true,
+  marketAddress: marketInfo.marketTokenAddress,
+  allowedSlippage: 50,
+  collateralToken,
+  collateralTokenAddress: collateralToken.address,
+  receiveTokenAddress: collateralToken.address,
+  fromToken: tokensData["0x912CE59144191C1204E64559FE8253a0e49E6548"],
+  marketInfo,
+  indexToken: marketInfo.indexToken,
+  increaseAmounts: {
+    // amounts for position
+  },
+});
+```

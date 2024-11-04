@@ -138,6 +138,7 @@ export async function buildMarketsValuesRequest(
     let prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
+      // eslint-disable-next-line no-console
       console.warn(
         `No pre-built hashed market keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
       );
@@ -233,6 +234,7 @@ export async function buildMarketsConfigsRequest(
     let prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
+      // eslint-disable-next-line no-console
       console.warn(
         `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
       );

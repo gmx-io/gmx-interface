@@ -1,25 +1,27 @@
 import type { PublicClient, WalletClient } from "viem";
-import { Token } from "./tokens";
+import type { Token } from "./tokens";
+import type { MarketSdkConfig } from "./markets";
 
 export interface GmxSdkConfig {
+  /** Chain ID */
   chainId: number;
+  /** Account's address */
   account?: string;
+  /** GMX Oracle URL */
   oracleUrl: string;
+  /** Blockhain RPC URL */
   rpcUrl: string;
+  /** GMX Subgraph URLs */
   subgraph: {
-    stats?: string;
-    referrals?: string;
-    nissohVault?: string;
-    syntheticsStats?: string;
     subsquid?: string;
   };
 
+  /** Custom viem's public and private client */
   publicClient?: PublicClient;
   walletClient?: WalletClient;
 
-  tokens?: Token[];
-
-  onEmitMetricCounter?(e: { event: string; data: any }): void;
-  onEmitMetricTiming?(e: { event: string; time: number; data: any }): void;
-  onEmitMetricEvent?(e: { event: string; isError: boolean; data: any }): void;
+  /** Tokens override configurations */
+  tokens?: Record<string, Partial<Token>>;
+  /** Markets override configurations */
+  markets?: Record<string, Partial<MarketSdkConfig>>;
 }

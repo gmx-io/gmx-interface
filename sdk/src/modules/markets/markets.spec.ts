@@ -1,4 +1,5 @@
-import { arbitrumSdk } from "utils/test";
+import { GmxSdk } from "../../index";
+import { arbitrumSdk, arbitrumSdkConfig } from "utils/testUtil";
 
 describe("Markets", () => {
   describe("getMarkets", () => {
@@ -14,16 +15,20 @@ describe("Markets", () => {
       expect(marketsData.marketsAddresses).toBeDefined();
       expect(marketsData.marketsData).toBeDefined();
     });
-  });
 
-  describe("getMarketsConfigs", () => {
-    it("should be able to get markets configs", async () => {
-      const data = await arbitrumSdk.markets.getMarkets();
-      const response = await arbitrumSdk.markets.getMarketsConfigs({
-        marketsAddresses: data.marketsAddresses,
-        marketsData: data.marketsData,
+    it("should respect config filters", async () => {
+      const sdk = new GmxSdk({
+        ...arbitrumSdkConfig,
+        markets: {
+          "0x47c031236e19d024b42f8AE6780E44A573170703": {
+            isListed: false,
+          },
+        },
       });
-      expect(response).toBeDefined();
+      const baseSdkResponse = await arbitrumSdk.markets.getMarkets();
+      const sdkResponse = await sdk.markets.getMarkets();
+      expect(baseSdkResponse.marketsData?.["0x47c031236e19d024b42f8AE6780E44A573170703"]).toBeDefined();
+      expect(sdkResponse.marketsData?.["0x47c031236e19d024b42f8AE6780E44A573170703"]).not.toBeDefined();
     });
   });
 

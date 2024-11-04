@@ -2,6 +2,14 @@ import { TokenData } from "./tokens";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
+export type MarketSdkConfig = {
+  marketToken: string;
+  indexToken: string;
+  longToken: string;
+  shortToken: string;
+  isListed: boolean;
+};
+
 export type Market = {
   marketTokenAddress: string;
   indexTokenAddress: string;

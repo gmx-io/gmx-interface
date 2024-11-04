@@ -1,4 +1,4 @@
-import { arbitrumSdk } from "utils/test";
+import { arbitrumSdk } from "utils/testUtil";
 
 describe("Trades", () => {
   it("should be able to get positions", async () => {

@@ -119,7 +119,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
       const decodedError = decodeErrorResult({
         abi: CustomErrors.abi,
-        data: errorData as any,
+        data: errorData as Address,
       });
 
       const isSimulationPassed = decodedError.errorName === "EndOfOracleSimulation";
@@ -138,8 +138,10 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
       msg = `${txnError?.info?.error?.message ?? decodedError.errorName ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`;
     } catch (parsingError) {
+      /* eslint-disable-next-line */
       console.error(parsingError);
       msg = `Execute order simulation failed`;
+      throw new Error(msg);
     }
 
     throw txnError;

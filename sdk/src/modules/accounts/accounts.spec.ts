@@ -1,4 +1,4 @@
-import { arbitrumSdk } from "utils/test";
+import { arbitrumSdk } from "utils/testUtil";
 
 describe("Accounts", () => {
   it("should be able to get delegates", async () => {

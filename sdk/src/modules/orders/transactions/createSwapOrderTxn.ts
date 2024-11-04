@@ -1,13 +1,18 @@
+import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
+
 import ExchangeRouter from "abis/ExchangeRouter.json";
+
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "configs/tokens";
 
-import type { GmxSdk } from "../../../index";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { TokensData } from "types/tokens";
+
 import { isMarketOrderType } from "utils/orders";
 import { applySlippageToMinOut } from "utils/trade";
-import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
+import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
+
+import type { GmxSdk } from "../../..";
 
 export type SwapOrderParams = {
   fromTokenAddress: string;
@@ -23,39 +28,17 @@ export type SwapOrderParams = {
 };
 
 export async function createSwapOrderTxn(sdk: GmxSdk, p: SwapOrderParams) {
-  // const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
-  const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const { encodedPayload, totalWntAmount } = await getParams(sdk, p);
+  const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(sdk, p);
 
-  const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(sdk, p);
-  // const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(sdk, p);
-
-  const initialCollateralTokenAddress = convertTokenAddress(sdk.chainId, p.fromTokenAddress, "wrapped");
-
-  const swapOrder = {
-    account: sdk.config.account,
-    marketAddress: zeroAddress,
-    initialCollateralTokenAddress,
-    initialCollateralDeltaAmount: p.fromTokenAmount,
-    swapPath: p.swapPath,
-    sizeDeltaUsd: 0n,
-    minOutputAmount,
-    isLong: false,
-    orderType: p.orderType,
-    shouldUnwrapNativeToken: isNativeReceive,
-    referralCode: p.referralCode,
-    txnType: "create",
-  };
-
-  // if (p.orderType !== OrderType.LimitSwap) {
-  //   await simulateExecuteTxn(chainId, {
-  //     account: p.account,
-  //     primaryPriceOverrides: {},
-  //     createMulticallPayload: simulationEncodedPayload,
-  //     value: sumaltionTotalWntAmount,
-  //     tokensData: p.tokensData,
-  //     errorTitle: t`Order error.`,
-  //   });
-  // }
+  if (p.orderType !== OrderType.LimitSwap) {
+    await simulateExecuteOrder(sdk, {
+      primaryPriceOverrides: {},
+      createMulticallPayload: simulationEncodedPayload,
+      value: sumaltionTotalWntAmount,
+      tokensData: p.tokensData,
+    });
+  }
 
   await sdk.callContract(
     getContract(sdk.chainId, "ExchangeRouter"),

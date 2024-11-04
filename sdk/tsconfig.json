@@ -27,5 +27,5 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
-  "include": ["./src", "./src/**/*.json"]
+  "include": ["./src", "./src/**/*.json", "./scripts"]
 }

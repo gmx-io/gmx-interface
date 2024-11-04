@@ -1,14 +1,12 @@
 import { zeroAddress } from "viem";
 
-import type { ApiMarket } from "modules/oracle";
-
 import { getContract } from "configs/contracts";
 import { getSubgraphUrl } from "configs/subgraph";
 import { convertTokenAddress, getToken } from "configs/tokens";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 
-import { ClaimableFundingData, MarketInfo, MarketsData, MarketsInfoData } from "types/markets";
+import { ClaimableFundingData, MarketInfo, MarketsData, MarketSdkConfig, MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
 
 import { TIMEZONE_OFFSET_SEC } from "utils/common";
@@ -25,94 +23,7 @@ import {
 import { MarketConfig, MarketsInfoResult, MarketsResult, MarketValues } from "./types";
 
 export class Markets extends Module {
-  private _marketsData: MarketsResult | undefined;
-  async getMarkets(offset = 0n, limit = 100n): Promise<MarketsResult> {
-    if (this._marketsData) {
-      return this._marketsData;
-    }
-
-    const readerAddress = getContract(this.chainId, "SyntheticsReader");
-    const dataStoreAddress = getContract(this.chainId, "DataStore");
-
-    const apiMarkets = await this.sdk.oracle.getMarkets();
-
-    const marketsMap = apiMarkets.reduce(
-      (acc, market) => {
-        return {
-          ...acc,
-          [market.marketToken]: market,
-        };
-      },
-      {} as { [marketToken: string]: ApiMarket }
-    );
-
-    const markets = await this.sdk
-      .executeMulticall({
-        markets: {
-          contractAddress: readerAddress,
-          abi: SyntheticsReader.abi,
-          calls: {
-            markets: {
-              methodName: "getMarkets",
-              params: [dataStoreAddress, offset, offset + limit],
-            },
-          },
-        },
-      })
-      .then((res) => {
-        return res.data.markets.markets.returnValues.map(
-          (market: { marketToken: string; indexToken: string; longToken: string; shortToken: string }) => {
-            return {
-              marketTokenAddress: market.marketToken,
-              indexTokenAddress: market.indexToken,
-              longTokenAddress: market.longToken,
-              shortTokenAddress: market.shortToken,
-            };
-          }
-        );
-      });
-
-    const chainId = this.chainId;
-
-    const marketsResult = markets.reduce(
-      (acc: MarketsResult, market) => {
-        try {
-          if (!marketsMap[market.marketTokenAddress]?.isListed) {
-            return acc;
-          }
-
-          const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
-          const longToken = getToken(chainId, market.longTokenAddress);
-          const shortToken = getToken(chainId, market.shortTokenAddress);
-
-          const isSameCollaterals = market.longTokenAddress === market.shortTokenAddress;
-          const isSpotOnly = market.indexTokenAddress === zeroAddress;
-
-          const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
-
-          acc.marketsAddresses!.push(market.marketTokenAddress);
-          acc.marketsData![market.marketTokenAddress] = {
-            ...market,
-            isSameCollaterals,
-            isSpotOnly,
-            name,
-            data: "",
-          };
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.warn(`Unsupported market ${market.marketTokenAddress}`, e);
-        }
-
-        return acc;
-      },
-      { marketsData: {}, marketsAddresses: [] }
-    );
-
-    this._marketsData = marketsResult;
-    return marketsResult;
-  }
-
-  async getClaimableFundingData() {
+  private async getClaimableFundingData() {
     const chainId = this.chainId;
     const account = this.account;
 
@@ -154,7 +65,7 @@ export class Markets extends Module {
       });
   }
 
-  async getMarketsValues({
+  private async getMarketsValues({
     marketsAddresses,
     marketsData,
     tokensData,
@@ -277,10 +188,7 @@ export class Markets extends Module {
     });
   }
 
-  /**
-   * Fetch market configs from the blockchain
-   */
-  async getMarketsConfigs({
+  private async getMarketsConfigs({
     marketsAddresses,
     marketsData,
   }: {
@@ -379,18 +287,105 @@ export class Markets extends Module {
     });
   }
 
+  private _marketsData: MarketsResult | undefined;
+  async getMarkets(offset = 0n, limit = 100n): Promise<MarketsResult> {
+    if (this._marketsData) {
+      return this._marketsData;
+    }
+
+    const readerAddress = getContract(this.chainId, "SyntheticsReader");
+    const dataStoreAddress = getContract(this.chainId, "DataStore");
+
+    const apiMarkets = await this.sdk.oracle.getMarkets();
+    const configMarkets = this.sdk.config.markets ?? {};
+
+    const marketsMap = apiMarkets.reduce(
+      (acc, market) => {
+        if (configMarkets[market.marketToken]?.isListed === false) {
+          return acc;
+        }
+
+        return {
+          ...acc,
+          [market.marketToken]: market,
+        };
+      },
+      {} as { [marketToken: string]: MarketSdkConfig }
+    );
+
+    const markets = await this.sdk
+      .executeMulticall({
+        markets: {
+          contractAddress: readerAddress,
+          abi: SyntheticsReader.abi,
+          calls: {
+            markets: {
+              methodName: "getMarkets",
+              params: [dataStoreAddress, offset, offset + limit],
+            },
+          },
+        },
+      })
+      .then((res) => {
+        return res.data.markets.markets.returnValues.map(
+          (market: { marketToken: string; indexToken: string; longToken: string; shortToken: string }) => {
+            return {
+              marketTokenAddress: market.marketToken,
+              indexTokenAddress: market.indexToken,
+              longTokenAddress: market.longToken,
+              shortTokenAddress: market.shortToken,
+            };
+          }
+        );
+      });
+
+    const chainId = this.chainId;
+
+    const marketsResult = markets.reduce(
+      (acc: MarketsResult, market) => {
+        try {
+          if (!marketsMap[market.marketTokenAddress]?.isListed) {
+            return acc;
+          }
+
+          const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
+          const longToken = getToken(chainId, market.longTokenAddress);
+          const shortToken = getToken(chainId, market.shortTokenAddress);
+
+          const isSameCollaterals = market.longTokenAddress === market.shortTokenAddress;
+          const isSpotOnly = market.indexTokenAddress === zeroAddress;
+
+          const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
+
+          acc.marketsAddresses!.push(market.marketTokenAddress);
+          acc.marketsData![market.marketTokenAddress] = {
+            ...market,
+            isSameCollaterals,
+            isSpotOnly,
+            name,
+            data: "",
+          };
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn(`Unsupported market ${market.marketTokenAddress}`, e);
+        }
+
+        return acc;
+      },
+      { marketsData: {}, marketsAddresses: [] }
+    );
+
+    this._marketsData = marketsResult;
+    return marketsResult;
+  }
+
   async getMarketsInfo(): Promise<MarketsInfoResult> {
     const { marketsData, marketsAddresses } = await this.getMarkets();
-    const {
-      tokensData,
-      pricesUpdatedAt,
-      error: tokensDataError,
-      isBalancesLoaded,
-    } = await this.sdk.tokens.getTokensData();
+    const { tokensData, pricesUpdatedAt } = await this.sdk.tokens.getTokensData();
 
     const [marketsValues, marketsConfigs, claimableFundingData] = await Promise.all([
       this.getMarketsValues({
-        account: this.sdk.config.account,
+        account: this.account,
         marketsAddresses,
         marketsData,
         tokensData,
@@ -399,7 +394,6 @@ export class Markets extends Module {
         marketsAddresses,
         marketsData,
       }),
-
       this.getClaimableFundingData(),
     ]);
 
@@ -408,8 +402,6 @@ export class Markets extends Module {
         marketsInfoData: {},
         tokensData,
         pricesUpdatedAt,
-        error: tokensDataError,
-        isBalancesLoaded,
       };
     }
 
@@ -443,14 +435,10 @@ export class Markets extends Module {
       marketsInfoData[marketAddress] = fullMarketInfo;
     }
 
-    const error = tokensDataError;
-
     return {
       marketsInfoData,
       tokensData,
       pricesUpdatedAt,
-      error,
-      isBalancesLoaded,
     };
   }
 

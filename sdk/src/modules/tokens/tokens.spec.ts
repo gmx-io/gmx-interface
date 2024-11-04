@@ -1,4 +1,5 @@
-import { arbitrumSdk } from "utils/test";
+import { GmxSdk } from "../..";
+import { arbitrumSdk, arbitrumSdkConfig } from "utils/testUtil";
 
 describe("Tokens", () => {
   it("should be able to fetch tokens", async () => {
@@ -6,17 +7,24 @@ describe("Tokens", () => {
     expect(response).toBeDefined();
   });
 
-  it("should be able to get tokens balances", async () => {
-    const response = await arbitrumSdk.tokens.getTokensBalances();
-    expect(response).toBeDefined();
+  it("should respect passed config", async () => {
+    const ARB = "0x912CE59144191C1204E64559FE8253a0e49E6548";
+    const sdk = new GmxSdk({
+      ...arbitrumSdkConfig,
+      tokens: {
+        [ARB]: {
+          symbol: "testARB",
+        },
+      },
+    });
+
+    const data = await sdk.tokens.getTokensData();
+
+    expect(sdk.tokens.tokensConfig[ARB]?.symbol).toBe("testARB");
+    expect(data.tokensData?.[ARB].symbol).toBe("testARB");
   });
 
-  it("should be able to get tokens prices", async () => {
-    const response = await arbitrumSdk.tokens.getTokenRecentPrices();
-    expect(response).toBeDefined();
-  });
-
-  it.only("should be able to get tokens data", async () => {
+  it("should be able to get tokens data", async () => {
     const response = await arbitrumSdk.tokens.getTokensData();
     expect(response).toBeDefined();
   });

@@ -104,15 +104,7 @@ export class GmxSdk {
 
   async executeMulticall<T = any>(request: MulticallRequestConfig<any>) {
     const multicall = await Multicall.getInstance(this);
-    const promise: Promise<T> & { request?: MulticallRequestConfig<any> } = multicall?.call(
-      request,
-      MAX_TIMEOUT
-    ) as Promise<T>;
-
-    // debug mode
-    promise.request = request;
-
-    return promise;
+    return multicall?.call(request, MAX_TIMEOUT) as Promise<T>;
   }
 
   async callContract(address: Address, abi: Abi, method: string, params: any[], opts?: CallContractOpts) {
@@ -121,6 +113,14 @@ export class GmxSdk {
 
   get chainId() {
     return this.config.chainId;
+  }
+
+  get chain() {
+    return getChain(this.chainId);
+  }
+
+  get account() {
+    return this.config.account as Address;
   }
 
   _gasLimits: GasLimitsConfig | null = null;

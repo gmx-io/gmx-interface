@@ -2,6 +2,7 @@ import fetch from "cross-fetch";
 
 import type { GmxSdk } from "../index";
 import { buildUrl } from "utils/buildUrl";
+import { MarketSdkConfig } from "types/markets";
 
 export type TickersResponse = {
   minPrice: string;
@@ -19,15 +20,6 @@ export type TokensResponse = {
   synthetic: boolean;
 }[];
 
-export type ApiMarket = {
-  marketToken: string;
-  indexToken: string;
-  longToken: string;
-  shortToken: string;
-  isListed: boolean;
-};
-export type MarketsResponse = ApiMarket[];
-
 export class Oracle {
   private url: string;
 
@@ -35,7 +27,7 @@ export class Oracle {
     this.url = sdk.config.oracleUrl;
   }
 
-  getMarkets(): Promise<MarketsResponse> {
+  getMarkets(): Promise<MarketSdkConfig[]> {
     return fetch(buildUrl(this.url!, "/markets"))
       .then((res) => res.json())
       .then((res) => {

@@ -126,9 +126,6 @@
       "last 1 safari version"
     ]
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@lingui/cli": "4.10.0",
@@ -165,6 +162,10 @@
     "vitest": "2.0.5"
   },
   "lint-staged": {
+    "sdk/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix --max-warnings=0 ./sdk",
+      "prettier --write"
+    ],
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix --max-warnings=0 ./src",
       "prettier --write"

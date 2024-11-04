@@ -1,12 +1,5 @@
 import { getContract } from "configs/contracts";
-import {
-  NATIVE_TOKEN_ADDRESS,
-  createTokensMap,
-  getToken,
-  getTokensMap,
-  getV2Tokens,
-  getWrappedToken,
-} from "configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, getToken, getTokensMap, getV2Tokens, getWrappedToken } from "configs/tokens";
 import { TokenBalancesData, TokenPricesData, TokensData, Token as TToken } from "types/tokens";
 
 import Multicall from "abis/Multicall.json";
@@ -23,8 +16,6 @@ type TokenPricesDataResult = {
 type TokensDataResult = {
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
-  isBalancesLoaded?: boolean;
-  error?: Error;
 };
 
 export class Tokens extends Module {
@@ -34,15 +25,21 @@ export class Tokens extends Module {
       return this._tokensConfigs;
     }
 
-    const tokenConfigs =
-      this._tokensConfigs ??
-      (this.sdk.config.tokens ? createTokensMap(this.sdk.config.tokens) : getTokensMap(this.chainId));
+    const tokenConfigs = this._tokensConfigs ?? getTokensMap(this.chainId);
+
+    Object.entries(this.sdk.config.tokens ?? []).forEach(([address, token]) => {
+      tokenConfigs[address] = {
+        ...tokenConfigs[address],
+        ...token,
+      };
+    });
+
     this._tokensConfigs = tokenConfigs;
 
     return tokenConfigs;
   }
 
-  getTokenRecentPrices(): Promise<TokenPricesDataResult> {
+  private getTokenRecentPrices(): Promise<TokenPricesDataResult> {
     return this.oracle.getTickers().then((priceItems) => {
       const result: TokenPricesData = {};
 
@@ -76,7 +73,7 @@ export class Tokens extends Module {
     });
   }
 
-  getTokensBalances(
+  private getTokensBalances(
     account?: string,
     tokensList?: {
       address: string;

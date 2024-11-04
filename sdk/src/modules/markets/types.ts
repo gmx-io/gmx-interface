@@ -12,8 +12,6 @@ export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   pricesUpdatedAt?: number;
-  isBalancesLoaded?: boolean;
-  error?: Error;
 };
 
 export type MarketValues = Pick<
