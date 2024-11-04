@@ -266,6 +266,17 @@ export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: b
 }
 
 export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, maximize: boolean) {
+  let res: bigint | undefined = undefined;
+  if (maximize) {
+    res = isLong ? marketInfo.pnlLongMax : marketInfo.pnlShortMax;
+  } else {
+    res = isLong ? marketInfo.pnlLongMin : marketInfo.pnlShortMin;
+  }
+
+  if (res !== undefined) {
+    return res;
+  }
+
   const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
   const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
 
