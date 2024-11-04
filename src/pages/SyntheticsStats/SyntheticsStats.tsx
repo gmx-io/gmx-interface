@@ -806,7 +806,7 @@ export function SyntheticsStats() {
 
               const cappedShortPnlMax = getCappedPoolPnl({
                 marketInfo: market,
-                poolUsd: getPoolUsdWithoutPnl(market, false, "minPrice"),
+                poolUsd: getPoolUsdWithoutPnl(market, false, "maxPrice"),
                 poolPnl: shortPnlMax,
                 isLong: false,
               });

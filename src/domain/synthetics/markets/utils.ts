@@ -265,7 +265,8 @@ export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: b
   return maximize ? prices.minPrice : prices.maxPrice;
 }
 
-export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, maximize: boolean) {
+export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, forMaxPoolValue: boolean) {
+  const maximize = !forMaxPoolValue;
   const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
   const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
 
