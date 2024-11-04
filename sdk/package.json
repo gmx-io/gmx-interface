@@ -5,14 +5,14 @@
   "main": "build/src/index.js",
   "exports": {
     ".": {
-      "import": "./build/index.js",
-      "require": "./build/index.js"
+      "import": "./build/src/index.js",
+      "require": "./build/src/index.js"
     },
     "./abis/*": "./build/abis/*",
     "./prebuilt/*": "./build/prebuilt/*",
-    "./utils/*": "./build/utils/*",
-    "./types/*": "./build/types/*",
-    "./configs/*": "./build/configs/*"
+    "./utils/*": "./build/src/utils/*",
+    "./types/*": "./build/src/types/*",
+    "./configs/*": "./build/src/configs/*"
   },
   "scripts": {
     "prebuild": "yarn tsx scripts/prebuild",
