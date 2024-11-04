@@ -171,9 +171,9 @@ export class Orders extends Module {
       throw new Error("Account is not defined");
     }
 
-    const gasLimits = await this.sdk.getGasLimits();
-    const gasPrice = await this.sdk.getGasPrice();
-    const executionFee = await this.sdk.getExecutionFee("increase", {
+    const gasLimits = await this.sdk.utils.getGasLimits();
+    const gasPrice = await this.sdk.utils.getGasPrice();
+    const executionFee = await this.sdk.utils.getExecutionFee("increase", tokensData, {
       increaseAmounts,
     });
 
@@ -301,7 +301,7 @@ export class Orders extends Module {
       throw new Error("Account is not defined");
     }
 
-    const executionFee = await this.sdk.getExecutionFee("decrease", {
+    const executionFee = await this.sdk.utils.getExecutionFee("decrease", tokensData, {
       decreaseAmounts,
     });
 
@@ -375,7 +375,7 @@ export class Orders extends Module {
   }) {
     const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
-    const executionFee = await this.sdk.getExecutionFee("swap", {
+    const executionFee = await this.sdk.utils.getExecutionFee("swap", tokensData, {
       swapAmounts,
     });
 

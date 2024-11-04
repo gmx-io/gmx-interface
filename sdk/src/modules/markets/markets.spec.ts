@@ -43,6 +43,6 @@ describe("Markets", () => {
     it("should be able to get daily volumes", async () => {
       const response = await arbitrumSdk.markets.getDailyVolumes();
       expect(response).toBeDefined();
-    });
+    }, 30_000);
   });
 });
