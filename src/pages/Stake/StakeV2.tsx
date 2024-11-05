@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
@@ -811,6 +812,7 @@ function ClaimModal(props: {
   wrappedTokenSymbol: string;
   isNativeTokenToClaim?: boolean;
   gmxUsageOptionsMsg?: React.ReactNode;
+  onClaimSuccess?: () => void;
 }) {
   const {
     isVisible,
@@ -824,6 +826,7 @@ function ClaimModal(props: {
     wrappedTokenSymbol,
     isNativeTokenToClaim,
     gmxUsageOptionsMsg,
+    onClaimSuccess,
   } = props;
   const [isClaiming, setIsClaiming] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -927,6 +930,7 @@ function ClaimModal(props: {
     )
       .then(() => {
         setIsVisible(false);
+        onClaimSuccess?.();
       })
       .finally(() => {
         setIsClaiming(false);
@@ -1394,34 +1398,32 @@ export default function StakeV2() {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
-  const showStakeGmxModal = useCallback(
-    ({ resetValue = true } = {}) => {
-      if (!isGmxTransferEnabled) {
-        helperToast.error(t`GMX transfers not yet enabled`);
-        return;
-      }
+  const showStakeGmxModal = useCallback(() => {
+    if (!isGmxTransferEnabled) {
+      helperToast.error(t`GMX transfers not yet enabled`);
+      return;
+    }
 
-      setIsStakeModalVisible(true);
-      setStakeModalTitle(t`Stake GMX`);
-      setStakeModalMaxAmount(processedData?.gmxBalance);
-      setStakingTokenSymbol("GMX");
-      setStakingTokenAddress(gmxAddress);
-      setStakingFarmAddress(stakedGmxTrackerAddress);
-      setStakeMethodName("stakeGmx");
+    setIsStakeModalVisible(true);
+    setStakeModalTitle(t`Stake GMX`);
+    setStakeModalMaxAmount(processedData?.gmxBalance);
+    setStakeValue("");
+    setStakingTokenSymbol("GMX");
+    setStakingTokenAddress(gmxAddress);
+    setStakingFarmAddress(stakedGmxTrackerAddress);
+    setStakeMethodName("stakeGmx");
+  }, [
+    isGmxTransferEnabled,
+    processedData?.gmxBalance,
+    gmxAddress,
+    stakedGmxTrackerAddress,
+    setStakeModalMaxAmount,
+    setStakeValue,
+  ]);
 
-      if (resetValue) {
-        setStakeValue("");
-      }
-    },
-    [
-      isGmxTransferEnabled,
-      processedData?.gmxBalance,
-      gmxAddress,
-      stakedGmxTrackerAddress,
-      setStakeModalMaxAmount,
-      setStakeValue,
-    ]
-  );
+  useEffect(() => {
+    setStakeModalMaxAmount(processedData?.gmxBalance);
+  }, [processedData?.gmxBalance]);
 
   const showStakeEsGmxModal = () => {
     setIsStakeModalVisible(true);
@@ -1636,11 +1638,11 @@ export default function StakeV2() {
     return `${formatAmount(gmxApy, 28, 2, true)}%`;
   }, [marketsTokensApyData, marketsTokensIncentiveAprData, gmxMarketAddress, chainId]);
 
+  const hideToasts = useCallback(() => toast.dismiss(), []);
   const handleStakeGmx = useCallback(async () => {
+    hideToasts();
     showStakeGmxModal();
-    await refetchBalances();
-    showStakeGmxModal({ resetValue: false }); // Updating maxAmount
-  }, [refetchBalances, showStakeGmxModal]);
+  }, [showStakeGmxModal, hideToasts]);
 
   return (
     <div className="default-container page-layout">
@@ -1729,6 +1731,7 @@ export default function StakeV2() {
         signer={signer}
         chainId={chainId}
         isNativeTokenToClaim={isAnyNativeTokenRewards}
+        onClaimSuccess={refetchBalances}
         gmxUsageOptionsMsg={
           <ul className="list-disc">
             <li className="!pb-0">
@@ -1743,7 +1746,11 @@ export default function StakeV2() {
               <>
                 <li className="!pb-0">
                   <Trans>
-                    <Link className="link-underline" to={`/pools/?market=${gmxMarketAddress}&operation=buy&scroll=1`}>
+                    <Link
+                      className="link-underline"
+                      to={`/pools/?market=${gmxMarketAddress}&operation=buy&scroll=1`}
+                      onClick={hideToasts}
+                    >
                       Provide liquidity
                     </Link>{" "}
                     and earn {gmxMarketApyDataText} APY
@@ -1751,7 +1758,11 @@ export default function StakeV2() {
                 </li>
                 <li className="!pb-0">
                   <Trans>
-                    <Link className="link-underline" to={`/trade/long/?mode=market&from=gmx&market=gmx`}>
+                    <Link
+                      className="link-underline"
+                      to={`/trade/long/?mode=market&from=gmx&market=gmx`}
+                      onClick={hideToasts}
+                    >
                       Trade GMX
                     </Link>
                   </Trans>
