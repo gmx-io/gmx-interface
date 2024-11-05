@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 import Checkbox from "components/Checkbox/Checkbox";
@@ -1137,14 +1137,10 @@ export default function StakeV2() {
 
   const icons = getIcons(chainId);
   const hasInsurance = true;
-  const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
-  const [stakeModalTitle, setStakeModalTitle] = useState("");
-  const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<bigint | undefined>(undefined);
-  const [stakeValue, setStakeValue] = useState("");
-  const [stakingTokenSymbol, setStakingTokenSymbol] = useState("");
-  const [stakingTokenAddress, setStakingTokenAddress] = useState("");
-  const [stakingFarmAddress, setStakingFarmAddress] = useState("");
-  const [stakeMethodName, setStakeMethodName] = useState("");
+  const [isStakeGmxModalVisible, setIsStakeGmxModalVisible] = useState(false);
+  const [stakeGmxValue, setStakeGmxValue] = useState("");
+  const [isStakeEsGmxModalVisible, setIsStakeEsGmxModalVisible] = useState(false);
+  const [stakeEsGmxValue, setStakeEsGmxValue] = useState("");
 
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
@@ -1404,37 +1400,14 @@ export default function StakeV2() {
       return;
     }
 
-    setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake GMX`);
-    setStakeModalMaxAmount(processedData?.gmxBalance);
-    setStakeValue("");
-    setStakingTokenSymbol("GMX");
-    setStakingTokenAddress(gmxAddress);
-    setStakingFarmAddress(stakedGmxTrackerAddress);
-    setStakeMethodName("stakeGmx");
-  }, [
-    isGmxTransferEnabled,
-    processedData?.gmxBalance,
-    gmxAddress,
-    stakedGmxTrackerAddress,
-    setStakeModalMaxAmount,
-    setStakeValue,
-  ]);
+    setIsStakeGmxModalVisible(true);
+    setStakeGmxValue("");
+  }, [isGmxTransferEnabled]);
 
-  useEffect(() => {
-    setStakeModalMaxAmount(processedData?.gmxBalance);
-  }, [processedData?.gmxBalance]);
-
-  const showStakeEsGmxModal = () => {
-    setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake esGMX`);
-    setStakeModalMaxAmount(processedData?.esGmxBalance);
-    setStakeValue("");
-    setStakingTokenSymbol("esGMX");
-    setStakingTokenAddress(esGmxAddress);
-    setStakingFarmAddress(ZeroAddress);
-    setStakeMethodName("stakeEsGmx");
-  };
+  const showStakeEsGmxModal = useCallback(() => {
+    setIsStakeEsGmxModalVisible(true);
+    setStakeEsGmxValue("");
+  }, []);
 
   const showGmxVesterDepositModal = () => {
     if (!vestingData) return;
@@ -1647,19 +1620,36 @@ export default function StakeV2() {
   return (
     <div className="default-container page-layout">
       <StakeModal
-        isVisible={isStakeModalVisible}
-        setIsVisible={setIsStakeModalVisible}
+        isVisible={isStakeGmxModalVisible}
+        setIsVisible={setIsStakeGmxModalVisible}
         chainId={chainId}
-        title={stakeModalTitle}
-        maxAmount={stakeModalMaxAmount}
-        value={stakeValue}
-        setValue={setStakeValue}
+        title={t`Stake GMX`}
+        maxAmount={processedData?.gmxBalance}
+        value={stakeGmxValue}
+        setValue={setStakeGmxValue}
         signer={signer}
-        stakingTokenSymbol={stakingTokenSymbol}
-        stakingTokenAddress={stakingTokenAddress}
-        farmAddress={stakingFarmAddress}
+        stakingTokenSymbol="GMX"
+        stakingTokenAddress={gmxAddress}
+        farmAddress={stakedGmxTrackerAddress}
         rewardRouterAddress={rewardRouterAddress}
-        stakeMethodName={stakeMethodName}
+        stakeMethodName="stakeGmx"
+        setPendingTxns={setPendingTxns}
+        processedData={processedData}
+      />
+      <StakeModal
+        isVisible={isStakeEsGmxModalVisible}
+        setIsVisible={setIsStakeEsGmxModalVisible}
+        chainId={chainId}
+        title={t`Stake esGMX`}
+        maxAmount={processedData?.esGmxBalance}
+        value={stakeEsGmxValue}
+        setValue={setStakeEsGmxValue}
+        signer={signer}
+        stakingTokenSymbol="esGMX"
+        stakingTokenAddress={esGmxAddress}
+        farmAddress={ZeroAddress}
+        rewardRouterAddress={rewardRouterAddress}
+        stakeMethodName="stakeEsGmx"
         setPendingTxns={setPendingTxns}
         processedData={processedData}
       />
