@@ -114,8 +114,8 @@ function App() {
   let app = <AppRoutes />;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
-  app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
