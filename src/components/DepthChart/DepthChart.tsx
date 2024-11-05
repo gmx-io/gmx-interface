@@ -49,7 +49,8 @@ const Y_AXIS_LABEL: LabelProps = {
   dx: 1,
   fontSize: 12,
 };
-const Y_AXIS_DOMAIN: [AxisDomainItem, AxisDomainItem] = [0, "auto"] as const;
+const Y_AXIS_DOMAIN: [AxisDomainItem, AxisDomainItem] = [0, "auto"];
+const DEFAULT_X_AXIS_DOMAIN: [AxisDomainItem, AxisDomainItem] = ["dataMin", "dataMax"];
 
 const ORACLE_PRICE_LABEL: ImplicitLabelType = {
   position: "bottom",
@@ -64,6 +65,17 @@ const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
 
 const CHART_MARGIN: Margin = { bottom: 10, top: 20 };
 const Y_AXIS_TICK: YAxisProps["tick"] = { fill: "#ffffff", opacity: 0.7, fontSize: 12 };
+const TICKS_SPACING = 120;
+const DEFAULT_TICK_COUNT_BIGINT = 9n;
+const LINE_PATH_ELLIPSIS = "3px 3px 3px 3px 3px 3px 100%";
+
+const ZERO_PRICE_IMPACT_LEFT_MULTIPLIER = 0.999;
+const ZERO_PRICE_IMPACT_LEFT_MULTIPLIER_BIGINT = 9990n;
+const ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER = 1.001;
+const ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER_BIGINT = 10010n;
+const FLOAT_PRECISION = 10000n;
+const FLOAT_DECIMALS = 4;
+const SIDE_POINTS_COUNT = 60n;
 
 export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -84,7 +96,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         if (isZeroPriceImpact) {
           return;
         }
-        setZoom((pZoom) => Math.min(Math.max(1, pZoom * Math.exp(-event.deltaY * 0.001)), 20));
+        setZoom((pZoom) => clamp(pZoom * Math.exp(-event.deltaY * 0.001), 1, 20));
       };
 
       container.addEventListener("wheel", handler, { passive: false });
@@ -131,7 +143,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
 
   const handleResize = useCallback(
     (width: number) => {
-      setTickCount(BigInt(Math.round(width / 120)));
+      setTickCount(BigInt(Math.round(width / TICKS_SPACING)));
     },
     [setTickCount]
   );
@@ -168,13 +180,13 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               dot={isZeroPriceImpact ? renderLeftLineDot : false}
               isAnimationActive={false}
               activeDot={renderActiveDotSemiTransparent}
-              strokeDasharray={drawLeftTransparentEllipsis ? "3px 3px 3px 3px 3px 3px 100%" : undefined}
+              strokeDasharray={drawLeftTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
             />
             <ReferenceDot
               x={leftMinExecutionPrice}
               y={bigintToNumber(leftMin, USD_DECIMALS)}
               fill={GREEN}
-              shape={<EdgeTick />}
+              shape={<TransparentOpaqueSeparatorDot />}
             />
           </>
         )}
@@ -186,7 +198,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           fill="url(#colorGreen)"
           isAnimationActive={false}
           activeDot={renderActiveDot}
-          strokeDasharray={drawLeftOpaqueEllipsis ? "3px 3px 3px 3px 3px 3px 100%" : undefined}
+          strokeDasharray={drawLeftOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
         />
         <Area
           dataKey="longIncreaseAndShortDecreaseSize"
@@ -196,7 +208,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           fill="url(#colorRed)"
           isAnimationActive={false}
           activeDot={renderActiveDot}
-          strokeDasharray={drawRightOpaqueEllipsis ? "3px 3px 3px 3px 3px 3px 100%" : undefined}
+          strokeDasharray={drawRightOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
         />
         {drawRightTransparent && (
           <>
@@ -204,7 +216,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               x={rightMinExecutionPrice}
               y={bigintToNumber(rightMin, USD_DECIMALS)}
               fill={RED}
-              shape={<EdgeTick />}
+              shape={<TransparentOpaqueSeparatorDot />}
             />
             <Line
               dataKey="longIncreaseXorShortDecreaseSize"
@@ -214,7 +226,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               dot={isZeroPriceImpact ? renderRightLineDot : false}
               isAnimationActive={false}
               activeDot={renderActiveDotSemiTransparent}
-              strokeDasharray={drawRightTransparentEllipsis ? "3px 3px 3px 3px 3px 3px 100%" : undefined}
+              strokeDasharray={drawRightTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
             />
           </>
         )}
@@ -234,7 +246,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           domain={Y_AXIS_DOMAIN}
           allowDataOverflow
           includeHidden={false}
-          tickFormatter={(value) => numberWithCommas(value / 1000)}
+          tickFormatter={yAxisTickFormatter}
         />
         <XAxis
           dataKey="executionPrice"
@@ -255,7 +267,6 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           stroke="#ffffff"
           opacity={0.6}
           strokeDasharray="2 2"
-          ifOverflow="extendDomain"
         />
       </ComposedChart>
     </ResponsiveContainer>
@@ -338,7 +349,6 @@ function LineDot(props: { cx: number; cy: number; stroke: string; opacity: numbe
   return (
     <>
       <path d={`M${cx},${cy}L${cx},${top + height}`} stroke={stroke} strokeWidth={2} opacity={opacity} />
-
       <path d={path} stroke={stroke} strokeWidth={2} opacity={opacity} />
     </>
   );
@@ -391,7 +401,7 @@ function Tick(props: any) {
   );
 }
 
-function EdgeTick(props: ReferenceDotProps) {
+function TransparentOpaqueSeparatorDot(props: ReferenceDotProps) {
   const { cx, cy, fill } = props;
 
   if (cy === undefined || cy === undefined) {
@@ -427,8 +437,8 @@ function useDepthChart(
   let leftMinExecutionPrice = 0;
   let rightMinExecutionPrice = 0;
 
-  const rightInc = (rightMax - DOLLAR) / 60n;
-  const leftInc = (leftMax - DOLLAR) / 60n;
+  const rightInc = (rightMax - DOLLAR) / SIDE_POINTS_COUNT;
+  const leftInc = (leftMax - DOLLAR) / SIDE_POINTS_COUNT;
 
   // open long
   for (let i = DOLLAR; i < rightMax; i += rightInc) {
@@ -657,12 +667,16 @@ function useTicks(
   const maxPriceFloat = bigintToNumber(maxPrice, USD_DECIMALS);
 
   const xAxisDomain: AxisDomain = isZeroPriceImpact
-    ? [minPriceFloat * 0.999, maxPriceFloat * 1.001]
-    : ["dataMin", "dataMax"];
+    ? [minPriceFloat * ZERO_PRICE_IMPACT_LEFT_MULTIPLIER, maxPriceFloat * ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER]
+    : DEFAULT_X_AXIS_DOMAIN;
 
-  let lowPrice = isZeroPriceImpact ? bigMath.mulDiv(leftExecutionPrice, 999n, 1000n) : leftExecutionPrice;
-  let highPrice = isZeroPriceImpact ? bigMath.mulDiv(rightExecutionPrice, 1001n, 1000n) : rightExecutionPrice;
-  let marketPriceIndex;
+  let lowPrice = isZeroPriceImpact
+    ? bigMath.mulDiv(leftExecutionPrice, ZERO_PRICE_IMPACT_LEFT_MULTIPLIER_BIGINT, FLOAT_PRECISION)
+    : leftExecutionPrice;
+  let highPrice = isZeroPriceImpact
+    ? bigMath.mulDiv(rightExecutionPrice, ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER_BIGINT, FLOAT_PRECISION)
+    : rightExecutionPrice;
+  let marketPriceIndex: number | undefined;
 
   // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
   let ticks: number[] = [];
@@ -670,27 +684,33 @@ function useTicks(
   const decimals = USD_DECIMALS;
   const span = highPrice - lowPrice;
 
-  const [tickCount, setTickCount] = useState(9n);
+  const [tickCount, setTickCount] = useState(DEFAULT_TICK_COUNT_BIGINT);
 
   const stepRaw = bigMath.divRound(span, tickCount);
   const stepScale = numberToBigint(Math.pow(10, Math.floor(Math.log10(bigintToNumber(stepRaw, decimals)))), decimals);
   const step = bigMath.divRound(stepRaw, stepScale) * stepScale;
 
-  const leftStart = bigMath.divRound(midPrice, stepScale) * stepScale - step;
-  const rightStart = bigMath.divRound(midPrice, stepScale) * stepScale + step;
+  if (midPrice >= lowPrice && midPriceFloat <= highPrice) {
+    const leftStart = bigMath.divRound(midPrice, stepScale) * stepScale - step;
+    const rightStart = bigMath.divRound(midPrice, stepScale) * stepScale + step;
+    for (let i = leftStart; i > lowPrice; i -= step) {
+      ticks.unshift(bigintToNumber(i, decimals));
+    }
 
-  for (let i = leftStart; i > lowPrice; i -= step) {
-    ticks.unshift(bigintToNumber(i, decimals));
+    ticks.push(midPriceFloat);
+    marketPriceIndex = ticks.length - 1;
+
+    for (let i = rightStart; i < highPrice; i += step) {
+      ticks.push(bigintToNumber(i, decimals));
+    }
+  } else {
+    // divide and ceil
+    const leftStart = (lowPrice / stepScale + 1n) * stepScale;
+
+    for (let i = leftStart; i < highPrice; i += step) {
+      ticks.push(bigintToNumber(i, decimals));
+    }
   }
-
-  ticks.push(midPriceFloat);
-  marketPriceIndex = ticks.length - 1;
-
-  for (let i = rightStart; i < highPrice; i += step) {
-    ticks.push(bigintToNumber(i, decimals));
-  }
-
-  // console.log({ ticks });
 
   return { ticks, marketPriceIndex, xAxisDomain, setTickCount };
 }
@@ -716,10 +736,10 @@ function useEdgePoints(
   const rightMin = shortLiquidity;
   const realRightMax = bigMath.max(marketInfo.shortInterestUsd, longLiquidity);
 
-  const zoomBigInt = numberToBigint(zoom, 4);
+  const zoomBigInt = numberToBigint(zoom, FLOAT_DECIMALS);
 
-  const rightMax = bigMath.min(realRightMax, bigMath.mulDiv(realRightMax, 10000n, zoomBigInt));
-  const leftMax = bigMath.min(realLeftMax, bigMath.mulDiv(realLeftMax, 10000n, zoomBigInt));
+  const rightMax = bigMath.min(realRightMax, bigMath.mulDiv(realRightMax, FLOAT_PRECISION, zoomBigInt));
+  const leftMax = bigMath.min(realLeftMax, bigMath.mulDiv(realLeftMax, FLOAT_PRECISION, zoomBigInt));
 
   let leftMaxExecutionPrice = 0n;
   let rightMaxExecutionPrice = 0n;
@@ -762,4 +782,12 @@ function useEdgePoints(
     realLeftMax,
     realRightMax,
   };
+}
+
+function yAxisTickFormatter(value: number) {
+  return numberWithCommas(value / 1000);
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(value, max));
 }

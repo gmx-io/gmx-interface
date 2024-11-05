@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { useState } from "react";
 import { useMedia } from "react-use";
 
@@ -21,13 +22,13 @@ const TAB_LABELS = {
   PRICE: (
     <div className="flex items-center gap-8">
       <CandlestickChartIcon />
-      PRICE
+      <Trans>PRICE</Trans>
     </div>
   ),
   DEPTH: (
     <div className="flex items-center gap-8">
       <AntennaBarsIcon />
-      DEPTH
+      <Trans>DEPTH</Trans>
     </div>
   ),
 };
