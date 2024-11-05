@@ -1953,6 +1953,10 @@ msgstr "수령할 수 있는 esGMX가 없습니다"
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APY"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 msgid "Acknowledge high Price Impact"
@@ -2038,6 +2042,10 @@ msgstr "{0} 승인 완료!"
 msgid "Advanced display"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Long {0}"
 msgstr "롱 {0}"
@@ -2048,8 +2056,8 @@ msgid "Address"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Provide liquidity</0> in GM: GMX/USD<1/>[GMX-USDC] and earn {gmxMarketApyDataText}"
-msgstr ""
+#~ msgid "<0>Provide liquidity</0> in GM: GMX/USD<1/>[GMX-USDC] and earn {gmxMarketApyDataText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Take-Profit"
@@ -7952,8 +7960,8 @@ msgid "Your position's collateral after deducting fees:"
 msgstr "수수료를 제외한 귀하의 포지션 담보입니다:"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Stake GMX</0> and earn {gmxAvgAprText}"
-msgstr ""
+#~ msgid "<0>Stake GMX</0> and earn {gmxAvgAprText}"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Selling..."

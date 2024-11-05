@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
@@ -921,7 +921,7 @@ function ClaimModal(props: {
         sentMsg: t`Claim submitted!`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
-        detailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
+        successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
         setPendingTxns,
       }
     )
@@ -1244,7 +1244,7 @@ export default function StakeV2() {
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const { ensName: govTokenDelegatesEns } = useENS(govTokenDelegatesAddress);
 
-  const { data: walletBalances } = useSWR(
+  const { data: walletBalances, mutate: refetchBalances } = useSWR(
     [
       `StakeV2:walletBalances:${active}`,
       chainId,
@@ -1394,21 +1394,34 @@ export default function StakeV2() {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
-  const showStakeGmxModal = () => {
-    if (!isGmxTransferEnabled) {
-      helperToast.error(t`GMX transfers not yet enabled`);
-      return;
-    }
+  const showStakeGmxModal = useCallback(
+    ({ resetValue = true } = {}) => {
+      if (!isGmxTransferEnabled) {
+        helperToast.error(t`GMX transfers not yet enabled`);
+        return;
+      }
 
-    setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake GMX`);
-    setStakeModalMaxAmount(processedData?.gmxBalance);
-    setStakeValue("");
-    setStakingTokenSymbol("GMX");
-    setStakingTokenAddress(gmxAddress);
-    setStakingFarmAddress(stakedGmxTrackerAddress);
-    setStakeMethodName("stakeGmx");
-  };
+      setIsStakeModalVisible(true);
+      setStakeModalTitle(t`Stake GMX`);
+      setStakeModalMaxAmount(processedData?.gmxBalance);
+      setStakingTokenSymbol("GMX");
+      setStakingTokenAddress(gmxAddress);
+      setStakingFarmAddress(stakedGmxTrackerAddress);
+      setStakeMethodName("stakeGmx");
+
+      if (resetValue) {
+        setStakeValue("");
+      }
+    },
+    [
+      isGmxTransferEnabled,
+      processedData?.gmxBalance,
+      gmxAddress,
+      stakedGmxTrackerAddress,
+      setStakeModalMaxAmount,
+      setStakeValue,
+    ]
+  );
 
   const showStakeEsGmxModal = () => {
     setIsStakeModalVisible(true);
@@ -1623,6 +1636,12 @@ export default function StakeV2() {
     return `${formatAmount(gmxApy, 28, 2, true)}%`;
   }, [marketsTokensApyData, marketsTokensIncentiveAprData, gmxMarketAddress, chainId]);
 
+  const handleStakeGmx = useCallback(async () => {
+    showStakeGmxModal();
+    await refetchBalances();
+    showStakeGmxModal({ resetValue: false }); // Updating maxAmount
+  }, [refetchBalances, showStakeGmxModal]);
+
   return (
     <div className="default-container page-layout">
       <StakeModal
@@ -1699,7 +1718,6 @@ export default function StakeV2() {
         signer={signer}
         setPendingTxns={setPendingTxns}
       />
-      <Link to={`trade/long/?mode=market&from=gmx&market=gmx`}>Trade GMX</Link>
       <ClaimModal
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
@@ -1715,10 +1733,10 @@ export default function StakeV2() {
           <ul className="-mt-16 list-disc">
             <li className="!pb-0">
               <Trans>
-                <Link className="link-underline" to="#" onClick={showStakeGmxModal}>
+                <Link className="link-underline" to="#" onClick={handleStakeGmx}>
                   Stake GMX
                 </Link>{" "}
-                and earn {gmxAvgAprText}
+                and earn {gmxAvgAprText} APY
               </Trans>
             </li>
             {chainId === ARBITRUM && (
@@ -1728,9 +1746,7 @@ export default function StakeV2() {
                     <Link className="link-underline" to={`/pools/?market=${gmxMarketAddress}&operation=buy&scroll=1`}>
                       Provide liquidity
                     </Link>{" "}
-                    in GM: GMX/USD
-                    <br />
-                    [GMX-USDC] and earn {gmxMarketApyDataText}
+                    and earn {gmxMarketApyDataText} APY
                   </Trans>
                 </li>
                 <li className="!pb-0">
