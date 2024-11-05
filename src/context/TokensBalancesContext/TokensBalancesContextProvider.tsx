@@ -1,9 +1,7 @@
 import { getIsFlagEnabled } from "config/ab";
 import { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { EMPTY_OBJECT } from "lib/objects";
 import entries from "lodash/entries";
-import noop from "lodash/noop";
 import {
   Dispatch,
   PropsWithChildren,
@@ -31,20 +29,12 @@ type TokensBalancesContextType = {
   resetTokensBalancesUpdates: (tokenAddresses: string[]) => void;
 };
 
-const DEFAULT_TOKENS_BALANCES_CONTEXT: TokensBalancesContextType = {
-  tokensBalancesUpdates: EMPTY_OBJECT,
-  setTokensBalancesUpdates: noop,
-  resetTokensBalancesUpdates: noop,
-};
-
-const Context = createContext<TokensBalancesContextType>(DEFAULT_TOKENS_BALANCES_CONTEXT);
+const Context = createContext<TokensBalancesContextType | null>(null);
 
 export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
   const { chainId } = useChainId();
 
-  const [tokensBalancesUpdates, setTokensBalancesUpdates] = useState<TokensBalancesUpdates>(
-    DEFAULT_TOKENS_BALANCES_CONTEXT.tokensBalancesUpdates
-  );
+  const [tokensBalancesUpdates, setTokensBalancesUpdates] = useState<TokensBalancesUpdates>({});
 
   const resetTokensBalancesUpdates = useCallback((tokenAddresses: string[]) => {
     setTokensBalancesUpdates((old) => {
@@ -70,12 +60,18 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
   return <Context.Provider value={state}>{children}</Context.Provider>;
 }
 
-export function useTokensBalancesContext(): TokensBalancesContextType {
-  return useContext(Context);
+export function useTokensBalancesUpdates(): TokensBalancesContextType {
+  const context = useContext(Context);
+
+  if (!context) {
+    throw new Error("useTokensBalancesUpdates must be used within a TokensBalancesContextProvider");
+  }
+
+  return context;
 }
 
 export function useUpdatedTokensBalances<T extends TokenBalancesData | TokensData>(balancesData?: T): T | undefined {
-  const { tokensBalancesUpdates } = useTokensBalancesContext();
+  const { tokensBalancesUpdates } = useTokensBalancesUpdates();
 
   return useMemo(() => {
     if (!balancesData || !getIsFlagEnabled("testWebsocketBalances")) {

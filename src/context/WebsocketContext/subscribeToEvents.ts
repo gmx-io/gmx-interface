@@ -143,7 +143,6 @@ export function subscribeToV2Events(
   };
 }
 
-// TODO: think about native token spendings
 export function subscribeToTransferEvents(
   chainId: number,
   provider: Provider,

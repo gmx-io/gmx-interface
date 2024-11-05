@@ -10,7 +10,7 @@ import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
 import { getIsFlagEnabled } from "config/ab";
 import {
-  useTokensBalancesContext,
+  useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 
@@ -28,7 +28,7 @@ export function useTokenBalances(
   }[],
   refreshInterval?: number
 ): BalancesDataResult {
-  const { resetTokensBalancesUpdates } = useTokensBalancesContext();
+  const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
   const { address: currentAccount } = useAccount();
 

@@ -14,7 +14,7 @@ import {
 import { USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
 import { getTokenBySymbol } from "config/tokens";
-import { useTokensBalancesContext } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
@@ -53,7 +53,7 @@ export function useGlvMarketsInfo(
     filterIncorrectMarkets?: boolean;
   }
 ) {
-  const { resetTokensBalancesUpdates } = useTokensBalancesContext();
+  const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { marketsInfoData, tokensData, chainId, account, filterIncorrectMarkets } = deps;
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";

@@ -19,7 +19,7 @@ import TokenAbi from "abis/Token.json";
 import { getIsFlagEnabled } from "config/ab";
 import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
-  useTokensBalancesContext,
+  useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { useMemo } from "react";
@@ -45,7 +45,7 @@ export function useMarketTokensDataRequest(
   const { isDeposit, account, glvData = {}, withGlv = true } = p;
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { resetTokensBalancesUpdates } = useTokensBalancesContext();
+  const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
   let isGlvTokensLoaded;
 

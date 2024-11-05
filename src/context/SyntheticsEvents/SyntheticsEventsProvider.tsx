@@ -4,7 +4,7 @@ import { GmStatusNotification } from "components/Synthetics/StatusNotification/G
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 import { getIsFlagEnabled } from "config/ab";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { useTokensBalancesContext } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import {
   subscribeToApprovalEvents,
@@ -109,7 +109,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
-  const { tokensBalancesUpdates, setTokensBalancesUpdates } = useTokensBalancesContext();
+  const { tokensBalancesUpdates, setTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
