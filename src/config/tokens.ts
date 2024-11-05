@@ -412,6 +412,27 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "APT",
+      symbol: "APT",
+      address: "0x3f8f0dCE4dCE4d0D1d0871941e79CDA82cA50d0B",
+      decimals: 8,
+      priceDecimals: 4,
+      imageUrl: "https://assets.coingecko.com/coins/images/26455/standard/aptos_round.png?1696525528",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/aptos",
+      isSynthetic: true,
+    },
+    {
+      name: "TIA",
+      symbol: "TIA",
+      address: "0x38676f62d166f5CE7De8433F51c6B3D6D9d66C19",
+      decimals: 6,
+      priceDecimals: 4,
+      imageUrl: "https://assets.coingecko.com/coins/images/31967/standard/tia.jpg?1696530772",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/celestia",
+      isSynthetic: true,
+    },
+
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
