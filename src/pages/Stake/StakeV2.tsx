@@ -1730,13 +1730,13 @@ export default function StakeV2() {
         chainId={chainId}
         isNativeTokenToClaim={isAnyNativeTokenRewards}
         gmxUsageOptionsMsg={
-          <ul className="-mt-16 list-disc">
+          <ul className="list-disc">
             <li className="!pb-0">
               <Trans>
                 <Link className="link-underline" to="#" onClick={handleStakeGmx}>
                   Stake GMX
                 </Link>{" "}
-                and earn {gmxAvgAprText} APY
+                and earn {gmxAvgAprText} APR
               </Trans>
             </li>
             {chainId === ARBITRUM && (

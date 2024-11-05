@@ -1954,8 +1954,8 @@ msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} ex
 msgstr "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APY"
-msgstr "<0>Stake GMX</0> and earn {gmxAvgAprText} APY"
+#~ msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APY"
+#~ msgstr "<0>Stake GMX</0> and earn {gmxAvgAprText} APY"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
@@ -4243,6 +4243,10 @@ msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
+msgstr "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
