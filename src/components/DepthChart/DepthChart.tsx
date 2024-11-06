@@ -91,7 +91,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         return;
       }
 
-      const handler = (event: WheelEvent) => {
+      const wheelHandler = (event: WheelEvent) => {
         event.preventDefault();
         if (isZeroPriceImpact) {
           return;
@@ -99,10 +99,39 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         setZoom((pZoom) => clamp(pZoom * Math.exp(-event.deltaY * 0.001), 1, 20));
       };
 
-      container.addEventListener("wheel", handler, { passive: false });
+      container.addEventListener("wheel", wheelHandler, { passive: false });
 
+      let isPressed = false;
+      let prevTouchY = 0;
+
+      const touchDownHandler = (event: TouchEvent) => {
+        event.preventDefault();
+        isPressed = true;
+        prevTouchY = event.touches[0].clientY;
+      };
+
+      const touchUpHandler = (event: TouchEvent) => {
+        event.preventDefault();
+        isPressed = false;
+        prevTouchY = 0;
+      };
+
+      const touchMoveHandler = (event: TouchEvent) => {
+        if (isPressed) {
+          event.preventDefault();
+          const deltaY = event.touches[0].clientY - prevTouchY;
+          prevTouchY = event.touches[0].clientY;
+          setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * 0.002), 1, 20));
+        }
+      };
+
+      container.addEventListener("touchstart", touchDownHandler, { passive: false });
+      container.addEventListener("touchend", touchUpHandler, { passive: false });
+      container.addEventListener("touchmove", touchMoveHandler, { passive: false });
       return () => {
-        container.removeEventListener("wheel", handler);
+        container.removeEventListener("wheel", wheelHandler);
+        container.removeEventListener("touchstart", touchDownHandler);
+        container.removeEventListener("touchend", touchUpHandler);
       };
     },
     [isZeroPriceImpact]
