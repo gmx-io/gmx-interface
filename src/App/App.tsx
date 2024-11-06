@@ -80,14 +80,19 @@ function App() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
               <div>
-                {pendingTxn.message}{" "}
-                <ExternalLink href={txUrl}>
-                  <Trans>View</Trans>
-                </ExternalLink>
-                <br />
-                {pendingTxn.messageDetails && <br />}
-                {pendingTxn.messageDetails}
-              </div>
+                <div className="px-10 py-8">
+                  {pendingTxn.message}{" "}
+                  <ExternalLink href={txUrl}>
+                    <Trans>View</Trans>
+                  </ExternalLink>
+                </div>
+                {pendingTxn.messageDetails && (
+                  <div className="border-t-[1.5px] border-[#0f463d] px-10 py-8">{pendingTxn.messageDetails}</div>
+                )}
+              </div>,
+              {
+                className: "OrdersStatusNotificiation",
+              }
             );
           }
           continue;

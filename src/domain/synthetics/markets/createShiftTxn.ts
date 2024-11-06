@@ -11,6 +11,7 @@ import type { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 
 import ExchangeRouter from "abis/ExchangeRouter.json";
+import { OrderMetricId } from "lib/metrics/types";
 
 type Params = {
   account: string;
@@ -22,7 +23,7 @@ type Params = {
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
-  metricId?: string;
+  metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingShift: SetPendingShift;
 };
@@ -64,6 +65,7 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
       method: "simulateExecuteShift",
       errorTitle: t`Shift error.`,
       value: p.executionFee,
+      metricId: p.metricId,
     });
   }
 

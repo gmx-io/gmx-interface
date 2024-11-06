@@ -8,6 +8,8 @@ import { getGasLimit, getGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
+import { OrderMetricId } from "lib/metrics/types";
 
 export async function callContract(
   chainId: number,
@@ -20,13 +22,14 @@ export async function callContract(
     detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;
+    successDetailsMsg?: ReactNode;
     hideSentMsg?: boolean;
     hideSuccessMsg?: boolean;
     showPreliminaryMsg?: boolean;
     failMsg?: string;
     customSigners?: Wallet[];
     setPendingTxns?: (txns: any) => void;
-    metricId?: string;
+    metricId?: OrderMetricId;
   }
 ) {
   try {
@@ -100,6 +103,10 @@ export async function callContract(
 
       await Promise.all([gasLimitPromise, gasPriceDataPromise]);
 
+      if (opts.metricId) {
+        sendOrderTxnSubmittedMetric(opts.metricId);
+      }
+
       return cntrct[method](...params, txnInstance);
     });
 
@@ -126,7 +133,7 @@ export async function callContract(
       const pendingTxn = {
         hash: res.hash,
         message,
-        messageDetails: opts.detailsMsg,
+        messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,
         metricId: opts.metricId,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);

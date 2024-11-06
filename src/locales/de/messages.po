@@ -35,6 +35,7 @@ msgid "Decentralized Trading Protocol"
 msgstr "Dezentrales Tradingprotokoll"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "Claim submitted!"
 msgstr "Anspruch übermittelt!"
 
@@ -837,6 +838,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Positions ({positionsCount})"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Trade GMX</0>"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -1948,6 +1953,10 @@ msgstr "Kein esGMX zu beanspruchen"
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APY"
+#~ msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 msgid "Acknowledge high Price Impact"
@@ -2033,6 +2042,10 @@ msgstr "{0} Genehmigt!"
 msgid "Advanced display"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Long {0}"
 msgstr "Long {0}"
@@ -2041,6 +2054,10 @@ msgstr "Long {0}"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
 msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Provide liquidity</0> in GM: GMX/USD<1/>[GMX-USDC] and earn {gmxMarketApyDataText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Take-Profit"
@@ -3692,7 +3709,6 @@ msgid "Net Rate / 1h"
 msgstr "Netto-Rate / 1h"
 
 #: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Claim esGMX Rewards"
 msgstr ""
 
@@ -4141,6 +4157,10 @@ msgstr "Medienpaket"
 msgid "Reduce Liquidation Risks"
 msgstr "Verringere Liquidationsrisiken"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "collateral"
 msgstr "Kollateral"
@@ -4219,6 +4239,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -4546,6 +4570,10 @@ msgstr ""
 msgid "Collateral ({0})"
 msgstr "Kollateral ({0})"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "You will earn {0}% more rewards with this action."
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Network Fee Buffer"
 msgstr ""
@@ -4623,8 +4651,8 @@ msgid "Sell order executed"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound submitted!"
-msgstr ""
+#~ msgid "Compound submitted!"
+#~ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -4879,8 +4907,8 @@ msgstr "WARNUNG: Hohe Gebühren"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before compounding.</1>"
-msgstr ""
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before compounding.</1>"
+#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the<0>Ethena dashboard</0>."
@@ -4954,8 +4982,8 @@ msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound Rewards"
-msgstr ""
+#~ msgid "Compound Rewards"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5525,7 +5553,6 @@ msgid "SHORT LIQ."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Claim submitted."
 msgstr ""
 
@@ -5555,8 +5582,8 @@ msgid "No delegate found"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound failed."
-msgstr ""
+#~ msgid "Compound failed."
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.jsx
 msgid "Wallet not yet connected"
@@ -5615,8 +5642,8 @@ msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} zu {toExecutionText}"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compounding..."
-msgstr ""
+#~ msgid "Compounding..."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -6097,8 +6124,8 @@ msgid "Deposit"
 msgstr "Einzahlung"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
-msgstr ""
+#~ msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -6458,7 +6485,6 @@ msgstr ""
 msgid "Terms and Conditions"
 msgstr "Bedingungen und Konditionen"
 
-#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
@@ -6901,6 +6927,10 @@ msgstr ""
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -6911,7 +6941,6 @@ msgstr ""
 msgid "Increase"
 msgstr "Erhöhen"
 
-#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr ""
@@ -7226,8 +7255,8 @@ msgid "Escrowed GMX APR"
 msgstr "Escrowed GMX APR"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound completed!"
-msgstr ""
+#~ msgid "Compound completed!"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Initial collateral"
@@ -7658,7 +7687,6 @@ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x lever
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Claim GMX Rewards"
 msgstr ""
 
@@ -7746,8 +7774,8 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound"
-msgstr ""
+#~ msgid "Compound"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
@@ -7934,6 +7962,10 @@ msgstr "<0>Unzureichende Liquidität für die Ausführung des Auftrags</0><1>Der
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Your position's collateral after deducting fees:"
 msgstr "Das Kollateral deiner Position nach Abzug der Gebühren:"
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Stake GMX</0> and earn {gmxAvgAprText}"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Selling..."

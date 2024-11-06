@@ -13,6 +13,7 @@ import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
+import { OrderMetricId } from "lib/metrics/types";
 
 const { ZeroAddress } = ethers;
 
@@ -30,7 +31,7 @@ export type SwapOrderParams = {
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
-  metricId: string;
+  metricId: OrderMetricId;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -77,6 +78,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
       value: sumaltionTotalWntAmount,
       tokensData: p.tokensData,
       errorTitle: t`Order error.`,
+      metricId: p.metricId,
     });
   }
 

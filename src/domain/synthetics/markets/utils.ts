@@ -265,17 +265,18 @@ export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: b
   return maximize ? prices.minPrice : prices.maxPrice;
 }
 
-export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, maximize: boolean) {
+export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, forMaxPoolValue: boolean) {
+  const maximize = !forMaxPoolValue;
   const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
   const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
 
-  if (openInterestUsd === 0n && openInterestInTokens === 0n) {
+  if (openInterestUsd === 0n || openInterestInTokens === 0n) {
     return 0n;
   }
 
   const price = getPriceForPnl(marketInfo.indexToken.prices, isLong, maximize);
 
-  const openInterestValue = (openInterestInTokens * price) / PRECISION;
+  const openInterestValue = convertToUsd(openInterestInTokens, marketInfo.indexToken.decimals, price)!;
   const pnl = isLong ? openInterestValue - openInterestUsd : openInterestUsd - openInterestValue;
 
   return pnl;
