@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useState } from "react";
 import { useMedia } from "react-use";
 
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { TVChartHeader } from "./TVChartHeader";
 
@@ -35,8 +35,7 @@ const TAB_LABELS = {
 
 export function Chart() {
   const isMobile = useMedia("(max-width: 700px)");
-
-  const [tab, setTab] = useState("PRICE");
+  const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
 
   return (
     <div className="ExchangeChart tv">

@@ -173,7 +173,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         {drawLeftTransparent && (
           <>
             <Line
-              dataKey="longDecreaseXorShortIncreaseSize"
+              dataKey="leftTransparentSize"
               stroke={GREEN}
               opacity={0.3}
               strokeWidth={2}
@@ -191,7 +191,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           </>
         )}
         <Area
-          dataKey="longDecreaseAndShortIncreaseSize"
+          dataKey="leftOpaqueSize"
           stroke={GREEN}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
           dot={isZeroPriceImpact ? renderLeftAreaDot : false}
@@ -201,7 +201,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           strokeDasharray={drawLeftOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
         />
         <Area
-          dataKey="longIncreaseAndShortDecreaseSize"
+          dataKey="rightOpaqueSize"
           stroke={RED}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
           dot={isZeroPriceImpact ? renderRightAreaDot : false}
@@ -219,7 +219,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               shape={<TransparentOpaqueSeparatorDot />}
             />
             <Line
-              dataKey="longIncreaseXorShortDecreaseSize"
+              dataKey="rightTransparentSize"
               stroke={RED}
               strokeWidth={2}
               opacity={0.3}
@@ -418,10 +418,14 @@ function TransparentOpaqueSeparatorDot(props: ReferenceDotProps) {
 export type DataPoint = {
   size: number;
   sizeBigInt: bigint;
-  longIncreaseAndShortDecreaseSize: number | null;
-  longDecreaseAndShortIncreaseSize: number | null;
-  longIncreaseXorShortDecreaseSize: number | null;
-  longDecreaseXorShortIncreaseSize: number | null;
+  rightOpaqueSize: number | null;
+  rightOpaqueSizeBigInt: bigint | null;
+  leftOpaqueSize: number | null;
+  leftOpaqueSizeBigInt: bigint | null;
+  rightTransparentSize: number | null;
+  rightTransparentSizeBigInt: bigint | null;
+  leftTransparentSize: number | null;
+  leftTransparentSizeBigInt: bigint | null;
   executionPrice: number;
   executionPriceBigInt: bigint;
   priceImpact: number;
@@ -455,13 +459,16 @@ function useDepthChart(
     if (priceImpactUsd == 0n) {
       data.push({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        longIncreaseAndShortDecreaseSize: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
+        rightOpaqueSize: bigintToNumber(rightMin, USD_DECIMALS),
+        rightOpaqueSizeBigInt: rightMin,
         size: bigintToNumber(rightMax, USD_DECIMALS),
         priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        longDecreaseAndShortIncreaseSize: null,
-        longIncreaseXorShortDecreaseSize: Math.abs(bigintToNumber(rightMax, USD_DECIMALS)),
-        longDecreaseXorShortIncreaseSize: null,
-
+        leftOpaqueSize: null,
+        leftOpaqueSizeBigInt: null,
+        rightTransparentSize: rightMax > rightMin ? bigintToNumber(rightMax, USD_DECIMALS) : null,
+        rightTransparentSizeBigInt: rightMax > rightMin ? rightMax : null,
+        leftTransparentSize: null,
+        leftTransparentSizeBigInt: null,
         sizeBigInt: rightMax,
         executionPriceBigInt: executionPrice,
         priceImpactBigInt: priceImpactUsd,
@@ -472,13 +479,16 @@ function useDepthChart(
 
     data.unshift({
       executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-      longIncreaseAndShortDecreaseSize: i < rightMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
-      size: Math.abs(bigintToNumber(i, USD_DECIMALS)),
+      rightOpaqueSize: i < rightMin ? bigintToNumber(i, USD_DECIMALS) : null,
+      rightOpaqueSizeBigInt: i < rightMin ? i : null,
+      size: bigintToNumber(i, USD_DECIMALS),
       priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-      longDecreaseAndShortIncreaseSize: null,
-      longIncreaseXorShortDecreaseSize: i > rightMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
-      longDecreaseXorShortIncreaseSize: null,
-
+      leftOpaqueSize: null,
+      leftOpaqueSizeBigInt: null,
+      rightTransparentSize: i > rightMin ? bigintToNumber(i, USD_DECIMALS) : null,
+      rightTransparentSizeBigInt: i > rightMin ? i : null,
+      leftTransparentSize: null,
+      leftTransparentSizeBigInt: null,
       sizeBigInt: i,
       executionPriceBigInt: executionPrice,
       priceImpactBigInt: priceImpactUsd,
@@ -501,12 +511,16 @@ function useDepthChart(
 
       data.unshift({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        longIncreaseAndShortDecreaseSize: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
-        size: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
+        rightOpaqueSize: bigintToNumber(rightMin, USD_DECIMALS),
+        rightOpaqueSizeBigInt: rightMin,
+        size: bigintToNumber(rightMin, USD_DECIMALS),
         priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        longDecreaseAndShortIncreaseSize: null,
-        longIncreaseXorShortDecreaseSize: Math.abs(bigintToNumber(rightMin, USD_DECIMALS)),
-        longDecreaseXorShortIncreaseSize: null,
+        leftOpaqueSize: null,
+        leftOpaqueSizeBigInt: null,
+        rightTransparentSize: bigintToNumber(rightMin, USD_DECIMALS),
+        rightTransparentSizeBigInt: rightMin,
+        leftTransparentSize: null,
+        leftTransparentSizeBigInt: null,
 
         sizeBigInt: rightMin,
         executionPriceBigInt: executionPrice,
@@ -527,12 +541,16 @@ function useDepthChart(
 
       data.unshift({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        longIncreaseAndShortDecreaseSize: rightMax > rightMin ? null : Math.abs(bigintToNumber(rightMax, USD_DECIMALS)),
-        size: Math.abs(bigintToNumber(rightMax, USD_DECIMALS)),
+        rightOpaqueSize: rightMax > rightMin ? null : bigintToNumber(rightMax, USD_DECIMALS),
+        rightOpaqueSizeBigInt: rightMax > rightMin ? null : rightMax,
+        size: bigintToNumber(rightMax, USD_DECIMALS),
         priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        longDecreaseAndShortIncreaseSize: null,
-        longIncreaseXorShortDecreaseSize: rightMax > rightMin ? Math.abs(bigintToNumber(rightMax, USD_DECIMALS)) : null,
-        longDecreaseXorShortIncreaseSize: null,
+        leftOpaqueSize: null,
+        leftOpaqueSizeBigInt: null,
+        rightTransparentSize: rightMax > rightMin ? bigintToNumber(rightMax, USD_DECIMALS) : null,
+        rightTransparentSizeBigInt: rightMax > rightMin ? rightMax : null,
+        leftTransparentSize: null,
+        leftTransparentSizeBigInt: null,
 
         sizeBigInt: rightMax,
         executionPriceBigInt: executionPrice,
@@ -556,13 +574,16 @@ function useDepthChart(
     if (priceImpactUsd == 0n) {
       data.unshift({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        longDecreaseAndShortIncreaseSize: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
-        size: Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
+        leftOpaqueSize: bigintToNumber(leftMin, USD_DECIMALS),
+        leftOpaqueSizeBigInt: leftMin,
+        size: bigintToNumber(leftMax, USD_DECIMALS),
         priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        longIncreaseAndShortDecreaseSize: null,
-        longIncreaseXorShortDecreaseSize: null,
-        longDecreaseXorShortIncreaseSize: Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
-
+        rightOpaqueSize: null,
+        rightOpaqueSizeBigInt: null,
+        rightTransparentSize: null,
+        rightTransparentSizeBigInt: null,
+        leftTransparentSize: leftMax > leftMin ? bigintToNumber(leftMax, USD_DECIMALS) : null,
+        leftTransparentSizeBigInt: leftMax > leftMin ? leftMax : null,
         sizeBigInt: leftMax,
         executionPriceBigInt: executionPrice,
         priceImpactBigInt: priceImpactUsd,
@@ -572,14 +593,17 @@ function useDepthChart(
     }
 
     data.unshift({
-      longDecreaseAndShortIncreaseSize: i < leftMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
+      leftOpaqueSize: i < leftMin ? bigintToNumber(i, USD_DECIMALS) : null,
+      leftOpaqueSizeBigInt: i < leftMin ? i : null,
       executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-      size: Math.abs(bigintToNumber(i, USD_DECIMALS)),
+      size: bigintToNumber(i, USD_DECIMALS),
       priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-      longIncreaseAndShortDecreaseSize: null,
-      longIncreaseXorShortDecreaseSize: null,
-      longDecreaseXorShortIncreaseSize: i > leftMin ? Math.abs(bigintToNumber(i, USD_DECIMALS)) : null,
-
+      rightOpaqueSize: null,
+      rightOpaqueSizeBigInt: null,
+      rightTransparentSize: null,
+      rightTransparentSizeBigInt: null,
+      leftTransparentSize: i > leftMin ? bigintToNumber(i, USD_DECIMALS) : null,
+      leftTransparentSizeBigInt: i > leftMin ? i : null,
       sizeBigInt: i,
       executionPriceBigInt: executionPrice,
       priceImpactBigInt: priceImpactUsd,
@@ -601,12 +625,16 @@ function useDepthChart(
 
       data.unshift({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        longDecreaseAndShortIncreaseSize: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
-        size: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
+        leftOpaqueSize: bigintToNumber(leftMin, USD_DECIMALS),
+        leftOpaqueSizeBigInt: leftMin,
+        size: bigintToNumber(leftMin, USD_DECIMALS),
         priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        longIncreaseAndShortDecreaseSize: null,
-        longIncreaseXorShortDecreaseSize: null,
-        longDecreaseXorShortIncreaseSize: Math.abs(bigintToNumber(leftMin, USD_DECIMALS)),
+        rightOpaqueSize: null,
+        rightOpaqueSizeBigInt: null,
+        rightTransparentSize: null,
+        rightTransparentSizeBigInt: null,
+        leftTransparentSize: bigintToNumber(leftMin, USD_DECIMALS),
+        leftTransparentSizeBigInt: leftMin,
 
         sizeBigInt: leftMin,
         executionPriceBigInt: executionPrice,
@@ -627,13 +655,16 @@ function useDepthChart(
 
       data.unshift({
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        longDecreaseAndShortIncreaseSize: leftMax > leftMin ? null : Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
-        size: Math.abs(bigintToNumber(leftMax, USD_DECIMALS)),
+        leftOpaqueSize: leftMax > leftMin ? null : bigintToNumber(leftMax, USD_DECIMALS),
+        leftOpaqueSizeBigInt: leftMax > leftMin ? null : leftMax,
+        size: bigintToNumber(leftMax, USD_DECIMALS),
         priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        longIncreaseAndShortDecreaseSize: null,
-        longIncreaseXorShortDecreaseSize: null,
-        longDecreaseXorShortIncreaseSize: leftMax > leftMin ? Math.abs(bigintToNumber(leftMax, USD_DECIMALS)) : null,
-
+        rightOpaqueSize: null,
+        rightOpaqueSizeBigInt: null,
+        rightTransparentSize: null,
+        rightTransparentSizeBigInt: null,
+        leftTransparentSize: leftMax > leftMin ? bigintToNumber(leftMax, USD_DECIMALS) : null,
+        leftTransparentSizeBigInt: leftMax > leftMin ? leftMax : null,
         sizeBigInt: leftMax,
         executionPriceBigInt: executionPrice,
         priceImpactBigInt: priceImpactUsd,
@@ -732,8 +763,8 @@ function useEdgePoints(
   const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
 
   const realLeftMax = bigMath.max(marketInfo.longInterestUsd, shortLiquidity);
-  const leftMin = longLiquidity;
-  const rightMin = shortLiquidity;
+  const leftMin = shortLiquidity;
+  const rightMin = longLiquidity;
   const realRightMax = bigMath.max(marketInfo.shortInterestUsd, longLiquidity);
 
   const zoomBigInt = numberToBigint(zoom, FLOAT_DECIMALS);
