@@ -7,7 +7,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
-import { getObjectKeyFromValue } from "domain/tradingview/utils";
+import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { bigintToNumber } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -37,7 +37,7 @@ type Props = {
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
   oraclePriceDecimals?: number;
-  visualMultiplier?: number | bigint;
+  visualMultiplier?: number;
 };
 
 export default function TVChartContainer({
@@ -119,10 +119,14 @@ export default function TVChartContainer({
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
-        tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
+        tvWidgetRef.current.setSymbol(
+          getSymbolName(symbol, visualMultiplier),
+          tvWidgetRef.current.activeChart().resolution(),
+          () => null
+        );
       }
     }
-  }, [symbol, chartReady, period, chainId, datafeed]);
+  }, [symbol, chartReady, period, chainId, datafeed, visualMultiplier]);
 
   useEffect(() => {
     dataProvider?.resetCache();
@@ -132,7 +136,7 @@ export default function TVChartContainer({
 
     const widgetOptions = {
       debug: false,
-      symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
+      symbol: symbolRef.current && getSymbolName(symbolRef.current, visualMultiplier), // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed: datafeed,
       theme: defaultChartProps.theme,
       container: chartContainerRef.current,
@@ -193,7 +197,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, dataProvider, visualMultiplier]);
+  }, [chainId, dataProvider]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

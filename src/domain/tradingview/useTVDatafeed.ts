@@ -26,7 +26,7 @@ import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
-import { formatTimeInBarToMs, multiplyBarValues } from "./utils";
+import { formatTimeInBarToMs, multiplyBarValues, parseSymbolName } from "./utils";
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
@@ -45,10 +45,9 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
 
 type Props = {
   dataProvider?: TVDataProvider;
-  visualMultiplier?: number;
 };
 
-export default function useTVDatafeed({ dataProvider, visualMultiplier }: Props) {
+export default function useTVDatafeed({ dataProvider }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
@@ -121,9 +120,8 @@ export default function useTVDatafeed({ dataProvider, visualMultiplier }: Props)
       missingBarsInfoRef: missingBarsInfo,
       feedDataRef: feedData,
       lastBarTimeRef: lastBarTime,
-      visualMultiplier,
     });
-  }, [chainId, stableTokens, supportedResolutions, visualMultiplier]);
+  }, [chainId, stableTokens, supportedResolutions]);
 }
 
 export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi>;
@@ -137,7 +135,6 @@ function buildFeeder({
   missingBarsInfoRef,
   feedDataRef,
   lastBarTimeRef,
-  visualMultiplier: maybeVisualMultiplier,
 }: {
   chainId: number;
   stableTokens: string[];
@@ -150,7 +147,6 @@ function buildFeeder({
   }>;
   feedDataRef: MutableRefObject<boolean>;
   lastBarTimeRef: MutableRefObject<number>;
-  visualMultiplier?: number;
 }): { datafeed: TvDatafeed } {
   return {
     datafeed: {
@@ -170,16 +166,14 @@ function buildFeeder({
           });
         }
       },
-      resolveSymbol(symbolName, onSymbolResolvedCallback) {
+      resolveSymbol(symbolNameWithMultiplier, onSymbolResolvedCallback) {
+        let { symbolName, visualMultiplier } = parseSymbolName(symbolNameWithMultiplier);
+
         if (!isChartAvailabeForToken(chainId, symbolName)) {
           symbolName = getNativeToken(chainId).symbol;
         }
 
-        const visualMultiplier = maybeVisualMultiplier ?? 1;
-        const prefix =
-          maybeVisualMultiplier && maybeVisualMultiplier !== 1
-            ? getTokenVisualMultiplier(getTokenBySymbol(chainId, symbolName))
-            : "";
+        const prefix = visualMultiplier !== 1 ? getTokenVisualMultiplier(getTokenBySymbol(chainId, symbolName)) : "";
 
         let pricescale = Math.pow(
           10,
