@@ -32,7 +32,7 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { calculatePriceDecimals, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
@@ -866,7 +866,7 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
       {triggerThresholdType}{" "}
       {formatUsd(order.triggerPrice, {
-        displayDecimals: calculatePriceDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier),
+        displayDecimals: calculateDisplayDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier),
         visualMultiplier: order.indexToken?.visualMultiplier,
       })}
       :{" "}

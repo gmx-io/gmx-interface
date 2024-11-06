@@ -514,7 +514,7 @@ export function numberToBigint(value: number, decimals: number) {
   return negative ? -res : res;
 }
 
-export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
+export function calculateDisplayDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
   if (price === undefined || price === 0n) return 2;
   const priceNumber = bigintToNumber(price * BigInt(visualMultiplier), decimals);
 
@@ -539,7 +539,7 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
     throw new Error("formatUsdPrice accept only non-negative bigints");
   }
 
-  const decimals = calculatePriceDecimals(price, undefined, opts.visualMultiplier);
+  const decimals = calculateDisplayDecimals(price, undefined, opts.visualMultiplier);
 
   return formatUsd(price, {
     ...opts,

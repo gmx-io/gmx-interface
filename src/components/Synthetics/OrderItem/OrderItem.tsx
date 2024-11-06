@@ -27,7 +27,7 @@ import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { calculatePriceDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";
@@ -260,7 +260,7 @@ function MarkPrice({ order }: { order: OrderInfo }) {
   }, [order]);
 
   const positionOrder = order as PositionOrderInfo;
-  const priceDecimals = calculatePriceDecimals(
+  const priceDecimals = calculateDisplayDecimals(
     positionOrder.indexToken?.prices?.minPrice,
     undefined,
     positionOrder.indexToken?.visualMultiplier
@@ -333,7 +333,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     );
   } else {
     const positionOrder = order as PositionOrderInfo;
-    const priceDecimals = calculatePriceDecimals(
+    const priceDecimals = calculateDisplayDecimals(
       positionOrder?.indexToken?.prices?.minPrice,
       undefined,
       positionOrder?.indexToken?.visualMultiplier
@@ -657,7 +657,7 @@ function getSwapRatioText(order: OrderInfo) {
       ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
       : undefined;
 
-  const ratioDecimals = calculatePriceDecimals(triggerRatio?.ratio);
+  const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
   const swapRatioText = `${formatAmount(
     triggerRatio?.ratio,
     USD_DECIMALS,

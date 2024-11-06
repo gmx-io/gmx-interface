@@ -11,7 +11,7 @@ import {
   BN_NEGATIVE_ONE,
   BN_ONE,
   applyFactor,
-  calculatePriceDecimals,
+  calculateDisplayDecimals,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
@@ -42,7 +42,7 @@ export const formatPositionMessage = (
   const collateralToken = tradeAction.initialCollateralToken;
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
-  const marketPriceDecimals = calculatePriceDecimals(
+  const marketPriceDecimals = calculateDisplayDecimals(
     tradeAction.indexToken.prices.minPrice,
     undefined,
     tradeAction.indexToken.visualMultiplier
@@ -136,7 +136,7 @@ export const formatPositionMessage = (
     collateralToken.symbol,
     {
       useCommas: true,
-      displayDecimals: calculatePriceDecimals(collateralDeltaAmount, collateralToken.decimals),
+      displayDecimals: calculateDisplayDecimals(collateralDeltaAmount, collateralToken.decimals),
     }
   );
 
@@ -532,7 +532,7 @@ export const formatPositionMessage = (
       tradeAction.initialCollateralToken?.symbol,
       tradeAction.initialCollateralToken?.decimals,
       {
-        displayDecimals: calculatePriceDecimals(
+        displayDecimals: calculateDisplayDecimals(
           tradeAction.initialCollateralDeltaAmount,
           tradeAction.initialCollateralToken?.decimals
         ),

@@ -23,7 +23,7 @@ import {
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import {
-  calculatePriceDecimals,
+  calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
@@ -480,7 +480,7 @@ export function OrderEditor(p: Props) {
 
         setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
         const price = positionOrder.triggerPrice ?? 0n;
-        const decimals = calculatePriceDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
+        const decimals = calculateDisplayDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
 
         setTriggerPriceInputValue(
           formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
@@ -552,7 +552,7 @@ export function OrderEditor(p: Props) {
                   formatAmount(
                     markPrice,
                     USD_DECIMALS,
-                    calculatePriceDecimals(markPrice, USD_DECIMALS, indexToken?.visualMultiplier),
+                    calculateDisplayDecimals(markPrice, USD_DECIMALS, indexToken?.visualMultiplier),
                     undefined,
                     undefined,
                     indexToken?.visualMultiplier

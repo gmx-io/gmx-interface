@@ -34,7 +34,7 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import {
-  calculatePriceDecimals,
+  calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
   formatTokenAmountWithUsd,
@@ -604,7 +604,7 @@ export function PositionSeller(p: Props) {
                     formatAmount(
                       markPrice,
                       USD_DECIMALS,
-                      calculatePriceDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
+                      calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
                       undefined,
                       undefined,
                       toToken?.visualMultiplier

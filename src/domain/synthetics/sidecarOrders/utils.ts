@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import uniqueId from "lodash/uniqueId";
 import { USD_DECIMALS } from "config/factors";
 import { PositionOrderInfo } from "domain/synthetics/orders";
-import { calculatePriceDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
@@ -32,7 +32,7 @@ export function getDefaultEntryField(
           formatAmount(
             value,
             decimals,
-            calculatePriceDecimals(value, decimals, visualMultiplier),
+            calculateDisplayDecimals(value, decimals, visualMultiplier),
             undefined,
             undefined,
             visualMultiplier

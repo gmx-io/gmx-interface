@@ -22,7 +22,7 @@ import {
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
 import { LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
-import { calculatePriceDecimals, numberToBigint } from "lib/numbers";
+import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
@@ -184,7 +184,7 @@ function buildFeeder({
         let pricescale = Math.pow(
           10,
           tvDataProviderRef.current?.currentPrice
-            ? calculatePriceDecimals(
+            ? calculateDisplayDecimals(
                 numberToBigint(tvDataProviderRef.current.currentPrice, USD_DECIMALS),
                 USD_DECIMALS,
                 visualMultiplier

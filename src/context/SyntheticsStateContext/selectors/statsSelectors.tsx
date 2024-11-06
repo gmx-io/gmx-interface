@@ -1,6 +1,6 @@
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { calculatePriceDecimals } from "lib/numbers";
+import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { createSelector, createSelectorFactory } from "../utils";
 import { selectChartToken } from "./chartSelectors";
@@ -40,7 +40,7 @@ export const selectSelectedMarketPriceDecimals = createSelector((q) => {
     return 2;
   }
 
-  return calculatePriceDecimals(chartToken.prices.minPrice);
+  return calculateDisplayDecimals(chartToken.prices.minPrice);
 });
 
 export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress?: string) =>
@@ -55,7 +55,7 @@ export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress
 
     const visualMultiplier = isSwap ? 1 : token.visualMultiplier;
 
-    return calculatePriceDecimals(token.prices.minPrice, undefined, visualMultiplier);
+    return calculateDisplayDecimals(token.prices.minPrice, undefined, visualMultiplier);
   })
 );
 

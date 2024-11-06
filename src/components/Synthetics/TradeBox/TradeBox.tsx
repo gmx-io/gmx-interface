@@ -83,7 +83,7 @@ import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import {
-  calculatePriceDecimals,
+  calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
@@ -904,7 +904,7 @@ export function TradeBox(p: Props) {
       formatAmount(
         markPrice,
         USD_DECIMALS,
-        calculatePriceDecimals(markPrice, undefined, toToken?.visualMultiplier),
+        calculateDisplayDecimals(markPrice, undefined, toToken?.visualMultiplier),
         undefined,
         undefined,
         toToken?.visualMultiplier

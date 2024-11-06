@@ -19,7 +19,7 @@ import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import {
   bigNumberify,
-  calculatePriceDecimals,
+  calculateDisplayDecimals,
   deserializeBigIntsInObject,
   expandDecimals,
   formatAmount,
@@ -128,7 +128,7 @@ export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = (PRECISION * PRECISION) / rate;
   }
-  const rateDecimals = calculatePriceDecimals(rate);
+  const rateDecimals = calculateDisplayDecimals(rate);
   const rateValue = formatAmount(rate, USD_DECIMALS, rateDecimals, true);
   if (opts.omitSymbols) {
     return rateValue;
