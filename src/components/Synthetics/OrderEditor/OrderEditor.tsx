@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
+import { USD_DECIMALS } from "config/factors";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   OrderInfo,
@@ -21,14 +22,14 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "config/factors";
 import {
+  calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
-  formatUsd,
+  formatUsdPrice,
 } from "lib/numbers";
 
 import Button from "components/Button/Button";
@@ -78,11 +79,9 @@ import {
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorToToken,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { bigMath } from "lib/bigmath";
@@ -113,7 +112,6 @@ export function OrderEditor(p: Props) {
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const fromToken = useSelector(selectOrderEditorFromToken);
-  const toToken = useSelector(selectOrderEditorToToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
   const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
@@ -121,7 +119,6 @@ export function OrderEditor(p: Props) {
 
   const market = useMarketInfo(p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-  const indexPriceDecimals = indexToken?.priceDecimals;
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
 
@@ -482,23 +479,23 @@ export function OrderEditor(p: Props) {
         const positionOrder = p.order as PositionOrderInfo;
 
         setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        const price = positionOrder.triggerPrice ?? 0n;
+        const decimals = calculateDisplayDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
+
         setTriggerPriceInputValue(
-          formatAmount(positionOrder.triggerPrice ?? 0n, USD_DECIMALS, indexPriceDecimals || 2)
+          formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
         );
       }
 
       setIsInited(true);
     },
     [
-      fromToken,
-      indexPriceDecimals,
+      indexToken?.visualMultiplier,
       isInited,
       p.order,
       setSizeInputValue,
       setTriggerPriceInputValue,
       setTriggerRatioInputValue,
-      sizeInputValue,
-      toToken,
     ]
   );
 
@@ -526,8 +523,6 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const marketPriceDecimals = useSelector(makeSelectMarketPriceDecimals(p.order.marketAddress));
-
   return (
     <div className="PositionEditor">
       <Modal
@@ -549,9 +544,20 @@ export function OrderEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark`}
-              topRightValue={formatUsd(markPrice, { displayDecimals: indexPriceDecimals })}
+              topRightValue={formatUsdPrice(markPrice, {
+                visualMultiplier: indexToken?.visualMultiplier,
+              })}
               onClickTopRightLabel={() =>
-                setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, indexPriceDecimals || 2))
+                setTriggerPriceInputValue(
+                  formatAmount(
+                    markPrice,
+                    USD_DECIMALS,
+                    calculateDisplayDecimals(markPrice, USD_DECIMALS, indexToken?.visualMultiplier),
+                    undefined,
+                    undefined,
+                    indexToken?.visualMultiplier
+                  )
+                )
               }
               inputValue={triggerPriceInputValue}
               onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
@@ -610,14 +616,16 @@ export function OrderEditor(p: Props) {
             <ExchangeInfo.Group>
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
-                value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
+                value={formatAcceptablePrice(acceptablePrice, {
+                  visualMultiplier: indexToken?.visualMultiplier,
+                })}
               />
 
               {existingPosition && (
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                    displayDecimals: marketPriceDecimals,
+                    visualMultiplier: indexToken?.visualMultiplier,
                   })}
                 />
               )}

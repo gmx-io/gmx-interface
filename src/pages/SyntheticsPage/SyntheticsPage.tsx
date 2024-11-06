@@ -16,7 +16,10 @@ import { selectChartToken } from "context/SyntheticsStateContext/selectors/chart
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
-import { selectTradeboxSetActivePosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxSetActivePosition,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -28,7 +31,7 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
+import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -52,6 +55,7 @@ import { useMedia } from "react-use";
 import { MissedCoinsModal } from "components/MissedCoinsModal/MissedCoinsModal";
 import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
+import { getTokenVisualMultiplier } from "config/tokens";
 
 export type Props = {
   openSettings: () => void;
@@ -131,21 +135,25 @@ export function SyntheticsPage(p: Props) {
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+
   useEffect(() => {
     if (!chartToken) return;
 
     const averagePrice = getMidPrice(chartToken.prices);
     const currentTokenPriceStr =
-      formatUsd(averagePrice, {
-        displayDecimals: chartToken.priceDecimals,
+      formatUsdPrice(averagePrice, {
+        visualMultiplier: isSwap ? 1 : chartToken.visualMultiplier,
       }) || "...";
+
+    const prefix = isSwap ? "" : getTokenVisualMultiplier(chartToken);
 
     const title = getPageTitle(
       currentTokenPriceStr +
-        ` | ${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
+        ` | ${prefix}${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
     );
     document.title = title;
-  }, [chartToken, chartToken?.address, chartToken?.isStable, chartToken?.symbol]);
+  }, [chartToken, isSwap]);
 
   const onSelectPositionClick = useCallback(
     (key: string, tradeMode?: TradeMode) => {

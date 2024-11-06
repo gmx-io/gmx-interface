@@ -7,6 +7,7 @@ import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import { useMedia } from "react-use";
 
+import { getTokenVisualMultiplier } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -31,7 +32,7 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
@@ -345,6 +346,7 @@ export function PositionItem(p: Props) {
           handle={
             formatLiquidationPrice(p.position.liquidationPrice, {
               displayDecimals: marketDecimals,
+              visualMultiplier: p.position.indexToken.visualMultiplier,
             }) || "..."
           }
           position="bottom-end"
@@ -360,6 +362,7 @@ export function PositionItem(p: Props) {
     return (
       formatLiquidationPrice(p.position.liquidationPrice, {
         displayDecimals: marketDecimals,
+        visualMultiplier: p.position.indexToken.visualMultiplier,
       }) || "..."
     );
   }
@@ -388,6 +391,7 @@ export function PositionItem(p: Props) {
                     displaySize={20}
                     importSize={24}
                   />
+                  {getTokenVisualMultiplier(p.position.indexToken)}
                   {p.position.indexToken.symbol}
                 </>
               }
@@ -477,12 +481,14 @@ export function PositionItem(p: Props) {
             ? t`Opening...`
             : formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
+                visualMultiplier: p.position.indexToken.visualMultiplier,
               })}
         </TableTd>
         <TableTd>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
             displayDecimals: marketDecimals,
+            visualMultiplier: p.position.indexToken.visualMultiplier,
           })}
         </TableTd>
         <TableTd>
@@ -545,6 +551,7 @@ export function PositionItem(p: Props) {
                   displaySize={20}
                   importSize={24}
                 />
+                {p.position.indexToken && getTokenVisualMultiplier(p.position.indexToken)}
                 {p.position.indexToken?.symbol}
               </span>
               <div>
@@ -625,6 +632,7 @@ export function PositionItem(p: Props) {
                 <div>
                   {formatUsd(p.position.entryPrice, {
                     displayDecimals: marketDecimals,
+                    visualMultiplier: p.position.indexToken.visualMultiplier,
                   })}
                 </div>
               </div>
@@ -635,6 +643,7 @@ export function PositionItem(p: Props) {
                 <div>
                   {formatUsd(p.position.markPrice, {
                     displayDecimals: marketDecimals,
+                    visualMultiplier: p.position.indexToken.visualMultiplier,
                   })}
                 </div>
               </div>
@@ -857,7 +866,8 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
       {triggerThresholdType}{" "}
       {formatUsd(order.triggerPrice, {
-        displayDecimals: order.indexToken?.priceDecimals,
+        displayDecimals: calculateDisplayDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier),
+        visualMultiplier: order.indexToken?.visualMultiplier,
       })}
       :{" "}
       <span>

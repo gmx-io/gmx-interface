@@ -290,6 +290,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 8,
       imageUrl: "https://assets.coingecko.com/coins/images/29850/standard/pepe-token.jpeg?1696528776",
       coingeckoUrl: "https://www.coingecko.com/en/coins/pepe",
+      visualMultiplier: 1000,
+      visualPrefix: "k",
     },
     {
       name: "dogwifhat",
@@ -344,6 +346,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/11939/standard/shiba.png?1696511800",
       coingeckoUrl: "https://www.coingecko.com/en/coins/shiba-inu",
       isSynthetic: true,
+      visualMultiplier: 1000,
+      visualPrefix: "k",
     },
     {
       name: "tBTC",
@@ -371,6 +375,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/30666/standard/_dD8qr3M_400x400.png?1702913020",
       coingeckoUrl: "https://www.coingecko.com/en/coins/sats-ordinals",
       isSynthetic: true,
+      visualMultiplier: 1000_000,
+      visualPrefix: "m",
     },
     {
       name: "Polygon",
@@ -1356,4 +1362,8 @@ export function isSimilarToken(tokenA: Token, tokenB: Token) {
   }
 
   return false;
+}
+
+export function getTokenVisualMultiplier(token: Token): string {
+  return token.visualPrefix || token.visualMultiplier?.toString() || "";
 }

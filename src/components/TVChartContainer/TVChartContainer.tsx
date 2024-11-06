@@ -1,14 +1,14 @@
 import Loader from "components/Common/Loader";
 import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
-import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
+import { isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { formatAmount } from "lib/numbers";
+import { bigintToNumber } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage, useMedia } from "react-use";
@@ -37,6 +37,7 @@ type Props = {
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
   oraclePriceDecimals?: number;
+  visualMultiplier?: number | bigint;
 };
 
 export default function TVChartContainer({
@@ -51,6 +52,7 @@ export default function TVChartContainer({
   chartToken,
   supportedResolutions,
   oraclePriceDecimals,
+  visualMultiplier,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -66,17 +68,9 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartToken && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
-      let priceDecimals: number;
-
-      try {
-        priceDecimals = oraclePriceDecimals ?? getPriceDecimals(chainId, chartToken.symbol);
-      } catch (e) {
-        return;
-      }
-
       const averagePrice = getMidPrice(chartToken);
 
-      const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, priceDecimals));
+      const formattedPrice = bigintToNumber(averagePrice, USD_DECIMALS);
       dataProvider?.setCurrentChartToken({
         price: formattedPrice,
         ticker: chartToken.symbol,
@@ -199,7 +193,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, dataProvider]);
+  }, [chainId, dataProvider, visualMultiplier]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

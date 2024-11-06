@@ -85,7 +85,20 @@ export const selectOrderEditorSizeDeltaUsd = createSelector((q) => {
 });
 
 export const selectOrderEditorTriggerPrice = createSelector((q) => {
-  return parseValue(q(selectOrderEditorTriggerPriceInputValue) || "0", USD_DECIMALS);
+  const triggerPriceInputValue = q(selectOrderEditorTriggerPriceInputValue);
+  const indexToken = q(selectOrderEditorIndexToken);
+
+  if (!triggerPriceInputValue || !indexToken) return undefined;
+
+  let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+
+  if (triggerPrice === 0n) {
+    triggerPrice = undefined;
+  } else if (triggerPrice !== undefined && indexToken?.visualMultiplier) {
+    triggerPrice = triggerPrice / BigInt(indexToken?.visualMultiplier ?? 1);
+  }
+
+  return triggerPrice;
 });
 
 export const selectOrdersList = createSelector((q) => {
@@ -279,6 +292,22 @@ export const selectOrderEditorToToken = createSelector((q) => {
   if (!swapPathInfo.outTokenAddress) return undefined;
 
   return q((s) => selectTokensData(s)?.[swapPathInfo.outTokenAddress]);
+});
+
+export const selectOrderEditorIndexToken = createSelector((q) => {
+  const order = q(selectEditingOrder);
+
+  if (!order) return undefined;
+
+  const marketsData = q(selectMarketsInfoData);
+  const indexTokenAddress = marketsData?.[order.marketAddress]?.indexTokenAddress;
+
+  if (!indexTokenAddress) return undefined;
+
+  const tokensData = q(selectTokensData);
+  const token = getTokenData(tokensData, indexTokenAddress);
+
+  return token;
 });
 
 export const selectOrderEditorMarkRatio = createSelector((q) => {
