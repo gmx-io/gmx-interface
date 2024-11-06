@@ -20,6 +20,7 @@ export async function callContract(
     detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;
+    successDetailsMsg?: ReactNode;
     hideSentMsg?: boolean;
     hideSuccessMsg?: boolean;
     showPreliminaryMsg?: boolean;
@@ -126,7 +127,7 @@ export async function callContract(
       const pendingTxn = {
         hash: res.hash,
         message,
-        messageDetails: opts.detailsMsg,
+        messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,
         metricId: opts.metricId,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
