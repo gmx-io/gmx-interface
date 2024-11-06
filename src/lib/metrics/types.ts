@@ -17,6 +17,8 @@ export type GlobalMetricData = {
 
 export enum OrderStage {
   Submitted = "submitted",
+  Simulated = "simulated",
+  TxnSubmitted = "txnSubmitted",
   Sent = "sent",
   Created = "created",
   Executed = "executed",
@@ -157,6 +159,20 @@ export type OrderSentEvent = {
   event: `${OrderMetricType}.${OrderStage.Sent}`;
   isError: false;
   time: number | undefined;
+  data: OrderMetricData;
+};
+
+export type OrderSimulatedEvent = {
+  event: `${OrderMetricType}.${OrderStage.Simulated}`;
+  isError: false;
+  time: number;
+  data: OrderMetricData;
+};
+
+export type OrderTxnSubmittedEvent = {
+  event: `${OrderMetricType}.${OrderStage.TxnSubmitted}`;
+  isError: false;
+  time: number;
   data: OrderMetricData;
 };
 

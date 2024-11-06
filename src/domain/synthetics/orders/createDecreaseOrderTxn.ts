@@ -15,6 +15,7 @@ import { t } from "@lingui/macro";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { OrderMetricId } from "lib/metrics";
 
 const { ZeroAddress } = ethers;
 
@@ -55,7 +56,7 @@ export async function createDecreaseOrderTxn(
   subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
-  metricId?: string
+  metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
@@ -102,6 +103,7 @@ export async function createDecreaseOrderTxn(
           value: totalWntAmount,
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
+          metricId,
         });
       }
     })

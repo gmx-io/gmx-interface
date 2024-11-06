@@ -19,6 +19,8 @@ import {
   useMarketsInfoRequest,
   getMarketNetPnl,
   getMarketPnl,
+  getCappedPoolPnl,
+  getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
@@ -795,6 +797,20 @@ export function SyntheticsStats() {
               const longPnlMax = getMarketPnl(market, true, true);
               const shortPnlMax = getMarketPnl(market, false, true);
 
+              const cappedLongPnlMax = getCappedPoolPnl({
+                marketInfo: market,
+                poolUsd: getPoolUsdWithoutPnl(market, true, "maxPrice"),
+                poolPnl: longPnlMax,
+                isLong: true,
+              });
+
+              const cappedShortPnlMax = getCappedPoolPnl({
+                marketInfo: market,
+                poolUsd: getPoolUsdWithoutPnl(market, false, "maxPrice"),
+                poolPnl: shortPnlMax,
+                isLong: false,
+              });
+
               return (
                 <tr key={market.marketTokenAddress}>
                   <td className="sticky-left">{renderMarketCell()}</td>
@@ -818,9 +834,9 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Long"
-                                textClassName={getPositiveOrNegativeClass(longPnlMax)}
-                                value={`${getPlusOrMinusSymbol(longPnlMax)}${formatAmountHuman(
-                                  bigMath.abs(longPnlMax),
+                                textClassName={getPositiveOrNegativeClass(cappedLongPnlMax)}
+                                value={`${getPlusOrMinusSymbol(cappedLongPnlMax)}${formatAmountHuman(
+                                  bigMath.abs(cappedLongPnlMax),
                                   30,
                                   true
                                 )}`}
@@ -829,8 +845,8 @@ export function SyntheticsStats() {
                                 showDollar={false}
                                 label="PnL Short"
                                 textClassName={getPositiveOrNegativeClass(shortPnlMax)}
-                                value={`${getPlusOrMinusSymbol(shortPnlMax)}${formatAmountHuman(
-                                  bigMath.abs(shortPnlMax),
+                                value={`${getPlusOrMinusSymbol(cappedShortPnlMax)}${formatAmountHuman(
+                                  bigMath.abs(cappedShortPnlMax),
                                   30,
                                   true
                                 )}`}

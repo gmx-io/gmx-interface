@@ -31,13 +31,13 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
   makeTxnErrorMetricsHandler,
-  makeTxnSentMetricsHandler,
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
   initSwapMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
+import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";

@@ -6,7 +6,7 @@ import {
   OracleFetcher,
   TimingPayload,
   UiReportPayload,
-} from "lib/oracleKeeperFetcher";
+} from "lib/oracleKeeperFetcher/types";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
