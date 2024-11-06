@@ -18,6 +18,7 @@ import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPa
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import concat from "lodash/concat";
+import { OrderMetricId } from "lib/metrics/types";
 
 const { ZeroAddress } = ethers;
 
@@ -91,7 +92,7 @@ export async function createIncreaseOrderTxn({
   chainId: number;
   signer: Signer;
   subaccount: Subaccount;
-  metricId?: string;
+  metricId?: OrderMetricId;
   createIncreaseOrderParams: IncreaseOrderParams;
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
@@ -221,6 +222,7 @@ export async function createIncreaseOrderTxn({
       createMulticallPayload: simulationEncodedPayload,
       value: totalWntAmount,
       errorTitle: t`Order error.`,
+      metricId,
     });
   }
 

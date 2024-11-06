@@ -1,3 +1,4 @@
+import { USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
@@ -20,7 +21,6 @@ import {
   OrderMetricData,
   OrderMetricId,
   OrderMetricType,
-  OrderSentEvent,
   OrderStage,
   OrderTxnFailedEvent,
   PendingTxnErrorEvent,
@@ -28,7 +28,6 @@ import {
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
-import { USD_DECIMALS } from "config/factors";
 
 export function getMetricTypeByOrderType(p: {
   orderType: OrderType;
@@ -421,6 +420,8 @@ export function sendOrderSubmittedMetric(metricId: OrderMetricId) {
     isError: false,
     data: metricData,
   });
+
+  metrics.startTimer(metricId);
 }
 
 export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
@@ -440,28 +441,6 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
       ...metricData,
     },
   });
-}
-
-export function makeTxnSentMetricsHandler(metricId: OrderMetricId) {
-  return () => {
-    const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
-
-    if (!metricData) {
-      metrics.pushError("Order metric data not found", "makeTxnSentMetricsHandler");
-      return;
-    }
-
-    metrics.startTimer(metricId);
-
-    metrics.pushEvent<OrderSentEvent>({
-      event: `${metricData.metricType}.sent`,
-      isError: false,
-      time: metrics.getTime(metricId)!,
-      data: metricData,
-    });
-
-    return Promise.resolve();
-  };
 }
 
 export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {

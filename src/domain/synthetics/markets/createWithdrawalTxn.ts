@@ -1,16 +1,17 @@
+import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
-import { applySlippageToMinOut } from "../trade";
-import { TokensData } from "../tokens";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { t } from "@lingui/macro";
+import { OrderMetricId } from "lib/metrics/types";
 import { SwapPricingType } from "../orders";
+import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { TokensData } from "../tokens";
+import { applySlippageToMinOut } from "../trade";
 
 export type CreateWithdrawalParams = {
   account: string;
@@ -26,7 +27,7 @@ export type CreateWithdrawalParams = {
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
-  metricId?: string;
+  metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
@@ -85,6 +86,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
       errorTitle: t`Withdrawal error.`,
       value: wntAmount,
       swapPricingType: SwapPricingType.TwoStep,
+      metricId: p.metricId,
     });
   }
 

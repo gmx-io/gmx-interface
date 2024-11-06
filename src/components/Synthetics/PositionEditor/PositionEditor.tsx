@@ -84,11 +84,11 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
 import {
   makeTxnErrorMetricsHandler,
-  makeTxnSentMetricsHandler,
   initEditCollateralMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
+import { makeTxnSentMetricsHandler } from "lib/metrics/transactionUtils";
 import "./PositionEditor.scss";
 
 export type Props = {

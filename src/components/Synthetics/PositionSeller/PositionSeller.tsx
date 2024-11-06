@@ -70,10 +70,10 @@ import { helperToast } from "lib/helperToast";
 import {
   initDecreaseOrderMetricData,
   makeTxnErrorMetricsHandler,
-  makeTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
+import { makeTxnSentMetricsHandler } from "lib/metrics/transactionUtils";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 

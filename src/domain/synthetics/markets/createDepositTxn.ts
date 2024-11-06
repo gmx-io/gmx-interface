@@ -9,6 +9,7 @@ import { callContract } from "lib/contracts";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
+import { OrderMetricId } from "lib/metrics/types";
 
 export type CreateDepositParams = {
   account: string;
@@ -24,7 +25,7 @@ export type CreateDepositParams = {
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
-  metricId?: string;
+  metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
 };
@@ -104,6 +105,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
       method: "simulateExecuteDeposit",
       errorTitle: t`Deposit error.`,
       value: wntAmount,
+      metricId: p.metricId,
     });
   }
 
