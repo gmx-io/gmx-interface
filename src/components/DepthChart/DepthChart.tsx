@@ -105,18 +105,30 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       let prevTouchY = 0;
 
       const touchDownHandler = (event: TouchEvent) => {
+        if (isZeroPriceImpact) {
+          return;
+        }
+
         event.preventDefault();
         isPressed = true;
         prevTouchY = event.touches[0].clientY;
       };
 
       const touchUpHandler = (event: TouchEvent) => {
+        if (isZeroPriceImpact) {
+          return;
+        }
+
         event.preventDefault();
         isPressed = false;
         prevTouchY = 0;
       };
 
       const touchMoveHandler = (event: TouchEvent) => {
+        if (isZeroPriceImpact) {
+          return;
+        }
+
         if (isPressed) {
           event.preventDefault();
           const deltaY = event.touches[0].clientY - prevTouchY;
