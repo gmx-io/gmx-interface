@@ -2,10 +2,18 @@ import { t } from "@lingui/macro";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
-import { getToken, getWrappedToken } from "config/tokens";
+import { getIsFlagEnabled } from "config/ab";
+import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import { subscribeToApprovalEvents, subscribeToV2Events } from "context/WebsocketContext/subscribeToEvents";
+import {
+  subscribeToApprovalEvents,
+  subscribeToTransferEvents,
+  subscribeToV2Events,
+} from "context/WebsocketContext/subscribeToEvents";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
+import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -30,10 +38,11 @@ import {
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
+import { getProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
-import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   ApprovalStatuses,
   DepositCreatedEventData,
@@ -57,8 +66,6 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -69,9 +76,9 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { account: currentAccount } = useWallet();
+  const provider = getProvider(undefined, chainId);
   const { wsProvider } = useWebsocketProvider();
-
-  const { hasV2LostFocus } = useHasLostFocus();
+  const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
@@ -83,10 +90,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     account: currentAccount,
   });
 
-  const GlvAndGmMarketsData = useMemo(() => {
-    return {
+  const { glvAndGmMarketsData, marketTokensAddressesString } = useMemo(() => {
+    const glvAndGmMarketsData = {
       ...marketsInfoData,
       ...glvData,
+    };
+
+    const marketTokensAddressesString = Object.keys(glvAndGmMarketsData).join("-");
+
+    return {
+      glvAndGmMarketsData,
+      marketTokensAddressesString,
     };
   }, [marketsInfoData, glvData]);
 
@@ -94,6 +108,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
+
+  const { tokensBalancesUpdates, setTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
@@ -104,9 +120,29 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [, setPendingTxns] = usePendingTxns();
 
+  const updateNativeTokenBalance = useCallback(() => {
+    if (!getIsFlagEnabled("testWebsocketBalances")) {
+      return;
+    }
+
+    if (!currentAccount) {
+      return;
+    }
+
+    provider.getBalance(currentAccount, "pending").then((balance) => {
+      setTokensBalancesUpdates((old) =>
+        setByKey(old, NATIVE_TOKEN_ADDRESS, {
+          balance,
+        })
+      );
+    });
+  }, [currentAccount, provider, setTokensBalancesUpdates]);
+
   // use ref to avoid re-subscribing on state changes
   eventLogHandlers.current = {
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const data: OrderCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -171,6 +207,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       const order = orderStatuses[key]?.data;
@@ -191,6 +229,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
       const account = eventData.addressItems.items.account;
 
@@ -259,6 +299,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const depositData: DepositCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -300,6 +342,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const depositData: DepositCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -339,6 +383,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvDepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
       if (depositStatuses[key]?.data) {
         const metricId = getGMSwapMetricId(depositStatuses[key].data!);
@@ -350,6 +396,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     DepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (depositStatuses[key]?.data) {
@@ -362,6 +410,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     DepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (depositStatuses[key]?.data) {
@@ -374,6 +424,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvDepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (depositStatuses[key]?.data) {
@@ -386,6 +438,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     WithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const data: WithdrawalCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -423,6 +477,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvWithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const data: WithdrawalCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
@@ -460,6 +516,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     WithdrawalExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (withdrawalStatuses[key]?.data) {
@@ -474,6 +532,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvWithdrawalExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
       if (withdrawalStatuses[key]?.data) {
         const metricId = getGMSwapMetricId({
@@ -487,6 +547,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     WithdrawalCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (withdrawalStatuses[key]?.data) {
@@ -501,6 +563,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     GlvWithdrawalCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (withdrawalStatuses[key]?.data) {
@@ -551,6 +615,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     ShiftExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (shiftStatuses[key]?.data) {
@@ -567,6 +633,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     ShiftCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      updateNativeTokenBalance();
+
       const key = eventData.bytes32Items.items.key;
 
       if (shiftStatuses[key].data) {
@@ -730,6 +798,40 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   );
 
   useEffect(
+    function subscribeTokenTransferEvents() {
+      if (!getIsFlagEnabled("testWebsocketBalances")) {
+        return;
+      }
+
+      if (hasPageLostFocus || !wsProvider || !currentAccount || !marketTokensAddressesString) {
+        return;
+      }
+
+      const unsubscribeFromTokenEvents = subscribeToTransferEvents(
+        chainId,
+        wsProvider,
+        currentAccount,
+        marketTokensAddressesString.split("-"),
+        (tokenAddress, amount) => {
+          setTokensBalancesUpdates((old) => {
+            const oldDiff = old[tokenAddress]?.diff || 0n;
+
+            return setByKey(old, tokenAddress, {
+              diff: oldDiff + amount,
+            });
+          });
+        }
+      );
+
+      return function cleanup() {
+        unsubscribeFromTokenEvents();
+      };
+    },
+
+    [chainId, currentAccount, hasPageLostFocus, marketTokensAddressesString, setTokensBalancesUpdates, wsProvider]
+  );
+
+  useEffect(
     function subscribeApproval() {
       if (!wsProvider || !currentAccount) {
         return;
@@ -763,6 +865,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       depositStatuses,
       withdrawalStatuses,
       shiftStatuses,
+      tokensBalancesUpdates,
       approvalStatuses,
       pendingPositionsUpdates,
       positionIncreaseEvents,
@@ -806,7 +909,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingDepositData={data}
-            marketsInfoData={GlvAndGmMarketsData}
+            marketsInfoData={glvAndGmMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,
@@ -822,7 +925,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         helperToast.success(
           <GmStatusNotification
             pendingWithdrawalData={data}
-            marketsInfoData={GlvAndGmMarketsData}
+            marketsInfoData={glvAndGmMarketsData}
             tokensData={tokensData}
             toastTimestamp={toastId}
           />,
@@ -869,18 +972,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       },
     };
   }, [
-    depositStatuses,
-    marketsInfoData,
     orderStatuses,
+    depositStatuses,
+    withdrawalStatuses,
+    shiftStatuses,
+    tokensBalancesUpdates,
     approvalStatuses,
     pendingPositionsUpdates,
-    positionDecreaseEvents,
     positionIncreaseEvents,
-    setPendingTxns,
-    shiftStatuses,
+    positionDecreaseEvents,
+    marketsInfoData,
     tokensData,
-    withdrawalStatuses,
-    GlvAndGmMarketsData,
+    setPendingTxns,
+    glvAndGmMarketsData,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;

@@ -8,6 +8,11 @@ import { TokenBalancesData } from "./types";
 
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
+import { getIsFlagEnabled } from "config/ab";
+import {
+  useTokensBalancesUpdates,
+  useUpdatedTokensBalances,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
@@ -23,6 +28,8 @@ export function useTokenBalances(
   }[],
   refreshInterval?: number
 ): BalancesDataResult {
+  const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
+
   const { address: currentAccount } = useAccount();
 
   const account = overrideAccount ?? currentAccount;
@@ -65,16 +72,25 @@ export function useTokenBalances(
 
         return acc;
       }, {}),
-    parseResponse: (res) =>
-      Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
-        tokenBalances[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
+    parseResponse: (res) => {
+      const result: TokenBalancesData = {};
 
-        return tokenBalances;
-      }, {} as TokenBalancesData),
+      Object.keys(res.data).forEach((tokenAddress) => {
+        result[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
+      });
+
+      if (getIsFlagEnabled("testWebsocketBalances")) {
+        resetTokensBalancesUpdates(Object.keys(result));
+      }
+
+      return result;
+    },
   });
 
+  const balancesData = useUpdatedTokensBalances(data);
+
   return {
-    balancesData: data,
+    balancesData,
     error,
   };
 }

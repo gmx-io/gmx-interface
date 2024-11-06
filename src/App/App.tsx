@@ -35,6 +35,7 @@ import { SWRConfigProp } from "./swrConfig";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { sendPendingOrderTxnErrorMetric } from "lib/metrics";
 import { AppRoutes } from "./AppRoutes";
+import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -119,6 +120,7 @@ function App() {
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
