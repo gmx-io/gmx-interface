@@ -38,3 +38,25 @@ export function multiplyBarValues(bar: Bar, visualMultiplier: number | undefined
     low: bar.low * visualMultiplier,
   };
 }
+
+export function getSymbolName(symbolName: string, visualMultiplier = 1): string {
+  return visualMultiplier ? `${visualMultiplier}@${symbolName}` : symbolName;
+}
+
+export function parseSymbolName(nameWithMultiplier: string): {
+  visualMultiplier: number;
+  symbolName: string;
+} {
+  if (nameWithMultiplier.includes("@")) {
+    const [multiplier, symbol] = nameWithMultiplier.split("@");
+    return {
+      visualMultiplier: parseInt(multiplier),
+      symbolName: symbol,
+    };
+  }
+
+  return {
+    visualMultiplier: 1,
+    symbolName: nameWithMultiplier,
+  };
+}
