@@ -73,7 +73,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { makeTxnSentMetricsHandler } from "lib/metrics/transactionUtils";
+import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 

@@ -8,7 +8,7 @@ import { getGasLimit, getGasPrice, getBestNonce } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import { sendOrderTxnSubmittedMetric } from "lib/metrics/transactionUtils";
+import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { OrderMetricId } from "lib/metrics/types";
 
 export async function callContract(

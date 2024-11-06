@@ -37,7 +37,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { makeTxnSentMetricsHandler } from "lib/metrics/transactionUtils";
+import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";

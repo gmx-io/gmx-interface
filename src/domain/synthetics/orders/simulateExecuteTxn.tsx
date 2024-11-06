@@ -16,7 +16,7 @@ import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "d
 import { BaseContract, BytesLike, ethers } from "ethers";
 import { extractDataFromError, extractError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
-import { sendOrderSimulatedMetric, sendOrderSimulationErrorMetric } from "lib/metrics/transactionUtils";
+import { sendOrderSimulatedMetric, sendOrderSimulationErrorMetric } from "lib/metrics/utils";
 import { OrderMetricId } from "lib/metrics/types";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";

@@ -88,7 +88,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { makeTxnSentMetricsHandler } from "lib/metrics/transactionUtils";
+import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import "./PositionEditor.scss";
 
 export type Props = {
