@@ -121,7 +121,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           event.preventDefault();
           const deltaY = event.touches[0].clientY - prevTouchY;
           prevTouchY = event.touches[0].clientY;
-          setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * 0.002), 1, 20));
+          setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * 0.004), 1, 20));
         }
       };
 
