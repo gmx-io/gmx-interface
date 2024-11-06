@@ -97,6 +97,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       method: "simulateExecuteGlvDeposit",
       errorTitle: t`Deposit error.`,
       value: wntAmount,
+      metricId: p.metricId,
     });
   }
 

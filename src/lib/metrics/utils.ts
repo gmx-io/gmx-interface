@@ -1,3 +1,4 @@
+import { USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
@@ -21,14 +22,15 @@ import {
   OrderMetricId,
   OrderMetricType,
   OrderSentEvent,
+  OrderSimulatedEvent,
   OrderStage,
   OrderTxnFailedEvent,
+  OrderTxnSubmittedEvent,
   PendingTxnErrorEvent,
   ShiftGmMetricData,
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
-import { USD_DECIMALS } from "config/factors";
 
 export function getMetricTypeByOrderType(p: {
   orderType: OrderType;
@@ -421,24 +423,60 @@ export function sendOrderSubmittedMetric(metricId: OrderMetricId) {
     isError: false,
     data: metricData,
   });
+
+  metrics.startTimer(metricId);
 }
 
-export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
+export function sendOrderSimulatedMetric(metricId: OrderMetricId) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
-    metrics.pushError("Order metric data not found", "sendTxnValidationErrorMetric");
+    metrics.pushError("Order metric data not found", "sendOrderSimulatedMetric");
     return;
   }
 
-  metrics.pushEvent({
-    event: `${metricData.metricType}.failed`,
+  metrics.pushEvent<OrderSimulatedEvent>({
+    event: `${metricData.metricType}.simulated`,
+    isError: false,
+    time: metrics.getTime(metricId)!,
+    data: metricData,
+  });
+}
+
+export function sendOrderSimulationErrorMetric(metricId: OrderMetricId, error: Error) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics.pushError("Order metric data not found", "sendOrderSimulationErrorMetric");
+    return;
+  }
+
+  const errorData = prepareErrorMetricData(error);
+
+  metrics.pushEvent<OrderTxnFailedEvent>({
+    event: `${metricData.metricType}.${OrderStage.Failed}`,
     isError: true,
     data: {
-      errorContext: "submit",
-      errorMessage: "Error submitting order, missed data",
+      errorContext: "simulation",
+      ...(errorData || {}),
       ...metricData,
     },
+  });
+}
+
+export function sendOrderTxnSubmittedMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics.pushError("Order metric data not found", "sendOrderTxnSubmittedMetric");
+    return;
+  }
+
+  metrics.pushEvent<OrderTxnSubmittedEvent>({
+    event: `${metricData.metricType}.txnSubmitted`,
+    isError: false,
+    time: metrics.getTime(metricId)!,
+    data: metricData,
   });
 }
 
@@ -462,6 +500,25 @@ export function makeTxnSentMetricsHandler(metricId: OrderMetricId) {
 
     return Promise.resolve();
   };
+}
+
+export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics.pushError("Order metric data not found", "sendTxnValidationErrorMetric");
+    return;
+  }
+
+  metrics.pushEvent({
+    event: `${metricData.metricType}.failed`,
+    isError: true,
+    data: {
+      errorContext: "submit",
+      errorMessage: "Error submitting order, missed data",
+      ...metricData,
+    },
+  });
 }
 
 export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {

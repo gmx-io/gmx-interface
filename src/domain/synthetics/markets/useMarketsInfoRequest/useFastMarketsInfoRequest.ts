@@ -4,16 +4,13 @@ import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { FastMarketInfoData } from "..";
-import { getIsFlagEnabled } from "config/ab";
 
 export function useFastMarketsInfoRequest(chainId: number) {
-  const swrKey = getIsFlagEnabled("testFastMarketsInfo") ? [chainId, "useFastMarketsInfoRequest"] : null;
-
   const {
     data: fastMarketInfoData,
     error,
     isLoading,
-  } = useSWR<FastMarketInfoData>(swrKey, {
+  } = useSWR<FastMarketInfoData>([chainId, "useFastMarketsInfoRequest"], {
     refreshInterval: undefined,
     fetcher: async () => {
       try {

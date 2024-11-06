@@ -32,6 +32,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getTokenVisualMultiplier } from "config/tokens";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -307,6 +308,7 @@ const TableRow = memo(
             label={t`Mark Price`}
             value={formatUsd(markPrice, {
               displayDecimals: indexToken?.priceDecimals,
+              visualMultiplier: marketInfo?.indexToken.visualMultiplier,
             })}
             showDollar={false}
           />
@@ -316,13 +318,19 @@ const TableRow = memo(
               value={formatUsd(liquidationPrice - markPrice, {
                 maxThreshold: "1000000",
                 displayDecimals: indexToken?.priceDecimals,
+                visualMultiplier: marketInfo?.indexToken.visualMultiplier,
               })}
               showDollar={false}
             />
           )}
         </>
       );
-    }, [indexToken?.priceDecimals, indexToken?.prices.maxPrice, liquidationPrice]);
+    }, [
+      indexToken?.priceDecimals,
+      indexToken?.prices.maxPrice,
+      liquidationPrice,
+      marketInfo?.indexToken.visualMultiplier,
+    ]);
 
     return (
       <TableTr key={position.key} bordered={false}>
@@ -349,7 +357,7 @@ const TableRow = memo(
         <TableCell>
           <TooltipWithPortal
             handle={
-              <span className="">
+              <span>
                 {indexToken ? (
                   <TokenIcon
                     className="PositionList-token-icon"
@@ -358,7 +366,10 @@ const TableRow = memo(
                     importSize={24}
                   />
                 ) : null}
-                <span className="">{marketInfo?.indexToken.symbol}</span>
+                <span>
+                  {marketInfo?.indexToken && getTokenVisualMultiplier(marketInfo.indexToken)}
+                  {marketInfo?.indexToken.symbol}
+                </span>
                 <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
                   {position.isLong ? t`Long` : t`Short`}
                 </span>
@@ -372,6 +383,7 @@ const TableRow = memo(
         <TableCell>
           {formatUsd(position.entryPrice, {
             displayDecimals: marketDecimals,
+            visualMultiplier: marketInfo?.indexToken.visualMultiplier,
           })}
         </TableCell>
         <TableCell>
@@ -388,7 +400,11 @@ const TableRow = memo(
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
-              handle={formatUsd(liquidationPrice, { maxThreshold: "1000000", displayDecimals: marketDecimals })}
+              handle={formatUsd(liquidationPrice, {
+                maxThreshold: "1000000",
+                displayDecimals: marketDecimals,
+                visualMultiplier: marketInfo?.indexToken.visualMultiplier,
+              })}
             />
           ) : (
             <TooltipWithPortal

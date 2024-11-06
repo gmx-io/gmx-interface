@@ -90,7 +90,7 @@ export class TVDataProvider {
       return;
     }
 
-    const latestBar = prices[0];
+    const latestBar = { ...prices[0] };
 
     latestBar.ticker = this.currentTicker;
     latestBar.period = this.currentPeriod;

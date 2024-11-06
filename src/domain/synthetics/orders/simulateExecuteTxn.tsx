@@ -4,20 +4,22 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
   getDataStoreContract,
-  getMulticallContract,
   getExchangeRouterContract,
   getGlvRouterContract,
+  getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
+import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { ethers, BytesLike, BaseContract } from "ethers";
-import { extractError, getErrorMessage } from "lib/contracts/transactionErrors";
+import { BaseContract, BytesLike, ethers } from "ethers";
+import { extractDataFromError, extractError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
+import { sendOrderSimulatedMetric, sendOrderSimulationErrorMetric } from "lib/metrics/utils";
+import { OrderMetricId } from "lib/metrics/types";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import { SwapPricingType } from "domain/synthetics/orders";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 import { withRetry } from "viem";
 import { isGlvEnabled } from "../markets/glv";
@@ -41,6 +43,7 @@ type SimulateExecuteParams = {
     | "simulateExecuteGlvWithdrawal";
   errorTitle?: string;
   swapPricingType?: SwapPricingType;
+  metricId?: OrderMetricId;
 };
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
@@ -166,7 +169,14 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
 
       if (isSimulationPassed) {
+        if (p.metricId) {
+          sendOrderSimulatedMetric(p.metricId);
+        }
         return;
+      }
+
+      if (p.metricId) {
+        sendOrderSimulationErrorMetric(p.metricId, txnError);
       }
 
       const parsedArgs = Object.keys(parsedError?.args ?? []).reduce((acc, k) => {
@@ -210,18 +220,6 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
 
     throw txnError;
   }
-}
-
-export function extractDataFromError(errorMessage: unknown) {
-  if (typeof errorMessage !== "string") return null;
-
-  const pattern = /data="([^"]+)"/;
-  const match = errorMessage.match(pattern);
-
-  if (match && match[1]) {
-    return match[1];
-  }
-  return null;
 }
 
 function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {

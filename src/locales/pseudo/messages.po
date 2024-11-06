@@ -35,6 +35,7 @@ msgid "Decentralized Trading Protocol"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
+#: src/pages/Stake/StakeV2.tsx
 msgid "Claim submitted!"
 msgstr ""
 
@@ -489,10 +490,6 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Setting auto-cancel order(s)"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr ""
@@ -694,10 +691,6 @@ msgstr ""
 msgid "Total value locked takes into account:"
 msgstr ""
 
-#: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
-#~ msgid "You can have up to {allowedAutoCancelOrders} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request"
 msgstr ""
@@ -837,6 +830,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Positions ({positionsCount})"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Trade GMX</0>"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -1948,6 +1945,10 @@ msgstr ""
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APY"
+#~ msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
 msgid "Acknowledge high Price Impact"
@@ -2033,6 +2034,10 @@ msgstr ""
 msgid "Advanced display"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Long {0}"
 msgstr ""
@@ -2041,6 +2046,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
 msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Provide liquidity</0> in GM: GMX/USD<1/>[GMX-USDC] and earn {gmxMarketApyDataText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Take-Profit"
@@ -2517,10 +2526,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
-
-#: src/config/bridging.tsx
-#~ msgid "Mint tBTC using BTC with <0>Threshold</0>"
-#~ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -3625,10 +3630,6 @@ msgstr ""
 msgid "Rebates earned by this account as a trader."
 msgstr ""
 
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Auto-cancel order(s) set"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3691,7 +3692,6 @@ msgstr ""
 msgid "Net Rate / 1h"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim esGMX Rewards"
 msgstr ""
@@ -4141,6 +4141,10 @@ msgstr ""
 msgid "Reduce Liquidation Risks"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "collateral"
 msgstr ""
@@ -4221,6 +4225,10 @@ msgstr ""
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APY."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr ""
@@ -4252,6 +4260,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
 msgid "Switch to:"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -4546,6 +4558,10 @@ msgstr ""
 msgid "Collateral ({0})"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "You will earn {0}% more rewards with this action."
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Network Fee Buffer"
 msgstr ""
@@ -4623,8 +4639,8 @@ msgid "Sell order executed"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound submitted!"
-msgstr ""
+#~ msgid "Compound submitted!"
+#~ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -4879,8 +4895,8 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before compounding.</1>"
-msgstr ""
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before compounding.</1>"
+#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the<0>Ethena dashboard</0>."
@@ -4954,8 +4970,8 @@ msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound Rewards"
-msgstr ""
+#~ msgid "Compound Rewards"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -4986,6 +5002,10 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
+msgstr ""
+
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Close {0} {1}{2}"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -5355,10 +5375,6 @@ msgid "This order using {collateralSymbol} as collateral will not be valid for t
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr ""
 
@@ -5525,7 +5541,6 @@ msgid "SHORT LIQ."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-#: src/pages/Stake/StakeV2.tsx
 msgid "Claim submitted."
 msgstr ""
 
@@ -5555,8 +5570,8 @@ msgid "No delegate found"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound failed."
-msgstr ""
+#~ msgid "Compound failed."
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.jsx
 msgid "Wallet not yet connected"
@@ -5615,8 +5630,8 @@ msgid "{fromText} to {toExecutionText}"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compounding..."
-msgstr ""
+#~ msgid "Compounding..."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -5717,6 +5732,10 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Edit {0} {1}{2}"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5936,10 +5955,6 @@ msgstr ""
 msgid "Protocol analytics"
 msgstr ""
 
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "{updateOrdersCount} orders were not updated as max order limit reached"
-#~ msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/NftWallet/NftWallet.jsx
@@ -6097,8 +6112,8 @@ msgid "Deposit"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
-msgstr ""
+#~ msgid "{0}<0>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -6209,10 +6224,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Leftover Collateral Excluding Impact"
-msgstr ""
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Edit {0} {1}"
 msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
@@ -6458,7 +6469,6 @@ msgstr ""
 msgid "Terms and Conditions"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
@@ -6901,6 +6911,10 @@ msgstr ""
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -6911,7 +6925,6 @@ msgstr ""
 msgid "Increase"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr ""
@@ -7226,8 +7239,8 @@ msgid "Escrowed GMX APR"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound completed!"
-msgstr ""
+#~ msgid "Compound completed!"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Initial collateral"
@@ -7427,10 +7440,6 @@ msgstr ""
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Net Rate"
 msgstr ""
-
-#: src/domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams.ts
-#~ msgid "No orders eligble for conversion"
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -7649,15 +7658,10 @@ msgstr ""
 msgid "Leftover collateral below {0} USD"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}"
-msgstr ""
-
 #: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim GMX Rewards"
 msgstr ""
@@ -7746,8 +7750,8 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "Compound"
-msgstr ""
+#~ msgid "Compound"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
@@ -7935,6 +7939,10 @@ msgstr ""
 msgid "Your position's collateral after deducting fees:"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>Stake GMX</0> and earn {gmxAvgAprText}"
+#~ msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Selling..."
 msgstr ""
@@ -8059,10 +8067,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake GMX"
 msgstr ""
-
-#: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
-#~ msgid "Failed to set auto-cancel order(s)"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Deposit failed!"

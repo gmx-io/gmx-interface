@@ -43,17 +43,22 @@ describe("formatUsdPrice", () => {
     expect(() => formatUsdPrice(-1n)).toThrowError();
   });
 
-  it("should calculate correct decimals if displayDecimals not passed", () => {
-    expect(formatUsdPrice(ONE_USD)).toBe("$1.0000");
-    expect(formatUsdPrice(ONE_USD * 10000n)).toBe("$10,000.00");
-    expect(formatUsdPrice(ONE_USD * 1000n)).toBe("$1,000.000");
-    expect(formatUsdPrice(ONE_USD * 100n)).toBe("$100.000");
-    expect(formatUsdPrice(ONE_USD * 10n)).toBe("$10.0000");
-    expect(formatUsdPrice(ONE_USD / 10n)).toBe("$0.100000");
-    expect(formatUsdPrice(ONE_USD / 1000n)).toBe("$0.0010000");
-    expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe("$0.000000001");
-    expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe("< $0.000000001");
-  });
+  it("should calculate correct decimals if displayDecimals not passed", () =>
+    // prettier-ignore
+    {
+      expect(formatUsdPrice(ONE_USD * 10000n)).toBe(       "$10,000.00");
+      expect(formatUsdPrice(ONE_USD * 1000n)).toBe(         "$1,000.00");
+      expect(formatUsdPrice(ONE_USD * 100n)).toBe(            "$100.000");
+      expect(formatUsdPrice(ONE_USD * 10n)).toBe(              "$10.0000");
+      expect(formatUsdPrice(ONE_USD)).toBe(                     "$1.0000");
+      expect(formatUsdPrice(ONE_USD / 10n)).toBe(               "$0.10000");
+      expect(formatUsdPrice(ONE_USD / 100n)).toBe(              "$0.010000");
+      expect(formatUsdPrice(ONE_USD / 1000n)).toBe(             "$0.0010000");
+      expect(formatUsdPrice(ONE_USD / 10_000n)).toBe(           "$0.0001000");
+      expect(formatUsdPrice(ONE_USD / 100_000n)).toBe(          "$0.00001000");
+      expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe(    "$0.000000001");
+      expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe( "< $0.000000001");
+    });
 });
 
 describe("formatAmountHuman", () => {

@@ -11,7 +11,7 @@ type AbStorage = {
 
 const abFlagsConfig = {
   // testExampleAb: 0.5,
-  testFastMarketsInfo: 0.5,
+  testWebsocketBalances: 0.3,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;

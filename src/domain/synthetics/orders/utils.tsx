@@ -8,7 +8,7 @@ import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets
 import { PositionInfo, PositionsInfoData, getLeverage, parsePositionKey } from "../positions";
 import { DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { SecondaryUpdateOrderParams, SecondaryCancelOrderParams } from "./createIncreaseOrderTxn";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenVisualMultiplier } from "config/tokens";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import {
   FindSwapPath,
@@ -121,7 +121,8 @@ export function getPositionOrderTitle(p: {
   const { orderType, isLong, indexToken, sizeDeltaUsd } = p;
 
   const longShortText = isLong ? t`Long` : t`Short`;
-  const tokenText = `${indexToken.symbol} ${longShortText}`;
+  const visualMultiplier = getTokenVisualMultiplier(indexToken);
+  const tokenText = `${visualMultiplier}${indexToken.symbol} ${longShortText}`;
   const sizeText = formatUsd(sizeDeltaUsd);
   const increaseOrDecreaseText = isIncreaseOrderType(orderType) ? t`Increase` : t`Decrease`;
 

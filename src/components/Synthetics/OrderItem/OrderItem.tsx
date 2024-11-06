@@ -27,7 +27,7 @@ import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { calculatePriceDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";
@@ -39,7 +39,6 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import "./OrderItem.scss";
 
 type Props = {
@@ -261,11 +260,18 @@ function MarkPrice({ order }: { order: OrderInfo }) {
   }, [order]);
 
   const positionOrder = order as PositionOrderInfo;
-  const priceDecimals = useSelector(makeSelectMarketPriceDecimals(positionOrder.marketInfo?.indexTokenAddress));
+  const priceDecimals = calculateDisplayDecimals(
+    positionOrder.indexToken?.prices?.minPrice,
+    undefined,
+    positionOrder.indexToken?.visualMultiplier
+  );
 
   const markPriceFormatted = useMemo(() => {
-    return formatUsd(markPrice, { displayDecimals: priceDecimals });
-  }, [markPrice, priceDecimals]);
+    return formatUsd(markPrice, {
+      displayDecimals: priceDecimals,
+      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+    });
+  }, [markPrice, priceDecimals, positionOrder.indexToken?.visualMultiplier]);
 
   if (isLimitSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
@@ -283,7 +289,11 @@ function MarkPrice({ order }: { order: OrderInfo }) {
             <Trans>
               <p>
                 The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
-                {formatUsd(positionOrder.triggerPrice, { displayDecimals: priceDecimals })}.
+                {formatUsd(positionOrder.triggerPrice, {
+                  displayDecimals: priceDecimals,
+                  visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+                })}
+                .
               </p>
               <br />
               <p>
@@ -323,12 +333,16 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     );
   } else {
     const positionOrder = order as PositionOrderInfo;
-    const priceDecimals =
-      calculatePriceDecimals(positionOrder?.indexToken?.prices?.minPrice) || positionOrder?.indexToken?.priceDecimals;
+    const priceDecimals = calculateDisplayDecimals(
+      positionOrder?.indexToken?.prices?.minPrice,
+      undefined,
+      positionOrder?.indexToken?.visualMultiplier
+    );
     return (
       <Tooltip
         handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
           displayDecimals: priceDecimals,
+          visualMultiplier: positionOrder.indexToken?.visualMultiplier,
         })}`}
         position="bottom-end"
         renderContent={() => (
@@ -340,6 +354,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
                   ? "NA"
                   : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                       displayDecimals: priceDecimals,
+                      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
                     })}`
               }
               showDollar={false}
@@ -642,7 +657,7 @@ function getSwapRatioText(order: OrderInfo) {
       ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
       : undefined;
 
-  const ratioDecimals = calculatePriceDecimals(triggerRatio?.ratio);
+  const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
   const swapRatioText = `${formatAmount(
     triggerRatio?.ratio,
     USD_DECIMALS,

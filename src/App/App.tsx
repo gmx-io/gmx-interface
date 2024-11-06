@@ -35,6 +35,7 @@ import { SWRConfigProp } from "./swrConfig";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { sendPendingOrderTxnErrorMetric } from "lib/metrics";
 import { AppRoutes } from "./AppRoutes";
+import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -79,14 +80,19 @@ function App() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
               <div>
-                {pendingTxn.message}{" "}
-                <ExternalLink href={txUrl}>
-                  <Trans>View</Trans>
-                </ExternalLink>
-                <br />
-                {pendingTxn.messageDetails && <br />}
-                {pendingTxn.messageDetails}
-              </div>
+                <div className="px-10 py-8">
+                  {pendingTxn.message}{" "}
+                  <ExternalLink href={txUrl}>
+                    <Trans>View</Trans>
+                  </ExternalLink>
+                </div>
+                {pendingTxn.messageDetails && (
+                  <div className="border-t-[1.5px] border-[#0f463d] px-10 py-8">{pendingTxn.messageDetails}</div>
+                )}
+              </div>,
+              {
+                className: "OrdersStatusNotificiation",
+              }
             );
           }
           continue;
@@ -114,6 +120,7 @@ function App() {
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;

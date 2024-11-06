@@ -66,6 +66,7 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
       errorTitle: t`Withdrawal error.`,
       value: wntAmount,
       swapPricingType: SwapPricingType.TwoStep,
+      metricId: p.metricId,
     });
   }
 
