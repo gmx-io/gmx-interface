@@ -33,6 +33,21 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "trx-ton-listing",
+    title: "TON and TRX markets added on Arbitrum",
+    isActive: true,
+    startDate: "7 Nov 2024, 00:00",
+    endDate: "13 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="TON" />
+        /USD and <TokenSymbolWithIcon symbol="TRX" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WETH" />{" "}
+        or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "apt-tia-listing",
     title: "TIA and APT markets added on Arbitrum",
     isActive: true,
