@@ -1,30 +1,30 @@
 import { t } from "@lingui/macro";
 
 import {
+  selectTradeboxMarketAddress,
   selectTradeboxRelatedMarketsStats,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMarketPoolName, type MarketInfo } from "domain/synthetics/markets";
-import type { Token } from "domain/tokens";
+import { getMarketPoolName } from "domain/synthetics/markets";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
-export type Props = {
-  indexToken?: Token;
-  selectedMarket?: MarketInfo;
-  isOutPositionLiquidity?: boolean;
-  currentPriceImpactBps?: bigint;
-  onSelectMarketAddress: (marketAddress?: string) => void;
-};
+import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getByKey } from "lib/objects";
+import { useBestMarketAddress } from "./hooks/useBestMarketAddress";
 
-export function MarketPoolSelectorRow(p: Props) {
-  const { selectedMarket, onSelectMarketAddress } = p;
+export function MarketPoolSelectorRow() {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
+  const marketAddress = useSelector(selectTradeboxMarketAddress);
   const tradeType = useSelector(selectTradeboxTradeType);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
 
+  const { setMarketAddress } = useBestMarketAddress();
+
+  const selectedMarket = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
 
   return (
@@ -39,7 +39,7 @@ export function MarketPoolSelectorRow(p: Props) {
               options={relatedMarketStats}
               tradeType={tradeType}
               positionStats={relatedMarketsPositionStats}
-              onSelect={onSelectMarketAddress}
+              onSelect={setMarketAddress}
             />
           </>
         }

@@ -7,6 +7,7 @@ import {
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
+  selectTradeboxFromTokenInputValue,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
@@ -15,6 +16,8 @@ export function useTradeboxChanges() {
   const leverage = useSelector(selectTradeboxLeverage);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
+  const fromTokenInputValue = useSelector(selectTradeboxFromTokenInputValue);
+  const toTokenInputValue = useSelector(selectTradeboxFromTokenInputValue);
 
   const previousMarketIndexTokenAddress = usePrevious(marketInfo?.indexTokenAddress);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -29,6 +32,8 @@ export function useTradeboxChanges() {
   const previousIsSwap = usePrevious(tradeFlags.isSwap);
 
   const previousLimitPrice = usePrevious(triggerPrice);
+  const previousFromTokenInputValue = usePrevious(fromTokenInputValue);
+  const previousToTokenInputValue = usePrevious(toTokenInputValue);
 
   const isMarketChanged = previousMarketIndexTokenAddress !== marketInfo?.indexTokenAddress;
   const isLimitChanged = previousIsLimit !== tradeFlags.isLimit;
@@ -38,6 +43,8 @@ export function useTradeboxChanges() {
   const isFromTokenAddressChanged = previousFromTokenAddress !== fromTokenAddress;
   const isToTokenAddressChanged = previousToTokenAddress !== toTokenAddress;
   const isDirectionChanged = previousIsSwap !== tradeFlags.isSwap || previousTradeIsLong !== tradeFlags.isLong;
+  const isFromTokenInputValueChanged = previousFromTokenInputValue !== fromTokenInputValue;
+  const isToTokenInputValueChanged = previousToTokenInputValue !== toTokenInputValue;
 
   return {
     market: isMarketChanged,
@@ -48,5 +55,7 @@ export function useTradeboxChanges() {
     leverage: isLeverageChanged,
     fromTokenAddress: isFromTokenAddressChanged,
     toTokenAddress: isToTokenAddressChanged,
+    fromTokenInputValue: isFromTokenInputValueChanged,
+    toTokenInputValue: isToTokenInputValueChanged,
   };
 }

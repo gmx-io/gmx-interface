@@ -96,12 +96,7 @@ function useCollateralWarnings() {
     if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
         messages.push(
-          <AlertInfo
-            key="showHasExistingPositionWithDifferentCollateral_1"
-            type="warning"
-            compact
-            textColor="text-yellow-500"
-          >
+          <AlertInfo key="showHasExistingPositionWithDifferentCollateral_1" type="info" compact>
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
               apply for that position.{" "}
@@ -119,12 +114,7 @@ function useCollateralWarnings() {
         );
       } else {
         messages.push(
-          <AlertInfo
-            key="showHasExistingPositionWithDifferentCollateral_2"
-            type="warning"
-            compact
-            textColor="text-yellow-500"
-          >
+          <AlertInfo key="showHasExistingPositionWithDifferentCollateral_2" type="info" compact>
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
               valid for that Position.{" "}
@@ -148,7 +138,7 @@ function useCollateralWarnings() {
       const symbol = collateralWithOrder.symbol;
 
       messages.push(
-        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="warning" textColor="text-yellow-500" compact>
+        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="info" compact>
           <Trans>
             You have an existing order with {symbol} as collateral.{" "}
             <span
