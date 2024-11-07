@@ -162,18 +162,6 @@ export const useTradeboxPoolWarnings = (
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool, but it lacks
           liquidity for this order.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => {
-                setMarketAddress(marketWithPosition.marketTokenAddress);
-                setCollateralAddress(marketsOptions.collateralWithPosition?.address);
-              }}
-            >
-              Switch anyway to {getMarketPoolName(marketWithPosition)} market pool
-            </span>
-            .
-          </WithActon>
         </Trans>
       </AlertInfo>
     );
