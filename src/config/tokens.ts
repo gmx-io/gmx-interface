@@ -437,7 +437,26 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/celestia",
       isSynthetic: true,
     },
-
+    {
+      name: "TRON",
+      symbol: "TRX",
+      address: "0xb06aa7E4af937C130dDade66f6ed7642716fe07A",
+      decimals: 6,
+      priceDecimals: 6,
+      imageUrl: "https://assets.coingecko.com/coins/images/1094/standard/tron-logo.png?1696502193",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/tron",
+      isSynthetic: true,
+    },
+    {
+      name: "TON",
+      symbol: "TON",
+      address: "0xB2f7cefaeEb08Aa347705ac829a7b8bE2FB560f3",
+      decimals: 9,
+      priceDecimals: 4,
+      imageUrl: "https://assets.coingecko.com/coins/images/17980/standard/photo_2024-09-10_17.09.00.jpeg?1725963446",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/toncoin",
+      isSynthetic: true,
+    },
     {
       name: "GMX LP",
       symbol: "GLP",
