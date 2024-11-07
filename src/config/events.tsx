@@ -36,7 +36,7 @@ export const appEventsData: EventData[] = [
     id: "trx-ton-listing",
     title: "TON and TRX markets added on Arbitrum",
     isActive: true,
-    startDate: "7 Nov 2024, 00:00",
+    startDate: "7 Nov 2024, 15:00",
     endDate: "13 Nov 2024, 00:00",
     bodyText: (
       <>
