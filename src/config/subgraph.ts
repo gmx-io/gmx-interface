@@ -8,7 +8,8 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum:live/api/graphql",
+    // subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum:live/api/graphql",
+    subsquid: "https://gmx-test.squids.live/midas-gmx-arbitrum/v/v1/graphql",
   },
 
   [ARBITRUM_GOERLI]: {
@@ -22,7 +23,8 @@ const SUBGRAPH_URLS = {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:live/api/graphql",
+    // subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:live/api/graphql",
+    subsquid: "https://gmx-test.squids.live/midas-gmx-avalanche/v/v1/graphql",
   },
 
   [AVALANCHE_FUJI]: {
