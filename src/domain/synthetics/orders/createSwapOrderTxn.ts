@@ -14,6 +14,7 @@ import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { OrderMetricId } from "lib/metrics/types";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 
 const { ZeroAddress } = ethers;
 
@@ -31,6 +32,7 @@ export type SwapOrderParams = {
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
+  skipSimulation: boolean;
   metricId: OrderMetricId;
 };
 
@@ -70,17 +72,28 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     p.setPendingOrder(swapOrder);
   }
 
-  if (p.orderType !== OrderType.LimitSwap) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      primaryPriceOverrides: {},
-      createMulticallPayload: simulationEncodedPayload,
-      value: sumaltionTotalWntAmount,
-      tokensData: p.tokensData,
-      errorTitle: t`Order error.`,
-      metricId: p.metricId,
-    });
-  }
+  const simulationPromise =
+    !p.skipSimulation && p.orderType !== OrderType.LimitSwap
+      ? simulateExecuteTxn(chainId, {
+          account: p.account,
+          primaryPriceOverrides: {},
+          createMulticallPayload: simulationEncodedPayload,
+          value: sumaltionTotalWntAmount,
+          tokensData: p.tokensData,
+          errorTitle: t`Order error.`,
+          metricId: p.metricId,
+        })
+      : undefined;
+
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+    chainId,
+    router,
+    "multicall",
+    [encodedPayload],
+    totalWntAmount,
+    simulationPromise,
+    p.metricId
+  );
 
   await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
@@ -89,6 +102,8 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     customSigners: subaccount?.customSigners,
     setPendingTxns: p.setPendingTxns,
     metricId: p.metricId,
+    gasLimit,
+    gasPriceData,
   });
 
   if (!subaccount) {

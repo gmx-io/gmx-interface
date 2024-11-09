@@ -3884,6 +3884,10 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
+#: src/domain/synthetics/orders/prepareOrderTxn.ts
+msgid "Error preparing transaction. Provider is not defined"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "ファンディング手数料"
@@ -6717,6 +6721,7 @@ msgstr ""
 msgid "View on Arbitrum"
 msgstr ""
 
+#: src/domain/synthetics/markets/createShiftTxn.ts
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
 msgstr ""

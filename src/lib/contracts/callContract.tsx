@@ -4,7 +4,7 @@ import { getExplorerUrl } from "config/chains";
 import { Contract, Wallet, Overrides } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
-import { getGasLimit, getGasPrice, getBestNonce } from "./utils";
+import { getGasLimit, getGasPrice, getBestNonce, GasPriceData } from "./utils";
 import { ReactNode } from "react";
 import React from "react";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
@@ -19,6 +19,7 @@ export async function callContract(
   opts: {
     value?: bigint | number;
     gasLimit?: bigint | number;
+    gasPriceData?: GasPriceData;
     detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;
@@ -87,12 +88,16 @@ export async function callContract(
         return opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
       }
 
+      async function retrieveGasPrice() {
+        return opts.gasPriceData ? opts.gasPriceData : await getGasPrice(cntrct.runner!.provider!, chainId);
+      }
+
       const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
         txnInstance.gasLimit = gasLimit;
       });
 
-      const gasPriceDataPromise = getGasPrice(cntrct.runner.provider, chainId).then((gasPriceData) => {
-        if (gasPriceData.gasPrice !== undefined) {
+      const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
+        if ("gasPrice" in gasPriceData) {
           txnInstance.gasPrice = gasPriceData.gasPrice;
         } else {
           txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;

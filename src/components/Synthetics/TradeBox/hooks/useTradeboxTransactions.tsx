@@ -130,26 +130,27 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         setPendingTxns,
         setPendingOrder,
         metricId: metricData.metricId,
+        skipSimulation: shouldDisableValidationForTesting,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       isLimit,
-      account,
       fromToken,
       toToken,
+      referralCodeForTxn,
       swapAmounts,
       executionFee,
       allowedSlippage,
-
+      subaccount,
+      account,
       tokensData,
       signer,
       chainId,
-      subaccount,
-      referralCodeForTxn,
       setPendingTxns,
       setPendingOrder,
+      shouldDisableValidationForTesting,
     ]
   );
 
