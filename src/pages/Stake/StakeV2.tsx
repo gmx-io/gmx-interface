@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
@@ -27,8 +28,11 @@ import {
   getPageTitle,
   getProcessedData,
   getStakingData,
+  ProcessedData,
 } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
+import { MARKETS } from "config/static/markets";
+import { Link } from "react-router-dom";
 
 import useSWR from "swr";
 
@@ -103,6 +107,7 @@ function StakeModal(props: {
   rewardRouterAddress: string;
   stakeMethodName: string;
   setPendingTxns: SetPendingTransactions;
+  processedData: ProcessedData | undefined;
 }) {
   const {
     isVisible,
@@ -119,6 +124,7 @@ function StakeModal(props: {
     rewardRouterAddress,
     stakeMethodName,
     setPendingTxns,
+    processedData,
   } = props;
 
   const govTokenAmount = useGovTokenAmount(chainId);
@@ -139,6 +145,20 @@ function StakeModal(props: {
   let amount = parseValue(value, 18);
   const needApproval =
     farmAddress !== ZeroAddress && tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
+
+  let stakeBonusPercentage: undefined | bigint = undefined;
+  if (
+    processedData &&
+    amount !== undefined &&
+    amount > 0 &&
+    processedData.esGmxInStakedGmx !== undefined &&
+    processedData.gmxInStakedGmx !== undefined
+  ) {
+    const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+    if (divisor !== 0n) {
+      stakeBonusPercentage = bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+    }
+  }
 
   const getError = () => {
     if (amount === undefined || amount === 0n) {
@@ -258,6 +278,17 @@ function StakeModal(props: {
             />
           </div>
         )}
+
+        {stakeBonusPercentage !== undefined &&
+          stakeBonusPercentage > 0 &&
+          amount !== undefined &&
+          maxAmount !== undefined &&
+          amount <= maxAmount && (
+            <AlertInfo type="info">
+              <Trans>You will earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action.</Trans>
+            </AlertInfo>
+          )}
+
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -282,8 +313,7 @@ function UnstakeModal(props: {
   unstakeMethodName: string;
   reservedAmount: bigint | undefined;
   setPendingTxns: SetPendingTransactions;
-  processedData: any;
-  nativeTokenSymbol: string;
+  processedData: ProcessedData | undefined;
 }) {
   const {
     isVisible,
@@ -300,7 +330,6 @@ function UnstakeModal(props: {
     reservedAmount,
     setPendingTxns,
     processedData,
-    nativeTokenSymbol,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
   const icons = getIcons(chainId);
@@ -309,6 +338,7 @@ function UnstakeModal(props: {
 
   let unstakeBonusLostPercentage: undefined | bigint = undefined;
   if (
+    processedData &&
     amount !== undefined &&
     amount > 0 &&
     processedData.esGmxInStakedGmx !== undefined &&
@@ -410,8 +440,7 @@ function UnstakeModal(props: {
                   </span>
                 ) : null}
                 <span>
-                  You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
-                  this action.
+                  You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards with this action.
                 </span>
               </Trans>
             </AlertInfo>
@@ -771,7 +800,7 @@ function AffiliateVesterWithdrawModal(props) {
   );
 }
 
-function CompoundModal(props: {
+function ClaimModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   rewardRouterAddress: string;
@@ -782,6 +811,8 @@ function CompoundModal(props: {
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
   isNativeTokenToClaim?: boolean;
+  gmxUsageOptionsMsg?: React.ReactNode;
+  onClaimSuccess?: () => void;
 }) {
   const {
     isVisible,
@@ -794,8 +825,10 @@ function CompoundModal(props: {
     nativeTokenSymbol,
     wrappedTokenSymbol,
     isNativeTokenToClaim,
+    gmxUsageOptionsMsg,
+    onClaimSuccess,
   } = props;
-  const [isCompounding, setIsCompounding] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-gmx"],
     true
@@ -845,7 +878,7 @@ function CompoundModal(props: {
       (totalGmxRewards > 0n && gmxTokenAllowance === undefined));
 
   const isPrimaryEnabled = () => {
-    return !isCompounding && !isApproving && !needApproval && !isCompounding && !isUndelegatedGovToken;
+    return !isClaiming && !isApproving && !needApproval && !isUndelegatedGovToken;
   };
 
   const getPrimaryText = () => {
@@ -853,10 +886,10 @@ function CompoundModal(props: {
       return t`Pending GMX approval`;
     }
 
-    if (isCompounding) {
-      return t`Compounding...`;
+    if (isClaiming) {
+      return t`Claiming...`;
     }
-    return t`Compound`;
+    return t`Claim`;
   };
 
   const onClickPrimary = () => {
@@ -871,7 +904,7 @@ function CompoundModal(props: {
       return;
     }
 
-    setIsCompounding(true);
+    setIsClaiming(true);
 
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(
@@ -888,17 +921,19 @@ function CompoundModal(props: {
         isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
-        sentMsg: t`Compound submitted!`,
-        failMsg: t`Compound failed.`,
-        successMsg: t`Compound completed!`,
+        sentMsg: t`Claim submitted!`,
+        failMsg: t`Claim failed.`,
+        successMsg: t`Claim completed!`,
+        successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
         setPendingTxns,
       }
     )
       .then(() => {
         setIsVisible(false);
+        onClaimSuccess?.();
       })
       .finally(() => {
-        setIsCompounding(false);
+        setIsClaiming(false);
       });
   };
 
@@ -925,14 +960,14 @@ function CompoundModal(props: {
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
         {isUndelegatedGovToken ? (
           <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
               </ExternalLink>
-              <span>&nbsp;voting power before compounding.</span>
+              <span>&nbsp;voting power before claiming.</span>
             </Trans>
           </AlertInfo>
         ) : null}
@@ -984,152 +1019,6 @@ function CompoundModal(props: {
             />
           </div>
         )}
-        <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
-          </Button>
-        </div>
-      </Modal>
-    </div>
-  );
-}
-
-function ClaimModal(props: {
-  isVisible: boolean;
-  setIsVisible: (isVisible: boolean) => void;
-  rewardRouterAddress: string;
-  signer: UncheckedJsonRpcSigner | undefined;
-  chainId: number;
-  setPendingTxns: SetPendingTransactions;
-  nativeTokenSymbol: string;
-  wrappedTokenSymbol: string;
-  isNativeTokenToClaim?: boolean;
-}) {
-  const {
-    isVisible,
-    setIsVisible,
-    rewardRouterAddress,
-    signer,
-    chainId,
-    setPendingTxns,
-    nativeTokenSymbol,
-    wrappedTokenSymbol,
-    isNativeTokenToClaim,
-  } = props;
-  const [isClaiming, setIsClaiming] = useState(false);
-  const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-claim-should-claim-gmx"],
-    true
-  );
-  const [shouldClaimEsGmx, setShouldClaimEsGmx] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-claim-should-claim-es-gmx"],
-    true
-  );
-  const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-claim-should-claim-weth"],
-    true
-  );
-  const [shouldConvertWeth, setShouldConvertWeth] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-claim-should-convert-weth"],
-    true
-  );
-
-  const govTokenAmount = useGovTokenAmount(chainId);
-  const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
-  const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
-
-  const isPrimaryEnabled = () => {
-    return !isClaiming && !isUndelegatedGovToken;
-  };
-
-  const getPrimaryText = () => {
-    if (isClaiming) {
-      return t`Claiming...`;
-    }
-    return t`Claim`;
-  };
-
-  const onClickPrimary = () => {
-    setIsClaiming(true);
-
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
-    callContract(
-      chainId,
-      contract,
-      "handleRewards",
-      [
-        shouldClaimGmx,
-        false, // shouldStakeGmx
-        shouldClaimEsGmx,
-        false, // shouldStakeEsGmx
-        false, // shouldStakeMultiplierPoints
-        isNativeTokenToClaim ? shouldClaimWeth : false,
-        isNativeTokenToClaim ? shouldConvertWeth : false,
-      ],
-      {
-        sentMsg: t`Claim submitted.`,
-        failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed!`,
-        setPendingTxns,
-      }
-    )
-      .then(() => {
-        setIsVisible(false);
-      })
-      .finally(() => {
-        setIsClaiming(false);
-      });
-  };
-
-  const toggleConvertWeth = (value) => {
-    if (value) {
-      setShouldClaimWeth(true);
-    }
-    setShouldConvertWeth(value);
-  };
-
-  return (
-    <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
-        {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
-            <Trans>
-              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
-              </ExternalLink>
-              <span>&nbsp;voting power before compounding.</span>
-            </Trans>
-          </AlertInfo>
-        ) : null}
-        <div className="CompoundModal-menu">
-          <div>
-            <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
-              <Trans>Claim GMX Rewards</Trans>
-            </Checkbox>
-          </div>
-          <div>
-            <Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx}>
-              <Trans>Claim esGMX Rewards</Trans>
-            </Checkbox>
-          </div>
-          {isNativeTokenToClaim && (
-            <>
-              <div>
-                <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
-                  <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
-                </Checkbox>
-              </div>
-              <div>
-                <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
-                  <Trans>
-                    Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
-                  </Trans>
-                </Checkbox>
-              </div>
-            </>
-          )}
-        </div>
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -1248,14 +1137,10 @@ export default function StakeV2() {
 
   const icons = getIcons(chainId);
   const hasInsurance = true;
-  const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
-  const [stakeModalTitle, setStakeModalTitle] = useState("");
-  const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<bigint | undefined>(undefined);
-  const [stakeValue, setStakeValue] = useState("");
-  const [stakingTokenSymbol, setStakingTokenSymbol] = useState("");
-  const [stakingTokenAddress, setStakingTokenAddress] = useState("");
-  const [stakingFarmAddress, setStakingFarmAddress] = useState("");
-  const [stakeMethodName, setStakeMethodName] = useState("");
+  const [isStakeGmxModalVisible, setIsStakeGmxModalVisible] = useState(false);
+  const [stakeGmxValue, setStakeGmxValue] = useState("");
+  const [isStakeEsGmxModalVisible, setIsStakeEsGmxModalVisible] = useState(false);
+  const [stakeEsGmxValue, setStakeEsGmxValue] = useState("");
 
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
@@ -1285,7 +1170,6 @@ export default function StakeV2() {
   const [vesterWithdrawAddress, setVesterWithdrawAddress] = useState("");
 
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
-  const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
   const [isAffiliateClaimModalVisible, setIsAffiliateClaimModalVisible] = useState(false);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
@@ -1360,7 +1244,7 @@ export default function StakeV2() {
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
   const { ensName: govTokenDelegatesEns } = useENS(govTokenDelegatesAddress);
 
-  const { data: walletBalances } = useSWR(
+  const { data: walletBalances, mutate: refetchBalances } = useSWR(
     [
       `StakeV2:walletBalances:${active}`,
       chainId,
@@ -1510,32 +1394,20 @@ export default function StakeV2() {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
-  const showStakeGmxModal = () => {
+  const showStakeGmxModal = useCallback(() => {
     if (!isGmxTransferEnabled) {
       helperToast.error(t`GMX transfers not yet enabled`);
       return;
     }
 
-    setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake GMX`);
-    setStakeModalMaxAmount(processedData?.gmxBalance);
-    setStakeValue("");
-    setStakingTokenSymbol("GMX");
-    setStakingTokenAddress(gmxAddress);
-    setStakingFarmAddress(stakedGmxTrackerAddress);
-    setStakeMethodName("stakeGmx");
-  };
+    setIsStakeGmxModalVisible(true);
+    setStakeGmxValue("");
+  }, [isGmxTransferEnabled]);
 
-  const showStakeEsGmxModal = () => {
-    setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake esGMX`);
-    setStakeModalMaxAmount(processedData?.esGmxBalance);
-    setStakeValue("");
-    setStakingTokenSymbol("esGMX");
-    setStakingTokenAddress(esGmxAddress);
-    setStakingFarmAddress(ZeroAddress);
-    setStakeMethodName("stakeEsGmx");
-  };
+  const showStakeEsGmxModal = useCallback(() => {
+    setIsStakeEsGmxModalVisible(true);
+    setStakeEsGmxValue("");
+  }, []);
 
   const showGmxVesterDepositModal = () => {
     if (!vestingData) return;
@@ -1723,23 +1595,63 @@ export default function StakeV2() {
     [arbitrumGmxStaked, avaxGmxStaked]
   );
 
+  const gmxMarketAddress = useMemo(() => {
+    if (chainId === ARBITRUM) {
+      return Object.values(MARKETS[ARBITRUM]).find((m) => m.indexTokenAddress === gmxAddress)?.marketTokenAddress;
+    }
+    return undefined;
+  }, [chainId, gmxAddress]);
+
+  const gmxMarketApyDataText = useMemo(() => {
+    if (!gmxMarketAddress || chainId !== ARBITRUM) return;
+
+    const gmxApy =
+      (marketsTokensApyData?.[gmxMarketAddress] ?? 0n) + (marketsTokensIncentiveAprData?.[gmxMarketAddress] ?? 0n);
+
+    return `${formatAmount(gmxApy, 28, 2, true)}%`;
+  }, [marketsTokensApyData, marketsTokensIncentiveAprData, gmxMarketAddress, chainId]);
+
+  const hideToasts = useCallback(() => toast.dismiss(), []);
+  const handleStakeGmx = useCallback(async () => {
+    hideToasts();
+    showStakeGmxModal();
+  }, [showStakeGmxModal, hideToasts]);
+
   return (
     <div className="default-container page-layout">
       <StakeModal
-        isVisible={isStakeModalVisible}
-        setIsVisible={setIsStakeModalVisible}
+        isVisible={isStakeGmxModalVisible}
+        setIsVisible={setIsStakeGmxModalVisible}
         chainId={chainId}
-        title={stakeModalTitle}
-        maxAmount={stakeModalMaxAmount}
-        value={stakeValue}
-        setValue={setStakeValue}
+        title={t`Stake GMX`}
+        maxAmount={processedData?.gmxBalance}
+        value={stakeGmxValue}
+        setValue={setStakeGmxValue}
         signer={signer}
-        stakingTokenSymbol={stakingTokenSymbol}
-        stakingTokenAddress={stakingTokenAddress}
-        farmAddress={stakingFarmAddress}
+        stakingTokenSymbol="GMX"
+        stakingTokenAddress={gmxAddress}
+        farmAddress={stakedGmxTrackerAddress}
         rewardRouterAddress={rewardRouterAddress}
-        stakeMethodName={stakeMethodName}
+        stakeMethodName="stakeGmx"
         setPendingTxns={setPendingTxns}
+        processedData={processedData}
+      />
+      <StakeModal
+        isVisible={isStakeEsGmxModalVisible}
+        setIsVisible={setIsStakeEsGmxModalVisible}
+        chainId={chainId}
+        title={t`Stake esGMX`}
+        maxAmount={processedData?.esGmxBalance}
+        value={stakeEsGmxValue}
+        setValue={setStakeEsGmxValue}
+        signer={signer}
+        stakingTokenSymbol="esGMX"
+        stakingTokenAddress={esGmxAddress}
+        farmAddress={ZeroAddress}
+        rewardRouterAddress={rewardRouterAddress}
+        stakeMethodName="stakeEsGmx"
+        setPendingTxns={setPendingTxns}
+        processedData={processedData}
       />
       <UnstakeModal
         setPendingTxns={setPendingTxns}
@@ -1756,7 +1668,6 @@ export default function StakeV2() {
         rewardRouterAddress={rewardRouterAddress}
         unstakeMethodName={unstakeMethodName}
         processedData={processedData}
-        nativeTokenSymbol={nativeTokenSymbol}
       />
       <VesterDepositModal
         isVisible={isVesterDepositModalVisible}
@@ -1799,7 +1710,7 @@ export default function StakeV2() {
         signer={signer}
         setPendingTxns={setPendingTxns}
       />
-      <CompoundModal
+      <ClaimModal
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
         setIsVisible={setIsCompoundModalVisible}
@@ -1810,17 +1721,46 @@ export default function StakeV2() {
         signer={signer}
         chainId={chainId}
         isNativeTokenToClaim={isAnyNativeTokenRewards}
-      />
-      <ClaimModal
-        setPendingTxns={setPendingTxns}
-        isVisible={isClaimModalVisible}
-        setIsVisible={setIsClaimModalVisible}
-        rewardRouterAddress={rewardRouterAddress}
-        wrappedTokenSymbol={wrappedTokenSymbol}
-        nativeTokenSymbol={nativeTokenSymbol}
-        signer={signer}
-        chainId={chainId}
-        isNativeTokenToClaim={isAnyNativeTokenRewards}
+        onClaimSuccess={refetchBalances}
+        gmxUsageOptionsMsg={
+          <ul className="list-disc">
+            <li className="!pb-0">
+              <Trans>
+                <Link className="link-underline" to="#" onClick={handleStakeGmx}>
+                  Stake GMX
+                </Link>{" "}
+                and earn {gmxAvgAprText} APR
+              </Trans>
+            </li>
+            {chainId === ARBITRUM && (
+              <>
+                <li className="!pb-0">
+                  <Trans>
+                    <Link
+                      className="link-underline"
+                      to={`/pools/?market=${gmxMarketAddress}&operation=buy&scroll=1`}
+                      onClick={hideToasts}
+                    >
+                      Provide liquidity
+                    </Link>{" "}
+                    and earn {gmxMarketApyDataText} APY
+                  </Trans>
+                </li>
+                <li className="!pb-0">
+                  <Trans>
+                    <Link
+                      className="link-underline"
+                      to={`/trade/long/?mode=market&from=gmx&market=gmx`}
+                      onClick={hideToasts}
+                    >
+                      Trade GMX
+                    </Link>
+                  </Trans>
+                </li>
+              </>
+            )}
+          </ul>
+        }
       />
       <AffiliateClaimModal
         signer={signer}
@@ -2181,11 +2121,6 @@ export default function StakeV2() {
                 <div className="App-card-buttons m-0">
                   {active && (
                     <Button variant="secondary" onClick={() => setIsCompoundModalVisible(true)}>
-                      <Trans>Compound</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => setIsClaimModalVisible(true)}>
                       <Trans>Claim</Trans>
                     </Button>
                   )}

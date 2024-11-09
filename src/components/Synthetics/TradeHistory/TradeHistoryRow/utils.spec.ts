@@ -92,7 +92,7 @@ describe("TradeHistoryRow helpers", () => {
     "Acceptable price for the order.",
   ],
   "priceImpact": undefined,
-  "size": "0.0500 DAI",
+  "size": "0.050000 DAI",
   "timestamp": "15 Feb 2024, 21:30",
   "timestampISO": "2024-02-15T21:30:44+04:00",
 }
@@ -189,7 +189,7 @@ describe("TradeHistoryRow helpers", () => {
       {
         "acceptablePrice": ">  $0.82764",
         "action": "Execute Limit",
-        "executionPrice": "$0.837",
+        "executionPrice": "$0.83711",
         "fullMarket": "ARB/USD [ARB-USDC]",
         "indexName": "ARB/USD",
         "indexTokenSymbol": "ARB",
@@ -211,7 +211,7 @@ describe("TradeHistoryRow helpers", () => {
           },
           {
             "key": "Order Execution Price",
-            "value": "$0.837",
+            "value": "$0.83711",
           },
           {
             "key": "Price Impact",
@@ -224,7 +224,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order execution price takes into account price impact.",
         ],
         "priceImpact": "-$16.82",
-        "size": "+$2,070.187",
+        "size": "+$2,070.18",
         "timestamp": "18 Sep 2023, 16:43",
         "timestampISO": "2023-09-18T16:43:18+04:00",
       }
@@ -278,7 +278,7 @@ describe("TradeHistoryRow helpers", () => {
   "poolName": "WETH-USDC",
   "price": "",
   "priceImpact": undefined,
-  "size": "-$4,954.2429",
+  "size": "-$4,954.24",
   "timestamp": "18 Sep 2023, 11:52",
   "timestampISO": "2023-09-18T11:52:39+04:00",
 }
@@ -287,7 +287,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(liquidated, minCollateralUsd)).toMatchInlineSnapshot(`
 {
   "action": "Liquidated",
-  "executionPrice": "$6.106",
+  "executionPrice": "$6.1062",
   "fullMarket": "LINK/USD [LINK-USDC]",
   "indexName": "LINK/USD",
   "indexTokenSymbol": "LINK",
@@ -306,7 +306,7 @@ describe("TradeHistoryRow helpers", () => {
     "",
     {
       "key": "Order Execution Price",
-      "value": "$6.106",
+      "value": "$6.1062",
     },
     "",
     "Order execution price takes into account price impact.",
@@ -369,7 +369,7 @@ describe("TradeHistoryRow helpers", () => {
     },
   ],
   "priceImpact": "-$16.82",
-  "size": "-$6,441.900",
+  "size": "-$6,441.90",
   "timestamp": "04 Sep 2023, 06:38",
   "timestampISO": "2023-09-04T06:38:49+04:00",
 }

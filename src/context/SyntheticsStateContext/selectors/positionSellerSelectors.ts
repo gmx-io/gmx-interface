@@ -88,15 +88,11 @@ const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const tradeType = position.isLong ? TradeType.Long : TradeType.Short;
   const collateralTokenAddress = position.collateralTokenAddress;
   const marketAddress = position.market.marketTokenAddress;
-  const triggerPriceInputValue = q(selectPositionSellerTriggerPriceInputValue);
+  const triggerPrice = q(selectPositionSellerTriggerPrice);
   const closeSizeInputValue = q(selectPositionSellerCloseUsdInputValue);
   const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-  let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
-  if (triggerPrice === 0n) {
-    triggerPrice = undefined;
-  }
   const isPnlInLeverage = q(selectIsPnlInLeverage);
 
   return {
@@ -368,4 +364,20 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
     findSwapPath,
     uiFeeFactor,
   });
+});
+
+export const selectPositionSellerTriggerPrice = createSelector((q) => {
+  const toToken = q(selectPositionSellerPosition)?.indexToken;
+  const triggerPriceInputValue = q(selectPositionSellerTriggerPriceInputValue);
+
+  if (!toToken || !triggerPriceInputValue) return undefined;
+
+  let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  if (triggerPrice === 0n) {
+    triggerPrice = undefined;
+  } else if (triggerPrice !== undefined && toToken?.visualMultiplier) {
+    triggerPrice = triggerPrice / BigInt(toToken?.visualMultiplier ?? 1);
+  }
+
+  return triggerPrice;
 });

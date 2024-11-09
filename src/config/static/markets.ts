@@ -397,6 +397,24 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // TRX/USD [WETH-USDC]
+    "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1": {
+      enabled: true,
+      listingDate: p("7 Nov 2024"),
+      marketTokenAddress: "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1",
+      indexTokenAddress: "0xb06aa7E4af937C130dDade66f6ed7642716fe07A",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // TON/USD [WETH-USDC]
+    "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c": {
+      enabled: true,
+      listingDate: p("7 Nov 2024"),
+      marketTokenAddress: "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c",
+      indexTokenAddress: "0xB2f7cefaeEb08Aa347705ac829a7b8bE2FB560f3",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

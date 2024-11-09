@@ -1,9 +1,15 @@
-import { calculatePriceDecimals } from "lib/numbers";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getTokenBySymbolSafe } from "config/tokens";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { createSelector, createSelectorFactory } from "../utils";
 import { selectChartToken } from "./chartSelectors";
+import { selectTradeboxTradeFlags } from "./tradeboxSelectors";
 
 export const selectIndexTokenStats = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
@@ -39,18 +45,47 @@ export const selectSelectedMarketPriceDecimals = createSelector((q) => {
     return 2;
   }
 
-  return calculatePriceDecimals(chartToken.prices.minPrice);
+  return calculateDisplayDecimals(chartToken.prices.minPrice);
 });
 
 export const makeSelectMarketPriceDecimals = createSelectorFactory((tokenAddress?: string) =>
   createSelector(function selectSelectedMarketPriceDecimals(q) {
     const tokensData = q(selectTokensData);
     const token = getByKey(tokensData, tokenAddress);
+    const { isSwap } = q(selectTradeboxTradeFlags);
 
     if (!token) {
       return;
     }
 
-    return calculatePriceDecimals(token.prices.minPrice);
+    const visualMultiplier = isSwap ? 1 : token.visualMultiplier;
+
+    return calculateDisplayDecimals(token.prices.minPrice, undefined, visualMultiplier);
   })
 );
+
+/**
+ * Returns 1 if swap or no visual multiplier
+ */
+export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
+  const { symbol } = q(selectChartToken);
+
+  if (!symbol) {
+    return 1;
+  }
+
+  const chainId = q(selectChainId);
+  const token = getTokenBySymbolSafe(chainId, symbol);
+
+  if (!token) {
+    return 1;
+  }
+
+  const { isSwap } = q(selectTradeboxTradeFlags);
+
+  if (!token.visualMultiplier || isSwap) {
+    return 1;
+  }
+
+  return token.visualMultiplier;
+});

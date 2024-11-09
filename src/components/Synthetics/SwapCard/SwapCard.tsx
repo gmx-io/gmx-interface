@@ -5,7 +5,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
 
-import { formatUsdPrice, calculatePriceDecimals } from "lib/numbers";
+import { formatUsdPrice, calculateDisplayDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "config/factors";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
@@ -35,7 +35,7 @@ export function SwapCard(p: Props) {
     const smallest = markRatio.smallestToken;
     const largest = markRatio.largestToken;
 
-    const ratioDecimals = calculatePriceDecimals(markRatio.ratio);
+    const ratioDecimals = calculateDisplayDecimals(markRatio.ratio);
 
     return `${formatAmount(markRatio.ratio, USD_DECIMALS, ratioDecimals)} ${smallest.symbol} / ${largest.symbol}`;
   }, [fromToken, toToken]);

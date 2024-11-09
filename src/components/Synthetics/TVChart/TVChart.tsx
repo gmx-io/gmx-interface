@@ -11,7 +11,10 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import {
+  selectSelectedMarketPriceDecimals,
+  selectSelectedMarketVisualMultiplier,
+} from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
@@ -41,6 +44,7 @@ let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
   const { chartToken, symbol } = useSelector(selectChartToken);
+  const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
@@ -258,6 +262,7 @@ export function TVChart() {
             chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
             oraclePriceDecimals={oraclePriceDecimals}
+            visualMultiplier={visualMultiplier}
           />
         )}
       </div>

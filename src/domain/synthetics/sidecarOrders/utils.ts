@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import uniqueId from "lodash/uniqueId";
 import { USD_DECIMALS } from "config/factors";
 import { PositionOrderInfo } from "domain/synthetics/orders";
-import { formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
@@ -12,20 +12,34 @@ export const PERCENTAGE_DECEMALS = 0;
 export function getDefaultEntryField(
   decimals: number | undefined,
   { input, value, error }: Partial<EntryField> = {},
-  priceDecimals?: number
+  visualMultiplier?: number
 ): EntryField {
   let nextInput = "";
   let nextValue: bigint | null = null;
   let nextError = error ?? null;
 
-  const displayPercentage = priceDecimals ?? Math.min(2, decimals ?? 0);
-
   if (input) {
     nextInput = input;
     nextValue = (decimals !== undefined && parseValue(input, decimals)) || null;
+    if (nextValue !== null && visualMultiplier !== undefined) {
+      nextValue = nextValue / BigInt(visualMultiplier);
+    }
   } else if (value) {
-    nextInput =
-      decimals !== undefined ? String(removeTrailingZeros(formatAmount(value, decimals, displayPercentage))) : "";
+    nextInput = "";
+    if (decimals !== undefined) {
+      nextInput = String(
+        removeTrailingZeros(
+          formatAmount(
+            value,
+            decimals,
+            calculateDisplayDecimals(value, decimals, visualMultiplier),
+            undefined,
+            undefined,
+            visualMultiplier
+          )
+        )
+      );
+    }
     nextValue = value;
   }
 
@@ -51,11 +65,11 @@ export function getDefaultEntry<T extends SidecarOrderEntryBase>(
 export function prepareInitialEntries({
   positionOrders,
   sort = "desc",
-  priceDecimals,
+  visualMultiplier,
 }: {
   positionOrders: PositionOrderInfo[] | undefined;
   sort: "desc" | "asc";
-  priceDecimals?: number;
+  visualMultiplier?: number;
 }): undefined | InitialEntry[] {
   if (!positionOrders) return;
 
@@ -70,7 +84,7 @@ export function prepareInitialEntries({
     .map((order) => {
       const entry: InitialEntry = {
         sizeUsd: getDefaultEntryField(USD_DECIMALS, { value: order.sizeDeltaUsd }),
-        price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }, priceDecimals),
+        price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }, visualMultiplier),
         order,
       };
 

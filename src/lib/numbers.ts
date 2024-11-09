@@ -106,7 +106,8 @@ export const formatAmount = (
   tokenDecimals: number,
   displayDecimals?: number,
   useCommas?: boolean,
-  defaultValue?: string
+  defaultValue?: string,
+  visualMultiplier?: number
 ) => {
   if (defaultValue === undefined || defaultValue === null) {
     defaultValue = "...";
@@ -117,7 +118,7 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  let amountStr = ethers.formatUnits(amount, tokenDecimals);
+  let amountStr = ethers.formatUnits(BigInt(amount) * BigInt(visualMultiplier ?? 1), tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);
@@ -174,6 +175,7 @@ export function formatUsd(
     maxThreshold?: string | null;
     minThreshold?: string;
     displayPlus?: boolean;
+    visualMultiplier?: number;
   } = {}
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
@@ -184,6 +186,10 @@ export function formatUsd(
     } else {
       return undefined;
     }
+  }
+
+  if (opts.visualMultiplier) {
+    usd *= BigInt(opts.visualMultiplier);
   }
 
   const defaultMinThreshold = displayDecimals > 1 ? "0." + "0".repeat(displayDecimals - 1) + "1" : undefined;
@@ -508,9 +514,9 @@ export function numberToBigint(value: number, decimals: number) {
   return negative ? -res : res;
 }
 
-export function calculatePriceDecimals(price?: bigint, decimals = USD_DECIMALS) {
+export function calculateDisplayDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
   if (price === undefined || price === 0n) return 2;
-  const priceNumber = Number(price.toString()) / Math.pow(10, decimals);
+  const priceNumber = bigintToNumber(price * BigInt(visualMultiplier), decimals);
 
   if (isNaN(priceNumber)) return 2;
   if (priceNumber >= 1000) return 2;
@@ -533,7 +539,7 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
     throw new Error("formatUsdPrice accept only non-negative bigints");
   }
 
-  const decimals = calculatePriceDecimals(price);
+  const decimals = calculateDisplayDecimals(price, undefined, opts.visualMultiplier);
 
   return formatUsd(price, {
     ...opts,

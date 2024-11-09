@@ -1,3 +1,7 @@
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from "react";
+
+import { USD_DECIMALS } from "config/factors";
+import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   makeSelectTradeboxSidecarOrdersEntriesIsUntouched,
   makeSelectTradeboxSidecarOrdersState,
@@ -7,9 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "lib/bigmath";
-import { USD_DECIMALS } from "config/factors";
 import { usePrevious } from "lib/usePrevious";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from "react";
 import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
 import { MAX_PERCENTAGE, PERCENTAGE_DECEMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
 
@@ -29,6 +31,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const isUntouched = useSelector(makeSelectTradeboxSidecarOrdersEntriesIsUntouched(prefix));
   const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
   const totalPositionSizeUsd = useSelector(selectTradeboxSidecarOrdersTotalSizeUsd);
+  const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
 
   const getPercentageBySizeUsd = useCallback(
     (sizeUsd: bigint | null) => {
@@ -83,13 +86,13 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         });
       } else if (field === "price") {
         if (nextField) {
-          price = getDefaultEntryField(USD_DECIMALS, nextField);
+          price = getDefaultEntryField(USD_DECIMALS, nextField, visualMultiplier);
         }
       }
 
       return { ...entry, sizeUsd, percentage, price } as T;
     },
-    [getPercentageBySizeUsd, getSizeUsdByPercentage]
+    [getPercentageBySizeUsd, getSizeUsdByPercentage, visualMultiplier]
   );
 
   const initialState = useMemo(() => {
