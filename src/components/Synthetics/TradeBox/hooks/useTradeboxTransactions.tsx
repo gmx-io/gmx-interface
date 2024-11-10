@@ -310,6 +310,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         decreaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
         executionFee,
+        swapPath: [],
         orderType: decreaseAmounts?.triggerOrderType,
         hasReferralCode: Boolean(referralCodeForTxn),
         subaccount,
