@@ -11,14 +11,11 @@ import { GetFeeDataBlockError } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { withRetry } from "viem";
 
-export type GasPriceData =
-  | {
-      gasPrice: bigint;
-    }
-  | {
-      maxFeePerGas: bigint;
-      maxPriorityFeePerGas: bigint;
-    };
+export type GasPriceData = {
+  gasPrice?: bigint;
+  maxFeePerGas?: bigint;
+  maxPriorityFeePerGas?: bigint;
+};
 
 export async function getGasPrice(provider: Provider, chainId: number): Promise<GasPriceData> {
   let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
