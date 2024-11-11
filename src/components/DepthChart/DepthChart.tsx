@@ -35,18 +35,19 @@ import {
   numberWithCommas,
 } from "lib/numbers";
 
-import { ChartTooltip } from "./DepthChartTooltip";
+import { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
+import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
 const GREEN = "#0ECC83";
 const RED = "#FF506A";
 
 const Y_AXIS_LABEL: LabelProps = {
-  value: "Scale, k",
+  value: "Size, k",
   position: "top",
   offset: 10,
   fill: "#ffffff",
   opacity: 0.7,
-  dx: 1,
+  dx: -3,
   fontSize: 12,
 };
 const Y_AXIS_DOMAIN: [AxisDomainItem, AxisDomainItem] = [0, "auto"];
@@ -63,7 +64,8 @@ const ORACLE_PRICE_LABEL: ImplicitLabelType = {
 
 const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
 
-const CHART_MARGIN: Margin = { bottom: 10, top: 20 };
+const CHART_MARGIN: Margin = { bottom: 10, top: 20, right: 0 };
+const TOOLTIP_WRAPPER_POSITION = { x: 0, y: 0 };
 const Y_AXIS_TICK: YAxisProps["tick"] = { fill: "#ffffff", opacity: 0.7, fontSize: 12 };
 const TICKS_SPACING = 120;
 const DEFAULT_TICK_COUNT_BIGINT = 9n;
@@ -83,6 +85,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     marketInfo.positionImpactFactorPositive === 0n && marketInfo.positionImpactFactorNegative === 0n;
 
   const [zoom, setZoom] = useState(1);
+  const [isZooming, setIsZooming] = useState(false);
 
   useEffect(
     function listenWheel() {
@@ -93,6 +96,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
 
       const wheelHandler = (event: WheelEvent) => {
         event.preventDefault();
+
         if (isZeroPriceImpact) {
           return;
         }
@@ -103,6 +107,10 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
 
       let isPressed = false;
       let prevTouchY = 0;
+      let prevTouchX = 0;
+      let gestureRecognizeState: "idle" | "vertical" | "horizontal" = "idle";
+      let gestureRecognizeDistanceX = 0;
+      let gestureRecognizeDistanceY = 0;
 
       const touchDownHandler = (event: TouchEvent) => {
         if (isZeroPriceImpact) {
@@ -112,6 +120,10 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         event.preventDefault();
         isPressed = true;
         prevTouchY = event.touches[0].clientY;
+        prevTouchX = event.touches[0].clientX;
+        gestureRecognizeState = "idle";
+        gestureRecognizeDistanceX = 0;
+        gestureRecognizeDistanceY = 0;
       };
 
       const touchUpHandler = (event: TouchEvent) => {
@@ -122,6 +134,11 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         event.preventDefault();
         isPressed = false;
         prevTouchY = 0;
+        prevTouchX = 0;
+        gestureRecognizeState = "idle";
+        gestureRecognizeDistanceX = 0;
+        gestureRecognizeDistanceY = 0;
+        setIsZooming(false);
       };
 
       const touchMoveHandler = (event: TouchEvent) => {
@@ -129,12 +146,40 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           return;
         }
 
-        if (isPressed) {
-          event.preventDefault();
-          const deltaY = event.touches[0].clientY - prevTouchY;
-          prevTouchY = event.touches[0].clientY;
+        if (!isPressed) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const deltaY = event.touches[0].clientY - prevTouchY;
+
+        if (gestureRecognizeState === "idle") {
+          const deltaX = event.touches[0].clientX - prevTouchX;
+
+          gestureRecognizeDistanceX += deltaX;
+          gestureRecognizeDistanceY += deltaY;
+
+          const gestureRecognizeDistance = Math.sqrt(
+            gestureRecognizeDistanceX * gestureRecognizeDistanceX +
+              gestureRecognizeDistanceY * gestureRecognizeDistanceY
+          );
+
+          if (
+            gestureRecognizeDistance > 10 &&
+            Math.abs(gestureRecognizeDistanceY) > Math.abs(gestureRecognizeDistanceX)
+          ) {
+            gestureRecognizeState = "vertical";
+            setZoom((pZoom) => clamp(pZoom * Math.exp(-gestureRecognizeDistanceY * 0.004), 1, 20));
+            setIsZooming(true);
+          } else if (gestureRecognizeDistance > 10) {
+            gestureRecognizeState = "horizontal";
+          }
+        } else if (gestureRecognizeState === "vertical") {
           setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * 0.004), 1, 20));
         }
+
+        prevTouchY = event.touches[0].clientY;
       };
 
       container.addEventListener("touchstart", touchDownHandler, { passive: false });
@@ -144,6 +189,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         container.removeEventListener("wheel", wheelHandler);
         container.removeEventListener("touchstart", touchDownHandler);
         container.removeEventListener("touchend", touchUpHandler);
+        container.removeEventListener("touchmove", touchMoveHandler);
       };
     },
     [isZeroPriceImpact]
@@ -193,9 +239,22 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     setZoom(1);
   }, [marketInfo.marketTokenAddress]);
 
+  const tooltipRef = useRef<ChartTooltipHandle>(null);
+
+  const handleMouseMove = useCallback<CategoricalChartFunc>(
+    (nextState) => {
+      if (!tooltipRef.current) {
+        return;
+      }
+
+      tooltipRef.current.setMouseRelativePosition(nextState.chartX, nextState.chartY);
+    },
+    [tooltipRef]
+  );
+
   return (
-    <ResponsiveContainer onResize={handleResize} width="100%" height="100%" ref={containerRef}>
-      <ComposedChart data={data} margin={CHART_MARGIN}>
+    <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
+      <ComposedChart data={data} margin={CHART_MARGIN} onMouseMove={handleMouseMove}>
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
             <stop offset="50%" stopColor={GREEN} stopOpacity={0.5} />
@@ -274,7 +333,17 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
 
         <RechartsTooltip
           cursor={false}
-          content={<ChartTooltip leftMin={leftMin} rightMin={rightMin} isZeroPriceImpact={isZeroPriceImpact} />}
+          isAnimationActive={false}
+          position={TOOLTIP_WRAPPER_POSITION}
+          active={isZooming ? false : undefined}
+          content={
+            <ChartTooltip
+              ref={tooltipRef}
+              leftMin={leftMin}
+              rightMin={rightMin}
+              isZeroPriceImpact={isZeroPriceImpact}
+            />
+          }
         />
         <YAxis
           orientation="right"
@@ -285,7 +354,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           tick={Y_AXIS_TICK}
           label={Y_AXIS_LABEL}
           domain={Y_AXIS_DOMAIN}
-          allowDataOverflow
+          // allowDataOverflow
           includeHidden={false}
           tickFormatter={yAxisTickFormatter}
         />
@@ -295,7 +364,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           axisLine={false}
           tickLine={false}
           domain={xAxisDomain}
-          allowDataOverflow
+          // allowDataOverflow
           allowDecimals={true}
           ticks={ticks}
           interval={0}

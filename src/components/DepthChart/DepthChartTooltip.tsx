@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { ReactNode } from "react";
+import { ReactNode, forwardRef, useImperativeHandle, useRef } from "react";
 import type { TooltipProps } from "recharts";
 import { useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 
@@ -9,6 +9,8 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import type { DataPoint } from "./DepthChart";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
+import "./DepthChartTooltip.css";
 
 const LEFT_OPAQUE_TOOLTIP = (
   <Trans>
@@ -46,14 +48,16 @@ const RIGHT_OPAQUE_NO_PRICE_IMPACT_TOOLTIP = (
   </Trans>
 );
 
-export function ChartTooltip({
-  active,
-  payload,
-  leftMin,
-  rightMin,
-  isZeroPriceImpact,
-  coordinate,
-}: TooltipProps<number | string, string> & { leftMin: bigint; rightMin: bigint; isZeroPriceImpact: boolean }) {
+export type ChartTooltipHandle = {
+  setMouseRelativePosition: (x: number | undefined, y: number | undefined) => void;
+};
+
+export const ChartTooltip = forwardRef<
+  ChartTooltipHandle,
+  TooltipProps<number | string, string> & { leftMin: bigint; rightMin: bigint; isZeroPriceImpact: boolean }
+>(({ active, payload, leftMin, rightMin, isZeroPriceImpact, coordinate, ...rest }, ref) => {
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
   const viewBox = useViewBox() as {
     x: number;
     y: number;
@@ -63,39 +67,42 @@ export function ChartTooltip({
 
   const yAxis = useYAxisWithFiniteDomainOrRandom() as {
     domain: [number, number];
+    niceTicks: number[];
   };
 
-  if (!active || !payload || !payload.length) {
-    return null;
-  }
+  const domainSpan = yAxis.niceTicks.at(-1)! - yAxis.niceTicks.at(0)!;
 
-  let stats: DataPoint = payload[0].payload as DataPoint;
-  let size = stats.sizeBigInt;
+  // if (!active || !payload || !payload.length) {
+  //   return null;
+  // }
+
+  let stats: DataPoint | undefined = payload?.[0]?.payload as DataPoint | undefined;
+  let size = stats?.sizeBigInt;
+  let sizeY = 0;
 
   let isOpaqueCloser = true;
   let isLeft = false;
 
-  if (isZeroPriceImpact) {
-    const dataPoint = payload[0].payload as DataPoint;
+  if (isZeroPriceImpact && stats) {
+    // const dataPoint = payload[0].payload as DataPoint;
 
-    isLeft = dataPoint.leftTransparentSize !== null || dataPoint.leftOpaqueSize !== null;
+    isLeft = stats.leftTransparentSize !== null || stats.leftOpaqueSize !== null;
 
-    const transparentSize: number | null = isLeft ? dataPoint.leftTransparentSize : dataPoint.rightTransparentSize;
+    const transparentSize: number | null = isLeft ? stats.leftTransparentSize : stats.rightTransparentSize;
     const transparentSizeBigInt: bigint | null = isLeft
-      ? dataPoint.leftTransparentSizeBigInt
-      : dataPoint.rightTransparentSizeBigInt;
+      ? stats.leftTransparentSizeBigInt
+      : stats.rightTransparentSizeBigInt;
 
-    const opaqueSize: number | null = isLeft ? dataPoint.leftOpaqueSize : dataPoint.rightOpaqueSize;
-    const opaqueSizeBigInt = isLeft ? dataPoint.leftOpaqueSizeBigInt : dataPoint.rightOpaqueSizeBigInt;
+    const opaqueSize: number | null = isLeft ? stats.leftOpaqueSize : stats.rightOpaqueSize;
+    const opaqueSizeBigInt = isLeft ? stats.leftOpaqueSizeBigInt : stats.rightOpaqueSizeBigInt;
 
     if (transparentSize === null && opaqueSize !== null) {
       size = opaqueSizeBigInt!;
     } else if (transparentSize !== null && opaqueSize === null) {
       size = transparentSizeBigInt!;
     } else if (transparentSize !== null && opaqueSize !== null) {
-      const transparentFloatY =
-        viewBox.height - (transparentSize! / (yAxis.domain[1] - yAxis.domain[0])) * viewBox.height;
-      const opaqueFloatY = viewBox.height - (opaqueSize! / (yAxis.domain[1] - yAxis.domain[0])) * viewBox.height;
+      const transparentFloatY = viewBox.height - (transparentSize! / domainSpan) * viewBox.height;
+      const opaqueFloatY = viewBox.height - (opaqueSize! / domainSpan) * viewBox.height;
 
       const distanceToTransparent = Math.abs((coordinate?.y ?? 0) - viewBox.y - transparentFloatY);
       const distanceToOpaque = Math.abs((coordinate?.y ?? 0) - viewBox.y - opaqueFloatY);
@@ -103,7 +110,46 @@ export function ChartTooltip({
       isOpaqueCloser = distanceToOpaque < distanceToTransparent;
 
       size = isOpaqueCloser ? opaqueSizeBigInt! : transparentSizeBigInt!;
+      sizeY = isOpaqueCloser ? opaqueFloatY : transparentFloatY;
     }
+  } else if (stats) {
+    sizeY = viewBox.y + viewBox.height - (stats.size / domainSpan) * viewBox.height;
+  }
+
+  useImperativeHandle(ref, () => ({
+    setMouseRelativePosition: (x: number | undefined, y: number | undefined) => {
+      if (!tooltipRef.current || x === undefined || y === undefined) {
+        return;
+      }
+
+      // when small put the tooltip either fully on top or fully on bottom
+      const isSmall = viewBox.width < 360;
+
+      const offset = 16;
+
+      const tooltipWidth = tooltipRef.current.clientWidth;
+      const tooltipHeight = tooltipRef.current.clientHeight;
+
+      const isLeft = x < viewBox.width / 2;
+      const isTop = y < viewBox.height / 2;
+
+      const tooltipX = isLeft ? x + offset : x - tooltipWidth - offset;
+      let tooltipY;
+      if (isSmall) {
+        tooltipY = isTop ? viewBox.height + viewBox.y - tooltipHeight : viewBox.y;
+      } else {
+        tooltipY = isTop ? y + offset : y - tooltipHeight - offset;
+      }
+
+      const boundedTooltipX = Math.max(0, Math.min(tooltipX, viewBox.width + viewBox.x - tooltipWidth));
+      const boundedTooltipY = Math.max(0, Math.min(tooltipY, viewBox.height + viewBox.y - tooltipHeight));
+
+      tooltipRef.current.style.transform = `translate(${boundedTooltipX}px, ${boundedTooltipY}px)`;
+    },
+  }));
+
+  if (!stats) {
+    return null;
   }
 
   const priceImpactFeeItem = getFeeItem(stats.priceImpactBigInt, stats.sizeBigInt);
@@ -173,7 +219,10 @@ export function ChartTooltip({
   }
 
   return (
-    <div className="z-50 rounded-4 border border-gray-950 bg-slate-800 p-8 text-14">
+    <div
+      ref={tooltipRef}
+      className="DepthChartTooltip body-large z-50 rounded-4 p-8 text-14 transition-transform duration-100 ease-linear"
+    >
       <p className="mb-8">{tooltip}</p>
       <StatsTooltipRow
         label={t`Execution Price`}
@@ -193,4 +242,4 @@ export function ChartTooltip({
       />
     </div>
   );
-}
+});
