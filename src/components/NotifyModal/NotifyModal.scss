@@ -16,8 +16,6 @@
 }
 
 .NotifyModal-bullet {
-  line-height: 2rem;
-  font-size: var(--font-size-body-small);
   display: flex;
   align-items: center;
   gap: 1.2rem;
@@ -31,12 +29,11 @@
 
 .NotifyModal-terms {
   margin-top: 2rem;
-  font-size: 1rem;
   text-align: center;
   color: var(--text-gray);
 }
 
-.NotifyModal-notifi {
+.NotifyModal-notify {
   display: flex;
   gap: 0.5rem;
   align-items: center;

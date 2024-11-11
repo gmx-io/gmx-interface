@@ -101,6 +101,7 @@ function customUtilsPlugin({ addUtilities, theme }) {
 
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
+ * @See https://www.notion.so/gmxio/Fonts-Clean-Up-13303574745d8015b115e03426827f3c
  */
 function fontComponentsPlugin({ addComponents, addBase }) {
   addBase({
