@@ -210,7 +210,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
               />
             </div>
             <div>
-              <div className="App-card-info-title">{marketIndexName}</div>
+              <div className="text-body-large">{marketIndexName}</div>
             </div>
             <div>
               <AssetDropdown token={stats.token} />

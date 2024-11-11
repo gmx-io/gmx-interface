@@ -12,7 +12,7 @@ function JoinReferralCode({ active }) {
   const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center mt-medium">
-      <h2 className="title">
+      <h2 className="title text-h2">
         <Trans>Enter Referral Code</Trans>
       </h2>
       <p className="sub-title">

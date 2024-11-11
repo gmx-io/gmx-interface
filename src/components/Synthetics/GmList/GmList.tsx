@@ -524,7 +524,7 @@ function GmListItem({
         </div>
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTd>
-      <TableTd>{formatUsdPrice(token.prices?.minPrice)}</TableTd>
+      <TableTd className="text-body-large">{formatUsdPrice(token.prices?.minPrice)}</TableTd>
       <TableTd>
         <TokenValuesInfoCell
           token={formatTokenAmount(totalSupply, token.decimals, token.symbol, {

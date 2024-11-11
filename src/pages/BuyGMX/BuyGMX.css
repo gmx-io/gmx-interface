@@ -175,7 +175,7 @@
 
 @media (max-width: 400px) {
   .BuyGMXGLP-description {
-    font-size: var(--font-base);
+    font-size: var(--font-size-body-medium);
     line-height: 2rem;
   }
   .buttons-group {

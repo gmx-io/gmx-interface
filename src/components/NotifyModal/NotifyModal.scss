@@ -1,7 +1,7 @@
 .NotifyModal {
   max-width: 31rem;
   line-height: 1.5;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,7 +17,7 @@
 
 .NotifyModal-bullet {
   line-height: 2rem;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   display: flex;
   align-items: center;
   gap: 1.2rem;

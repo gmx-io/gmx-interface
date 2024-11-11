@@ -33,15 +33,15 @@
 }
 
 .App-card-title-mark .App-card-title-mark-title {
-  font-size: 1.6rem;
-  line-height: 2.1rem;
+  font-size: var(--font-size-body-large);
+  line-height: var(--line-height-body-large);
   letter-spacing: 0px;
   color: var(--color-white);
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
-  font-size: 1.2rem;
-  line-height: 1.5rem;
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
   letter-spacing: 0px;
   color: var(--color-gray-400);
 }

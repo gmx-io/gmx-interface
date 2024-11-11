@@ -31,11 +31,11 @@ export default function PageTitle({
   return (
     <div className={classNames} data-qa={qa}>
       <div className="Page-title-group">
-        <h2 className="Page-title__text">{title}</h2>
+        <h2 className="Page-title__text text-h1">{title}</h2>
         {showNetworkIcon && <img className="Page-title__icon" src={currentNetworkIcon} alt="Current Network Icon" />}
         {afterTitle}
       </div>
-      <div className="Page-subtitle-group">{subtitle}</div>
+      <div className="text-body-large text-gray-300">{subtitle}</div>
     </div>
   );
 }

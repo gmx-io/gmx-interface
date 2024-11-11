@@ -71,7 +71,7 @@
 
 .Modal-title {
   text-align: left;
-  font-size: var(--font-md);
+  font-size: var(--font-size-body-medium);
   line-height: 1;
 }
 
