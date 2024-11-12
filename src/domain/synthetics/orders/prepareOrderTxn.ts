@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { getIsFlagEnabled } from "config/ab";
-import { ethers } from "ethers";
+import { ethers, Wallet } from "ethers";
 import { getGasLimit, getGasPrice } from "lib/contracts";
 import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
@@ -16,6 +16,7 @@ export async function prepareOrderTxn(
   method: string,
   params: any[],
   value: bigint,
+  customSigners?: Wallet[],
   simulationPromise?: Promise<any>,
   metricId?: OrderMetricId
 ) {
@@ -29,13 +30,17 @@ export async function prepareOrderTxn(
     throw new Error("Provider is not defined");
   }
 
-  const [gasLimit, gasPriceData] = await Promise.all([
+  const customSignerContracts = customSigners?.map((signer) => contract.connect(signer)) || [];
+
+  const [gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices] = await Promise.all([
     getGasLimit(contract, method, params, value).catch(makeCatchTransactionError(chainId, metricId, "gasLimit")),
     getGasPrice(contract.runner.provider, chainId).catch(makeCatchTransactionError(chainId, metricId, "gasPrice")),
+    Promise.all(customSignerContracts.map((cntrct) => getGasLimit(cntrct, method, params, value))),
+    Promise.all(customSignerContracts.map((cntrct) => getGasPrice(cntrct.runner!.provider!, chainId))),
     simulationPromise,
   ]);
 
-  return { gasLimit, gasPriceData };
+  return { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices };
 }
 
 export const makeCatchTransactionError =

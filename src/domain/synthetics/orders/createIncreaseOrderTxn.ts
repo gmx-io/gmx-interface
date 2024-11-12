@@ -229,12 +229,13 @@ export async function createIncreaseOrderTxn({
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices } = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
     [finalPayload],
     totalWntAmount,
+    subaccount?.customSigners,
     simulationPromise,
     metricId
   );
@@ -246,6 +247,8 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    customSignersGasLimits,
+    customSignersGasPrices,
     metricId,
     gasLimit,
     gasPriceData,

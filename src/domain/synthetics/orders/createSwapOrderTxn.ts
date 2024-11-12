@@ -85,12 +85,13 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
         })
       : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices } = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
     [encodedPayload],
     totalWntAmount,
+    subaccount?.customSigners,
     simulationPromise,
     p.metricId
   );
@@ -100,6 +101,8 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    customSignersGasLimits,
+    customSignersGasPrices,
     setPendingTxns: p.setPendingTxns,
     metricId: p.metricId,
     gasLimit,

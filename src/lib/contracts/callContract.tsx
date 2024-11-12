@@ -1,15 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { Contract, Wallet, Overrides } from "ethers";
+import { Contract, Overrides, Wallet } from "ethers";
+import { OrderMetricId } from "lib/metrics/types";
+import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
+import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
-import { getGasLimit, getGasPrice, getBestNonce, GasPriceData } from "./utils";
-import { ReactNode } from "react";
-import React from "react";
-import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
-import { OrderMetricId } from "lib/metrics/types";
+import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
 
 export async function callContract(
   chainId: number,
@@ -29,6 +28,8 @@ export async function callContract(
     showPreliminaryMsg?: boolean;
     failMsg?: string;
     customSigners?: Wallet[];
+    customSignersGasLimits?: (bigint | number)[];
+    customSignersGasPrices?: GasPriceData[];
     setPendingTxns?: (txns: any) => void;
     metricId?: OrderMetricId;
   }
@@ -78,7 +79,10 @@ export async function callContract(
 
     const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
+    const customGasLimits = [opts.gasLimit].concat(opts.customSignersGasLimits || []);
+    const customGasPrices = [opts.gasPriceData].concat(opts.customSignersGasPrices || []);
+
+    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct, i) => {
       const txnInstance = { ...txnOpts };
 
       if (!cntrct.runner?.provider) {
@@ -86,11 +90,15 @@ export async function callContract(
       }
 
       async function retrieveGasLimit() {
-        return opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
+        return customGasLimits[i] !== undefined
+          ? (customGasLimits[i] as bigint | number)
+          : await getGasLimit(cntrct, method, params, opts.value);
       }
 
       async function retrieveGasPrice() {
-        return opts.gasPriceData ? opts.gasPriceData : await getGasPrice(cntrct.runner!.provider!, chainId);
+        return customGasPrices[i] !== undefined
+          ? (customGasPrices[i] as GasPriceData)
+          : await getGasPrice(cntrct.runner!.provider!, chainId);
       }
 
       const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
