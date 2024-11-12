@@ -110,7 +110,7 @@ export async function createDecreaseOrderTxn(
     })
   );
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices } = await prepareOrderTxn(
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -135,6 +135,7 @@ export async function createDecreaseOrderTxn(
     gasLimit,
     gasPriceData,
     metricId,
+    bestNonce,
     setPendingTxns: callbacks.setPendingTxns,
   });
 

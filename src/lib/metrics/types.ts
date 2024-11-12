@@ -55,6 +55,7 @@ export type OrderErrorContext =
   | "simulation"
   | "gasLimit"
   | "gasPrice"
+  | "bestNonce"
   | "sending"
   | "pending"
   | "minting"

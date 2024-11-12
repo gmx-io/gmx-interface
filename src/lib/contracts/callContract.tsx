@@ -30,6 +30,7 @@ export async function callContract(
     customSigners?: Wallet[];
     customSignersGasLimits?: (bigint | number)[];
     customSignersGasPrices?: GasPriceData[];
+    bestNonce?: number;
     setPendingTxns?: (txns: any) => void;
     metricId?: OrderMetricId;
   }
@@ -63,7 +64,9 @@ export async function callContract(
       txnOpts.value = opts.value;
     }
 
-    if (opts.customSigners) {
+    if (opts.bestNonce) {
+      txnOpts.nonce = opts.bestNonce;
+    } else if (opts.customSigners) {
       // If we send the transaction to multiple RPCs simultaneously,
       // we should specify a fixed nonce to avoid possible txn duplication.
       txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
