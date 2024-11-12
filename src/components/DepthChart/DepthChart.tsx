@@ -216,7 +216,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     rightCenter,
   });
 
-  const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChart(marketInfo, {
+  const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
     leftMax,
     rightMax,
     leftMin,
@@ -548,7 +548,7 @@ export type DataPoint = {
   priceImpactBigInt: bigint;
 };
 
-function useDepthChart(
+function useDepthChartPricesData(
   marketInfo: MarketInfo,
   { leftMax, rightMax, leftMin, rightMin }: { leftMax: bigint; rightMax: bigint; leftMin: bigint; rightMin: bigint }
 ) {
@@ -792,8 +792,6 @@ function useDepthChart(
     data,
     leftMinExecutionPrice,
     rightMinExecutionPrice,
-    leftMin,
-    rightMin,
   };
 }
 
