@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
-import { getIsFlagEnabled } from "config/ab";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
@@ -121,10 +120,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [, setPendingTxns] = usePendingTxns();
 
   const updateNativeTokenBalance = useCallback(() => {
-    if (!getIsFlagEnabled("testWebsocketBalances")) {
-      return;
-    }
-
     if (!currentAccount) {
       return;
     }
@@ -799,10 +794,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribeTokenTransferEvents() {
-      if (!getIsFlagEnabled("testWebsocketBalances")) {
-        return;
-      }
-
       if (hasPageLostFocus || !wsProvider || !currentAccount || !marketTokensAddressesString) {
         return;
       }
