@@ -1,7 +1,7 @@
 import camelCase from "lodash/camelCase";
 import entries from "lodash/entries";
-import upperFirst from "lodash/upperFirst";
 import mapKeys from "lodash/mapKeys";
+import upperFirst from "lodash/upperFirst";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -115,6 +115,7 @@ export default function UiPage() {
   return (
     <main className="mx-auto max-w-prose p-20">
       <h1 className="text-34 font-bold">UI Page</h1>
+
       <p>This page demonstrates the use of the UI components in the app.</p>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Fill colors</h2>

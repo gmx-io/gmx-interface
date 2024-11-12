@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
-import { useMedia, usePrevious } from "react-use";
+import { usePrevious } from "react-use";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { convertTokenAddress, getPriceDecimals } from "config/tokens";
@@ -27,12 +27,11 @@ import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 
-import { TVChartHeader } from "./TVChartHeader";
-
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
+
 import "./TVChart.scss";
 
 const DEFAULT_PERIOD = "5m";
@@ -239,28 +238,25 @@ export function TVChart() {
     [chartToken]
   );
 
-  const isMobile = useMedia("(max-width: 700px)");
+  if (!symbol) {
+    return null;
+  }
 
   return (
-    <div className="ExchangeChart tv">
-      <TVChartHeader isMobile={isMobile} />
-      <div className="ExchangeChart-bottom App-box App-box-border">
-        {symbol && (
-          <TVChartContainer
-            chartLines={chartLines}
-            symbol={symbol}
-            chainId={chainId}
-            onSelectToken={onSelectChartToken}
-            dataProvider={dataProvider}
-            datafeed={datafeed}
-            period={period}
-            setPeriod={setPeriod}
-            chartToken={chartTokenProp}
-            supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
-            oraclePriceDecimals={oraclePriceDecimals}
-          />
-        )}
-      </div>
+    <div className="relative grow">
+      <TVChartContainer
+        chartLines={chartLines}
+        symbol={symbol}
+        chainId={chainId}
+        onSelectToken={onSelectChartToken}
+        dataProvider={dataProvider}
+        datafeed={datafeed}
+        period={period}
+        setPeriod={setPeriod}
+        chartToken={chartTokenProp}
+        supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+        oraclePriceDecimals={oraclePriceDecimals}
+      />
     </div>
   );
 }

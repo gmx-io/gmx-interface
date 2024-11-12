@@ -119,7 +119,7 @@ export function getPriceImpactForPosition(
     currentLongUsd: longInterestUsd,
     currentShortUsd: shortInterestUsd,
     usdDelta: sizeDeltaUsd,
-    isLong: isLong!,
+    isLong: isLong,
   });
 
   const priceImpactUsd = getPriceImpactUsd({
@@ -144,7 +144,7 @@ export function getPriceImpactForPosition(
   const virtualInventoryParams = getNextOpenInterestForVirtualInventory({
     virtualInventory: marketInfo.virtualInventoryForPositions,
     usdDelta: sizeDeltaUsd,
-    isLong: isLong!,
+    isLong: isLong,
   });
 
   const priceImpactUsdForVirtualInventory = getPriceImpactUsd({
