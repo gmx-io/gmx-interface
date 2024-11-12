@@ -55,7 +55,7 @@ export type ChartTooltipHandle = {
 export const ChartTooltip = forwardRef<
   ChartTooltipHandle,
   TooltipProps<number | string, string> & { leftMin: bigint; rightMin: bigint; isZeroPriceImpact: boolean }
->(({ active, payload, leftMin, rightMin, isZeroPriceImpact, coordinate, ...rest }, ref) => {
+>(({ payload, leftMin, rightMin, isZeroPriceImpact, coordinate }, ref) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const viewBox = useViewBox() as {
@@ -72,37 +72,31 @@ export const ChartTooltip = forwardRef<
 
   const domainSpan = yAxis.niceTicks.at(-1)! - yAxis.niceTicks.at(0)!;
 
-  // if (!active || !payload || !payload.length) {
-  //   return null;
-  // }
-
   let stats: DataPoint | undefined = payload?.[0]?.payload as DataPoint | undefined;
   let size = stats?.sizeBigInt;
   let sizeY = 0;
 
   let isOpaqueCloser = true;
-  let isLeft = false;
+  let isLogicallyLeft = false;
 
   if (isZeroPriceImpact && stats) {
-    // const dataPoint = payload[0].payload as DataPoint;
+    isLogicallyLeft = stats.leftTransparentSize !== null || stats.leftOpaqueSize !== null;
 
-    isLeft = stats.leftTransparentSize !== null || stats.leftOpaqueSize !== null;
-
-    const transparentSize: number | null = isLeft ? stats.leftTransparentSize : stats.rightTransparentSize;
-    const transparentSizeBigInt: bigint | null = isLeft
+    const transparentSize: number | null = isLogicallyLeft ? stats.leftTransparentSize : stats.rightTransparentSize;
+    const transparentSizeBigInt: bigint | null = isLogicallyLeft
       ? stats.leftTransparentSizeBigInt
       : stats.rightTransparentSizeBigInt;
 
-    const opaqueSize: number | null = isLeft ? stats.leftOpaqueSize : stats.rightOpaqueSize;
-    const opaqueSizeBigInt = isLeft ? stats.leftOpaqueSizeBigInt : stats.rightOpaqueSizeBigInt;
+    const opaqueSize: number | null = isLogicallyLeft ? stats.leftOpaqueSize : stats.rightOpaqueSize;
+    const opaqueSizeBigInt = isLogicallyLeft ? stats.leftOpaqueSizeBigInt : stats.rightOpaqueSizeBigInt;
 
     if (transparentSize === null && opaqueSize !== null) {
       size = opaqueSizeBigInt!;
     } else if (transparentSize !== null && opaqueSize === null) {
       size = transparentSizeBigInt!;
     } else if (transparentSize !== null && opaqueSize !== null) {
-      const transparentFloatY = viewBox.height - (transparentSize! / domainSpan) * viewBox.height;
-      const opaqueFloatY = viewBox.height - (opaqueSize! / domainSpan) * viewBox.height;
+      const transparentFloatY = viewBox.height - (transparentSize! / domainSpan) * viewBox.height + viewBox.y;
+      const opaqueFloatY = viewBox.height - (opaqueSize! / domainSpan) * viewBox.height + viewBox.y;
 
       const distanceToTransparent = Math.abs((coordinate?.y ?? 0) - viewBox.y - transparentFloatY);
       const distanceToOpaque = Math.abs((coordinate?.y ?? 0) - viewBox.y - opaqueFloatY);
@@ -122,23 +116,39 @@ export const ChartTooltip = forwardRef<
         return;
       }
 
+      if (isZeroPriceImpact) {
+        x = coordinate?.x ?? 0;
+      }
+
       // when small put the tooltip either fully on top or fully on bottom
       const isSmall = viewBox.width < 360;
 
-      const offset = 16;
+      const offsetX = 16;
+      const offsetY = isZeroPriceImpact ? 0 : 16;
 
       const tooltipWidth = tooltipRef.current.clientWidth;
       const tooltipHeight = tooltipRef.current.clientHeight;
 
       const isLeft = x < viewBox.width / 2;
-      const isTop = y < viewBox.height / 2;
+      const isTop = sizeY < viewBox.height / 2;
 
-      const tooltipX = isLeft ? x + offset : x - tooltipWidth - offset;
+      let tooltipX;
+
+      if (isZeroPriceImpact) {
+        tooltipX = isLogicallyLeft ? x - tooltipWidth - offsetX : x + offsetX;
+      } else {
+        tooltipX = isLeft ? x + offsetX : x - tooltipWidth - offsetX;
+      }
+
       let tooltipY;
       if (isSmall) {
         tooltipY = isTop ? viewBox.height + viewBox.y - tooltipHeight : viewBox.y;
       } else {
-        tooltipY = isTop ? y + offset : y - tooltipHeight - offset;
+        if (isZeroPriceImpact) {
+          tooltipY = sizeY + offsetY;
+        } else {
+          tooltipY = isTop ? sizeY + offsetY : sizeY - tooltipHeight - offsetY;
+        }
       }
 
       const boundedTooltipX = Math.max(0, Math.min(tooltipX, viewBox.width + viewBox.x - tooltipWidth));
@@ -156,9 +166,9 @@ export const ChartTooltip = forwardRef<
 
   let tooltip: ReactNode;
 
-  if (isZeroPriceImpact && isLeft && isOpaqueCloser) {
+  if (isZeroPriceImpact && isLogicallyLeft && isOpaqueCloser) {
     tooltip = LEFT_OPAQUE_NO_PRICE_IMPACT_TOOLTIP;
-  } else if (isZeroPriceImpact && isLeft && !isOpaqueCloser) {
+  } else if (isZeroPriceImpact && isLogicallyLeft && !isOpaqueCloser) {
     tooltip = (
       <Trans>
         No liquidity is available for increasing shorts for
@@ -173,9 +183,9 @@ export const ChartTooltip = forwardRef<
         this size.
       </Trans>
     );
-  } else if (isZeroPriceImpact && !isLeft && isOpaqueCloser) {
+  } else if (isZeroPriceImpact && !isLogicallyLeft && isOpaqueCloser) {
     tooltip = RIGHT_OPAQUE_NO_PRICE_IMPACT_TOOLTIP;
-  } else if (isZeroPriceImpact && !isLeft && !isOpaqueCloser) {
+  } else if (isZeroPriceImpact && !isLogicallyLeft && !isOpaqueCloser) {
     tooltip = (
       <Trans>
         No liquidity is available for increasing longs for
