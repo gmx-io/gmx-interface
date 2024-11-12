@@ -168,24 +168,28 @@ export default function UiPage() {
       <h2 className="mb-16 mt-24 text-24 font-bold">Font sizes</h2>
       <div className="flex flex-col gap-16">
         <div className="flex items-baseline gap-8">
-          <div>xl</div>
-          <p className="text-34">Some very important title</p>
+          <div>h1</div>
+          <p className="text-h1">H1 Text Size</p>
         </div>
         <div className="flex items-baseline gap-8">
-          <div>lg</div>
-          <p className="text-24">Not that important title</p>
+          <div>h2</div>
+          <p className="text-h2">H2 Text size</p>
         </div>
         <div className="flex items-baseline gap-8">
-          <div>md</div>
-          <p className="text-16">Some important text indeed</p>
+          <div>Body Large</div>
+          <p className="text-body-large">Some important text indeed</p>
         </div>
         <div className="flex items-baseline gap-8">
-          <div>base</div>
-          <p className="text-15">Base text it is. Nothing special</p>
+          <div>Medium</div>
+          <p className="text-body-medium">Base text it is. Nothing special</p>
         </div>
         <div className="flex items-baseline gap-8">
-          <div>sm</div>
-          <p className="text-14">Somewhat unimportant text, but still readable</p>
+          <div>Small</div>
+          <p className="text-body-small">Somewhat unimportant text, but still readable</p>
+        </div>
+        <div className="flex items-baseline gap-8">
+          <div>Caption</div>
+          <p className="text-caption">Somewhat unimportant text, but still readable</p>
         </div>
 
         <div className="flex items-baseline gap-8">

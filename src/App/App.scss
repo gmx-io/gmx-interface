@@ -165,96 +165,10 @@ $app-card-padding: 1.5rem;
   margin-bottom: 1.8rem;
 }
 
-.App-card-long {
-  background: var(--color-slate-800);
-  margin-bottom: 2.4rem;
-}
-
-.App-card-long-content {
-  display: flex;
-  padding: 1.6rem 0;
-}
-
-.App-card-long_sub {
-  width: 20%;
-  padding: 0 1.6rem;
-}
-
-.App-card-long_sub__info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 0.8rem;
-}
-
-.App-card-long_sub__info___title {
-  font-size: var(--font-size-body-medium);
-  line-height: 2.1rem;
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-white);
-}
-
-.App-card-long_sub__info___subtitle {
-  font-size: 1.2rem;
-  line-height: 1.5rem;
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-slate-100);
-}
-
-.App-card-long-sub-left {
-  display: flex;
-}
-
-.App-card-long_sub-icon {
-  display: flex;
-}
-
-.App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon {
-  margin-left: 0.8rem;
-}
-
-.App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon img {
-  filter: grayscale(1);
-}
-
-.App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon img:hover {
-  filter: unset;
-}
-
-.App-card-long_sub__iconlist {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-}
-
 .App-card-divider-vertical {
   width: 1px;
   height: 8.8rem;
   background: var(--color-slate-100);
-}
-
-.App-card-long_sub:first-child {
-  display: flex;
-  align-items: center;
-}
-
-.App-card-long_sub__title {
-  color: var(--color-slate-100);
-  font-size: var(--font-size-body-small);
-  line-height: 1.8rem;
-  font-weight: normal;
-  letter-spacing: 0.25px;
-  margin-bottom: 0.8rem;
-}
-
-.App-card-long_sub__subtitle {
-  letter-spacing: 0.36px;
-  color: var(--color-white);
-  font-size: 2rem;
-  line-height: 2.6rem;
-  font-weight: normal;
 }
 
 .App-card-title-block {
@@ -274,16 +188,12 @@ $app-card-padding: 1.5rem;
 }
 
 .App-card-info-title {
-  font-size: var(--font-size-body-medium);
-  line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: var(--color-white);
 }
 
 .App-card-info-subtitle {
-  font-size: 1.2rem;
-  line-height: 1.5rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: var(--color-gray-400);
@@ -871,33 +781,13 @@ button.App-button-option:disabled {
 .App-header-user {
   display: flex;
   align-items: center;
-}
-
-.App-header-user-settings {
-  display: inline-flex;
-  cursor: pointer;
-  border: none;
-  border-radius: 1.5rem;
-  font-size: var(--font-size-body-medium);
-  background: none;
-  color: var(--color-white);
-  padding: 0;
-  width: 2.4rem;
-  height: 2.4rem;
-  align-items: center;
-  border-radius: 0.4rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
+  gap: 1.6rem;
 }
 
 .Network-icon {
   vertical-align: middle;
   width: 1.85rem;
   height: 1.85rem;
-}
-.App-header-user {
-  gap: 1.6rem;
 }
 
 .App-content {
@@ -1301,25 +1191,11 @@ button.App-button {
   a.App-header-user-account {
     margin-right: 0;
   }
-
-  .App-card-long-content.card-list {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (max-width: 1000px) {
-  .App-card-long-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-row-gap: 1.5rem;
-  }
-
   .App-card-divider-vertical {
     display: none;
-  }
-
-  .App-card-long_sub {
-    width: 100%;
   }
 
   .Page-title {
@@ -1331,21 +1207,7 @@ button.App-button {
   }
 }
 
-@media (max-width: 700px) {
-  .App-card-long-content {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 @media (max-width: 600px) {
-  .App-card-long-content.card-list {
-    grid-template-columns: 1fr;
-  }
-
-  .App-card-long-content {
-    grid-template-columns: 1fr;
-  }
-
   .page-layout {
     padding-top: 2.5rem;
   }
