@@ -5,7 +5,7 @@
   align-items: center;
   border: none;
   color: var(--color-white);
-  font-size: var(--font-size-body-small);
+  font-size: var(--font-size-body-medium);
   white-space: nowrap;
   cursor: pointer;
   border: 1px solid var(--dark-blue-border);
@@ -18,7 +18,7 @@
   }
   .btn-label {
     font-weight: 400;
-    font-size: var(--font-size-body-small);
+    font-size: var(--font-size-body-medium);
     margin-left: 0.8rem;
     letter-spacing: 0;
   }

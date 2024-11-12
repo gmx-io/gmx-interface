@@ -69,13 +69,13 @@
   margin: 0;
   padding: 0.3875rem 0;
   margin-left: 1.1625rem;
-  font-size: var(--font-size-body-medium);
+  font-size: var(--font-size-body-large);
 }
 
 .single-toast .toast-body {
   margin: 0.8rem 0;
   padding: 0;
-  font-size: var(--font-size-body-small);
+  font-size: var(--font-size-body-medium);
   line-height: 1.5;
   padding: 0 1.5rem;
 }
