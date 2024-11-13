@@ -48,8 +48,8 @@ msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus
 msgstr "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -2072,6 +2072,10 @@ msgstr "Total Trading Volume"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral Spread"
 msgstr "Collateral Spread"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
+msgstr "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
@@ -4277,6 +4281,10 @@ msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgid "{txnTypeText} limit order for"
 msgstr "{txnTypeText} limit order for"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+msgstr "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr "Decreasing"
@@ -4373,8 +4381,8 @@ msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancell
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
-msgstr "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
+#~ msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
+#~ msgstr "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx

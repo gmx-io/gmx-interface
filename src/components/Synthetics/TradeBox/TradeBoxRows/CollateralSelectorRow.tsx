@@ -5,7 +5,7 @@ import {
   selectTradeboxAvailableAndDisabledTokensForCollateral,
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralTokenAddress,
-  selectTradeboxHasExistingOrder,
+  selectTradeboxHasExistingLimitOrder,
   selectTradeboxHasExistingPosition,
   selectTradeboxMarketAddress,
   selectTradeboxMarketInfo,
@@ -72,7 +72,7 @@ function useCollateralWarnings() {
 
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
 
-  const hasExistingOrder = useSelector(selectTradeboxHasExistingOrder);
+  const hasExistingOrder = useSelector(selectTradeboxHasExistingLimitOrder);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
@@ -140,7 +140,7 @@ function useCollateralWarnings() {
       messages.push(
         <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="info" compact>
           <Trans>
-            You have an existing order with {symbol} as collateral.{" "}
+            You have an existing limit order with {symbol} as collateral.{" "}
             <span
               className="clickable muted underline"
               onClick={() => {

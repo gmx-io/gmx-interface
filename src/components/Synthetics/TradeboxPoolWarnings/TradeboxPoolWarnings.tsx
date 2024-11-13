@@ -4,9 +4,9 @@ import { ReactNode, useCallback } from "react";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectTradeboxAvailableMarketsOptions,
-  selectTradeboxExistingOrder,
+  selectTradeboxHasExistingLimitOrder,
+  selectTradeboxHasExistingPosition,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxSelectedPosition,
   selectTradeboxState,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -33,10 +33,8 @@ export const useTradeboxPoolWarnings = (
   const { marketInfo, setCollateralAddress, setMarketAddress } = useSelector(selectTradeboxState);
 
   const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
-  const existingOrder = useSelector(selectTradeboxExistingOrder);
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
-  const hasExistingOrder = Boolean(existingOrder);
-  const hasExistingPosition = Boolean(selectedPosition);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
+  const hasExistingOrder = useSelector(selectTradeboxHasExistingLimitOrder);
 
   const isSelectedMarket = useCallback(
     (market: Market) => {
@@ -62,6 +60,8 @@ export const useTradeboxPoolWarnings = (
 
   const indexToken = marketInfo.indexToken;
   const marketWithPosition = marketsOptions?.marketWithPosition;
+  const collateralWithPosition = marketsOptions?.collateralWithPosition;
+
   const isNoSufficientLiquidityInAnyMarket = marketsOptions?.isNoSufficientLiquidityInAnyMarket;
   const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
   const minOpenFeesMarket = (marketsOptions?.minOpenFeesMarket?.marketAddress &&
@@ -112,6 +112,8 @@ export const useTradeboxPoolWarnings = (
     !showHasExistingPositionWarning &&
     !hasExistingPosition &&
     !hasExistingOrder &&
+    !collateralWithPosition &&
+    !marketWithOrder &&
     isIncrease &&
     minOpenFeesMarket &&
     !isSelectedMarket(minOpenFeesMarket) &&
@@ -223,7 +225,7 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.
+          You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool.
           <WithActon>
             <span
               className="clickable muted underline"
