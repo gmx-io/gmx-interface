@@ -244,6 +244,7 @@ export function useTradeboxState(
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const [isMarketAddressChangedManually, setIsMarketAddressChangedManually] = useState(false);
 
   const [advancedOptions, setAdvancedOptions] = useSafeState<TradeboxAdvancedOptions>(
     storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
@@ -722,6 +723,8 @@ export function useTradeboxState(
     setAdvancedOptions,
     allowedSlippage,
     setAllowedSlippage,
+    isMarketAddressChangedManually,
+    setIsMarketAddressChangedManually,
   };
 }
 
