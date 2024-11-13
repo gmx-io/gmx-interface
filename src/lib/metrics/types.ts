@@ -49,6 +49,7 @@ export type OrderMetricType =
   | DecreaseOrderMetricData["metricType"]
   | EditCollateralMetricData["metricType"]
   | SwapGmMetricData["metricType"]
+  | SwapGLVMetricData["metricType"]
   | ShiftGmMetricData["metricType"];
 
 export type OrderErrorContext =
@@ -72,6 +73,7 @@ export type OrderMetricData =
   | DecreaseOrderMetricData
   | EditCollateralMetricData
   | SwapGmMetricData
+  | SwapGLVMetricData
   | ShiftGmMetricData;
 
 // General metrics
@@ -342,25 +344,23 @@ export type ShiftGmMetricData = {
   metricType: "shiftGM";
   requestId: string;
   fromMarketAddress: string | undefined;
-  fromMarketName: string | undefined;
   toMarketAddress: string | undefined;
-  toMarketName: string | undefined;
   minToMarketTokenAmount: number | undefined;
   executionFee: number | undefined;
 };
 
 export type SwapGLVMetricData = {
-  metricId: `gm:${string}`;
+  metricId: `glv:${string}`;
   metricType: "buyGLV" | "sellGLV";
   requestId: string;
   initialLongTokenAddress: string | undefined;
   initialShortTokenAddress: string | undefined;
-  marketAddress: string | undefined;
-  marketName: string | undefined;
+  glvAddress: string | undefined;
+  selectedMarketForGlv: string | undefined;
   executionFee: number | undefined;
   longTokenAmount: number | undefined;
   shortTokenAmount: number | undefined;
-  marketTokenAmount: number | undefined;
+  glvTokenAmount: number | undefined;
 };
 
 export type ErrorMetricData = {

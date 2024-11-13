@@ -6256,6 +6256,9 @@ msgstr "Transfer {nativeTokenSymbol}"
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
