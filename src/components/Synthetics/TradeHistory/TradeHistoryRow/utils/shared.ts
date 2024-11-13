@@ -174,7 +174,7 @@ export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErr
 
   try {
     error = customErrors.interface.parseError(reasonBytes);
-  } catch {
+  } catch (error) {
     return undefined;
   }
 

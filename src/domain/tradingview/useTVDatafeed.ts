@@ -257,7 +257,7 @@ function buildFeeder({
           }
 
           onHistoryCallback(bars, { noData });
-        } catch {
+        } catch (error) {
           onErrorCallback("Unable to load historical data!");
         }
       },

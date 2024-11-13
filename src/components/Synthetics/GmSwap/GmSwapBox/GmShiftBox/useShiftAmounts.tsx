@@ -32,14 +32,14 @@ export function useShiftAmounts({
     let fromTokenAmount = 0n;
     try {
       fromTokenAmount = parseValue(selectedMarketText, selectedToken.decimals) ?? 0n;
-    } catch {
+    } catch (error) {
       // pass
     }
 
     let toTokenAmount = 0n;
     try {
       toTokenAmount = parseValue(toMarketText, toToken.decimals) ?? 0n;
-    } catch {
+    } catch (error) {
       // pass
     }
 
