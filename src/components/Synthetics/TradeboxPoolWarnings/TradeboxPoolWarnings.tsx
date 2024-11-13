@@ -109,6 +109,9 @@ export const useTradeboxPoolWarnings = (
     !isSelectedMarket(marketWithOrder);
 
   const canShowHasBetterExecutionFeesWarning =
+    !showHasExistingPositionWarning &&
+    !hasExistingPosition &&
+    !hasExistingOrder &&
     isIncrease &&
     minOpenFeesMarket &&
     !isSelectedMarket(minOpenFeesMarket) &&
