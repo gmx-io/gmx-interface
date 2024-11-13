@@ -16,6 +16,7 @@ import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { OrderMetricId } from "lib/metrics";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 
 const { ZeroAddress } = ethers;
 
@@ -82,7 +83,7 @@ export async function createDecreaseOrderTxn(
     chainId,
   });
 
-  await Promise.all(
+  const simulationPromise = Promise.all(
     ps.map(async (p) => {
       if (subaccount && callbacks.setPendingOrder) {
         callbacks.setPendingOrder(getPendingOrderFromParams(chainId, "create", p));
@@ -109,19 +110,36 @@ export async function createDecreaseOrderTxn(
     })
   );
 
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+    chainId,
+    router,
+    "multicall",
+    [encodedPayload],
+    totalWntAmount,
+    subaccount?.customSigners,
+    simulationPromise,
+    metricId
+  );
+
   const txnCreatedAt = Date.now();
 
   if (!signer.provider) throw new Error("No provider found");
-  const txnCreatedAtBlock = await signer.provider.getBlockNumber();
 
   await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    customSignersGasLimits,
+    customSignersGasPrices,
+    gasLimit,
+    gasPriceData,
     metricId,
+    bestNonce,
     setPendingTxns: callbacks.setPendingTxns,
   });
+
+  const txnCreatedAtBlock = await signer.provider.getBlockNumber();
 
   ps.forEach((p) => {
     if (isMarketOrderType(p.orderType)) {

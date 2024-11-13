@@ -3887,6 +3887,10 @@ msgstr "Buy AVAX directly to Avalanche or transfer it there."
 msgid "Single"
 msgstr "Single"
 
+#: src/domain/synthetics/orders/prepareOrderTxn.ts
+msgid "Error preparing transaction. Provider is not defined"
+msgstr "Error preparing transaction. Provider is not defined"
+
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "Funding fees"
@@ -6736,6 +6740,7 @@ msgstr "Sell GM"
 msgid "View on Arbitrum"
 msgstr "View on Arbitrum"
 
+#: src/domain/synthetics/markets/createShiftTxn.ts
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
 msgstr "Shift error."

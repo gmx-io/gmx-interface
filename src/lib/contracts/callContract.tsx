@@ -1,15 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { Contract, Wallet, Overrides } from "ethers";
+import { Contract, Overrides, Wallet } from "ethers";
+import { OrderMetricId } from "lib/metrics/types";
+import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
+import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
-import { getGasLimit, getGasPrice, getBestNonce } from "./utils";
-import { ReactNode } from "react";
-import React from "react";
-import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
-import { OrderMetricId } from "lib/metrics/types";
+import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
 
 export async function callContract(
   chainId: number,
@@ -19,6 +18,7 @@ export async function callContract(
   opts: {
     value?: bigint | number;
     gasLimit?: bigint | number;
+    gasPriceData?: GasPriceData;
     detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;
@@ -28,6 +28,9 @@ export async function callContract(
     showPreliminaryMsg?: boolean;
     failMsg?: string;
     customSigners?: Wallet[];
+    customSignersGasLimits?: (bigint | number)[];
+    customSignersGasPrices?: GasPriceData[];
+    bestNonce?: number;
     setPendingTxns?: (txns: any) => void;
     metricId?: OrderMetricId;
   }
@@ -61,7 +64,9 @@ export async function callContract(
       txnOpts.value = opts.value;
     }
 
-    if (opts.customSigners) {
+    if (opts.bestNonce) {
+      txnOpts.nonce = opts.bestNonce;
+    } else if (opts.customSigners) {
       // If we send the transaction to multiple RPCs simultaneously,
       // we should specify a fixed nonce to avoid possible txn duplication.
       txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
@@ -77,7 +82,10 @@ export async function callContract(
 
     const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
 
-    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct) => {
+    const customGasLimits = [opts.gasLimit].concat(opts.customSignersGasLimits || []);
+    const customGasPrices = [opts.gasPriceData].concat(opts.customSignersGasPrices || []);
+
+    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct, i) => {
       const txnInstance = { ...txnOpts };
 
       if (!cntrct.runner?.provider) {
@@ -85,15 +93,23 @@ export async function callContract(
       }
 
       async function retrieveGasLimit() {
-        return opts.gasLimit ? opts.gasLimit : await getGasLimit(cntrct, method, params, opts.value);
+        return customGasLimits[i] !== undefined
+          ? (customGasLimits[i] as bigint | number)
+          : await getGasLimit(cntrct, method, params, opts.value);
+      }
+
+      async function retrieveGasPrice() {
+        return customGasPrices[i] !== undefined
+          ? (customGasPrices[i] as GasPriceData)
+          : await getGasPrice(cntrct.runner!.provider!, chainId);
       }
 
       const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
         txnInstance.gasLimit = gasLimit;
       });
 
-      const gasPriceDataPromise = getGasPrice(cntrct.runner.provider, chainId).then((gasPriceData) => {
-        if (gasPriceData.gasPrice !== undefined) {
+      const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
+        if ("gasPrice" in gasPriceData) {
           txnInstance.gasPrice = gasPriceData.gasPrice;
         } else {
           txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;

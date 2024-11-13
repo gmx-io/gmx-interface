@@ -52,6 +52,16 @@ export type OrderMetricType =
   | SwapGLVMetricData["metricType"]
   | ShiftGmMetricData["metricType"];
 
+export type OrderErrorContext =
+  | "simulation"
+  | "gasLimit"
+  | "gasPrice"
+  | "bestNonce"
+  | "sending"
+  | "pending"
+  | "minting"
+  | "execution";
+
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
 
@@ -354,7 +364,7 @@ export type SwapGLVMetricData = {
 };
 
 export type ErrorMetricData = {
-  errorContext?: string;
+  errorContext?: OrderErrorContext;
   errorMessage?: string;
   errorGroup?: string;
   errorStack?: string;

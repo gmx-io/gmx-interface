@@ -12,6 +12,7 @@ import { applySlippageToMinOut } from "../trade";
 
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { OrderMetricId } from "lib/metrics/types";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 
 type Params = {
   account: string;
@@ -69,11 +70,37 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     });
   }
 
+  const simulationPromise = !p.skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: p.account,
+        primaryPriceOverrides: {},
+        tokensData: p.tokensData,
+        createMulticallPayload: encodedPayload,
+        method: "simulateExecuteShift",
+        errorTitle: t`Shift error.`,
+        value: p.executionFee,
+        metricId: p.metricId,
+      })
+    : undefined;
+
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+    chainId,
+    contract,
+    "multicall",
+    [encodedPayload],
+    p.executionFee,
+    undefined,
+    simulationPromise,
+    p.metricId
+  );
+
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: p.executionFee,
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingShift({
