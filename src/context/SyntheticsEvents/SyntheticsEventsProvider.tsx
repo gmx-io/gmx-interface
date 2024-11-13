@@ -27,6 +27,7 @@ import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import {
+  getGLVSwapMetricId,
   getGMSwapMetricId,
   getPositionOrderMetricId,
   getShiftGMMetricId,
@@ -48,6 +49,7 @@ import {
   DepositStatuses,
   EventLogData,
   EventTxnParams,
+  GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
@@ -296,7 +298,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const depositData: DepositCreatedEventData = {
+      const depositData: GLVDepositCreatedEventData = {
         account: eventData.addressItems.items.account,
         receiver: eventData.addressItems.items.receiver,
         callbackContract: eventData.addressItems.items.callbackContract,
@@ -322,7 +324,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const metricId = getGMSwapMetricId(depositData);
+      const metricId = getGLVSwapMetricId(depositData);
 
       sendOrderCreatedMetric(metricId);
 
@@ -382,7 +384,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       const key = eventData.bytes32Items.items.key;
       if (depositStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
+        const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
 
         sendOrderExecutedMetric(metricId);
 
@@ -424,7 +426,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const key = eventData.bytes32Items.items.key;
 
       if (depositStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
+        const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
 
         sendOrderCancelledMetric(metricId, eventData);
 
@@ -493,8 +495,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const metricId = getGMSwapMetricId({
-        marketAddress: data.marketAddress,
+      const metricId = getGLVSwapMetricId({
+        glvAddress: data.marketAddress,
         executionFee: data.executionFee,
       });
 
@@ -531,8 +533,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       const key = eventData.bytes32Items.items.key;
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId({
-          marketAddress: withdrawalStatuses[key].data!.marketAddress,
+        const metricId = getGLVSwapMetricId({
+          glvAddress: withdrawalStatuses[key].data!.marketAddress,
           executionFee: withdrawalStatuses[key].data!.executionFee,
         });
         sendOrderExecutedMetric(metricId);
@@ -547,8 +549,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const key = eventData.bytes32Items.items.key;
 
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId({
-          marketAddress: withdrawalStatuses[key].data!.marketAddress,
+        const metricId = getGLVSwapMetricId({
+          glvAddress: withdrawalStatuses[key].data!.marketAddress,
           executionFee: withdrawalStatuses[key].data!.executionFee,
         });
         sendOrderCancelledMetric(metricId, eventData);

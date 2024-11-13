@@ -28,6 +28,7 @@ import {
   OrderTxnSubmittedEvent,
   PendingTxnErrorEvent,
   ShiftGmMetricData,
+  SwapGLVMetricData,
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
@@ -178,6 +179,7 @@ export function initDecreaseOrderMetricData({
   hasExistingPosition,
   executionFee,
   orderType,
+  swapPath,
   hasReferralCode,
   subaccount,
   triggerPrice,
@@ -189,6 +191,7 @@ export function initDecreaseOrderMetricData({
   decreaseAmounts: DecreasePositionAmounts | undefined;
   executionFee: ExecutionFee | undefined;
   orderType: OrderType | undefined;
+  swapPath: string[] | undefined;
   allowedSlippage: number | undefined;
   hasReferralCode: boolean | undefined;
   hasExistingPosition: boolean | undefined;
@@ -211,7 +214,7 @@ export function initDecreaseOrderMetricData({
     metricId: getPositionOrderMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
       initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
-      swapPath: [],
+      swapPath,
       isLong,
       orderType,
       sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
@@ -329,32 +332,70 @@ export function initGMSwapMetricData({
   });
 }
 
+export function initGLVSwapMetricData({
+  longToken,
+  shortToken,
+  isDeposit,
+  executionFee,
+  glvAddress,
+  selectedMarketForGlv,
+  glvTokenAmount,
+  glvToken,
+  longTokenAmount,
+  shortTokenAmount,
+}: {
+  longToken: TokenData | undefined;
+  shortToken: TokenData | undefined;
+  selectedMarketForGlv: string | undefined;
+  isDeposit: boolean;
+  executionFee: ExecutionFee | undefined;
+  glvAddress: string | undefined;
+  longTokenAmount: bigint | undefined;
+  shortTokenAmount: bigint | undefined;
+  marketTokenAmount: bigint | undefined;
+  glvTokenAmount: bigint | undefined;
+  glvToken: TokenData | undefined;
+}) {
+  return metrics.setCachedMetricData<SwapGLVMetricData>({
+    metricId: getGLVSwapMetricId({
+      glvAddress,
+      executionFee: executionFee?.feeTokenAmount,
+    }),
+    metricType: isDeposit ? "buyGLV" : "sellGLV",
+    requestId: getRequestId(),
+    initialLongTokenAddress: longToken?.address,
+    initialShortTokenAddress: shortToken?.address,
+    glvAddress,
+    selectedMarketForGlv,
+    executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
+    longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
+    shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
+    glvTokenAmount: formatAmountForMetrics(glvTokenAmount, glvToken?.decimals),
+  });
+}
+
 export function initShiftGmMetricData({
   executionFee,
-  fromMarketInfo,
-  toMarketInfo,
-  marketToken,
+  fromMarketToken,
+  toMarketToken,
   minMarketTokenAmount,
 }: {
   executionFee: ExecutionFee | undefined;
-  fromMarketInfo: MarketInfo | undefined;
-  toMarketInfo: MarketInfo | undefined;
+  fromMarketToken: TokenData | undefined;
+  toMarketToken: TokenData | undefined;
   minMarketTokenAmount: bigint | undefined;
-  marketToken: TokenData | undefined;
 }) {
   return metrics.setCachedMetricData<ShiftGmMetricData>({
     metricId: getShiftGMMetricId({
-      fromMarketAddress: fromMarketInfo?.marketTokenAddress,
-      toMarketAddress: toMarketInfo?.marketTokenAddress,
+      fromMarketAddress: fromMarketToken?.address,
+      toMarketAddress: toMarketToken?.address,
       executionFee: executionFee?.feeTokenAmount,
     }),
     metricType: "shiftGM",
     requestId: getRequestId(),
-    fromMarketAddress: fromMarketInfo?.marketTokenAddress,
-    fromMarketName: fromMarketInfo?.name,
-    toMarketName: toMarketInfo?.name,
-    toMarketAddress: toMarketInfo?.marketTokenAddress,
-    minToMarketTokenAmount: formatAmountForMetrics(minMarketTokenAmount, marketToken?.decimals),
+    fromMarketAddress: fromMarketToken?.address,
+    toMarketAddress: toMarketToken?.address,
+    minToMarketTokenAmount: formatAmountForMetrics(minMarketTokenAmount, toMarketToken?.decimals),
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
   });
 }
@@ -364,6 +405,13 @@ export function getGMSwapMetricId(p: {
   executionFee: bigint | undefined;
 }): SwapGmMetricData["metricId"] {
   return `gm:${[p.marketAddress || "marketTokenAddress", p.executionFee?.toString || "marketTokenAmount"].join(":")}`;
+}
+
+export function getGLVSwapMetricId(p: {
+  glvAddress: string | undefined;
+  executionFee: bigint | undefined;
+}): SwapGLVMetricData["metricId"] {
+  return `glv:${[p.glvAddress || "glvAddress", p.executionFee?.toString() || "executionFee"].join(":")}`;
 }
 
 export function getShiftGMMetricId(p: {
