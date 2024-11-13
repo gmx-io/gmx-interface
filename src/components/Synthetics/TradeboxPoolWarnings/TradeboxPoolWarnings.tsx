@@ -18,7 +18,6 @@ import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { useBestMarketAddress } from "../TradeBox/hooks/useBestMarketAddress";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
@@ -31,9 +30,8 @@ export const useTradeboxPoolWarnings = (
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const { marketInfo, setCollateralAddress } = useSelector(selectTradeboxState);
+  const { marketInfo, setCollateralAddress, setMarketAddress } = useSelector(selectTradeboxState);
 
-  const { setMarketAddress } = useBestMarketAddress();
   const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
   const existingOrder = useSelector(selectTradeboxExistingOrder);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
