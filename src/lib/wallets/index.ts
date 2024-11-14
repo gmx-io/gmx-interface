@@ -1,7 +1,7 @@
 import { switchChain } from "@wagmi/core";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { getRainbowKitConfig } from "./rainbowKitConfig";
-import { Chains } from "config/chains";
+import { ChainId } from "config/chains";
 
 export type NetworkMetadata = {
   chainId: string;
@@ -18,7 +18,7 @@ export type NetworkMetadata = {
 export async function switchNetwork(chainId: number, active: boolean): Promise<void> {
   if (active) {
     await switchChain(getRainbowKitConfig(), {
-      chainId: chainId as Chains,
+      chainId: chainId as ChainId,
     });
     localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
   } else {
