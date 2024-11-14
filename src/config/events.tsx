@@ -33,6 +33,22 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "wld-tao-listing",
+    title: "BONK, TAO and WLD markets added on Arbitrum",
+    isActive: true,
+    startDate: "14 Nov 2024, 16:00",
+    endDate: "20 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="BONK" />
+        /USD, <TokenSymbolWithIcon symbol="TAO" />
+        /USD and <TokenSymbolWithIcon symbol="WLD" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WETH" />,{" "}
+        <TokenSymbolWithIcon symbol="WBTC" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "trx-ton-listing",
     title: "TON and TRX markets added on Arbitrum",
     isActive: true,
