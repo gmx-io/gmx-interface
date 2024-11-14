@@ -88,7 +88,7 @@ export function usePositions(
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
-        if (BigInt(numbers.increasedAtBlock) == 0n) {
+        if (numbers.increasedAtTime == 0n) {
           return positionsMap;
         }
 
@@ -104,8 +104,8 @@ export function usePositions(
           sizeInUsd: numbers.sizeInUsd,
           sizeInTokens: numbers.sizeInTokens,
           collateralAmount: numbers.collateralAmount,
-          increasedAtBlock: numbers.increasedAtBlock,
-          decreasedAtBlock: numbers.decreasedAtBlock,
+          increasedAtTime: numbers.increasedAtTime,
+          decreasedAtTime: numbers.decreasedAtTime,
           isLong: flags.isLong,
           pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
           fundingFeeAmount: fees.funding.fundingFeeAmount,
@@ -227,22 +227,22 @@ export function useOptimisticPositions(p: {
 
       if (
         lastIncreaseEvent &&
-        lastIncreaseEvent.increasedAtBlock > position.increasedAtBlock &&
-        lastIncreaseEvent.increasedAtBlock > (lastDecreaseEvent?.decreasedAtBlock || 0)
+        lastIncreaseEvent.increasedAtTime > position.increasedAtTime &&
+        lastIncreaseEvent.increasedAtTime > (lastDecreaseEvent?.decreasedAtTime || 0)
       ) {
         position = applyEventChanges(position, lastIncreaseEvent);
       } else if (
         lastDecreaseEvent &&
-        lastDecreaseEvent.decreasedAtBlock > position.decreasedAtBlock &&
-        lastDecreaseEvent.decreasedAtBlock > (lastIncreaseEvent?.increasedAtBlock || 0)
+        lastDecreaseEvent.decreasedAtTime > position.decreasedAtTime &&
+        lastDecreaseEvent.decreasedAtTime > (lastIncreaseEvent?.increasedAtTime || 0)
       ) {
         position = applyEventChanges(position, lastDecreaseEvent);
       }
 
       if (
         pendingUpdate &&
-        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtBlock) ||
-          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtBlock))
+        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtTime) ||
+          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtTime))
       ) {
         position.pendingUpdate = pendingUpdate;
       }
@@ -277,13 +277,13 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   nextPosition.isOpening = false;
 
   // eslint-disable-next-line local-rules/no-logical-bigint
-  if ((event as PositionIncreaseEvent).increasedAtBlock) {
-    nextPosition.increasedAtBlock = (event as PositionIncreaseEvent).increasedAtBlock;
+  if ((event as PositionIncreaseEvent).increasedAtTime) {
+    nextPosition.increasedAtTime = (event as PositionIncreaseEvent).increasedAtTime;
   }
 
   // eslint-disable-next-line local-rules/no-logical-bigint
-  if ((event as PositionDecreaseEvent).decreasedAtBlock) {
-    nextPosition.decreasedAtBlock = (event as PositionDecreaseEvent).decreasedAtBlock;
+  if ((event as PositionDecreaseEvent).decreasedAtTime) {
+    nextPosition.decreasedAtTime = (event as PositionDecreaseEvent).decreasedAtTime;
   }
 
   return nextPosition;
@@ -302,8 +302,8 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     sizeInUsd: pendingUpdate.sizeDeltaUsd ?? 0n,
     collateralAmount: pendingUpdate.collateralDeltaAmount ?? 0n,
     sizeInTokens: pendingUpdate.sizeDeltaInTokens ?? 0n,
-    increasedAtBlock: pendingUpdate.updatedAtBlock,
-    decreasedAtBlock: 0n,
+    increasedAtTime: pendingUpdate.updatedAtBlock,
+    decreasedAtTime: 0n,
     pendingBorrowingFeesUsd: 0n,
     fundingFeeAmount: 0n,
     claimableLongTokenAmount: 0n,

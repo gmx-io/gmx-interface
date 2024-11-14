@@ -277,6 +277,11 @@
                   "internalType": "uint256",
                   "name": "minOutputAmount",
                   "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "validFromTime",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct IBaseOrderUtils.CreateOrderParamsNumbers",
@@ -565,6 +570,11 @@
         {
           "internalType": "uint256",
           "name": "minOutputAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "validFromTime",
           "type": "uint256"
         },
         {

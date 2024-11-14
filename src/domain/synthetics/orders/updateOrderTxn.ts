@@ -106,6 +106,7 @@ export function createUpdateEncodedPayload({
       convertToContractPrice(acceptablePrice, indexToken?.decimals || 0),
       convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
       minOutputAmount,
+      0n,
       autoCancel,
     ],
   });
