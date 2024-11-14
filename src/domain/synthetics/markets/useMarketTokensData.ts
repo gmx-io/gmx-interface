@@ -16,7 +16,6 @@ import { getContractMarketPrices } from "./utils";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
-import { getIsFlagEnabled } from "config/ab";
 import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   useTokensBalancesUpdates,
@@ -159,9 +158,7 @@ export function useMarketTokensDataRequest(
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 
-        if (getIsFlagEnabled("testWebsocketBalances")) {
-          resetTokensBalancesUpdates(Object.keys(marketTokensMap));
-        }
+        resetTokensBalancesUpdates(Object.keys(marketTokensMap));
 
         return marketTokensMap;
       }, {} as TokensData),

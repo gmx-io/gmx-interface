@@ -1,4 +1,3 @@
-import { getIsFlagEnabled } from "config/ab";
 import { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import entries from "lodash/entries";
@@ -74,7 +73,7 @@ export function useUpdatedTokensBalances<T extends TokenBalancesData | TokensDat
   const { tokensBalancesUpdates } = useTokensBalancesUpdates();
 
   return useMemo(() => {
-    if (!balancesData || !getIsFlagEnabled("testWebsocketBalances")) {
+    if (!balancesData) {
       return balancesData;
     }
 

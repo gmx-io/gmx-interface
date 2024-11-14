@@ -2,54 +2,39 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback } from "react";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
-  selectTradeboxExistingOrder,
+  selectTradeboxHasExistingLimitOrder,
+  selectTradeboxHasExistingPosition,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxSelectedPosition,
   selectTradeboxState,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
-import {
-  getAvailableUsdLiquidityForPosition,
-  getIsZeroPriceImpactMarket,
-  getMarketPoolName,
-} from "domain/synthetics/markets/utils";
-import { BN_ZERO, formatPercentage, formatRatePercentage } from "lib/numbers";
+import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { bigMath } from "lib/bigmath";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
-const SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD = 10n ** 25n; // +0.001%
 
 const SPACE = " ";
 
 export const useTradeboxPoolWarnings = (
   withActions = true,
-  textColor: "text-yellow-500" | "text-gray-300" = "text-yellow-500"
+  textColor: "text-yellow-500" | "text-gray-300" = "text-gray-300"
 ) => {
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const { marketInfo, setMarketAddress, setCollateralAddress } = useSelector(selectTradeboxState);
-  const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
-  const existingOrder = useSelector(selectTradeboxExistingOrder);
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
-  const hasExistingOrder = Boolean(existingOrder);
-  const hasExistingPosition = Boolean(selectedPosition);
-  const allMarketStats = useSelector(selectIndexTokenStatsMap);
+  const { marketInfo, setCollateralAddress, setMarketAddress } = useSelector(selectTradeboxState);
 
-  const currentMarketStat =
-    marketInfo &&
-    allMarketStats.indexMap[marketInfo.indexTokenAddress]?.marketsStats.find(
-      (marketStat) => marketStat.marketInfo.marketTokenAddress === marketInfo.marketTokenAddress
-    );
+  const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
+  const hasExistingOrder = useSelector(selectTradeboxHasExistingLimitOrder);
 
   const isSelectedMarket = useCallback(
     (market: Market) => {
@@ -75,6 +60,8 @@ export const useTradeboxPoolWarnings = (
 
   const indexToken = marketInfo.indexToken;
   const marketWithPosition = marketsOptions?.marketWithPosition;
+  const collateralWithPosition = marketsOptions?.collateralWithPosition;
+
   const isNoSufficientLiquidityInAnyMarket = marketsOptions?.isNoSufficientLiquidityInAnyMarket;
   const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
   const minOpenFeesMarket = (marketsOptions?.minOpenFeesMarket?.marketAddress &&
@@ -97,23 +84,6 @@ export const useTradeboxPoolWarnings = (
         (positionFeeBeforeDiscountBps ?? BN_ZERO) -
         increaseAmounts.acceptablePriceDeltaBps
       : undefined;
-
-  const availableIndexTokenStat = marketsOptions.availableIndexTokenStat;
-
-  const bestNetFee = isLong ? availableIndexTokenStat?.bestNetFeeLong : availableIndexTokenStat?.bestNetFeeShort;
-  const currentNetFee = isLong ? currentMarketStat?.netFeeLong : currentMarketStat?.netFeeShort;
-  const improvedNetRateAbsDelta =
-    (currentMarketStat &&
-      bestNetFee !== undefined &&
-      currentNetFee !== undefined &&
-      bigMath.abs(bestNetFee - currentNetFee)) ||
-    undefined;
-  const bestNetFeeMarket = getByKey(
-    marketsInfoData,
-    isLong
-      ? availableIndexTokenStat?.bestNetFeeLongMarketAddress
-      : availableIndexTokenStat?.bestNetFeeShortMarketAddress
-  );
 
   const showHasExistingPositionButNotEnoughLiquidityWarning =
     !hasExistingPosition &&
@@ -139,6 +109,11 @@ export const useTradeboxPoolWarnings = (
     !isSelectedMarket(marketWithOrder);
 
   const canShowHasBetterExecutionFeesWarning =
+    !showHasExistingPositionWarning &&
+    !hasExistingPosition &&
+    !hasExistingOrder &&
+    !collateralWithPosition &&
+    !marketWithOrder &&
     isIncrease &&
     minOpenFeesMarket &&
     !isSelectedMarket(minOpenFeesMarket) &&
@@ -146,21 +121,7 @@ export const useTradeboxPoolWarnings = (
       ? improvedOpenFeesDeltaBps >= SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS
       : undefined);
 
-  const canShowHasBetterNetFeesWarning =
-    isIncrease &&
-    bestNetFeeMarket &&
-    marketInfo.marketTokenAddress !== bestNetFeeMarket.marketTokenAddress &&
-    (improvedNetRateAbsDelta !== undefined
-      ? improvedNetRateAbsDelta >= SHOW_HAS_BETTER_NET_RATE_WARNING_THRESHOLD
-      : undefined);
-
-  const showHasBetterOpenFeesAndNetFeesWarning =
-    canShowHasBetterExecutionFeesWarning &&
-    canShowHasBetterNetFeesWarning &&
-    bestNetFeeMarket.marketTokenAddress === minOpenFeesMarket?.marketTokenAddress;
-
-  const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
-  const showHasBetterNetFeesWarning = canShowHasBetterNetFeesWarning && !showHasBetterOpenFeesAndNetFeesWarning;
+  const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;
 
   if (
     !showHasExistingPositionWarning &&
@@ -169,8 +130,6 @@ export const useTradeboxPoolWarnings = (
     !showHasInsufficientLiquidityAndNoPositionWarning &&
     !showHasExistingOrderWarning &&
     !showHasBetterOpenFeesWarning &&
-    !showHasBetterNetFeesWarning &&
-    !showHasBetterOpenFeesAndNetFeesWarning &&
     !showHasExistingPositionButNotEnoughLiquidityWarning
   ) {
     return null;
@@ -202,22 +161,10 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasExistingPositionButNotEnoughLiquidityWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingPositionButNotEnoughLiquidityWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasExistingPositionButNotEnoughLiquidityWarning" type="info" compact textColor={textColor}>
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool, but it lacks
           liquidity for this order.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => {
-                setMarketAddress(marketWithPosition.marketTokenAddress);
-                setCollateralAddress(marketsOptions.collateralWithPosition?.address);
-              }}
-            >
-              Switch anyway to {getMarketPoolName(marketWithPosition)} market pool
-            </span>
-            .
-          </WithActon>
         </Trans>
       </AlertInfo>
     );
@@ -225,7 +172,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
-      <AlertInfo key="showHasNoSufficientLiquidityInAnyMarketWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasNoSufficientLiquidityInAnyMarketWarning" type="info" compact textColor={textColor}>
         <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.</Trans>
       </AlertInfo>
     );
@@ -233,7 +180,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasInsufficientLiquidityAndNoPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasInsufficientLiquidityAndNoPositionWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasInsufficientLiquidityAndNoPositionWarning" type="info" compact textColor={textColor}>
         <Trans>
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market.
@@ -253,7 +200,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasInsufficientLiquidityAndPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasInsufficientLiquidityAndPositionWarning" type="warning" compact textColor={textColor}>
+      <AlertInfo key="showHasInsufficientLiquidityAndPositionWarning" type="info" compact textColor={textColor}>
         <Trans>
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market. Choosing a different pool would open a new position different from the
@@ -278,7 +225,7 @@ export const useTradeboxPoolWarnings = (
     warning.push(
       <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.
+          You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool.
           <WithActon>
             <span
               className="clickable muted underline"
@@ -297,61 +244,10 @@ export const useTradeboxPoolWarnings = (
   }
 
   if (showHasBetterOpenFeesWarning) {
-    const zeroPriceImpactMessage = getIsZeroPriceImpactMarket(minOpenFeesMarket) ? (
-      <Trans>and zero price impact</Trans>
-    ) : null;
-
     warning.push(
       <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost {zeroPriceImpactMessage} in the{" "}
-          {getMarketPoolName(minOpenFeesMarket)} market pool.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}
-            >
-              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
-            </span>
-            .
-          </WithActon>
-        </Trans>
-      </AlertInfo>
-    );
-  }
-
-  if (showHasBetterNetFeesWarning) {
-    warning.push(
-      <AlertInfo key="showHasBetterNetFeesWarning" type="info" compact textColor={textColor}>
-        <Trans>
-          You can get a {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
-          {getMarketPoolName(bestNetFeeMarket)} market pool.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => setMarketAddress(bestNetFeeMarket.marketTokenAddress)}
-            >
-              Switch to {getMarketPoolName(bestNetFeeMarket)} market pool
-            </span>
-            .
-          </WithActon>
-        </Trans>
-      </AlertInfo>
-    );
-  }
-
-  if (showHasBetterOpenFeesAndNetFeesWarning) {
-    const zeroPriceImpactMessage = getIsZeroPriceImpactMarket(minOpenFeesMarket) ? (
-      <Trans>
-        , <b>zero price impact</b>
-      </Trans>
-    ) : null;
-
-    warning.push(
-      <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact textColor={textColor}>
-        <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost{zeroPriceImpactMessage} and a{" "}
-          {formatRatePercentage(improvedNetRateAbsDelta, { signed: false })} / 1h better net rate in the{" "}
+          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
           <WithActon>
             <span

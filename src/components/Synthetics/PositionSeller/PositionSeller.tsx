@@ -296,11 +296,17 @@ export function PositionSeller(p: Props) {
     }
 
     const orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
+    // TODO findSwapPath considering decreasePositionSwapType?
+    const swapPath =
+      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
+        ? []
+        : swapAmounts?.swapPathStats?.swapPath || [];
 
     const metricData = initDecreaseOrderMetricData({
       collateralToken: position?.collateralToken,
       decreaseAmounts,
       hasExistingPosition: true,
+      swapPath,
       executionFee,
       orderType: orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
@@ -330,12 +336,6 @@ export function PositionSeller(p: Props) {
     }
 
     setIsSubmitting(true);
-
-    // TODO findSwapPath considering decreasePositionSwapType?
-    const swapPath =
-      decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
-        ? []
-        : swapAmounts?.swapPathStats?.swapPath || [];
 
     const txnPromise = createDecreaseOrderTxn(
       chainId,

@@ -9,7 +9,7 @@ import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { TxError } from "lib/contracts/transactionErrors";
 import { bigintToNumber, roundToOrder } from "lib/numbers";
-import { metrics, SubmittedOrderEvent } from ".";
+import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
 import {
   DecreaseOrderMetricData,
@@ -28,6 +28,7 @@ import {
   OrderTxnSubmittedEvent,
   PendingTxnErrorEvent,
   ShiftGmMetricData,
+  SwapGLVMetricData,
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
@@ -178,6 +179,7 @@ export function initDecreaseOrderMetricData({
   hasExistingPosition,
   executionFee,
   orderType,
+  swapPath,
   hasReferralCode,
   subaccount,
   triggerPrice,
@@ -189,6 +191,7 @@ export function initDecreaseOrderMetricData({
   decreaseAmounts: DecreasePositionAmounts | undefined;
   executionFee: ExecutionFee | undefined;
   orderType: OrderType | undefined;
+  swapPath: string[] | undefined;
   allowedSlippage: number | undefined;
   hasReferralCode: boolean | undefined;
   hasExistingPosition: boolean | undefined;
@@ -211,7 +214,7 @@ export function initDecreaseOrderMetricData({
     metricId: getPositionOrderMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
       initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
-      swapPath: [],
+      swapPath,
       isLong,
       orderType,
       sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
@@ -329,32 +332,70 @@ export function initGMSwapMetricData({
   });
 }
 
+export function initGLVSwapMetricData({
+  longToken,
+  shortToken,
+  isDeposit,
+  executionFee,
+  glvAddress,
+  selectedMarketForGlv,
+  glvTokenAmount,
+  glvToken,
+  longTokenAmount,
+  shortTokenAmount,
+}: {
+  longToken: TokenData | undefined;
+  shortToken: TokenData | undefined;
+  selectedMarketForGlv: string | undefined;
+  isDeposit: boolean;
+  executionFee: ExecutionFee | undefined;
+  glvAddress: string | undefined;
+  longTokenAmount: bigint | undefined;
+  shortTokenAmount: bigint | undefined;
+  marketTokenAmount: bigint | undefined;
+  glvTokenAmount: bigint | undefined;
+  glvToken: TokenData | undefined;
+}) {
+  return metrics.setCachedMetricData<SwapGLVMetricData>({
+    metricId: getGLVSwapMetricId({
+      glvAddress,
+      executionFee: executionFee?.feeTokenAmount,
+    }),
+    metricType: isDeposit ? "buyGLV" : "sellGLV",
+    requestId: getRequestId(),
+    initialLongTokenAddress: longToken?.address,
+    initialShortTokenAddress: shortToken?.address,
+    glvAddress,
+    selectedMarketForGlv,
+    executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
+    longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
+    shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
+    glvTokenAmount: formatAmountForMetrics(glvTokenAmount, glvToken?.decimals),
+  });
+}
+
 export function initShiftGmMetricData({
   executionFee,
-  fromMarketInfo,
-  toMarketInfo,
-  marketToken,
+  fromMarketToken,
+  toMarketToken,
   minMarketTokenAmount,
 }: {
   executionFee: ExecutionFee | undefined;
-  fromMarketInfo: MarketInfo | undefined;
-  toMarketInfo: MarketInfo | undefined;
+  fromMarketToken: TokenData | undefined;
+  toMarketToken: TokenData | undefined;
   minMarketTokenAmount: bigint | undefined;
-  marketToken: TokenData | undefined;
 }) {
   return metrics.setCachedMetricData<ShiftGmMetricData>({
     metricId: getShiftGMMetricId({
-      fromMarketAddress: fromMarketInfo?.marketTokenAddress,
-      toMarketAddress: toMarketInfo?.marketTokenAddress,
+      fromMarketAddress: fromMarketToken?.address,
+      toMarketAddress: toMarketToken?.address,
       executionFee: executionFee?.feeTokenAmount,
     }),
     metricType: "shiftGM",
     requestId: getRequestId(),
-    fromMarketAddress: fromMarketInfo?.marketTokenAddress,
-    fromMarketName: fromMarketInfo?.name,
-    toMarketName: toMarketInfo?.name,
-    toMarketAddress: toMarketInfo?.marketTokenAddress,
-    minToMarketTokenAmount: formatAmountForMetrics(minMarketTokenAmount, marketToken?.decimals),
+    fromMarketAddress: fromMarketToken?.address,
+    toMarketAddress: toMarketToken?.address,
+    minToMarketTokenAmount: formatAmountForMetrics(minMarketTokenAmount, toMarketToken?.decimals),
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
   });
 }
@@ -364,6 +405,13 @@ export function getGMSwapMetricId(p: {
   executionFee: bigint | undefined;
 }): SwapGmMetricData["metricId"] {
   return `gm:${[p.marketAddress || "marketTokenAddress", p.executionFee?.toString || "marketTokenAmount"].join(":")}`;
+}
+
+export function getGLVSwapMetricId(p: {
+  glvAddress: string | undefined;
+  executionFee: bigint | undefined;
+}): SwapGLVMetricData["metricId"] {
+  return `glv:${[p.glvAddress || "glvAddress", p.executionFee?.toString() || "executionFee"].join(":")}`;
 }
 
 export function getShiftGMMetricId(p: {
@@ -443,27 +491,6 @@ export function sendOrderSimulatedMetric(metricId: OrderMetricId) {
   });
 }
 
-export function sendOrderSimulationErrorMetric(metricId: OrderMetricId, error: Error) {
-  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
-
-  if (!metricData) {
-    metrics.pushError("Order metric data not found", "sendOrderSimulationErrorMetric");
-    return;
-  }
-
-  const errorData = prepareErrorMetricData(error);
-
-  metrics.pushEvent<OrderTxnFailedEvent>({
-    event: `${metricData.metricType}.${OrderStage.Failed}`,
-    isError: true,
-    data: {
-      errorContext: "simulation",
-      ...(errorData || {}),
-      ...metricData,
-    },
-  });
-}
-
 export function sendOrderTxnSubmittedMetric(metricId: OrderMetricId) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
@@ -521,27 +548,30 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
   });
 }
 
+export function sendTxnErrorMetric(metricId: OrderMetricId, error: Error | TxError, errorContext: OrderErrorContext) {
+  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
+
+  if (!metricData) {
+    metrics.pushError("Order metric data not found", "sendTxnErrorMetric");
+    return;
+  }
+
+  const errorData = prepareErrorMetricData(error);
+
+  metrics.pushEvent<OrderTxnFailedEvent>({
+    event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
+    isError: true,
+    data: {
+      errorContext,
+      ...(errorData || {}),
+      ...metricData,
+    },
+  });
+}
+
 export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {
   return (error: Error | TxError) => {
-    const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
-
-    if (!metricData) {
-      metrics.pushError("Order metric data not found", "makeTxnErrorMetricsHandler");
-      return;
-    }
-
-    const errorData = prepareErrorMetricData(error);
-
-    metrics.pushEvent<OrderTxnFailedEvent>({
-      event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
-      isError: true,
-      data: {
-        errorContext: "sending",
-        ...(errorData || {}),
-        ...metricData,
-      },
-    });
-
+    sendTxnErrorMetric(metricId, error, "sending");
     throw error;
   };
 }
