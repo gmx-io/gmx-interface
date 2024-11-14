@@ -48,8 +48,8 @@ msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr ""
+#~ msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -2071,6 +2071,10 @@ msgstr "총 트레이딩 거래량"
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral Spread"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr ""
 
 #: src/components/Header/Header.tsx
@@ -4274,6 +4278,10 @@ msgstr ""
 msgid "{txnTypeText} limit order for"
 msgstr ""
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr ""
@@ -4370,8 +4378,8 @@ msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancell
 msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 완료: {cancelledTotal}"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
-msgstr ""
+#~ msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
+#~ msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx

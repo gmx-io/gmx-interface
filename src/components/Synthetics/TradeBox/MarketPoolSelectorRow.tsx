@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 
 import {
-  selectTradeboxMarketAddress,
   selectTradeboxRelatedMarketsStats,
+  selectTradeboxState,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -14,15 +14,12 @@ import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnin
 
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { getByKey } from "lib/objects";
-import { useBestMarketAddress } from "./hooks/useBestMarketAddress";
 
 export function MarketPoolSelectorRow() {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
-  const marketAddress = useSelector(selectTradeboxMarketAddress);
+  const { marketAddress, setMarketAddress } = useSelector(selectTradeboxState);
   const tradeType = useSelector(selectTradeboxTradeType);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-
-  const { setMarketAddress } = useBestMarketAddress();
 
   const selectedMarket = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;

@@ -15,7 +15,7 @@ import {
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
-import { DecreasePositionSwapType, isSwapOrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   SwapAmounts,
@@ -662,6 +662,12 @@ export const selectTradeboxSelectedPosition = createSelectorDeprecated(
   (selectedPositionKey, positionsInfoData) => getByKey(positionsInfoData, selectedPositionKey)
 );
 
+export const selectTradeboxExistingOrders = createSelector((q) => {
+  const ordersInfoData = q(selectOrdersInfoData);
+
+  return Object.values(ordersInfoData || {});
+});
+
 export const selectTradeboxExistingOrder = createSelector((q) => {
   const selectedPositionKey = q(selectTradeboxSelectedPositionKey);
 
@@ -670,15 +676,39 @@ export const selectTradeboxExistingOrder = createSelector((q) => {
   }
 
   const chainId = q(selectChainId);
-  const ordersInfoData = q(selectOrdersInfoData);
 
-  return Object.values(ordersInfoData || {})
+  return q(selectTradeboxExistingOrders)
     .filter((order) => !isSwapOrderType(order.orderType))
     .find((order) => {
-      if (isSwapOrderType(order.orderType)) {
-        return false;
-      }
+      const positionKey = getPositionKey(
+        order.account,
+        order.marketAddress,
+        order.shouldUnwrapNativeToken
+          ? convertTokenAddress(chainId, order.targetCollateralToken.address, "wrapped")
+          : order.targetCollateralToken.address,
+        order.isLong,
+        order.shouldUnwrapNativeToken
+          ? // Noop: if order.shouldUnwrapNativeToken is true, then order.targetCollateralToken.address is already native
+            convertTokenAddress(chainId, order.targetCollateralToken.address, "native")
+          : undefined
+      );
 
+      return positionKey === selectedPositionKey;
+    });
+});
+
+export const selectTradeboxExistingLimitOrder = createSelector((q) => {
+  const selectedPositionKey = q(selectTradeboxSelectedPositionKey);
+
+  if (!selectedPositionKey) {
+    return undefined;
+  }
+
+  const chainId = q(selectChainId);
+
+  return q(selectTradeboxExistingOrders)
+    .filter((order) => isLimitOrderType(order.orderType))
+    .find((order) => {
       const positionKey = getPositionKey(
         order.account,
         order.marketAddress,
@@ -711,6 +741,7 @@ export type AvailableMarketsOptions = {
 };
 
 export const selectTradeboxHasExistingOrder = createSelector((q) => !!q(selectTradeboxExistingOrder));
+export const selectTradeboxHasExistingLimitOrder = createSelector((q) => !!q(selectTradeboxExistingLimitOrder));
 export const selectTradeboxHasExistingPosition = createSelector((q) => !!q(selectTradeboxSelectedPosition));
 
 export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
