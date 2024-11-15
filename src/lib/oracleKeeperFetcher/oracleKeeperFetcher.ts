@@ -124,11 +124,11 @@ export class OracleKeeperFetcher implements OracleFetcher {
       console.log("sendBatchMetrics", body);
     }
 
-    if (isLocal()) {
-      return Promise.resolve(new Response());
-    }
+    // if (isLocal()) {
+    //   return Promise.resolve(new Response());
+    // }
 
-    return fetch(buildUrl(this.url!, "/report/ui/batch_report"), {
+    return fetch(buildUrl("http://localhost:3004", "/report/ui/batch_report"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

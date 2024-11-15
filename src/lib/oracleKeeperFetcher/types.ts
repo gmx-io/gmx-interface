@@ -33,6 +33,17 @@ export type TimingPayload = {
   customFields?: { [key: string]: any };
 };
 
+export type UserEventPayload = {
+  distinctId: string;
+  event: string;
+  customFields: any;
+};
+
+export type UserProfilePayload = {
+  distinctId: string;
+  customFields: any;
+};
+
 export type BatchReportItem =
   | {
       type: "event";
@@ -45,6 +56,14 @@ export type BatchReportItem =
   | {
       type: "timing";
       payload: TimingPayload;
+    }
+  | {
+      type: "userEvent";
+      payload: UserEventPayload;
+    }
+  | {
+      type: "userProfile";
+      payload: UserProfilePayload;
     };
 
 export type BatchReportBody = {

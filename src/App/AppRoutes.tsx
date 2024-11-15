@@ -28,6 +28,7 @@ import { MainRoutes } from "./MainRoutes";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useOpenAppMetric } from "lib/metrics";
 import { useAccountInitedMetric } from "lib/metrics";
+import { useSetMetricsProfileProperties } from "lib/metrics/useSetProfileProperties";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -45,6 +46,7 @@ export function AppRoutes() {
 
   useEventToast();
   useConfigureMetrics();
+  useSetMetricsProfileProperties();
   useOpenAppMetric();
   useAccountInitedMetric();
 
