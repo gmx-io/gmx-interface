@@ -3,8 +3,7 @@ import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import {
   DatafeedConfiguration,
   HistoryCallback,
-  IDatafeedChartApi,
-  IExternalDatafeed,
+  IBasicDataFeed,
   LibrarySymbolInfo,
   PeriodParams,
   ResolutionString,
@@ -24,6 +23,7 @@ import { useChainId } from "lib/chains";
 import { LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
 import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
+import { EMPTY_ARRAY } from "lib/objects";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, FromOldToNewArray, SymbolInfo } from "./types";
 import { formatTimeInBarToMs, multiplyBarValues, parseSymbolName } from "./utils";
@@ -37,6 +37,7 @@ function getConfigurationData(supportedResolutions): DatafeedConfiguration {
     supports_marks: false,
     supports_timescale_marks: false,
     supports_time: true,
+    // @ts-ignore
     reset_cache_timeout: 100,
   };
 
@@ -124,7 +125,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   }, [chainId, stableTokens, supportedResolutions]);
 }
 
-export type TvDatafeed = Partial<IExternalDatafeed & IDatafeedChartApi>;
+export type TvDatafeed = IBasicDataFeed;
 
 function buildFeeder({
   chainId,
@@ -201,8 +202,8 @@ function buildFeeder({
           data_status: "streaming",
           isStable: stableTokens.includes(symbolName),
           visualMultiplier,
-          // @ts-ignore Untyped field, fixme when updating TradingView
           visible_plots_set: "ohlc",
+          exchange: "GMX",
         } satisfies Partial<SymbolInfo> as unknown as LibrarySymbolInfo;
         setTimeout(() => onSymbolResolvedCallback(symbolInfo));
       },
@@ -288,6 +289,9 @@ function buildFeeder({
         if (!isStable && intervalRef.current) {
           clearInterval(intervalRef.current[id]);
         }
+      },
+      searchSymbols: (_userInput, _exchange, _symbolType, onResult) => {
+        onResult(EMPTY_ARRAY);
       },
     },
   };

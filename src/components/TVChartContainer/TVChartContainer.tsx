@@ -12,7 +12,13 @@ import { bigintToNumber } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage, useMedia } from "react-use";
-import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
+import type {
+  ChartData,
+  ChartingLibraryWidgetOptions,
+  IChartingLibraryWidget,
+  IPositionLineAdapter,
+  ResolutionString,
+} from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 
@@ -134,28 +140,30 @@ export default function TVChartContainer({
       dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
     }
 
-    const widgetOptions = {
+    const widgetOptions: ChartingLibraryWidgetOptions = {
       debug: false,
       symbol: symbolRef.current && getSymbolName(symbolRef.current, visualMultiplier), // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed: datafeed,
       theme: defaultChartProps.theme,
-      container: chartContainerRef.current,
+      container: chartContainerRef.current!,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
       loading_screen: defaultChartProps.loading_screen,
       enabled_features: defaultChartProps.enabled_features,
+
       disabled_features: isMobile
         ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMobile)
         : defaultChartProps.disabled_features,
-      client_id: defaultChartProps.clientId,
-      user_id: defaultChartProps.userId,
+      client_id: defaultChartProps.client_id,
+      user_id: defaultChartProps.user_id,
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
       overrides: defaultChartProps.overrides,
-      interval: getObjectKeyFromValue(period, supportedResolutions),
-      favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) },
+      interval: getObjectKeyFromValue(period, supportedResolutions) as ResolutionString,
+      favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,
+      load_last_chart: true,
       save_load_adapter: new SaveLoadAdapter(
         chainId,
         tvCharts,

@@ -1,23 +1,28 @@
+import { ChartingLibraryFeatureset, ChartingLibraryWidgetOptions, WidgetOverrides } from "charting_library";
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { lightFormat, parse } from "date-fns";
 import { formatTVDate, formatTVTime } from "lib/dates";
 
 const RED = "#fa3c58";
 const GREEN = "#0ecc83";
 export const DEFAULT_PERIOD = "4h";
 
-const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
-  acc[`mainSeriesProperties.${cv}.drawWick`] = true;
-  acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
-  acc[`mainSeriesProperties.${cv}.upColor`] = GREEN;
-  acc[`mainSeriesProperties.${cv}.downColor`] = RED;
-  acc[`mainSeriesProperties.${cv}.wickUpColor`] = GREEN;
-  acc[`mainSeriesProperties.${cv}.wickDownColor`] = RED;
-  acc[`mainSeriesProperties.${cv}.borderUpColor`] = GREEN;
-  acc[`mainSeriesProperties.${cv}.borderDownColor`] = RED;
-  return acc;
-}, {});
+const chartStyleOverrides: Partial<WidgetOverrides> = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce(
+  (acc, cv) => {
+    acc[`mainSeriesProperties.${cv}.drawWick`] = true;
+    acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
+    acc[`mainSeriesProperties.${cv}.upColor`] = GREEN;
+    acc[`mainSeriesProperties.${cv}.downColor`] = RED;
+    acc[`mainSeriesProperties.${cv}.wickUpColor`] = GREEN;
+    acc[`mainSeriesProperties.${cv}.wickDownColor`] = RED;
+    acc[`mainSeriesProperties.${cv}.borderUpColor`] = GREEN;
+    acc[`mainSeriesProperties.${cv}.borderDownColor`] = RED;
+    return acc;
+  },
+  {}
+);
 
-const chartOverrides = {
+const chartOverrides: Partial<WidgetOverrides> = {
   "paneProperties.background": "#16182e",
   "paneProperties.backgroundGradientStartColor": "#16182e",
   "paneProperties.backgroundGradientEndColor": "#16182e",
@@ -32,17 +37,16 @@ const chartOverrides = {
   ...chartStyleOverrides,
 };
 
-export const disabledFeaturesOnMobile = ["header_saveload", "header_fullscreen_button"];
+export const disabledFeaturesOnMobile: ChartingLibraryFeatureset[] = ["header_saveload", "header_fullscreen_button"];
 
-const disabledFeatures = [
+const disabledFeatures: ChartingLibraryFeatureset[] = [
   "volume_force_overlay",
-  "show_logo_on_all_charts",
-  "caption_buttons_text_if_possible",
   "create_volume_indicator_by_default",
   "header_compare",
-  "compare_symbol",
+  "symbol_search_hot_key",
+  "allow_arbitrary_symbol_search_input",
+  "header_quick_search",
   "display_market_status",
-  "header_interval_dialog_button",
   "show_interval_dialog_on_key_press",
   "header_symbol_search",
   "popup_hints",
@@ -50,24 +54,25 @@ const disabledFeatures = [
   "use_localstorage_for_settings",
   "right_bar_stays_on_scroll",
   "symbol_info",
+  "header_quick_search",
+  "edit_buttons_in_legend",
 ];
-const enabledFeatures = [
+
+const enabledFeatures: ChartingLibraryFeatureset[] = [
   "side_toolbar_in_fullscreen_mode",
   "header_in_fullscreen_mode",
-  "hide_resolution_in_legend",
   "items_favoriting",
   "hide_left_toolbar_by_default",
 ];
 
 export const defaultChartProps = {
-  theme: "Dark",
+  theme: "dark",
   locale: "en",
   library_path: "/charting_library/",
-  clientId: "tradingview.com",
-  userId: "public_user_id",
+  client_id: "tradingview.com",
+  user_id: "public_user_id",
   fullscreen: false,
   autosize: true,
-  header_widget_dom_node: false,
   overrides: chartOverrides,
   enabled_features: enabledFeatures,
   disabled_features: disabledFeatures,
@@ -77,11 +82,15 @@ export const defaultChartProps = {
   custom_formatters: {
     timeFormatter: {
       format: (date) => formatTVTime(date),
+      formatLocal: (date) => formatTVTime(date),
+      parse: (date) => lightFormat(parse(date, "h:mm a", new Date()), "YYYY-MM-DD"),
     },
     dateFormatter: {
       format: (date) => formatTVDate(date),
+      formatLocal: (date) => formatTVDate(date),
+      parse: (date) => lightFormat(parse(date, "dd MMM yyyy", new Date()), "YYYY-MM-DD"),
     },
   },
-};
+} satisfies Partial<ChartingLibraryWidgetOptions>;
 
 export const availableNetworksForChart = [ARBITRUM, AVALANCHE];
