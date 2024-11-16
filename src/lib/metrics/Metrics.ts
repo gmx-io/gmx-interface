@@ -4,9 +4,9 @@ import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/number
 import {
   BatchReportItem,
   CounterPayload,
+  EventPayload,
   OracleFetcher,
   TimingPayload,
-  UiReportPayload,
 } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
@@ -33,7 +33,6 @@ const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
 const MAX_QUEUE_LENGTH = 500;
 const MAX_BATCH_LENGTH = 100;
 const BATCH_INTERVAL_MS = 1000;
-const MAX_DISTINCT_ID_AGE = 1000 * 60 * 60 * 24; // 1 day
 const BANNED_CUSTOM_FIELDS = ["metricId"];
 const BAD_REQUEST_ERROR = "BadRequest";
 
@@ -41,28 +40,14 @@ type CachedMetricData = { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
 type Timers = { [key: string]: number };
 
-type CommonUserParams = {
-  platform?: string;
-  ordersCount?: number;
-  isWalletConnected?: boolean;
-};
-
 export class Metrics {
   fetcher?: OracleFetcher;
   debug = false;
   globalMetricData: GlobalMetricData = {} as GlobalMetricData;
-  commonUserParams: CommonUserParams = {} as CommonUserParams;
   queue: BatchReportItem[] = [];
   wallets?: WalletNames;
   eventIndex = 0;
   isProcessing = false;
-  distinctId:
-    | {
-        value: string;
-        updatedAt: number;
-      }
-    | undefined;
-
   performanceObserver?: PerformanceObserver;
 
   static _instance: Metrics;
@@ -91,49 +76,17 @@ export class Metrics {
     this.globalMetricData = { ...this.globalMetricData, ...meta };
   };
 
-  setCommonUserParams = (params: CommonUserParams) => {
-    this.commonUserParams = { ...this.commonUserParams, ...params };
-  };
-
   async updateWalletNames() {
     this.wallets = await getWalletNames();
   }
 
-  pushUserEvent(event: string, data: object) {
+  pushBatchItem(item: BatchReportItem) {
     if (this.debug) {
       // eslint-disable-next-line no-console
-      console.log(`Metrics: push user event`, event, data);
+      console.log(`Metrics: push ${item.type}`, item.payload);
     }
 
-    this.queue.push({
-      type: "userEvent",
-      payload: {
-        event,
-        distinctId: this.getDistinctId(),
-        customFields: {
-          ...this.commonUserParams,
-          ...data,
-          time: Date.now(),
-        },
-      },
-    });
-  }
-
-  pushUserProfile(data: object) {
-    if (this.debug) {
-      // eslint-disable-next-line no-console
-      console.log(`Metrics: push user profile`, data);
-    }
-
-    this.queue.push({
-      type: "userProfile",
-      payload: {
-        distinctId: this.getDistinctId(),
-        customFields: {
-          ...data,
-        },
-      },
-    });
+    this.queue.push(item);
   }
 
   // Require Generic type to be specified
@@ -153,7 +106,7 @@ export class Metrics {
         ...this.globalMetricData,
         wallets: this.wallets,
       },
-    } as UiReportPayload;
+    } as EventPayload;
 
     if (this.debug) {
       // eslint-disable-next-line no-console
@@ -434,17 +387,6 @@ export class Metrics {
     }
 
     return Date.now() - time;
-  };
-
-  getDistinctId = () => {
-    if (!this.distinctId || Date.now() - this.distinctId.updatedAt > MAX_DISTINCT_ID_AGE) {
-      this.distinctId = {
-        value: Math.random().toString(36),
-        updatedAt: Date.now(),
-      };
-    }
-
-    return this.distinctId.value;
   };
 
   serializeCachedMetricsData = (metricsData: CachedMetricsData) => {

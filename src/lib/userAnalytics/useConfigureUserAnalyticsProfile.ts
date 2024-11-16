@@ -1,19 +1,20 @@
 import { useLingui } from "@lingui/react";
 import Bowser from "bowser";
-import { USD_DECIMALS } from "config/factors";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
-import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
-import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo } from "react";
-import { formatAmountForMetrics } from ".";
-import { metrics } from "./Metrics";
+import { userAnalytics } from "./UserAnalytics";
+import { formatAmountForMetrics } from "lib/metrics";
+import { USD_DECIMALS } from "config/factors";
+import { useReferralCodeFromUrl } from "domain/referrals";
+import { useUtmParams } from "domain/utm";
 
-export function useSetMetricsProfileProperties() {
+export function useConfigureUserAnalyticsProfile() {
   const currentLanguage = useLingui().i18n.locale;
-  const query = useRouteQuery();
+  const referralCode = useReferralCodeFromUrl();
+  const utmParams = useUtmParams();
   const { chainId } = useChainId();
   const { account, active } = useWallet();
 
@@ -39,7 +40,7 @@ export function useSetMetricsProfileProperties() {
   useEffect(() => {
     const bowser = Bowser.parse(window.navigator.userAgent);
 
-    metrics.setCommonUserParams({
+    userAnalytics.setCommonEventParams({
       platform: bowser.platform.type,
       ordersCount,
       isWalletConnected: active,
@@ -47,24 +48,12 @@ export function useSetMetricsProfileProperties() {
   }, [active, ordersCount]);
 
   useEffect(() => {
-    if (lastMonthAccountStats && accountStats) {
-      let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
-      if (!referralCode || referralCode.length === 0) {
-        const params = new URLSearchParams(window.location.search);
-        referralCode = params.get(REFERRAL_CODE_QUERY_PARAM);
-      }
-
-      if (referralCode?.length && referralCode.length > 20) {
-        referralCode = referralCode.substring(0, 20);
-      }
-
-      metrics.pushUserProfile({
-        last30DVolume: formatAmountForMetrics(last30DVolume, USD_DECIMALS, "toSecondOrderInt"),
-        totalVolume: formatAmountForMetrics(totalVolume, USD_DECIMALS, "toSecondOrderInt"),
-        languageCode: currentLanguage,
-        ref: referralCode,
-      });
-      //   setIsSettled(true);
-    }
-  }, [lastMonthAccountStats, accountStats, currentLanguage, last30DVolume, totalVolume, query]);
+    userAnalytics.pushProfileProps({
+      last30DVolume: formatAmountForMetrics(last30DVolume, USD_DECIMALS, "toSecondOrderInt"),
+      totalVolume: formatAmountForMetrics(totalVolume, USD_DECIMALS, "toSecondOrderInt"),
+      languageCode: currentLanguage,
+      ref: referralCode,
+      utm: utmParams?.utmString,
+    });
+  }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString]);
 }

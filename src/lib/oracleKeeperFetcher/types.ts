@@ -2,7 +2,7 @@ import { FromNewToOldArray, Bar } from "domain/tradingview/types";
 import { UserFeedback } from "domain/synthetics/userFeedback";
 import type { Address } from "viem";
 
-export type UiReportPayload = {
+export type EventPayload = {
   isError: boolean;
   version: string;
   event: string;
@@ -33,21 +33,21 @@ export type TimingPayload = {
   customFields?: { [key: string]: any };
 };
 
-export type UserEventPayload = {
-  distinctId: string;
+export type UserAnalyticsEventPayload = {
   event: string;
-  customFields: any;
+  distinctId: string;
+  customFields: { [key: string]: any };
 };
 
-export type UserProfilePayload = {
+export type UserAnalyticsProfilePayload = {
   distinctId: string;
-  customFields: any;
+  customFields: { [key: string]: any };
 };
 
 export type BatchReportItem =
   | {
       type: "event";
-      payload: UiReportPayload;
+      payload: EventPayload;
     }
   | {
       type: "counter";
@@ -58,12 +58,12 @@ export type BatchReportItem =
       payload: TimingPayload;
     }
   | {
-      type: "userEvent";
-      payload: UserEventPayload;
+      type: "userAnalyticsEvent";
+      payload: UserAnalyticsEventPayload;
     }
   | {
-      type: "userProfile";
-      payload: UserProfilePayload;
+      type: "userAnalyticsProfile";
+      payload: UserAnalyticsProfilePayload;
     };
 
 export type BatchReportBody = {
@@ -76,7 +76,7 @@ export interface OracleFetcher {
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
-  fetchPostEvent(body: UiReportPayload, debug?: boolean): Promise<Response>;
+  fetchPostEvent(body: EventPayload, debug?: boolean): Promise<Response>;
   fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchPostTiming(

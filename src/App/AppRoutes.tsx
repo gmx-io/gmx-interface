@@ -23,12 +23,11 @@ import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
+import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
+import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
-import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
-import { useOpenAppMetric } from "lib/metrics";
-import { useAccountInitedMetric } from "lib/metrics";
-import { useSetMetricsProfileProperties } from "lib/metrics/useSetProfileProperties";
+import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -46,7 +45,7 @@ export function AppRoutes() {
 
   useEventToast();
   useConfigureMetrics();
-  useSetMetricsProfileProperties();
+  useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
 

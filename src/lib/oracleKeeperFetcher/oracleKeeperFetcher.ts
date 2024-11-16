@@ -7,7 +7,7 @@ import { isLocal, isDevelopment, APP_VERSION } from "config/env";
 import {
   OracleFetcher,
   BatchReportBody,
-  UiReportPayload,
+  EventPayload,
   DayPriceCandle,
   RawIncentivesStats,
   TickersResponse,
@@ -137,7 +137,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPostEvent(body: UiReportPayload, debug?: boolean): Promise<Response> {
+  fetchPostEvent(body: EventPayload, debug?: boolean): Promise<Response> {
     if (debug) {
       // eslint-disable-next-line no-console
       console.log("sendMetric", body.event, body);

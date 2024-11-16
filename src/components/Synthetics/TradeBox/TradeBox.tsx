@@ -148,7 +148,6 @@ import SwapIcon from "img/swap.svg?react";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
 import "./TradeBox.scss";
-import { metrics } from "lib/metrics";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -741,14 +740,6 @@ export function TradeBox(p: Props) {
   );
 
   const onSwitchTokens = useCallback(() => {
-    metrics.pushUserProfile({
-      data: "test",
-    });
-
-    metrics.pushUserEvent("clicked", {
-      data: "test",
-    });
-
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
     switchTokenAddresses();
     setFromTokenInputValue(toTokenInputValue || "", true);
