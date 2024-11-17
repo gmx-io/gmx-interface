@@ -216,7 +216,7 @@ export type SharePositionActionEvent = {
 export type ReferralTopMenuClickEvent = {
   event: "ReferralCodeAction";
   data: {
-    action: "RefferalTopMenuClick";
+    action: "ReferralTopMenuClick";
   };
 };
 

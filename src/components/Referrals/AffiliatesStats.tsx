@@ -42,7 +42,10 @@ import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 import ReferralInfoCard from "./ReferralInfoCard";
 
+import { userAnalytics } from "lib/userAnalytics";
+import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import "./AffiliatesStats.scss";
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 type Props = {
   chainId: number;
@@ -70,7 +73,15 @@ function AffiliatesStats({
 
   const [isClaiming, setIsClaiming] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
-  const open = () => setIsAddReferralCodeModalOpen(true);
+  const open = () => {
+    userAnalytics.pushEvent<ReferralCreateCodeEvent>({
+      event: "ReferralCodeAction",
+      data: {
+        action: "CreateCode",
+      },
+    });
+    setIsAddReferralCodeModalOpen(true);
+  };
   const close = () => setIsAddReferralCodeModalOpen(false);
 
   const { total, chains } = referralsData || {};
@@ -314,6 +325,12 @@ function AffiliatesStats({
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
+                              userAnalytics.pushEvent<ReferralShareEvent>({
+                                event: "ReferralCodeAction",
+                                data: {
+                                  action: "CopyCode",
+                                },
+                              });
                               copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
                               helperToast.success("Referral link copied to your clipboard");
                             }}
@@ -321,14 +338,25 @@ function AffiliatesStats({
                           >
                             <BiCopy />
                           </div>
-                          <a
-                            href={getTwitterShareUrl(stat.referralCode)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="referral-code-icon"
+                          <TrackingLink
+                            onClick={() => {
+                              userAnalytics.pushEvent<ReferralShareEvent>({
+                                event: "ReferralCodeAction",
+                                data: {
+                                  action: "ShareTwitter",
+                                },
+                              });
+                            }}
                           >
-                            <FiTwitter />
-                          </a>
+                            <a
+                              href={getTwitterShareUrl(stat.referralCode)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="referral-code-icon"
+                            >
+                              <FiTwitter />
+                            </a>
+                          </TrackingLink>
                           <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
                       </TableTd>
