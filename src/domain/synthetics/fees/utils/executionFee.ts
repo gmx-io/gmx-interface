@@ -59,8 +59,6 @@ export function estimateExecuteDepositGasLimit(
     longTokenSwapsCount?: number;
     // We do not use this yet
     shortTokenSwapsCount?: number;
-    initialLongTokenAmount?: bigint;
-    initialShortTokenAmount?: bigint;
     callbackGasLimit?: bigint;
   }
 ) {
@@ -68,16 +66,7 @@ export function estimateExecuteDepositGasLimit(
   const swapsCount = BigInt((deposit.longTokenSwapsCount ?? 0) + (deposit.shortTokenSwapsCount ?? 0));
   const gasForSwaps = swapsCount * gasPerSwap;
 
-  if (
-    deposit.initialLongTokenAmount === undefined ||
-    deposit.initialLongTokenAmount === 0n ||
-    deposit.initialShortTokenAmount === undefined ||
-    deposit.initialShortTokenAmount === 0n
-  ) {
-    return gasLimits.depositSingleToken + (deposit.callbackGasLimit ?? 0n) + gasForSwaps;
-  }
-
-  return gasLimits.depositMultiToken + (deposit.callbackGasLimit ?? 0n) + gasForSwaps;
+  return gasLimits.depositToken + (deposit.callbackGasLimit ?? 0n) + gasForSwaps;
 }
 
 export function estimateExecuteGlvDepositGasLimit(
@@ -85,8 +74,6 @@ export function estimateExecuteGlvDepositGasLimit(
   {
     marketsCount,
     isMarketTokenDeposit,
-    initialLongTokenAmount,
-    initialShortTokenAmount,
   }: {
     isMarketTokenDeposit;
     marketsCount: bigint;
@@ -103,11 +90,7 @@ export function estimateExecuteGlvDepositGasLimit(
     return gasLimit;
   }
 
-  if (initialLongTokenAmount == 0n || initialShortTokenAmount === 0n) {
-    return gasLimit + gasLimits.depositSingleToken;
-  }
-
-  return gasLimit + gasLimits.depositMultiToken;
+  return gasLimit + gasLimits.depositToken;
 }
 
 export function estimateExecuteGlvWithdrawalGasLimit(

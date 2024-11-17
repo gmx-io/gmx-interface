@@ -87,10 +87,7 @@ export const useDepositWithdrawalFees = ({
         : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
     } else {
       gasLimit = isDeposit
-        ? estimateExecuteDepositGasLimit(gasLimits, {
-            initialLongTokenAmount: amounts.longTokenAmount,
-            initialShortTokenAmount: amounts.shortTokenAmount,
-          })
+        ? estimateExecuteDepositGasLimit(gasLimits, {})
         : estimateExecuteWithdrawalGasLimit(gasLimits, {});
       oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
     }
