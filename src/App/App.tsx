@@ -36,6 +36,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { sendPendingOrderTxnErrorMetric } from "lib/metrics";
 import { AppRoutes } from "./AppRoutes";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { sendUserAnalyticsTradeBoxResultEvent } from "lib/userAnalytics";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -73,6 +74,7 @@ function App() {
 
             if (pendingTxn.metricId) {
               sendPendingOrderTxnErrorMetric(pendingTxn.metricId);
+              sendUserAnalyticsTradeBoxResultEvent(chainId, pendingTxn.metricId, false);
             }
           }
 

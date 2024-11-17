@@ -67,6 +67,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { sendUserAnalyticsTradeBoxResultEvent } from "lib/userAnalytics";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -169,6 +170,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
       sendOrderCreatedMetric(metricId);
 
+      if (!isMarketOrderType(data.orderType)) {
+        sendUserAnalyticsTradeBoxResultEvent(chainId, metricId, true);
+      }
+
       setOrderStatuses((old) =>
         setByKey(old, data.key, {
           key: data.key,
@@ -216,6 +221,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderExecutedMetric(metricId);
+        sendUserAnalyticsTradeBoxResultEvent(chainId, metricId, true);
       }
 
       setOrderStatuses((old) => {
@@ -258,6 +264,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderCancelledMetric(metricId, eventData);
+        sendUserAnalyticsTradeBoxResultEvent(chainId, metricId, false);
       }
 
       // If pending user order is cancelled, reset the pending position state

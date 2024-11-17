@@ -277,6 +277,8 @@ export type SwapMetricData = {
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
   metricType: "increasePosition" | "limitOrder";
+  leverage: string | undefined;
+  isFirstOrder: boolean | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
@@ -293,6 +295,8 @@ export type PositionOrderMetricParams = {
   hasReferralCode: boolean | undefined;
   marketAddress: string | undefined;
   marketName: string | undefined;
+  marketIndexName: string | undefined;
+  marketPoolName: string | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;

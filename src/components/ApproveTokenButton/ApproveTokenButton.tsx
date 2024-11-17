@@ -15,6 +15,7 @@ type Props = {
   isApproved?: boolean;
   approveAmount?: bigint;
   customLabel?: string;
+  onApproveSubmitted?: () => void;
 };
 
 export function ApproveTokenButton(p: Props) {
@@ -38,7 +39,10 @@ export function ApproveTokenButton(p: Props) {
       infoTokens: {},
       chainId,
       approveAmount: p.approveAmount,
-      onApproveSubmitted: () => setIsApproveSubmitted(true),
+      onApproveSubmitted: () => {
+        setIsApproveSubmitted(true);
+        p.onApproveSubmitted?.();
+      },
     });
   }
 

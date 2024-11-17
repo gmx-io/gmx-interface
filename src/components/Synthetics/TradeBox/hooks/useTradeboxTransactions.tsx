@@ -3,6 +3,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -26,19 +27,24 @@ import {
   OrderType,
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
-  makeTxnErrorMetricsHandler,
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
   initSwapMetricData,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
+import {
+  makeUserAnalyticsTradeboxFailResultHandler,
+  sendUserAnalyticsTradeBoxConfirmClickEvent,
+} from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
@@ -56,6 +62,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isLimit } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
+  const accountStats = useSelector(selectAccountStats);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
@@ -115,6 +122,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         return Promise.resolve();
       }
 
+      sendUserAnalyticsTradeBoxConfirmClickEvent(chainId, metricData.metricId);
+
       return createSwapOrderTxn(chainId, signer, subaccount, {
         account,
         fromTokenAddress: fromToken.address,
@@ -133,7 +142,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         skipSimulation: shouldDisableValidationForTesting,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch(makeUserAnalyticsTradeboxFailResultHandler(chainId, metricData.metricId));
     },
     [
       isLimit,
@@ -162,6 +172,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         fromToken,
         increaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
+        leverage: formatLeverage(increaseAmounts?.estimatedLeverage) ?? "",
         executionFee,
         orderType,
         hasReferralCode: Boolean(referralCodeForTxn),
@@ -170,6 +181,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         allowedSlippage,
         marketInfo,
         isLong,
+        isFirstOrder: !accountStats || accountStats.closedCount === 0,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -200,6 +212,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isLong,
         indexToken: marketInfo.indexToken,
       };
+
+      sendUserAnalyticsTradeBoxConfirmClickEvent(chainId, metricData.metricId);
 
       return createIncreaseOrderTxn({
         chainId,
@@ -273,25 +287,27 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         })),
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch(makeUserAnalyticsTradeboxFailResultHandler(chainId, metricData.metricId));
     },
     [
       isLimit,
-      account,
-      referralCodeForTxn,
-      selectedPosition,
-      marketInfo,
       fromToken,
       increaseAmounts,
-      collateralToken,
-      triggerPrice,
-      isLong,
+      selectedPosition,
       executionFee,
-      tokensData,
-      signer,
-      allowedSlippage,
-      chainId,
+      referralCodeForTxn,
       subaccount,
+      triggerPrice,
+      allowedSlippage,
+      marketInfo,
+      isLong,
+      tokensData,
+      account,
+      collateralToken,
+      signer,
+      chainId,
+      accountStats,
       shouldDisableValidationForTesting,
       setPendingTxns,
       setPendingOrder,
@@ -342,6 +358,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         return Promise.resolve();
       }
 
+      sendUserAnalyticsTradeBoxConfirmClickEvent(chainId, metricData.metricId);
+
       return createDecreaseOrderTxn(
         chainId,
         signer,
@@ -379,7 +397,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         metricData.metricId
       )
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch(makeUserAnalyticsTradeboxFailResultHandler(chainId, metricData.metricId));
     },
     [
       account,

@@ -100,45 +100,51 @@ export type TradeBoxInteractionStartedEvent = {
 export type TradeBoxApproveClickEvent = {
   event: "TradeBoxAction";
   data: {
-    action: "OpenPositionApproveClick";
+    action: "ApproveClick";
   };
 };
 
 export type TradeBoxApproveResultEvent = {
   event: "TradeBoxAction";
   data: {
-    action: "OpenPositionApproveSuccess" | "OpenPositionApproveFail";
+    action: "ApproveSuccess" | "ApproveFail";
   };
 };
 
 export type TradeBoxConfirmClickEvent = {
   event: "TradeBoxAction";
   data: {
-    action: "OpenPositionConfirmClick";
+    action: "IncreasePositionConfirmClick" | "DecreasePositionConfirmClick" | "SwapConfirmClick";
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
     orderType: "Limit" | "Market" | "TPSL";
-    tradeType: "InitialTrade" | "IncreaseSize";
+    tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
     leverage: string;
     is1CT: boolean;
-    chain: "Arbitrum" | "Avalanche";
+    chain: string;
     isFirstOrder: boolean;
   };
 };
 
-export type TradeBoxPositionResultEvent = {
+export type TradeBoxResultEvent = {
   event: "TradeBoxAction";
   data: {
-    action: "OpenPositionSuccess" | "OpenPositionFail";
+    action:
+      | "IncreasePositionSuccess"
+      | "DecreasePositionSuccess"
+      | "SwapSuccess"
+      | "IncreasePositionFail"
+      | "DecreasePositionFail"
+      | "SwapFail";
     pair: string;
     pool: string;
     type: "Short" | "Long" | "Swap";
     orderType: "Limit" | "Market" | "TPSL";
-    tradeType: "OpenNew" | "IncreaseSize";
+    tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
     leverage: string;
     is1CT: boolean;
-    chain: "Arbitrum" | "Avalanche";
+    chain: string;
     isFirstOrder: boolean;
   };
 };

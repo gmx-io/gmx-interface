@@ -17,6 +17,8 @@ import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecu
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import { userAnalytics } from "lib/userAnalytics";
+import { TradeBoxApproveClickEvent } from "lib/userAnalytics/types";
 import { useMemo } from "react";
 
 export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<typeof usePriceImpactWarningState>) {
@@ -89,6 +91,14 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
           tokenAddress={fromToken.address}
           tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
           spenderAddress={getContract(chainId, "SyntheticsRouter")}
+          onApproveSubmitted={() => {
+            userAnalytics.pushEvent<TradeBoxApproveClickEvent>({
+              event: "TradeBoxAction",
+              data: {
+                action: "ApproveClick",
+              },
+            });
+          }}
         />
       )}
     </>

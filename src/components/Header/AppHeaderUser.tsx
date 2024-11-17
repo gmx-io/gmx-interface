@@ -11,7 +11,7 @@ import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import { useTradePageVersion } from "lib/useTradePageVersion";
-import { pushConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
+import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
@@ -96,7 +96,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
           <>
             <ConnectWalletButton
               onClick={() => {
-                pushConnectWalletClickEvent("Header");
+                sendUserAnalyticsConnectWalletClickEvent("Header");
                 openConnectModal();
               }}
               imgSrc={connectWalletImg}
