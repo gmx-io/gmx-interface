@@ -124,30 +124,11 @@ export class OracleKeeperFetcher implements OracleFetcher {
       console.log("sendBatchMetrics", body);
     }
 
-    // if (isLocal()) {
-    //   return Promise.resolve(new Response());
-    // }
-
-    return fetch(buildUrl("http://localhost:3004", "/report/ui/batch_report"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-  }
-
-  fetchPostEvent(body: EventPayload, debug?: boolean): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendMetric", body.event, body);
-    }
-
     if (isLocal()) {
       return Promise.resolve(new Response());
     }
 
-    return fetch(buildUrl(this.url!, "/report/ui/event"), {
+    return fetch(buildUrl(this.url!, "/report/ui/batch_report"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -168,61 +149,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-    });
-  }
-
-  fetchPostTiming(
-    body: {
-      event: string;
-      time: number;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendTiming", body);
-    }
-
-    return fetch(buildUrl(this.url!, "/report/ui/timing"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...body,
-        isDev: isDevelopment(),
-        host: self.location.host,
-        version: APP_VERSION,
-      }),
-    });
-  }
-
-  fetchPostCounter(
-    body: {
-      event: string;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendCounter", body);
-    }
-
-    return fetch(buildUrl(this.url!, "/report/ui/counter"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...body,
-        isDev: isDevelopment(),
-        host: self.location.host,
-        version: APP_VERSION,
-      }),
     });
   }
 

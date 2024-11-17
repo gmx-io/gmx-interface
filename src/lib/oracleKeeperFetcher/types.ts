@@ -76,26 +76,8 @@ export interface OracleFetcher {
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
-  fetchPostEvent(body: EventPayload, debug?: boolean): Promise<Response>;
   fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
-  fetchPostTiming(
-    body: {
-      event: string;
-      time: number;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response>;
-  fetchPostCounter(
-    body: {
-      event: string;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response>;
 }
 export type TickersResponse = {
   minPrice: string;
