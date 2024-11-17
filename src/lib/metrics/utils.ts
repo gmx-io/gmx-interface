@@ -313,6 +313,8 @@ export function initGMSwapMetricData({
   longTokenAmount,
   shortTokenAmount,
   marketTokenAmount,
+  marketTokenUsd,
+  isFirstBuy,
 }: {
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
@@ -323,6 +325,8 @@ export function initGMSwapMetricData({
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   marketTokenAmount: bigint | undefined;
+  marketTokenUsd: bigint | undefined;
+  isFirstBuy: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<SwapGmMetricData>({
     metricId: getGMSwapMetricId({
@@ -339,6 +343,8 @@ export function initGMSwapMetricData({
     longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
     shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
     marketTokenAmount: formatAmountForMetrics(marketTokenAmount, marketToken?.decimals),
+    marketTokenUsd: formatAmountForMetrics(marketTokenUsd),
+    isFirstBuy,
   });
 }
 
@@ -347,24 +353,30 @@ export function initGLVSwapMetricData({
   shortToken,
   isDeposit,
   executionFee,
+  marketName,
   glvAddress,
   selectedMarketForGlv,
   glvTokenAmount,
   glvToken,
   longTokenAmount,
   shortTokenAmount,
+  glvTokenUsd,
+  isFirstBuy,
 }: {
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
   selectedMarketForGlv: string | undefined;
   isDeposit: boolean;
   executionFee: ExecutionFee | undefined;
+  marketName: string | undefined;
   glvAddress: string | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   marketTokenAmount: bigint | undefined;
   glvTokenAmount: bigint | undefined;
+  glvTokenUsd: bigint | undefined;
   glvToken: TokenData | undefined;
+  isFirstBuy: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<SwapGLVMetricData>({
     metricId: getGLVSwapMetricId({
@@ -377,10 +389,13 @@ export function initGLVSwapMetricData({
     initialShortTokenAddress: shortToken?.address,
     glvAddress,
     selectedMarketForGlv,
+    marketName,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
     shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
     glvTokenAmount: formatAmountForMetrics(glvTokenAmount, glvToken?.decimals),
+    glvTokenUsd: formatAmountForMetrics(glvTokenUsd),
+    isFirstBuy,
   });
 }
 

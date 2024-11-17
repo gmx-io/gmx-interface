@@ -41,10 +41,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
-import {
-  makeUserAnalyticsTradeboxFailResultHandler,
-  sendUserAnalyticsTradeBoxConfirmClickEvent,
-} from "lib/userAnalytics";
+import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
@@ -122,7 +119,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         return Promise.resolve();
       }
 
-      sendUserAnalyticsTradeBoxConfirmClickEvent(chainId, metricData.metricId);
+      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
       return createSwapOrderTxn(chainId, signer, subaccount, {
         account,
@@ -143,7 +140,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-        .catch(makeUserAnalyticsTradeboxFailResultHandler(chainId, metricData.metricId));
+        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
       isLimit,
@@ -213,7 +210,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         indexToken: marketInfo.indexToken,
       };
 
-      sendUserAnalyticsTradeBoxConfirmClickEvent(chainId, metricData.metricId);
+      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
       return createIncreaseOrderTxn({
         chainId,
@@ -288,7 +285,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-        .catch(makeUserAnalyticsTradeboxFailResultHandler(chainId, metricData.metricId));
+        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
       isLimit,
@@ -358,7 +355,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         return Promise.resolve();
       }
 
-      sendUserAnalyticsTradeBoxConfirmClickEvent(chainId, metricData.metricId);
+      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
       return createDecreaseOrderTxn(
         chainId,
@@ -398,7 +395,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       )
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-        .catch(makeUserAnalyticsTradeboxFailResultHandler(chainId, metricData.metricId));
+        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
       account,

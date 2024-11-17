@@ -1,9 +1,16 @@
 import { getChainName } from "config/chains";
 import { OrderType } from "domain/synthetics/orders";
 import { metrics } from "lib/metrics";
+import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { userAnalytics } from "lib/userAnalytics";
-import { ConnectWalletClickEvent, TradeBoxConfirmClickEvent, TradeBoxResultEvent } from "lib/userAnalytics/types";
+import {
+  ConnectWalletClickEvent,
+  PoolsPageBuyConfirmEvent,
+  PoolsPageBuyResultEvent,
+  TradeBoxConfirmClickEvent,
+  TradeBoxResultEvent,
+} from "lib/userAnalytics/types";
 
 export function sendUserAnalyticsConnectWalletClickEvent(position: ConnectWalletClickEvent["data"]["position"]) {
   userAnalytics.pushEvent<ConnectWalletClickEvent>({
@@ -15,7 +22,7 @@ export function sendUserAnalyticsConnectWalletClickEvent(position: ConnectWallet
   });
 }
 
-export function sendUserAnalyticsTradeBoxConfirmClickEvent(chainId: number, metricId: OrderMetricId) {
+export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricId: OrderMetricId) {
   let metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
@@ -36,7 +43,7 @@ export function sendUserAnalyticsTradeBoxConfirmClickEvent(chainId: number, metr
         leverage: metricData.leverage || "",
         is1CT: metricData.is1ct,
         chain: getChainName(chainId),
-        isFirstOrder: metricData.isFirstOrder || true,
+        isFirstOrder: Boolean(metricData.isFirstOrder),
       },
     });
   } else if (metricData.metricType === "decreasePosition") {
@@ -71,16 +78,47 @@ export function sendUserAnalyticsTradeBoxConfirmClickEvent(chainId: number, metr
         isFirstOrder: false,
       },
     });
+  } else if (metricData.metricType === "buyGM") {
+    userAnalytics.pushEvent<PoolsPageBuyConfirmEvent>({
+      event: "PoolsPageAction",
+      data: {
+        action: "BuyConfirm",
+        type: "GM",
+        poolName: metricData.marketName || "",
+        glvAddress: "",
+        amount: metricData.marketTokenUsd || 0,
+        isFirstBuy: Boolean(metricData.isFirstBuy),
+      },
+    });
+  } else if (metricData.metricType === "buyGLV") {
+    userAnalytics.pushEvent<PoolsPageBuyConfirmEvent>({
+      event: "PoolsPageAction",
+      data: {
+        action: "BuyConfirm",
+        type: "GLV",
+        poolName: metricData.marketName || "",
+        glvAddress: metricData.glvAddress || "",
+        amount: metricData.glvTokenUsd || 0,
+        isFirstBuy: Boolean(metricData.isFirstBuy),
+      },
+    });
   }
 }
 
-export function sendUserAnalyticsTradeBoxResultEvent(chainId: number, metricId: OrderMetricId, isSuccess: boolean) {
+export function sendUserAnalyticsOrderResultEvent(
+  chainId: number,
+  metricId: OrderMetricId,
+  isSuccess: boolean,
+  error?: Error
+) {
   let metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
     metrics.pushError("Order metric data not found", "sendUserAnalyticsTradeBoxPositionResultEvent");
     return;
   }
+
+  const isUserError = Boolean(prepareErrorMetricData(error)?.isUserError);
 
   if (metricData.metricType === "increasePosition") {
     userAnalytics.pushEvent<TradeBoxResultEvent>({
@@ -95,7 +133,8 @@ export function sendUserAnalyticsTradeBoxResultEvent(chainId: number, metricId: 
         leverage: metricData.leverage || "",
         is1CT: metricData.is1ct,
         chain: getChainName(chainId),
-        isFirstOrder: metricData.isFirstOrder || true,
+        isFirstOrder: Boolean(metricData.isFirstOrder),
+        isUserError,
       },
     });
   } else if (metricData.metricType === "decreasePosition") {
@@ -112,6 +151,7 @@ export function sendUserAnalyticsTradeBoxResultEvent(chainId: number, metricId: 
         is1CT: metricData.is1ct,
         chain: getChainName(chainId),
         isFirstOrder: false,
+        isUserError,
       },
     });
   } else if (metricData.metricType === "swap") {
@@ -128,14 +168,41 @@ export function sendUserAnalyticsTradeBoxResultEvent(chainId: number, metricId: 
         is1CT: metricData.is1ct,
         chain: getChainName(chainId),
         isFirstOrder: false,
+        isUserError,
+      },
+    });
+  } else if (metricData.metricType === "buyGM") {
+    userAnalytics.pushEvent<PoolsPageBuyResultEvent>({
+      event: "PoolsPageAction",
+      data: {
+        action: isSuccess ? "BuySuccess" : "BuyFail",
+        type: "GM",
+        poolName: metricData.marketName || "",
+        glvAddress: "",
+        amount: metricData.marketTokenUsd || 0,
+        isFirstBuy: Boolean(metricData.isFirstBuy),
+        isUserError,
+      },
+    });
+  } else if (metricData.metricType === "buyGLV") {
+    userAnalytics.pushEvent<PoolsPageBuyResultEvent>({
+      event: "PoolsPageAction",
+      data: {
+        action: isSuccess ? "BuySuccess" : "BuyFail",
+        type: "GLV",
+        poolName: metricData.marketName || "",
+        glvAddress: metricData.glvAddress || "",
+        amount: metricData.glvTokenUsd || 0,
+        isFirstBuy: Boolean(metricData.isFirstBuy),
+        isUserError,
       },
     });
   }
 }
 
-export function makeUserAnalyticsTradeboxFailResultHandler(chainId: number, metricId: OrderMetricId) {
+export function makeUserAnalyticsOrderFailResultHandler(chainId: number, metricId: OrderMetricId) {
   return (error: Error) => {
-    sendUserAnalyticsTradeBoxResultEvent(chainId, metricId, false);
+    sendUserAnalyticsOrderResultEvent(chainId, metricId, false, error);
     throw error;
   };
 }

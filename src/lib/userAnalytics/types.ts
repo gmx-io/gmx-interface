@@ -146,6 +146,7 @@ export type TradeBoxResultEvent = {
     is1CT: boolean;
     chain: string;
     isFirstOrder: boolean;
+    isUserError: boolean;
   };
 };
 
@@ -173,13 +174,28 @@ export type TradeBoxWarningShownEvent = {
   };
 };
 
-export type EarnPageBuyEvent = {
-  event: "EarnPageAction";
+export type PoolsPageBuyConfirmEvent = {
+  event: "PoolsPageAction";
   data: {
-    action: "BuySuccess" | "BuyFail";
-    poolName: "GM" | "GLV";
+    action: "BuyConfirm";
+    type: "GM" | "GLV";
+    poolName: string;
+    glvAddress: string;
     amount: number; // Amount in USD
     isFirstBuy: boolean;
+  };
+};
+
+export type PoolsPageBuyResultEvent = {
+  event: "PoolsPageAction";
+  data: {
+    action: "BuySuccess" | "BuyFail";
+    type: "GM" | "GLV";
+    poolName: string;
+    glvAddress: string;
+    amount: number; // Amount in USD
+    isFirstBuy: boolean;
+    isUserError: boolean;
   };
 };
 

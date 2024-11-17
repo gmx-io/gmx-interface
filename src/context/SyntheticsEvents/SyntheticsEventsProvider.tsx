@@ -67,7 +67,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { sendUserAnalyticsTradeBoxResultEvent } from "lib/userAnalytics";
+import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -171,7 +171,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       sendOrderCreatedMetric(metricId);
 
       if (!isMarketOrderType(data.orderType)) {
-        sendUserAnalyticsTradeBoxResultEvent(chainId, metricId, true);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
       }
 
       setOrderStatuses((old) =>
@@ -221,7 +221,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderExecutedMetric(metricId);
-        sendUserAnalyticsTradeBoxResultEvent(chainId, metricId, true);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
       }
 
       setOrderStatuses((old) => {
@@ -264,7 +264,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderCancelledMetric(metricId, eventData);
-        sendUserAnalyticsTradeBoxResultEvent(chainId, metricId, false);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
       }
 
       // If pending user order is cancelled, reset the pending position state
@@ -394,6 +394,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
 
         sendOrderExecutedMetric(metricId);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
 
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
@@ -408,7 +409,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGMSwapMetricId(depositStatuses[key].data!);
 
         sendOrderExecutedMetric(metricId);
-
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -422,7 +423,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGMSwapMetricId(depositStatuses[key].data!);
 
         sendOrderCancelledMetric(metricId, eventData);
-
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -436,6 +437,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
 
         sendOrderCancelledMetric(metricId, eventData);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
 
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }

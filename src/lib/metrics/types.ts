@@ -341,6 +341,8 @@ export type SwapGmMetricData = {
   longTokenAmount: number | undefined;
   shortTokenAmount: number | undefined;
   marketTokenAmount: number | undefined;
+  marketTokenUsd: number | undefined;
+  isFirstBuy: boolean | undefined;
 };
 
 export type ShiftGmMetricData = {
@@ -361,10 +363,13 @@ export type SwapGLVMetricData = {
   initialShortTokenAddress: string | undefined;
   glvAddress: string | undefined;
   selectedMarketForGlv: string | undefined;
+  marketName: string | undefined;
   executionFee: number | undefined;
   longTokenAmount: number | undefined;
   shortTokenAmount: number | undefined;
   glvTokenAmount: number | undefined;
+  glvTokenUsd: number | undefined;
+  isFirstBuy: boolean | undefined;
 };
 
 export type ErrorMetricData = {
