@@ -17,9 +17,9 @@ type ProfileProps = {
   utm?: string;
 };
 
-type SentEventsInSession = {
-  sessionId: string;
-  events: string[];
+type DedupEventsStorage = {
+  // key:event -> timestamp
+  [keyAndEvent: string]: number;
 };
 
 type AnalyticsEventParams = {
@@ -30,7 +30,9 @@ type AnalyticsEventParams = {
 const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24; // 1 day
 const SESSION_ID_COOKIE_NAME = "sessionId";
 const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
-const USER_ANALYTICS_SENT_EVENTS_KEY = "USER_ANALYTICS_SENT_EVENTS";
+
+const MAX_DEDUP_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
+const USER_ANALYTICS_DEDUP_EVENTS_STORAGE = "USER_ANALYTICS_DEDUP_EVENTS_STORAGE";
 
 export class UserAnalytics {
   commonEventParams: CommonEventParams = {} as CommonEventParams;
@@ -48,33 +50,40 @@ export class UserAnalytics {
     localStorage.setItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY, time.toString());
   }
 
-  getSentEvents() {
-    const sentEventsStr = localStorage.getItem(USER_ANALYTICS_SENT_EVENTS_KEY);
-    const sentEvents = sentEventsStr ? (JSON.parse(sentEventsStr) as SentEventsInSession) : undefined;
+  getDedupEventsStorage() {
+    const dedupEventsStorageStr = localStorage.getItem(USER_ANALYTICS_DEDUP_EVENTS_STORAGE);
+    const dedupEventsStorage = dedupEventsStorageStr ? (JSON.parse(dedupEventsStorageStr) as DedupEventsStorage) : {};
 
-    return sentEvents;
+    return dedupEventsStorage;
   }
 
-  getIsEventAlreadySent(sessionId: string, event: string) {
-    const sentEvents = this.getSentEvents();
+  shouldDedupEvent(key: string, event: string, dedupInterval: number = MAX_DEDUP_INTERVAL) {
+    const dedupEventsStorage = this.getDedupEventsStorage();
 
-    if (sentEvents?.sessionId === sessionId) {
-      return sentEvents.events.includes(event);
+    const keyAndEvent = `${key}:${event}`;
+    const lastSentTimestamp = dedupEventsStorage[keyAndEvent];
+
+    if (lastSentTimestamp && Date.now() - lastSentTimestamp < dedupInterval) {
+      return true;
     }
 
     return false;
   }
 
-  setSentEventBySession(sessionId: string, event: string) {
-    let sentEvents = this.getSentEvents();
+  saveDedupEventData(key: string, event: string) {
+    const dedupEventsStorage = this.getDedupEventsStorage();
 
-    if (sentEvents?.sessionId === sessionId) {
-      sentEvents.events.push(event);
-    } else {
-      sentEvents = { sessionId, events: [event] };
-    }
+    // Clear old events
+    Object.keys(dedupEventsStorage).forEach((key) => {
+      if (Date.now() - dedupEventsStorage[key] > MAX_DEDUP_INTERVAL) {
+        delete dedupEventsStorage[key];
+      }
+    });
 
-    localStorage.setItem(USER_ANALYTICS_SENT_EVENTS_KEY, JSON.stringify(sentEvents));
+    const keyAndEvent = `${key}:${event}`;
+    dedupEventsStorage[keyAndEvent] = Date.now();
+
+    localStorage.setItem(USER_ANALYTICS_DEDUP_EVENTS_STORAGE, JSON.stringify(dedupEventsStorage));
   }
 
   getOrSetSessionId() {
@@ -89,16 +98,23 @@ export class UserAnalytics {
     return sessionId;
   }
 
-  pushEvent = <T extends AnalyticsEventParams = never>(params: T, onlyOncePerSession = false) => {
+  pushEvent = <T extends AnalyticsEventParams = never>(
+    params: T,
+    options: { onlyOncePerSession?: boolean; dedupKey?: string; dedupInterval?: number } = {}
+  ) => {
     this.setLastEventTime(Date.now());
 
     const sessionId = this.getOrSetSessionId();
 
-    if (onlyOncePerSession && this.getIsEventAlreadySent(sessionId, params.event)) {
+    const dedupKey = options.onlyOncePerSession ? sessionId : options.dedupKey;
+
+    if (dedupKey && this.shouldDedupEvent(dedupKey, params.event, options.dedupInterval)) {
       return;
     }
 
-    this.setSentEventBySession(sessionId, params.event);
+    if (dedupKey) {
+      this.saveDedupEventData(dedupKey, params.event);
+    }
 
     metrics.pushBatchItem({
       type: "userAnalyticsEvent",

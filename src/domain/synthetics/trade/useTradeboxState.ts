@@ -31,6 +31,8 @@ import { TradeMode, TradeType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 import { MarketInfo } from "domain/synthetics/markets";
+import { userAnalytics } from "lib/userAnalytics";
+import { TradeBoxInteractionStartedEvent } from "lib/userAnalytics/types";
 
 export type TradeStage = "trade" | "processing";
 
@@ -668,6 +670,23 @@ export function useTradeboxState(
       };
     });
   }, [advancedOptions, setStoredOptionsOnChain, storedOptions.advanced]);
+
+  useEffect(
+    function tradeBoxInteractionStarted() {
+      if (fromTokenInputValue.length > 0) {
+        userAnalytics.pushEvent<TradeBoxInteractionStartedEvent>(
+          {
+            event: "TradeBoxAction",
+            data: {
+              action: "InteractionStarted",
+            },
+          },
+          { onlyOncePerSession: true }
+        );
+      }
+    },
+    [enabled, chainId, fromTokenInputValue]
+  );
 
   return {
     tradeType,

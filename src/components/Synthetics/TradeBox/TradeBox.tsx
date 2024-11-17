@@ -145,10 +145,11 @@ import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 import SwapIcon from "img/swap.svg?react";
 
-import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
+import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
 import "./TradeBox.scss";
+import { TradeBoxLeverageSliderToggleEvent } from "lib/userAnalytics/types";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -1169,7 +1170,16 @@ export function TradeBox(p: Props) {
             <ToggleSwitch
               className="Exchange-leverage-slider-settings"
               isChecked={isLeverageEnabled ?? false}
-              setIsChecked={setIsLeverageEnabled}
+              setIsChecked={(isChecked) => {
+                setIsLeverageEnabled(isChecked);
+                userAnalytics.pushEvent<TradeBoxLeverageSliderToggleEvent>({
+                  event: "TradeBoxAction",
+                  data: {
+                    action: "LeverageSliderToggle",
+                    state: isChecked ? "enabled" : "disabled",
+                  },
+                });
+              }}
               beforeSwitchContent={
                 <div className={cx({ invisible: !isLeverageEnabled })}>
                   <SuggestionInput

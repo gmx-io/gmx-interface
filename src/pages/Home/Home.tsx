@@ -150,7 +150,7 @@ export default function Home({ showRedirectModal }) {
           action: "PageView",
         },
       },
-      true
+      { onlyOncePerSession: true }
     );
   }, []);
 
