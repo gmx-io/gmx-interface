@@ -209,7 +209,7 @@ export type SharePositionClickEvent = {
 export type SharePositionActionEvent = {
   event: "SharePositionAction";
   data: {
-    action: "Copy" | "Download" | "Click";
+    action: "Copy" | "Download" | "ShareTwitter";
   };
 };
 

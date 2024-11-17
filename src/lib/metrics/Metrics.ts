@@ -80,14 +80,27 @@ export class Metrics {
     this.wallets = await getWalletNames();
   }
 
-  pushBatchItem(item: BatchReportItem) {
+  pushBatchItem = (item: BatchReportItem) => {
     if (this.debug) {
       // eslint-disable-next-line no-console
       console.log(`Metrics: push ${item.type}`, item.payload);
     }
 
     this.queue.push(item);
-  }
+  };
+
+  sendBatchItems = (items: BatchReportItem[], logEvents = false) => {
+    if (logEvents && this.debug) {
+      // eslint-disable-next-line no-console
+      console.log(`Metrics: send batch items`, items);
+    }
+
+    if (!this.fetcher) {
+      return Promise.reject(new Error("Metrics: fetcher is not initialized"));
+    }
+
+    return this.fetcher.fetchPostBatchReport({ items }, this.debug);
+  };
 
   // Require Generic type to be specified
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
@@ -210,8 +223,7 @@ export class Metrics {
       console.log(`Metrics: send batch metrics: ${items.length} items`);
     }
 
-    return this.fetcher
-      .fetchPostBatchReport({ items }, this.debug)
+    return this.sendBatchItems(items, this.debug)
       .then(async (res) => {
         if (res.status === 400) {
           const errorData = await res.json();

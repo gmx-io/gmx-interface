@@ -2,6 +2,7 @@ import { setCookie } from "lib/cookies";
 import { getCookie } from "lib/cookies";
 import { metrics } from "../metrics/Metrics";
 import { isDevelopment } from "config/env";
+import { BatchReportItem } from "lib/oracleKeeperFetcher";
 
 type CommonEventParams = {
   platform?: string;
@@ -100,7 +101,7 @@ export class UserAnalytics {
 
   pushEvent = <T extends AnalyticsEventParams = never>(
     params: T,
-    options: { onlyOncePerSession?: boolean; dedupKey?: string; dedupInterval?: number } = {}
+    options: { onlyOncePerSession?: boolean; dedupKey?: string; dedupInterval?: number; instantSend?: boolean } = {}
   ) => {
     this.setLastEventTime(Date.now());
 
@@ -116,7 +117,7 @@ export class UserAnalytics {
       this.saveDedupEventData(dedupKey, params.event);
     }
 
-    metrics.pushBatchItem({
+    const item: BatchReportItem = {
       type: "userAnalyticsEvent",
       payload: {
         event: params.event,
@@ -127,7 +128,13 @@ export class UserAnalytics {
           time: Date.now(),
         },
       },
-    });
+    };
+
+    if (options.instantSend) {
+      metrics.sendBatchItems([item], true);
+    } else {
+      metrics.pushBatchItem(item);
+    }
   };
 
   pushProfileProps = (data: ProfileProps) => {
