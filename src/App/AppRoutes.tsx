@@ -28,6 +28,7 @@ import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
+import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -48,6 +49,7 @@ export function AppRoutes() {
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
+  useWalletConnectedUserAnalyticsEvent();
 
   const query = useRouteQuery();
 

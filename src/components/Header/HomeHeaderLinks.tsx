@@ -6,6 +6,8 @@ import "./Header.scss";
 import { Link } from "react-router-dom";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { HeaderLink } from "./HeaderLink";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 
 type Props = {
   small?: boolean;
@@ -13,7 +15,7 @@ type Props = {
   showRedirectModal: (to: string) => void;
 };
 
-type HomeLink = { label: string; link: string; isHomeLink?: boolean | false };
+type HomeLink = { label: string; link: string; isHomeLink?: boolean | false; onClick?: () => void };
 
 export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Props) {
   const HOME_MENUS: HomeLink[] = [
@@ -21,6 +23,15 @@ export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pr
       label: t`App`,
       isHomeLink: true,
       link: "/trade",
+      onClick: () => {
+        userAnalytics.pushEvent<LandingPageLaunchAppEvent>({
+          event: "LandingPageAction",
+          data: {
+            action: "LaunchApp",
+            buttonPosition: "MenuButton",
+          },
+        });
+      },
     },
     {
       label: t`Protocol`,
@@ -54,11 +65,11 @@ export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pr
           </div>
         </div>
       )}
-      {HOME_MENUS.map(({ link, label, isHomeLink = false }) => {
+      {HOME_MENUS.map(({ link, label, isHomeLink = false, onClick }) => {
         return (
           <div key={label} className="App-header-link-container">
             {isHomeLink ? (
-              <HeaderLink to={link} showRedirectModal={showRedirectModal}>
+              <HeaderLink onClick={onClick} to={link} showRedirectModal={showRedirectModal}>
                 {label}
               </HeaderLink>
             ) : (

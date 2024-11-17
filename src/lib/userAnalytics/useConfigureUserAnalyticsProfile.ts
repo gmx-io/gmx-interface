@@ -18,7 +18,6 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
 
-  //   const [isSettled] = useState(false);
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
   const { data: lastMonthAccountStats } = usePeriodAccountStats(chainId, {

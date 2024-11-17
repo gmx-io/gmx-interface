@@ -22,6 +22,11 @@ type SentEventsInSession = {
   events: string[];
 };
 
+type AnalyticsEventParams = {
+  event: string;
+  data: object;
+};
+
 const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24; // 1 day
 const SESSION_ID_COOKIE_NAME = "sessionId";
 const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
@@ -84,30 +89,32 @@ export class UserAnalytics {
     return sessionId;
   }
 
-  pushEvent(event: string, data: object, onlyOnce = false) {
+  pushEvent = <T extends AnalyticsEventParams = never>(params: T, onlyOncePerSession = false) => {
     this.setLastEventTime(Date.now());
 
     const sessionId = this.getOrSetSessionId();
 
-    if (onlyOnce && this.getIsEventAlreadySent(sessionId, event)) {
+    if (onlyOncePerSession && this.getIsEventAlreadySent(sessionId, params.event)) {
       return;
     }
+
+    this.setSentEventBySession(sessionId, params.event);
 
     metrics.pushBatchItem({
       type: "userAnalyticsEvent",
       payload: {
-        event,
+        event: params.event,
         distinctId: sessionId,
         customFields: {
           ...this.commonEventParams,
-          ...data,
+          ...params.data,
           time: Date.now(),
         },
       },
     });
-  }
+  };
 
-  pushProfileProps(data: ProfileProps) {
+  pushProfileProps = (data: ProfileProps) => {
     this.setLastEventTime(Date.now());
 
     const sessionId = this.getOrSetSessionId();
@@ -121,7 +128,7 @@ export class UserAnalytics {
         },
       },
     });
-  }
+  };
 }
 
 export const userAnalytics = new UserAnalytics();

@@ -145,6 +145,7 @@ import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 import SwapIcon from "img/swap.svg?react";
 
+import { pushConnectWalletClickEvent } from "lib/userAnalytics";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
 import "./TradeBox.scss";
@@ -766,6 +767,7 @@ export function TradeBox(p: Props) {
 
   const onSubmit = useCallback(async () => {
     if (!account) {
+      pushConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
       return;
     }

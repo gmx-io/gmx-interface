@@ -7,7 +7,7 @@ import { USD_DECIMALS } from "config/factors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useUserStat } from "domain/legacy";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { getTotalVolumeSum } from "lib/legacy";
+import { getAppBaseUrl, getTotalVolumeSum } from "lib/legacy";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 
 import Footer from "components/Footer/Footer";
@@ -24,10 +24,35 @@ import totaluserIcon from "img/ic_totaluser.svg";
 import tradingIcon from "img/ic_trading.svg";
 
 import "./Home.css";
+import { useEffect } from "react";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
 
-function LaunchExchangeButton({ showRedirectModal }: { showRedirectModal: (to: string) => void }) {
+function LaunchExchangeButton({
+  showRedirectModal,
+  position,
+}: {
+  showRedirectModal: (to: string) => void;
+  position: "Title" | "Chains";
+}) {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    userAnalytics.pushEvent<LandingPageLaunchAppEvent>({
+      event: "LandingPageAction",
+      data: {
+        action: "LaunchApp",
+        buttonPosition: position,
+      },
+    });
+
+    const baseUrl = getAppBaseUrl();
+
+    window.location.href = baseUrl + "/trade";
+  };
+
   return (
-    <HeaderLink className="default-btn" to="/trade" showRedirectModal={showRedirectModal}>
+    <HeaderLink onClick={handleClick} className="default-btn" to="/trade" showRedirectModal={showRedirectModal}>
       <Trans>Launch App</Trans>
     </HeaderLink>
   );
@@ -117,6 +142,18 @@ export default function Home({ showRedirectModal }) {
     totalUsers = Number(bigNumberify(totalUsers)! + arbV2Stats.totalUsers + avaxV2Stats.totalUsers);
   }
 
+  useEffect(() => {
+    userAnalytics.pushEvent<LandingPageViewEvent>(
+      {
+        event: "LandingPageAction",
+        data: {
+          action: "PageView",
+        },
+      },
+      true
+    );
+  }, []);
+
   return (
     <div className="Home">
       <div className="Home-top">
@@ -134,7 +171,7 @@ export default function Home({ showRedirectModal }) {
                 Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet
               </Trans>
             </div>
-            <LaunchExchangeButton showRedirectModal={showRedirectModal} />
+            <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Title" />
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -231,7 +268,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <LaunchExchangeButton showRedirectModal={showRedirectModal} />
+                  <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Chains" />
                 </div>
               </div>
             </div>
@@ -242,7 +279,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <LaunchExchangeButton showRedirectModal={showRedirectModal} />
+                  <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Chains" />
                 </div>
               </div>
             </div>
