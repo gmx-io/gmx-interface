@@ -7,7 +7,7 @@ import { USD_DECIMALS } from "config/factors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useUserStat } from "domain/legacy";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { getAppBaseUrl, getTotalVolumeSum } from "lib/legacy";
+import { getTotalVolumeSum } from "lib/legacy";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 
 import Footer from "components/Footer/Footer";
@@ -23,10 +23,10 @@ import statsIcon from "img/ic_stats.svg";
 import totaluserIcon from "img/ic_totaluser.svg";
 import tradingIcon from "img/ic_trading.svg";
 
-import "./Home.css";
-import { useEffect } from "react";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
+import { useEffect } from "react";
+import "./Home.css";
 
 function LaunchExchangeButton({
   showRedirectModal,
@@ -35,24 +35,24 @@ function LaunchExchangeButton({
   showRedirectModal: (to: string) => void;
   position: "Title" | "Chains";
 }) {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-
-    userAnalytics.pushEvent<LandingPageLaunchAppEvent>({
-      event: "LandingPageAction",
-      data: {
-        action: "LaunchApp",
-        buttonPosition: position,
-      },
-    });
-
-    const baseUrl = getAppBaseUrl();
-
-    window.location.href = baseUrl + "/trade";
-  };
-
   return (
-    <HeaderLink onClick={handleClick} className="default-btn" to="/trade" showRedirectModal={showRedirectModal}>
+    <HeaderLink
+      onClick={async () => {
+        await userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
+          {
+            event: "LandingPageAction",
+            data: {
+              action: "LaunchApp",
+              buttonPosition: position,
+            },
+          },
+          { instantSend: true }
+        );
+      }}
+      className="default-btn"
+      to="/trade"
+      showRedirectModal={showRedirectModal}
+    >
       <Trans>Launch App</Trans>
     </HeaderLink>
   );

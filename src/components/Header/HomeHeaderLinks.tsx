@@ -23,14 +23,17 @@ export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pr
       label: t`App`,
       isHomeLink: true,
       link: "/trade",
-      onClick: () => {
-        userAnalytics.pushEvent<LandingPageLaunchAppEvent>({
-          event: "LandingPageAction",
-          data: {
-            action: "LaunchApp",
-            buttonPosition: "MenuButton",
+      onClick: async () => {
+        await userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
+          {
+            event: "LandingPageAction",
+            data: {
+              action: "LaunchApp",
+              buttonPosition: "MenuButton",
+            },
           },
-        });
+          { instantSend: true }
+        );
       },
     },
     {

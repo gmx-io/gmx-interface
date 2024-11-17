@@ -99,7 +99,7 @@ export class UserAnalytics {
     return sessionId;
   }
 
-  pushEvent = <T extends AnalyticsEventParams = never>(
+  pushEvent = async <T extends AnalyticsEventParams = never>(
     params: T,
     options: { onlyOncePerSession?: boolean; dedupKey?: string; dedupInterval?: number; instantSend?: boolean } = {}
   ) => {
@@ -131,7 +131,7 @@ export class UserAnalytics {
     };
 
     if (options.instantSend) {
-      metrics.sendBatchItems([item], true);
+      await metrics.sendBatchItems([item], true);
     } else {
       metrics.pushBatchItem(item);
     }

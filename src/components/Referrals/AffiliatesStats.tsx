@@ -340,12 +340,15 @@ function AffiliatesStats({
                           </div>
                           <TrackingLink
                             onClick={() => {
-                              userAnalytics.pushEvent<ReferralShareEvent>({
-                                event: "ReferralCodeAction",
-                                data: {
-                                  action: "ShareTwitter",
+                              userAnalytics.pushEvent<ReferralShareEvent>(
+                                {
+                                  event: "ReferralCodeAction",
+                                  data: {
+                                    action: "ShareTwitter",
+                                  },
                                 },
-                              });
+                                { instantSend: true }
+                              );
                             }}
                           >
                             <a

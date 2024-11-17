@@ -18,7 +18,7 @@ export type LandingPageProtocolTokenEvent = {
   data: {
     action: "ProtocolTokenAction";
     chain: "Arbitrum" | "Avalanche";
-    type: "GM" | "GLM" | "GLP";
+    type: "GMX" | "GM" | "GLV" | "GLP";
   };
 };
 
@@ -41,7 +41,7 @@ export type LandingPageFooterMenuEvent = {
   event: "LandingPageAction";
   data: {
     action: "FooterMenu";
-    button: "X" | "Discord" | "Telegram" | "Github";
+    button: string;
   };
 };
 

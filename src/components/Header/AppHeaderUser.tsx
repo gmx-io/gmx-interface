@@ -73,18 +73,21 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
       <div className="App-header-user">
         <div data-qa="trade" className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink
+            className="default-btn"
             onClick={() => {
               if (isHomeSite()) {
-                userAnalytics.pushEvent<LandingPageLaunchAppEvent>({
-                  event: "LandingPageAction",
-                  data: {
-                    action: "LaunchApp",
-                    buttonPosition: "StickyHeader",
+                userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
+                  {
+                    event: "LandingPageAction",
+                    data: {
+                      action: "LaunchApp",
+                      buttonPosition: "StickyHeader",
+                    },
                   },
-                });
+                  { instantSend: true }
+                );
               }
             }}
-            className="default-btn"
             to={tradeLink!}
             showRedirectModal={showRedirectModal}
           >
@@ -124,18 +127,21 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
     <div className="App-header-user">
       <div data-qa="trade" className={cx("App-header-trade-link")}>
         <HeaderLink
-          onClick={() => {
+          className="default-btn"
+          onClick={async () => {
             if (isHomeSite()) {
-              userAnalytics.pushEvent<LandingPageLaunchAppEvent>({
-                event: "LandingPageAction",
-                data: {
-                  action: "LaunchApp",
-                  buttonPosition: "StickyHeader",
+              await userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
+                {
+                  event: "LandingPageAction",
+                  data: {
+                    action: "LaunchApp",
+                    buttonPosition: "StickyHeader",
+                  },
                 },
-              });
+                { instantSend: true }
+              );
             }
           }}
-          className="default-btn"
           to={tradeLink!}
           showRedirectModal={showRedirectModal}
         >

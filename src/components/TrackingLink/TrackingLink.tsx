@@ -3,7 +3,7 @@ import React from "react";
 type InternalLink = { to: string | { pathname: string }; onClick?: (e: React.MouseEvent) => void };
 
 interface TrackingLinkProps<TChildren extends InternalLink | HTMLAnchorElement> {
-  onClick?: () => Promise<void> | void;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement, MouseEvent>) => Promise<void> | void;
   children: React.ReactElement<TChildren>;
 }
 
@@ -15,10 +15,16 @@ export function TrackingLink<TChildren extends InternalLink | HTMLAnchorElement>
     return null;
   }
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement, MouseEvent>) => {
     if (onClick) {
       e.preventDefault();
-      onClick();
+
+      try {
+        await onClick(e);
+      } catch (error) {
+        // ignore
+      }
+
       // Navigate after the onClick completes
       if ("href" in children.props) {
         window.location.href = children.props.href;
@@ -31,9 +37,8 @@ export function TrackingLink<TChildren extends InternalLink | HTMLAnchorElement>
     }
   };
 
-  // @ts-expect-error: Partial<TChildren> is not assignable to Attributes
   return React.cloneElement(children, {
     ...children.props,
     onClick: handleClick,
-  });
+  } as TChildren);
 }
