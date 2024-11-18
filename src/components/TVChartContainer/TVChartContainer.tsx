@@ -1,7 +1,7 @@
 import Loader from "components/Common/Loader";
 import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
-import { isChartAvailabeForToken } from "config/tokens";
+import { isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
@@ -28,7 +28,6 @@ export type ChartLine = {
 };
 
 type Props = {
-  symbol?: string;
   chainId: number;
   chartLines: ChartLine[];
   onSelectToken: (token: Token) => void;
@@ -42,12 +41,11 @@ type Props = {
       } & TokenPrices)
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
-  oraclePriceDecimals?: number;
   visualMultiplier?: number;
 };
 
 export default function TVChartContainer({
-  symbol,
+  chartToken,
   chainId,
   chartLines,
   onSelectToken,
@@ -55,9 +53,7 @@ export default function TVChartContainer({
   datafeed,
   period,
   setPeriod,
-  chartToken,
   supportedResolutions,
-  oraclePriceDecimals,
   visualMultiplier,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
@@ -70,20 +66,7 @@ export default function TVChartContainer({
   const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
   const isMobile = useMedia("(max-width: 550px)");
-  const symbolRef = useRef(symbol);
-
-  useEffect(() => {
-    if (chartToken && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
-      const averagePrice = getMidPrice(chartToken);
-
-      const formattedPrice = bigintToNumber(averagePrice, USD_DECIMALS);
-      dataProvider?.setCurrentChartToken({
-        price: formattedPrice,
-        ticker: chartToken.symbol,
-        isChartReady: chartReady,
-      });
-    }
-  }, [chartToken, chartReady, dataProvider, chainId, oraclePriceDecimals]);
+  const symbolRef = useRef(chartToken.symbol);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
@@ -123,16 +106,32 @@ export default function TVChartContainer({
   );
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
-      if (isChartAvailabeForToken(chainId, symbol)) {
-        tvWidgetRef.current.setSymbol(
-          getSymbolName(symbol, visualMultiplier),
-          tvWidgetRef.current.activeChart().resolution(),
-          () => null
-        );
-      }
+    if (chartToken.symbol && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
+      const averagePrice = getMidPrice(chartToken);
+
+      const formattedPrice = bigintToNumber(averagePrice, USD_DECIMALS);
+      dataProvider?.setCurrentChartToken({
+        price: formattedPrice,
+        ticker: chartToken.symbol,
+        isChartReady: chartReady,
+      });
     }
-  }, [symbol, chartReady, period, chainId, datafeed, visualMultiplier]);
+  }, [chartReady, chartToken, dataProvider]);
+
+  useEffect(() => {
+    if (
+      chartReady &&
+      tvWidgetRef.current &&
+      chartToken.symbol &&
+      isChartAvailableForToken(chainId, chartToken.symbol)
+    ) {
+      tvWidgetRef.current.setSymbol(
+        getSymbolName(chartToken.symbol, visualMultiplier),
+        tvWidgetRef.current.activeChart().resolution(),
+        () => null
+      );
+    }
+  }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
 
   useEffect(() => {
     dataProvider?.resetCache();

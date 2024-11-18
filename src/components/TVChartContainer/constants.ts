@@ -54,8 +54,8 @@ const disabledFeatures: ChartingLibraryFeatureset[] = [
   "use_localstorage_for_settings",
   "right_bar_stays_on_scroll",
   "symbol_info",
-  "header_quick_search",
   "edit_buttons_in_legend",
+  "header_undo_redo",
 ];
 
 const enabledFeatures: ChartingLibraryFeatureset[] = [

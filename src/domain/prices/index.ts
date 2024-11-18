@@ -8,7 +8,7 @@ import { GMX_STATS_API_URL } from "config/backend";
 import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
-import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
+import { getNativeToken, getNormalizedTokenSymbol, isChartAvailableForToken } from "config/tokens";
 import type { Bar, FromOldToNewArray } from "../tradingview/types";
 import { FEED_ID_MAP, TIMEZONE_OFFSET_SEC } from "./constants";
 
@@ -71,7 +71,7 @@ export async function getLimitChartPricesFromStats(
 ): Promise<FromOldToNewArray<Bar>> {
   symbol = getNormalizedTokenSymbol(symbol);
 
-  if (!isChartAvailabeForToken(chainId, symbol)) {
+  if (!isChartAvailableForToken(chainId, symbol)) {
     symbol = getNativeToken(chainId).symbol;
   }
 

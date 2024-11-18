@@ -11,10 +11,7 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import {
-  selectSelectedMarketPriceDecimals,
-  selectSelectedMarketVisualMultiplier,
-} from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
@@ -43,7 +40,7 @@ let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
-  const { chartToken, symbol } = useSelector(selectChartToken);
+  const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
@@ -60,8 +57,6 @@ export function TVChart() {
   if (!period || !(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }
-
-  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
 
@@ -236,11 +231,11 @@ export function TVChart() {
             ...chartToken.prices,
           }
         : {
-            symbol: "",
+            symbol: chartTokenSymbol || "",
             minPrice: 0n,
             maxPrice: 0n,
           },
-    [chartToken]
+    [chartToken, chartTokenSymbol]
   );
 
   const isMobile = useMedia("(max-width: 700px)");
@@ -249,19 +244,17 @@ export function TVChart() {
     <div className="ExchangeChart tv">
       <TVChartHeader isMobile={isMobile} />
       <div className="ExchangeChart-bottom App-box App-box-border overflow-hidden">
-        {symbol && (
+        {chartToken && (
           <TVChartContainer
             chartLines={chartLines}
-            symbol={symbol}
+            chartToken={chartTokenProp}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
             dataProvider={dataProvider}
             datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
-            chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
-            oraclePriceDecimals={oraclePriceDecimals}
             visualMultiplier={visualMultiplier}
           />
         )}

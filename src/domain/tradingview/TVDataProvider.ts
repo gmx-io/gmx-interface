@@ -25,14 +25,14 @@ const initialState = {
 
 export class TVDataProvider {
   chainId: number | null = null;
-  liveBars: Bar[] = [];
+  private liveBars: Bar[] = [];
   supportedResolutions: { [key: number]: string };
-  barsInfo: {
+  private barsInfo: {
     period: string;
     data: Bar[];
     ticker: string;
   };
-  chartTokenInfo?: {
+  private chartTokenInfo?: {
     price: number;
     ticker: string;
     isChartReady: boolean;
@@ -300,15 +300,23 @@ export class TVDataProvider {
   }
 
   setCurrentChartToken(chartTokenInfo: { price: number; ticker: string; isChartReady: boolean }) {
-    this.chartTokenInfo = chartTokenInfo;
-
-    const latestBar = this.liveBars[this.liveBars.length - 1];
-
-    if (latestBar) {
-      latestBar.close = chartTokenInfo.price;
-      latestBar.high = getMax(latestBar.open, latestBar.high, this.currentPrice);
-      latestBar.low = getMin(latestBar.open, latestBar.low, this.currentPrice);
+    if (chartTokenInfo.ticker === this.currentTicker) {
+      const latestBar = this.liveBars[this.liveBars.length - 1];
+      if (latestBar) {
+        latestBar.close = chartTokenInfo.price;
+        latestBar.high = getMax(latestBar.open, latestBar.high, this.currentPrice);
+        latestBar.low = getMin(latestBar.open, latestBar.low, this.currentPrice);
+      }
+    } else {
+      this.barsInfo = {
+        period: this.currentPeriod,
+        ticker: chartTokenInfo.ticker,
+        data: [],
+      };
+      this.liveBars = [];
     }
+
+    this.chartTokenInfo = chartTokenInfo;
   }
 
   setChainId(chainId: number) {

@@ -1474,7 +1474,7 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
   return tokenSymbol;
 }
 
-export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
+export function isChartAvailableForToken(chainId: number, tokenSymbol: string) {
   let token;
 
   try {

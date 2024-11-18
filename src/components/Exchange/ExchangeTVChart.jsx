@@ -375,14 +375,13 @@ export default function ExchangeTVChart(props) {
           <TVChartContainer
             chartLines={chartLines}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
-            symbol={chartToken.symbol}
+            chartToken={chartToken}
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
             datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
-            chartToken={chartToken}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
           />
         ) : (
