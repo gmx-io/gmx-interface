@@ -277,7 +277,8 @@
 }
 
 .ExchangeChart-info-label {
-  font-size: var(--font-size-body-medium);
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
   opacity: 0.7;
   white-space: nowrap;
 }

@@ -1,6 +1,7 @@
 .button {
   cursor: pointer;
   font-size: var(--font-size-body-medium);
+  line-height: var(--line-height-body-medium);
   display: inline-flex;
   align-items: center;
   font-weight: normal;
@@ -25,7 +26,6 @@
     color: var(--color-white);
     border-radius: 0.3rem;
     padding: 1.65rem 1.6rem;
-    line-height: 1;
 
     &:not([disabled]):hover {
       background: var(--primary-btn-hover);
@@ -41,7 +41,6 @@
     color: var(--color-white);
     border-radius: 0.3rem;
     padding: 1.65rem 1.6rem;
-    line-height: 1;
 
     &:not([disabled], .disabled):hover {
       background: var(--primary-btn-hover);
@@ -61,7 +60,6 @@
     padding: 1.1rem 1.25rem;
     font-weight: normal;
     position: relative;
-    line-height: 1;
     letter-spacing: 0;
 
     > .btn-image {
@@ -96,7 +94,6 @@
     padding: 1.1rem 1.25rem;
     font-weight: normal;
     position: relative;
-    line-height: 1;
     letter-spacing: 0;
 
     > .btn-image {

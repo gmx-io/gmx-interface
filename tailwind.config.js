@@ -113,8 +113,8 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       "--font-size-body-small": '1.2rem',
       "--font-size-caption": '1rem',
 
-      "--line-height-h1": 'auto',
-      "--line-height-h2": 'auto',
+      "--line-height-h1": '34px',
+      "--line-height-h2": '24px',
       "--line-height-body-large": '2.1rem',
       "--line-height-body-medium": '1.8rem',
       "--line-height-body-small": '1.6rem',

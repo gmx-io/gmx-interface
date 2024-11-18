@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import { useMemo } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
@@ -20,6 +21,7 @@ type AddressViewProps = {
   breakpoint?: keyof typeof lengths;
   maxLength?: number;
   noLink?: boolean;
+  big?: boolean;
 };
 
 export default function AddressView({
@@ -30,6 +32,7 @@ export default function AddressView({
   breakpoint,
   maxLength,
   noLink,
+  big,
 }: AddressViewProps) {
   const { account } = useWallet();
   const strLength = (breakpoint && lengths[breakpoint]) ?? maxLength;
@@ -59,6 +62,8 @@ export default function AddressView({
     [avatarUrl, size]
   );
 
+  const textClassName = big ? "text-body-large" : "text-body-medium";
+
   if (noLink) {
     return (
       <div className="AddressView">
@@ -67,7 +72,7 @@ export default function AddressView({
         ) : (
           <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
         )}
-        <span className="AddressView-trader-id">{trader}</span>
+        <span className={cx("AddressView-trader-id", textClassName)}>{trader}</span>
       </div>
     );
   }
@@ -79,7 +84,7 @@ export default function AddressView({
       ) : (
         <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
       )}
-      <span className="AddressView-trader-id">{trader}</span>
+      <span className={cx("AddressView-trader-id", textClassName)}>{trader}</span>
     </Link>
   );
 }

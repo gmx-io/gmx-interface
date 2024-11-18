@@ -23,6 +23,7 @@
   }
 
   &-text {
-    font-size: 1.3rem;
+    font-size: var(--font-size-body-medium);
+    line-height: var(--line-height-body-medium);
   }
 }

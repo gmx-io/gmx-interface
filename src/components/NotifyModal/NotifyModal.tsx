@@ -18,9 +18,11 @@ export function NotifyModal() {
   return (
     <Modal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX Alerts`}>
       <div className="NotifyModal">
-        <Trans>
-          Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and&nbsp;more.
-        </Trans>
+        <p className="text-body-medium">
+          <Trans>
+            Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and&nbsp;more.
+          </Trans>
+        </p>
         <NotifyBulletList />
         <Button
           variant="primary-action"
@@ -43,7 +45,7 @@ export function NotifyModal() {
             <ExternalLink href="https://notifi.network/terms">Terms of Use</ExternalLink>.
           </Trans>
         </div>
-        <div className="NotifyModal-notify">
+        <div className="NotifyModal-notify text-caption">
           <Trans>Powered by</Trans>
           <NotifiLogoIcon />
         </div>

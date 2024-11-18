@@ -42,7 +42,8 @@
     .Exchange-swap-max {
       position: unset;
       color: var(--color-white);
-      font-size: var(--font-size-body-small);
+      font-size: var(--font-size-body-medium);
+      line-height: var(--line-height-body-medium);
     }
 
     .TokenSelector-caret {

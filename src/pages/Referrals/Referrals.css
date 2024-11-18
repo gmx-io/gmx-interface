@@ -32,8 +32,8 @@
   margin: 0;
 }
 .referral-card .sub-title {
-  font-size: 1.8rem;
-  line-height: 2.5rem;
+  font-size: var(--font-size-body-large);
+  line-height: var(--line-height-body-large);
   letter-spacing: 0px;
   color: var(--color-white);
   margin-top: 1.1625rem;

@@ -505,3 +505,8 @@ table.Table.Exchange-list th {
   min-width: 38rem !important;
   max-width: 38rem !important;
 }
+
+.LeaderboardContainer__leaderboard-tabs .Tab-option {
+  font-size: var(--font-size-body-large) !important;
+  line-height: var(--line-height-body-large) !important;
+}

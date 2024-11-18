@@ -30,7 +30,7 @@
 .Footer-link {
   color: var(--color-slate-100);
   font-size: var(--font-size-body-small);
-  line-height: 1.85rem;
+  line-height: var(--line-height-body-small);
   font-weight: normal;
   text-decoration: none;
   cursor: pointer;
