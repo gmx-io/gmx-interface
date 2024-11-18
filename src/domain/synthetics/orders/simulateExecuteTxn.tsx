@@ -15,7 +15,7 @@ import { BaseContract, ethers } from "ethers";
 import { extractDataFromError, extractError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
-import { sendOrderSimulatedMetric, sendOrderSimulationErrorMetric } from "lib/metrics/utils";
+import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
@@ -165,7 +165,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }
 
       if (p.metricId) {
-        sendOrderSimulationErrorMetric(p.metricId, txnError);
+        sendTxnErrorMetric(p.metricId, txnError, "simulation");
       }
 
       const parsedArgs = Object.keys(parsedError?.args ?? []).reduce((acc, k) => {

@@ -212,7 +212,6 @@ export function TradeBox(p: Props) {
     setFromTokenInputValue: setFromTokenInputValueRaw,
     toTokenInputValue,
     setToTokenInputValue: setToTokenInputValueRaw,
-    setMarketAddress: onSelectMarketAddress,
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
     setTradeType: onSelectTradeType,
@@ -285,7 +284,7 @@ export function TradeBox(p: Props) {
   const { maxLiquidity: swapOutLiquidity } = useSelector(selectTradeboxMaxLiquidityPath);
 
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
-  const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useSelector(selectTradeboxLiquidity);
+  const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
   const maxLeverage = useSelector(selectTradeboxMaxLeverage);
   const executionPrice = useSelector(selectTradeboxExecutionPrice);
@@ -1214,13 +1213,7 @@ export function TradeBox(p: Props) {
           />
         )}
 
-        <MarketPoolSelectorRow
-          selectedMarket={marketInfo}
-          indexToken={toToken}
-          isOutPositionLiquidity={isOutPositionLiquidity}
-          currentPriceImpactBps={increaseAmounts?.acceptablePriceDeltaBps}
-          onSelectMarketAddress={onSelectMarketAddress}
-        />
+        <MarketPoolSelectorRow />
 
         <CollateralSelectorRow
           selectedMarketAddress={marketInfo?.marketTokenAddress}

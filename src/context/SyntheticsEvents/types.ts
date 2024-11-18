@@ -92,7 +92,11 @@ export type DepositCreatedEventData = {
   marketTokenAmount?: bigint;
   isMarketDeposit?: boolean;
   initialMarketTokenAmount?: bigint;
-  glvAddress?: string;
+};
+
+export type GLVDepositCreatedEventData = DepositCreatedEventData & {
+  glvAddress: string;
+  isGlvDeposit: true;
 };
 
 export type PendingDepositData = {
@@ -172,7 +176,7 @@ export type MultiTransactionStatus<TEventData> = {
 };
 
 export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData>;
-export type DepositStatus = MultiTransactionStatus<DepositCreatedEventData>;
+export type DepositStatus = MultiTransactionStatus<DepositCreatedEventData | GLVDepositCreatedEventData>;
 export type WithdrawalStatus = MultiTransactionStatus<WithdrawalCreatedEventData>;
 export type ShiftStatus = MultiTransactionStatus<ShiftCreatedEventData>;
 

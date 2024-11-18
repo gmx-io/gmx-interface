@@ -2,7 +2,6 @@ import DataStore from "abis/DataStore.json";
 import GlvReader from "abis/GlvReader.json";
 import TokenAbi from "abis/Token.json";
 
-import { getIsFlagEnabled } from "config/ab";
 import { getContract } from "config/contracts";
 import {
   glvMaxMarketTokenBalanceAmountKey,
@@ -320,9 +319,7 @@ export function useGlvMarketsInfo(
           };
         });
 
-        if (getIsFlagEnabled("testWebsocketBalances")) {
-          resetTokensBalancesUpdates(Object.keys(result));
-        }
+        resetTokensBalancesUpdates(Object.keys(result));
 
         return result;
       },
@@ -330,7 +327,7 @@ export function useGlvMarketsInfo(
   );
 
   const updatedGlvData = useMemo(() => {
-    if (!glvData || !getIsFlagEnabled("testWebsocketBalances")) {
+    if (!glvData) {
       return glvData;
     }
 

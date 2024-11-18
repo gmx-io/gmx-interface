@@ -9,6 +9,14 @@ import useWallet from "lib/wallets/useWallet";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
+import {
+  initShiftGmMetricData,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics/utils";
+import { helperToast } from "lib/helperToast";
+import { t } from "@lingui/macro";
 
 interface Props {
   fromMarketToken: TokenData | undefined;
@@ -39,6 +47,13 @@ export function useShiftTransactions({
 
   const onCreateShift = useCallback(
     function onCreateShift() {
+      const metricData = initShiftGmMetricData({
+        fromMarketToken,
+        toMarketToken: marketToken,
+        minMarketTokenAmount: marketTokenAmount,
+        executionFee,
+      });
+
       if (
         !signer ||
         !account ||
@@ -49,6 +64,8 @@ export function useShiftTransactions({
         marketTokenAmount === undefined ||
         !tokensData
       ) {
+        sendTxnValidationErrorMetric(metricData.metricId);
+        helperToast.error(t`Error submitting order`);
         return Promise.resolve();
       }
 
@@ -64,7 +81,9 @@ export function useShiftTransactions({
         tokensData,
         setPendingTxns,
         setPendingShift,
-      });
+      })
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       account,
