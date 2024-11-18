@@ -133,6 +133,9 @@ export const useTradeboxPoolWarnings = (
 
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;
 
+  const showHasExistingOrderButNoLiquidityWarning =
+    !hasExistingOrder && marketWithOrder && !hasEnoughLiquidity(marketWithOrder);
+
   if (
     !showHasExistingPositionWarning &&
     !showHasNoSufficientLiquidityInAnyMarketWarning &&
@@ -140,7 +143,8 @@ export const useTradeboxPoolWarnings = (
     !showHasInsufficientLiquidityAndNoPositionWarning &&
     !showHasExistingOrderWarning &&
     !showHasBetterOpenFeesWarning &&
-    !showHasExistingPositionButNotEnoughLiquidityWarning
+    !showHasExistingPositionButNotEnoughLiquidityWarning &&
+    !showHasExistingOrderButNoLiquidityWarning
   ) {
     return null;
   }
@@ -250,6 +254,17 @@ export const useTradeboxPoolWarnings = (
             </span>
             .
           </WithActon>
+        </Trans>
+      </AlertInfo>
+    );
+  }
+
+  if (showHasExistingOrderButNoLiquidityWarning) {
+    warning.push(
+      <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
+        <Trans>
+          You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool but it lacks
+          liquidity for this order.
         </Trans>
       </AlertInfo>
     );
