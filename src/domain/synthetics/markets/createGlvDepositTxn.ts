@@ -94,7 +94,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       primaryPriceOverrides: {},
       tokensData: p.tokensData,
       createMulticallPayload: encodedPayload,
-      method: "simulateExecuteGlvDeposit",
+      method: "simulateExecuteLatestGlvDeposit",
       errorTitle: t`Deposit error.`,
       value: wntAmount,
       metricId: p.metricId,

@@ -3,21 +3,19 @@ import CustomErrors from "abis/CustomErrors.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
-  getDataStoreContract,
   getExchangeRouterContract,
   getGlvRouterContract,
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { NONCE_KEY, orderKey } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { BaseContract, BytesLike, ethers } from "ethers";
+import { BaseContract, ethers } from "ethers";
 import { extractDataFromError, extractError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
-import { sendOrderSimulatedMetric, sendOrderSimulationErrorMetric } from "lib/metrics/utils";
 import { OrderMetricId } from "lib/metrics/types";
+import { sendOrderSimulatedMetric, sendOrderSimulationErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
@@ -35,12 +33,12 @@ type SimulateExecuteParams = {
   tokensData: TokensData;
   value: bigint;
   method?:
-    | "simulateExecuteDeposit"
-    | "simulateExecuteWithdrawal"
-    | "simulateExecuteOrder"
-    | "simulateExecuteShift"
-    | "simulateExecuteGlvDeposit"
-    | "simulateExecuteGlvWithdrawal";
+    | "simulateExecuteLatestDeposit"
+    | "simulateExecuteLatestWithdrawal"
+    | "simulateExecuteLatestOrder"
+    | "simulateExecuteLatestShift"
+    | "simulateExecuteLatestGlvDeposit"
+    | "simulateExecuteLatestGlvWithdrawal";
   errorTitle?: string;
   swapPricingType?: SwapPricingType;
   metricId?: OrderMetricId;
@@ -49,35 +47,27 @@ type SimulateExecuteParams = {
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
-  const dataStoreAddress = getContract(chainId, "DataStore");
   const multicallAddress = getContract(chainId, "Multicall");
 
-  const dataStore = getDataStoreContract(chainId, provider);
   const multicall = getMulticallContract(chainId, provider);
   const exchangeRouter = getExchangeRouterContract(chainId, provider);
   const glvRouter = isGlvEnabled(chainId) ? getGlvRouterContract(chainId, provider) : getZeroAddressContract(provider);
 
   const result = await multicall.blockAndAggregate.staticCall([
-    { target: dataStoreAddress, callData: dataStore.interface.encodeFunctionData("getUint", [NONCE_KEY]) },
     { target: multicallAddress, callData: multicall.interface.encodeFunctionData("getCurrentBlockTimestamp") },
   ]);
 
   const blockNumber = Number(result.blockNumber);
-
-  const [nonce] = dataStore.interface.decodeFunctionResult("getUint", result.returnData[0].returnData);
   const [blockTimestamp] = multicall.interface.decodeFunctionResult(
     "getCurrentBlockTimestamp",
-    result.returnData[1].returnData
+    result.returnData[0].returnData
   );
-
-  const nextNonce = nonce + 1n;
-  const nextKey = orderKey(dataStoreAddress, nextNonce) as BytesLike;
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
   const priceTimestamp = blockTimestamp + 10n;
-  const method = p.method || "simulateExecuteOrder";
+  const method = p.method || "simulateExecuteLatestOrder";
 
-  const isGlv = method === "simulateExecuteGlvDeposit" || method === "simulateExecuteGlvWithdrawal";
+  const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";
 
   const simulationPriceParams = {
     primaryTokens: primaryTokens,
@@ -88,37 +78,36 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
-  if (method === "simulateExecuteWithdrawal") {
+  if (method === "simulateExecuteLatestWithdrawal") {
     if (p.swapPricingType === undefined) {
-      throw new Error("swapPricingType is required for simulateExecuteWithdrawal");
+      throw new Error("swapPricingType is required for simulateExecuteLatestWithdrawal");
     }
 
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteWithdrawal", [
-        nextKey,
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestWithdrawal", [
         simulationPriceParams,
         p.swapPricingType,
       ])
     );
-  } else if (method === "simulateExecuteDeposit") {
+  } else if (method === "simulateExecuteLatestDeposit") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteDeposit", [nextKey, simulationPriceParams])
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestDeposit", [simulationPriceParams])
     );
-  } else if (method === "simulateExecuteOrder") {
+  } else if (method === "simulateExecuteLatestOrder") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteOrder", [nextKey, simulationPriceParams])
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestOrder", [simulationPriceParams])
     );
-  } else if (method === "simulateExecuteShift") {
+  } else if (method === "simulateExecuteLatestShift") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteShift", [nextKey, simulationPriceParams])
+      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestShift", [simulationPriceParams])
     );
-  } else if (method === "simulateExecuteGlvDeposit") {
+  } else if (method === "simulateExecuteLatestGlvDeposit") {
     simulationPayloadData.push(
-      glvRouter.interface.encodeFunctionData("simulateExecuteGlvDeposit", [nextKey, simulationPriceParams])
+      glvRouter.interface.encodeFunctionData("simulateExecuteLatestGlvDeposit", [simulationPriceParams])
     );
-  } else if (method === "simulateExecuteGlvWithdrawal") {
+  } else if (method === "simulateExecuteLatestGlvWithdrawal") {
     simulationPayloadData.push(
-      glvRouter.interface.encodeFunctionData("simulateExecuteGlvWithdrawal", [nextKey, simulationPriceParams])
+      glvRouter.interface.encodeFunctionData("simulateExecuteLatestGlvWithdrawal", [simulationPriceParams])
     );
   } else {
     throw new Error(`Unknown method: ${method}`);

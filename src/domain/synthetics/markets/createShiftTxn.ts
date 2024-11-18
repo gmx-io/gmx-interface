@@ -62,7 +62,7 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
       primaryPriceOverrides: {},
       tokensData: p.tokensData,
       createMulticallPayload: encodedPayload,
-      method: "simulateExecuteShift",
+      method: "simulateExecuteLatestShift",
       errorTitle: t`Shift error.`,
       value: p.executionFee,
       metricId: p.metricId,

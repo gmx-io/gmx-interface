@@ -1403,6 +1403,53 @@
           "internalType": "struct OracleUtils.SimulatePricesParams",
           "name": "simulatedOracleParams",
           "type": "tuple"
+        }
+      ],
+      "name": "simulateExecuteLatestShift",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "primaryTokens",
+              "type": "address[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "min",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "max",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct Price.Props[]",
+              "name": "primaryPrices",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxTimestamp",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct OracleUtils.SimulatePricesParams",
+          "name": "simulatedOracleParams",
+          "type": "tuple"
         },
         {
           "internalType": "enum ISwapPricingUtils.SwapPricingType",
