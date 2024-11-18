@@ -435,7 +435,7 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
     },
     // TAO/USD [WBTC-USDC]
     "0xe55e1A29985488A2c8846a91E925c2B7C6564db1": {
-      enabled: false,
+      enabled: true,
       listingDate: p("15 Nov 2024"),
       marketTokenAddress: "0xe55e1A29985488A2c8846a91E925c2B7C6564db1",
       indexTokenAddress: "0x938aef36CAaFbcB37815251B602168087eC14648",
