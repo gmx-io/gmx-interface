@@ -2,17 +2,36 @@ import type { TokenOption } from "context/SyntheticsStateContext/selectors/trade
 import type { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
 import { TradeType } from "domain/synthetics/trade";
 import { isMarketIndexToken } from "./utils";
+import { isLimitOrderType, OrdersInfoData } from "../orders";
+import { OrderInfo, PositionOrderInfo } from "../orders/types";
 
-export function getLargestRelatedExistingPosition({
+type PositionOrOrder = {
+  size: bigint;
+  marketAddress: string;
+  collateralTokenAddress: string;
+} & (
+  | {
+      type: "position";
+      entity: PositionInfo;
+    }
+  | {
+      type: "order";
+      entity: OrderInfo;
+    }
+);
+
+export function getLargestRelatedExistingPositionOrOrder({
   positionsInfo,
+  ordersInfo,
   isLong,
   indexTokenAddress,
 }: {
   positionsInfo: PositionsInfoData;
+  ordersInfo: OrdersInfoData | undefined;
   isLong: boolean;
   indexTokenAddress: string;
-}): PositionInfo | undefined {
-  let largestRelatedExistingPosition: PositionInfo | undefined = undefined;
+}): PositionOrOrder | undefined {
+  let largestRelatedExistingPositionOrOrder: PositionOrOrder | undefined = undefined;
   for (const position of Object.values(positionsInfo)) {
     if (position.isLong !== isLong) {
       continue;
@@ -22,17 +41,40 @@ export function getLargestRelatedExistingPosition({
       continue;
     }
 
-    if (!largestRelatedExistingPosition) {
-      largestRelatedExistingPosition = position;
-      continue;
-    }
-
-    if (position.sizeInUsd > largestRelatedExistingPosition.sizeInUsd) {
-      largestRelatedExistingPosition = position;
+    if (!largestRelatedExistingPositionOrOrder || position.sizeInUsd > largestRelatedExistingPositionOrOrder.size) {
+      largestRelatedExistingPositionOrOrder = {
+        type: "position",
+        size: position.sizeInUsd,
+        entity: position,
+        marketAddress: position.marketAddress,
+        collateralTokenAddress: position.collateralTokenAddress,
+      };
     }
   }
 
-  return largestRelatedExistingPosition;
+  const matchingOrders = Object.values(ordersInfo ?? {})
+    .filter((order) => isLimitOrderType(order.orderType))
+    .filter((order) => {
+      return (
+        order.isLong === isLong &&
+        isMarketIndexToken({ indexToken: (order as PositionOrderInfo).indexToken }, indexTokenAddress)
+      );
+    });
+
+  matchingOrders.forEach((order) => {
+    if (!largestRelatedExistingPositionOrOrder || order.sizeDeltaUsd > largestRelatedExistingPositionOrOrder.size) {
+      largestRelatedExistingPositionOrOrder = {
+        type: "order",
+        size: order.sizeDeltaUsd,
+        entity: order,
+        marketAddress: order.marketAddress,
+        collateralTokenAddress: order.initialCollateralTokenAddress,
+      };
+      return;
+    }
+  });
+
+  return largestRelatedExistingPositionOrOrder;
 }
 
 export type PreferredTradeTypePickStrategy = TradeType | "largestPosition";
@@ -43,6 +85,7 @@ export function chooseSuitableMarket({
   maxShortLiquidityPool,
   isSwap,
   positionsInfo,
+  ordersInfo,
   preferredTradeType,
   currentTradeType,
 }: {
@@ -51,6 +94,7 @@ export function chooseSuitableMarket({
   maxShortLiquidityPool?: TokenOption;
   isSwap?: boolean;
   positionsInfo?: PositionsInfoData;
+  ordersInfo?: OrdersInfoData;
   preferredTradeType: PreferredTradeTypePickStrategy;
   currentTradeType?: TradeType;
 }):
@@ -65,19 +109,21 @@ export function chooseSuitableMarket({
   const maxLiquidtyPool = preferredTradeType === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
 
   if (preferredTradeType === "largestPosition" && positionsInfo) {
-    let largestLongPosition = getLargestRelatedExistingPosition({
+    let largestLongPositionOrOrder = getLargestRelatedExistingPositionOrOrder({
       positionsInfo,
+      ordersInfo,
       isLong: true,
       indexTokenAddress,
     });
 
-    let largestShortPosition = getLargestRelatedExistingPosition({
+    let largestShortPositionOrOrder = getLargestRelatedExistingPositionOrOrder({
       positionsInfo,
+      ordersInfo,
       isLong: false,
       indexTokenAddress,
     });
 
-    if (!largestLongPosition && !largestShortPosition) {
+    if (!largestLongPositionOrOrder && !largestShortPositionOrOrder) {
       let marketTokenAddress = maxLiquidtyPool?.marketTokenAddress;
 
       if (!marketTokenAddress) {
@@ -91,21 +137,23 @@ export function chooseSuitableMarket({
       };
     }
 
-    let largestPosition: PositionInfo | undefined = undefined;
-    if (largestLongPosition && largestShortPosition) {
-      largestPosition =
-        largestLongPosition.sizeInUsd > largestShortPosition.sizeInUsd ? largestLongPosition : largestShortPosition;
+    let largestPositionOrOrder: PositionOrOrder | undefined = undefined;
+    if (largestLongPositionOrOrder && largestShortPositionOrOrder) {
+      largestPositionOrOrder =
+        largestLongPositionOrOrder.size > largestShortPositionOrOrder.size
+          ? largestLongPositionOrOrder
+          : largestShortPositionOrOrder;
     } else {
-      largestPosition = (largestLongPosition || largestShortPosition) as PositionInfo;
+      largestPositionOrOrder = largestLongPositionOrOrder || largestShortPositionOrOrder;
     }
 
-    const largestPositionTradeType = largestPosition.isLong ? TradeType.Long : TradeType.Short;
+    const largestPositionTradeType = largestPositionOrOrder?.entity.isLong ? TradeType.Long : TradeType.Short;
 
     return {
       indexTokenAddress,
-      marketTokenAddress: largestPosition.market.marketTokenAddress,
+      marketTokenAddress: largestPositionOrOrder?.marketAddress,
       tradeType: largestPositionTradeType,
-      collateralTokenAddress: largestPosition.collateralTokenAddress,
+      collateralTokenAddress: largestPositionOrOrder?.collateralTokenAddress,
     };
   } else if (preferredTradeType === "largestPosition") {
     if (!maxLongLiquidityPool) {
@@ -119,15 +167,16 @@ export function chooseSuitableMarket({
     };
   }
 
-  const largestPosition =
+  const largestPositionOrOrder =
     positionsInfo &&
-    getLargestRelatedExistingPosition({
+    getLargestRelatedExistingPositionOrOrder({
       positionsInfo,
+      ordersInfo,
       isLong: preferredTradeType === TradeType.Long,
       indexTokenAddress,
     });
 
-  const marketAddress = largestPosition?.market.marketTokenAddress ?? maxLiquidtyPool?.marketTokenAddress;
+  const marketAddress = largestPositionOrOrder?.marketAddress ?? maxLiquidtyPool?.marketTokenAddress;
 
   if (!marketAddress) {
     return undefined;
@@ -137,6 +186,6 @@ export function chooseSuitableMarket({
     indexTokenAddress,
     marketTokenAddress: marketAddress,
     tradeType: preferredTradeType,
-    collateralTokenAddress: largestPosition?.collateralTokenAddress,
+    collateralTokenAddress: largestPositionOrOrder?.collateralTokenAddress,
   };
 }
