@@ -55,6 +55,7 @@
     "bigdecimal": "0.6.1",
     "bowser": "2.11.0",
     "classnames": "2.3.1",
+    "core-js": "3.39.0",
     "crypto-js": "4.2.0",
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",

@@ -7486,6 +7486,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:3.39.0":
+  version: 3.39.0
+  resolution: "core-js@npm:3.39.0"
+  checksum: 7a3670e9a2a89e0a049daa288d742d09f6e16d27a8945c5e2ef6fc45dc57e5c4bc5db589da05947486f54ae978d14cf27bd3fb1db0b9907000a611e8af37355b
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:~1.0.0":
   version: 1.0.3
   resolution: "core-util-is@npm:1.0.3"
@@ -10160,6 +10167,7 @@ __metadata:
     bowser: 2.11.0
     buffer: 6.0.3
     classnames: 2.3.1
+    core-js: 3.39.0
     crypto-js: 4.2.0
     date-fns: 2.27.0
     env-cmd: ^10.1.0
