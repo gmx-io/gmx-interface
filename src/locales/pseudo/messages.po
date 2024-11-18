@@ -2170,6 +2170,10 @@ msgstr ""
 msgid "Trading Volume"
 msgstr ""
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Reserved for Vesting"
