@@ -14,7 +14,7 @@ const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 export const DEFAULT_LISTING = p("01 Jan 1970");
 
 type MarketUiConfig = {
-  enabled: true;
+  enabled: boolean;
   listingDate: Date;
   marketTokenAddress: string;
   indexTokenAddress: string;
@@ -395,6 +395,51 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       marketTokenAddress: "0xBeB1f4EBC9af627Ca1E5a75981CE1AE97eFeDA22",
       indexTokenAddress: "0x38676f62d166f5CE7De8433F51c6B3D6D9d66C19",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // TRX/USD [WETH-USDC]
+    "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1": {
+      enabled: true,
+      listingDate: p("7 Nov 2024"),
+      marketTokenAddress: "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1",
+      indexTokenAddress: "0xb06aa7E4af937C130dDade66f6ed7642716fe07A",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // TON/USD [WETH-USDC]
+    "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c": {
+      enabled: true,
+      listingDate: p("7 Nov 2024"),
+      marketTokenAddress: "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c",
+      indexTokenAddress: "0xB2f7cefaeEb08Aa347705ac829a7b8bE2FB560f3",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // WLD/USD [WETH-USDC]
+    "0x872b5D567a2469Ed92D252eaCB0EB3BB0769e05b": {
+      enabled: true,
+      listingDate: p("15 Nov 2024"),
+      marketTokenAddress: "0x872b5D567a2469Ed92D252eaCB0EB3BB0769e05b",
+      indexTokenAddress: "0x75B9AdD873641b253718810E6c65dB6d72311FD0",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // BONK/USD [WETH-USDC]
+    "0xFaC5fF56c269432706d47DC82Ab082E9AE7D989E": {
+      enabled: true,
+      listingDate: p("15 Nov 2024"),
+      marketTokenAddress: "0xFaC5fF56c269432706d47DC82Ab082E9AE7D989E",
+      indexTokenAddress: "0x1FD10E767187A92f0AB2ABDEEF4505e319cA06B2",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // TAO/USD [WBTC-USDC]
+    "0xe55e1A29985488A2c8846a91E925c2B7C6564db1": {
+      enabled: false,
+      listingDate: p("15 Nov 2024"),
+      marketTokenAddress: "0xe55e1A29985488A2c8846a91E925c2B7C6564db1",
+      indexTokenAddress: "0x938aef36CAaFbcB37815251B602168087eC14648",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
   },

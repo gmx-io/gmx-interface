@@ -418,7 +418,7 @@ export default function SwapBox(props) {
   }, [maxToTokenOut, toTokenAddress, infoTokens]);
 
   const maxFromTokenInUSD = useMemo(() => {
-    if (fromTokenInfo.maxUsdgAmount === undefined) return 0n;
+    if (!fromTokenInfo || fromTokenInfo.maxUsdgAmount === undefined) return 0n;
 
     const value = bigMath.mulDiv(
       fromTokenInfo.maxUsdgAmount - fromTokenInfo.usdgAmount,
@@ -434,7 +434,7 @@ export default function SwapBox(props) {
   }, [fromTokenInfo]);
 
   const maxFromTokenIn = useMemo(() => {
-    if (fromTokenInfo.maxPrice === undefined) {
+    if (!fromTokenInfo || fromTokenInfo.maxPrice === undefined) {
       return 0n;
     }
     if (maxFromTokenInUSD === undefined) return undefined;
@@ -1755,18 +1755,24 @@ export default function SwapBox(props) {
   }
 
   const maxInValue = useMemo(
-    () => [
-      `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-      `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
-    ],
-    [fromTokenInfo.decimals, fromTokenInfo.symbol, maxFromTokenIn, maxFromTokenInUSD]
+    () =>
+      fromTokenInfo
+        ? [
+            `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
+            `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+          ]
+        : null,
+    [fromTokenInfo, maxFromTokenIn, maxFromTokenInUSD]
   );
   const maxOutValue = useMemo(
-    () => [
-      `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
-      `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
-    ],
-    [maxToTokenOut, maxToTokenOutUSD, toTokenInfo.decimals, toTokenInfo.symbol]
+    () =>
+      toTokenInfo
+        ? [
+            `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
+            `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+          ]
+        : null,
+    [maxToTokenOut, maxToTokenOutUSD, toTokenInfo]
   );
 
   const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");

@@ -8,7 +8,6 @@ import { TokenBalancesData } from "./types";
 
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
-import { getIsFlagEnabled } from "config/ab";
 import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
@@ -79,9 +78,7 @@ export function useTokenBalances(
         result[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
       });
 
-      if (getIsFlagEnabled("testWebsocketBalances")) {
-        resetTokensBalancesUpdates(Object.keys(result));
-      }
+      resetTokensBalancesUpdates(Object.keys(result));
 
       return result;
     },
