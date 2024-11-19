@@ -103,8 +103,8 @@ export function createUpdateEncodedPayload({
     params: [
       orderKey,
       sizeDeltaUsd,
-      convertToContractPrice(acceptablePrice, indexToken?.decimals || 0),
-      convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
+      acceptablePrice !== undefined ? convertToContractPrice(acceptablePrice, indexToken?.decimals || 0) : 0n,
+      triggerPrice !== undefined ? convertToContractPrice(triggerPrice, indexToken?.decimals || 0) : 0n,
       minOutputAmount,
       autoCancel,
     ],
