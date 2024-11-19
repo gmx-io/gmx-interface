@@ -193,7 +193,7 @@ export type PoolsPageBuyResultEvent = {
     type: "GM" | "GLV";
     poolName: string;
     glvAddress: string;
-    amount: number; // Amount in USD
+    amountUsd: number; // Amount in USD
     isFirstBuy: boolean;
     isUserError: boolean;
   };
