@@ -6,35 +6,24 @@ import type {
   LineToolsAndGroupsState,
   StudyTemplateMetaInfo,
 } from "charting_library";
-import { getTokenBySymbol } from "config/tokens";
-import type { Token } from "domain/tokens";
 
 type ChartDataInfo = ChartData & {
   appVersion?: number;
 };
 
 export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
-  chainId: number;
-  charts: ChartDataInfo[] | undefined;
-  setTvCharts: (a: ChartDataInfo[]) => void;
-  onSelectToken: (token: Token) => void;
-  currentAppVersion: number;
-  setTradePageVersion: (version: number) => void;
+  private charts: ChartDataInfo[] | undefined;
+  private setTvCharts: (a: ChartDataInfo[]) => void;
+  private currentAppVersion: number;
 
   constructor(
-    chainId: number,
     charts: ChartDataInfo[] | undefined,
     setTvCharts: (a: ChartDataInfo[]) => void,
-    onSelectToken: (token: Token) => void,
-    currentAppVersion: number,
-    setTradePageVersion: (version: number) => void
+    currentAppVersion: number
   ) {
     this.charts = charts;
     this.setTvCharts = setTvCharts;
-    this.chainId = chainId;
-    this.onSelectToken = onSelectToken;
     this.currentAppVersion = currentAppVersion;
-    this.setTradePageVersion = setTradePageVersion;
   }
   getAllStudyTemplates(): Promise<StudyTemplateMetaInfo[]> {
     return Promise.resolve([]);
@@ -132,12 +121,8 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
     if (!this.charts) return Promise.reject();
     for (let i = 0; i < this.charts.length; ++i) {
       if (this.charts[i].id === id) {
-        const { content, symbol, appVersion = 1 } = this.charts[i];
-        if (this.currentAppVersion !== appVersion) {
-          this.setTradePageVersion(appVersion);
-        }
-        const tokenInfo = getTokenBySymbol(this.chainId, symbol);
-        this.onSelectToken(tokenInfo);
+        const { content } = this.charts[i];
+
         return Promise.resolve(content);
       }
     }

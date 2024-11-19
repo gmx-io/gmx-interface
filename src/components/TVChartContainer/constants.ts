@@ -56,6 +56,7 @@ const disabledFeatures: ChartingLibraryFeatureset[] = [
   "symbol_info",
   "edit_buttons_in_legend",
   "header_undo_redo",
+  "header_saveload",
 ];
 
 const enabledFeatures: ChartingLibraryFeatureset[] = [

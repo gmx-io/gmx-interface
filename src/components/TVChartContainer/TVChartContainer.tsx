@@ -4,7 +4,7 @@ import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { Token, TokenPrices, getMidPrice } from "domain/tokens";
+import { TokenPrices, getMidPrice } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
@@ -30,7 +30,6 @@ export type ChartLine = {
 type Props = {
   chainId: number;
   chartLines: ChartLine[];
-  onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
@@ -48,7 +47,6 @@ export default function TVChartContainer({
   chartToken,
   chainId,
   chartLines,
-  onSelectToken,
   dataProvider,
   datafeed,
   period,
@@ -63,7 +61,7 @@ export default function TVChartContainer({
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
 
-  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
+  const [tradePageVersion] = useTradePageVersion();
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
@@ -163,14 +161,7 @@ export default function TVChartContainer({
       favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,
       load_last_chart: true,
-      save_load_adapter: new SaveLoadAdapter(
-        chainId,
-        tvCharts,
-        setTvCharts,
-        onSelectToken,
-        tradePageVersion,
-        setTradePageVersion
-      ),
+      save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts, tradePageVersion),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
     tvWidgetRef.current!.onChartReady(function () {
@@ -188,6 +179,12 @@ export default function TVChartContainer({
             setPeriod(period);
           }
         });
+
+      tvWidgetRef.current?.subscribe("onAutoSaveNeeded", () => {
+        tvWidgetRef.current?.saveChartToServer(undefined, undefined, {
+          chartName: `gmx-chart-v${tradePageVersion}`,
+        });
+      });
 
       tvWidgetRef.current?.activeChart().dataReady(() => {
         setChartDataLoading(false);

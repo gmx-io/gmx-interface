@@ -12,14 +12,12 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { isIncreaseOrderType, isSwapOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
-import { Token } from "domain/tokens";
 
 import { USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
@@ -57,8 +55,6 @@ export function TVChart() {
   if (!period || !(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }
-
-  const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
 
   const { datafeed } = useTVDatafeed({ dataProvider });
 
@@ -149,10 +145,6 @@ export function TVChart() {
 
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
-
-  function onSelectChartToken(token: Token) {
-    setToTokenAddress(token.address);
-  }
 
   const previousChainId = usePrevious(chainId);
 
@@ -274,7 +266,6 @@ export function TVChart() {
             chartLines={chartLines}
             chartToken={chartTokenProp}
             chainId={chainId}
-            onSelectToken={onSelectChartToken}
             dataProvider={dataProvider}
             datafeed={datafeed}
             period={period}
