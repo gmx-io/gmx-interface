@@ -52,7 +52,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<Record<string, number>>({});
   const tvDataProvider = useRef<TVDataProvider>();
-  const lastBarTime = useRef<number>(0);
+  const lastBarTimeRef = useRef<number>(0);
   const missingBarsInfo = useRef({
     bars: [] as FromOldToNewArray<Bar>,
     isFetching: false,
@@ -83,24 +83,27 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         missingBarsInfo.current.isFetching = true;
         const ticker = tvDataProvider.current?.currentTicker;
         const period = tvDataProvider.current?.currentPeriod;
-        if (ticker && period && lastBarTime.current && !stableTokens.includes(ticker)) {
+
+        if (ticker && period && lastBarTimeRef.current && !stableTokens.includes(ticker)) {
           let data: FromOldToNewArray<Bar> = [];
           try {
-            data = (await tvDataProvider.current!.getMissingBars(chainId, ticker, period, lastBarTime.current)) || [];
+            data =
+              (await tvDataProvider.current!.getMissingBars(chainId, ticker, period, lastBarTimeRef.current)) || [];
           } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e);
             data = [];
           }
           missingBarsInfo.current.bars = data;
-          missingBarsInfo.current.isFetching = false;
         } else {
-          missingBarsInfo.current.isFetching = false;
           missingBarsInfo.current.bars = [];
         }
       } else {
         feedData.current = false;
-        missingBarsInfo.current.isFetching = false;
         missingBarsInfo.current.bars = [];
       }
+
+      missingBarsInfo.current.isFetching = false;
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -120,7 +123,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
       intervalRef,
       missingBarsInfoRef: missingBarsInfo,
       feedDataRef: feedData,
-      lastBarTimeRef: lastBarTime,
+      lastBarTimeRef,
     });
   }, [chainId, stableTokens, supportedResolutions]);
 }
@@ -353,6 +356,7 @@ export function subscribeBars({
 
         onRealtimeCallback(multiplyBarValues(formatTimeInBarToMs(bar), symbolInfo.visualMultiplier));
         processedBarTimes.push(bar.time);
+        lastBarTimeRef.current = bar.time;
       });
       missingBarsInfoRef.current.bars = [];
     } else {

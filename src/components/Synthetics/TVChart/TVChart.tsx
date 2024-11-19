@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMedia, usePrevious } from "react-use";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
-import { convertTokenAddress, getPriceDecimals } from "config/tokens";
+import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import {
   useOrdersInfoData,
@@ -88,11 +88,23 @@ export function TVChart() {
 
         const longOrShortText = order.isLong ? t`Long` : t`Short`;
         const orderTypeText = isIncreaseOrderType(order.orderType) ? t`Inc.` : t`Dec.`;
-        const tokenSymbol = getTokenData(tokensData, positionOrder.marketInfo.indexTokenAddress, "native")?.symbol;
+        const token = getTokenData(tokensData, positionOrder.marketInfo.indexTokenAddress, "native");
+        const tokenSymbol = token?.symbol;
+        const prefix = token ? getTokenVisualMultiplier(token) : "";
+        const tokenVisualMultiplier = token?.visualMultiplier;
 
         return {
-          title: `${longOrShortText} ${orderTypeText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, priceDecimal)),
+          title: `${longOrShortText} ${orderTypeText} ${prefix}${tokenSymbol}`,
+          price: parseFloat(
+            formatAmount(
+              positionOrder.triggerPrice,
+              USD_DECIMALS,
+              priceDecimal,
+              undefined,
+              undefined,
+              tokenVisualMultiplier
+            )
+          ),
         };
       });
 
@@ -104,16 +116,29 @@ export function TVChart() {
           convertTokenAddress(chainId, chartTokenAddress, "wrapped")
       ) {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
-        const tokenSymbol = getTokenData(tokensData, position.marketInfo?.indexTokenAddress, "native")?.symbol;
-        const liquidationPrice = formatAmount(position?.liquidationPrice, USD_DECIMALS, priceDecimal);
+        const token = getTokenData(tokensData, position.marketInfo?.indexTokenAddress, "native");
+        const tokenSymbol = token?.symbol;
+        const prefix = token ? getTokenVisualMultiplier(token) : "";
+        const tokenVisualMultiplier = token?.visualMultiplier;
+
+        const liquidationPrice = formatAmount(
+          position?.liquidationPrice,
+          USD_DECIMALS,
+          priceDecimal,
+          undefined,
+          undefined,
+          tokenVisualMultiplier
+        );
 
         acc.push({
-          title: t`Open ${longOrShortText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal)),
+          title: t`Open ${longOrShortText} ${prefix}${tokenSymbol}`,
+          price: parseFloat(
+            formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
+          ),
         });
         if (liquidationPrice && liquidationPrice !== "NA") {
           acc.push({
-            title: t`Liq. ${longOrShortText} ${tokenSymbol}`,
+            title: t`Liq. ${longOrShortText} ${prefix}${tokenSymbol}`,
             price: parseFloat(liquidationPrice),
           });
         }

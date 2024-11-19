@@ -244,19 +244,24 @@ export class TVDataProvider {
     if (!ticker || !period || !chainId || !from) return;
     const barsInfo = this.barsInfo;
     const periodSeconds = CHART_PERIODS[period];
-    const currentPeriod = getCurrentCandleTime(period);
-    const barsCount = Math.ceil((currentPeriod - from) / periodSeconds) + 1;
+    const currentPeriodStart = getCurrentCandleTime(period);
+    const barsCount = Math.ceil((currentPeriodStart - from) / periodSeconds) + 1;
 
-    if (from === currentPeriod) return;
-    if (barsCount > 0) {
-      const bars = await this.getLimitBars(chainId, ticker, period, barsCount);
-
-      if (bars && ticker === barsInfo.ticker && period === barsInfo.period) {
-        this.liveBars = [{ ...bars.slice(-1)[0], ticker, period }];
-      }
-
-      return bars.filter((bar) => bar.time >= from).sort((a, b) => a.time - b.time) as FromOldToNewArray<Bar>;
+    if (from === currentPeriodStart) {
+      return;
     }
+
+    if (barsCount <= 0) {
+      return;
+    }
+
+    const bars = await this.getLimitBars(chainId, ticker, period, barsCount);
+
+    if (bars && ticker === barsInfo.ticker && period === barsInfo.period) {
+      this.liveBars = [{ ...bars.slice(-1)[0], ticker, period }];
+    }
+
+    return bars.filter((bar) => bar.time >= from).sort((a, b) => a.time - b.time) as FromOldToNewArray<Bar>;
   }
 
   getLiveBars(chainId: number, ticker: string, period: string): Bar[] {
