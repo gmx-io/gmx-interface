@@ -12,7 +12,7 @@ import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent } from "lib/userAnalytics/types";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { FiTwitter } from "react-icons/fi";
 import { RiFileDownloadLine } from "react-icons/ri";
@@ -121,6 +121,18 @@ function PositionShare({
     helperToast.success(t`Link copied to clipboard.`);
   }
 
+  const trackShareTwitter = useCallback(() => {
+    userAnalytics.pushEvent<SharePositionActionEvent>(
+      {
+        event: "SharePositionAction",
+        data: {
+          action: "ShareTwitter",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
+
   return (
     <Modal
       className="position-share-modal"
@@ -151,19 +163,7 @@ function PositionShare({
           <RiFileDownloadLine className="icon" />
           <Trans>Download</Trans>
         </Button>
-        <TrackingLink
-          onClick={() => {
-            userAnalytics.pushEvent<SharePositionActionEvent>(
-              {
-                event: "SharePositionAction",
-                data: {
-                  action: "ShareTwitter",
-                },
-              },
-              { instantSend: true }
-            );
-          }}
-        >
+        <TrackingLink onClick={trackShareTwitter}>
           <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-15" to={tweetLink}>
             <FiTwitter className="icon" />
             <Trans>Tweet</Trans>

@@ -46,7 +46,12 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
         isFirstOrder: Boolean(metricData.isFirstOrder),
       },
     });
-  } else if (metricData.metricType === "decreasePosition") {
+    return;
+  } else if (
+    metricData.metricType === "decreasePosition" ||
+    metricData.metricType === "stopLossOrder" ||
+    metricData.metricType === "takeProfitOrder"
+  ) {
     userAnalytics.pushEvent<TradeBoxConfirmClickEvent>({
       event: "TradeBoxAction",
       data: {
@@ -62,6 +67,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
         isFirstOrder: false,
       },
     });
+    return;
   } else if (metricData.metricType === "swap") {
     userAnalytics.pushEvent<TradeBoxConfirmClickEvent>({
       event: "TradeBoxAction",
@@ -78,6 +84,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
         isFirstOrder: false,
       },
     });
+    return;
   } else if (metricData.metricType === "buyGM") {
     userAnalytics.pushEvent<PoolsPageBuyConfirmEvent>({
       event: "PoolsPageAction",
@@ -86,10 +93,11 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
         type: "GM",
         poolName: metricData.marketName || "",
         glvAddress: "",
-        amount: metricData.marketTokenUsd || 0,
+        amountUsd: metricData.marketTokenUsd || 0,
         isFirstBuy: Boolean(metricData.isFirstBuy),
       },
     });
+    return;
   } else if (metricData.metricType === "buyGLV") {
     userAnalytics.pushEvent<PoolsPageBuyConfirmEvent>({
       event: "PoolsPageAction",
@@ -98,10 +106,11 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
         type: "GLV",
         poolName: metricData.marketName || "",
         glvAddress: metricData.glvAddress || "",
-        amount: metricData.glvTokenUsd || 0,
+        amountUsd: metricData.glvTokenUsd || 0,
         isFirstBuy: Boolean(metricData.isFirstBuy),
       },
     });
+    return;
   }
 }
 
@@ -137,7 +146,11 @@ export function sendUserAnalyticsOrderResultEvent(
         isUserError,
       },
     });
-  } else if (metricData.metricType === "decreasePosition") {
+  } else if (
+    metricData.metricType === "decreasePosition" ||
+    metricData.metricType === "stopLossOrder" ||
+    metricData.metricType === "takeProfitOrder"
+  ) {
     userAnalytics.pushEvent<TradeBoxResultEvent>({
       event: "TradeBoxAction",
       data: {

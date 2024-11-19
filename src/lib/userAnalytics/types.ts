@@ -181,7 +181,7 @@ export type PoolsPageBuyConfirmEvent = {
     type: "GM" | "GLV";
     poolName: string;
     glvAddress: string;
-    amount: number; // Amount in USD
+    amountUsd: number;
     isFirstBuy: boolean;
   };
 };

@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
@@ -134,6 +134,30 @@ function AffiliatesStats({
 
     return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
   }, [affiliateRewardsData, marketsInfoData]);
+
+  const trackCopyCode = useCallback(() => {
+    userAnalytics.pushEvent<ReferralShareEvent>(
+      {
+        event: "ReferralCodeAction",
+        data: {
+          action: "CopyCode",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
+
+  const trackShareTwitter = useCallback(() => {
+    userAnalytics.pushEvent<ReferralShareEvent>(
+      {
+        event: "ReferralCodeAction",
+        data: {
+          action: "ShareTwitter",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
 
   return (
     <div className="referral-body-container">
@@ -325,12 +349,7 @@ function AffiliatesStats({
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
-                              userAnalytics.pushEvent<ReferralShareEvent>({
-                                event: "ReferralCodeAction",
-                                data: {
-                                  action: "CopyCode",
-                                },
-                              });
+                              trackCopyCode();
                               copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
                               helperToast.success("Referral link copied to your clipboard");
                             }}
@@ -338,19 +357,7 @@ function AffiliatesStats({
                           >
                             <BiCopy />
                           </div>
-                          <TrackingLink
-                            onClick={() => {
-                              userAnalytics.pushEvent<ReferralShareEvent>(
-                                {
-                                  event: "ReferralCodeAction",
-                                  data: {
-                                    action: "ShareTwitter",
-                                  },
-                                },
-                                { instantSend: true }
-                              );
-                            }}
-                          >
+                          <TrackingLink onClick={trackShareTwitter}>
                             <a
                               href={getTwitterShareUrl(stat.referralCode)}
                               target="_blank"

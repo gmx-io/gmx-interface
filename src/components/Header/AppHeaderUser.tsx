@@ -19,6 +19,7 @@ import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import { NotifyButton } from "../NotifyButton/NotifyButton";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
+import { useCallback } from "react";
 
 type Props = {
   openSettings: () => void;
@@ -68,26 +69,26 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   const selectorLabel = getChainName(chainId);
 
+  const trackLaunchApp = useCallback(() => {
+    userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
+      {
+        event: "LandingPageAction",
+        data: {
+          action: "LaunchApp",
+          buttonPosition: "StickyHeader",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
+
   if (!active || !account) {
     return (
       <div className="App-header-user">
         <div data-qa="trade" className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink
             className="default-btn"
-            onClick={() => {
-              if (isHomeSite()) {
-                userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
-                  {
-                    event: "LandingPageAction",
-                    data: {
-                      action: "LaunchApp",
-                      buttonPosition: "StickyHeader",
-                    },
-                  },
-                  { instantSend: true }
-                );
-              }
-            }}
+            onClick={trackLaunchApp}
             to={tradeLink!}
             showRedirectModal={showRedirectModal}
           >
@@ -128,20 +129,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
       <div data-qa="trade" className={cx("App-header-trade-link")}>
         <HeaderLink
           className="default-btn"
-          onClick={async () => {
-            if (isHomeSite()) {
-              await userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
-                {
-                  event: "LandingPageAction",
-                  data: {
-                    action: "LaunchApp",
-                    buttonPosition: "StickyHeader",
-                  },
-                },
-                { instantSend: true }
-              );
-            }
-          }}
+          onClick={trackLaunchApp}
           to={tradeLink!}
           showRedirectModal={showRedirectModal}
         >

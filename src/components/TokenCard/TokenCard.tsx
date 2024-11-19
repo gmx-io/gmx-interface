@@ -144,6 +144,15 @@ async function sendUserAnalyticsProtocolTokenEvent(
   }
 }
 
+const trackGMXBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GMX");
+const trackGMXBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GMX");
+const trackGLPBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLP");
+const trackGLPBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLP");
+const trackGLVBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLV");
+const trackGLVBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLV");
+const trackGMBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GM");
+const trackGMBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GM");
+
 async function sendUserAnalyticsProtocolReadMoreEvent() {
   if (isHomeSite()) {
     await userAnalytics.pushEvent<LandingPageProtocolReadMoreEvent>(
@@ -293,7 +302,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               to="/buy_gmx"
               network={ARBITRUM}
               showRedirectModal={showRedirectModal}
-              onClick={() => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GMX")}
+              onClick={trackGMXBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
@@ -304,7 +313,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               to="/buy_gmx"
               network={AVALANCHE}
               showRedirectModal={showRedirectModal}
-              onClick={() => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GMX")}
+              onClick={trackGMXBuyAvalanche}
             >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
@@ -356,7 +365,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
-              onClick={() => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLV")}
+              onClick={trackGLVBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
@@ -368,7 +377,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
                 chainId={chainId}
                 active={active}
                 showRedirectModal={showRedirectModal}
-                onClick={() => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLV")}
+                onClick={trackGLVBuyAvalanche}
               >
                 <Trans>View on Avalanche</Trans>
               </BuyLink>
@@ -416,7 +425,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
-              onClick={() => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GM")}
+              onClick={trackGMBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
@@ -428,7 +437,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
-              onClick={() => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GM")}
+              onClick={trackGMBuyAvalanche}
             >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
@@ -478,7 +487,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
-              onClick={() => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLP")}
+              onClick={trackGLPBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
@@ -489,7 +498,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
-              onClick={() => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLP")}
+              onClick={trackGLPBuyAvalanche}
             >
               <Trans>View on Avalanche</Trans>
             </BuyLink>

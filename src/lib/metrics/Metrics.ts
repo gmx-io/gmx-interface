@@ -106,7 +106,7 @@ export class Metrics {
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
     const { time, isError, data, event } = params;
 
-    const payload = {
+    const payload: EventPayload = {
       isDev: isDevelopment(),
       host: window.location.host,
       url: window.location.href,
@@ -119,7 +119,7 @@ export class Metrics {
         ...this.globalMetricData,
         wallets: this.wallets,
       },
-    } as EventPayload;
+    };
 
     if (this.debug) {
       // eslint-disable-next-line no-console
@@ -133,33 +133,37 @@ export class Metrics {
   };
 
   pushCounter<T extends { event: string; data?: object } = never>(event: T["event"], data?: T["data"]) {
+    const payload: CounterPayload = {
+      event,
+      isDev: isDevelopment(),
+      host: window.location.host,
+      url: window.location.href,
+      version: getAppVersion(),
+      abFlags: this.globalMetricData.abFlags,
+      customFields: data ? this.serializeCustomFields(data) : undefined,
+    };
+
     this.queue.push({
       type: "counter",
-      payload: {
-        event,
-        isDev: isDevelopment(),
-        host: window.location.host,
-        url: window.location.href,
-        version: getAppVersion(),
-        abFlags: this.globalMetricData.abFlags,
-        customFields: data ? this.serializeCustomFields(data) : undefined,
-      } as CounterPayload,
+      payload,
     });
   }
 
   pushTiming<T extends { event: string; data?: object } = never>(event: T["event"], time: number, data?: T["data"]) {
+    const payload: TimingPayload = {
+      event,
+      isDev: isDevelopment(),
+      host: window.location.host,
+      url: window.location.href,
+      version: getAppVersion(),
+      time,
+      abFlags: this.globalMetricData.abFlags,
+      customFields: data ? this.serializeCustomFields(data) : undefined,
+    };
+
     this.queue.push({
       type: "timing",
-      payload: {
-        event,
-        isDev: isDevelopment(),
-        host: window.location.host,
-        url: window.location.href,
-        version: getAppVersion(),
-        time,
-        abFlags: this.globalMetricData.abFlags,
-        customFields: data ? this.serializeCustomFields(data) : undefined,
-      } as TimingPayload,
+      payload,
     });
   }
 

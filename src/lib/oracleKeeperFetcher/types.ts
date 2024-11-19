@@ -19,6 +19,7 @@ export type CounterPayload = {
   version: string;
   isDev: boolean;
   host: string;
+  url: string;
   abFlags: { [key: string]: boolean };
   customFields?: { [key: string]: any };
 };
@@ -29,6 +30,7 @@ export type TimingPayload = {
   time: number;
   isDev: boolean;
   host: string;
+  url: string;
   abFlags: { [key: string]: boolean };
   customFields?: { [key: string]: any };
 };

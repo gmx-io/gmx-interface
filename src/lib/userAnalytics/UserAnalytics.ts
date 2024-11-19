@@ -44,7 +44,7 @@ export class UserAnalytics {
 
   getLastEventTime() {
     const lastEventTime = localStorage.getItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY);
-    return lastEventTime ? parseInt(lastEventTime) : 0;
+    return parseInt(lastEventTime as string) || 0;
   }
 
   setLastEventTime(time: number) {
@@ -58,7 +58,7 @@ export class UserAnalytics {
     return dedupEventsStorage;
   }
 
-  shouldDedupEvent(key: string, event: string, dedupInterval: number = MAX_DEDUP_INTERVAL) {
+  shouldSkipEvent(key: string, event: string, dedupInterval: number = MAX_DEDUP_INTERVAL) {
     const dedupEventsStorage = this.getDedupEventsStorage();
 
     const keyAndEvent = `${key}:${event}`;
@@ -107,9 +107,9 @@ export class UserAnalytics {
 
     const sessionId = this.getOrSetSessionId();
 
-    const dedupKey = options.onlyOncePerSession ? sessionId : options.dedupKey;
+    const dedupKey = options.dedupKey ? options.dedupKey : options.onlyOncePerSession ? sessionId : undefined;
 
-    if (dedupKey && this.shouldDedupEvent(dedupKey, params.event, options.dedupInterval)) {
+    if (dedupKey && this.shouldSkipEvent(dedupKey, params.event, options.dedupInterval)) {
       return;
     }
 
