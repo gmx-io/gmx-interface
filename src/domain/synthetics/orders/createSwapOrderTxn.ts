@@ -156,6 +156,7 @@ async function getParams(
       executionFee: p.executionFee,
       callbackGasLimit: 0n,
       minOutputAmount,
+      validFromTime: 0n,
     },
     autoCancel: false,
     orderType: p.orderType,
