@@ -67,7 +67,8 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
-import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
+import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
+import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -851,6 +852,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               [spender]: { value, createdAt: Date.now() },
             },
           }));
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: {
+              action: "ApproveSuccess",
+            },
+          });
         }
       );
 

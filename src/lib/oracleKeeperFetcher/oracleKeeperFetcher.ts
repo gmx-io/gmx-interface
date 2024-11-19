@@ -1,14 +1,13 @@
+import { isLocal } from "config/env";
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
-import { isLocal, isDevelopment, APP_VERSION } from "config/env";
 import {
-  OracleFetcher,
   BatchReportBody,
-  EventPayload,
   DayPriceCandle,
+  OracleFetcher,
   RawIncentivesStats,
   TickersResponse,
   UserFeedbackBody,

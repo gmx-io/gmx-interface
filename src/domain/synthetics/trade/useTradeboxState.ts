@@ -681,11 +681,11 @@ export function useTradeboxState(
               action: "InteractionStarted",
             },
           },
-          { onlyOncePerSession: true }
+          { dedupKey: marketAddress }
         );
       }
     },
-    [enabled, chainId, fromTokenInputValue]
+    [enabled, chainId, fromTokenInputValue, marketAddress]
   );
 
   return {

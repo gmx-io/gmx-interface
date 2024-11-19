@@ -97,15 +97,15 @@ export type TradeBoxInteractionStartedEvent = {
   };
 };
 
-export type TradeBoxApproveClickEvent = {
-  event: "TradeBoxAction";
+export type TokenApproveClickEvent = {
+  event: "TokenApproveAction";
   data: {
     action: "ApproveClick";
   };
 };
 
-export type TradeBoxApproveResultEvent = {
-  event: "TradeBoxAction";
+export type TokenApproveResultEvent = {
+  event: "TokenApproveAction";
   data: {
     action: "ApproveSuccess" | "ApproveFail";
   };

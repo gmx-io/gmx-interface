@@ -7,6 +7,8 @@ import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
 
 import "./ApproveTokenButton.scss";
 import useWallet from "lib/wallets/useWallet";
+import { userAnalytics } from "lib/userAnalytics";
+import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 
 type Props = {
   spenderAddress: string;
@@ -29,6 +31,13 @@ export function ApproveTokenButton(p: Props) {
     const wrappedToken = getWrappedToken(chainId);
     const tokenAddress = isAddressZero(p.tokenAddress) ? wrappedToken.address : p.tokenAddress;
 
+    userAnalytics.pushEvent<TokenApproveClickEvent>({
+      event: "TokenApproveAction",
+      data: {
+        action: "ApproveClick",
+      },
+    });
+
     approveTokens({
       setIsApproving,
       signer,
@@ -42,6 +51,14 @@ export function ApproveTokenButton(p: Props) {
       onApproveSubmitted: () => {
         setIsApproveSubmitted(true);
         p.onApproveSubmitted?.();
+      },
+      onApproveFail: () => {
+        userAnalytics.pushEvent<TokenApproveResultEvent>({
+          event: "TokenApproveAction",
+          data: {
+            action: "ApproveFail",
+          },
+        });
       },
     });
   }
