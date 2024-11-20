@@ -111,19 +111,10 @@ export function getOrderInfo(p: {
       toTokenAmount: toAmount,
     });
 
-    // const title = getSwapOrderTitle({
-    //   initialCollateralToken,
-    //   targetCollateralToken,
-    //   minOutputAmount: order.minOutputAmount,
-    //   initialCollateralAmount: order.initialCollateralDeltaAmount,
-    // });
-    const title = "TODO";
-
     const orderInfo: SwapOrderInfo = {
       ...order,
       swapPathStats,
       triggerRatio,
-      title,
       initialCollateralToken,
       targetCollateralToken,
     };

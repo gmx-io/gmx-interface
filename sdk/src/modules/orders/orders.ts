@@ -22,17 +22,21 @@ import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
 
 export class Orders extends Module {
   async getOrders({
+    account: _account,
     marketsInfoData,
     tokensData,
     orderTypesFilter = [],
     marketsDirectionsFilter = [],
   }: {
+    account?: string;
     marketsInfoData: MarketsInfoData;
     tokensData: TokensData;
     orderTypesFilter?: OrderType[];
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
   }) {
-    if (!this.account) {
+    const account = _account || this.account;
+
+    if (!account) {
       return {
         count: 0,
         ordersInfoData: {},
@@ -61,7 +65,7 @@ export class Orders extends Module {
     const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
     const orders = await this.sdk
-      .executeMulticall(buildGetOrdersMulticall(this.chainId, this.account))
+      .executeMulticall(buildGetOrdersMulticall(this.chainId, account))
       .then(parseGetOrdersResponse);
 
     const filteredOrders = orders.orders.filter((order) => {
@@ -193,7 +197,7 @@ export class Orders extends Module {
         account,
         collateralAddress: collateralToken.address,
       })
-    ) as PositionOrderInfo[];
+    );
 
     const { autoCancelOrdersLimit } = await this.sdk.positions.getMaxAutoCancelOrders({
       positionOrders,

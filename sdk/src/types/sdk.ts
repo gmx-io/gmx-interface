@@ -11,10 +11,8 @@ export interface GmxSdkConfig {
   oracleUrl: string;
   /** Blockhain RPC URL */
   rpcUrl: string;
-  /** GMX Subgraph URLs */
-  subgraph: {
-    subsquid?: string;
-  };
+  /** GMX Subsquid URL */
+  subsquidUrl: string;
 
   /** Custom viem's public and private client */
   publicClient?: PublicClient;

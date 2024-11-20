@@ -18,9 +18,7 @@ const sdk = new GmxSdk({
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   walletClient: useWallet().walletClient,
-  subgraph: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
-  },
+  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
 });
 
 const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
@@ -151,7 +149,28 @@ sdk.orders.createIncreaseOrder({
   marketInfo,
   indexToken: marketInfo.indexToken,
   increaseAmounts: {
-    // amounts for position
+    initialCollateralAmount: 3000000n,
+    initialCollateralUsd: 2999578868393486100000000000000n,
+    collateralDeltaAmount: 2997003n,
+    collateralDeltaUsd: 2996582289103961007386100000000n,
+    indexTokenAmount: 1919549334876037n,
+    sizeDeltaUsd: 5993158579050185227800000000000n,
+    sizeDeltaInTokens: 1919536061202302n,
+    estimatedLeverage: 20000n,
+    indexPrice: 3122169600000000000000000000000000n,
+    initialCollateralPrice: 999859622797828700000000000000n,
+    collateralPrice: 999859622797828700000000000000n,
+    triggerPrice: 0n,
+    acceptablePrice: 3122191190655414690893787784152819n,
+    acceptablePriceDeltaBps: 0n,
+    positionFeeUsd: 2996579289525092613900000000n,
+    swapPathStats: undefined,
+    uiFeeUsd: 0n,
+    swapUiFeeUsd: 0n,
+    feeDiscountUsd: 0n,
+    borrowingFeeUsd: 0n,
+    fundingFeeUsd: 0n,
+    positionPriceImpactDeltaUsd: 41444328240807630917223064n,
   },
 });
 ```

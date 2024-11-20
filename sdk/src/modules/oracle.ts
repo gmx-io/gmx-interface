@@ -36,11 +36,6 @@ export class Oracle {
         }
 
         return res.markets;
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        throw e;
       });
   }
 
@@ -54,12 +49,7 @@ export class Oracle {
             isSynthetic: synthetic,
           };
         })
-      )
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        throw e;
-      });
+      );
   }
 
   getTickers(): Promise<TickersResponse> {
@@ -71,11 +61,6 @@ export class Oracle {
         }
 
         return res;
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        throw e;
       });
   }
 }

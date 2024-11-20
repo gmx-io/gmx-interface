@@ -1,4 +1,3 @@
-import { getSubgraphUrl } from "configs/subgraph";
 import { getWrappedToken } from "configs/tokens";
 import merge from "lodash/merge";
 import { MarketsInfoData } from "types/markets";
@@ -101,7 +100,7 @@ export async function fetchTradeActions({
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
 }): Promise<TradeAction[]> {
-  const endpoint = getSubgraphUrl(sdk, "syntheticsStats");
+  const endpoint = sdk.config.subsquidUrl;
   const chainId = sdk.chainId;
 
   if (!endpoint) {

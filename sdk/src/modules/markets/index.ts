@@ -1,7 +1,6 @@
 import { zeroAddress } from "viem";
 
 import { getContract } from "configs/contracts";
-import { getSubgraphUrl } from "configs/subgraph";
 import { convertTokenAddress, getToken } from "configs/tokens";
 
 import SyntheticsReader from "abis/SyntheticsReader.json";
@@ -445,7 +444,7 @@ export class Markets extends Module {
   async getDailyVolumes(): Promise<Record<string, bigint> | undefined> {
     const { marketsAddresses } = await this.getMarkets();
 
-    const endpoint = getSubgraphUrl(this.sdk, "subsquid");
+    const endpoint = this.sdk.config.subsquidUrl;
 
     if (!marketsAddresses || !endpoint) {
       return;

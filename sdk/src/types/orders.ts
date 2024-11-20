@@ -62,7 +62,7 @@ export type Order = {
 };
 
 export type SwapOrderInfo = Order & {
-  title: string;
+  title?: string;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio;
   initialCollateralToken: TokenData;
