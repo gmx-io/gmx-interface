@@ -2,16 +2,15 @@ import uniqueId from "lodash/uniqueId";
 
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { sleep } from "lib/sleep";
-import { promiseWithResolvers } from "lib/utils";
 
-import { emitMetricEvent, emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { getAbFlags } from "config/ab";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
+import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { MAX_TIMEOUT, MulticallProviderUrls } from "./Multicall";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
-import { getAbFlags } from "config/ab";
-import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
-import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
 
@@ -87,7 +86,7 @@ export async function executeMulticallWorker(
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
   });
 
-  const { promise, resolve, reject } = promiseWithResolvers<MulticallResult<any> | undefined>();
+  const { promise, resolve, reject } = Promise.withResolvers<MulticallResult<any> | undefined>();
   promises[id] = { resolve, reject };
 
   const internalMulticallTimeout = MAX_TIMEOUT;

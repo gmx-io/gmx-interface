@@ -427,7 +427,7 @@ function AffiliatesStats({
                         let token;
                         try {
                           token = getToken(chainId, tokenAddress);
-                        } catch {
+                        } catch (error) {
                           token = getNativeToken(chainId);
                         }
                         acc[token.address] = acc[token.address] ?? 0n;

@@ -62,7 +62,7 @@ function loadAbStorage(): void {
       if (changed) {
         localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
       }
-    } catch {
+    } catch (error) {
       initAbStorage();
     }
   }

@@ -79,7 +79,7 @@ function PositionShare({
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
-        } catch {
+        } catch (error) {
           setUploadedImageInfo(null);
           setUploadedImageError(t`Image generation error, please refresh and try again.`);
         }
