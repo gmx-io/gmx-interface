@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { getIsFlagEnabled } from "config/ab";
 import { ethers, Wallet } from "ethers";
 import { getBestNonce, getGasLimit, getGasPrice } from "lib/contracts";
 import { getErrorMessage } from "lib/contracts/transactionErrors";
@@ -20,11 +19,6 @@ export async function prepareOrderTxn(
   simulationPromise?: Promise<any>,
   metricId?: OrderMetricId
 ) {
-  if (!getIsFlagEnabled("testParallelSimulation")) {
-    await simulationPromise;
-    return { gasLimit: undefined, gasPriceData: undefined };
-  }
-
   if (!contract.runner?.provider) {
     helperToast.error(t`Error preparing transaction. Provider is not defined`);
     throw new Error("Provider is not defined");
