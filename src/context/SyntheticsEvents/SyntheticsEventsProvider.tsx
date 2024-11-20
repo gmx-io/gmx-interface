@@ -648,7 +648,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      debugger; // eslint-disable-line
       const data: PositionIncreaseEvent = {
         positionKey: getPositionKey(
           eventData.addressItems.items.account,
@@ -671,7 +670,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         isLong: eventData.boolItems.items.isLong,
-        increasedAtTime: eventData.uintItems.items.increasedAtTime,
+        increasedAtTime: eventData.uintItems.items.increasedAtTime ?? BigInt(Math.trunc(Date.now() / 1000)),
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -734,7 +733,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         pnlUsd: eventData.intItems.items.pnlUsd,
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
-        decreasedAtTime: eventData.uintItems.items.decreasedAtTime,
+        decreasedAtTime: eventData.uintItems.items.decreasedAtTime ?? BigInt(Math.trunc(Date.now() / 1000)),
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
