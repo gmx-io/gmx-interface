@@ -38,7 +38,8 @@
 .Checkbox-label {
   display: inline-block;
   vertical-align: middle;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-medium);
+  line-height: var(--line-height-body-medium);
   text-align: left;
   flex: 1;
 }
@@ -48,6 +49,6 @@
   display: flex;
   grid-template-columns: 1fr auto;
   flex-direction: row-reverse;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   margin-bottom: 0.465rem;
 }

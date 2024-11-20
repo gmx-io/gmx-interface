@@ -78,13 +78,13 @@ export default function ChartTokenSelector(props: Props) {
                 "flex-row items-center": oneRowLabels,
               })}
             >
-              <span>
+              <span className="text-body-large">
                 {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                 {selectedToken.symbol} / USD
               </span>
               {poolName && (
                 <span
-                  className={cx("text-12 font-normal text-gray-300", {
+                  className={cx("text-body-small font-normal text-gray-300", {
                     "ml-8": oneRowLabels,
                   })}
                 >

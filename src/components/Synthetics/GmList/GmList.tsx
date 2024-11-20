@@ -151,7 +151,7 @@ export function GmList({
       <TableScrollFadeContainer>
         <table className="w-[max(100%,1100px)]">
           <thead>
-            <TableTheadTr bordered>
+            <TableTheadTr bordered className="text-body-large">
               <TableTh>
                 <Trans>POOL</Trans>
               </TableTh>
@@ -524,7 +524,7 @@ function GmListItem({
         </div>
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTd>
-      <TableTd>{formatUsdPrice(token.prices?.minPrice)}</TableTd>
+      <TableTd className="text-body-large">{formatUsdPrice(token.prices?.minPrice)}</TableTd>
       <TableTd>
         <TokenValuesInfoCell
           token={formatTokenAmount(totalSupply, token.decimals, token.symbol, {

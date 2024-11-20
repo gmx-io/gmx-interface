@@ -1,6 +1,6 @@
 .RedirectModal .Modal-content {
   width: 34rem;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   line-height: 1.9rem;
 }
 

@@ -176,7 +176,7 @@ export function LeaderboardContainer() {
           <h1 className="text-34 font-bold" data-qa="leaderboard-page">
             {title} <img alt={t`Chain Icon`} src={getIcon(page.isCompetition ? page.chainId : chainId, "network")} />
           </h1>
-          <div className="Leaderboard-Title__description">{description}</div>
+          <div className="Page-description">{description}</div>
         </div>
       </div>
       {!isCompetition && (
