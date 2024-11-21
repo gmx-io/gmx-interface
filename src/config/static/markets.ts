@@ -442,6 +442,42 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // BOME/USD [WBTC/USDC]
+    "0x71237F8C3d1484495A136022E16840b70fF84a69": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+      marketTokenAddress: "0x71237F8C3d1484495A136022E16840b70fF84a69",
+      indexTokenAddress: "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // FLOKI/USD [WBTC/USDC]
+    "0xfD46a5702D4d97cE0164375744c65F0c31A3901b": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+      marketTokenAddress: "0xfD46a5702D4d97cE0164375744c65F0c31A3901b",
+      indexTokenAddress: "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // MEME/USD [WBTC/USDC]
+    "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+      marketTokenAddress: "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C",
+      indexTokenAddress: "0xaF770F03518686a365300ab35AD860e99967B2f0",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // MEW/USD [WBTC/USDC]
+    "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+      marketTokenAddress: "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244",
+      indexTokenAddress: "0x5503CF72f54b6d692d36BBCD391516A7dE068687",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
