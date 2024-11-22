@@ -43,6 +43,18 @@ export const useTradeboxPoolWarnings = (
     [marketInfo]
   );
 
+  const hasEnoughLiquidity = useCallback(
+    (marketInfo: MarketInfo) => {
+      const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
+      const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+
+      return isLong
+        ? longLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0)
+        : shortLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0);
+    },
+    [increaseAmounts, isLong]
+  );
+
   const WithActon = useCallback(
     ({ children }: { children: ReactNode }) =>
       withActions ? (
@@ -66,11 +78,8 @@ export const useTradeboxPoolWarnings = (
   const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
   const minOpenFeesMarket = (marketsOptions?.minOpenFeesMarket?.marketAddress &&
     getByKey(marketsInfoData, marketsOptions?.minOpenFeesMarket.marketAddress)) as MarketInfo | undefined;
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
-  const isOutPositionLiquidity = isLong
-    ? longLiquidity < (increaseAmounts?.sizeDeltaUsd || 0)
-    : shortLiquidity < (increaseAmounts?.sizeDeltaUsd || 0);
+
+  const isOutPositionLiquidity = !hasEnoughLiquidity(marketInfo);
   const marketWithOrder = marketsOptions?.marketWithOrder;
 
   const positionFeeBeforeDiscountBps =
@@ -106,6 +115,7 @@ export const useTradeboxPoolWarnings = (
     !marketWithPosition &&
     !hasExistingOrder &&
     marketWithOrder &&
+    hasEnoughLiquidity(marketWithOrder) &&
     !isSelectedMarket(marketWithOrder);
 
   const canShowHasBetterExecutionFeesWarning =
@@ -123,6 +133,9 @@ export const useTradeboxPoolWarnings = (
 
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;
 
+  const showHasExistingOrderButNoLiquidityWarning =
+    !hasExistingOrder && marketWithOrder && !hasEnoughLiquidity(marketWithOrder);
+
   if (
     !showHasExistingPositionWarning &&
     !showHasNoSufficientLiquidityInAnyMarketWarning &&
@@ -130,7 +143,8 @@ export const useTradeboxPoolWarnings = (
     !showHasInsufficientLiquidityAndNoPositionWarning &&
     !showHasExistingOrderWarning &&
     !showHasBetterOpenFeesWarning &&
-    !showHasExistingPositionButNotEnoughLiquidityWarning
+    !showHasExistingPositionButNotEnoughLiquidityWarning &&
+    !showHasExistingOrderButNoLiquidityWarning
   ) {
     return null;
   }
@@ -184,15 +198,17 @@ export const useTradeboxPoolWarnings = (
         <Trans>
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
-            >
-              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
-            </span>
-            .
-          </WithActon>
+          {hasEnoughLiquidity(minOpenFeesMarket) && (
+            <WithActon>
+              <span
+                className="clickable muted underline"
+                onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
+              >
+                Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
+              </span>
+              .
+            </WithActon>
+          )}
         </Trans>
       </AlertInfo>
     );
@@ -238,6 +254,17 @@ export const useTradeboxPoolWarnings = (
             </span>
             .
           </WithActon>
+        </Trans>
+      </AlertInfo>
+    );
+  }
+
+  if (showHasExistingOrderButNoLiquidityWarning) {
+    warning.push(
+      <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
+        <Trans>
+          You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool but it lacks
+          liquidity for this order.
         </Trans>
       </AlertInfo>
     );

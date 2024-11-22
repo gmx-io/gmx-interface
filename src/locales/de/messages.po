@@ -2170,6 +2170,10 @@ msgstr ""
 msgid "Trading Volume"
 msgstr ""
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Reserved for Vesting"
@@ -2980,8 +2984,8 @@ msgid "Debug values are not available"
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr ""
+#~ msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/StakeV2.tsx
@@ -3309,6 +3313,10 @@ msgstr "Einzahlung fehlgeschlagen"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Markttausch anfordern"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
