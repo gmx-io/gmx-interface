@@ -1,11 +1,10 @@
 import { Trans } from "@lingui/macro";
 import SpinningLoader from "components/Common/SpinningLoader";
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
 import gmxLogo from "img/gmx-logo-with-name.svg";
 import { getHomeUrl } from "lib/legacy";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals } from "lib/numbers";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
@@ -40,8 +39,9 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     const isMobile = useMedia("(max-width: 400px)");
     const { code, success } = userAffiliateCode;
     const homeURL = getHomeUrl();
-    const priceDecimals = useSelector(makeSelectMarketPriceDecimals(indexToken?.address));
     const style = useMemo(() => ({ backgroundImage: `url(${sharePositionBgImg})` }), [sharePositionBgImg]);
+
+    const priceDecimals = calculateDisplayDecimals(markPrice, undefined, indexToken.visualMultiplier);
 
     return (
       <div className="relative">
