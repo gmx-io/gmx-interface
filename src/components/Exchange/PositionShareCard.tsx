@@ -9,6 +9,7 @@ import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
+import { getTokenVisualMultiplier } from "config/tokens";
 
 type Props = {
   entryPrice: bigint | undefined;
@@ -50,7 +51,10 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
           <ul className="info">
             <li className="side">{isLong ? "LONG" : "SHORT"}</li>
             <li>{formatAmount(leverage, 4, 2, true)}x&nbsp;</li>
-            <li>{indexToken.symbol} USD</li>
+            <li>
+              {getTokenVisualMultiplier(indexToken)}
+              {indexToken.symbol} USD
+            </li>
           </ul>
           <h3 className="pnl">{formatPercentage(pnlAfterFeesPercentage, { signed: true })}</h3>
           <div className="prices">
@@ -59,6 +63,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               <p className="price">
                 {formatUsd(entryPrice, {
                   displayDecimals: priceDecimals,
+                  visualMultiplier: indexToken.visualMultiplier,
                 })}
               </p>
             </div>
@@ -67,6 +72,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               <p className="price">
                 {formatUsd(markPrice, {
                   displayDecimals: priceDecimals,
+                  visualMultiplier: indexToken.visualMultiplier,
                 })}
               </p>
             </div>
