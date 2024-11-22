@@ -532,6 +532,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "PENDLE",
+      symbol: "PENDLE",
+      address: "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8",
+      decimals: 18,
+      priceDecimals: 4,
+      imageUrl: "https://assets.coingecko.com/coins/images/15069/standard/Pendle_Logo_Normal-03.png?1696514728",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/pendle",
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
