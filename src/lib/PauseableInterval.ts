@@ -1,10 +1,12 @@
+import { useSequentialTimedSWR } from "domain/synthetics/tokens/useSequentialTimedSWR";
+
 type PauseableIntervalFunction<T> = (pausedParams: {
   wasPausedSinceLastCall: boolean;
   lastReturnedValue: Awaited<T> | undefined;
 }) => T | Promise<T>;
 
 export class PauseableInterval<T = undefined> {
-  private intervalId: number;
+  private timerId: number | undefined;
   private wasPausedSinceLastCall = false;
   private lastReturnedValue: Awaited<T> | undefined;
   private state: "paused" | "running" = "running";
@@ -13,11 +15,7 @@ export class PauseableInterval<T = undefined> {
     private cb: PauseableIntervalFunction<T>,
     private interval: number
   ) {
-    this.executeCallback();
-
-    this.intervalId = window.setInterval(() => {
-      this.executeCallback();
-    }, interval);
+    this.scheduleNextExecution(0);
   }
 
   pause() {
@@ -25,13 +23,15 @@ export class PauseableInterval<T = undefined> {
       return;
     }
 
-    window.clearInterval(this.intervalId);
+    window.clearTimeout(this.timerId);
+    this.timerId = undefined;
     this.wasPausedSinceLastCall = true;
     this.state = "paused";
   }
 
   destroy() {
-    window.clearInterval(this.intervalId);
+    window.clearTimeout(this.timerId);
+    this.timerId = undefined;
   }
 
   resume() {
@@ -41,30 +41,40 @@ export class PauseableInterval<T = undefined> {
 
     this.state = "running";
 
-    this.executeCallback();
-
-    this.intervalId = window.setInterval(() => {
-      this.executeCallback();
-    }, this.interval);
+    this.scheduleNextExecution(0);
   }
 
   private async executeCallback() {
-    const wasPausedBeforeCallback = this.wasPausedSinceLastCall;
-
-    const result = await Promise.resolve(
-      this.cb({
-        wasPausedSinceLastCall: this.wasPausedSinceLastCall,
-        lastReturnedValue: this.lastReturnedValue,
-      })
-    );
+    const result = await this.cb({
+      wasPausedSinceLastCall: this.wasPausedSinceLastCall,
+      lastReturnedValue: this.lastReturnedValue,
+    });
     this.lastReturnedValue = result;
+  }
 
-    const wasPausedDuringCallback = this.wasPausedSinceLastCall;
+  private scheduleNextExecution(delay: number) {
+    this.timerId = window.setTimeout(async () => {
+      const start = Date.now();
+      const wasPausedBeforeCallback = this.wasPausedSinceLastCall;
 
-    if (!wasPausedBeforeCallback && wasPausedDuringCallback) {
-      this.wasPausedSinceLastCall = true;
-    } else {
-      this.wasPausedSinceLastCall = false;
-    }
+      await this.executeCallback();
+
+      const isPausedAfterCallback = this.wasPausedSinceLastCall;
+
+      if (!wasPausedBeforeCallback && isPausedAfterCallback) {
+        this.wasPausedSinceLastCall = true;
+      } else {
+        this.wasPausedSinceLastCall = false;
+      }
+
+      if (this.state === "paused") {
+        this.timerId = undefined;
+        return;
+      }
+
+      const end = Date.now();
+      const nextDelay = Math.max(this.interval - (end - start), 0);
+      this.scheduleNextExecution(nextDelay);
+    }, delay);
   }
 }

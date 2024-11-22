@@ -47,6 +47,8 @@ const V2_UPDATE_INTERVAL = 1000;
 export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
+  private visibilityHandler: () => void;
+  private tickQueues: Record<string, Bar[]> = {};
 
   constructor(
     private chainId: number,
@@ -58,13 +60,15 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     metrics.startTimer("candlesLoad");
     metrics.startTimer("candlesDisplay");
 
-    document.addEventListener("visibilitychange", () => {
+    this.visibilityHandler = () => {
       if (document.visibilityState === "hidden") {
         this.pauseAll();
       } else {
         this.resumeAll();
       }
-    });
+    };
+
+    document.addEventListener("visibilitychange", this.visibilityHandler);
   }
 
   searchSymbols(): void {
@@ -233,15 +237,16 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     const visualMultiplier = parseInt(symbolInfo.unit_id ?? "1");
 
     const interval = new PauseableInterval<Bar | undefined>(
-      async ({ wasPausedSinceLastCall, lastReturnedValue }) => {
+      async ({ lastReturnedValue }) => {
+        let start = performance.now();
         let candlesToFetch = 1;
 
         const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
 
-        if (wasPausedSinceLastCall && lastReturnedValue) {
+        if (lastReturnedValue) {
           const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
-          const nowSeconds = Math.floor(Date.now() / 1000);
-          const diff = Math.abs(nowSeconds - lastReturnedValue.time);
+
+          const diff = Math.abs(currentCandleTime - lastReturnedValue.time);
           if (diff >= periodSeconds) {
             candlesToFetch = Math.ceil(diff / periodSeconds);
           }
@@ -249,9 +254,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           console.log("diff", diff, "candles to fetch", candlesToFetch);
         }
 
-        console.log("was paused since last call", wasPausedSinceLastCall, "candles to fetch", candlesToFetch);
+        console.log("candles to fetch", candlesToFetch);
 
         let prices: FromOldToNewArray<Bar> = [];
+        let fetchStart = performance.now();
         try {
           prices = !isStable
             ? await this.fetchCandles(symbolInfo.name, resolution, candlesToFetch)
@@ -266,6 +272,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           console.error("error fetching candles", e);
           return lastReturnedValue;
         }
+
+        console.log("fetch time", performance.now() - fetchStart);
 
         console.log(
           "got len",
@@ -285,19 +293,37 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           if (lastReturnedValue?.time && price.time < lastReturnedValue.time) {
             continue;
           }
+          console.log("pre patch", lastReturnedValue?.time);
 
           if (lastReturnedValue?.time && price.time > lastReturnedValue.time && !didPatchPreviousCandle) {
             didPatchPreviousCandle = true;
             const previousBarWithNewClose = { ...lastReturnedValue, close: price.open };
-            onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
+            console.log(
+              "patching previous candle",
+              previousBarWithNewClose,
+              "with time",
+              previousBarWithNewClose.time,
+              multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier)
+            );
+
+            await Promise.resolve().then(() => {
+              console.log("[] patch");
+
+              onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
+            });
           }
 
           const bar = multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier);
 
-          onTick(bar);
+          await Promise.resolve().then(() => {
+            console.log("[] tick", bar);
+            onTick(bar);
+          });
+
           newLastReturnedValue = price;
         }
 
+        console.log("time", performance.now() - start);
         return newLastReturnedValue;
       },
       this.tradePageVersion === 1 ? V1_UPDATE_INTERVAL : V2_UPDATE_INTERVAL
@@ -397,10 +423,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     ).toReversed();
   }
 
-  // private getStableCandles(s)
+  private queueTick(listenerGuid: string, onTick: SubscribeBarsCallback, bar: Bar) {
+    if (!(listenerGuid in this.tickQueues)) {
+      this.tickQueues[listenerGuid] = [];
+    }
+
+    this.tickQueues[listenerGuid].push(bar);
+  }
 
   destroy() {
     console.log("destroying datafeed");
     Object.values(this.subscriptions).forEach((subscription) => subscription.destroy());
+    document.removeEventListener("visibilitychange", this.visibilityHandler);
   }
 }

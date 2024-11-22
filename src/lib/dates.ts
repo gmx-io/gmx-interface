@@ -1,4 +1,4 @@
-import { lightFormat as formatDateFn, set as setTime } from "date-fns";
+import { format as formatDateFn, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
 
 export function formatDateTime(time: number) {
@@ -14,7 +14,7 @@ export function formatTVDate(date: Date) {
 }
 
 export function formatTVTime(date: Date) {
-  return formatDateFn(date, "h:mm a");
+  return formatDateFn(date, "HH:mm");
 }
 
 export function getTimeRemaining(time: number) {

@@ -17,6 +17,8 @@ describe("PauseableInterval", () => {
 
     new PauseableInterval(mockCallback, interval);
 
+    await vi.advanceTimersByTimeAsync(0);
+
     // Initial call should happen immediately
     expect(mockCallback).toHaveBeenCalledTimes(1);
     expect(mockCallback).toHaveBeenCalledWith({
@@ -89,6 +91,8 @@ describe("PauseableInterval", () => {
     const mockCallback = vi.fn();
     const interval = 1000;
     const pauseableInterval = new PauseableInterval(mockCallback, interval);
+
+    await vi.advanceTimersByTimeAsync(0);
 
     const initialCallCount = mockCallback.mock.calls.length;
     pauseableInterval.resume(); // Should be no-op as it's already running
