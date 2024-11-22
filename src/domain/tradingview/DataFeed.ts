@@ -234,7 +234,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     const interval = new PauseableInterval<Bar | undefined>(
       async ({ wasPausedSinceLastCall, lastReturnedValue }) => {
-        let candlesToFetch = wasPausedSinceLastCall ? 2 : 1;
+        let candlesToFetch = 1;
 
         const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
 
@@ -242,21 +242,11 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
           const nowSeconds = Math.floor(Date.now() / 1000);
           const diff = Math.abs(nowSeconds - lastReturnedValue.time);
-          if (diff > periodSeconds) {
+          if (diff >= periodSeconds) {
             candlesToFetch = Math.ceil(diff / periodSeconds);
           }
 
           console.log("diff", diff, "candles to fetch", candlesToFetch);
-        } else if (lastReturnedValue?.time && lastReturnedValue.time < currentCandleTime) {
-          candlesToFetch = 2;
-          console.log(
-            "the shift is soon from",
-            lastReturnedValue.time,
-            "to",
-            currentCandleTime,
-            "candles to fetch",
-            candlesToFetch
-          );
         }
 
         console.log("was paused since last call", wasPausedSinceLastCall, "candles to fetch", candlesToFetch);
@@ -289,9 +279,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
         let newLastReturnedValue: Bar | undefined = lastReturnedValue;
 
+        let didPatchPreviousCandle = false;
+
         for (const price of prices) {
           if (lastReturnedValue?.time && price.time < lastReturnedValue.time) {
             continue;
+          }
+
+          if (lastReturnedValue?.time && price.time > lastReturnedValue.time && !didPatchPreviousCandle) {
+            didPatchPreviousCandle = true;
+            const previousBarWithNewClose = { ...lastReturnedValue, close: price.open };
+            onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
           }
 
           const bar = multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier);
@@ -398,6 +396,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       await this.oracleFetcher.fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
     ).toReversed();
   }
+
+  // private getStableCandles(s)
 
   destroy() {
     console.log("destroying datafeed");
