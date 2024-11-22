@@ -34,7 +34,7 @@ export const homeEventsData: EventData[] = [];
 export const appEventsData: EventData[] = [
   {
     id: "gmx-pendle-listing",
-    title: "GMX and PENDLE markets added on Arbitrum",
+    title: "GMX single-sided and PENDLE markets added on Arbitrum",
     isActive: true,
     startDate: "22 Nov 2024, 00:00",
     endDate: "28 Nov 2024, 00:00",
