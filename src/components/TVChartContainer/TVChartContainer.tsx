@@ -1,17 +1,15 @@
 import Loader from "components/Common/Loader";
-import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { TokenPrices, getMidPrice } from "domain/tokens";
-import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
+import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
+import { TokenPrices } from "domain/tokens";
+import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
-import { bigintToNumber } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
-import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLocalStorage, useMedia } from "react-use";
+import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLocalStorage, useMedia, usePrevious } from "react-use";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
@@ -21,6 +19,8 @@ import type {
 } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type ChartLine = {
   price: number;
@@ -32,8 +32,6 @@ type Props = {
   chartLines: ChartLine[];
   period: string;
   setPeriod: (period: string) => void;
-  dataProvider?: TVDataProvider;
-  datafeed: TvDatafeed;
   chartToken:
     | ({
         symbol: string;
@@ -47,8 +45,6 @@ export default function TVChartContainer({
   chartToken,
   chainId,
   chartLines,
-  dataProvider,
-  datafeed,
   period,
   setPeriod,
   supportedResolutions,
@@ -60,8 +56,26 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
+  const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
 
   const [tradePageVersion] = useTradePageVersion();
+
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+
+  const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
+
+  useEffect(() => {
+    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);
+    newDatafeed.addEventListener("candlesLoad.success", () => {
+      setIsCandlesLoaded(true);
+    });
+    setDatafeed((prev) => {
+      if (prev) {
+        prev.destroy();
+      }
+      return newDatafeed;
+    });
+  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, tradePageVersion]);
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
@@ -104,19 +118,6 @@ export default function TVChartContainer({
   );
 
   useEffect(() => {
-    if (chartToken.symbol && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
-      const averagePrice = getMidPrice(chartToken);
-
-      const formattedPrice = bigintToNumber(averagePrice, USD_DECIMALS);
-      dataProvider?.setCurrentChartToken({
-        price: formattedPrice,
-        ticker: chartToken.symbol,
-        isChartReady: chartReady,
-      });
-    }
-  }, [chartReady, chartToken, dataProvider]);
-
-  useEffect(() => {
     if (
       chartReady &&
       tvWidgetRef.current &&
@@ -131,23 +132,25 @@ export default function TVChartContainer({
     }
   }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
 
-  useEffect(() => {
-    dataProvider?.resetCache();
+  useLayoutEffect(() => {
     if (symbolRef.current) {
-      dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
+      datafeed?.prefetchBars(symbolRef.current);
     }
+  }, [datafeed]);
+
+  useEffect(() => {
+    if (!datafeed) return;
 
     const widgetOptions: ChartingLibraryWidgetOptions = {
       debug: false,
       symbol: symbolRef.current && getSymbolName(symbolRef.current, visualMultiplier), // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
-      datafeed: datafeed,
+      datafeed,
       theme: defaultChartProps.theme,
       container: chartContainerRef.current!,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
       loading_screen: defaultChartProps.loading_screen,
       enabled_features: defaultChartProps.enabled_features,
-
       disabled_features: isMobile
         ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMobile)
         : defaultChartProps.disabled_features,
@@ -164,6 +167,8 @@ export default function TVChartContainer({
       save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts, tradePageVersion),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+
+    // tvWidgetRef.current.activeChart().dataReady()
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
@@ -201,7 +206,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, dataProvider]);
+  }, [chainId, datafeed]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

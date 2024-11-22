@@ -1,6 +1,6 @@
 import { getServerUrl } from "config/backend";
 import { getTokenBySymbol, getWrappedToken } from "config/tokens";
-import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, TIMEZONE_OFFSET_SEC } from "domain/prices";
+import { getChainlinkChartPricesFromGraph, getChartPricesFromStats } from "domain/prices";
 
 import { CHART_PERIODS } from "lib/legacy";
 import { Bar, FromOldToNewArray } from "./types";
@@ -56,7 +56,7 @@ export async function getCurrentPriceOfToken(chainId: number, symbol: string): P
 export function fillBarGaps(prices: FromOldToNewArray<Bar>, periodSeconds: number): FromOldToNewArray<Bar> {
   if (prices.length < 2) return prices;
 
-  const lastChartPeriod = getCurrentBarTimestamp(periodSeconds) / 1000 + TIMEZONE_OFFSET_SEC;
+  const lastChartPeriod = getCurrentBarTimestamp(periodSeconds) / 1000;
   let lastBar = prices[prices.length - 1];
 
   if (lastBar.time !== lastChartPeriod) {
@@ -109,7 +109,5 @@ export function getStableCoinPrice(period: string, from: number, to: number): Fr
       low: 1,
     });
   }
-  return priceData
-    .filter((candle) => candle.time >= from && candle.time <= to)
-    .map((bar) => ({ ...bar, time: bar.time + TIMEZONE_OFFSET_SEC }));
+  return priceData.filter((candle) => candle.time >= from && candle.time <= to);
 }

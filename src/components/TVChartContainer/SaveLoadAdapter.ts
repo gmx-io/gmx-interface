@@ -103,12 +103,6 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
       this.removeChart(chartData.id);
     }
 
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    const offsetMinutes = new Date().getTimezoneOffset();
-    const offsetSeconds = offsetMinutes * 60;
-    const adjustedTimestamp = currentTimestamp - offsetSeconds;
-
-    chartData.timestamp = adjustedTimestamp;
     if (this.charts) {
       this.charts.push(chartData);
       this.setTvCharts(this.charts);

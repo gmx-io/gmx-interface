@@ -1,7 +1,9 @@
 import { ChartingLibraryFeatureset, ChartingLibraryWidgetOptions, WidgetOverrides } from "charting_library";
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
 import { lightFormat, parse } from "date-fns";
 import { formatTVDate, formatTVTime } from "lib/dates";
+import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 
 const RED = "#fa3c58";
 const GREEN = "#0ecc83";
@@ -90,6 +92,19 @@ export const defaultChartProps = {
       format: (date) => formatTVDate(date),
       formatLocal: (date) => formatTVDate(date),
       parse: (date) => lightFormat(parse(date, "dd MMM yyyy", new Date()), "YYYY-MM-DD"),
+    },
+
+    priceFormatterFactory: (symbolInfo) => {
+      if (symbolInfo === null) {
+        return null;
+      }
+
+      return {
+        format: (price) => {
+          const bn = numberToBigint(price, USD_DECIMALS);
+          return formatAmount(bn, USD_DECIMALS, calculateDisplayDecimals(bn));
+        },
+      };
     },
   },
 } satisfies Partial<ChartingLibraryWidgetOptions>;

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
-import { useEffect, useMemo, useState } from "react";
-import { useMedia, usePrevious } from "react-use";
+import { useEffect, useMemo } from "react";
+import { useMedia } from "react-use";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "config/tokens";
@@ -16,8 +16,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { isIncreaseOrderType, isSwapOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
-import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
-import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 
 import { USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
@@ -27,15 +25,9 @@ import { formatAmount } from "lib/numbers";
 
 import { TVChartHeader } from "./TVChartHeader";
 
-import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import useTVDatafeed from "domain/tradingview/useTVDatafeed";
-import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
-import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
 
 const DEFAULT_PERIOD = "5m";
-let metricsRequestId: string | undefined = undefined;
-let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
   const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
@@ -45,9 +37,6 @@ export function TVChart() {
   const positionsInfo = usePositionsInfoData();
 
   const { chainId } = useChainId();
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
-  const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
-  const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
   const chartTokenAddress = chartToken?.address;
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
@@ -55,8 +44,6 @@ export function TVChart() {
   if (!period || !(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }
-
-  const { datafeed } = useTVDatafeed({ dataProvider });
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -146,91 +133,6 @@ export function TVChart() {
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
-  const previousChainId = usePrevious(chainId);
-
-  useEffect(() => {
-    if (chainId !== previousChainId) {
-      dataProvider?.finalize();
-    }
-  }, [chainId, previousChainId, dataProvider]);
-
-  useEffect(() => {
-    if (!chainId) {
-      return;
-    }
-
-    const dataProvider = new SyntheticsTVDataProvider({
-      resolutions: SUPPORTED_RESOLUTIONS_V2,
-      oracleFetcher: oracleKeeperFetcher,
-      chainId,
-    });
-
-    // Start timer for dataProvider initialization
-    metrics.startTimer("candlesLoad");
-    metrics.startTimer("candlesDisplay");
-
-    dataProvider.setOnBarsLoadStarted(() => {
-      metricsIsFirstLoadTime = !metricsRequestId;
-      metricsRequestId = getRequestId();
-
-      metrics.pushEvent<LoadingStartEvent>({
-        event: "candlesLoad.started",
-        isError: false,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-        },
-      });
-
-      metrics.startTimer("candlesLoad");
-    });
-
-    dataProvider.setOnBarsLoaded(() => {
-      metrics.pushEvent<LoadingSuccessEvent>({
-        event: "candlesLoad.success",
-        isError: false,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-        },
-      });
-
-      setIsCandlesLoaded(true);
-    });
-
-    dataProvider.setOnBarsLoadFailed((error) => {
-      const metricData = prepareErrorMetricData(error);
-
-      metrics.pushEvent<LoadingFailedEvent>({
-        event: "candlesLoad.failed",
-        isError: true,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-          ...metricData,
-        },
-      });
-
-      metrics.pushEvent<LoadingFailedEvent>({
-        event: "candlesDisplay.failed",
-        isError: true,
-        time: metrics.getTime("candlesDisplay", true),
-        data: {
-          requestId: metricsRequestId!,
-        },
-      });
-    });
-
-    setDataProvider(dataProvider);
-
-    return () => {
-      dataProvider.finalize();
-    };
-  }, [oracleKeeperFetcher, chainId, setIsCandlesLoaded]);
-
   useEffect(
     function updatePeriod() {
       if (!period || !(period in CHART_PERIODS)) {
@@ -266,8 +168,6 @@ export function TVChart() {
             chartLines={chartLines}
             chartToken={chartTokenProp}
             chainId={chainId}
-            dataProvider={dataProvider}
-            datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}

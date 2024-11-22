@@ -1530,3 +1530,7 @@ export function isSimilarToken(tokenA: Token, tokenB: Token) {
 export function getTokenVisualMultiplier(token: Token): string {
   return token.visualPrefix || token.visualMultiplier?.toString() || "";
 }
+
+export function getStableTokens(chainId: number) {
+  return getTokens(chainId).filter((t) => t.isStable);
+}

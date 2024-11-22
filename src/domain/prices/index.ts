@@ -10,7 +10,7 @@ import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailableForToken } from "config/tokens";
 import type { Bar, FromOldToNewArray } from "../tradingview/types";
-import { FEED_ID_MAP, TIMEZONE_OFFSET_SEC } from "./constants";
+import { FEED_ID_MAP } from "./constants";
 
 type CompactBar = {
   t: number;
@@ -23,15 +23,13 @@ type CompactBar = {
 function formatBarInfo(compactBar: CompactBar): Bar {
   const { t, o: open, c: close, h: high, l: low } = compactBar;
   return {
-    time: t + TIMEZONE_OFFSET_SEC,
+    time: t,
     open,
     close,
     high,
     low,
   };
 }
-
-export { TIMEZONE_OFFSET_SEC };
 
 export function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
@@ -168,7 +166,7 @@ function getCandlesFromPrices(prices, period) {
     const [ts, price] = prices[i];
     const tsGroup = Math.floor(ts / periodTime) * periodTime;
     if (prevTsGroup !== tsGroup) {
-      candles.push({ t: prevTsGroup + TIMEZONE_OFFSET_SEC, o, h, l, c });
+      candles.push({ t: prevTsGroup, o, h, l, c });
       o = c;
       h = Math.max(o, c);
       l = Math.min(o, c);
@@ -290,7 +288,7 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
 
 function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
   const periodSeconds = CHART_PERIODS[period];
-  const currentCandleTime = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + TIMEZONE_OFFSET_SEC;
+  const currentCandleTime = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
   const last = prices[prices.length - 1];
   const averagePriceValue = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2));
   if (currentCandleTime === last.time) {
