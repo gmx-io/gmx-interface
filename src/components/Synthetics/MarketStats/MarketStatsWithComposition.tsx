@@ -87,13 +87,13 @@ export function MarketStatsWithComposition(p: Props) {
   const maxLongSellableTokenAmount = convertToTokenAmount(
     sellableInfo?.maxLongSellableUsd,
     longToken?.decimals,
-    longToken?.prices.minPrice
+    longToken?.prices?.minPrice
   );
 
   const maxShortSellableTokenAmount = convertToTokenAmount(
     sellableInfo?.maxShortSellableUsd,
     shortToken?.decimals,
-    shortToken?.prices.minPrice
+    shortToken?.prices?.minPrice
   );
 
   const apy = getByKey(marketsTokensApyData, marketInfo && getGlvOrMarketAddress(marketInfo));
