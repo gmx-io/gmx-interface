@@ -1,13 +1,13 @@
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
+import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
   AccountStats,
   PeriodAccountStats,
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
-import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -34,6 +34,7 @@ import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
+import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -90,6 +91,7 @@ export type SyntheticsState = {
     isCandlesLoaded: boolean;
     setIsCandlesLoaded: (isLoaded: boolean) => void;
     isLargeAccount?: boolean;
+    isFirstOrder: boolean;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -146,7 +148,10 @@ export function SyntheticsStateContextProvider({
     marketsData: markets.marketsData,
     tokensData,
   });
+
   const marketsInfo = useMarketsInfoRequest(chainId);
+
+  const { isFirstOrder } = useIsFirstOrder(chainId, { account });
 
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "earn" || pageType === "buy");
@@ -285,6 +290,7 @@ export function SyntheticsStateContextProvider({
         isCandlesLoaded,
         setIsCandlesLoaded,
         isLargeAccount,
+        isFirstOrder,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -321,6 +327,8 @@ export function SyntheticsStateContextProvider({
     lastMonthAccountStats,
     accountStats,
     isCandlesLoaded,
+    isLargeAccount,
+    isFirstOrder,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,
@@ -330,7 +338,6 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     confirmationBoxState,
-    isLargeAccount,
   ]);
 
   latestState = state;

@@ -146,6 +146,7 @@ export type TradeBoxResultEvent = {
     is1CT: boolean;
     chain: string;
     isFirstOrder: boolean;
+    isLeverageEnabled: boolean;
     isUserError: boolean;
   };
 };

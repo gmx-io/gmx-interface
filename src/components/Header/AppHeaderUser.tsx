@@ -89,7 +89,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
-            to={tradeLink!}
+            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParam() : ""}`}
             showRedirectModal={showRedirectModal}
           >
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
@@ -130,7 +130,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
         <HeaderLink
           className="default-btn"
           onClick={trackLaunchApp}
-          to={tradeLink!}
+          to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParam() : ""}`}
           showRedirectModal={showRedirectModal}
         >
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}

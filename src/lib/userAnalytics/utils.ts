@@ -44,7 +44,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           leverage: metricData.leverage || "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
-          isFirstOrder: Boolean(metricData.isFirstOrder),
+          isFirstOrder: metricData.isFirstOrder ?? false,
         },
       });
       break;
@@ -93,7 +93,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           poolName: metricData.marketName || "",
           glvAddress: "",
           amountUsd: metricData.marketTokenUsd || 0,
-          isFirstBuy: Boolean(metricData.isFirstBuy),
+          isFirstBuy: metricData.isFirstBuy ?? false,
         },
       });
       break;
@@ -106,7 +106,7 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           poolName: metricData.marketName || "",
           glvAddress: metricData.glvAddress || "",
           amountUsd: metricData.glvTokenUsd || 0,
-          isFirstBuy: Boolean(metricData.isFirstBuy),
+          isFirstBuy: metricData.isFirstBuy ?? false,
         },
       });
       break;
@@ -144,7 +144,8 @@ export function sendUserAnalyticsOrderResultEvent(
           leverage: metricData.leverage || "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
-          isFirstOrder: Boolean(metricData.isFirstOrder),
+          isFirstOrder: metricData.isFirstOrder ?? false,
+          isLeverageEnabled: Boolean(metricData.isLeverageEnabled),
           isUserError,
         },
       });
@@ -165,6 +166,7 @@ export function sendUserAnalyticsOrderResultEvent(
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
           isFirstOrder: false,
+          isLeverageEnabled: false,
           isUserError,
         },
       });
@@ -182,7 +184,8 @@ export function sendUserAnalyticsOrderResultEvent(
           leverage: "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
-          isFirstOrder: false,
+          isFirstOrder: metricData.isFirstOrder ?? false,
+          isLeverageEnabled: false,
           isUserError,
         },
       });
@@ -197,7 +200,7 @@ export function sendUserAnalyticsOrderResultEvent(
           poolName: metricData.marketName || "",
           glvAddress: "",
           amountUsd: metricData.marketTokenUsd || 0,
-          isFirstBuy: Boolean(metricData.isFirstBuy),
+          isFirstBuy: metricData.isFirstBuy ?? false,
           isUserError,
         },
       });
@@ -212,7 +215,7 @@ export function sendUserAnalyticsOrderResultEvent(
           poolName: metricData.marketName || "",
           glvAddress: metricData.glvAddress || "",
           amountUsd: metricData.glvTokenUsd || 0,
-          isFirstBuy: Boolean(metricData.isFirstBuy),
+          isFirstBuy: metricData.isFirstBuy ?? false,
           isUserError,
         },
       });

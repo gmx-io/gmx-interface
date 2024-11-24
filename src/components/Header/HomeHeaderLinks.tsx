@@ -1,13 +1,13 @@
-import { FiX } from "react-icons/fi";
-import logoImg from "img/logo_GMX.svg";
 import { t } from "@lingui/macro";
+import logoImg from "img/logo_GMX.svg";
+import { FiX } from "react-icons/fi";
 
-import "./Header.scss";
-import { Link } from "react-router-dom";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { HeaderLink } from "./HeaderLink";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
+import { Link } from "react-router-dom";
+import "./Header.scss";
+import { HeaderLink } from "./HeaderLink";
 
 type Props = {
   small?: boolean;
@@ -22,7 +22,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pr
     {
       label: t`App`,
       isHomeLink: true,
-      link: "/trade",
+      link: `/trade?${userAnalytics.getSessionIdUrlParam()}`,
       onClick: async () => {
         await userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
           {

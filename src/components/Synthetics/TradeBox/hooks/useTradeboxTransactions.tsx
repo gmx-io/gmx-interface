@@ -3,7 +3,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -11,6 +11,7 @@ import {
   selectTradeboxExecutionFee,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsLeverageEnabled,
   selectTradeboxMarketInfo,
   selectTradeboxSelectedPosition,
   selectTradeboxSwapAmounts,
@@ -59,7 +60,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isLimit } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const accountStats = useSelector(selectAccountStats);
+  const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
+  const isFirstOrder = useSelector(selectIsFirstOrder);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
@@ -100,6 +102,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         allowedSlippage,
         orderType,
         subaccount,
+        isFirstOrder,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -151,6 +154,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       executionFee,
       allowedSlippage,
       subaccount,
+      isFirstOrder,
       account,
       tokensData,
       signer,
@@ -178,7 +182,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         allowedSlippage,
         marketInfo,
         isLong,
-        isFirstOrder: !accountStats || accountStats.closedCount === 0,
+        isFirstOrder,
+        isLeverageEnabled,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -299,12 +304,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       allowedSlippage,
       marketInfo,
       isLong,
+      isFirstOrder,
+      isLeverageEnabled,
       tokensData,
       account,
       collateralToken,
       signer,
       chainId,
-      accountStats,
       shouldDisableValidationForTesting,
       setPendingTxns,
       setPendingOrder,

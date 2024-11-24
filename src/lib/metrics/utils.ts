@@ -83,6 +83,7 @@ export function initSwapMetricData({
   hasReferralCode,
   subaccount,
   allowedSlippage,
+  isFirstOrder,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -92,6 +93,7 @@ export function initSwapMetricData({
   allowedSlippage: number | undefined;
   hasReferralCode: boolean | undefined;
   subaccount: Subaccount | undefined;
+  isFirstOrder: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<SwapMetricData>({
     metricId: getSwapOrderMetricId({
@@ -115,6 +117,7 @@ export function initSwapMetricData({
     orderType,
     is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
+    isFirstOrder,
   });
 }
 
@@ -131,6 +134,7 @@ export function initIncreaseOrderMetricData({
   marketInfo,
   isLong,
   isFirstOrder,
+  isLeverageEnabled,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -145,6 +149,7 @@ export function initIncreaseOrderMetricData({
   subaccount: Subaccount | undefined;
   isLong: boolean | undefined;
   isFirstOrder: boolean | undefined;
+  isLeverageEnabled: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
@@ -178,6 +183,7 @@ export function initIncreaseOrderMetricData({
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     isFirstOrder,
+    isLeverageEnabled,
   });
 }
 

@@ -1,13 +1,11 @@
-import { setCookie } from "lib/cookies";
-import { getCookie } from "lib/cookies";
-import { metrics } from "../metrics/Metrics";
-import { isDevelopment } from "config/env";
 import { BatchReportItem } from "lib/oracleKeeperFetcher";
+import { metrics } from "../metrics/Metrics";
 
 type CommonEventParams = {
   platform?: string;
   ordersCount?: number;
   isWalletConnected?: boolean;
+  isTest: boolean;
 };
 
 type ProfileProps = {
@@ -28,8 +26,8 @@ type AnalyticsEventParams = {
   data: object;
 };
 
+export const SESSION_ID_KEY = "sessionId";
 const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24; // 1 day
-const SESSION_ID_COOKIE_NAME = "sessionId";
 const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
 
 const MAX_DEDUP_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
@@ -87,13 +85,20 @@ export class UserAnalytics {
     localStorage.setItem(USER_ANALYTICS_DEDUP_EVENTS_STORAGE, JSON.stringify(dedupEventsStorage));
   }
 
+  setSessionId(sessionId: string) {
+    localStorage.setItem(SESSION_ID_KEY, sessionId);
+  }
+
+  getSessionIdUrlParam() {
+    return `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+  }
+
   getOrSetSessionId() {
-    let sessionId = getCookie(SESSION_ID_COOKIE_NAME);
+    let sessionId = localStorage.getItem(SESSION_ID_KEY);
 
     if (!sessionId || Date.now() - this.getLastEventTime() > MAX_SESSION_ID_AGE) {
       sessionId = Math.random().toString(36).substring(2, 15);
-      const domain = isDevelopment() ? window.location.hostname : "gmx.io";
-      setCookie(SESSION_ID_COOKIE_NAME, sessionId, MAX_SESSION_ID_AGE, domain);
+      this.setSessionId(sessionId);
     }
 
     return sessionId;

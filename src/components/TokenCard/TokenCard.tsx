@@ -299,7 +299,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               className="default-btn"
-              to="/buy_gmx"
+              to={`/buy_gmx?${userAnalytics.getSessionIdUrlParam()}`}
               network={ARBITRUM}
               showRedirectModal={showRedirectModal}
               onClick={trackGMXBuyArbitrum}
@@ -310,7 +310,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               className="default-btn"
-              to="/buy_gmx"
+              to={`/buy_gmx?${userAnalytics.getSessionIdUrlParam()}`}
               network={AVALANCHE}
               showRedirectModal={showRedirectModal}
               onClick={trackGMXBuyAvalanche}
@@ -359,7 +359,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink
-              to="/pools?pickBestGlv=1"
+              to={`/pools?pickBestGlv=1&${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={ARBITRUM}
               chainId={chainId}
@@ -371,7 +371,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </BuyLink>
             {isGlvEnabled(AVALANCHE) && (
               <BuyLink
-                to="/pools?pickBestGlv=1"
+                to={`/pools?pickBestGlv=1&${userAnalytics.getSessionIdUrlParam()}`}
                 className="default-btn"
                 network={AVALANCHE}
                 chainId={chainId}
@@ -419,7 +419,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink
-              to="/pools"
+              to={`/pools?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={ARBITRUM}
               chainId={chainId}
@@ -431,7 +431,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </BuyLink>
 
             <BuyLink
-              to="/pools"
+              to={`/pools?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={AVALANCHE}
               chainId={chainId}
@@ -481,7 +481,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
         <div className="Home-token-card-option-action">
           <div className="buy">
             <BuyLink
-              to="/buy_glp"
+              to={`/buy_glp?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={ARBITRUM}
               chainId={chainId}
@@ -492,7 +492,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
             <BuyLink
-              to="/buy_glp"
+              to={`/buy_glp?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={AVALANCHE}
               chainId={chainId}

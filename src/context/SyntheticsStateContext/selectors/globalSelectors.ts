@@ -14,6 +14,7 @@ export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
+export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvData;
 export const selectGlvs = (s: SyntheticsState) => s.globals.glvInfo.glvs;

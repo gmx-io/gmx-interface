@@ -272,6 +272,7 @@ export type SwapMetricData = {
   executionFee: number | undefined;
   allowedSlippage: number | undefined;
   orderType: OrderType | undefined;
+  isFirstOrder: boolean | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
@@ -279,6 +280,7 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   metricType: "increasePosition" | "limitOrder";
   leverage: string | undefined;
   isFirstOrder: boolean | undefined;
+  isLeverageEnabled: boolean | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
