@@ -609,7 +609,10 @@ export function TradeBox(p: Props) {
   ]);
 
   const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows(priceImpactWarningState);
-  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({ positionKey: selectedPositionKey });
+  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
+    positionKey: selectedPositionKey,
+    isCreatingNewAutoCancel: isTrigger,
+  });
   const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
   const submitButtonText = useMemo(() => {
