@@ -48,7 +48,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
   private visibilityHandler: () => void;
-  private tickQueues: Record<string, Bar[]> = {};
 
   constructor(
     private chainId: number,
@@ -390,14 +389,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     return (
       await this.oracleFetcher.fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
     ).toReversed();
-  }
-
-  private queueTick(listenerGuid: string, onTick: SubscribeBarsCallback, bar: Bar) {
-    if (!(listenerGuid in this.tickQueues)) {
-      this.tickQueues[listenerGuid] = [];
-    }
-
-    this.tickQueues[listenerGuid].push(bar);
   }
 
   destroy() {
