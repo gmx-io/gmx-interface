@@ -155,7 +155,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         );
       } else {
         const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
-        bars = this.getStableCandles(currentCandleTime, periodParams.countBack + offset, resolution);
+        bars = this.getStableCandles(currentCandleTime, resolution, periodParams.countBack + offset);
       }
     } catch (e) {
       onError(String(e));
@@ -251,7 +251,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         try {
           prices = !isStable
             ? await this.fetchCandles(symbolInfo.name, resolution, candlesToFetch)
-            : this.getStableCandles(currentCandleTime, candlesToFetch, resolution);
+            : this.getStableCandles(currentCandleTime, resolution, candlesToFetch);
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error(e);
@@ -413,7 +413,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       });
   }
 
-  private getStableCandles(to: number, count: number, resolution: ResolutionString) {
+  private getStableCandles(to: number, resolution: ResolutionString, count: number) {
     const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
     return range(count, 0, -1).map((i) => ({
       time: to - i * periodSeconds,
