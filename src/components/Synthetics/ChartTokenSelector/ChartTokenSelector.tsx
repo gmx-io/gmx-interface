@@ -17,12 +17,11 @@ import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/choose
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { TradeType } from "domain/synthetics/trade";
-import type { Token } from "domain/tokens";
-import { stripBlacklistedWords } from "domain/tokens/utils";
+import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { getByKey } from "lib/objects";
+import { searchBy } from "lib/searchBy";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -291,16 +290,11 @@ function useFilterSortTokens({
   direction: SortDirection;
   orderBy: SortField;
 }) {
-  const fuse = useFuse(
-    () =>
-      options?.map((item, index) => ({ id: index, name: stripBlacklistedWords(item.name), symbol: item.symbol })) ||
-      EMPTY_ARRAY,
-    options?.map((item) => item.address)
-  );
-
   const filteredTokens: Token[] | undefined = useMemo(() => {
     const textMatched =
-      searchKeyword.trim() && options ? fuse.search(searchKeyword).map((result) => options[result.item.id]) : options;
+      searchKeyword.trim() && options
+        ? searchBy(options, [(item) => stripBlacklistedWords(item.name), "symbol"], searchKeyword)
+        : options;
 
     const tabMatched = textMatched?.filter((item) => {
       if (tab === "favorites") {
@@ -311,7 +305,7 @@ function useFilterSortTokens({
     });
 
     return tabMatched;
-  }, [favoriteTokens, fuse, options, searchKeyword, tab]);
+  }, [favoriteTokens, options, searchKeyword, tab]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 

@@ -26,7 +26,7 @@ import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/t
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
@@ -334,25 +334,22 @@ function useFilterSortTokensInfo({
   orderBy: SortField;
   direction: SortDirection;
 }) {
-  const fuse = useFuse(
-    () =>
-      sortedMarketsByIndexToken.map((market, index) => {
-        const marketInfo = getByKey(marketsInfoData, market?.address)!;
-        return {
-          id: index,
-          marketName: isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name,
-        };
-      }),
-    sortedMarketsByIndexToken.map((market) => market.address)
-  );
-
   const filteredTokensInfo = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
       return [];
     }
 
     const textMatched = searchKeyword.trim()
-      ? fuse.search(searchKeyword).map((result) => sortedMarketsByIndexToken[result.item.id])
+      ? searchBy(
+          sortedMarketsByIndexToken,
+          [
+            (item) => {
+              const marketInfo = getByKey(marketsInfoData, item?.address)!;
+              return isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name;
+            },
+          ],
+          searchKeyword
+        )
       : sortedMarketsByIndexToken;
 
     const tabMatched = textMatched.filter((item) => {
@@ -397,7 +394,6 @@ function useFilterSortTokensInfo({
   }, [
     sortedMarketsByIndexToken,
     searchKeyword,
-    fuse,
     tab,
     favoriteTokens,
     marketsInfoData,
