@@ -11,7 +11,7 @@ import {
   BN_NEGATIVE_ONE,
   BN_ONE,
   applyFactor,
-  calculatePriceDecimals,
+  calculateDisplayDecimals,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
@@ -42,8 +42,11 @@ export const formatPositionMessage = (
   const collateralToken = tradeAction.initialCollateralToken;
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
-  const priceDecimals = tradeAction.indexToken.priceDecimals;
-  const marketPriceDecimals = calculatePriceDecimals(tradeAction.indexToken.prices.minPrice);
+  const marketPriceDecimals = calculateDisplayDecimals(
+    tradeAction.indexToken.prices.minPrice,
+    undefined,
+    tradeAction.indexToken.visualMultiplier
+  );
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
@@ -87,7 +90,6 @@ export const formatPositionMessage = (
   }
 
   const sizeDeltaText = formatUsd(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
-    displayDecimals: priceDecimals,
     displayPlus: true,
   })!;
 
@@ -110,13 +112,16 @@ export const formatPositionMessage = (
   const marketPrice = getTokenPriceByTradeAction(tradeAction);
   const formattedMarketPrice = formatUsd(marketPrice, {
     displayDecimals: marketPriceDecimals,
+    visualMultiplier: tradeAction.indexToken.visualMultiplier,
   });
 
   const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice, {
     displayDecimals: marketPriceDecimals,
+    visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
   const formattedTriggerPrice = formatUsd(tradeAction.triggerPrice, {
     displayDecimals: marketPriceDecimals,
+    visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
@@ -131,12 +136,13 @@ export const formatPositionMessage = (
     collateralToken.symbol,
     {
       useCommas: true,
-      displayDecimals: priceDecimals,
+      displayDecimals: calculateDisplayDecimals(collateralDeltaAmount, collateralToken.decimals),
     }
   );
 
   const formattedExecutionPrice = formatUsd(tradeAction.executionPrice, {
-    displayDecimals: priceDecimals,
+    displayDecimals: marketPriceDecimals,
+    visualMultiplier: tradeAction.indexToken.visualMultiplier,
   });
   const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
 
@@ -193,7 +199,8 @@ export const formatPositionMessage = (
         infoRow(
           t`Order Execution Price`,
           formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-            displayDecimals: priceDecimals,
+            displayDecimals: marketPriceDecimals,
+            visualMultiplier: tradeAction.indexToken.visualMultiplier,
           })
         )
     );
@@ -222,7 +229,8 @@ export const formatPositionMessage = (
     const customPrice =
       triggerPriceInequality +
       formatUsd(tradeAction.triggerPrice, {
-        displayDecimals: priceDecimals,
+        displayDecimals: marketPriceDecimals,
+        visualMultiplier: tradeAction.indexToken.visualMultiplier,
       })!;
 
     result = {
@@ -271,7 +279,8 @@ export const formatPositionMessage = (
           infoRow(
             t`Order Execution Price`,
             formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: priceDecimals,
+              displayDecimals: marketPriceDecimals,
+              visualMultiplier: tradeAction.indexToken.visualMultiplier,
             })
           )
       ),
@@ -305,7 +314,8 @@ export const formatPositionMessage = (
         infoRow(
           t`Order Execution Price`,
           formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-            displayDecimals: priceDecimals,
+            displayDecimals: marketPriceDecimals,
+            visualMultiplier: tradeAction.indexToken.visualMultiplier,
           })
         )
     );
@@ -359,7 +369,8 @@ export const formatPositionMessage = (
     const customPrice =
       triggerPriceInequality +
       formatUsd(tradeAction.triggerPrice, {
-        displayDecimals: priceDecimals,
+        displayDecimals: marketPriceDecimals,
+        visualMultiplier: tradeAction.indexToken.visualMultiplier,
       })!;
 
     result = {
@@ -412,7 +423,8 @@ export const formatPositionMessage = (
           infoRow(
             t`Order Execution Price`,
             formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: priceDecimals,
+              displayDecimals: marketPriceDecimals,
+              visualMultiplier: tradeAction.indexToken.visualMultiplier,
             })
           )
       ),
@@ -427,7 +439,11 @@ export const formatPositionMessage = (
     (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderCancelled)
   ) {
     const customPrice =
-      triggerPriceInequality + formatUsd(tradeAction.triggerPrice, { displayDecimals: priceDecimals })!;
+      triggerPriceInequality +
+      formatUsd(tradeAction.triggerPrice, {
+        displayDecimals: marketPriceDecimals,
+        visualMultiplier: tradeAction.indexToken.visualMultiplier,
+      })!;
 
     const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
 
@@ -490,7 +506,8 @@ export const formatPositionMessage = (
           infoRow(
             t`Order Execution Price`,
             formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: priceDecimals,
+              displayDecimals: marketPriceDecimals,
+              visualMultiplier: tradeAction.indexToken.visualMultiplier,
             })
           )
       ),
@@ -515,7 +532,10 @@ export const formatPositionMessage = (
       tradeAction.initialCollateralToken?.symbol,
       tradeAction.initialCollateralToken?.decimals,
       {
-        displayDecimals: priceDecimals,
+        displayDecimals: calculateDisplayDecimals(
+          tradeAction.initialCollateralDeltaAmount,
+          tradeAction.initialCollateralToken?.decimals
+        ),
       }
     );
 

@@ -5,25 +5,24 @@ import { selectChartHeaderInfo, selectChartToken } from "context/SyntheticsState
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
+import { USD_DECIMALS } from "config/factors";
+import { getToken } from "config/tokens";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { use24hPriceDelta } from "domain/synthetics/tokens";
+import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "config/factors";
 import {
   formatAmountHuman,
   formatPercentageDisplay,
   formatRatePercentage,
-  formatUsd,
+  formatUsdPrice,
   numberWithCommas,
 } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { use24hPriceDelta } from "domain/synthetics/tokens";
-import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
-
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
-
-import { getToken } from "config/tokens";
 
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
@@ -31,7 +30,7 @@ import ShortIcon from "img/short.svg?react";
 export function useChartHeaderFormattedValues() {
   const dailyVolumeValue = use24hVolume();
   const info = useSelector(selectChartHeaderInfo);
-
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const { chartToken } = useSelector(selectChartToken);
 
   const { chainId } = useChainId();
@@ -40,6 +39,7 @@ export function useChartHeaderFormattedValues() {
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
+  const visualMultiplier = isSwap ? 1 : selectedTokenOption?.visualMultiplier ?? 1;
 
   const priceTokenSymbol = useMemo(() => {
     if (selectedTokenOption?.isWrapped) {
@@ -53,14 +53,31 @@ export function useChartHeaderFormattedValues() {
 
   const avgPriceValue = bigMath.avg(chartToken?.prices?.maxPrice, chartToken?.prices?.minPrice);
 
-  const high24 = useMemo(
-    () => (dayPriceDeltaData?.high ? numberWithCommas(dayPriceDeltaData.high.toFixed(oraclePriceDecimals)) : "-"),
-    [dayPriceDeltaData, oraclePriceDecimals]
-  );
-  const low24 = useMemo(
-    () => (dayPriceDeltaData?.low ? numberWithCommas(dayPriceDeltaData?.low.toFixed(oraclePriceDecimals)) : "-"),
-    [dayPriceDeltaData, oraclePriceDecimals]
-  );
+  const high24 = useMemo(() => {
+    if (!dayPriceDeltaData?.high) {
+      return "-";
+    }
+
+    let value = dayPriceDeltaData.high;
+    if (!isSwap) {
+      value = value * visualMultiplier;
+    }
+
+    return numberWithCommas(value.toFixed(oraclePriceDecimals));
+  }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
+
+  const low24 = useMemo(() => {
+    if (!dayPriceDeltaData?.low) {
+      return "-";
+    }
+
+    let value = dayPriceDeltaData.low;
+    if (!isSwap) {
+      value = value * visualMultiplier;
+    }
+
+    return numberWithCommas(value.toFixed(oraclePriceDecimals));
+  }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
 
   const dayPriceDelta = useMemo(() => {
     return (
@@ -77,11 +94,11 @@ export function useChartHeaderFormattedValues() {
 
   const avgPrice = useMemo(() => {
     return (
-      formatUsd(avgPriceValue, {
-        displayDecimals: oraclePriceDecimals,
+      formatUsdPrice(avgPriceValue, {
+        visualMultiplier,
       }) || "..."
     );
-  }, [avgPriceValue, oraclePriceDecimals]);
+  }, [avgPriceValue, visualMultiplier]);
 
   const [longOIValue, longOIPercentage] = useMemo(() => {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {

@@ -33,9 +33,117 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "gmx-pendle-listing",
+    title: "GMX single-sided and PENDLE markets added on Arbitrum",
+    isActive: true,
+    startDate: "22 Nov 2024, 00:00",
+    endDate: "28 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="GMX" />
+        /USD and <TokenSymbolWithIcon symbol="PENDLE" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="PENDLE" />
+        , <TokenSymbolWithIcon symbol="GMX" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "bome-floki-meme-mew-listing",
+    title: "BOME, FLOKI, MEW, MEME and TAO markets added on Arbitrum",
+    isActive: true,
+    startDate: "21 Nov 2024, 16:00",
+    endDate: "27 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="BOME" />
+        /USD, <TokenSymbolWithIcon symbol="FLOKI" />
+        /USD, <TokenSymbolWithIcon symbol="MEW" />
+        /USD and <TokenSymbolWithIcon symbol="MEME" />
+        /USD and <TokenSymbolWithIcon symbol="TAO" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />{" "}
+        or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "wld-listing",
+    title: "BONK and WLD markets added on Arbitrum",
+    isActive: true,
+    startDate: "15 Nov 2024, 12:00",
+    endDate: "21 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="BONK" />
+        /USD and <TokenSymbolWithIcon symbol="WLD" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WETH" />{" "}
+        or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "trx-ton-listing",
+    title: "TON and TRX markets added on Arbitrum",
+    isActive: true,
+    startDate: "7 Nov 2024, 15:00",
+    endDate: "13 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="TON" />
+        /USD and <TokenSymbolWithIcon symbol="TRX" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WETH" />{" "}
+        or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "apt-tia-listing",
+    title: "TIA and APT markets added on Arbitrum",
+    isActive: true,
+    startDate: "31 Oct 2024, 18:00",
+    endDate: "6 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="TIA" />
+        /USD and <TokenSymbolWithIcon symbol="APT" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WETH" />{" "}
+        or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "gmx-buyback",
+    title: "GMX buybacks are now enabled",
+    isActive: true,
+    startDate: "29 Oct 2024, 00:00",
+    endDate: "15 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        Starting October 30, GMX fees from V1 (30%) and V2 (27%) will fund GMX token buybacks, distributed as GMX
+        staking rewards instead of ETH/AVAX.
+      </>
+    ),
+  },
+  {
+    id: "auto-cancel",
+    title: "TP/SL orders automatically cancelled with position closure",
+    isActive: true,
+    startDate: "01 Oct 2024, 00:00",
+    endDate: "15 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        New Take-Profit and Stop-Loss orders will now be automatically cancelled when the associated position is fully
+        closed. You can disable this feature in the settings.
+        <br />
+        <br />
+        You can enable Auto-Cancel for your existing TP/SL orders by clicking{" "}
+        <Link to="/trade?setOrdersAutoCancel=1">here</Link>.
+      </>
+    ),
+  },
+  {
     id: "ape-sui-sei-markets-arbitrum",
     title: "APE, SUI, and SEI markets added on Arbitrum",
-    isActive: true,
+    isActive: false,
     startDate: "24 Oct 2024, 00:00",
     endDate: "7 Nov 2024, 00:00",
     bodyText: (
@@ -51,7 +159,7 @@ export const appEventsData: EventData[] = [
   {
     id: "pol-aave-pepe-uni-markets-arbitrum",
     title: "POL, AAVE, PEPE, and UNI markets added on Arbitrum",
-    isActive: true,
+    isActive: false,
     startDate: "17 Oct 2024, 00:00",
     endDate: "31 Oct 2024, 00:00",
     bodyText: (

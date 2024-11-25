@@ -32,13 +32,9 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
         contractAddress: getContract(chainId, "DataStore"),
         abi: DataStore.abi,
         calls: {
-          depositSingleToken: {
+          depositToken: {
             methodName: "getUint",
-            params: [depositGasLimitKey(true)],
-          },
-          depositMultiToken: {
-            methodName: "getUint",
-            params: [depositGasLimitKey(false)],
+            params: [depositGasLimitKey()],
           },
           withdrawalMultiToken: {
             methodName: "getUint",
@@ -99,8 +95,7 @@ export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
       }
 
       return {
-        depositSingleToken: getBigInt("depositSingleToken"),
-        depositMultiToken: getBigInt("depositMultiToken"),
+        depositToken: getBigInt("depositToken"),
         withdrawalMultiToken: getBigInt("withdrawalMultiToken"),
         shift: getBigInt("shift"),
         singleSwap: getBigInt("singleSwap"),

@@ -1,9 +1,12 @@
 import EventEmitter from "abis/EventEmitter.json";
+import Token from "abis/Token.json";
 import { getContract, tryGetContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, getTokens } from "config/tokens";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
 import { MutableRefObject } from "react";
+
+const coder = AbiCoder.defaultAbiCoder();
 
 const vaultEvents = {
   UpdatePosition: "onUpdatePosition",
@@ -72,6 +75,7 @@ const GLV_WITHDRAWAL_EXECUTED_HASH = ethers.id("GlvWithdrawalExecuted");
 const GLV_WITHDRAWAL_CANCELLED_HASH = ethers.id("GlvWithdrawalCancelled");
 
 const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
+const TRANSFER_HASH = ethers.id("Transfer(address,address,uint256)");
 
 export function subscribeToV2Events(
   chainId: number,
@@ -136,6 +140,78 @@ export function subscribeToV2Events(
     filters.forEach((filter) => {
       provider.off(filter, handleCommonLog);
     });
+  };
+}
+
+export function subscribeToTransferEvents(
+  chainId: number,
+  provider: Provider,
+  account: string,
+  marketTokensAddresses: string[],
+  onTransfer: (tokenAddress: string, amount: bigint) => void
+) {
+  const vaults = [
+    tryGetContract(chainId, "OrderVault"),
+    tryGetContract(chainId, "ShiftVault"),
+    tryGetContract(chainId, "DepositVault"),
+    tryGetContract(chainId, "WithdrawalVault"),
+    tryGetContract(chainId, "GlvVault"),
+  ].filter(Boolean);
+  const vaultHashes = vaults.map((vault) => coder.encode(["address"], [vault]));
+
+  const senderHashes = [ZeroAddress, ...marketTokensAddresses].map((address) => coder.encode(["address"], [address]));
+
+  const accountHash = coder.encode(["address"], [account]);
+
+  const tokenAddresses = getTokens(chainId)
+    .filter((token) => !token.isSynthetic && isAddress(token.address) && token.address !== NATIVE_TOKEN_ADDRESS)
+    .map((token) => token.address);
+  const allTokenAddresses = [...marketTokensAddresses, ...tokenAddresses];
+
+  const tokenContract = new ethers.Contract(ZeroAddress, Token.abi, provider);
+
+  const sendFilters: ProviderEvent = {
+    address: allTokenAddresses,
+    topics: [TRANSFER_HASH, accountHash, vaultHashes],
+  };
+
+  const receiveFilters: ProviderEvent = {
+    address: allTokenAddresses,
+    topics: [TRANSFER_HASH, senderHashes, accountHash],
+  };
+
+  const handleSend = (log: LogParams) => {
+    const tokenAddress = log.address;
+    const data = tokenContract.interface.parseLog(log);
+
+    if (!data) {
+      return;
+    }
+
+    const amount = BigInt(data.args[2]);
+
+    onTransfer(tokenAddress, -amount);
+  };
+
+  const handleReceive = (log: LogParams) => {
+    const tokenAddress = log.address;
+    const data = tokenContract.interface.parseLog(log);
+
+    if (!data) {
+      return;
+    }
+
+    const amount = BigInt(data.args[2]);
+
+    onTransfer(tokenAddress, amount);
+  };
+
+  provider.on(sendFilters, handleSend);
+  provider.on(receiveFilters, handleReceive);
+
+  return () => {
+    provider.off(sendFilters, handleSend);
+    provider.off(receiveFilters, handleReceive);
   };
 }
 

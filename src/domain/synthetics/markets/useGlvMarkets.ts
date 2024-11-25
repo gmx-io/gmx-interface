@@ -13,13 +13,18 @@ import {
 import { USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
 import { getTokenBySymbol } from "config/tokens";
+import {
+  updateTokenBalance,
+  useTokensBalancesUpdates,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
+import entries from "lodash/entries";
+import { useMemo } from "react";
 import { getContractMarketPrices, getGlvMarketName, GlvInfoData, MarketsInfoData } from ".";
 import { convertToContractTokenPrices } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
-import { useMemo } from "react";
 
 export type GlvList = {
   glv: {
@@ -51,6 +56,7 @@ export function useGlvMarketsInfo(
     filterIncorrectMarkets?: boolean;
   }
 ) {
+  const { tokensBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { marketsInfoData, tokensData, chainId, account, filterIncorrectMarkets } = deps;
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
@@ -312,14 +318,40 @@ export function useGlvMarketsInfo(
               }),
           };
         });
+
+        resetTokensBalancesUpdates(Object.keys(result));
+
         return result;
       },
     }
   );
 
+  const updatedGlvData = useMemo(() => {
+    if (!glvData) {
+      return glvData;
+    }
+
+    const result = structuredClone(glvData);
+    const updateEntries = entries(tokensBalancesUpdates);
+
+    for (const [tokenAddress, balanceUpdate] of updateEntries) {
+      if (!result[tokenAddress] || !balanceUpdate) {
+        continue;
+      }
+
+      const glvToken = result[tokenAddress].glvToken;
+
+      if (glvToken.balance !== undefined) {
+        glvToken.balance = updateTokenBalance(balanceUpdate, glvToken.balance);
+      }
+    }
+
+    return result;
+  }, [glvData, tokensBalancesUpdates]);
+
   return {
     glvs,
-    glvData,
+    glvData: updatedGlvData,
     isLoading: isLoadingGlvs || isLoadingGlvsInfo,
   };
 }

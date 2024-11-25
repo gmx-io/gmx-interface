@@ -1,19 +1,16 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import values from "lodash/values";
 import { useCallback } from "react";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GmPoolsSelectorForGlvMarket } from "components/MarketSelector/GmPoolsSelectorForGlvMarket";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
-import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
-import { ARBITRUM } from "config/chains";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { getGlvOrMarketAddress, GlvInfo, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
@@ -22,12 +19,6 @@ import { GmSwapFees } from "domain/synthetics/trade";
 
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { showMarketToast } from "../showMarketToast";
-
-// TODO: midas, https://app.asana.com/0/1206524620304500/1208269257416079
-// Remove this when Chainlink fixes the issue
-const ENDANGERED_POOLS = {
-  [ARBITRUM]: ["0x0Cf1fb4d1FF67A3D8Ca92c9d6643F8F9be8e03E5", "0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8"],
-};
 
 export function InfoRows({
   indexName,
@@ -60,7 +51,6 @@ export function InfoRows({
   selectedMarketForGlv?: string;
   disablePoolSelector?: boolean;
 }) {
-  const chainId = useSelector(selectChainId);
   const markets = values(useSelector(selectGlvAndMarketsInfoData));
 
   const onSelectMarket = useCallback(
@@ -77,8 +67,6 @@ export function InfoRows({
     },
     [onMarketChange]
   );
-
-  const isEndangeredPool = ENDANGERED_POOLS[chainId]?.includes(marketAddress);
 
   return (
     <ExchangeInfo className="GmSwapBox-info-section" dividerClassName="App-card-divider">
@@ -120,21 +108,6 @@ export function InfoRows({
             )
           }
         />
-
-        {isEndangeredPool && (
-          <AlertInfo type="info" textColor="text-yellow-500">
-            <Trans>
-              This pool currently has a 1% sell fee.{" "}
-              <ExternalLink
-                href="https://gov.gmx.io/t/wsteth-weth-market-temporarily-disabled/3823"
-                className="!text-yellow-500"
-              >
-                <span className="hover:text-yellow-300">Read more</span>
-              </ExternalLink>
-              .
-            </Trans>
-          </AlertInfo>
-        )}
       </ExchangeInfo.Group>
 
       <ExchangeInfo.Group>

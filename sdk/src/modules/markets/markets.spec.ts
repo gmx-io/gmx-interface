@@ -3,13 +3,6 @@ import { arbitrumSdk, arbitrumSdkConfig } from "utils/testUtil";
 
 describe("Markets", () => {
   describe("getMarkets", () => {
-    it("should be able to get markets", async () => {
-      const response = await arbitrumSdk.markets.getMarkets();
-      expect(response).toBeDefined();
-    });
-  });
-
-  describe("getMarkets", () => {
     it("should be able to get markets data", async () => {
       const marketsData = await arbitrumSdk.markets.getMarkets();
       expect(marketsData.marketsAddresses).toBeDefined();

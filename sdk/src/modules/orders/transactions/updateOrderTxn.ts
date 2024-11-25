@@ -15,10 +15,20 @@ export type UpdateOrderParams = {
   minOutputAmount: bigint;
   // used to top-up execution fee for frozen orders
   executionFee?: bigint;
+  autoCancel: boolean;
 };
 
 export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Address> {
-  const { orderKey, sizeDeltaUsd, triggerPrice, acceptablePrice, minOutputAmount, executionFee, indexToken } = p;
+  const {
+    orderKey,
+    sizeDeltaUsd,
+    triggerPrice,
+    acceptablePrice,
+    minOutputAmount,
+    executionFee,
+    indexToken,
+    autoCancel,
+  } = p;
 
   const router = getContract(sdk.chainId, "ExchangeRouter");
 
@@ -31,6 +41,7 @@ export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Addre
     acceptablePrice,
     triggerPrice,
     minOutputAmount,
+    autoCancel,
   });
 
   return sdk.callContract(router, ExchangeRouter.abi as Abi, "multicall", [encodedPayload], {
@@ -46,6 +57,7 @@ export function createUpdateEncodedPayload({
   indexToken,
   acceptablePrice,
   triggerPrice,
+  autoCancel,
   minOutputAmount,
 }: {
   sdk: GmxSdk;
@@ -56,6 +68,7 @@ export function createUpdateEncodedPayload({
   acceptablePrice: bigint;
   triggerPrice: bigint;
   minOutputAmount: bigint;
+  autoCancel: boolean;
 }) {
   const orderVaultAddress = getContract(sdk.chainId, "OrderVault");
 
@@ -69,10 +82,11 @@ export function createUpdateEncodedPayload({
     params: [
       orderKey,
       sizeDeltaUsd,
-      convertToContractPrice(acceptablePrice, indexToken?.decimals || 0),
-      convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
+      acceptablePrice !== undefined ? convertToContractPrice(acceptablePrice, indexToken?.decimals || 0) : 0n,
+      triggerPrice !== undefined ? convertToContractPrice(triggerPrice, indexToken?.decimals || 0) : 0n,
       minOutputAmount,
-      false, // autoCancel
+      0n,
+      autoCancel,
     ],
   });
 

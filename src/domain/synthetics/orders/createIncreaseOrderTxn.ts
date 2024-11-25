@@ -1,23 +1,25 @@
+import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingOrder, SetPendingPosition, PendingOrderData } from "context/SyntheticsEvents";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
-import { DecreasePositionSwapType, OrderType, OrderTxnType } from "./types";
-import { isMarketOrderType, getPendingOrderFromParams } from "./utils";
-import { getPositionKey } from "../positions";
-import { applySlippageToPrice } from "../trade";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { t } from "@lingui/macro";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
-import { createCancelEncodedPayload } from "./cancelOrdersTxn";
-import { createUpdateEncodedPayload } from "./updateOrderTxn";
+import { OrderMetricId } from "lib/metrics/types";
 import concat from "lodash/concat";
+import { getPositionKey } from "../positions";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
+import { applySlippageToPrice } from "../trade";
+import { createCancelEncodedPayload } from "./cancelOrdersTxn";
+import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
+import { prepareOrderTxn } from "./prepareOrderTxn";
+import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
+import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
+import { createUpdateEncodedPayload } from "./updateOrderTxn";
+import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
 
 const { ZeroAddress } = ethers;
 
@@ -75,6 +77,7 @@ export type SecondaryUpdateOrderParams = SecondaryOrderCommonParams & {
   executionFee: bigint;
   indexToken: TokenData;
   minOutputAmount: bigint;
+  autoCancel: boolean;
 };
 
 export async function createIncreaseOrderTxn({
@@ -90,7 +93,7 @@ export async function createIncreaseOrderTxn({
   chainId: number;
   signer: Signer;
   subaccount: Subaccount;
-  metricId?: string;
+  metricId?: OrderMetricId;
   createIncreaseOrderParams: IncreaseOrderParams;
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
@@ -180,7 +183,10 @@ export async function createIncreaseOrderTxn({
 
   const updateEncodedPayload =
     updateOrderParams?.reduce<string[]>(
-      (acc, { orderKey, sizeDeltaUsd, executionFee, indexToken, acceptablePrice, triggerPrice, minOutputAmount }) => {
+      (
+        acc,
+        { orderKey, sizeDeltaUsd, executionFee, indexToken, acceptablePrice, triggerPrice, minOutputAmount, autoCancel }
+      ) => {
         return [
           ...acc,
           ...createUpdateEncodedPayload({
@@ -193,6 +199,7 @@ export async function createIncreaseOrderTxn({
             acceptablePrice,
             triggerPrice,
             minOutputAmount,
+            autoCancel,
           }),
         ];
       },
@@ -208,18 +215,31 @@ export async function createIncreaseOrderTxn({
     };
   }
 
-  if (!p.skipSimulation) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      tokensData: p.tokensData,
-      primaryPriceOverrides,
-      createMulticallPayload: simulationEncodedPayload,
-      value: totalWntAmount,
-      errorTitle: t`Order error.`,
-    });
-  }
-
   const finalPayload = [...encodedPayload, ...decreaseEncodedPayload, ...cancelEncodedPayload, ...updateEncodedPayload];
+
+  const simulationPromise = !p.skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: p.account,
+        tokensData: p.tokensData,
+        primaryPriceOverrides,
+        createMulticallPayload: simulationEncodedPayload,
+        value: totalWntAmount,
+        errorTitle: t`Order error.`,
+        metricId,
+      })
+    : undefined;
+
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+    chainId,
+    router,
+    "multicall",
+    [finalPayload],
+    totalWntAmount,
+    subaccount?.customSigners,
+    simulationPromise,
+    metricId
+  );
+
   const txnCreatedAt = Date.now();
 
   await callContract(chainId, router, "multicall", [finalPayload], {
@@ -227,7 +247,12 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    customSignersGasLimits,
+    customSignersGasPrices,
     metricId,
+    gasLimit,
+    gasPriceData,
+    bestNonce,
     setPendingTxns: p.setPendingTxns,
   });
 
@@ -326,6 +351,7 @@ function createOrderParams({
       executionFee: p.executionFee,
       callbackGasLimit: 0n,
       minOutputAmount: 0n,
+      validFromTime: 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,

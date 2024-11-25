@@ -632,6 +632,7 @@ export const Exchange = forwardRef(
       const selectedTokenPriceDecimal = getPriceDecimals(chainId, selectedToken?.symbol);
 
       if (!selectedToken) {
+        setTokenSelection(defaultTokenSelection);
         return;
       }
 
@@ -640,7 +641,16 @@ export const Exchange = forwardRef(
         currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "-USD"}`
       );
       document.title = title;
-    }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
+    }, [
+      tokenSelection,
+      swapOption,
+      infoTokens,
+      chainId,
+      fromTokenAddress,
+      toTokenAddress,
+      defaultTokenSelection,
+      setTokenSelection,
+    ]);
 
     const { positions, positionsMap } = useMemo(
       () =>

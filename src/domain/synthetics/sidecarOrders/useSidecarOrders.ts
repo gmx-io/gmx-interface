@@ -30,6 +30,7 @@ import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, Sidec
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { getCommonError, handleEntryError } from "./utils";
 import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
+import { usePrevious } from "lib/usePrevious";
 
 export * from "./types";
 
@@ -52,8 +53,6 @@ export function useSidecarOrders() {
   const existingLimitOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingLimitEntries);
   const existingSlOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingSlEntries);
   const existingTpOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingTpEntries);
-
-  const doesEntriesChanged = useSidecarOrdersChanged();
 
   const handleLimitErrors = useCallback(
     (entry: SidecarLimitOrderEntry) =>
@@ -359,8 +358,11 @@ export function useSidecarOrders() {
     takeProfit.reset();
   }, [limit, stopLoss, takeProfit]);
 
+  const doesEntriesChanged = useSidecarOrdersChanged();
+  const prevDoesEntriesChanged = usePrevious(doesEntriesChanged);
+
   useEffect(() => {
-    if (doesEntriesChanged) {
+    if (prevDoesEntriesChanged === false && doesEntriesChanged) {
       reset();
       /**
        * We need to reset the untouched state to false, to prevent next init on [./useSidecarOrdersGroup.ts#L115]
@@ -370,7 +372,7 @@ export function useSidecarOrders() {
       setIsUntouched("sl", false);
       setIsUntouched("tp", false);
     }
-  }, [doesEntriesChanged, reset, setIsUntouched]);
+  }, [doesEntriesChanged, prevDoesEntriesChanged, reset, setIsUntouched]);
 
   return {
     stopLoss,

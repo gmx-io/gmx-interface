@@ -1,12 +1,26 @@
 import { t } from "@lingui/macro";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
-import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  getCappedPoolPnl,
+  getMarketPnl,
+  getOpenInterestUsd,
+  getPoolUsdWithoutPnl,
+} from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
-import { applyFactor, expandDecimals, formatAmount, formatUsd, calculatePriceDecimals, PRECISION } from "lib/numbers";
+import {
+  applyFactor,
+  expandDecimals,
+  formatAmount,
+  formatUsd,
+  calculateDisplayDecimals,
+  PRECISION,
+  formatUsdPrice,
+} from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
@@ -76,14 +90,14 @@ export function getPositionPnlUsd(p: {
     return totalPnl;
   }
 
-  const poolPnl = isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
+  const poolPnl = getMarketPnl(marketInfo, isLong, true);
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({
     marketInfo,
     poolUsd,
+    poolPnl,
     isLong,
-    maximize: true,
   });
 
   const WEI_PRECISION = expandDecimals(1, 18);
@@ -207,11 +221,14 @@ export function getLiquidationPrice(p: {
   return liquidationPrice;
 }
 
-export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displayDecimals?: number } = {}) {
+export function formatLiquidationPrice(
+  liquidationPrice?: bigint,
+  opts: { displayDecimals?: number; visualMultiplier?: number } = {}
+) {
   if (liquidationPrice === undefined || liquidationPrice < 0) {
     return "NA";
   }
-  const priceDecimalPlaces = calculatePriceDecimals(liquidationPrice);
+  const priceDecimalPlaces = calculateDisplayDecimals(liquidationPrice, undefined, opts.visualMultiplier);
 
   return formatUsd(liquidationPrice, {
     ...opts,
@@ -220,14 +237,17 @@ export function formatLiquidationPrice(liquidationPrice?: bigint, opts: { displa
   });
 }
 
-export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { displayDecimals?: number } = {}) {
+export function formatAcceptablePrice(
+  acceptablePrice?: bigint,
+  opts: { displayDecimals?: number; visualMultiplier?: number } = {}
+) {
   if (acceptablePrice !== undefined && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
     return "NA";
   }
 
-  const priceDecimalPlaces = calculatePriceDecimals(acceptablePrice);
-
-  return formatUsd(acceptablePrice, { ...opts, displayDecimals: opts.displayDecimals ?? priceDecimalPlaces });
+  return formatUsdPrice(acceptablePrice, {
+    ...opts,
+  });
 }
 
 export function getLeverage(p: {

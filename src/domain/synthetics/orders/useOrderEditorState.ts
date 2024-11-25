@@ -30,9 +30,29 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     },
     [editingOrderKey]
   );
-
-  const triggerPrice = useMemo(() => parseValue(triggerPriceInputValue || "0", USD_DECIMALS), [triggerPriceInputValue]);
   const order = getByKey(ordersInfoData, editingOrderKey);
+
+  const triggerPrice = useMemo(() => {
+    const order = getByKey(ordersInfoData, editingOrderKey);
+
+    let triggerPrice = parseValue(triggerPriceInputValue || "0", USD_DECIMALS);
+
+    if (triggerPrice === 0n) {
+      triggerPrice = undefined;
+    }
+
+    if (order && !isSwapOrderType(order.orderType)) {
+      const positionOrder = order as PositionOrderInfo;
+      const toToken = positionOrder?.indexToken;
+
+      if (triggerPrice !== undefined && toToken?.visualMultiplier) {
+        triggerPrice = triggerPrice / BigInt(toToken?.visualMultiplier ?? 1);
+      }
+    }
+
+    return triggerPrice;
+  }, [editingOrderKey, ordersInfoData, triggerPriceInputValue]);
+
   const { acceptablePrice, acceptablePriceImpactBps, initialAcceptablePriceImpactBps, setAcceptablePriceImpactBps } =
     useAcceptablePrice(order, triggerPrice);
 

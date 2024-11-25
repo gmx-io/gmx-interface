@@ -26,17 +26,18 @@ import {
   OrderType,
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
   makeTxnErrorMetricsHandler,
-  makeTxnSentMetricsHandler,
   initDecreaseOrderMetricData,
   initIncreaseOrderMetricData,
   initSwapMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
+import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
@@ -77,6 +78,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const { summaryExecutionFee, getExecutionFeeAmountForEntry } = useTPSLSummaryExecutionFee();
+
+  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
 
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
@@ -127,26 +130,27 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         setPendingTxns,
         setPendingOrder,
         metricId: metricData.metricId,
+        skipSimulation: shouldDisableValidationForTesting,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       isLimit,
-      account,
       fromToken,
       toToken,
+      referralCodeForTxn,
       swapAmounts,
       executionFee,
       allowedSlippage,
-
+      subaccount,
+      account,
       tokensData,
       signer,
       chainId,
-      subaccount,
-      referralCodeForTxn,
       setPendingTxns,
       setPendingOrder,
+      shouldDisableValidationForTesting,
     ]
   );
 
@@ -226,7 +230,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingOrder,
           setPendingPosition,
         },
-        createDecreaseOrderParams: createSltpEntries.map((entry) => {
+        createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
           return {
             ...commonSecondaryOrderParams,
             initialCollateralDeltaAmount: entry.decreaseAmounts.collateralDeltaAmount ?? 0n,
@@ -242,6 +246,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             tokensData,
             txnType: entry.txnType!,
             skipSimulation: isLimit || shouldDisableValidationForTesting,
+            autoCancel: i < autoCancelOrdersLimit,
           };
         }),
         cancelOrderParams: cancelSltpEntries.map((entry) => ({
@@ -264,6 +269,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           minOutputAmount: 0n,
           txnType: entry.txnType!,
           initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
+          autoCancel: entry.order!.autoCancel,
         })),
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
@@ -281,7 +287,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       triggerPrice,
       isLong,
       executionFee,
-
       tokensData,
       signer,
       allowedSlippage,
@@ -295,6 +300,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       cancelSltpEntries,
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
+      autoCancelOrdersLimit,
     ]
   );
 
@@ -305,6 +311,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         decreaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
         executionFee,
+        swapPath: [],
         orderType: decreaseAmounts?.triggerOrderType,
         hasReferralCode: Boolean(referralCodeForTxn),
         subaccount,
@@ -362,6 +369,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           skipSimulation: true,
           indexToken: marketInfo.indexToken,
           tokensData,
+          autoCancel: autoCancelOrdersLimit > 0,
         },
         {
           setPendingTxns,
@@ -391,6 +399,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       subaccount,
       tokensData,
       triggerPrice,
+      autoCancelOrdersLimit,
     ]
   );
 

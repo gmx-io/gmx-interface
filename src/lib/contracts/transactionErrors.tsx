@@ -200,3 +200,15 @@ export function getInvalidNetworkErrorMessage(chainId: number) {
     </Trans>
   );
 }
+
+export function extractDataFromError(errorMessage: unknown) {
+  if (typeof errorMessage !== "string") return null;
+
+  const pattern = /data="([^"]+)"/;
+  const match = errorMessage.match(pattern);
+
+  if (match && match[1]) {
+    return match[1];
+  }
+  return null;
+}

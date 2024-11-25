@@ -16,7 +16,7 @@ export const DEFAULT_LISTING = p("01 Jan 1970");
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
 type MarketUiConfig = {
-  enabled: true;
+  enabled: boolean;
   listingDate: Date;
 };
 
@@ -220,6 +220,71 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0xB489711B1cB86afDA48924730084e23310EB4883": {
       enabled: true,
       listingDate: p("24 Oct 2024"),
+    },
+    // APT/USD [WETH-USDC]
+    "0x66A69c8eb98A7efE22A22611d1967dfec786a708": {
+      enabled: true,
+      listingDate: p("31 Oct 2024"),
+    },
+    // TIA/USD [WETH-USDC]
+    "0xBeB1f4EBC9af627Ca1E5a75981CE1AE97eFeDA22": {
+      enabled: true,
+      listingDate: p("31 Oct 2024"),
+    },
+    // TRX/USD [WETH-USDC]
+    "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1": {
+      enabled: true,
+      listingDate: p("7 Nov 2024"),
+    },
+    // TON/USD [WETH-USDC]
+    "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c": {
+      enabled: true,
+      listingDate: p("7 Nov 2024"),
+    },
+    // WLD/USD [WETH-USDC]
+    "0x872b5D567a2469Ed92D252eaCB0EB3BB0769e05b": {
+      enabled: true,
+      listingDate: p("15 Nov 2024"),
+    },
+    // BONK/USD [WETH-USDC]
+    "0xFaC5fF56c269432706d47DC82Ab082E9AE7D989E": {
+      enabled: true,
+      listingDate: p("15 Nov 2024"),
+    },
+    // TAO/USD [WBTC-USDC]
+    "0xe55e1A29985488A2c8846a91E925c2B7C6564db1": {
+      enabled: true,
+      listingDate: p("15 Nov 2024"),
+    },
+    // BOME/USD [WBTC/USDC]
+    "0x71237F8C3d1484495A136022E16840b70fF84a69": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+    },
+    // FLOKI/USD [WBTC/USDC]
+    "0xfD46a5702D4d97cE0164375744c65F0c31A3901b": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+    },
+    // MEME/USD [WBTC/USDC]
+    "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+    },
+    // MEW/USD [WBTC/USDC]
+    "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244": {
+      enabled: true,
+      listingDate: p("21 Nov 2024"),
+    },
+    // GMX [GMX]
+    "0xbD48149673724f9cAeE647bb4e9D9dDaF896Efeb": {
+      enabled: true,
+      listingDate: p("22 Nov 2024"),
+    },
+    // PENDLE/USD [PENDLE/USDC]
+    "0x784292E87715d93afD7cb8C941BacaFAAA9A5102": {
+      enabled: true,
+      listingDate: p("22 Nov 2024"),
     },
   },
   [AVALANCHE]: {

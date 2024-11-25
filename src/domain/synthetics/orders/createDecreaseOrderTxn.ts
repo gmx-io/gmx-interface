@@ -15,6 +15,8 @@ import { t } from "@lingui/macro";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { OrderMetricId } from "lib/metrics";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 
 const { ZeroAddress } = ethers;
 
@@ -39,6 +41,7 @@ export type DecreaseOrderParams = {
   referralCode?: string;
   indexToken: Token;
   tokensData: TokensData;
+  autoCancel: boolean;
 };
 
 export type DecreaseOrderCallbacks = {
@@ -54,7 +57,7 @@ export async function createDecreaseOrderTxn(
   subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
-  metricId?: string
+  metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
@@ -80,7 +83,7 @@ export async function createDecreaseOrderTxn(
     chainId,
   });
 
-  await Promise.all(
+  const simulationPromise = Promise.all(
     ps.map(async (p) => {
       if (subaccount && callbacks.setPendingOrder) {
         callbacks.setPendingOrder(getPendingOrderFromParams(chainId, "create", p));
@@ -101,24 +104,42 @@ export async function createDecreaseOrderTxn(
           value: totalWntAmount,
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
+          metricId,
         });
       }
     })
   );
 
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+    chainId,
+    router,
+    "multicall",
+    [encodedPayload],
+    totalWntAmount,
+    subaccount?.customSigners,
+    simulationPromise,
+    metricId
+  );
+
   const txnCreatedAt = Date.now();
 
   if (!signer.provider) throw new Error("No provider found");
-  const txnCreatedAtBlock = await signer.provider.getBlockNumber();
 
   await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    customSignersGasLimits,
+    customSignersGasPrices,
+    gasLimit,
+    gasPriceData,
     metricId,
+    bestNonce,
     setPendingTxns: callbacks.setPendingTxns,
   });
+
+  const txnCreatedAtBlock = await signer.provider.getBlockNumber();
 
   ps.forEach((p) => {
     if (isMarketOrderType(p.orderType)) {
@@ -200,13 +221,15 @@ export function createDecreaseEncodedPayload({
           acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
+          validFromTime: 0n,
           minOutputAmount,
         },
         orderType: p.orderType,
         decreasePositionSwapType: p.decreasePositionSwapType,
         isLong: p.isLong,
         shouldUnwrapNativeToken: isNativeReceive,
-        autoCancel: false,
+
+        autoCancel: p.autoCancel,
         referralCode: p.referralCode || ethers.ZeroHash,
       };
 

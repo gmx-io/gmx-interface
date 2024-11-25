@@ -9,6 +9,7 @@ import { SwapPricingType } from "../orders";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 import { CreateWithdrawalParams } from "./createWithdrawalTxn";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 
 interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenAmount" | "marketTokenAddress"> {
   glv: string;
@@ -56,24 +57,38 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  if (!p.skipSimulation) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      primaryPriceOverrides: {},
-      tokensData: p.tokensData,
-      createMulticallPayload: encodedPayload,
-      method: "simulateExecuteGlvWithdrawal",
-      errorTitle: t`Withdrawal error.`,
-      value: wntAmount,
-      swapPricingType: SwapPricingType.TwoStep,
-    });
-  }
+  const simulationPromise = !p.skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: p.account,
+        primaryPriceOverrides: {},
+        tokensData: p.tokensData,
+        createMulticallPayload: encodedPayload,
+        method: "simulateExecuteLatestGlvWithdrawal",
+        errorTitle: t`Withdrawal error.`,
+        value: wntAmount,
+        swapPricingType: SwapPricingType.TwoStep,
+        metricId: p.metricId,
+      })
+    : undefined;
+
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+    chainId,
+    contract,
+    "multicall",
+    [encodedPayload],
+    wntAmount,
+    undefined,
+    simulationPromise,
+    p.metricId
+  );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingWithdrawal({

@@ -13,6 +13,8 @@ import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
+import { OrderMetricId } from "lib/metrics/types";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 
 const { ZeroAddress } = ethers;
 
@@ -30,7 +32,8 @@ export type SwapOrderParams = {
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
-  metricId: string;
+  skipSimulation: boolean;
+  metricId: OrderMetricId;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -69,24 +72,42 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     p.setPendingOrder(swapOrder);
   }
 
-  if (p.orderType !== OrderType.LimitSwap) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      primaryPriceOverrides: {},
-      createMulticallPayload: simulationEncodedPayload,
-      value: sumaltionTotalWntAmount,
-      tokensData: p.tokensData,
-      errorTitle: t`Order error.`,
-    });
-  }
+  const simulationPromise =
+    !p.skipSimulation && p.orderType !== OrderType.LimitSwap
+      ? simulateExecuteTxn(chainId, {
+          account: p.account,
+          primaryPriceOverrides: {},
+          createMulticallPayload: simulationEncodedPayload,
+          value: sumaltionTotalWntAmount,
+          tokensData: p.tokensData,
+          errorTitle: t`Order error.`,
+          metricId: p.metricId,
+        })
+      : undefined;
+
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+    chainId,
+    router,
+    "multicall",
+    [encodedPayload],
+    totalWntAmount,
+    subaccount?.customSigners,
+    simulationPromise,
+    p.metricId
+  );
 
   await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
+    customSignersGasLimits,
+    customSignersGasPrices,
+    bestNonce,
     setPendingTxns: p.setPendingTxns,
     metricId: p.metricId,
+    gasLimit,
+    gasPriceData,
   });
 
   if (!subaccount) {
@@ -135,6 +156,7 @@ async function getParams(
       executionFee: p.executionFee,
       callbackGasLimit: 0n,
       minOutputAmount,
+      validFromTime: 0n,
     },
     autoCancel: false,
     orderType: p.orderType,

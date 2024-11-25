@@ -1,6 +1,6 @@
 import CustomErrors from "abis/CustomErrors.json";
 import cryptoJs from "crypto-js";
-import { extractDataFromError } from "domain/synthetics/orders/simulateExecuteTxn";
+import { extractDataFromError } from "lib/contracts/transactionErrors";
 import { ethers } from "ethers";
 import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "../contracts/transactionErrors";
 import { ErrorMetricData } from "./types";

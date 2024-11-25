@@ -9,6 +9,8 @@ import { callContract } from "lib/contracts";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
+import { OrderMetricId } from "lib/metrics/types";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 
 export type CreateDepositParams = {
   account: string;
@@ -24,7 +26,7 @@ export type CreateDepositParams = {
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
-  metricId?: string;
+  metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
 };
@@ -95,23 +97,37 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  if (!p.skipSimulation) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      primaryPriceOverrides: {},
-      tokensData: p.tokensData,
-      createMulticallPayload: encodedPayload,
-      method: "simulateExecuteDeposit",
-      errorTitle: t`Deposit error.`,
-      value: wntAmount,
-    });
-  }
+  const simulationPromise = !p.skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: p.account,
+        primaryPriceOverrides: {},
+        tokensData: p.tokensData,
+        createMulticallPayload: encodedPayload,
+        method: "simulateExecuteLatestDeposit",
+        errorTitle: t`Deposit error.`,
+        value: wntAmount,
+        metricId: p.metricId,
+      })
+    : undefined;
+
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+    chainId,
+    contract,
+    "multicall",
+    [encodedPayload],
+    wntAmount,
+    undefined,
+    simulationPromise,
+    p.metricId
+  );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({

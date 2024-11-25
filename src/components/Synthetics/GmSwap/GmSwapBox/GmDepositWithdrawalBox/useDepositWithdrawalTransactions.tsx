@@ -13,6 +13,16 @@ import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
 import { Operation } from "../types";
+import {
+  initGLVSwapMetricData,
+  initGMSwapMetricData,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
+  sendTxnValidationErrorMetric,
+} from "lib/metrics";
+import { helperToast } from "lib/helperToast";
+import { t } from "@lingui/macro";
 
 interface Props {
   marketInfo?: MarketInfo;
@@ -62,6 +72,35 @@ export const useDepositWithdrawalTransactions = ({
 
   const onCreateDeposit = useCallback(
     function onCreateDeposit() {
+      const metricData =
+        glvInfo && selectedMarketForGlv
+          ? initGLVSwapMetricData({
+              longToken,
+              shortToken,
+              selectedMarketForGlv,
+              isDeposit: true,
+              executionFee,
+              glvAddress: glvInfo.glvTokenAddress,
+              glvToken: glvInfo.glvToken,
+              longTokenAmount,
+              shortTokenAmount,
+              marketTokenAmount,
+              glvTokenAmount,
+            })
+          : initGMSwapMetricData({
+              longToken,
+              shortToken,
+              marketToken,
+              isDeposit: true,
+              executionFee,
+              marketInfo,
+              longTokenAmount,
+              shortTokenAmount,
+              marketTokenAmount,
+            });
+
+      sendOrderSubmittedMetric(metricData.metricId);
+
       if (
         !account ||
         !executionFee ||
@@ -71,8 +110,11 @@ export const useDepositWithdrawalTransactions = ({
         !tokensData ||
         !signer
       ) {
+        helperToast.error(t`Error submitting order`);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
+
       const initialLongTokenAddress = longToken?.address || marketInfo.longTokenAddress;
       const initialShortTokenAddress = marketInfo.isSameCollaterals
         ? initialLongTokenAddress
@@ -98,7 +140,9 @@ export const useDepositWithdrawalTransactions = ({
           setPendingTxns,
           setPendingDeposit,
           isMarketTokenDeposit: isMarketTokenDeposit ?? false,
-        });
+        })
+          .then(makeTxnSentMetricsHandler(metricData.metricId))
+          .catch(makeTxnErrorMetricsHandler(metricData.metricId));
       }
 
       return createDepositTxn(chainId, signer, {
@@ -115,9 +159,12 @@ export const useDepositWithdrawalTransactions = ({
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
         tokensData,
+        metricId: metricData.metricId,
         setPendingTxns,
         setPendingDeposit,
-      });
+      })
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       account,
@@ -144,6 +191,33 @@ export const useDepositWithdrawalTransactions = ({
 
   const onCreateWithdrawal = useCallback(
     function onCreateWithdrawal() {
+      const metricData =
+        glvInfo && selectedMarketForGlv
+          ? initGLVSwapMetricData({
+              longToken,
+              shortToken,
+              selectedMarketForGlv,
+              isDeposit: false,
+              executionFee,
+              glvAddress: glvInfo.glvTokenAddress,
+              glvToken: glvInfo.glvToken,
+              longTokenAmount,
+              shortTokenAmount,
+              marketTokenAmount,
+              glvTokenAmount,
+            })
+          : initGMSwapMetricData({
+              longToken,
+              shortToken,
+              marketToken,
+              isDeposit: false,
+              executionFee,
+              marketInfo,
+              longTokenAmount,
+              shortTokenAmount,
+              marketTokenAmount,
+            });
+
       if (
         !account ||
         !marketInfo ||
@@ -154,6 +228,8 @@ export const useDepositWithdrawalTransactions = ({
         !tokensData ||
         !signer
       ) {
+        helperToast.error(t`Error submitting order`);
+        sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
 
@@ -176,7 +252,9 @@ export const useDepositWithdrawalTransactions = ({
           setPendingWithdrawal,
           selectedGmMarket: selectedMarketForGlv,
           glv: glvInfo.glvTokenAddress,
-        });
+        })
+          .then(makeTxnSentMetricsHandler(metricData.metricId))
+          .catch(makeTxnErrorMetricsHandler(metricData.metricId));
       }
 
       return createWithdrawalTxn(chainId, signer, {
@@ -195,7 +273,9 @@ export const useDepositWithdrawalTransactions = ({
         skipSimulation: shouldDisableValidation,
         setPendingTxns,
         setPendingWithdrawal,
-      });
+      })
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
       account,

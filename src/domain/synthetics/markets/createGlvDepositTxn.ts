@@ -9,6 +9,7 @@ import { applySlippageToMinOut } from "../trade";
 
 import GlvRouter from "abis/GlvRouter.json";
 import { CreateDepositParams } from "./createDepositTxn";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 
 interface CreateGlvDepositParams extends CreateDepositParams {
   glvAddress: string;
@@ -88,23 +89,37 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  if (!p.skipSimulation) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      primaryPriceOverrides: {},
-      tokensData: p.tokensData,
-      createMulticallPayload: encodedPayload,
-      method: "simulateExecuteGlvDeposit",
-      errorTitle: t`Deposit error.`,
-      value: wntAmount,
-    });
-  }
+  const simulationPromise = !p.skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: p.account,
+        primaryPriceOverrides: {},
+        tokensData: p.tokensData,
+        createMulticallPayload: encodedPayload,
+        method: "simulateExecuteLatestGlvDeposit",
+        errorTitle: t`Deposit error.`,
+        value: wntAmount,
+        metricId: p.metricId,
+      })
+    : undefined;
+
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+    chainId,
+    contract,
+    "multicall",
+    [encodedPayload],
+    wntAmount,
+    undefined,
+    simulationPromise,
+    p.metricId
+  );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({

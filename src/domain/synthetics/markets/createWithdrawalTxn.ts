@@ -1,16 +1,18 @@
+import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
-import { applySlippageToMinOut } from "../trade";
-import { TokensData } from "../tokens";
-import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { t } from "@lingui/macro";
+import { OrderMetricId } from "lib/metrics/types";
 import { SwapPricingType } from "../orders";
+import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
+import { TokensData } from "../tokens";
+import { applySlippageToMinOut } from "../trade";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 
 export type CreateWithdrawalParams = {
   account: string;
@@ -26,7 +28,7 @@ export type CreateWithdrawalParams = {
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
-  metricId?: string;
+  metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
@@ -75,24 +77,38 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  if (!p.skipSimulation) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      primaryPriceOverrides: {},
-      tokensData: p.tokensData,
-      createMulticallPayload: encodedPayload,
-      method: "simulateExecuteWithdrawal",
-      errorTitle: t`Withdrawal error.`,
-      value: wntAmount,
-      swapPricingType: SwapPricingType.TwoStep,
-    });
-  }
+  const simulationPromise = !p.skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: p.account,
+        primaryPriceOverrides: {},
+        tokensData: p.tokensData,
+        createMulticallPayload: encodedPayload,
+        method: "simulateExecuteLatestWithdrawal",
+        errorTitle: t`Withdrawal error.`,
+        value: wntAmount,
+        swapPricingType: SwapPricingType.TwoStep,
+        metricId: p.metricId,
+      })
+    : undefined;
+
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+    chainId,
+    contract,
+    "multicall",
+    [encodedPayload],
+    wntAmount,
+    undefined,
+    simulationPromise,
+    p.metricId
+  );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingWithdrawal({

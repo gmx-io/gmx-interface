@@ -89,6 +89,7 @@ export const GLV_SHIFT_MIN_INTERVAL = hashString("GLV_SHIFT_MIN_INTERVAL");
 export const GLV_DEPOSIT_GAS_LIMIT = hashString("GLV_DEPOSIT_GAS_LIMIT");
 export const GLV_WITHDRAWAL_GAS_LIMIT = hashString("GLV_WITHDRAWAL_GAS_LIMIT");
 export const GLV_PER_MARKET_GAS_LIMIT = hashString("GLV_PER_MARKET_GAS_LIMIT");
+export const MAX_AUTO_CANCEL_ORDERS_KEY = hashString("MAX_AUTO_CANCEL_ORDERS");
 
 export function glvShiftLastExecutedAtKey(glvAddress: string) {
   return hashData(["bytes32", "address"], [GLV_SHIFT_LAST_EXECUTED_AT, glvAddress]);
@@ -241,8 +242,8 @@ export function orderKey(dataStoreAddress: string, nonce: bigint) {
   return hashData(["address", "uint256"], [dataStoreAddress, nonce]);
 }
 
-export function depositGasLimitKey(singleToken: boolean) {
-  return hashData(["bytes32", "bool"], [DEPOSIT_GAS_LIMIT_KEY, singleToken]);
+export function depositGasLimitKey() {
+  return DEPOSIT_GAS_LIMIT_KEY;
 }
 
 export function withdrawalGasLimitKey() {
