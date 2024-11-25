@@ -83,7 +83,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
         primaryPriceOverrides: {},
         tokensData: p.tokensData,
         createMulticallPayload: encodedPayload,
-        method: "simulateExecuteWithdrawal",
+        method: "simulateExecuteLatestWithdrawal",
         errorTitle: t`Withdrawal error.`,
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,

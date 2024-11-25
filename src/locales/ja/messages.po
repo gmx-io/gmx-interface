@@ -6743,7 +6743,6 @@ msgid "View on Arbitrum"
 msgstr ""
 
 #: src/domain/synthetics/markets/createShiftTxn.ts
-#: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
 msgstr ""
 

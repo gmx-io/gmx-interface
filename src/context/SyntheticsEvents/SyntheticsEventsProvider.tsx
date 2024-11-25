@@ -670,7 +670,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         isLong: eventData.boolItems.items.isLong,
-        increasedAtBlock: BigInt(txnParams.blockNumber),
+        increasedAtTime: eventData.uintItems.items.increasedAtTime,
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -733,7 +733,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         pnlUsd: eventData.intItems.items.pnlUsd,
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
-        decreasedAtBlock: BigInt(txnParams.blockNumber),
+        decreasedAtTime: eventData.uintItems.items.decreasedAtTime,
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };

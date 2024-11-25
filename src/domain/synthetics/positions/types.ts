@@ -12,8 +12,8 @@ export type Position = {
   sizeInTokens: bigint;
   collateralAmount: bigint;
   pendingBorrowingFeesUsd: bigint;
-  increasedAtBlock: bigint;
-  decreasedAtBlock: bigint;
+  increasedAtTime: bigint;
+  decreasedAtTime: bigint;
   isLong: boolean;
   fundingFeeAmount: bigint;
   claimableLongTokenAmount: bigint;

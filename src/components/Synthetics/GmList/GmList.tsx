@@ -86,6 +86,7 @@ export function GmList({
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectGlvAndMarketsInfoData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
+
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
   const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId)!;

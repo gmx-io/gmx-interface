@@ -57,26 +57,13 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
 
   const encodedPayload = multicall.map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  if (!p.skipSimulation) {
-    await simulateExecuteTxn(chainId, {
-      account: p.account,
-      primaryPriceOverrides: {},
-      tokensData: p.tokensData,
-      createMulticallPayload: encodedPayload,
-      method: "simulateExecuteShift",
-      errorTitle: t`Shift error.`,
-      value: p.executionFee,
-      metricId: p.metricId,
-    });
-  }
-
   const simulationPromise = !p.skipSimulation
     ? simulateExecuteTxn(chainId, {
         account: p.account,
         primaryPriceOverrides: {},
         tokensData: p.tokensData,
         createMulticallPayload: encodedPayload,
-        method: "simulateExecuteShift",
+        method: "simulateExecuteLatestShift",
         errorTitle: t`Shift error.`,
         value: p.executionFee,
         metricId: p.metricId,
