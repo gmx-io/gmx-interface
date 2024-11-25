@@ -63,7 +63,7 @@
 }
 
 .Tab.Tab__inline .Tab-option.active {
-  opacity: 1;
+  color: var(--color-white);
   pointer-events: none;
 }
 

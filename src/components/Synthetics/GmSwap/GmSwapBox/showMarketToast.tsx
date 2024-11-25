@@ -18,7 +18,7 @@ export function showMarketToast(market: GlvOrMarketInfo) {
       <div className="inline-flex">
         {titlePrefix}
         {indexName ? <span>&nbsp;{indexName}</span> : null}
-        <span className="ml-2 text-12 font-normal text-gray-300">[{poolName}]</span>
+        <span className="ml-2 text-12 font-normal text-slate-100">[{poolName}]</span>
       </div>{" "}
       <span>selected in order form</span>
     </Trans>

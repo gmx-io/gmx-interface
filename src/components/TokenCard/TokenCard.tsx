@@ -275,7 +275,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
           <Button
             className="!py-11 tracking-normal"
             newTab
-            variant="primary"
+            variant="secondary"
             to="https://docs.gmx.io/docs/category/tokenomics"
           >
             <Trans>Read more</Trans>

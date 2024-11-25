@@ -100,7 +100,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           ref={refs.setReference}
           className="dropdown-arrow center-both"
         >
-          <FiChevronDown size={20} />
+          <FiChevronDown size={20} className="text-slate-100" />
         </Menu.Button>
         <Menu.Items
           as="div"

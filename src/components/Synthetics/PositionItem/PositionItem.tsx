@@ -260,7 +260,7 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <AiOutlineEdit fontSize={16} />
+              <AiOutlineEdit className="text-slate-100" fontSize={16} />
             </span>
           )}
         </div>
@@ -768,7 +768,7 @@ function PositionItemOrdersLarge({
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-gray-300",
+          "text-slate-100",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"

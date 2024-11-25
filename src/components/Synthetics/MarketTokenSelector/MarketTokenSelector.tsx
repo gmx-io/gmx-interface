@@ -106,11 +106,11 @@ export default function MarketTokenSelector(props: Props) {
                   ) : (
                     <span>GM{indexName && `: ${indexName}`}</span>
                   )}
-                  <span className="ml-3 text-12 text-gray-300 group-hover/selector-base:text-[color:inherit]">
+                  <span className="ml-3 text-12 text-slate-100 group-hover/selector-base:text-[color:inherit]">
                     {poolName && `[${poolName}]`}
                   </span>
                 </div>
-                <div className="text-12 text-gray-400 group-hover/selector-base:text-[color:inherit]">
+                <div className="text-12 text-slate-100 group-hover/selector-base:text-[color:inherit]">
                   {isGlv
                     ? getGlvMarketSubtitle(chainId, getGlvOrMarketAddress(currentMarketInfo))
                     : "GMX Market Tokens"}
@@ -196,7 +196,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-16 last-of-type:pr-16") : "px-16";
   const thClassName = cx(
-    "sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100 last-of-type:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -520,7 +520,7 @@ function MarketTokenListItem({
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
             <div className="inline-flex flex-wrap items-center">
               <span className="text-slate-100">{indexName && indexName}</span>
-              <span className="ml-3 text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+              <span className="ml-3 text-12 leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
             </div>
           </div>
         )}
@@ -528,7 +528,7 @@ function MarketTokenListItem({
           <div className="inline-flex flex-col items-start">
             <TokenIcon symbol={iconName} displaySize={16} importSize={40} />
             <span>{indexName && indexName}</span>
-            <span className="text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+            <span className="text-12 leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
           </div>
         )}
       </td>

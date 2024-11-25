@@ -517,7 +517,7 @@ function GmListItem({
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
               </div>
             </div>
-            <div className="text-12 tracking-normal text-gray-400">
+            <div className="text-12 tracking-normal text-slate-100">
               [{getMarketPoolName({ longToken, shortToken })}]
             </div>
           </div>

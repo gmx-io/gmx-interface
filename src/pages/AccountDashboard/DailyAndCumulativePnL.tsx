@@ -73,7 +73,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-24 px-16 pt-16 text-gray-300">
+      <div className="flex flex-wrap gap-24 px-16 pt-16 text-slate-100">
         <div>
           <div className="inline-block size-10 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
         </div>

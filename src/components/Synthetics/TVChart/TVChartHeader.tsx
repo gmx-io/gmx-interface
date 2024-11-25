@@ -127,7 +127,7 @@ function TVChartHeaderInfoMobile() {
         </div>
 
         <div>
-          <div className="mb-4 whitespace-nowrap text-[1.25rem]">
+          <div className="mb-4 whitespace-nowrap">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
@@ -334,15 +334,11 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
         <div>
-          <div className="mb-4 whitespace-nowrap text-[1.25rem]">
-            <span className="opacity-70">
-              <Trans>Open Interest</Trans>
-            </span>
-            <span className="opacity-70">{" ("}</span>
-            <span className="positive">{longOIPercentage}</span>
-            <span className="opacity-70">/</span>
-            <span className="negative">{shortOIPercentage}</span>
-            <span className="opacity-70">{")"}</span>
+          <div className="ExchangeChart-info-label mb-4 whitespace-nowrap text-[1.25rem]">
+            <Trans>Open Interest</Trans>
+            {" ("}
+            <span className="positive">{longOIPercentage}</span>/<span className="negative">{shortOIPercentage}</span>
+            {")"}
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-4">{longOIValue}</div>
@@ -458,7 +454,7 @@ function TVChartHeaderInfoDesktop() {
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">
             <div className="text-body-large mb-4">{avgPrice}</div>
-            <div className="text-body-small">{dayPriceDelta}</div>
+            <div className="text-body-medium">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
         </div>

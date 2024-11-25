@@ -79,9 +79,9 @@ export function ExpandableRow({
           label={<span className="flex flex-row justify-between align-middle group-hover:text-blue-300">{label}</span>}
           value={
             open ? (
-              <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 opacity-70" />
+              <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white" />
             ) : (
-              <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 opacity-70" />
+              <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white" />
             )
           }
         />
