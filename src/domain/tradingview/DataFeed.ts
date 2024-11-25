@@ -14,7 +14,7 @@ import range from "lodash/range";
 import { getTvParamsCacheKey } from "config/localStorage";
 import { getNativeToken, getTokenBySymbol, getTokenVisualMultiplier, isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { getLimitChartPricesFromStats } from "domain/prices";
+import { getChainlinkChartPricesFromGraph, getLimitChartPricesFromStats } from "domain/prices";
 import { Bar, FromOldToNewArray, TvParamsCache } from "domain/tradingview/types";
 import {
   formatTimeInBarToMs,
@@ -26,6 +26,7 @@ import { PauseableInterval } from "lib/PauseableInterval";
 import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
+import { sleep } from "lib/sleep";
 
 const RESOLUTION_TO_SECONDS = {
   1: 60,
@@ -144,23 +145,18 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     let bars: FromOldToNewArray<Bar> = [];
     try {
-      bars = !isStable
-        ? await this.fetchCandles(
-            symbolInfo.name,
-            resolution,
-            periodParams.countBack + offset,
-            false,
-            periodParams.firstDataRequest
-          )
-        : range(periodParams.countBack, 0, -1).map((i) => ({
-            time:
-              Math.trunc(to / RESOLUTION_TO_SECONDS[resolution]) * RESOLUTION_TO_SECONDS[resolution] -
-              i * RESOLUTION_TO_SECONDS[resolution],
-            open: 1,
-            close: 1,
-            high: 1,
-            low: 1,
-          }));
+      if (!isStable) {
+        bars = await this.fetchCandles(
+          symbolInfo.name,
+          resolution,
+          periodParams.countBack + offset,
+          false,
+          periodParams.firstDataRequest
+        );
+      } else {
+        const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+        bars = this.getStableCandles(currentCandleTime, periodParams.countBack + offset, resolution);
+      }
     } catch (e) {
       onError(String(e));
 
@@ -255,13 +251,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         try {
           prices = !isStable
             ? await this.fetchCandles(symbolInfo.name, resolution, candlesToFetch)
-            : range(candlesToFetch, 0, -1).map((i) => ({
-                time: currentCandleTime - i * RESOLUTION_TO_SECONDS[resolution],
-                open: 1,
-                close: 1,
-                high: 1,
-                low: 1,
-              }));
+            : this.getStableCandles(currentCandleTime, candlesToFetch, resolution);
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error(e);
@@ -383,12 +373,55 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     if (this.tradePageVersion === 1) {
-      return await getLimitChartPricesFromStats(this.chainId, symbol, SUPPORTED_RESOLUTIONS_V1[resolution], count);
+      return Promise.race([
+        getLimitChartPricesFromStats(this.chainId, symbol, SUPPORTED_RESOLUTIONS_V1[resolution], count),
+        sleep(5000).then(() => Promise.reject("Stats candles timeout")),
+      ])
+        .catch((ex) => {
+          // eslint-disable-next-line no-console
+          console.warn(ex, "Switching to graph chainlink data");
+          return Promise.race([
+            getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V1[resolution]),
+            sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
+          ]);
+        })
+        .catch((ex) => {
+          // eslint-disable-next-line no-console
+          console.warn("Load history candles failed", ex);
+          return [];
+        });
     }
 
-    return (
-      await this.oracleFetcher.fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
-    ).toReversed();
+    return Promise.race([
+      this.oracleFetcher
+        .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
+        .then((bars) => bars.toReversed()),
+      sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
+    ])
+      .catch((ex) => {
+        // eslint-disable-next-line no-console
+        console.warn(ex, "Switching to graph chainlink data");
+        return Promise.race([
+          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
+          sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
+        ]);
+      })
+      .catch((ex) => {
+        // eslint-disable-next-line no-console
+        console.warn("Load history candles failed", ex);
+        return [];
+      });
+  }
+
+  private getStableCandles(to: number, count: number, resolution: ResolutionString) {
+    const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
+    return range(count, 0, -1).map((i) => ({
+      time: to - i * periodSeconds,
+      open: 1,
+      close: 1,
+      high: 1,
+      low: 1,
+    }));
   }
 
   destroy() {
