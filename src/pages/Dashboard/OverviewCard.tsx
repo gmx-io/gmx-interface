@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
@@ -56,8 +56,6 @@ export function OverviewCard({
 
   const v1ArbitrumFees = useV1FeesInfo(ARBITRUM);
   const v1AvalancheFees = useV1FeesInfo(AVALANCHE);
-
-  const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
@@ -254,18 +252,14 @@ export function OverviewCard({
     [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees]
   );
 
-  const formattedDuration = useMemo(() => {
-    const now = Date.now() / 1000;
-    const days = Math.floor((now - epochStartedTimestamp) / (3600 * 24));
-    let restHours = Math.round((now - epochStartedTimestamp) / 3600) - days * 24;
-    if (days === 0) {
-      restHours = Math.max(restHours, 1);
-    }
+  const [formattedDuration, setFormattedDuration] = useState(() => getFormattedDuration());
 
-    const daysStr = days > 0 ? `${days}d` : "";
-    const hoursStr = restHours > 0 ? `${restHours}h` : "";
-    return [daysStr, hoursStr].filter(Boolean).join(" ");
-  }, [epochStartedTimestamp]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFormattedDuration(getFormattedDuration());
+    }, 1000 * 60);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="App-card">
@@ -417,4 +411,19 @@ export function OverviewCard({
       </div>
     </div>
   );
+}
+
+function getFormattedDuration() {
+  const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
+
+  const now = Date.now() / 1000;
+  const days = Math.floor((now - epochStartedTimestamp) / (3600 * 24));
+  let restHours = Math.round((now - epochStartedTimestamp) / 3600) - days * 24;
+  if (days === 0) {
+    restHours = Math.max(restHours, 1);
+  }
+
+  const daysStr = days > 0 ? `${days}d` : "";
+  const hoursStr = restHours > 0 ? `${restHours}h` : "";
+  return [daysStr, hoursStr].filter(Boolean).join(" ");
 }
