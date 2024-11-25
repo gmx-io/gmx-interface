@@ -3,13 +3,15 @@ import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useLocalStorage, useMedia, usePrevious } from "react-use";
+import { useLocalStorage, useMedia } from "react-use";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
@@ -19,8 +21,6 @@ import type {
 } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type ChartLine = {
   price: number;

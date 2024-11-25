@@ -238,7 +238,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     const interval = new PauseableInterval<Bar | undefined>(
       async ({ lastReturnedValue }) => {
-        let start = performance.now();
         let candlesToFetch = 1;
 
         const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
@@ -250,14 +249,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           if (diff >= periodSeconds) {
             candlesToFetch = Math.ceil(diff / periodSeconds);
           }
-
-          console.log("diff", diff, "candles to fetch", candlesToFetch);
         }
 
-        console.log("candles to fetch", candlesToFetch);
-
         let prices: FromOldToNewArray<Bar> = [];
-        let fetchStart = performance.now();
+
         try {
           prices = !isStable
             ? await this.fetchCandles(symbolInfo.name, resolution, candlesToFetch)
@@ -269,21 +264,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
                 low: 1,
               }));
         } catch (e) {
-          console.error("error fetching candles", e);
+          // eslint-disable-next-line no-console
+          console.error(e);
           return lastReturnedValue;
         }
-
-        console.log("fetch time", performance.now() - fetchStart);
-
-        console.log(
-          "got len",
-          prices.length,
-          "with times",
-          prices.map((p) => p.time).join(", "),
-          "last time",
-          lastReturnedValue?.time,
-          getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution])
-        );
 
         let newLastReturnedValue: Bar | undefined = lastReturnedValue;
 
@@ -293,37 +277,24 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           if (lastReturnedValue?.time && price.time < lastReturnedValue.time) {
             continue;
           }
-          console.log("pre patch", lastReturnedValue?.time);
 
           if (lastReturnedValue?.time && price.time > lastReturnedValue.time && !didPatchPreviousCandle) {
             didPatchPreviousCandle = true;
-            const previousBarWithNewClose = { ...lastReturnedValue, close: price.open };
-            console.log(
-              "patching previous candle",
-              previousBarWithNewClose,
-              "with time",
-              previousBarWithNewClose.time,
-              multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier)
-            );
+            const previousBarWithNewClose = {
+              ...lastReturnedValue,
+              close: price.open,
+              low: Math.min(lastReturnedValue.low, price.open),
+              high: Math.max(lastReturnedValue.high, price.open),
+            };
 
-            await Promise.resolve().then(() => {
-              console.log("[] patch");
-
-              onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
-            });
+            onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
           }
 
-          const bar = multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier);
-
-          await Promise.resolve().then(() => {
-            console.log("[] tick", bar);
-            onTick(bar);
-          });
+          onTick(multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier));
 
           newLastReturnedValue = price;
         }
 
-        console.log("time", performance.now() - start);
         return newLastReturnedValue;
       },
       this.tradePageVersion === 1 ? V1_UPDATE_INTERVAL : V2_UPDATE_INTERVAL
@@ -392,12 +363,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   private pauseAll() {
-    console.log("pausing all");
     Object.values(this.subscriptions).forEach((subscription) => subscription.pause());
   }
 
   private resumeAll() {
-    console.log("resuming all");
     Object.values(this.subscriptions).forEach((subscription) => subscription.resume());
   }
 
@@ -432,7 +401,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   destroy() {
-    console.log("destroying datafeed");
     Object.values(this.subscriptions).forEach((subscription) => subscription.destroy());
     document.removeEventListener("visibilitychange", this.visibilityHandler);
   }

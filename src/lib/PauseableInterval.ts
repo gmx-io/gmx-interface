@@ -1,5 +1,3 @@
-import { useSequentialTimedSWR } from "domain/synthetics/tokens/useSequentialTimedSWR";
-
 type PauseableIntervalFunction<T> = (pausedParams: {
   wasPausedSinceLastCall: boolean;
   lastReturnedValue: Awaited<T> | undefined;
