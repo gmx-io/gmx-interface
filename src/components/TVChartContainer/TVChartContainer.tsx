@@ -182,7 +182,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, themeContext.theme]);
+  }, [chainId]);
 
   return (
     <div className="ExchangeChart-error">
