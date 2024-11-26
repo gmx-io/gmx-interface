@@ -242,8 +242,8 @@ export function orderKey(dataStoreAddress: string, nonce: bigint) {
   return hashData(["address", "uint256"], [dataStoreAddress, nonce]);
 }
 
-export function depositGasLimitKey(singleToken: boolean) {
-  return hashData(["bytes32", "bool"], [DEPOSIT_GAS_LIMIT_KEY, singleToken]);
+export function depositGasLimitKey() {
+  return DEPOSIT_GAS_LIMIT_KEY;
 }
 
 export function withdrawalGasLimitKey() {

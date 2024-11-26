@@ -33,6 +33,39 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "gmx-pendle-listing",
+    title: "GMX single-sided and PENDLE markets added on Arbitrum",
+    isActive: true,
+    startDate: "22 Nov 2024, 00:00",
+    endDate: "28 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="GMX" />
+        /USD and <TokenSymbolWithIcon symbol="PENDLE" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="PENDLE" />
+        , <TokenSymbolWithIcon symbol="GMX" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "bome-floki-meme-mew-listing",
+    title: "BOME, FLOKI, MEW, MEME and TAO markets added on Arbitrum",
+    isActive: true,
+    startDate: "21 Nov 2024, 16:00",
+    endDate: "27 Nov 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="BOME" />
+        /USD, <TokenSymbolWithIcon symbol="FLOKI" />
+        /USD, <TokenSymbolWithIcon symbol="MEW" />
+        /USD and <TokenSymbolWithIcon symbol="MEME" />
+        /USD and <TokenSymbolWithIcon symbol="TAO" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />{" "}
+        or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "wld-listing",
     title: "BONK and WLD markets added on Arbitrum",
     isActive: true,

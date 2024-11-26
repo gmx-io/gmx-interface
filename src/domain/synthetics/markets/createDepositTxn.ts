@@ -103,7 +103,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
         primaryPriceOverrides: {},
         tokensData: p.tokensData,
         createMulticallPayload: encodedPayload,
-        method: "simulateExecuteDeposit",
+        method: "simulateExecuteLatestDeposit",
         errorTitle: t`Deposit error.`,
         value: wntAmount,
         metricId: p.metricId,
