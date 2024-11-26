@@ -3,7 +3,7 @@ import type { PositionInfo, PositionsInfoData } from "domain/synthetics/position
 import { TradeType } from "domain/synthetics/trade";
 import { isMarketIndexToken } from "./utils";
 import { isLimitOrderType, OrdersInfoData } from "../orders";
-import { OrderInfo, PositionOrderInfo } from "../orders/types";
+import { OrderInfo } from "../orders/types";
 
 type PositionOrOrder = {
   size: bigint;
@@ -52,14 +52,15 @@ export function getLargestRelatedExistingPositionOrOrder({
     }
   }
 
-  const matchingOrders = Object.values(ordersInfo ?? {})
-    .filter((order) => isLimitOrderType(order.orderType))
-    .filter((order) => {
-      return (
-        order.isLong === isLong &&
-        isMarketIndexToken({ indexToken: (order as PositionOrderInfo).indexToken }, indexTokenAddress)
-      );
-    });
+  const matchingOrders = Object.values(ordersInfo ?? {}).filter((order) => {
+    return (
+      isLimitOrderType(order.orderType) &&
+      order.isLong === isLong &&
+      "indexToken" in order &&
+      order.indexToken &&
+      isMarketIndexToken({ indexToken: order.indexToken }, indexTokenAddress)
+    );
+  });
 
   matchingOrders.forEach((order) => {
     if (!largestRelatedExistingPositionOrOrder || order.sizeDeltaUsd > largestRelatedExistingPositionOrOrder.size) {
