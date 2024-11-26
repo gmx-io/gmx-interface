@@ -33,6 +33,7 @@ export type RawTradeAction = {
   positionFeeAmount?: string;
   borrowingFeeAmount?: string;
   fundingFeeAmount?: string;
+  liquidationFeeAmount?: string;
   pnlUsd?: string;
   basePnlUsd?: string;
 

@@ -582,6 +582,8 @@ export const formatPositionMessage = (
       tradeAction.collateralTokenPriceMin!
     );
 
+    const formattedLiquidationFee = formatDeltaUsd(liquidationFeeUsd ? liquidationFeeUsd * -1n : undefined);
+
     const returnedCollateralUsd =
       initialCollateralUsd !== undefined &&
       tradeAction.basePnlUsd !== undefined &&
@@ -623,7 +625,7 @@ export const formatPositionMessage = (
           text: formattedFundingFee,
           state: "error",
         }),
-        infoRow(t`Close fee`, {
+        infoRow(t`Close Fee`, {
           text: formattedPositionFee,
           state: "error",
         }),
@@ -635,8 +637,8 @@ export const formatPositionMessage = (
           text: formattedPriceImpact!,
           state: numberToState(tradeAction.priceImpactUsd!),
         }),
-        infoRow(t`Liquidation fee`, {
-          text: formatUsd(liquidationFeeUsd),
+        infoRow(t`Liquidation Fee`, {
+          text: formattedLiquidationFee,
           state: "error",
         }),
         "",
