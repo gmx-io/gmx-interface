@@ -28,7 +28,7 @@ type AnalyticsEventParams = {
 };
 
 export const SESSION_ID_KEY = "sessionId";
-const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24; // 1 day
+const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24 * 4; // 4 days
 const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
 
 const MAX_DEDUP_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
