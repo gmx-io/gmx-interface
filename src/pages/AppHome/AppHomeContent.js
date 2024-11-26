@@ -1,38 +1,34 @@
 import { Trans } from "@lingui/macro";
 import "./AppHomeContent.css";
-import liquidationImage from "img/liquidation_risks.svg";
-import saveCostImg from "img/save_costs.svg";
-import simpleSwapImg from "img/swaps.svg";
+import { HeaderLink } from "components/Header/HeaderLink";
+import { BsArrowRight } from "react-icons/bs";
 
 export default function AppHomeContent() {
   return (
     <div className="landing-content">
       <div className="content-title">
-        <img src={liquidationImage} alt="liquidation risk" width={45} />
-        <Trans>Reduce Liquidation Risks</Trans>
+        <Trans>Become a Liquidity Provider</Trans>
         <br />
         <span className="content-desc">
-          An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from
-          temporary wicks.
+          Provide liquidity to T3's trading pools and earn fees from every trade. Join our growing network of liquidity
+          providers and earn passive income from the platform's success.
         </span>
+        <HeaderLink className="btn text-white orange-cta" to="/earn">
+          <Trans>Buy TLP</Trans>
+          <BsArrowRight className="arrow" style={{ marginLeft: "1rem" }} color={"white"} />
+        </HeaderLink>
       </div>
       <div className="content-title">
-        <img src={saveCostImg} alt="liquidation risk" width={45} />
-        <Trans>Save on Costs</Trans>
-        <br />
+        <Trans>Buy TMX Token</Trans>
+        <span style={{fontSize: '14px', color: '#FFB547'}}> (Coming Soon)</span>
         <span className="content-desc">
-          Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring
-          additional costs.
+          Invest in T3's growth by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium features
+          as a T3 Pro member. Be part of our ecosystem's future.
         </span>
-      </div>
-      <div className="content-title">
-        <img src={simpleSwapImg} alt="liquidation risk" width={45} />
-        <Trans>Simple Swaps</Trans>
-        <br />
-        <span className="content-desc">
-          Open positions through a simple swap interface. Conveniently swap from any supported asset into the position
-          of your choice.
-        </span>
+        <button className="btn text-white orange-cta" disabled style={{opacity: 0.5, cursor: 'not-allowed'}}>
+          <Trans>Buy TMX</Trans>
+          <BsArrowRight className="arrow" style={{ marginLeft: "1rem" }} color={"white"} />
+        </button>
       </div>
     </div>
   );
