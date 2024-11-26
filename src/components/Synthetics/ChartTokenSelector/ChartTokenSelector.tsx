@@ -293,7 +293,11 @@ function useFilterSortTokens({
   const filteredTokens: Token[] | undefined = useMemo(() => {
     const textMatched =
       searchKeyword.trim() && options
-        ? searchBy(options, [(item) => stripBlacklistedWords(item.name), "symbol"], searchKeyword)
+        ? searchBy(
+            options,
+            [(item) => stripBlacklistedWords(item.name), (item) => `${getTokenVisualMultiplier(item)}${item.symbol}`],
+            searchKeyword
+          )
         : options;
 
     const tabMatched = textMatched?.filter((item) => {
