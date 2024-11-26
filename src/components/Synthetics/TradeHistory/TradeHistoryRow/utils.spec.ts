@@ -370,7 +370,7 @@ describe("TradeHistoryRow helpers", () => {
     "",
     {
       "key": "Returned collateral",
-      "value": "$77.19",
+      "value": "$66.08",
     },
   ],
   "priceImpact": "-$16.82",

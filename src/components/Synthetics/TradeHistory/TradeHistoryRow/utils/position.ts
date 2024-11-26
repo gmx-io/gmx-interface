@@ -583,7 +583,6 @@ export const formatPositionMessage = (
     );
 
     const formattedLiquidationFee = formatDeltaUsd(liquidationFeeUsd ? liquidationFeeUsd * -1n : undefined);
-
     const returnedCollateralUsd =
       initialCollateralUsd !== undefined &&
       tradeAction.basePnlUsd !== undefined &&
@@ -593,10 +592,10 @@ export const formatPositionMessage = (
       liquidationFeeUsd !== undefined &&
       tradeAction.priceImpactUsd !== undefined &&
       initialCollateralUsd +
-        tradeAction.basePnlUsd +
-        borrowingFeeUsd +
-        fundingFeeUsd +
-        positionFeeUsd +
+        tradeAction.basePnlUsd -
+        borrowingFeeUsd -
+        fundingFeeUsd -
+        positionFeeUsd -
         liquidationFeeUsd +
         tradeAction.priceImpactUsd;
 
