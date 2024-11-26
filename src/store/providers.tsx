@@ -1,5 +1,13 @@
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import { BLAST_SEPOLIA_TESTNET, MORPH_L2, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getDynamicChain } from "config/chains";
+import {
+  BLAST_SEPOLIA_TESTNET,
+  MORPH_L2,
+  MORPH_MAINNET,
+  OPBNB_TESTNET,
+  OPTIMISM_MAINNET,
+  SEPOLIA_TESTNET,
+  getDynamicChain,
+} from "config/chains";
 import * as React from "react";
 import { EthersExtension } from "@dynamic-labs/ethers-v5";
 
@@ -90,14 +98,14 @@ export function Providers({ children }: ProvidersProps) {
 
     `;
 
-  const DynamicNetworks = getDynamicChain([OPTIMISM_MAINNET, SEPOLIA_TESTNET, MORPH_L2]);
+  const DynamicNetworks = getDynamicChain([OPTIMISM_MAINNET, SEPOLIA_TESTNET, MORPH_L2, MORPH_MAINNET]);
 
   return (
     <DynamicContextProvider
       theme={themeContext.isLight ? "light" : "dark"}
       settings={{
         cssOverrides,
-        environmentId: "8e7e23bc-43e3-4eb1-ba85-401166cee40e",
+        environmentId: "e2b597d3-4634-4d19-9802-301ddcd8bc5a",
         evmNetworks: DynamicNetworks,
         walletConnectorExtensions: [EthersExtension],
         walletConnectors: [EthereumWalletConnectors],

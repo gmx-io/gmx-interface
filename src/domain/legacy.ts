@@ -26,6 +26,7 @@ import {
   getHighExecutionFee,
   BLAST_SEPOLIA_TESTNET,
   MORPH_L2,
+  MORPH_MAINNET,
 } from "config/chains";
 import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
@@ -399,7 +400,8 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
     chainId === OPTIMISM_GOERLI_TESTNET ||
     chainId === OPTIMISM_MAINNET ||
     chainId === BLAST_SEPOLIA_TESTNET ||
-    chainId === MORPH_L2
+    chainId === MORPH_L2 || 
+    chainId === MORPH_MAINNET
   ) {
     multiplier = 2150000;
   }

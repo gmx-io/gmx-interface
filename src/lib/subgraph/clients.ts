@@ -6,6 +6,7 @@ import {
   BLAST_SEPOLIA_TESTNET,
   ETH_MAINNET,
   MORPH_L2,
+  MORPH_MAINNET,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
@@ -36,6 +37,8 @@ export function getGmxGraphClient(chainId: number) {
   } else if (chainId === BLAST_SEPOLIA_TESTNET) {
     return null;
   } else if (chainId == MORPH_L2) {
+    return null;
+  } else if (chainId == MORPH_MAINNET) {
     return null;
   }
 

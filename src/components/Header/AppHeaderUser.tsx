@@ -13,6 +13,7 @@ import {
   SEPOLIA_TESTNET,
   MORPH_L2,
   getChainName,
+  MORPH_MAINNET,
 } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useDynamicChainId } from "lib/chains";
@@ -64,6 +65,12 @@ if (isDevelopment()) {
     label: getChainName(MORPH_L2),
     value: MORPH_L2,
     icon: getIcon(MORPH_L2, "network"),
+    color: "#264f79",
+  });
+  NETWORK_OPTIONS.push({
+    label: getChainName(MORPH_MAINNET),
+    value: MORPH_MAINNET,
+    icon: getIcon(MORPH_MAINNET, "network"),
     color: "#264f79",
   });
 }

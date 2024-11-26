@@ -6,6 +6,7 @@ import {
   AVALANCHE_FUJI,
   BLAST_SEPOLIA_TESTNET,
   MORPH_L2,
+  MORPH_MAINNET,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
@@ -14,7 +15,7 @@ import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
 import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
-import morphIcn from 'img/ic_morph_l2.svg';
+import morphIcn from "img/ic_morph_l2.svg";
 
 import optimismIcn from "img/icn_opt_24.svg";
 import tmxImg from "img/ic_tmx.svg";
@@ -63,6 +64,11 @@ const ICONS = {
     glp: tlpImg,
   },
   [MORPH_L2]: {
+    network: morphIcn,
+    gmx: tmxImg,
+    glp: tlpImg,
+  },
+  [MORPH_MAINNET]: {
     network: morphIcn,
     gmx: tmxImg,
     glp: tlpImg,
