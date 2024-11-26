@@ -254,6 +254,7 @@ function createOrderParams({
       executionFee: p.executionFee,
       callbackGasLimit: 0n,
       minOutputAmount: 0n,
+      validFromTime: 0n,
     },
     orderType: p.orderType,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,

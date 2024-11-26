@@ -124,6 +124,7 @@ export function createDecreaseEncodedPayload({
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
           minOutputAmount,
+          validFromTime: 0n,
         },
         orderType: p.orderType,
         decreasePositionSwapType: p.decreasePositionSwapType,

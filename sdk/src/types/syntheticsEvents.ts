@@ -30,7 +30,7 @@ export type PositionIncreaseEvent = {
   isLong: boolean;
   orderType: OrderType;
   orderKey: string;
-  increasedAtBlock: bigint;
+  increasedAtTime: bigint;
 };
 
 export type PositionDecreaseEvent = {
@@ -52,7 +52,7 @@ export type PositionDecreaseEvent = {
   isLong: boolean;
   orderType: OrderType;
   orderKey: string;
-  decreasedAtBlock: bigint;
+  decreasedAtTime: bigint;
 };
 
 export type PendingPositionUpdate = {
@@ -62,7 +62,7 @@ export type PendingPositionUpdate = {
   sizeDeltaInTokens: bigint;
   collateralDeltaAmount: bigint;
   updatedAt: number;
-  updatedAtBlock: bigint;
+  updatedAtTime: bigint;
 };
 
 export type PendingPositionsUpdates = {

@@ -50,13 +50,9 @@ export class Utils extends Module {
           contractAddress: getContract(this.chainId, "DataStore"),
           abi: DataStore.abi,
           calls: {
-            depositSingleToken: {
+            depositToken: {
               methodName: "getUint",
-              params: [depositGasLimitKey(true)],
-            },
-            depositMultiToken: {
-              methodName: "getUint",
-              params: [depositGasLimitKey(false)],
+              params: [depositGasLimitKey()],
             },
             withdrawalMultiToken: {
               methodName: "getUint",
@@ -117,8 +113,7 @@ export class Utils extends Module {
         }
 
         return {
-          depositSingleToken: getBigInt("depositSingleToken"),
-          depositMultiToken: getBigInt("depositMultiToken"),
+          depositToken: getBigInt("depositToken"),
           withdrawalMultiToken: getBigInt("withdrawalMultiToken"),
           shift: getBigInt("shift"),
           singleSwap: getBigInt("singleSwap"),

@@ -86,6 +86,7 @@ async function getParams(sdk: GmxSdk, p: SwapOrderParams) {
       executionFee: p.executionFee,
       callbackGasLimit: 0n,
       minOutputAmount,
+      validFromTime: 0n,
     },
     autoCancel: false,
     orderType: p.orderType,
