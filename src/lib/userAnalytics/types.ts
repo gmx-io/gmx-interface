@@ -1,3 +1,5 @@
+import { TradeMode, TradeType } from "domain/synthetics/trade";
+
 export type LandingPageViewEvent = {
   event: "LandingPageAction";
   data: {
@@ -94,6 +96,14 @@ export type TradeBoxInteractionStartedEvent = {
   event: "TradeBoxAction";
   data: {
     action: "InteractionStarted";
+    pair: string;
+    sizeDeltaUsd: number;
+    priceImpactDeltaUsd: number;
+    priceImpactBps: number;
+    netRate1h: number;
+    openInterestPercent: number;
+    tradeType: TradeType;
+    tradeMode: TradeMode;
   };
 };
 
@@ -232,5 +242,12 @@ export type ReferralShareEvent = {
   event: "ReferralCodeAction";
   data: {
     action: "ShareTwitter" | "CopyCode";
+  };
+};
+
+export type LandingPageAgreementConfirmationEvent = {
+  event: "LandingPageAction";
+  data: {
+    action: "AgreementConfirmationDialogShown" | "AgreementConfirmationAgreeClick";
   };
 };

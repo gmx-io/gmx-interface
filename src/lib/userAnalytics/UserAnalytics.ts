@@ -3,6 +3,7 @@ import { metrics } from "../metrics/Metrics";
 
 type CommonEventParams = {
   platform?: string;
+  browserName?: string;
   ordersCount?: number;
   isWalletConnected?: boolean;
   isTest: boolean;

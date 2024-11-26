@@ -60,6 +60,7 @@ export function useConfigureUserAnalyticsProfile() {
 
     userAnalytics.setCommonEventParams({
       platform: bowser.platform.type,
+      browserName: bowser.browser.name,
       ordersCount,
       isWalletConnected: active,
       isTest: isDevelopment(),

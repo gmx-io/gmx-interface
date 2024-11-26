@@ -1,16 +1,20 @@
 import { getChainName } from "config/chains";
 import { OrderType } from "domain/synthetics/orders";
-import { metrics } from "lib/metrics";
+import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { formatAmountForMetrics, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
+import { formatRatePercentage } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import {
   ConnectWalletClickEvent,
   PoolsPageBuyConfirmEvent,
   PoolsPageBuyResultEvent,
   TradeBoxConfirmClickEvent,
+  TradeBoxInteractionStartedEvent,
   TradeBoxResultEvent,
 } from "lib/userAnalytics/types";
+import debounce from "lodash/debounce";
 
 export function sendUserAnalyticsConnectWalletClickEvent(position: ConnectWalletClickEvent["data"]["position"]) {
   userAnalytics.pushEvent<ConnectWalletClickEvent>({
@@ -21,6 +25,49 @@ export function sendUserAnalyticsConnectWalletClickEvent(position: ConnectWallet
     },
   });
 }
+
+export const sendTradeBoxInteractionStartedEvent = debounce(
+  (p: {
+    pair: string;
+    sizeDeltaUsd?: bigint;
+    priceImpactDeltaUsd?: bigint;
+    priceImpactBps?: bigint;
+    fundingRate1h?: bigint;
+    openInterestPercent?: number;
+    tradeType: TradeType;
+    tradeMode: TradeMode;
+  }) => {
+    const {
+      pair,
+      fundingRate1h,
+      sizeDeltaUsd,
+      priceImpactDeltaUsd,
+      priceImpactBps,
+      openInterestPercent,
+      tradeType,
+      tradeMode,
+    } = p;
+
+    userAnalytics.pushEvent<TradeBoxInteractionStartedEvent>(
+      {
+        event: "TradeBoxAction",
+        data: {
+          action: "InteractionStarted",
+          pair,
+          sizeDeltaUsd: formatAmountForMetrics(sizeDeltaUsd) ?? 0,
+          priceImpactDeltaUsd: formatAmountForMetrics(priceImpactDeltaUsd) ?? 0,
+          priceImpactBps: priceImpactBps !== undefined ? Number(priceImpactBps) : 0,
+          netRate1h: parseFloat(formatRatePercentage(fundingRate1h)),
+          openInterestPercent: openInterestPercent !== undefined ? Number(openInterestPercent) : 0,
+          tradeType,
+          tradeMode,
+        },
+      },
+      { dedupKey: pair }
+    );
+  },
+  400
+);
 
 export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricId: OrderMetricId) {
   let metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
