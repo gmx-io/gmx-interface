@@ -177,7 +177,7 @@ img {
   flex-direction: column;
   align-items: flex-start;
   max-width: 400px;
-  margin-left: 8em;
+  margin-left: calc(114px - 1em);
   margin-bottom: 2em;
 }
 
