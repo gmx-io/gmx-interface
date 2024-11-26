@@ -13,7 +13,7 @@ export function VersionSwitch({ className }: Props) {
   const [currentVersion, setCurrentVersion] = useTradePageVersion();
 
   return (
-    <div className={cx("VersionSwitch", className)}>
+    <div className={cx("VersionSwitch text-body-medium", className)}>
       {getIsV1Supported(chainId) && (
         <div
           className={cx("VersionSwitch-option v1", { active: currentVersion === 1 })}

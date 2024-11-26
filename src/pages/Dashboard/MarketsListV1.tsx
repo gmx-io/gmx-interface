@@ -40,7 +40,7 @@ export function MarketsListV1({
   return (
     <>
       <div className="token-table-wrapper App-box">
-        <div className="flex items-center p-16">
+        <div className="text-body-large flex items-center p-16">
           <Trans>GLP Index Composition</Trans>{" "}
           <img src={currentIcons.network} className="ml-5" width="16" alt="Network Icon" />
         </div>
@@ -94,8 +94,8 @@ export function MarketsListV1({
                           <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} />
                         </div>
                         <div>
-                          <div className="App-card-info-title">{token.name}</div>
-                          <div className="App-card-info-subtitle">{token.symbol}</div>
+                          <div className="App-card-info-title text-body-large">{token.name}</div>
+                          <div className="App-card-info-subtitle text-body-small">{token.symbol}</div>
                         </div>
                         <div>
                           <AssetDropdown token={token} />

@@ -58,7 +58,7 @@ export type Order = {
   initialCollateralDeltaAmount: bigint;
   minOutputAmount: bigint;
   sizeDeltaUsd: bigint;
-  updatedAtBlock: bigint;
+  updatedAtTime: bigint;
   isFrozen: boolean;
   isLong: boolean;
   orderType: OrderType;

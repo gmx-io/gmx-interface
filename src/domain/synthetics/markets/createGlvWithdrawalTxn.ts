@@ -63,7 +63,7 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
         primaryPriceOverrides: {},
         tokensData: p.tokensData,
         createMulticallPayload: encodedPayload,
-        method: "simulateExecuteGlvWithdrawal",
+        method: "simulateExecuteLatestGlvWithdrawal",
         errorTitle: t`Withdrawal error.`,
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,

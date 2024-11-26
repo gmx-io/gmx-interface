@@ -1782,7 +1782,7 @@ export default function StakeV2() {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM</ExternalLink> or{" "}
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
-            {earnMsg && <div className="Page-description">{earnMsg}</div>}
+            {earnMsg && <div className="Page-description mt-8">{earnMsg}</div>}
             {incentivesMessage}
           </div>
         }

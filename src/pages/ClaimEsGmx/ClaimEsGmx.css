@@ -1,6 +1,6 @@
 .ClaimEsGmx input {
   border: 1px solid var(--color-gray-800);
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   width: 100%;
   box-sizing: border-box;
 }
@@ -74,7 +74,7 @@
   background: transparent;
   padding: 1.25rem;
   color: var(--color-white);
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
   max-width: 36rem;
@@ -105,7 +105,7 @@
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
   left: 29.75rem;
   top: 0.93rem;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;

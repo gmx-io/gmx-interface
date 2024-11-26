@@ -82,7 +82,7 @@ export function PositionList(p: Props) {
 
       {!isMobile && (
         <Table>
-          <thead>
+          <thead className="text-body-medium">
             <TableTheadTr bordered>
               <TableTh>
                 <Trans>Position</Trans>

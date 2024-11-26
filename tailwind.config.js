@@ -99,6 +99,56 @@ function customUtilsPlugin({ addUtilities, theme }) {
   });
 }
 
+/**
+ * @type {import('tailwindcss/types/config').PluginCreator}
+ * @See https://www.notion.so/gmxio/Fonts-Clean-Up-13303574745d8015b115e03426827f3c
+ */
+function fontComponentsPlugin({ addComponents, addBase }) {
+  addBase({
+    ":root": {
+      "--font-size-h1": '3.4rem',
+      "--font-size-h2": '2.4rem',
+      "--font-size-body-large": '1.6rem',
+      "--font-size-body-medium": '1.4rem',
+      "--font-size-body-small": '1.2rem',
+      "--font-size-caption": '1rem',
+
+      "--line-height-h1": '34px',
+      "--line-height-h2": '24px',
+      "--line-height-body-large": '2.1rem',
+      "--line-height-body-medium": '1.8rem',
+      "--line-height-body-small": '1.6rem',
+      "--line-height-caption": '1.4rem',
+    },
+  });
+  addComponents({
+    ".text-h1": {
+      fontSize: '3.4rem',
+      lineHeight: 'auto',
+    },
+    ".text-h2": {
+      fontSize: '2.4rem',
+      lineHeight: 'auto',
+    },
+    ".text-body-large": {
+      fontSize: '1.6rem',
+      lineHeight: '2.1rem',
+    },
+    ".text-body-medium": {
+      fontSize: '1.4rem',
+      lineHeight: '1.8rem',
+    },
+    '.text-body-small': {
+      fontSize: '1.2rem',
+      lineHeight: '1.6rem',
+    },
+    '.text-caption': {
+      fontSize: '1rem',
+      lineHeight: '1.4rem',
+    },
+  });
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
@@ -115,6 +165,14 @@ module.exports = {
       16: "1.6rem",
       24: "2.4rem",
       34: "3.4rem",
+
+      'h1': '3.4rem',
+      'h2': '2.4rem',
+      'body-large': '1.6rem',
+      'body-medium': '1.4rem',
+      'body-small': '1.2rem',
+      'caption': '1rem',
+      
     },
     lineHeight: {
       1: "1",
@@ -139,5 +197,5 @@ module.exports = {
       ),
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin],
+  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
 };

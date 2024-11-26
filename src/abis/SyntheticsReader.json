@@ -124,12 +124,12 @@
                 },
                 {
                   "internalType": "uint256",
-                  "name": "updatedAtBlock",
+                  "name": "updatedAtTime",
                   "type": "uint256"
                 },
                 {
                   "internalType": "uint256",
-                  "name": "updatedAtTime",
+                  "name": "validFromTime",
                   "type": "uint256"
                 }
               ],
@@ -336,16 +336,6 @@
                     },
                     {
                       "internalType": "uint256",
-                      "name": "increasedAtBlock",
-                      "type": "uint256"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "decreasedAtBlock",
-                      "type": "uint256"
-                    },
-                    {
-                      "internalType": "uint256",
                       "name": "increasedAtTime",
                       "type": "uint256"
                     },
@@ -402,6 +392,16 @@
                     },
                     {
                       "internalType": "uint256",
+                      "name": "affiliateRewardFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "adjustedAffiliateRewardFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
                       "name": "traderDiscountFactor",
                       "type": "uint256"
                     },
@@ -423,6 +423,28 @@
                   ],
                   "internalType": "struct PositionPricingUtils.PositionReferralFees",
                   "name": "referral",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
+                      "name": "traderTier",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "traderDiscountFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "traderDiscountAmount",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct PositionPricingUtils.PositionProFees",
+                  "name": "pro",
                   "type": "tuple"
                 },
                 {
@@ -515,6 +537,33 @@
                   "components": [
                     {
                       "internalType": "uint256",
+                      "name": "liquidationFeeUsd",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeAmount",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeReceiverFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeAmountForFeeReceiver",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct PositionPricingUtils.PositionLiquidationFees",
+                  "name": "liquidation",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
                       "name": "min",
                       "type": "uint256"
                     },
@@ -571,6 +620,11 @@
                 {
                   "internalType": "uint256",
                   "name": "totalCostAmount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "totalDiscountAmount",
                   "type": "uint256"
                 }
               ],
@@ -708,16 +762,6 @@
                 {
                   "internalType": "uint256",
                   "name": "shortTokenClaimableFundingAmountPerSize",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "increasedAtBlock",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "decreasedAtBlock",
                   "type": "uint256"
                 },
                 {
@@ -942,11 +986,6 @@
                 {
                   "internalType": "uint256",
                   "name": "minMarketTokens",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "updatedAtBlock",
                   "type": "uint256"
                 },
                 {
@@ -2450,12 +2489,12 @@
                 },
                 {
                   "internalType": "uint256",
-                  "name": "updatedAtBlock",
+                  "name": "updatedAtTime",
                   "type": "uint256"
                 },
                 {
                   "internalType": "uint256",
-                  "name": "updatedAtTime",
+                  "name": "validFromTime",
                   "type": "uint256"
                 }
               ],
@@ -2742,16 +2781,6 @@
                 },
                 {
                   "internalType": "uint256",
-                  "name": "increasedAtBlock",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "decreasedAtBlock",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
                   "name": "increasedAtTime",
                   "type": "uint256"
                 },
@@ -2944,16 +2973,6 @@
                     },
                     {
                       "internalType": "uint256",
-                      "name": "increasedAtBlock",
-                      "type": "uint256"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "decreasedAtBlock",
-                      "type": "uint256"
-                    },
-                    {
-                      "internalType": "uint256",
                       "name": "increasedAtTime",
                       "type": "uint256"
                     },
@@ -3010,6 +3029,16 @@
                     },
                     {
                       "internalType": "uint256",
+                      "name": "affiliateRewardFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "adjustedAffiliateRewardFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
                       "name": "traderDiscountFactor",
                       "type": "uint256"
                     },
@@ -3031,6 +3060,28 @@
                   ],
                   "internalType": "struct PositionPricingUtils.PositionReferralFees",
                   "name": "referral",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
+                      "name": "traderTier",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "traderDiscountFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "traderDiscountAmount",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct PositionPricingUtils.PositionProFees",
+                  "name": "pro",
                   "type": "tuple"
                 },
                 {
@@ -3123,6 +3174,33 @@
                   "components": [
                     {
                       "internalType": "uint256",
+                      "name": "liquidationFeeUsd",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeAmount",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeReceiverFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeAmountForFeeReceiver",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct PositionPricingUtils.PositionLiquidationFees",
+                  "name": "liquidation",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
                       "name": "min",
                       "type": "uint256"
                     },
@@ -3179,6 +3257,11 @@
                 {
                   "internalType": "uint256",
                   "name": "totalCostAmount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "totalDiscountAmount",
                   "type": "uint256"
                 }
               ],
@@ -3380,16 +3463,6 @@
                     },
                     {
                       "internalType": "uint256",
-                      "name": "increasedAtBlock",
-                      "type": "uint256"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "decreasedAtBlock",
-                      "type": "uint256"
-                    },
-                    {
-                      "internalType": "uint256",
                       "name": "increasedAtTime",
                       "type": "uint256"
                     },
@@ -3446,6 +3519,16 @@
                     },
                     {
                       "internalType": "uint256",
+                      "name": "affiliateRewardFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "adjustedAffiliateRewardFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
                       "name": "traderDiscountFactor",
                       "type": "uint256"
                     },
@@ -3467,6 +3550,28 @@
                   ],
                   "internalType": "struct PositionPricingUtils.PositionReferralFees",
                   "name": "referral",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
+                      "name": "traderTier",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "traderDiscountFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "traderDiscountAmount",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct PositionPricingUtils.PositionProFees",
+                  "name": "pro",
                   "type": "tuple"
                 },
                 {
@@ -3559,6 +3664,33 @@
                   "components": [
                     {
                       "internalType": "uint256",
+                      "name": "liquidationFeeUsd",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeAmount",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeReceiverFactor",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "liquidationFeeAmountForFeeReceiver",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct PositionPricingUtils.PositionLiquidationFees",
+                  "name": "liquidation",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
                       "name": "min",
                       "type": "uint256"
                     },
@@ -3615,6 +3747,11 @@
                 {
                   "internalType": "uint256",
                   "name": "totalCostAmount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "totalDiscountAmount",
                   "type": "uint256"
                 }
               ],
@@ -4205,11 +4342,6 @@
                 {
                   "internalType": "uint256",
                   "name": "minShortTokenAmount",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "updatedAtBlock",
                   "type": "uint256"
                 },
                 {

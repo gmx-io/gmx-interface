@@ -148,6 +148,7 @@ export function LeaderboardAccountsTable({
           pinned
           rank={pinnedRowData.rank}
           activeCompetition={activeCompetition}
+          big
         />
       )}
       {rowsData.length ? (
@@ -185,7 +186,7 @@ export function LeaderboardAccountsTable({
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1000px]">
           <thead>
-            <TableTheadTr bordered>
+            <TableTheadTr bordered className="text-body-large">
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
@@ -318,12 +319,14 @@ const TableRow = memo(
     rank,
     activeCompetition,
     index,
+    big,
   }: {
     account: LeaderboardAccount;
     index: number;
     pinned: boolean;
     rank: number | null;
     activeCompetition: CompetitionType | undefined;
+    big?: boolean;
   }) => {
     const renderWinsLossesTooltipContent = useCallback(() => {
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
@@ -340,7 +343,7 @@ const TableRow = memo(
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
     return (
-      <TableTr bordered={false} key={account.account}>
+      <TableTr bordered={false} key={account.account} className={big ? "text-body-large" : undefined}>
         <TableTd className={getCellClassname(rank, activeCompetition, pinned)}>
           <span className={getWinnerRankClassname(rank, activeCompetition)}>
             <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
@@ -348,7 +351,7 @@ const TableRow = memo(
         </TableTd>
 
         <TableTd>
-          <AddressView size={20} address={account.account} breakpoint="XL" />
+          <AddressView big={big} size={20} address={account.account} breakpoint="XL" />
         </TableTd>
         <TableTd>
           <TooltipWithPortal

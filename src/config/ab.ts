@@ -11,7 +11,6 @@ type AbStorage = {
 
 const abFlagsConfig = {
   // testExampleAb: 0.5,
-  testParallelSimulation: 0.5,
 };
 
 export type AbFlag = string; //keyof typeof abFlagsConfig;
@@ -63,7 +62,7 @@ function loadAbStorage(): void {
       if (changed) {
         localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
       }
-    } catch {
+    } catch (error) {
       initAbStorage();
     }
   }

@@ -344,7 +344,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </div>
           </div>
           {glvsIncentivizedLabel && (
-            <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{glvsIncentivizedLabel}</div>
+            <div className="text-body-large mt-15 rounded-4 bg-cold-blue-900 px-15 py-8">{glvsIncentivizedLabel}</div>
           )}
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum Max. APY:</Trans> {maxGlvApyText?.[ARBITRUM]}
@@ -408,7 +408,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </div>
           </div>
           {poolsIncentivizedLabel && (
-            <div className="mt-15 rounded-4 bg-cold-blue-900 px-15 py-8 text-15">{poolsIncentivizedLabel}</div>
+            <div className="text-body-large mt-15 rounded-4 bg-cold-blue-900 px-15 py-8">{poolsIncentivizedLabel}</div>
           )}
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum Max. APY:</Trans> {maxMarketApyText?.[ARBITRUM]},{" "}

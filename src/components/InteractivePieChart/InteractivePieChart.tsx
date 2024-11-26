@@ -64,7 +64,14 @@ export default function InteractivePieChart({ data, label }: Props) {
               />
             ))}
           </Pie>
-          <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
+          <text
+            x={"50%"}
+            y={"50%"}
+            fill="white"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className="text-body-large"
+          >
             {label}
           </text>
           <Tooltip content={(props) => <CustomTooltip active={props.active} payload={props.payload} />} />

@@ -1,6 +1,6 @@
 .Orders-toa .Modal-content {
   width: 36rem;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
 }
 
 .Orders-toa-accept-rules {
@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   direction: rtl;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   margin-bottom: 0.465rem;
 }
 

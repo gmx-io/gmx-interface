@@ -202,7 +202,7 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         executionFee: BigInt(order.numbers.executionFee),
         callbackGasLimit: BigInt(order.numbers.callbackGasLimit),
         minOutputAmount: BigInt(order.numbers.minOutputAmount),
-        updatedAtBlock: BigInt(order.numbers.updatedAtBlock),
+        updatedAtTime: order.numbers.updatedAtTime,
         isLong: order.flags.isLong as boolean,
         shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken as boolean,
         isFrozen: order.flags.isFrozen as boolean,

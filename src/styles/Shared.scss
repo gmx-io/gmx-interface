@@ -82,11 +82,6 @@ input {
   --error-red: var(--color-red-500);
   --error-red-hover: var(--color-red-400);
   --green: var(--color-green-500);
-  --font-sm: 1.4rem;
-  --font-base: 1.5rem; // 15px
-  --font-md: 1.6rem;
-  --font-lg: 2.4rem;
-  --font-xl: 3.4rem;
 
   --default-container-max-width: 126.4rem;
   --default-container-padding: 3.2rem;
@@ -193,7 +188,7 @@ a.plain {
 .default-btn {
   background: var(--color-blue-600);
   border-radius: 4px;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-medium);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -263,7 +258,7 @@ s .default-btn:active {
 .secondary-btn {
   background: #03d1cf;
   border-radius: 4px;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -335,7 +330,7 @@ button.btn-link {
   color: var(--color-white);
   border: none;
   padding: 0;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   display: block;
   text-align: left;
 }

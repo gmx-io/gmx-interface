@@ -11,7 +11,8 @@
 .VersionSwitch-option {
   padding: 1.2rem;
   text-decoration: none;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-medium);
+  line-height: var(--line-height-body-medium);
   cursor: pointer;
   color: var(--color-gray-300);
   line-height: 1;

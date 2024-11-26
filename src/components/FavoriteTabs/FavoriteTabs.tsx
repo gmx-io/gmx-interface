@@ -24,10 +24,14 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
 
   return (
     <div className="flex items-center gap-4">
-      <Button variant={tab === "all" ? "secondary" : "ghost"} className="!py-7" onClick={handleAll}>
+      <Button variant={tab === "all" ? "secondary" : "ghost"} className="!text-body-large !py-7" onClick={handleAll}>
         {localizedTabOptionLabels.all}
       </Button>
-      <Button variant={tab === "favorites" ? "secondary" : "ghost"} className="!py-7" onClick={handleFavorites}>
+      <Button
+        variant={tab === "favorites" ? "secondary" : "ghost"}
+        className="!text-body-large !py-7"
+        onClick={handleFavorites}
+      >
         {localizedTabOptionLabels.favorites}
       </Button>
     </div>

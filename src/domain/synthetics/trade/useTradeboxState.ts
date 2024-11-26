@@ -26,6 +26,7 @@ import { useSafeState } from "lib/useSafeState";
 import { MarketInfo } from "domain/synthetics/markets";
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
+import { OrdersInfoData } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType } from "./types";
@@ -92,10 +93,11 @@ export function useTradeboxState(
     marketsData?: MarketsData;
     marketsInfoData?: MarketsInfoData;
     positionsInfoData?: PositionsInfoData;
+    ordersInfoData?: OrdersInfoData;
     tokensData?: TokensData;
   }
 ) {
-  const { marketsInfoData, marketsData, tokensData, positionsInfoData } = p;
+  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData } = p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData, marketsData });
 
@@ -316,6 +318,7 @@ export function useTradeboxState(
           maxShortLiquidityPool,
           isSwap: tradeType === TradeType.Swap,
           positionsInfo: positionsInfoData,
+          ordersInfo: ordersInfoData,
           preferredTradeType: tradeType,
           currentTradeType: oldState.tradeType,
         });
@@ -340,7 +343,7 @@ export function useTradeboxState(
         });
       });
     },
-    [getMaxLongShortLiquidityPool, positionsInfoData, setStoredOptions, tokensData]
+    [getMaxLongShortLiquidityPool, positionsInfoData, setStoredOptions, tokensData, ordersInfoData]
   );
 
   const setTradeMode = useCallback(

@@ -69,7 +69,7 @@
 }
 
 .stats-label {
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   line-height: 1.6rem;
   border-radius: 0.4rem;
   padding: 1.05rem;

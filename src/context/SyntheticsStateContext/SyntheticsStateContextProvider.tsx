@@ -208,6 +208,7 @@ export function SyntheticsStateContextProvider({
     marketsData: markets.marketsData,
     tokensData: marketsInfo.tokensData,
     positionsInfoData,
+    ordersInfoData: ordersInfo.ordersInfoData,
   });
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
