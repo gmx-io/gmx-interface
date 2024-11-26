@@ -576,6 +576,30 @@ export const formatPositionMessage = (
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
     const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
 
+    const liquidationFeeUsd = convertToUsd(
+      tradeAction.liquidationFeeAmount,
+      tradeAction.initialCollateralToken?.decimals,
+      tradeAction.collateralTokenPriceMin!
+    );
+
+    const returnedCollateralUsd =
+      initialCollateralUsd !== undefined &&
+      tradeAction.basePnlUsd !== undefined &&
+      borrowingFeeUsd !== undefined &&
+      fundingFeeUsd !== undefined &&
+      positionFeeUsd !== undefined &&
+      liquidationFeeUsd !== undefined &&
+      tradeAction.priceImpactUsd !== undefined &&
+      initialCollateralUsd +
+        tradeAction.basePnlUsd +
+        borrowingFeeUsd +
+        fundingFeeUsd +
+        positionFeeUsd +
+        liquidationFeeUsd +
+        tradeAction.priceImpactUsd;
+
+    const formattedReturnedCollateral = returnedCollateralUsd ? formatUsd(returnedCollateralUsd) : undefined;
+
     result = {
       priceComment: lines(
         t`Mark price for the liquidation.`,
@@ -599,22 +623,24 @@ export const formatPositionMessage = (
           text: formattedFundingFee,
           state: "error",
         }),
-        infoRow(t`Position Fee`, {
+        infoRow(t`Close fee`, {
           text: formattedPositionFee,
           state: "error",
         }),
+        "",
+        infoRow(t`Collateral at Liquidation`, formattedLeftoverCollateral),
+        infoRow(t`Min. required Collateral`, formattedMinCollateral),
+        "",
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
           state: numberToState(tradeAction.priceImpactUsd!),
         }),
-        "",
-        infoRow(t`PnL after Fees and Price Impact`, {
-          text: formattedPnl,
-          state: numberToState(tradeAction.pnlUsd!),
+        infoRow(t`Liquidation fee`, {
+          text: formatUsd(liquidationFeeUsd),
+          state: "error",
         }),
         "",
-        infoRow(t`Leftover Collateral Excluding Impact`, formattedLeftoverCollateral),
-        infoRow(t`Min. required Collateral`, formattedMinCollateral)
+        infoRow(t`Returned collateral`, formattedReturnedCollateral)
       ),
       isActionError: true,
       pnl: formattedPnl,
