@@ -42,10 +42,10 @@ import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 import ReferralInfoCard from "./ReferralInfoCard";
 
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import "./AffiliatesStats.scss";
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 type Props = {
   chainId: number;
@@ -73,7 +73,7 @@ function AffiliatesStats({
 
   const [isClaiming, setIsClaiming] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
-  const open = () => {
+  const open = useCallback(() => {
     userAnalytics.pushEvent<ReferralCreateCodeEvent>({
       event: "ReferralCodeAction",
       data: {
@@ -81,8 +81,8 @@ function AffiliatesStats({
       },
     });
     setIsAddReferralCodeModalOpen(true);
-  };
-  const close = () => setIsAddReferralCodeModalOpen(false);
+  }, []);
+  const close = useCallback(() => setIsAddReferralCodeModalOpen(false), []);
 
   const { total, chains } = referralsData || {};
   const {
