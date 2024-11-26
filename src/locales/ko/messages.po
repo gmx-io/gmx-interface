@@ -1629,6 +1629,7 @@ msgstr ""
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close Fee"
 msgstr ""
 
@@ -2606,6 +2607,7 @@ msgid "The order may not execute at the desired {priceText} as its acceptable pr
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr ""
 
@@ -4538,8 +4540,8 @@ msgid "Leverage Trading Terminal"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Liquidation fee"
-msgstr ""
+#~ msgid "Liquidation fee"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
@@ -5902,8 +5904,8 @@ msgid "Order update submitted!"
 msgstr "주문 업데이트 제출 완료!"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Close fee"
-msgstr ""
+#~ msgid "Close fee"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable withdraw failed."
