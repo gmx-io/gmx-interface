@@ -105,7 +105,7 @@ export function Providers({ children }: ProvidersProps) {
       theme={themeContext.isLight ? "light" : "dark"}
       settings={{
         cssOverrides,
-        environmentId: "e2b597d3-4634-4d19-9802-301ddcd8bc5a",
+        environmentId: "8e7e23bc-43e3-4eb1-ba85-401166cee40e",
         evmNetworks: DynamicNetworks,
         walletConnectorExtensions: [EthersExtension],
         walletConnectors: [EthereumWalletConnectors],
