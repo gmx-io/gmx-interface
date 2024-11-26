@@ -88,6 +88,7 @@ export class UserAnalytics {
 
   setSessionId(sessionId: string) {
     localStorage.setItem(SESSION_ID_KEY, sessionId);
+    this.setLastEventTime(Date.now());
   }
 
   getSessionIdUrlParam() {
@@ -109,8 +110,6 @@ export class UserAnalytics {
     params: T,
     options: { onlyOncePerSession?: boolean; dedupKey?: string; dedupInterval?: number; instantSend?: boolean } = {}
   ) => {
-    this.setLastEventTime(Date.now());
-
     const sessionId = this.getOrSetSessionId();
 
     const dedupKey = options.dedupKey ? options.dedupKey : options.onlyOncePerSession ? sessionId : undefined;
@@ -122,6 +121,8 @@ export class UserAnalytics {
     if (dedupKey) {
       this.saveDedupEventData(dedupKey, params.event);
     }
+
+    this.setLastEventTime(Date.now());
 
     const item: BatchReportItem = {
       type: "userAnalyticsEvent",
