@@ -10,6 +10,7 @@ import mobilet3light from "img/t3-mobile-light-bg.svg";
 import mobilet3dark from "img/t3-mobile-dark-bg.svg";
 import { ThemeContext } from "store/theme-provider";
 import AppHomeContent from "./AppHomeContent";
+import AppHomeContentDesktop from "./AppHomeContentDesktop";
 
 export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
   const theme = useContext(ThemeContext);
@@ -32,16 +33,15 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
       <div className="hero">
         <div className="hero-inner">
           <div className="hero-title">
-            <Trans>User-friendly</Trans>
+            <Trans>Decentralized</Trans>
             <br />
-            <span className="Home-title-subtext">Compliant</span>
+            <span className="Home-title-subtext"><Trans>Perpetual</Trans></span>
             <br />
-            Digital asset
-            <br />
-            exchange
+            <Trans>Exchange</Trans>
           </div>
           <TradeNowButton />
         </div>
+        <AppHomeContentDesktop />
       </div>
       <div className="mobile">
         <div className="image">
@@ -49,16 +49,16 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
         </div>
         <div className="text">
           <p>
-            <Trans>User-friendly</Trans>
+            <Trans>Decentralized </Trans>
             <br />
-            <span className="subtext">Compliant</span>
+            <span className="subtext"><Trans>Perpetual</Trans></span>
             <br />
-            Digital asset exchange
+            <Trans>Exchange</Trans>
           </p>
           <TradeNowButton />
         </div>
+        <AppHomeContent />
       </div>
-      <AppHomeContent />
       <Footer />
     </div>
   );

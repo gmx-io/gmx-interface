@@ -2,6 +2,12 @@
   margin: 0;
 }
 
+@media (min-width: 1000px) {
+  .main {
+    min-height: 125vh;
+  }
+}
+
 img {
   max-width: 100%;
 }
@@ -21,7 +27,8 @@ img {
 .hero {
   /* Sizing */
   width: 100vw;
-  height: 90vh;
+  min-height: 90vh;
+  height: auto;
 
   /* Flexbox stuff */
   display: flex;
@@ -33,12 +40,14 @@ img {
   color: white;
 
   /* Background styles */
-
   background-image: url(img/t3-bg-dark.svg);
   background-size: cover;
   background-position: right;
   background-repeat: no-repeat;
   background-attachment: local;
+
+  flex-direction: column;
+  align-items: flex-start;
 }
 .hero-title {
   /* Text styles */
@@ -55,6 +64,11 @@ img {
 
 #light .hero-title {
   color: #000000;
+}
+
+.hero-inner {
+  padding-top: 5em;
+  margin-bottom: 5em;
 }
 
 .Home-title-subtext {
@@ -156,4 +170,25 @@ img {
     width: fit-content;
     margin: 0 auto;
   }
+}
+
+.content-title-desktop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 400px;
+  margin-left: calc(114px - 1em);
+  margin-bottom: 2em;
+}
+
+.content-title-desktop-cta {
+  margin-top: 0.5em;
+  margin-left: 0 !important;
+  padding: 0.5em 1em !important;
+}
+
+.landing-content-desktop {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
 }
