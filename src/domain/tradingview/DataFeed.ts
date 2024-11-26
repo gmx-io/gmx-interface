@@ -119,24 +119,21 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     onError: DatafeedErrorCallback
   ): Promise<void> {
     let isFirst = metricsIsFirstLoadTime;
-    if (metricsIsFirstLoadTime) {
-      metricsIsFirstLoadTime = false;
+    metricsIsFirstLoadTime = false;
 
-      metricsIsFirstLoadTime = !metricsRequestId;
-      metricsRequestId = getRequestId();
+    metricsRequestId = metricsRequestId ?? getRequestId();
 
-      metrics.pushEvent<LoadingStartEvent>({
-        event: "candlesLoad.started",
-        isError: false,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-        },
-      });
+    metrics.pushEvent<LoadingStartEvent>({
+      event: "candlesLoad.started",
+      isError: false,
+      time: metrics.getTime("candlesLoad", true),
+      data: {
+        requestId: metricsRequestId,
+        isFirstTimeLoad: isFirst,
+      },
+    });
 
-      metrics.startTimer("candlesLoad");
-    }
+    metrics.startTimer("candlesLoad");
 
     const to = periodParams.to;
 
@@ -187,16 +184,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       return;
     }
 
-    metrics.pushEvent<LoadingSuccessEvent>({
-      event: "candlesLoad.success",
-      isError: false,
-      time: metrics.getTime("candlesLoad", true),
-      data: {
-        requestId: metricsRequestId!,
-        isFirstTimeLoad: isFirst,
-      },
-    });
-
     const barsToReturn: FromOldToNewArray<Bar> = [];
     const visualMultiplier = parseInt(symbolInfo.unit_id ?? "1");
 
@@ -210,6 +197,16 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     onResult(barsToReturn);
 
+    metrics.pushEvent<LoadingSuccessEvent>({
+      event: "candlesLoad.success",
+      isError: false,
+      time: metrics.getTime("candlesLoad", true),
+      data: {
+        requestId: metricsRequestId!,
+        isFirstTimeLoad: isFirst,
+      },
+    });
+
     this.dispatchEvent(
       new CustomEvent("candlesLoad.success", {
         detail: {
@@ -219,7 +216,19 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       })
     );
 
-    this.saveTVParamsCache(this.chainId, { resolution, countBack: periodParams.countBack });
+    metrics.pushEvent<LoadingSuccessEvent>({
+      event: "candlesDisplay.success",
+      isError: false,
+      time: metrics.getTime("candlesDisplay", true),
+      data: {
+        requestId: metricsRequestId!,
+        isFirstTimeLoad: isFirst,
+      },
+    });
+
+    if (periodParams.firstDataRequest) {
+      this.saveTVParamsCache(this.chainId, { resolution, countBack: periodParams.countBack });
+    }
   }
 
   subscribeBars(
@@ -300,6 +309,19 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   onReady(callback: OnReadyCallback): void {
+    if (metricsIsFirstLoadTime) {
+      metricsRequestId = getRequestId();
+
+      metrics.pushEvent<LoadingStartEvent>({
+        event: "candlesDisplay.started",
+        isError: false,
+        time: metrics.getTime("candlesDisplay"),
+        data: {
+          requestId: metricsRequestId,
+        },
+      });
+    }
+
     setTimeout(() => {
       callback({
         supported_resolutions: Object.keys(
