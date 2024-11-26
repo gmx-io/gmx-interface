@@ -50,6 +50,9 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
   private visibilityHandler: () => void;
 
+  declare addEventListener: (event: "candlesLoad.success", callback: EventListenerOrEventListenerObject) => void;
+  declare removeEventListener: (event: "candlesLoad.success", callback: EventListenerOrEventListenerObject) => void;
+
   constructor(
     private chainId: number,
     private oracleFetcher: OracleFetcher,
