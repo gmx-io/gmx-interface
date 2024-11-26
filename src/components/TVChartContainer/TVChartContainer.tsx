@@ -164,6 +164,7 @@ export default function TVChartContainer({
       favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,
       load_last_chart: true,
+      auto_save_delay: 1,
       save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts, tradePageVersion),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);

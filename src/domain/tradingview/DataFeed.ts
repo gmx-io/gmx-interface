@@ -74,6 +74,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   searchSymbols(): void {
     // noop
   }
+
   resolveSymbol(symbolNameWithMultiplier: string, onResolve: ResolveCallback): void {
     let { symbolName, visualMultiplier } = parseSymbolName(symbolNameWithMultiplier);
 
@@ -83,7 +84,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     const token = getTokenBySymbol(this.chainId, symbolName);
-    const isStable = token.isStable;
     const prefix = visualMultiplier !== 1 ? getTokenVisualMultiplier(token) : "";
 
     const symbolInfo: LibrarySymbolInfo = {
@@ -103,10 +103,12 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       exchange: "GMX",
       listed_exchange: "GMX",
       format: "price",
-      pricescale: isStable ? 10 : 0,
+      pricescale: Infinity,
     };
 
-    onResolve(symbolInfo);
+    setTimeout(() => {
+      onResolve(symbolInfo);
+    }, 0);
   }
 
   async getBars(
@@ -298,16 +300,18 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   onReady(callback: OnReadyCallback): void {
-    callback({
-      supported_resolutions: Object.keys(
-        this.tradePageVersion === 1 ? SUPPORTED_RESOLUTIONS_V1 : SUPPORTED_RESOLUTIONS_V2
-      ) as ResolutionString[],
-      supports_marks: false,
-      supports_timescale_marks: false,
-      supports_time: true,
-      // @ts-ignore
-      reset_cache_timeout: 100,
-    });
+    setTimeout(() => {
+      callback({
+        supported_resolutions: Object.keys(
+          this.tradePageVersion === 1 ? SUPPORTED_RESOLUTIONS_V1 : SUPPORTED_RESOLUTIONS_V2
+        ) as ResolutionString[],
+        supports_marks: false,
+        supports_timescale_marks: false,
+        supports_time: true,
+        // @ts-ignore
+        reset_cache_timeout: 100,
+      });
+    }, 0);
   }
 
   prefetchBars(symbol: string): void {
@@ -331,7 +335,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       return undefined;
     }
 
-    const { countBack, resolution }: TvParamsCache = JSON.parse(tvCache);
+    let resolution: ResolutionString;
+    let countBack: number;
+
+    try {
+      const cache: TvParamsCache = JSON.parse(tvCache);
+      resolution = cache.resolution;
+      countBack = cache.countBack;
+    } catch (e) {
+      return undefined;
+    }
+
     const period = SUPPORTED_RESOLUTIONS_V2[resolution];
 
     if (!period) {
@@ -371,6 +385,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       delete this.prefetchedBarsPromises[symbol];
       return await promise;
     }
+
+    count = Math.min(count, 10000);
 
     if (this.tradePageVersion === 1) {
       return Promise.race([
