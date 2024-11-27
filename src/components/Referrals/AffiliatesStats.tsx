@@ -423,7 +423,11 @@ function AffiliatesStats({
       {currentRebateData.length > 0 ? (
         <div className="reward-history">
           <Card
-            title={t`Rebates Distribution History`}
+            title={
+              <span className="text-body-large">
+                <Trans>Rebates Distribution History</Trans>
+              </span>
+            }
             tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
             bodyPadding={false}
             divider={false}
