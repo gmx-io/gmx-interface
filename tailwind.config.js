@@ -164,15 +164,7 @@ module.exports = {
       15: "1.5rem",
       16: "1.6rem",
       24: "2.4rem",
-      34: "3.4rem",
-
-      'h1': '3.4rem',
-      'h2': '2.4rem',
-      'body-large': '1.6rem',
-      'body-medium': '1.4rem',
-      'body-small': '1.2rem',
-      'caption': '1rem',
-      
+      34: "3.4rem",      
     },
     lineHeight: {
       1: "1",
