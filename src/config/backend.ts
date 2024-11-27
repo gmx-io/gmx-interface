@@ -5,6 +5,7 @@ import {
   BLAST_SEPOLIA_TESTNET,
   MAINNET,
   MORPH_L2,
+  MORPH_MAINNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
 } from "./chains";
@@ -23,6 +24,7 @@ const BACKEND_URLS = {
   [OPTIMISM_MAINNET]: "https://t3-trade-history-api.onrender.com",
   [BLAST_SEPOLIA_TESTNET]: "https://t3-trade-history-blast-sepolia-9dfi.onrender.com",
   [MORPH_L2]: "https://t3-trade-history-blast-sepolia-9dfi.onrender.com",
+  [MORPH_MAINNET]: "https://t3-trade-history-api-morph-mainnet.onrender.com",
 };
 
 export function getServerBaseUrl(chainId: number) {
