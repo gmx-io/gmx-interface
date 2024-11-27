@@ -127,7 +127,7 @@ function TVChartHeaderInfoMobile() {
         </div>
 
         <div>
-          <div className="mb-4 whitespace-nowrap text-[1.25rem]">
+          <div className="mb-4 whitespace-nowrap">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
@@ -457,7 +457,7 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="text-body-large mb-4">{avgPrice}</div>
+            <div className="text-body-medium mb-4">{avgPrice}</div>
             <div className="text-body-small">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
