@@ -11,6 +11,9 @@ import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
 import logoImg from "img/ic_gmx_footer.svg";
 
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 import "./Footer.css";
 
 type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: number };
@@ -28,9 +31,25 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
         <div className="Footer-social-link-block">
           {SOCIAL_LINKS.map((platform) => {
             return (
-              <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
-                <img src={platform.icon} alt={platform.name} />
-              </ExternalLink>
+              <TrackingLink
+                key={platform.name}
+                onClick={async () => {
+                  await userAnalytics.pushEvent<LandingPageFooterMenuEvent>(
+                    {
+                      event: "LandingPageAction",
+                      data: {
+                        action: "FooterMenu",
+                        button: platform.name,
+                      },
+                    },
+                    { instantSend: true }
+                  );
+                }}
+              >
+                <ExternalLink className="App-social-link" href={platform.link}>
+                  <img src={platform.icon} alt={platform.name} />
+                </ExternalLink>
+              </TrackingLink>
             );
           })}
         </div>

@@ -23,11 +23,14 @@ import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
+import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
+import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
-import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
-import { useOpenAppMetric } from "lib/metrics";
-import { useAccountInitedMetric } from "lib/metrics";
+import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
+import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
+import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -45,8 +48,10 @@ export function AppRoutes() {
 
   useEventToast();
   useConfigureMetrics();
+  useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
+  useWalletConnectedUserAnalyticsEvent();
 
   const query = useRouteQuery();
 
@@ -100,6 +105,12 @@ export function AppRoutes() {
   }
 
   const showRedirectModal = useCallback((to: string) => {
+    userAnalytics.pushEvent<LandingPageAgreementConfirmationEvent>({
+      event: "LandingPageAction",
+      data: {
+        action: "AgreementConfirmationDialogShown",
+      },
+    });
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   }, []);

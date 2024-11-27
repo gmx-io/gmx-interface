@@ -1,14 +1,13 @@
+import { isLocal } from "config/env";
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
-import { isLocal, isDevelopment, APP_VERSION } from "config/env";
 import {
-  OracleFetcher,
   BatchReportBody,
-  UiReportPayload,
   DayPriceCandle,
+  OracleFetcher,
   RawIncentivesStats,
   TickersResponse,
   UserFeedbackBody,
@@ -137,25 +136,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPostEvent(body: UiReportPayload, debug?: boolean): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendMetric", body.event, body);
-    }
-
-    if (isLocal()) {
-      return Promise.resolve(new Response());
-    }
-
-    return fetch(buildUrl(this.url!, "/report/ui/event"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-  }
-
   fetchPostFeedback(body: UserFeedbackBody, debug): Promise<Response> {
     if (debug) {
       // eslint-disable-next-line no-console
@@ -168,61 +148,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-    });
-  }
-
-  fetchPostTiming(
-    body: {
-      event: string;
-      time: number;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendTiming", body);
-    }
-
-    return fetch(buildUrl(this.url!, "/report/ui/timing"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...body,
-        isDev: isDevelopment(),
-        host: self.location.host,
-        version: APP_VERSION,
-      }),
-    });
-  }
-
-  fetchPostCounter(
-    body: {
-      event: string;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendCounter", body);
-    }
-
-    return fetch(buildUrl(this.url!, "/report/ui/counter"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...body,
-        isDev: isDevelopment(),
-        host: self.location.host,
-        version: APP_VERSION,
-      }),
     });
   }
 

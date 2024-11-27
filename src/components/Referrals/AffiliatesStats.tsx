@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
@@ -42,6 +42,9 @@ import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 import ReferralInfoCard from "./ReferralInfoCard";
 
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
+import { userAnalytics } from "lib/userAnalytics";
+import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import "./AffiliatesStats.scss";
 
 type Props = {
@@ -70,8 +73,16 @@ function AffiliatesStats({
 
   const [isClaiming, setIsClaiming] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
-  const open = () => setIsAddReferralCodeModalOpen(true);
-  const close = () => setIsAddReferralCodeModalOpen(false);
+  const open = useCallback(() => {
+    userAnalytics.pushEvent<ReferralCreateCodeEvent>({
+      event: "ReferralCodeAction",
+      data: {
+        action: "CreateCode",
+      },
+    });
+    setIsAddReferralCodeModalOpen(true);
+  }, []);
+  const close = useCallback(() => setIsAddReferralCodeModalOpen(false), []);
 
   const { total, chains } = referralsData || {};
   const {
@@ -123,6 +134,30 @@ function AffiliatesStats({
 
     return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
   }, [affiliateRewardsData, marketsInfoData]);
+
+  const trackCopyCode = useCallback(() => {
+    userAnalytics.pushEvent<ReferralShareEvent>(
+      {
+        event: "ReferralCodeAction",
+        data: {
+          action: "CopyCode",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
+
+  const trackShareTwitter = useCallback(() => {
+    userAnalytics.pushEvent<ReferralShareEvent>(
+      {
+        event: "ReferralCodeAction",
+        data: {
+          action: "ShareTwitter",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
 
   return (
     <div className="referral-body-container">
@@ -314,6 +349,7 @@ function AffiliatesStats({
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
+                              trackCopyCode();
                               copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
                               helperToast.success("Referral link copied to your clipboard");
                             }}
@@ -321,14 +357,16 @@ function AffiliatesStats({
                           >
                             <BiCopy />
                           </div>
-                          <a
-                            href={getTwitterShareUrl(stat.referralCode)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="referral-code-icon"
-                          >
-                            <FiTwitter />
-                          </a>
+                          <TrackingLink onClick={trackShareTwitter}>
+                            <a
+                              href={getTwitterShareUrl(stat.referralCode)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="referral-code-icon"
+                            >
+                              <FiTwitter />
+                            </a>
+                          </TrackingLink>
                           <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
                       </TableTd>

@@ -1,12 +1,12 @@
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import keyBy from "lodash/keyBy";
+import mapValues from "lodash/mapValues";
 import set from "lodash/set";
 import values from "lodash/values";
-import mapValues from "lodash/mapValues";
 
-import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { produce } from "immer";
+import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   getKeepLeverageKey,
@@ -14,8 +14,8 @@ import {
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getToken, isSimilarToken } from "config/tokens";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
@@ -23,15 +23,15 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 
+import { MarketInfo } from "domain/synthetics/markets";
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
+import { OrdersInfoData } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { TradeMode, TradeType } from "./types";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
-import { MarketInfo } from "domain/synthetics/markets";
-import { OrdersInfoData } from "../orders";
 
 export type TradeStage = "trade" | "processing";
 
