@@ -17,7 +17,8 @@ export default function TermsAndConditions() {
           <div className="content">
             <div className="section">
               <p className="body-text">
-                Welcome to t3.money ("we," "us," or "our"), the informational resource for TMX Protocol, as defined below.
+                Welcome to t3.money ("we," "us," or "our"), the informational resource for TMX Protocol, as defined
+                below.
               </p>
               <p className="body-text">
                 t3.money provides information and resources about the fundamentals of the decentralized non-custodial
@@ -35,17 +36,17 @@ export default function TermsAndConditions() {
               <h3 className="body-title">1. USE OF THE SITE AND THE INTERFACE</h3>
               <p className="body-text">The t3.money site is for informational purposes only.</p>
               <p className="body-text">
-                t3.money is not part of any transaction on the blockchain networks underlying the TMX Protocol; we do not
-                have possession, custody, or control over any crypto assets appearing on the Interface; and we do not
-                have possession, custody, or control over any user's funds. Further, we do not store, send, or receive
-                any crypto assets. You understand that when you interact with any TMX Protocol smart contracts, you
-                always retain control over your crypto assets. We do not have access to your private keys.
+                t3.money is not part of any transaction on the blockchain networks underlying the TMX Protocol; we do
+                not have possession, custody, or control over any crypto assets appearing on the Interface; and we do
+                not have possession, custody, or control over any user's funds. Further, we do not store, send, or
+                receive any crypto assets. You understand that when you interact with any TMX Protocol smart contracts,
+                you always retain control over your crypto assets. We do not have access to your private keys.
               </p>
               <ul className="list-style-none">
                 <li>
                   <p className="body-text">
-                    1.1. As a condition to accessing or using the Site or Interface, you represent and warrant to t3.money
-                    the following:
+                    1.1. As a condition to accessing or using the Site or Interface, you represent and warrant to
+                    t3.money the following:
                   </p>
                   <ul className="list-style-none">
                     <li>
@@ -121,10 +122,11 @@ export default function TermsAndConditions() {
                       <p className="body-text">
                         1.2.1. From time to time, the Site or the Interface may be inaccessible or inoperable for any
                         reason, including, but not limited to: (a) equipment malfunctions; (b) periodic maintenance
-                        procedures or repairs that t3.money or any of its suppliers or contractors may undertake from time
-                        to time; (c) causes beyond t3.money's control or that t3.money could not reasonably foresee; (d)
-                        disruptions and temporary or permanent unavailability of underlying blockchain infrastructure;
-                        or (e) unavailability of third-party service providers or external partners for any reason;
+                        procedures or repairs that t3.money or any of its suppliers or contractors may undertake from
+                        time to time; (c) causes beyond t3.money's control or that t3.money could not reasonably
+                        foresee; (d) disruptions and temporary or permanent unavailability of underlying blockchain
+                        infrastructure; or (e) unavailability of third-party service providers or external partners for
+                        any reason;
                       </p>
                     </li>
                     <li>
@@ -245,8 +247,8 @@ export default function TermsAndConditions() {
                 </li>
                 <li>
                   <p className="body-text">
-                    5.2. t3.money may revise these Terms from time to time. We will notify you by updating the date at the
-                    top of the Terms and maintaining a current version. The most current version of the Terms will
+                    5.2. t3.money may revise these Terms from time to time. We will notify you by updating the date at
+                    the top of the Terms and maintaining a current version. The most current version of the Terms will
                     always be at https://t3.money/#/terms-and-conditions. All modifications will be effective when they
                     are posted. By continuing to access or use the Site or the Interface after those revisions become
                     effective, you agree to be bound by the revised Terms.
@@ -268,8 +270,8 @@ export default function TermsAndConditions() {
                   <ul className="list-style-none">
                     <li>
                       <p className="body-text">
-                        6.1.1. That t3.money is not responsible for the operation of the open-source software and networks
-                        underlying the Interface;
+                        6.1.1. That t3.money is not responsible for the operation of the open-source software and
+                        networks underlying the Interface;
                       </p>
                     </li>
                     <li>
@@ -284,10 +286,10 @@ export default function TermsAndConditions() {
                         those commonly referred to as "forks," which may materially affect the Interface. You are
                         responsible for securing your private key(s). We do not have access to your private key(s);
                         losing control of your private key(s) will permanently and irreversibly deny you access to any
-                        blockchain-based network. Neither t3.money nor any other person or entity will be able to retrieve
-                        or protect your digital assets. If your private key(s) are lost, you will not be able to
-                        transfer your digital assets to any blockchain address or wallet. If this occurs, you will not
-                        be able to realize any value or utility from the digital assets you may hold.
+                        blockchain-based network. Neither t3.money nor any other person or entity will be able to
+                        retrieve or protect your digital assets. If your private key(s) are lost, you will not be able
+                        to transfer your digital assets to any blockchain address or wallet. If this occurs, you will
+                        not be able to realize any value or utility from the digital assets you may hold.
                       </p>
                     </li>
                   </ul>
@@ -296,12 +298,12 @@ export default function TermsAndConditions() {
                   <p className="body-text">
                     6.2. t3.money is not responsible for the content of any third party, including, but not limited to,
                     information, materials, products, or services that t3.money does not own or control. In addition,
-                    third parties may offer promotions related to your access and use of the Interface. t3.money does not
-                    endorse or assume any responsibility for such resources or promotions. Suppose you access any such
-                    resources or participate in any such promotions. In that case, you do so at your own risk and
+                    third parties may offer promotions related to your access and use of the Interface. t3.money does
+                    not endorse or assume any responsibility for such resources or promotions. Suppose you access any
+                    such resources or participate in any such promotions. In that case, you do so at your own risk and
                     understand that these Terms do not apply to your dealings or relationships with any third parties.
-                    You expressly relieve t3.money of all liability arising from using such resources or participating in
-                    such promotions.
+                    You expressly relieve t3.money of all liability arising from using such resources or participating
+                    in such promotions.
                   </p>
                 </li>
                 <li>
@@ -329,8 +331,8 @@ export default function TermsAndConditions() {
                 </li>
                 <li>
                   <p className="body-text">
-                    6.6. You hereby assume and agree that t3.money will have no responsibility or liability for the risks
-                    in Section 9. You hereby irrevocably waive, release and discharge all claims, whether known or
+                    6.6. You hereby assume and agree that t3.money will have no responsibility or liability for the
+                    risks in Section 9. You hereby irrevocably waive, release and discharge all claims, whether known or
                     unknown to you, against t3.money, its affiliates, and their respective shareholders, members,
                     directors, officers, employees, agents, representatives, suppliers, and contractors related to any
                     of the risks set forth in this Section 6.
@@ -413,9 +415,9 @@ export default function TermsAndConditions() {
             <div className="section">
               <h3 className="body-title">8. DISCLOSURES; DISCLAIMERS</h3>
               <p className="body-text">
-                t3.money is an informational site for the TMX Protocol. t3.money does not operate an exchange platform or
-                offer trade execution or clearing services and has no oversight, involvement, or control concerning your
-                transactions using the Interface. All transactions between users of the Interface are executed
+                t3.money is an informational site for the TMX Protocol. t3.money does not operate an exchange platform
+                or offer trade execution or clearing services and has no oversight, involvement, or control concerning
+                your transactions using the Interface. All transactions between users of the Interface are executed
                 peer-to-peer directly between the users' blockchain addresses through a third-party developed
                 open-source smart contract.
               </p>
@@ -426,8 +428,8 @@ export default function TermsAndConditions() {
                 Contracts using the Interface.
               </p>
               <p className="body-text">
-                You understand that t3.money is not registered or licensed by any regulatory agency or authority. No such
-                agency or authority has reviewed or approved the use of the Site or the Interface.
+                You understand that t3.money is not registered or licensed by any regulatory agency or authority. No
+                such agency or authority has reviewed or approved the use of the Site or the Interface.
               </p>
               <p className="body-text">
                 You agree that the Site and the Interface are provided on an "AS IS" and "AS AVAILABLE" basis. t3.money
@@ -437,9 +439,9 @@ export default function TermsAndConditions() {
             <div className="section">
               <h3 className="body-title">9. LIMITATION OF LIABILITY</h3>
               <p className="body-text">
-                In no event shall t3.money, its affiliates, its suppliers and contractors, and its affiliates', suppliers'
-                and contractors' respective stockholders, members, directors, officers, managers, employees, attorneys,
-                agents, representatives, suppliers, and contractors shall be liable for any direct, indirect,
+                In no event shall t3.money, its affiliates, its suppliers and contractors, and its affiliates',
+                suppliers' and contractors' respective stockholders, members, directors, officers, managers, employees,
+                attorneys, agents, representatives, suppliers, and contractors shall be liable for any direct, indirect,
                 incidental, special, punitive, consequential or similar damages or liabilities whatsoever (including,
                 without limitation, damages for loss of fiat, assets, data, information, revenue, opportunities, use,
                 goodwill, profits or other business or financial benefit) arising out of or in connection with the Site
@@ -447,8 +449,8 @@ export default function TermsAndConditions() {
                 (including negligence), civil liability, statute, strict liability, breach of warranties, or under any
                 other theory of liability, and whether or not we have been advised of, knew of or should have known of
                 the possibility of such damages and notwithstanding any failure of the essential purpose of these Terms
-                or any limited remedy hereunder nor is t3.money in any way responsible for the execution or settlement of
-                transactions between users of the Interface.
+                or any limited remedy hereunder nor is t3.money in any way responsible for the execution or settlement
+                of transactions between users of the Interface.
               </p>
               <p className="body-text">
                 In no event shall t3.money's aggregate liability arising out of or in connection with the Site or
@@ -478,11 +480,11 @@ export default function TermsAndConditions() {
               <p className="body-text">
                 t3.money will use its best efforts to resolve potential disputes through informal, good faith
                 negotiations. If a potential dispute arises, you must contact us by sending a written notice of your
-                claim ("Notice") to t3.money on any of our official channels. The notice must (a) describe the nature and
-                basis of the claim and (b) set forth the specific relief sought. Our notice to you will be similar in
-                form to that described above. If you and t3.money cannot reach an agreement to resolve the claim within
-                sixty (60) days of your email, then you and t3.money agree to resolve the potential dispute according to
-                the process set forth below.
+                claim ("Notice") to t3.money on any of our official channels. The notice must (a) describe the nature
+                and basis of the claim and (b) set forth the specific relief sought. Our notice to you will be similar
+                in form to that described above. If you and t3.money cannot reach an agreement to resolve the claim
+                within sixty (60) days of your email, then you and t3.money agree to resolve the potential dispute
+                according to the process set forth below.
               </p>
               <p className="body-text">
                 Any claim or controversy arising out of or relating to the Site, the Interface, or these Terms, or any
@@ -497,8 +499,8 @@ export default function TermsAndConditions() {
               </p>
               <p className="body-text">
                 Any claim arising out of or related to these Terms or the Site or the Interface must be filed within one
-                year after such claim arose; otherwise, the claim is permanently barred, which means that you and t3.money
-                will not have the right to assert the claim.
+                year after such claim arose; otherwise, the claim is permanently barred, which means that you and
+                t3.money will not have the right to assert the claim.
               </p>
             </div>
             <div className="section">
@@ -514,8 +516,8 @@ export default function TermsAndConditions() {
               <ul className="list-style-none">
                 <li>
                   <p className="body-text">
-                    13.1. Any right or remedy of t3.money set forth in these Terms is in addition to, and not in lieu of,
-                    any other right or remedy whether described in these Terms, under Applicable Law, at law, or in
+                    13.1. Any right or remedy of t3.money set forth in these Terms is in addition to, and not in lieu
+                    of, any other right or remedy whether described in these Terms, under Applicable Law, at law, or in
                     equity. The failure or delay of t3.money in exercising any right, power, or privilege under these
                     Terms shall not operate as a waiver thereof.
                   </p>
@@ -535,9 +537,9 @@ export default function TermsAndConditions() {
                 </li>
                 <li>
                   <p className="body-text">
-                    13.4. t3.money will have no responsibility or liability for any failure or delay in performance of the
-                    Site or the Interface, or any loss or damage that you may incur, due to any circumstance or event
-                    beyond our control, including without limitation any flood, extraordinary weather conditions,
+                    13.4. t3.money will have no responsibility or liability for any failure or delay in performance of
+                    the Site or the Interface, or any loss or damage that you may incur, due to any circumstance or
+                    event beyond our control, including without limitation any flood, extraordinary weather conditions,
                     earthquake, or other act of God, fire, war, insurrection, riot, labor dispute, accident, any law,
                     order regulation, direction, action or request of the government, communications, power failure, or
                     equipment or software malfunction.
@@ -577,8 +579,8 @@ export default function TermsAndConditions() {
             <div className="section">
               <h3 className="body-title">CONTACT INFORMATION</h3>
               <p className="body-text">
-                If you have any questions about these Terms, the Site, or the Interface, please get in touch with t3.money
-                on any of our official channels.
+                If you have any questions about these Terms, the Site, or the Interface, please get in touch with
+                t3.money on any of our official channels.
               </p>
             </div>
           </div>

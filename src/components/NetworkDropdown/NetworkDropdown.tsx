@@ -9,7 +9,7 @@ import "./NetworkDropdown.css";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
-import { useChainId, useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { getIcon } from "config/icons";
 import { FaChevronDown } from "react-icons/fa";
 

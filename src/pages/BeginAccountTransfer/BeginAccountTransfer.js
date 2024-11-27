@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-
 import { getContract } from "config/contracts";
 
 import Modal from "components/Modal/Modal";
@@ -18,9 +17,9 @@ import { FiX, FiCheck } from "react-icons/fi";
 import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
-import { callContract,  dynamicContractFetcher } from "lib/contracts";
+import { callContract, dynamicContractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import Button from "components/Button/Button";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 

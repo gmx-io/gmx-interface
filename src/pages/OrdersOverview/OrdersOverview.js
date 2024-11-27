@@ -22,7 +22,7 @@ import { t, Trans } from "@lingui/macro";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 import { useContext } from "react";

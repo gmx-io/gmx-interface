@@ -58,8 +58,8 @@ export function AffiliateCodeForm({
   const dynamicContext = useContext(DynamicWalletContext);
   //const active = dynamicContext.active;
   const account = dynamicContext.account;
- // const signer = dynamicContext.signer;
-  const {  chainId } = useDynamicChainId();
+  // const signer = dynamicContext.signer;
+  const { chainId } = useDynamicChainId();
   useEffect(() => {
     inputRef.current.focus();
   }, []);

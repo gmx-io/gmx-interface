@@ -78,8 +78,8 @@
   color: #ffffff;
 }
 
-#light .App-card-title-mark-title{
-  color : #000000;
+#light .App-card-title-mark-title {
+  color: #000000;
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
@@ -99,7 +99,7 @@
 }
 
 #light .GlpSwap-token-list {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .GlpSwap-token-list-content {
@@ -184,7 +184,7 @@
 }
 
 #light .token-table td {
-  color : #000000;
+  color: #000000;
 }
 
 .token-table th:first-child,

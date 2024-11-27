@@ -1,5 +1,5 @@
 import React from "react";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiExternalLink } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
@@ -42,35 +42,50 @@ export function AppHeaderLinks({
           </div>
         </div>
       )}
-      <div className="App-header-link-container"></div>
-      <div className="App-header-link-container" data-tour="step-1">
-        <HeaderLink to="/trade" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+      <div className="App-header-link-container" data-tour="step-1" style={{ display: "flex", alignItems: "center" }}>
+        <HeaderLink
+          to="/trade"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+          style={{ width: "100%" }}
+        >
           <Trans>Trade</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container" data-tour="step-2">
-        <HeaderLink to="/earn" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+      <div className="App-header-link-container" data-tour="step-2" style={{ display: "flex", alignItems: "center" }}>
+        <HeaderLink
+          to="/earn"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+          style={{ width: "100%" }}
+        >
           <Trans>Earn</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/swap" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
+      <div className="App-header-link-container" style={{ display: "flex", alignItems: "center" }}>
+        <HeaderLink
+          to="/swap"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+          style={{ width: "100%" }}
+        >
           <Trans>Swap</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
-        <ExternalLink href="https://docs.t3.money/dex/">
-          <Trans>Docs</Trans>
-        </ExternalLink>
-      </div>
-      <div className="App-header-link-container">
+      <div className="App-header-link-container" style={{ display: "flex", alignItems: "center" }}>
         <HeaderLink
+          style={{ width: "100%" }}
           to="/dashboard"
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
           <Trans>Dashboard</Trans>
         </HeaderLink>
+      </div>
+      <div className="App-header-link-container">
+        <ExternalLink href="https://docs.t3.money/dex/" style={{ display: "flex", alignItems: "center" }}>
+          <Trans>Docs</Trans> <FiExternalLink fontSize={14} style={{ marginLeft: "0.5rem", opacity: 0.25 }} />
+        </ExternalLink>
       </div>
       {small && !isHomeSite() && (
         <div className="App-header-link-container">

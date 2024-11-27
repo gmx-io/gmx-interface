@@ -20,7 +20,6 @@ function FaucetDropdown() {
   const active = dynamicContext.active;
   const account = dynamicContext.account;
   const signer = dynamicContext.signer;
-  // const { active, account, library } = useWeb3React();
   const { chainId } = useDynamicChainId();
 
   const txmContractAddress = "0x98e9944fdF31890F5823f351B4797e97C5f86088";
@@ -57,6 +56,7 @@ function FaucetDropdown() {
     };
 
     getToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
 
   function mint(tokenSymbol) {
@@ -64,7 +64,7 @@ function FaucetDropdown() {
     if (active) {
       if (tokenSymbol === "WBTC") {
         ethamount = new BN(0.1).times(1e8).toString();
-      } else if (tokenSymbol != "TMX") {
+      } else if (tokenSymbol !== "TMX") {
         const token = getTokenBySymbol(chainId, tokenSymbol);
         ethamount = (amount * 10 ** token.decimals).toLocaleString("fullwide", {
           useGrouping: false,
@@ -157,7 +157,7 @@ function FaucetDropdown() {
             }
             helperToast.error(failMsg);
           });
-      } else if (tokenSymbol != "TMX") {
+      } else if (tokenSymbol !== "TMX") {
         const token = getTokenBySymbol(chainId, tokenSymbol);
 
         const contract = new ethers.Contract(token.address, Token.abi, signer);

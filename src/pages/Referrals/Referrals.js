@@ -23,7 +23,7 @@ import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "componen
 import { ethers } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";

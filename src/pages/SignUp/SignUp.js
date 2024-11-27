@@ -22,24 +22,14 @@ const SignUp = () => {
             walletIco={metamaskImg}
             text={`Connect Metamask`}
             handleClick={activateMetaMask}
-           
+
             // disabled={false}
             // showArrow={true}
             // isActive={activeStep === 2}
             // showSkip={false}
           />
-          <WalletConnectSection
-            walletIco={coinbaseImg}
-            
-            text={`Coinbase wallet`}
-            handleClick={activateMetaMask}
-          />
-          <WalletConnectSection
-          
-            walletIco={walletConnectImg}
-            text={`Wallet Connect`}
-            handleClick={activateMetaMask}
-          />
+          <WalletConnectSection walletIco={coinbaseImg} text={`Coinbase wallet`} handleClick={activateMetaMask} />
+          <WalletConnectSection walletIco={walletConnectImg} text={`Wallet Connect`} handleClick={activateMetaMask} />
         </div>
       </div>
     </div>

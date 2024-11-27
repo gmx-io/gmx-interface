@@ -76,7 +76,6 @@
 }
 
 .Tooltip-handle {
-  
   cursor: help;
   position: relative;
   display: inline-flex;
@@ -120,7 +119,7 @@
 }
 
 #light .Tooltip-row > .Tooltip-row-value {
-  color : #000000;
+  color: #000000;
 }
 
 .Tooltip-row-values {

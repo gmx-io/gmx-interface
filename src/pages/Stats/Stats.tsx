@@ -1,8 +1,8 @@
 import { getContract } from "config/contracts";
 import { getWhitelistedTokens } from "config/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
-import {  useDynamicChainId } from "lib/chains";
-import {  dynamicContractFetcher } from "lib/contracts";
+import { useDynamicChainId } from "lib/chains";
+import { dynamicContractFetcher } from "lib/contracts";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import useSWR from "swr";
 import { getServerUrl } from "config/backend";
@@ -49,7 +49,7 @@ export default function Stats() {
   const dynamicContext = useContext(DynamicWalletContext);
   const active = dynamicContext.active;
   const signer = dynamicContext.signer;
- // const {  library } = useWeb3React();
+  // const {  library } = useWeb3React();
   const { chainId } = useDynamicChainId();
 
   const readerAddress = getContract(chainId, "Reader");

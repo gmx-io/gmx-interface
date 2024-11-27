@@ -25,7 +25,7 @@ import { helperToast } from "lib/helperToast";
 import { getInjectedHandler } from "lib/wallets";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const BASIS_POINTS_DIVISOR = 10000;

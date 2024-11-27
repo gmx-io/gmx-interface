@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import useSWR from "swr";
-import { useWeb3React } from "@web3-react/core";
 
 import cx from "classnames";
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
@@ -18,12 +17,12 @@ import metamaskImg from "img/metamask.png";
 import coingeckoImg from "img/coingecko.png";
 import bscscanImg from "img/bscscan.png";
 import { getServerUrl } from "config/backend";
-import { contractFetcher, dynamicContractFetcher } from "lib/contracts";
+import { dynamicContractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getTokenUrl } from "domain/tokens/utils";
 import { bigNumberify, expandDecimals, formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
-import { useChainId, useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 

@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, NavLinkProps } from "react-router-dom";
 import cx from "classnames";
 import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 
@@ -16,7 +16,8 @@ type Props = {
   showRedirectModal: (to: string) => void;
   redirectPopupTimestamp: number;
   children?: ReactNode;
-};
+} & React.PropsWithoutRef<NavLinkProps<string>> &
+  React.RefAttributes<HTMLAnchorElement>;
 
 export function HeaderLink({
   isHomeLink,
@@ -26,6 +27,7 @@ export function HeaderLink({
   children,
   redirectPopupTimestamp,
   showRedirectModal,
+  ...rest
 }: Props) {
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
@@ -56,7 +58,7 @@ export function HeaderLink({
   }
 
   return (
-    <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to}>
+    <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to} {...rest}>
       {children}
     </NavLink>
   );

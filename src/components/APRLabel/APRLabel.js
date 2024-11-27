@@ -17,8 +17,6 @@ import RewardReader from "abis/RewardReader.json";
 import Token from "abis/Token.json";
 import GlpManager from "abis/GlpManager.json";
 
-
-
 import { useGmxPrice } from "domain/legacy";
 
 import { getContract } from "config/contracts";

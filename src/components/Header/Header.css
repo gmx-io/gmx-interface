@@ -42,7 +42,7 @@
 }
 
 .App-header-drawer {
-  background: #17182c88 0% 0% no-repeat padding-box;
+  background: #0c100f 0% 0% no-repeat padding-box;
   box-shadow: 0.8rem 0.3rem 0.6rem #00000029;
   opacity: 1;
   backdrop-filter: blur(2.7rem);
@@ -83,9 +83,6 @@
   color: white;
 }
 
-
-
-
 .App-header-links-header {
   height: 6.2rem;
   display: flex;
@@ -113,8 +110,8 @@
   align-items: center;
 }
 
-#light .App-header-menu-icon{
-  color : #000000;
+#light .App-header-menu-icon {
+  color: #000000;
 }
 
 .App-header-menu-icon {
@@ -230,11 +227,10 @@
 }
 
 #light .App-header-faucet {
-  color : #000000 !important;
-  border : #D7D8D9 2px solid;
+  color: #000000 !important;
+  border: #d7d8d9 2px solid;
   border-radius: 10px !important;
 }
-
 
 .App-header-faucet {
   border: 1px solid #ffffff29;
@@ -325,7 +321,6 @@
     right: 38px;
   }
 
- 
   a.App-header-user-account {
     margin-right: 0;
   }

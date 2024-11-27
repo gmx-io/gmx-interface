@@ -4,8 +4,6 @@ import { Trans } from "@lingui/macro";
 
 import { isHomeSite } from "lib/legacy";
 
-
-
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE, OPTIMISM_GOERLI_TESTNET, SEPOLIA_TESTNET } from "config/chains";
@@ -23,8 +21,6 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const { chainId } = useDynamicChainId();
   const dynamicContext = useContext(DynamicWalletContext);
   const active = dynamicContext.active;
- 
-
 
   const changeNetwork = useCallback(
     (network) => {

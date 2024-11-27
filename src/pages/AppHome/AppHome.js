@@ -35,7 +35,9 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           <div className="hero-title">
             <Trans>Decentralized</Trans>
             <br />
-            <span className="Home-title-subtext"><Trans>Perpetual</Trans></span>
+            <span className="Home-title-subtext">
+              <Trans>Perpetual</Trans>
+            </span>
             <br />
             <Trans>Exchange</Trans>
           </div>
@@ -51,7 +53,9 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           <p>
             <Trans>Decentralized </Trans>
             <br />
-            <span className="subtext"><Trans>Perpetual</Trans></span>
+            <span className="subtext">
+              <Trans>Perpetual</Trans>
+            </span>
             <br />
             <Trans>Exchange</Trans>
           </p>

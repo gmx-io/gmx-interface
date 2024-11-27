@@ -1,22 +1,13 @@
+/* eslint-disable */
 import "@testing-library/jest-dom";
 import Token from "abis/Token.json";
 import * as MulticallLib from "ethereum-multicall";
-import * as rpcLib from "lib/rpc";
-import { ARBITRUM, AVALANCHE, FALLBACK_PROVIDERS } from "config/chains";
-import { executeMulticall, MAX_TIMEOUT } from "lib/multicall/utils";
+import { FALLBACK_PROVIDERS } from "config/chains";
 import { generateTestingUtils } from "eth-testing";
-import { sleep } from "lib/sleep";
 import { BigNumber, ethers } from "ethers";
 
-import { useWeb3React } from "@web3-react/core";
-import { getInjectedHandler } from "lib/wallets";
-import { useEffect } from "react";
-import { act } from "@testing-library/react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { testHook } from "lib/testUtils";
 import { MulticallRequestConfig, MulticallResult } from "lib/multicall";
-
-const chainId = ARBITRUM;
 
 const MulticallSpy = jest.spyOn(MulticallLib, "Multicall");
 
@@ -284,7 +275,4 @@ describe("executeMulticall", () => {
     // await expect(executeMulticall(chainId, undefined, testRequest)).rejects.toEqual("test error");
     // expect(MulticallSpy).toBeCalledTimes(2);
   });
-
-
-  
 });

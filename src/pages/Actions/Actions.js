@@ -18,12 +18,12 @@ import Reader from "abis/Reader.json";
 
 import { Trans, t } from "@lingui/macro";
 import { getServerBaseUrl } from "config/backend";
-import {  dynamicContractFetcher } from "lib/contracts";
+import { dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import { getToken, getTokens, getWhitelistedTokens } from "config/tokens";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 const USD_DECIMALS = 30;

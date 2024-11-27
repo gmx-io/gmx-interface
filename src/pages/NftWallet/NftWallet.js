@@ -6,7 +6,7 @@ import ERC721 from "abis/ERC721.json";
 import "./NftWallet.css";
 import { t, Trans } from "@lingui/macro";
 import { callContract } from "lib/contracts";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 
 export default function NftWallet() {
@@ -20,7 +20,6 @@ export default function NftWallet() {
   const account = dynamicContext.account;
   const signer = dynamicContext.signer;
 
- 
   const { chainId } = useDynamicChainId();
 
   function getTransferError() {

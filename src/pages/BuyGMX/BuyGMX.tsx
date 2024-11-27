@@ -6,7 +6,7 @@ import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { switchNetwork } from "lib/wallets";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import Card from "components/Common/Card";
 import { importImage } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -30,7 +30,7 @@ export default function BuyGMX() {
   const isArbitrum = chainId === ARBITRUM;
   const dynamicContext = useContext(DynamicWalletContext);
   const active = dynamicContext.active;
- 
+
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
 

@@ -175,7 +175,7 @@ export default function PositionsList(props) {
         />
       )}
       {ordersToaOpen && (
-      <OrdersToa
+        <OrdersToa
           setIsVisible={setOrdersToaOpen}
           approveOrderBook={approveOrderBook}
           isPluginApproving={isPluginApproving}

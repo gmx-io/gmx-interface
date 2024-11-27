@@ -8,7 +8,7 @@ import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
 import { addTokenToMetamask } from "lib/wallets";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { Token } from "domain/tokens";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";

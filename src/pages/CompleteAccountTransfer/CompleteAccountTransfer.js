@@ -15,7 +15,7 @@ import "./CompleteAccountTransfer.css";
 import { Trans, t } from "@lingui/macro";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import Button from "components/Button/Button";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 

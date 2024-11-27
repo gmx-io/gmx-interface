@@ -11,7 +11,6 @@
   background: #ffffff;
 }
 
-
 .center-both {
   display: flex;
   justify-content: center;
@@ -26,9 +25,8 @@
 }
 
 #light .dropdown-arrow {
-  color : #000000;
+  color: #000000;
 }
-
 
 .dropdown-arrow:hover {
   opacity: 1;

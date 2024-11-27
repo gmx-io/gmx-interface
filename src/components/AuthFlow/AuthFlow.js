@@ -1,4 +1,3 @@
-
 import Button from "components/Button/Button";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";

@@ -1,13 +1,10 @@
 /* eslint-disable no-console */
 import { supabase } from "./supabaseClient";
 
-
 export const addUser = async (walletAddress: string) => {
   //create referral code.
- 
-  const { data, error } = await supabase
-    .from("users")
-    .insert([{ wallet_address: walletAddress, referral_code: "" }]);
+
+  const { data, error } = await supabase.from("users").insert([{ wallet_address: walletAddress, referral_code: "" }]);
 
   if (error) {
     console.error("Error adding user:", error);
@@ -16,7 +13,6 @@ export const addUser = async (walletAddress: string) => {
 
   return data;
 };
-
 
 // Function to check if a user with a certain wallet exists
 export const getUserByWalletAddress = async (walletAddress: string) => {

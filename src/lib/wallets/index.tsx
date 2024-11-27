@@ -83,7 +83,7 @@ export function activateInjectedProvider(providerName: string) {
     return undefined;
   }
 
- // let provider;
+  // let provider;
   // if (ethereum?.providers) {
   //   switch (providerName) {
   //     case "CoinBase":

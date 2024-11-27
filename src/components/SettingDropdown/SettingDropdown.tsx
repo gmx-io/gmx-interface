@@ -17,7 +17,6 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
 import { ThemeContext } from "store/theme-provider";
 
-
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const SETTINGS_MODAL_KEY: string = "SETTINGS";
 const EMAIL_NOTIFICATION_MODAL_KEY: string = "EMAIL_NOTIFICATION";
@@ -101,7 +100,6 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
   // const [enabledDarkMode, setEnabledDarkMode] = useState(false);
   //const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
-
 
   return (
     <div className="App-header-setting">

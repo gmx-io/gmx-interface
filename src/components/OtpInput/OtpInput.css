@@ -37,9 +37,9 @@
   justify-content: center;
   flex-shrink: 0;
   border-radius: 8.984px;
-  color: #FA2424;
+  color: #fa2424;
   border: 1px solid rgba(250, 36, 36, 0.82);
-  background: rgba(250, 36, 36, 0.10);
+  background: rgba(250, 36, 36, 0.1);
   text-align: center;
   font-family: tektur;
   font-weight: 600;
@@ -61,7 +61,7 @@
   border: none;
   background: none;
   text-decoration: underline;
-  color: #FF7028;
+  color: #ff7028;
   cursor: pointer;
   font-size: 16px;
   font-style: normal;

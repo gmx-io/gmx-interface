@@ -9,7 +9,7 @@ export default function AppHomeContent() {
       <div className="content-title">
         <Trans>Become a Liquidity Provider</Trans>
         <br />
-        <span className="content-desc">
+        <span className="content-desc" style={{ fontFamily: "Relative" }}>
           Provide liquidity to T3's trading pools and earn fees from every trade. Join our growing network of liquidity
           providers and earn passive income from the platform's success.
         </span>
@@ -20,12 +20,12 @@ export default function AppHomeContent() {
       </div>
       <div className="content-title">
         <Trans>Buy TMX Token</Trans>
-        <span style={{fontSize: '14px', color: '#FFB547'}}> (Coming Soon)</span>
-        <span className="content-desc">
-          Invest in T3's growth by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium features
-          as a T3 Pro member. Be part of our ecosystem's future.
+        <span style={{ fontSize: "14px", color: "#FFB547" }}> (Coming Soon)</span>
+        <span className="content-desc" style={{ fontFamily: "Relative" }}>
+          Invest in T3's growth by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium
+          features as a T3 Pro member. Be part of our ecosystem's future.
         </span>
-        <button className="btn text-white orange-cta" disabled style={{opacity: 0.5, cursor: 'not-allowed'}}>
+        <button className="btn text-white orange-cta" disabled style={{ opacity: 0.5, cursor: "not-allowed" }}>
           <Trans>Buy TMX</Trans>
           <BsArrowRight className="arrow" style={{ marginLeft: "1rem" }} color={"white"} />
         </button>

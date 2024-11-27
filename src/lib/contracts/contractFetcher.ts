@@ -152,7 +152,7 @@ export const contractFetcher =
 
 function getContractCall({ provider, contractInfo, arg0, arg1, method, params, additionalArgs }) {
   if (ethers.utils.isAddress(arg0)) {
-   // console.log("creating new ethers contract");
+    // console.log("creating new ethers contract");
     const address = arg0;
 
     const contract = new ethers.Contract(address, contractInfo.abi, provider);

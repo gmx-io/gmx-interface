@@ -1,59 +1,58 @@
 .Wallet-btn-approve {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 72px;
-    width: 100%;
-    border: 0px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    background: #141620;
-    position: relative;
-    color: white;
-    font-size: 1.7rem;
-    padding-left: 1.6rem;
-    padding-right: 1.6rem;
-    text-align: left;
-  }
-  
-  #light .Wallet-btn-approve{
-    background: #ffffff;
-    color: #000000;
-  }
-  
-  /* .Wallet-btn-approve:hover {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  width: 100%;
+  border: 0px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: #141620;
+  position: relative;
+  color: white;
+  font-size: 1.7rem;
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
+  text-align: left;
+}
+
+#light .Wallet-btn-approve {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* .Wallet-btn-approve:hover {
     background: var(--dark-blue-hover);
   } */
-  
-  /* .Wallet-btn-approve:active {
+
+/* .Wallet-btn-approve:active {
     background: var(--dark-blue-active);
   } */
-  
-  .Wallet-btn-approve:not(:last-child) {
-    margin-bottom: 1.05rem;
-  }
-  
-  .Wallet-btn-approve:disabled {
-    opacity: 0.4;
-  }
-  
-  .Wallet-btn-end {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
 
-  #light .wallet-ctn-nextico{
-    filter: invert(1);
-  }
+.Wallet-btn-approve:not(:last-child) {
+  margin-bottom: 1.05rem;
+}
 
-  .Wallet-btn-end button {
-    margin-right: 6px;
-    padding: 5px 10px;
-    background-color: transparent;
-    font-family: tektur;
-    color: white;
-    border: 1px solid white;
-    border-radius: 6px;
-  }
-  
+.Wallet-btn-approve:disabled {
+  opacity: 0.4;
+}
+
+.Wallet-btn-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#light .wallet-ctn-nextico {
+  filter: invert(1);
+}
+
+.Wallet-btn-end button {
+  margin-right: 6px;
+  padding: 5px 10px;
+  background-color: transparent;
+  font-family: tektur;
+  color: white;
+  border: 1px solid white;
+  border-radius: 6px;
+}

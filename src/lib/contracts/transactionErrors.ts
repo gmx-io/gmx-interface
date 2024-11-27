@@ -15,7 +15,7 @@ const TX_ERROR_PATTERNS: { [key: string]: ErrorPattern[] } = {
   [USER_DENIED]: [{ msg: "User denied transaction signature" }],
   [SLIPPAGE]: [{ msg: "Router: mark price lower than limit" }, { msg: "Router: mark price higher than limit" }],
   [NETWORK_CHANGED]: [{ msg: "underlying network changed" }],
-  [ACCESS_DENIED] : [{msg : "reverted: Access Denied"}],
+  [ACCESS_DENIED]: [{ msg: "reverted: Access Denied" }],
   [RPC_ERROR]: [
     // @see https://eips.ethereum.org/EIPS/eip-1474#error-codes
     { code: -32005 },
@@ -39,23 +39,17 @@ export function extractError(ex: TxError) {
     return [];
   }
 
-  console.log("ex", ex);
   const message = ex.data?.message || ex.message;
   const code = ex.code;
-  console.log("code", code);
-  console.log("message", message);
   if (!message && !code) {
     return [];
   }
 
   for (const [type, patterns] of Object.entries(TX_ERROR_PATTERNS)) {
     for (const pattern of patterns) {
-      console.log("pattern code", pattern.code);
       const matchCode = pattern.code && code === pattern.code;
       const matchMessage = pattern.msg && message && message.includes(pattern.msg);
-      console.log("match message",matchMessage);
       if (matchCode || matchMessage) {
-
         return [message, type, ex.data];
       }
     }

@@ -36,9 +36,9 @@ export function getGmxGraphClient(chainId: number) {
     return null;
   } else if (chainId === BLAST_SEPOLIA_TESTNET) {
     return null;
-  } else if (chainId == MORPH_L2) {
+  } else if (chainId === MORPH_L2) {
     return null;
-  } else if (chainId == MORPH_MAINNET) {
+  } else if (chainId === MORPH_MAINNET) {
     return null;
   }
 

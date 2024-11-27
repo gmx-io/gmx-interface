@@ -1,4 +1,3 @@
-import { getLiquidationPrice } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 
 describe("getLiquidationPrice", function () {
@@ -100,7 +99,7 @@ describe("getLiquidationPrice", function () {
     // },
   ];
 
-  for (const { name: caseName, expected, ...case_ } of cases) {
+  for (const { name: caseName } of cases) {
     it(`getLiquidationPrice: ${caseName}`, function () {
       //const liqPrice = getLiquidationPrice(case_);
 
