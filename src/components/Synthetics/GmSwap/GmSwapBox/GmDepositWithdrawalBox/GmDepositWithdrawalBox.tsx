@@ -400,6 +400,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
     marketTokensData,
     selectedMarketForGlv,
+    selectedMarketInfoForGlv: getByKey(marketsInfoData, selectedMarketForGlv),
     isHighFeeConsentError,
     isMarketTokenDeposit: isMarketTokenDeposit,
     marketsInfoData,

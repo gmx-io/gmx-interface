@@ -71,8 +71,8 @@
 
 .Modal-title {
   text-align: left;
-  font-size: var(--font-md);
-  line-height: 1;
+  font-size: var(--font-size-body-large);
+  line-height: var(--line-height-body-large);
 }
 
 .Modal-close-button {

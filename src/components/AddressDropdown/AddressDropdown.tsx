@@ -22,6 +22,8 @@ import oneClickTradingIcon from "img/one_click_trading_20.svg";
 
 import { Avatar } from "components/Avatar/Avatar";
 import "./AddressDropdown.scss";
+import { userAnalytics } from "lib/userAnalytics";
+import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 
 type Props = {
   account: string;
@@ -93,7 +95,19 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             </div>
           </Menu.Item>
           <Menu.Item>
-            <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
+            <div
+              className="menu-item"
+              onClick={() => {
+                userAnalytics.pushEvent<DisconnectWalletEvent>({
+                  event: "ConnectWalletAction",
+                  data: {
+                    action: "Disconnect",
+                  },
+                });
+
+                disconnectAccountAndCloseSettings();
+              }}
+            >
               <img width={20} className="size-20" src={disconnect} alt="Disconnect the wallet" />
               <p>
                 <Trans>Disconnect</Trans>

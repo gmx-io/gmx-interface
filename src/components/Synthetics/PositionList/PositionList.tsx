@@ -16,6 +16,8 @@ import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { userAnalytics } from "lib/userAnalytics";
+import { SharePositionClickEvent } from "lib/userAnalytics/types";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -37,6 +39,12 @@ export function PositionList(p: Props) {
   const positions = useSelector(selectPositionsInfoDataSortedByMarket);
 
   const handleSharePositionClick = useCallback((positionKey: string) => {
+    userAnalytics.pushEvent<SharePositionClickEvent>({
+      event: "SharePositionAction",
+      data: {
+        action: "SharePositionClick",
+      },
+    });
     setPositionToShareKey(positionKey);
     setIsPositionShareModalOpen(true);
   }, []);
@@ -74,7 +82,7 @@ export function PositionList(p: Props) {
 
       {!isMobile && (
         <Table>
-          <thead>
+          <thead className="text-body-medium">
             <TableTheadTr bordered>
               <TableTh>
                 <Trans>Position</Trans>

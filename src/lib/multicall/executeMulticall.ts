@@ -6,7 +6,6 @@ import values from "lodash/values";
 import { isDevelopment } from "config/env";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { promiseWithResolvers } from "lib/utils";
 
 import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import uniqueId from "lodash/uniqueId";
@@ -156,7 +155,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   let requestCallsCount = 0;
   let resolvedCallsCount = 0;
 
-  const { promise, resolve } = promiseWithResolvers<MulticallResult<any>>();
+  const { promise, resolve } = Promise.withResolvers<MulticallResult<any>>();
 
   const callResultHandler: CallResultHandler = (destination, callResult, callError) => {
     resolvedCallsCount++;

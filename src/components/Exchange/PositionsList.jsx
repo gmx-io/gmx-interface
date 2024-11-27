@@ -469,10 +469,10 @@ export default function PositionsList(props) {
               <Trans>Position</Trans>
             </th>
             <th>
-              <Trans>Net Value</Trans>
+              <Trans>Size</Trans>
             </th>
             <th>
-              <Trans>Size</Trans>
+              <Trans>Net Value</Trans>
             </th>
             <th>
               <Trans>Collateral</Trans>
@@ -582,22 +582,6 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td>
-                  <div>{position.netValue ? <NetValueTooltip position={position} /> : t`Opening...`}</div>
-
-                  {position.deltaStr && (
-                    <div
-                      className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
-                        positive: hasPositionProfit && positionDelta > 0,
-                        negative: !hasPositionProfit && positionDelta > 0,
-                        muted: positionDelta == 0n,
-                      })}
-                      onClick={openSettings}
-                    >
-                      {position.deltaStr} ({position.deltaPercentageStr})
-                    </div>
-                  )}
-                </td>
-                <td>
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                   {positionOrders.length > 0 && (
                     <div
@@ -643,6 +627,22 @@ export default function PositionsList(props) {
                           );
                         }}
                       />
+                    </div>
+                  )}
+                </td>
+                <td>
+                  <div>{position.netValue ? <NetValueTooltip position={position} /> : t`Opening...`}</div>
+
+                  {position.deltaStr && (
+                    <div
+                      className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
+                        positive: hasPositionProfit && positionDelta > 0,
+                        negative: !hasPositionProfit && positionDelta > 0,
+                        muted: positionDelta == 0n,
+                      })}
+                      onClick={openSettings}
+                    >
+                      {position.deltaStr} ({position.deltaPercentageStr})
                     </div>
                   )}
                 </td>

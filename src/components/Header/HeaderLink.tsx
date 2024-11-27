@@ -1,11 +1,12 @@
-import React, { MouseEventHandler, ReactNode } from "react";
-import { NavLink, NavLinkProps } from "react-router-dom";
 import cx from "classnames";
 import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
+import { MouseEventHandler, ReactNode } from "react";
+import { NavLink, NavLinkProps } from "react-router-dom";
 
-import "./Header.scss";
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+import "./Header.scss";
 
 type Props = {
   isHomeLink?: boolean;
@@ -51,11 +52,14 @@ export function HeaderLink({
       );
     } else {
       const baseUrl = getAppBaseUrl();
-      return (
-        <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to} onClick={onClick}>
+
+      const LinkComponent = (
+        <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to}>
           {children}
         </a>
       );
+
+      return onClick ? <TrackingLink onClick={onClick}>{LinkComponent}</TrackingLink> : LinkComponent;
     }
   }
 

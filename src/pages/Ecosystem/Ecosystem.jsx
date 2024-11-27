@@ -689,7 +689,7 @@ export default function Ecosystem() {
               );
             })}
           </div>
-          <div className="mt-16">
+          <div className="text-body-large mt-16">
             <Trans>
               GMX uses TradingView to provide real-time cryptocurrency charts, so you can easily follow{" "}
               <ExternalLink href="https://www.tradingview.com/symbols/BTCUSD/">BTCUSD</ExternalLink> price in real-time,

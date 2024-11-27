@@ -43,7 +43,7 @@
 }
 
 .chart-token-menu-items .menu-item {
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   height: 3.4rem;
   color: var(--color-slate-100);
 }
@@ -56,7 +56,7 @@
   table {
     width: 100%;
     text-align: left;
-    font-size: var(--font-sm);
+    font-size: var(--font-size-body-small);
     border-collapse: collapse;
   }
   thead {

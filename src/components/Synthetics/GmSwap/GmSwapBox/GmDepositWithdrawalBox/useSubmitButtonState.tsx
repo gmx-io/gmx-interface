@@ -47,6 +47,7 @@ interface Props {
   selectedMarketForGlv?: string;
   isMarketTokenDeposit?: boolean;
   marketsInfoData?: MarketsInfoData;
+  selectedMarketInfoForGlv?: MarketInfo;
 }
 
 const processingTextMap = {
@@ -78,6 +79,7 @@ export const useSubmitButtonState = ({
   marketTokensData,
   executionFee,
   selectedMarketForGlv,
+  selectedMarketInfoForGlv,
   isHighFeeConsentError,
   glvInfo,
   isMarketTokenDeposit,
@@ -98,6 +100,8 @@ export const useSubmitButtonState = ({
     shortTokenUsd = 0n,
   } = amounts ?? {};
 
+  const isFirstBuy = Object.values(marketTokensData ?? {}).every((marketToken) => marketToken.balance === 0n);
+
   const { isSubmitting, onSubmit } = useDepositWithdrawalTransactions({
     marketInfo,
     marketToken,
@@ -108,12 +112,16 @@ export const useSubmitButtonState = ({
     shortTokenAmount,
     marketTokenAmount,
     glvTokenAmount,
+    glvTokenUsd,
     shouldDisableValidation,
     tokensData,
     executionFee,
     selectedMarketForGlv,
     glvInfo,
     isMarketTokenDeposit,
+    selectedMarketInfoForGlv,
+    marketTokenUsd,
+    isFirstBuy,
   });
 
   const onConnectAccount = useCallback(() => {

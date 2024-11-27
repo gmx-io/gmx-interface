@@ -78,13 +78,13 @@ export default function ChartTokenSelector(props: Props) {
                 "flex-row items-center": oneRowLabels,
               })}
             >
-              <span>
+              <span className="text-body-large">
                 {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                 {selectedToken.symbol} / USD
               </span>
               {poolName && (
                 <span
-                  className={cx("text-12 font-normal text-gray-300", {
+                  className={cx("text-body-small font-normal text-gray-300", {
                     "ml-8": oneRowLabels,
                   })}
                 >
@@ -169,12 +169,12 @@ function MarketsList(props: { options: Token[] | undefined }) {
     ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15")
     : "px-8 first-of-type:pl-16 last-of-type:pr-16";
   const thClassName = cx(
-    "sticky top-0 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
+    "text-body-medium sticky top-0 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
   const tdClassName = cx(
-    "cursor-pointer rounded-4 last-of-type:text-right hover:bg-cold-blue-900",
+    "text-body-medium cursor-pointer rounded-4 last-of-type:text-right hover:bg-cold-blue-900",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -406,7 +406,7 @@ function MarketListItem({
         </td>
         <td
           className={cx(
-            "w-full cursor-pointer rounded-4 hover:bg-cold-blue-900",
+            "text-body-medium w-full cursor-pointer rounded-4 hover:bg-cold-blue-900",
             rowVerticalPadding,
             rowHorizontalPadding
           )}
@@ -436,7 +436,7 @@ function MarketListItem({
       </td>
       <td
         className={cx(
-          "cursor-pointer rounded-4 pl-4 hover:bg-cold-blue-900",
+          "text-body-medium cursor-pointer rounded-4 pl-4 hover:bg-cold-blue-900",
           rowVerticalPadding,
           isSmallMobile ? "pr-6" : "pr-8"
         )}
