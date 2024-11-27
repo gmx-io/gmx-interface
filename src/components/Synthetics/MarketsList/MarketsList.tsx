@@ -68,7 +68,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
       </div>
       <TableScrollFadeContainer>
         <table className="w-[max(100%,900px)]">
-          <thead>
+          <thead className="text-body-large">
             <TableTheadTr bordered>
               <TableTh>
                 <Trans>MARKETS</Trans>
@@ -210,7 +210,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
               />
             </div>
             <div>
-              <div className="App-card-info-title">{marketIndexName}</div>
+              <div className="text-body-large">{marketIndexName}</div>
             </div>
             <div>
               <AssetDropdown token={stats.token} />

@@ -272,11 +272,15 @@ export type SwapMetricData = {
   executionFee: number | undefined;
   allowedSlippage: number | undefined;
   orderType: OrderType | undefined;
+  isFirstOrder: boolean | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   metricId: `position:${string}`;
   metricType: "increasePosition" | "limitOrder";
+  leverage: string | undefined;
+  isFirstOrder: boolean | undefined;
+  isLeverageEnabled: boolean | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
@@ -293,6 +297,8 @@ export type PositionOrderMetricParams = {
   hasReferralCode: boolean | undefined;
   marketAddress: string | undefined;
   marketName: string | undefined;
+  marketIndexName: string | undefined;
+  marketPoolName: string | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
@@ -337,6 +343,8 @@ export type SwapGmMetricData = {
   longTokenAmount: number | undefined;
   shortTokenAmount: number | undefined;
   marketTokenAmount: number | undefined;
+  marketTokenUsd: number | undefined;
+  isFirstBuy: boolean | undefined;
 };
 
 export type ShiftGmMetricData = {
@@ -357,10 +365,13 @@ export type SwapGLVMetricData = {
   initialShortTokenAddress: string | undefined;
   glvAddress: string | undefined;
   selectedMarketForGlv: string | undefined;
+  marketName: string | undefined;
   executionFee: number | undefined;
   longTokenAmount: number | undefined;
   shortTokenAmount: number | undefined;
   glvTokenAmount: number | undefined;
+  glvTokenUsd: number | undefined;
+  isFirstBuy: boolean | undefined;
 };
 
 export type ErrorMetricData = {

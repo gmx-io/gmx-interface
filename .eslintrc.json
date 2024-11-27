@@ -4,7 +4,8 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "plugin:react/recommended",
-    "plugin:react-perf/recommended"
+    "plugin:react-perf/recommended",
+    "plugin:es-x/restrict-to-es2017"
   ],
   "plugins": ["eslint-plugin-local-rules"],
   "rules": {
@@ -51,6 +52,28 @@
     "react/display-name": "off",
     "local-rules/no-bigint-negation": "off",
     "local-rules/no-logical-bigint": "off",
+
+    "es-x/no-bigint": "off",
+    "es-x/no-optional-chaining": "off",
+    "es-x/no-import-meta": "off",
+    "es-x/no-dynamic-import": "off",
+    "es-x/no-class-instance-fields": "off",
+    "es-x/no-class-static-fields": "off",
+    "es-x/no-nullish-coalescing-operators": "off",
+    "es-x/no-global-this": "off",
+    "es-x/no-numeric-separators": "off",
+    "es-x/no-rest-spread-properties": "off",
+    "es-x/no-regexp-named-capture-groups": "off",
+    // polyfills
+    "es-x/no-array-prototype-at": "off",
+    "es-x/no-array-prototype-flat": "off",
+    "es-x/no-object-fromentries": "off",
+    "es-x/no-promise-prototype-finally": "off",
+    "es-x/no-promise-any": "off",
+    "es-x/no-promise-all-settled": "off",
+    "es-x/no-promise-withresolvers": "off",
+    "es-x/no-array-prototype-findlast-findlastindex": "off",
+
     "no-restricted-imports": [
       "error",
       {
@@ -94,16 +117,6 @@
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]
-      }
-    },
-    {
-      "files": ["./sdk/**/*.ts", "./sdk/**/*.tsx", "./sdk/**/*.js", "./sdk/**/*.jsx"],
-      "rules": {
-        "local-rules/no-bigint-negation": "error",
-        "local-rules/no-logical-bigint": "error"
-      },
-      "parserOptions": {
-        "project": ["./sdk/tsconfig.json"]
       }
     },
     {

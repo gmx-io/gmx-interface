@@ -230,7 +230,7 @@ export class TVDataProvider {
         : await this.getTokenHistoryBars(chainId, ticker, period, periodParams);
 
       return bars.map(formatTimeInBarToMs) as FromOldToNewArray<Bar>;
-    } catch {
+    } catch (error) {
       throw new Error("Failed to get history bars");
     }
   }

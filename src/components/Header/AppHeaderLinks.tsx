@@ -9,6 +9,8 @@ import "./Header.scss";
 import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImg from "img/logo_GMX.svg";
+import { userAnalytics } from "lib/userAnalytics";
+import { ReferralTopMenuClickEvent } from "lib/userAnalytics/types";
 
 type Props = {
   small?: boolean;
@@ -55,7 +57,19 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink qa="referrals" to="/referrals" showRedirectModal={showRedirectModal}>
+        <HeaderLink
+          onClick={() => {
+            userAnalytics.pushEvent<ReferralTopMenuClickEvent>({
+              event: "ReferralCodeAction",
+              data: {
+                action: "ReferralTopMenuClick",
+              },
+            });
+          }}
+          qa="referrals"
+          to="/referrals"
+          showRedirectModal={showRedirectModal}
+        >
           <Trans>Referrals</Trans>
         </HeaderLink>
       </div>

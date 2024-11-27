@@ -3,7 +3,7 @@ import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { MarketInfo } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
@@ -83,6 +83,7 @@ export function initSwapMetricData({
   hasReferralCode,
   subaccount,
   allowedSlippage,
+  isFirstOrder,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -92,6 +93,7 @@ export function initSwapMetricData({
   allowedSlippage: number | undefined;
   hasReferralCode: boolean | undefined;
   subaccount: Subaccount | undefined;
+  isFirstOrder: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<SwapMetricData>({
     metricId: getSwapOrderMetricId({
@@ -115,6 +117,7 @@ export function initSwapMetricData({
     orderType,
     is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     requestId: getRequestId(),
+    isFirstOrder,
   });
 }
 
@@ -122,6 +125,7 @@ export function initIncreaseOrderMetricData({
   fromToken,
   increaseAmounts,
   hasExistingPosition,
+  leverage,
   executionFee,
   orderType,
   hasReferralCode,
@@ -129,9 +133,12 @@ export function initIncreaseOrderMetricData({
   triggerPrice,
   marketInfo,
   isLong,
+  isFirstOrder,
+  isLeverageEnabled,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
+  leverage: string | undefined;
   executionFee: ExecutionFee | undefined;
   orderType: OrderType;
   allowedSlippage: number | undefined;
@@ -141,6 +148,8 @@ export function initIncreaseOrderMetricData({
   marketInfo: MarketInfo | undefined;
   subaccount: Subaccount | undefined;
   isLong: boolean | undefined;
+  isFirstOrder: boolean | undefined;
+  isLeverageEnabled: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
@@ -159,6 +168,9 @@ export function initIncreaseOrderMetricData({
     hasExistingPosition,
     marketAddress: marketInfo?.marketTokenAddress,
     marketName: marketInfo?.name,
+    marketIndexName: marketInfo ? getMarketIndexName(marketInfo) : undefined,
+    marketPoolName: marketInfo ? getMarketPoolName(marketInfo) : undefined,
+    leverage,
     initialCollateralTokenAddress: fromToken?.address,
     initialCollateralSymbol: fromToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(increaseAmounts?.initialCollateralAmount, fromToken?.decimals),
@@ -170,6 +182,8 @@ export function initIncreaseOrderMetricData({
     isLong,
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
+    isFirstOrder,
+    isLeverageEnabled,
   });
 }
 
@@ -228,6 +242,8 @@ export function initDecreaseOrderMetricData({
     hasExistingPosition,
     marketAddress: marketInfo?.marketTokenAddress,
     marketName: marketInfo?.name,
+    marketIndexName: marketInfo ? getMarketIndexName(marketInfo) : undefined,
+    marketPoolName: marketInfo ? getMarketPoolName(marketInfo) : undefined,
     initialCollateralTokenAddress: collateralToken?.address,
     initialCollateralSymbol: collateralToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(
@@ -303,6 +319,8 @@ export function initGMSwapMetricData({
   longTokenAmount,
   shortTokenAmount,
   marketTokenAmount,
+  marketTokenUsd,
+  isFirstBuy,
 }: {
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
@@ -313,6 +331,8 @@ export function initGMSwapMetricData({
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   marketTokenAmount: bigint | undefined;
+  marketTokenUsd: bigint | undefined;
+  isFirstBuy: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<SwapGmMetricData>({
     metricId: getGMSwapMetricId({
@@ -329,6 +349,8 @@ export function initGMSwapMetricData({
     longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
     shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
     marketTokenAmount: formatAmountForMetrics(marketTokenAmount, marketToken?.decimals),
+    marketTokenUsd: formatAmountForMetrics(marketTokenUsd),
+    isFirstBuy,
   });
 }
 
@@ -337,24 +359,30 @@ export function initGLVSwapMetricData({
   shortToken,
   isDeposit,
   executionFee,
+  marketName,
   glvAddress,
   selectedMarketForGlv,
   glvTokenAmount,
   glvToken,
   longTokenAmount,
   shortTokenAmount,
+  glvTokenUsd,
+  isFirstBuy,
 }: {
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
   selectedMarketForGlv: string | undefined;
   isDeposit: boolean;
   executionFee: ExecutionFee | undefined;
+  marketName: string | undefined;
   glvAddress: string | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   marketTokenAmount: bigint | undefined;
   glvTokenAmount: bigint | undefined;
+  glvTokenUsd: bigint | undefined;
   glvToken: TokenData | undefined;
+  isFirstBuy: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<SwapGLVMetricData>({
     metricId: getGLVSwapMetricId({
@@ -367,10 +395,13 @@ export function initGLVSwapMetricData({
     initialShortTokenAddress: shortToken?.address,
     glvAddress,
     selectedMarketForGlv,
+    marketName,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
     shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
     glvTokenAmount: formatAmountForMetrics(glvTokenAmount, glvToken?.decimals),
+    glvTokenUsd: formatAmountForMetrics(glvTokenUsd),
+    isFirstBuy,
   });
 }
 

@@ -9,7 +9,7 @@
   }
 
   .Dropdown-current-arrow {
-    font-size: var(--font-sm);
+    font-size: var(--font-size-body-small);
     color: hsla(0, 0%, 100%, 0.7);
     margin-left: 1rem;
     margin-top: -2px;
@@ -22,7 +22,7 @@
   }
 
   .Dropdown-option {
-    font-size: var(--font-sm);
+    font-size: var(--font-size-body-small);
     height: 3.4rem;
     font-weight: 700;
   }
@@ -81,8 +81,8 @@
 }
 
 .Chart-header-value {
-  font-size: 14px;
-  line-height: 18px;
+  font-size: var(--font-size-body-medium);
+  line-height: var(--line-height-body-medium);
 }
 
 @media (max-width: 1100px) {

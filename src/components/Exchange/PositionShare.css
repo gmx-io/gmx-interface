@@ -62,7 +62,7 @@
 }
 
 .position-share .prices p.price {
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   font-weight: bold;
   margin-top: 0.25rem;
 }
