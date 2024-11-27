@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getIsFlagEnabled } from "config/ab";
 import { getExplorerUrl } from "config/chains";
 import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
@@ -104,20 +105,22 @@ export async function callContract(
           : await getGasPrice(cntrct.runner!.provider!, chainId);
       }
 
-      const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
-        txnInstance.gasLimit = gasLimit;
-      });
+      if (!getIsFlagEnabled("testRemoveGasRequests")) {
+        const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
+          txnInstance.gasLimit = gasLimit;
+        });
 
-      const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
-        if ("gasPrice" in gasPriceData) {
-          txnInstance.gasPrice = gasPriceData.gasPrice;
-        } else {
-          txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
-          txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
-        }
-      });
+        const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
+          if ("gasPrice" in gasPriceData) {
+            txnInstance.gasPrice = gasPriceData.gasPrice;
+          } else {
+            txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
+            txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
+          }
+        });
 
-      await Promise.all([gasLimitPromise, gasPriceDataPromise]);
+        await Promise.all([gasLimitPromise, gasPriceDataPromise]);
+      }
 
       if (opts.metricId) {
         sendOrderTxnSubmittedMetric(opts.metricId);
