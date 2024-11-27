@@ -1087,7 +1087,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   let { total: totalGmxStaked, avax: avaxStakedGmx, arbitrum: arbitrumStakedGmx } = useTotalGmxStaked();
 
-
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
@@ -1144,7 +1143,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   let stakedGmxSupplyUsd;
-  console.log("iszero", totalGmxStaked.isZero());
+
   if (!totalGmxStaked.isZero() && gmxPrice) {
     stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
   }
@@ -1197,6 +1196,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setStakeMethodName("stakeEsGmx");
   };
 
+  // eslint-disable-next-line no-unused-vars
   const showGmxVesterDepositModal = () => {
     let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount.sub(vestingData.gmxVester.vestedAmount);
     if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
@@ -1218,6 +1218,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setVesterDepositAddress(gmxVesterAddress);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const showGlpVesterDepositModal = () => {
     let remainingVestableAmount = vestingData.glpVester.maxVestableAmount.sub(vestingData.glpVester.vestedAmount);
     if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
@@ -1239,6 +1240,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setVesterDepositAddress(glpVesterAddress);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const showGmxVesterWithdrawModal = () => {
     if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount.eq(0)) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
@@ -1250,6 +1252,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setVesterWithdrawAddress(gmxVesterAddress);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const showGlpVesterWithdrawModal = () => {
     if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount.eq(0)) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);

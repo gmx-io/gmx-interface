@@ -1,19 +1,10 @@
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import {
-  BLAST_SEPOLIA_TESTNET,
-  MORPH_L2,
-  MORPH_MAINNET,
-  OPBNB_TESTNET,
-  OPTIMISM_MAINNET,
-  SEPOLIA_TESTNET,
-  getDynamicChain,
-} from "config/chains";
+import { MORPH_L2, MORPH_MAINNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getDynamicChain } from "config/chains";
 import * as React from "react";
 import { EthersExtension } from "@dynamic-labs/ethers-v5";
 
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { ThemeContext } from "./theme-provider";
-import { DYNAMIC_ENVIRONMENT_KEY } from "config/env";
 
 export interface ProvidersProps {
   children: React.ReactNode;

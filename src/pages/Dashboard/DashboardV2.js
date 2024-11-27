@@ -1,3 +1,4 @@
+/* */
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Trans, t } from "@lingui/macro";
@@ -35,7 +36,7 @@ import SEO from "components/Common/SEO";
 import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, AVALANCHE, getChainName, MORPH_L2, OPTIMISM_MAINNET, SEPOLIA_TESTNET } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, MORPH_L2 } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";

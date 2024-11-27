@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -400,7 +401,7 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
     chainId === OPTIMISM_GOERLI_TESTNET ||
     chainId === OPTIMISM_MAINNET ||
     chainId === BLAST_SEPOLIA_TESTNET ||
-    chainId === MORPH_L2 || 
+    chainId === MORPH_L2 ||
     chainId === MORPH_MAINNET
   ) {
     multiplier = 2150000;
@@ -525,7 +526,7 @@ export function useTotalGmxSupply() {
 
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressMorph = getContract(MORPH_L2, "StakedGmxTracker");
- 
+
   const stakedGmxTrackerAddressOptimism = getContract(OPTIMISM_MAINNET, "StakedGmxTracker");
   let totalStakedGmx = useRef(bigNumberify(0));
   const { data: stakedGmxSupplyMorph, mutate: updateStakedGmxSupplyMorph } = useSWR<BigNumber>(

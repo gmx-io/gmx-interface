@@ -29,6 +29,7 @@ export default function useAccountType() {
       const type = code === "0x" ? AccountType.EOA : AccountType.CONTRACT;
       setContractType(type);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, active]);
 
   return contractType;

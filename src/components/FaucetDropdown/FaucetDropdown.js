@@ -56,14 +56,15 @@ function FaucetDropdown() {
     };
 
     getToken();
-  }, [chainId, TMX_FAUCET]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId]);
 
   function mint(tokenSymbol) {
     let ethamount;
     if (active) {
       if (tokenSymbol === "WBTC") {
         ethamount = new BN(0.1).times(1e8).toString();
-      } else if (tokenSymbol != "TMX") {
+      } else if (tokenSymbol !== "TMX") {
         const token = getTokenBySymbol(chainId, tokenSymbol);
         ethamount = (amount * 10 ** token.decimals).toLocaleString("fullwide", {
           useGrouping: false,
@@ -156,7 +157,7 @@ function FaucetDropdown() {
             }
             helperToast.error(failMsg);
           });
-      } else if (tokenSymbol != "TMX") {
+      } else if (tokenSymbol !== "TMX") {
         const token = getTokenBySymbol(chainId, tokenSymbol);
 
         const contract = new ethers.Contract(token.address, Token.abi, signer);

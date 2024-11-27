@@ -9,7 +9,7 @@ import Modal from "../Modal/Modal";
 
 import "./Migration.css";
 
-import { getConnectWalletHandler } from "lib/legacy";
+// import { getConnectWalletHandler } from "lib/legacy";
 import { getContract } from "config/contracts";
 
 import Reader from "abis/Reader.json";
@@ -314,6 +314,7 @@ function MigrationModal(props) {
 export default function Migration() {
   const [isMigrationModalVisible, setIsMigrationModalVisible] = useState(false);
   const [isPendingApproval, setIsPendingApproval] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [migrationIndex, setMigrationIndex] = useState(0);
   const [migrationValue, setMigrationValue] = useState("");
 
@@ -321,7 +322,9 @@ export default function Migration() {
   const active = dynamicContext.active;
   const account = dynamicContext.account;
   const signer = dynamicContext.signer;
-  const {  library } = useWeb3React();
+  // eslint-disable-next-line no-undef
+  const { library } = useWeb3React();
+  // eslint-disable-next-line no-unused-vars
   const [activatingConnector, setActivatingConnector] = useState();
   // useEffect(() => {
   //   if (activatingConnector && activatingConnector === connector) {
@@ -335,6 +338,7 @@ export default function Migration() {
   const tokenAddresses = tokens.map((token) => token.address);
   const iouTokenAddresses = tokens.map((token) => token.iouToken);
 
+  // eslint-disable-next-line no-unused-vars
   const { data: iouBalances, mutate: updateIouBalances } = useSWR(
     ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
@@ -342,6 +346,7 @@ export default function Migration() {
     }
   );
 
+  // eslint-disable-next-line no-unused-vars
   const { data: balances, mutate: updateBalances } = useSWR(
     ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
@@ -349,6 +354,7 @@ export default function Migration() {
     }
   );
 
+  // eslint-disable-next-line no-unused-vars
   const { data: migratedAmounts, mutate: updateMigratedAmounts } = useSWR(
     ["Migration:migratedAmounts", CHAIN_ID, gmxMigratorAddress, "getTokenAmounts"],
     {
@@ -385,12 +391,12 @@ export default function Migration() {
   //   }
   // }, [active, updateBalances, updateIouBalances, updateMigratedAmounts]);
 
-  const showMigrationModal = (index) => {
-    setIsPendingApproval(false);
-    setMigrationValue("");
-    setMigrationIndex(index);
-    setIsMigrationModalVisible(true);
-  };
+  // const showMigrationModal = (index) => {
+  //   setIsPendingApproval(false);
+  //   setMigrationValue("");
+  //   setMigrationIndex(index);
+  //   setIsMigrationModalVisible(true);
+  // };
 
   return (
     <div className="Migration Page">

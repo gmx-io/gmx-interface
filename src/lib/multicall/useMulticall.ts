@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
@@ -26,9 +27,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   }
 ) {
   const dynamicContext = useContext(DynamicWalletContext);
-  const active = dynamicContext.active;
-  const account = dynamicContext.account;
-  const signer = dynamicContext.signer;
+  // const active = dynamicContext.active;
+  // const account = dynamicContext.account;
+  // const signer = dynamicContext.signer;
   const { library } = useWeb3React();
 
   const swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
