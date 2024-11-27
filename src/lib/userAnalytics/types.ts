@@ -85,13 +85,6 @@ export type DisconnectWalletEvent = {
   };
 };
 
-export type TradeBoxMarketSelectedEvent = {
-  event: "TradeBoxAction";
-  data: {
-    action: "MarketSelected";
-  };
-};
-
 export type TradeBoxInteractionStartedEvent = {
   event: "TradeBoxAction";
   data: {
