@@ -19,6 +19,7 @@ const sdk = new GmxSdk({
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   walletClient: useWallet().walletClient,
   subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
+  subgraphUrl: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
 });
 
 const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
@@ -72,9 +73,7 @@ interface GmxSdkConfig {
   chainId: number;
   rpcUrl: string;
   oracleUrl: string;
-  subgraph: {
-    subsquid?: string;
-  };
+  subsquidUrl?: string;
   account?: string;
   publicClient: PublicClient;
   walletClient: WalletClient;

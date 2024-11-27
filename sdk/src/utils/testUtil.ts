@@ -19,6 +19,7 @@ export const arbitrumSdkConfig = {
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   walletClient: client,
   subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum:live/api/graphql",
+  subgraphUrl: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
 };
 
 export const arbitrumSdk = new GmxSdk(arbitrumSdkConfig);

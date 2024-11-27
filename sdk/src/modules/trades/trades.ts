@@ -100,7 +100,7 @@ export async function fetchTradeActions({
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
 }): Promise<TradeAction[]> {
-  const endpoint = sdk.config.subsquidUrl;
+  const endpoint = sdk.config.subgraphUrl;
   const chainId = sdk.chainId;
 
   if (!endpoint) {
