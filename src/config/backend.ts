@@ -1,4 +1,14 @@
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, BLAST_SEPOLIA_TESTNET, MAINNET, MORPH_L2, OPTIMISM_MAINNET, SEPOLIA_TESTNET } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  AVALANCHE,
+  BLAST_SEPOLIA_TESTNET,
+  MAINNET,
+  MORPH_L2,
+  MORPH_MAINNET,
+  OPTIMISM_MAINNET,
+  SEPOLIA_TESTNET,
+} from "./chains";
 
 export const GMX_STATS_API_URL = "https://t3.finance/#/dashboard"; // TODO - launch stats api
 export const TF_TV_DATAFEED_API = "https://t3-tv-datafeed.fly.dev";
@@ -13,7 +23,8 @@ const BACKEND_URLS = {
   [SEPOLIA_TESTNET]: "https://t3-trade-history-sepolia-jy22.onrender.com",
   [OPTIMISM_MAINNET] : "https://t3-trade-history-api.onrender.com",
   [BLAST_SEPOLIA_TESTNET]: "https://t3-trade-history-blast-sepolia-9dfi.onrender.com",
-  [MORPH_L2] : "https://t3-trade-history-blast-sepolia-9dfi.onrender.com"
+  [MORPH_L2]: "https://t3-trade-history-blast-sepolia-9dfi.onrender.com",
+  [MORPH_MAINNET]: "https://t3-trade-history-api-morph-mainnet.onrender.com",
 };
 
 export function getServerBaseUrl(chainId: number) {
