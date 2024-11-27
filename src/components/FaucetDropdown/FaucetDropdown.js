@@ -20,7 +20,6 @@ function FaucetDropdown() {
   const active = dynamicContext.active;
   const account = dynamicContext.account;
   const signer = dynamicContext.signer;
-  // const { active, account, library } = useWeb3React();
   const { chainId } = useDynamicChainId();
 
   const txmContractAddress = "0x98e9944fdF31890F5823f351B4797e97C5f86088";
@@ -57,7 +56,7 @@ function FaucetDropdown() {
     };
 
     getToken();
-  }, [chainId]);
+  }, [chainId, TMX_FAUCET]);
 
   function mint(tokenSymbol) {
     let ethamount;

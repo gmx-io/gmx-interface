@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getLeaderboardLink } from "config/links";
 import cx from "classnames";
-import { useChainId, useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 
 export default function UsefulLinks({ className }) {
   const { chainId } = useDynamicChainId();

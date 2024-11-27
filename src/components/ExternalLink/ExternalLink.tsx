@@ -6,12 +6,12 @@ type Props = {
   href: string;
   children: React.ReactNode;
   className?: string;
-};
+} & React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-function ExternalLink({ href, children, className }: Props) {
+function ExternalLink({ href, children, className, ...props }: Props) {
   const classNames = cx("link-underline", className);
   return (
-    <a href={href} className={classNames} target="_blank" rel="noopener noreferrer">
+    <a href={href} className={classNames} target="_blank" rel="noopener noreferrer" {...props}>
       {children}
     </a>
   );

@@ -69,7 +69,7 @@
 }
 
 .App-header-drawer {
-  background: #17182c88 0% 0% no-repeat padding-box;
+  background: #0c100f 0% 0% no-repeat padding-box;
   box-shadow: 0.8rem 0.3rem 0.6rem #00000029;
   opacity: 1;
   backdrop-filter: blur(2.7rem);
@@ -105,6 +105,19 @@
 }
 #light .App-header-link-container a {
   color: black;
+}
+
+.App-header-link-container a {
+  color: rgb(77, 83, 134) !important;
+}
+
+.App-header-link-container a.active {
+  color: white !important;
+}
+
+.App-header-drawer .App-header-link-container .a {
+  display: flex;
+  width: 100%;
 }
 
 .App-header-drawer .App-header-link-container .a:hover,
@@ -404,7 +417,7 @@
   --dynamic-badge-color: #ff7028;
   --dynamic-badge-dot-background: #ff7028;
   --dynamic-badge-background: #ffede5;
-  --dynamic-brand-primary-color : #ff7028;
+  --dynamic-brand-primary-color: #ff7028;
   --dynamic-footer-icon-color: #ff7028;
   margin-left: 10px;
 }
