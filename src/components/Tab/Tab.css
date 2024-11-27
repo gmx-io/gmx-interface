@@ -5,14 +5,14 @@
   border-radius: 3px;
   overflow: hidden;
   color: #ffffff;
-  background: #1A1C2C;
+  background: #1a1c2c;
   /* background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%); */
   /* box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01); */
 }
 
 #light .Tab.block {
-  background: #EEEEF0;
-  color :#000000;
+  background: #eeeef0;
+  color: #000000;
 }
 
 .Tab-option-icon {
@@ -21,7 +21,7 @@
   filter: invert(1);
 }
 
-#light .Tab-option-icon{
+#light .Tab-option-icon {
   filter: invert(0);
 }
 
@@ -41,13 +41,13 @@
 .Tab.block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: #292B3F;
+  background: #292b3f;
   color: #ffffff;
 }
 
 #light .Tab-option.active {
-  background: #E1E2E5;
-  color : #000000
+  background: #e1e2e5;
+  color: #000000;
 }
 
 .Tab.block .Tab-option.active .Tab-option-icon {
@@ -72,7 +72,7 @@
   font-size: var(--font-base);
 }
 
-#light .Tab.inline .Tab-option{
+#light .Tab.inline .Tab-option {
   background: none;
 }
 

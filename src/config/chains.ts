@@ -305,7 +305,7 @@ export const DYNAMIC_NETWORK_METADATA: DynamicWalletNetworkMetadata[] = [
     nativeCurrency: {
       name: "BNB",
       symbol: "BNB",
-    decimals: 18,
+      decimals: 18,
     },
     networkId: MAINNET,
     rpcUrls: RPC_PROVIDERS[MAINNET],

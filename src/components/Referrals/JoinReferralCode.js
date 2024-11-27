@@ -42,7 +42,7 @@ export function ReferralCodeForm({
   const account = dynamicContext.account;
   const signer = dynamicContext.signer;
   const chainId = useDynamicChainId();
-  
+
   const [referralCode, setReferralCode] = useState("");
   const inputRef = useRef("");
   const [isValidating, setIsValidating] = useState(false);

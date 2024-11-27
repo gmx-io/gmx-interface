@@ -18,9 +18,9 @@ import avaIcon from "img/ic_avalanche_96.svg";
 
 import { Trans, t } from "@lingui/macro";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { callContract,  dynamicContractFetcher } from "lib/contracts";
+import { callContract, dynamicContractFetcher } from "lib/contracts";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
@@ -128,15 +128,11 @@ function getVestingValues({ minRatio, amount, vestingDataItem }) {
 }
 
 export default function ClaimEsGmx({ setPendingTxns }) {
-  
-
-
   const dynamicContext = useContext(DynamicWalletContext);
   const active = dynamicContext.active;
   const account = dynamicContext.account;
   const signer = dynamicContext.signer;
-  
-  
+
   const { chainId } = useDynamicChainId();
   const [selectedOption, setSelectedOption] = useState("");
   const [isClaiming, setIsClaiming] = useState(false);

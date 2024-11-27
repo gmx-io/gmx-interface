@@ -640,10 +640,10 @@ table.Exchange-list th {
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
 }
 
-#light .Exchange-swap-section{
+#light .Exchange-swap-section {
   background: none;
-  border :#E9E9E9 solid;
-  color : #000000;
+  border: #e9e9e9 solid;
+  color: #000000;
   border-radius: 6px;
 }
 
@@ -757,7 +757,7 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: #FF7028;
+  background: #ff7028;
   display: flex;
   justify-content: center;
   align-items: center;

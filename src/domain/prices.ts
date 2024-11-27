@@ -78,7 +78,7 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
   }
 
   // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
-  const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&limit=${limit}`
+  const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&limit=${limit}`;
 
   try {
     const response = await fetch(url);
@@ -98,7 +98,7 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
 }
 
 function formatCustomBarData(bar) {
-  const { time : t, open, close, high, low } = bar;
+  const { time: t, open, close, high, low } = bar;
   return {
     time: t + timezoneOffset,
     open,
@@ -108,16 +108,14 @@ function formatCustomBarData(bar) {
   };
 }
 
-
 export async function getChartPricesFromStats(chainId, symbol, period) {
   symbol = getNormalizedTokenSymbol(symbol);
 
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
- // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+  // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
 
- const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&from=${from}`
-
+  const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&from=${from}`;
 
   const TIMEOUT = 60000;
   const res: Response = await new Promise(async (resolve, reject) => {

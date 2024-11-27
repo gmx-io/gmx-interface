@@ -42,7 +42,7 @@ import Tab from "components/Tab/Tab";
 import Footer from "components/Footer/Footer";
 
 import "./Swap.css";
-import {  dynamicContractFetcher } from "lib/contracts";
+import { dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
@@ -387,7 +387,7 @@ export const SwapBox = forwardRef((props, ref) => {
   const signer = dynamicContext.signer;
   // const [active, setActive] = useState(false);
   // const [account, setAccount] = useState(null);
-   const { primaryWallet } = useDynamicContext();
+  const { primaryWallet } = useDynamicContext();
   // const [web3Provider, setWeb3Provider] = useState(null);
   // useEffect(() => {
   //   const fetchProvider = async () => {

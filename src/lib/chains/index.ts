@@ -7,7 +7,7 @@ import { DynamicWalletContext } from "store/dynamicwalletprovider";
 export function useDynamicChainId() {
   const { primaryWallet } = useDynamicContext();
   const walletContext = useContext(DynamicWalletContext);
-  
+
   if (primaryWallet && primaryWallet.connected && walletContext.chainId) {
     return { chainId: walletContext.chainId };
   }

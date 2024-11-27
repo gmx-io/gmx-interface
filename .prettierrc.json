@@ -1,6 +1,5 @@
 {
   "semi": true,
   "singleQuote": false,
-  "printWidth": 120,
-  "editor.formatOnSave": true
+  "printWidth": 120
 }

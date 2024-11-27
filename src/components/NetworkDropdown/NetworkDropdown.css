@@ -11,11 +11,10 @@
 }
 
 #light .App-header-network {
-  color : #000000 !important;
+  color: #000000 !important;
   /* border : #D7D8D9 2px solid; */
   border-radius: 10px !important;
 }
-
 
 .App-header-language {
   margin-left: 0;
@@ -105,7 +104,7 @@
 }
 
 #light .network-option {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .network-option:last-child {
@@ -123,8 +122,8 @@
   color: #fff;
 }
 
-#light .network-option span{
-  color : #000000;
+#light .network-option span {
+  color: #000000;
 }
 
 .network-option-img-label {

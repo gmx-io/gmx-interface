@@ -8,7 +8,6 @@ import { getTokenInfo } from "domain/tokens/utils";
 import Button from "components/Button/Button";
 import useSWR from "swr";
 
-
 import Token from "abis/Token.json";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 import { dynamicApprovePlugin } from "domain/legacy";
@@ -24,7 +23,7 @@ export default function ApproveTokenInput(props) {
   const dynamicContext = useContext(DynamicWalletContext);
   const active = dynamicContext.active;
   const account = dynamicContext.account;
- // const { active, account } = useWeb3React();
+  // const { active, account } = useWeb3React();
 
   const onApproveValueChange = (e) => {
     const inputValue = e.target.value;

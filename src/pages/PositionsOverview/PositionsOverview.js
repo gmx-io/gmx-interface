@@ -6,7 +6,7 @@ import { USD_DECIMALS } from "lib/legacy";
 
 import "./PositionsOverview.css";
 import { formatAmount } from "lib/numbers";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { getTimeRemaining } from "lib/dates";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
 import { useContext } from "react";
@@ -14,9 +14,9 @@ import { useContext } from "react";
 export default function PositionsOverview() {
   const { chainId } = useDynamicChainId();
   const dynamicContext = useContext(DynamicWalletContext);
- 
+
   const signer = dynamicContext.signer;
- // const { library } = useWeb3React();
+  // const { library } = useWeb3React();
 
   const positions = useAllPositions(chainId, signer);
 

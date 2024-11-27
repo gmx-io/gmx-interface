@@ -22,11 +22,11 @@
   padding-right: 0.8rem;
   margin-top: 1.5rem;
   margin-bottom: 1.05rem;
-  color : #ffffff;
+  color: #ffffff;
 }
 
 #light .Exchange-list-tab-container {
-  color : #000000;
+  color: #000000;
 }
 
 .Exchange-should-show-position-lines {
@@ -266,8 +266,6 @@
   position: relative;
   height: 49.6rem;
 }
-
-
 
 .ExchangeChart-main-price {
   font-size: 1.7rem;
@@ -706,7 +704,7 @@ table.Exchange-list th {
 }
 
 #light .Exchange-swap-max {
-  outline : none;
+  outline: none;
   background: #ff7028;
 }
 
@@ -749,8 +747,6 @@ input.Exchange-swap-input.small {
   z-index: 1;
 }
 
-
-
 .Exchange-swap-ball-icon {
   text-align: center;
   display: block;
@@ -759,8 +755,8 @@ input.Exchange-swap-input.small {
   opacity: 0.7;
 }
 
-#light .Exchange-swap-ball-icon{
-  fill : #FFFFFF;
+#light .Exchange-swap-ball-icon {
+  fill: #ffffff;
 }
 
 .Exchange-swap-ball {
@@ -773,14 +769,14 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: #FF7028;
+  background: #ff7028;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #light .Exchange-swap-ball {
-  background: #FF7028;
+  background: #ff7028;
 }
 
 /* .Exchange-swap-ball:hover {

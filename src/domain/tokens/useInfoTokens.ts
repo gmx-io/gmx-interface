@@ -1,6 +1,6 @@
 import { getContract } from "config/contracts";
 import useSWR from "swr";
-import {  dynamicContractFetcher } from "lib/contracts";
+import { dynamicContractFetcher } from "lib/contracts";
 import VaultReader from "abis/VaultReader.json";
 import {
   BASIS_POINTS_DIVISOR,
@@ -18,7 +18,7 @@ import { getTokens, getWhitelistedTokens } from "config/tokens";
 import { getSpread } from "./utils";
 
 export function useInfoTokens(
-  library:  undefined | any,
+  library: undefined | any,
   chainId: number,
   active: boolean,
   tokenBalances?: BigNumber[],
@@ -34,7 +34,6 @@ export function useInfoTokens(
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
-  
   const { data: vaultTokenInfo } = useSWR<BigNumber[], any>(
     [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {

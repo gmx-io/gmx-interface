@@ -22,7 +22,7 @@ import {
   getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
-import {  useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
+import { useExecutionFee, cancelMultipleOrders, dynamicApprovePlugin } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 
@@ -43,14 +43,14 @@ import Tab from "components/Tab/Tab";
 import Footer from "components/Footer/Footer";
 
 import "./Exchange.css";
-import {  dynamicContractFetcher } from "lib/contracts";
+import { dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { DynamicWalletContext } from "store/dynamicwalletprovider";
@@ -474,7 +474,6 @@ export const Exchange = forwardRef((props, ref) => {
     [tokenSelection, setTokenSelection]
   );
 
-  
   const setMarket = (selectedSwapOption, toTokenAddress) => {
     setSwapOption(selectedSwapOption);
     const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));

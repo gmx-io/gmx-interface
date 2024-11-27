@@ -29,8 +29,7 @@ code {
 }
 
 #light input {
-  color : #000000;
- 
+  color: #000000;
 }
 
 input {
@@ -58,7 +57,7 @@ input {
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
-  --primary-btn-bg: #FF7028;
+  --primary-btn-bg: #ff7028;
   --primary-btn-hover: #4f60fc;
   --primary-btn-active: #5f6ffd;
   --dark-blue-hover: #808aff14;
@@ -189,9 +188,8 @@ td {
   color: white;
 }
 
-
 #light .text-white {
-  color : #000000;
+  color: #000000;
 }
 
 .label,
@@ -201,7 +199,7 @@ td {
 
 #light .label,
 .label a {
-  color : #000000;
+  color: #000000;
 }
 
 ul {
@@ -222,7 +220,7 @@ a.plain {
 }
 
 .default-btn {
-  background: #FF7028;
+  background: #ff7028;
   border-radius: 4px;
   font-size: var(--font-sm);
   line-height: 2rem;

@@ -1,1 +1,622 @@
-<h1 style="color: rgb(70, 121, 254); font-size: 24px; text-align: center;">Dynamic Doctor Report</h1><fieldset><legend style="font-weight: bold;">Basic Data</legend><div style="margin-bottom: 10px;"><span style="display: inline-block; width: 150px;">framework:</span><span style="display: inline-block; margin-left: 10px; width: 50px;">react</span><span style="margin-left: 10px;">17.0.2</span></div><div style="margin-bottom: 10px;"><span style="display: inline-block; width: 150px;">node:</span><span style="display: inline-block; margin-left: 10px; width: 50px;">node</span><span style="margin-left: 10px;">16.20.2</span></div><div style="margin-bottom: 10px;"><span style="display: inline-block; width: 150px;">packageManager:</span><span style="display: inline-block; margin-left: 10px; width: 50px;">npm</span><span style="margin-left: 10px;">8.19.4</span></div><div style="margin-bottom: 10px;"><span style="display: inline-block; width: 150px;">platform:</span><span style="display: inline-block; margin-left: 10px; width: 50px;">darwin</span><span style="margin-left: 10px;">arm64</span></div></fieldset><hr/><h2>Found issues</h2><hr/><h2>Config files</h2><fieldset><legend style="font-weight: bold;">./package.json</legend><code><div><span>{</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;name&quot;: &quot;gambit-interface&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;version&quot;: &quot;0.1.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;private&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;dependencies&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@apollo/client&quot;: &quot;3.5.6&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@davatar/react&quot;: &quot;1.8.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@dynamic-labs/ethereum&quot;: &quot;^1.4.4&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@dynamic-labs/ethers-v5&quot;: &quot;^1.4.4&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@dynamic-labs/sdk-react-core&quot;: &quot;^1.4.4&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@ethersproject/providers&quot;: &quot;5.5.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@ethersproject/units&quot;: &quot;5.5.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@headlessui/react&quot;: &quot;1.6.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@lingui/core&quot;: &quot;3.13.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@lingui/react&quot;: &quot;3.13.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@supabase/supabase-js&quot;: &quot;^2.25.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@testing-library/jest-dom&quot;: &quot;5.16.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@testing-library/react&quot;: &quot;11.2.7&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@testing-library/user-event&quot;: &quot;12.8.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@types/node&quot;: &quot;18.7.13&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@types/react&quot;: &quot;18.0.17&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@types/react-dom&quot;: &quot;18.0.6&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@types/react-router-dom&quot;: &quot;5.3.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@uniswap/sdk-core&quot;: &quot;3.0.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@uniswap/v3-sdk&quot;: &quot;3.7.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@web3-react/core&quot;: &quot;6.1.9&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@web3-react/injected-connector&quot;: &quot;6.0.7&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@web3-react/walletconnect-connector&quot;: &quot;6.2.8&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;axios&quot;: &quot;^1.4.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;bigdecimal&quot;: &quot;0.6.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;bignumber.js&quot;: &quot;^9.0.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;classnames&quot;: &quot;2.3.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;date-fns&quot;: &quot;2.27.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;env-cmd&quot;: &quot;^10.1.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;eth-testing&quot;: &quot;1.9.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;ethereum-multicall&quot;: &quot;2.15.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;ethers&quot;: &quot;5.6.8&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;framer-motion&quot;: &quot;4.1.17&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;graphql&quot;: &quot;15.8.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;hex-to-rgba&quot;: &quot;2.0.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;html-to-image&quot;: &quot;^1.10.8&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;krasulya-lightweight-charts&quot;: &quot;3.4.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lodash&quot;: &quot;4.17.21&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;qrcode.react&quot;: &quot;^3.1.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;rc-slider&quot;: &quot;9.7.5&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react&quot;: &quot;17.0.2&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-confetti&quot;: &quot;^6.1.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-dom&quot;: &quot;17.0.2&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-helmet&quot;: &quot;6.1.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-hot-toast&quot;: &quot;2.2.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-icons&quot;: &quot;4.3.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-otp-input&quot;: &quot;^3.1.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-remove-scroll&quot;: &quot;2.5.5&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-router-dom&quot;: &quot;5.3.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-scripts&quot;: &quot;4.0.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-select&quot;: &quot;5.2.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-tabs&quot;: &quot;3.2.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-toastify&quot;: &quot;6.0.9&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-use&quot;: &quot;17.3.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;reactour&quot;: &quot;^1.19.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;recharts&quot;: &quot;2.1.8&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;sass&quot;: &quot;^1.55.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;serve&quot;: &quot;^14.2.1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;styled-components&quot;: &quot;^4.0.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;swr&quot;: &quot;0.4.2&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;typescript&quot;: &quot;4.7.4&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;use-immer&quot;: &quot;^0.9.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;viem&quot;: &quot;1&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;web-vitals&quot;: &quot;1.1.2&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;resolutions&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-error-overlay&quot;: &quot;6.0.9&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;scripts&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;start&quot;: &quot;PORT=3010 env-cmd -f .env react-scripts start&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;start-home&quot;: &quot;yarn lingui:prepare &amp;&amp; PORT=3010 env-cmd -e development-home react-scripts start&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;start-app&quot;: &quot;yarn lingui:prepare &amp;&amp; PORT=3011 env-cmd -e development-app react-scripts start&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;start-win&quot;: &quot;set PORT=3010&amp;react-scripts start&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;serve&quot;: &quot;serve -s build&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;build&quot;: &quot;INLINE_RUNTIME_CHUNK=false yarn test:ci &amp;&amp; react-scripts build&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;build-home&quot;: &quot;INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;build-app&quot;: &quot;INLINE_RUNTIME_CHUNK=false env-cmd -e production-app yarn test:ci &amp;&amp; react-scripts build&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;test&quot;: &quot;react-scripts test&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;test:ci&quot;: &quot;react-scripts test --watchAll=false&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;eject&quot;: &quot;react-scripts eject&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lint&quot;: &quot;node node_modules/.bin/eslint src&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;pre-commit&quot;: &quot;npm run test -- --watchAll=false &amp;&amp; npm run lint&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;prepare&quot;: &quot;husky install &amp;&amp; yarn lingui:prepare&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;extract&quot;: &quot;NODE_ENV=development lingui extract --clean&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;compile&quot;: &quot;lingui compile&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lingui:prepare&quot;: &quot;NODE_ENV=development yarn extract &amp;&amp; yarn compile&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lingui:generate&quot;: &quot;NODE_ENV=development lingui extract --overwrite&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;tscheck&quot;: &quot;tsc -p tsconfig.json --noEmit&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;eslintConfig&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;extends&quot;: [</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-app&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;react-app/jest&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>],</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;rules&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;no-console&quot;: &quot;warn&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>}</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;browserslist&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;production&quot;: [</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;&gt;0.2%&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;not dead&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;not op_mini all&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>],</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;development&quot;: [</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;last 1 chrome version&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;last 1 firefox version&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;last 1 safari version&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>]</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;devDependencies&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@lingui/cli&quot;: &quot;^3.13.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@lingui/loader&quot;: &quot;3.14.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;@lingui/macro&quot;: &quot;3.13.3&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;eslint&quot;: &quot;7.32.0&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;husky&quot;: &quot;7.0.4&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lint-staged&quot;: &quot;12.3.4&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;prettier&quot;: &quot;2.5.1&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lint-staged&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;src/**/*.{js,ts,jsx,tsx}&quot;: [</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;eslint --fix ./src&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;prettier --write&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>]</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;packageManager&quot;: &quot;yarn@3.1.0&quot;</span></div><div><span>}</span></div></code></fieldset><fieldset><legend style="font-weight: bold;">./public/charting_library/package.json</legend><code><div><span>{</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;private&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;description&quot;: &quot;CL v22.032 (internal id e2a841ff @ 2022-07-06T11:53:07.702Z)&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;type&quot;: &quot;module&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;main&quot;: &quot;charting_library.cjs.js&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;module&quot;: &quot;charting_library.esm.js&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;types&quot;: &quot;charting_library.d.ts&quot;</span></div><div><span>}</span></div></code></fieldset><fieldset><legend style="font-weight: bold;">./tsconfig.json</legend><code><div><span>{</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;compilerOptions&quot;: {</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;target&quot;: &quot;es5&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lib&quot;: [</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;dom&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;dom.iterable&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;esnext&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>],</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;allowJs&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;skipLibCheck&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;esModuleInterop&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;allowSyntheticDefaultImports&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;strict&quot;: false,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;noImplicitAny&quot;: false,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;strictNullChecks&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;strictFunctionTypes&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;strictBindCallApply&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;noImplicitThis&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;forceConsistentCasingInFileNames&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;noFallthroughCasesInSwitch&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;module&quot;: &quot;esnext&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;moduleResolution&quot;: &quot;node&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;resolveJsonModule&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;isolatedModules&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;noEmit&quot;: true,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;jsx&quot;: &quot;react-jsx&quot;,</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;baseUrl&quot;: &quot;./src&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;include&quot;: [</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;src&quot;</span></div><div><span>&nbsp;</span><span>&nbsp;</span><span>]</span></div><div><span>}</span></div></code></fieldset>
+<h1 style="color: rgb(70, 121, 254); font-size: 24px; text-align: center">Dynamic Doctor Report</h1>
+<fieldset>
+  <legend style="font-weight: bold">Basic Data</legend>
+  <div style="margin-bottom: 10px">
+    <span style="display: inline-block; width: 150px">framework:</span
+    ><span style="display: inline-block; margin-left: 10px; width: 50px">react</span
+    ><span style="margin-left: 10px">17.0.2</span>
+  </div>
+  <div style="margin-bottom: 10px">
+    <span style="display: inline-block; width: 150px">node:</span
+    ><span style="display: inline-block; margin-left: 10px; width: 50px">node</span
+    ><span style="margin-left: 10px">16.20.2</span>
+  </div>
+  <div style="margin-bottom: 10px">
+    <span style="display: inline-block; width: 150px">packageManager:</span
+    ><span style="display: inline-block; margin-left: 10px; width: 50px">npm</span
+    ><span style="margin-left: 10px">8.19.4</span>
+  </div>
+  <div style="margin-bottom: 10px">
+    <span style="display: inline-block; width: 150px">platform:</span
+    ><span style="display: inline-block; margin-left: 10px; width: 50px">darwin</span
+    ><span style="margin-left: 10px">arm64</span>
+  </div>
+</fieldset>
+<hr />
+<h2>Found issues</h2>
+<hr />
+<h2>Config files</h2>
+<fieldset>
+  <legend style="font-weight: bold">./package.json</legend>
+  <code
+    ><div><span>{</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;name&quot;: &quot;gambit-interface&quot;,</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;version&quot;: &quot;0.1.0&quot;,</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;private&quot;: true,</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;dependencies&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@apollo/client&quot;: &quot;3.5.6&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@davatar/react&quot;: &quot;1.8.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@dynamic-labs/ethereum&quot;: &quot;^1.4.4&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@dynamic-labs/ethers-v5&quot;: &quot;^1.4.4&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@dynamic-labs/sdk-react-core&quot;: &quot;^1.4.4&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@ethersproject/providers&quot;: &quot;5.5.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@ethersproject/units&quot;: &quot;5.5.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@headlessui/react&quot;: &quot;1.6.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@lingui/core&quot;: &quot;3.13.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@lingui/react&quot;: &quot;3.13.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@supabase/supabase-js&quot;: &quot;^2.25.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@testing-library/jest-dom&quot;: &quot;5.16.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@testing-library/react&quot;: &quot;11.2.7&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@testing-library/user-event&quot;: &quot;12.8.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@types/node&quot;: &quot;18.7.13&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@types/react&quot;: &quot;18.0.17&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@types/react-dom&quot;: &quot;18.0.6&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@types/react-router-dom&quot;: &quot;5.3.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@uniswap/sdk-core&quot;: &quot;3.0.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@uniswap/v3-sdk&quot;: &quot;3.7.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@web3-react/core&quot;: &quot;6.1.9&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@web3-react/injected-connector&quot;: &quot;6.0.7&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@web3-react/walletconnect-connector&quot;: &quot;6.2.8&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;axios&quot;: &quot;^1.4.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;bigdecimal&quot;: &quot;0.6.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;bignumber.js&quot;: &quot;^9.0.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;classnames&quot;: &quot;2.3.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;date-fns&quot;: &quot;2.27.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;env-cmd&quot;: &quot;^10.1.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;eth-testing&quot;: &quot;1.9.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;ethereum-multicall&quot;: &quot;2.15.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;ethers&quot;: &quot;5.6.8&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;framer-motion&quot;: &quot;4.1.17&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;graphql&quot;: &quot;15.8.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;hex-to-rgba&quot;: &quot;2.0.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;html-to-image&quot;: &quot;^1.10.8&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;krasulya-lightweight-charts&quot;: &quot;3.4.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;lodash&quot;: &quot;4.17.21&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;qrcode.react&quot;: &quot;^3.1.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;rc-slider&quot;: &quot;9.7.5&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react&quot;: &quot;17.0.2&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-confetti&quot;: &quot;^6.1.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-dom&quot;: &quot;17.0.2&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-helmet&quot;: &quot;6.1.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-hot-toast&quot;: &quot;2.2.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-icons&quot;: &quot;4.3.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-otp-input&quot;: &quot;^3.1.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-remove-scroll&quot;: &quot;2.5.5&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-router-dom&quot;: &quot;5.3.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-scripts&quot;: &quot;4.0.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-select&quot;: &quot;5.2.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-tabs&quot;: &quot;3.2.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-toastify&quot;: &quot;6.0.9&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-use&quot;: &quot;17.3.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;reactour&quot;: &quot;^1.19.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;recharts&quot;: &quot;2.1.8&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;sass&quot;: &quot;^1.55.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;serve&quot;: &quot;^14.2.1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;styled-components&quot;: &quot;^4.0.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;swr&quot;: &quot;0.4.2&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;typescript&quot;: &quot;4.7.4&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;use-immer&quot;: &quot;^0.9.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;viem&quot;: &quot;1&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;web-vitals&quot;: &quot;1.1.2&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;resolutions&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-error-overlay&quot;: &quot;6.0.9&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;scripts&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;start&quot;: &quot;PORT=3010 env-cmd -f .env react-scripts start&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span
+        >&quot;start-home&quot;: &quot;yarn lingui:prepare &amp;&amp; PORT=3010 env-cmd -e development-home
+        react-scripts start&quot;,</span
+      >
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span
+        >&quot;start-app&quot;: &quot;yarn lingui:prepare &amp;&amp; PORT=3011 env-cmd -e development-app react-scripts
+        start&quot;,</span
+      >
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;start-win&quot;: &quot;set PORT=3010&amp;react-scripts start&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;serve&quot;: &quot;serve -s build&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span
+        >&quot;build&quot;: &quot;INLINE_RUNTIME_CHUNK=false yarn test:ci &amp;&amp; react-scripts build&quot;,</span
+      >
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span
+        >&quot;build-home&quot;: &quot;INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts
+        build&quot;,</span
+      >
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span
+        >&quot;build-app&quot;: &quot;INLINE_RUNTIME_CHUNK=false env-cmd -e production-app yarn test:ci &amp;&amp;
+        react-scripts build&quot;,</span
+      >
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;test&quot;: &quot;react-scripts test&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;test:ci&quot;: &quot;react-scripts test --watchAll=false&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;eject&quot;: &quot;react-scripts eject&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;lint&quot;: &quot;node node_modules/.bin/eslint src&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;pre-commit&quot;: &quot;npm run test -- --watchAll=false &amp;&amp; npm run lint&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;prepare&quot;: &quot;husky install &amp;&amp; yarn lingui:prepare&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;extract&quot;: &quot;NODE_ENV=development lingui extract --clean&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;compile&quot;: &quot;lingui compile&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;lingui:prepare&quot;: &quot;NODE_ENV=development yarn extract &amp;&amp; yarn compile&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;lingui:generate&quot;: &quot;NODE_ENV=development lingui extract --overwrite&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;tscheck&quot;: &quot;tsc -p tsconfig.json --noEmit&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;eslintConfig&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;extends&quot;: [</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-app&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;react-app/jest&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>],</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;rules&quot;: {</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;no-console&quot;: &quot;warn&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>}</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;browserslist&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;production&quot;: [</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;&gt;0.2%&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;not dead&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;not op_mini all&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>],</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;development&quot;: [</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;last 1 chrome version&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;last 1 firefox version&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;last 1 safari version&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>]</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;devDependencies&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@lingui/cli&quot;: &quot;^3.13.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@lingui/loader&quot;: &quot;3.14.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;@lingui/macro&quot;: &quot;3.13.3&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;eslint&quot;: &quot;7.32.0&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;husky&quot;: &quot;7.0.4&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;lint-staged&quot;: &quot;12.3.4&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;prettier&quot;: &quot;2.5.1&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lint-staged&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;src/**/*.{js,ts,jsx,tsx}&quot;: [</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;eslint --fix ./src&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;prettier --write&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>]</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;packageManager&quot;: &quot;yarn@3.1.0&quot;</span></div>
+    <div><span>}</span></div></code
+  >
+</fieldset>
+<fieldset>
+  <legend style="font-weight: bold">./public/charting_library/package.json</legend>
+  <code
+    ><div><span>{</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;private&quot;: true,</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;description&quot;: &quot;CL v22.032 (internal id e2a841ff @ 2022-07-06T11:53:07.702Z)&quot;,</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;type&quot;: &quot;module&quot;,</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;main&quot;: &quot;charting_library.cjs.js&quot;,</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&quot;module&quot;: &quot;charting_library.esm.js&quot;,</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;types&quot;: &quot;charting_library.d.ts&quot;</span></div>
+    <div><span>}</span></div></code
+  >
+</fieldset>
+<fieldset>
+  <legend style="font-weight: bold">./tsconfig.json</legend>
+  <code
+    ><div><span>{</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;compilerOptions&quot;: {</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;target&quot;: &quot;es5&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;lib&quot;: [</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;dom&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;dom.iterable&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;esnext&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>],</span></div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;allowJs&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;skipLibCheck&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;esModuleInterop&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;allowSyntheticDefaultImports&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;strict&quot;: false,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;noImplicitAny&quot;: false,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;strictNullChecks&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;strictFunctionTypes&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;strictBindCallApply&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;noImplicitThis&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;forceConsistentCasingInFileNames&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;noFallthroughCasesInSwitch&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;module&quot;: &quot;esnext&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;moduleResolution&quot;: &quot;node&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;resolveJsonModule&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;isolatedModules&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;noEmit&quot;: true,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;jsx&quot;: &quot;react-jsx&quot;,</span>
+    </div>
+    <div>
+      <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span
+      ><span>&quot;baseUrl&quot;: &quot;./src&quot;</span>
+    </div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>},</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&quot;include&quot;: [</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&quot;src&quot;</span></div>
+    <div><span>&nbsp;</span><span>&nbsp;</span><span>]</span></div>
+    <div><span>}</span></div></code
+  >
+</fieldset>

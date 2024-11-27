@@ -14,14 +14,14 @@
 }
 
 #light .menu-items {
-  background: #ffffff;  
+  background: #ffffff;
 }
 
-.menu-items{
+.menu-items {
   background: #1e1e1e;
   position: absolute;
-  top : 4rem;
-  right : 0rem;
+  top: 4rem;
+  right: 0rem;
 }
 
 .setting-dropdown {
@@ -70,8 +70,8 @@
   border-radius: 50%;
 }
 
-#light .setting-dropdown-icon{
-  fill : #000000;
+#light .setting-dropdown-icon {
+  fill: #000000;
 }
 
 .setting-dropdown-info-icon {
@@ -123,14 +123,12 @@
   margin-bottom: 0.8rem;
 }
 
-#light .setting-option{
-  background: #FFFFFF;
-
+#light .setting-option {
+  background: #ffffff;
 }
 
-#light .setting-option span{
+#light .setting-option span {
   color: #000000;
-
 }
 
 .setting-option:last-child {
@@ -299,7 +297,7 @@
 }
 
 #light .email-notification {
-  color : #000000;
+  color: #000000;
 }
 
 .email-notification-title {
@@ -313,8 +311,8 @@
   color: #fff;
 }
 
-#light .email-notification-label{
-  color : #000000;
+#light .email-notification-label {
+  color: #000000;
 }
 
 .email-input-container {

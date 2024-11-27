@@ -21,7 +21,7 @@ import { getContract } from "config/contracts";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 

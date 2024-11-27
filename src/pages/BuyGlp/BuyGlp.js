@@ -7,7 +7,7 @@ import "./BuyGlp.css";
 
 import { Trans } from "@lingui/macro";
 import { getNativeToken } from "config/tokens";
-import {  useDynamicChainId } from "lib/chains";
+import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function BuyGlp(props) {
