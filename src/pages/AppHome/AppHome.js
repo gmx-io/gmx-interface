@@ -221,7 +221,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           alignItems: "center",
           justifyContent: "center",
           gap: mobile ? "2rem" : "3rem",
-          margin: mobile ? "18rem 1rem 6rem 1rem" : "18rem 6rem 12rem 6rem",
+          margin: mobile ? "10rem 1rem 6rem 1rem" : "18rem 6rem 12rem 6rem",
         }}
       >
         <img
