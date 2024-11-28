@@ -6,7 +6,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
-import { getCurrentEpochStartedTimestamp, useV1FeesInfo, useVolumeInfo } from "domain/stats";
+import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
@@ -16,6 +16,7 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
+import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 import { getPositionStats } from "./getPositionStats";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
@@ -252,11 +253,11 @@ export function OverviewCard({
     [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees]
   );
 
-  const [formattedDuration, setFormattedDuration] = useState(() => getFormattedDuration());
+  const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFormattedDuration(getFormattedDuration());
+      setFormattedDuration(getFormattedFeesDuration());
     }, 1000 * 60);
     return () => clearInterval(interval);
   }, []);
@@ -411,19 +412,4 @@ export function OverviewCard({
       </div>
     </div>
   );
-}
-
-function getFormattedDuration() {
-  const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
-
-  const now = Date.now() / 1000;
-  const days = Math.floor((now - epochStartedTimestamp) / (3600 * 24));
-  let restHours = Math.round((now - epochStartedTimestamp) / 3600) - days * 24;
-  if (days === 0) {
-    restHours = Math.max(restHours, 1);
-  }
-
-  const daysStr = days > 0 ? `${days}d` : "";
-  const hoursStr = restHours > 0 ? `${restHours}h` : "";
-  return [daysStr, hoursStr].filter(Boolean).join(" ");
 }
