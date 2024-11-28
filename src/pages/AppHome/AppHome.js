@@ -98,7 +98,8 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           flexDirection: mobile ? "column" : "row",
           gap: mobile ? "4rem" : "8rem",
           fontSize: mobile ? "1.5rem" : "2rem",
-          marginTop: mobile ? (window.matchMedia("(max-height: 700px)").matches ? "-300px" : "-425px") : "-400px",
+          position: "relative",
+          top: mobile ? "-40vh" : "-35vh",
           padding: mobile ? "8px 2rem" : "8px 16rem",
           cursor: "pointer",
         }}
@@ -221,7 +222,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           alignItems: "center",
           justifyContent: "center",
           gap: mobile ? "2rem" : "3rem",
-          margin: mobile ? "10rem 1rem 6rem 1rem" : "18rem 6rem 12rem 6rem",
+          margin: mobile ? "-15vh 1rem 6rem 1rem" : "-15vh 6rem 12rem 6rem",
         }}
       >
         <img
