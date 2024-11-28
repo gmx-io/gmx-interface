@@ -107,8 +107,16 @@
   color: black;
 }
 
-.App-header-link-container a {
-  color: rgb(77, 83, 134) !important;
+@media (max-width: 600px) {
+  .App-header-link-container a {
+    color: white !important;
+  }
+}
+
+@media (min-width: 601px) {
+  .App-header-link-container a {
+    color: rgb(77, 83, 134) !important;
+  }
 }
 
 .App-header-link-container a.active {
