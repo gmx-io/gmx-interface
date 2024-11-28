@@ -1485,7 +1485,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     <Tooltip
                       position="right-bottom"
                       className="nowrap"
-                      handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                      handle={"$0.00 [Coming soon]"}
                       renderContent={() => <></>}
                     />
                   )}
@@ -1896,7 +1896,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="label">
                   <Trans>Price</Trans>
                 </div>
-                <div>${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</div>
+                {/* <div>${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</div> */}
+                <div>$0.00 [Coming soon]</div>
               </div>
               <div className="App-card-row">
                 <div className="label">
