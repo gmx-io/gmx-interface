@@ -58,7 +58,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           <div style={{ textAlign: "center", color: "white" }}>
             <div
               style={{
-                fontSize: mobile ? "3.5rem" : "7rem",
+                fontSize: mobile ? "4rem" : "7rem",
                 fontWeight: "bold",
                 marginBottom: mobile ? "1rem" : "2rem",
               }}
@@ -98,7 +98,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           flexDirection: mobile ? "column" : "row",
           gap: mobile ? "4rem" : "8rem",
           fontSize: mobile ? "1.5rem" : "2rem",
-          marginTop: mobile ? "-500px" : "-400px",
+          marginTop: mobile ? "-450px" : "-400px",
           padding: mobile ? "8px 2rem" : "8px 16rem",
           cursor: "pointer",
         }}
