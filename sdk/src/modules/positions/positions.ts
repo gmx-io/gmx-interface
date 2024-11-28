@@ -14,7 +14,6 @@ import {
 } from "configs/dataStore";
 import { ContractMarketPrices, MarketsData, MarketsInfoData } from "types/markets";
 import { Position, PositionsData, PositionsInfoData } from "types/positions";
-import { PendingPositionUpdate, PositionDecreaseEvent, PositionIncreaseEvent } from "types/syntheticsEvents";
 import { TokensData } from "types/tokens";
 import { getContractMarketPrices, getMaxAllowedLeverageByMinCollateralFactor } from "utils/markets";
 import { getByKey } from "utils/objects";
@@ -25,7 +24,6 @@ import {
   getPositionKey,
   getPositionNetValue,
   getPositionPnlUsd,
-  parsePositionKey,
 } from "utils/positions";
 
 import { Module } from "../base";
@@ -95,70 +93,23 @@ export class Positions extends Module {
     return values;
   }
 
-  private getOptimisticPositions(p: {
+  private getPositionsData(p: {
     positionsData: PositionsData | undefined;
     allPositionsKeys: string[] | undefined;
-    positionDecreaseEvents?: PositionDecreaseEvent[] | undefined;
-    positionIncreaseEvents?: PositionIncreaseEvent[] | undefined;
-    pendingPositionsUpdates?: { [key: string]: PendingPositionUpdate } | undefined;
   }): PositionsData | undefined {
-    const { positionsData, allPositionsKeys, positionDecreaseEvents, pendingPositionsUpdates, positionIncreaseEvents } =
-      p;
+    const { positionsData, allPositionsKeys } = p;
 
     if (!allPositionsKeys) {
       return undefined;
     }
 
-    if (!positionDecreaseEvents && !positionIncreaseEvents && !pendingPositionsUpdates) {
-      return positionsData;
-    }
-
     return allPositionsKeys.reduce((acc, key) => {
-      const now = Date.now();
-
-      const lastIncreaseEvent = positionIncreaseEvents
-        ? positionIncreaseEvents.filter((e) => e.positionKey === key).pop()
-        : undefined;
-      const lastDecreaseEvent = positionDecreaseEvents
-        ? positionDecreaseEvents.filter((e) => e.positionKey === key).pop()
-        : undefined;
-
-      const pendingUpdate =
-        pendingPositionsUpdates?.[key] &&
-        (pendingPositionsUpdates[key]?.updatedAt ?? 0) + Positions.MAX_PENDING_UPDATE_AGE > now
-          ? pendingPositionsUpdates[key]
-          : undefined;
-
       let position: Position;
 
       if (getByKey(positionsData, key)) {
         position = { ...getByKey(positionsData, key)! };
-      } else if (pendingUpdate && pendingUpdate.isIncrease) {
-        position = getPendingMockPosition(pendingUpdate);
       } else {
         return acc;
-      }
-
-      if (
-        lastIncreaseEvent &&
-        lastIncreaseEvent.increasedAtTime > position.increasedAtTime &&
-        lastIncreaseEvent.increasedAtTime > (lastDecreaseEvent?.decreasedAtTime || 0)
-      ) {
-        position = applyEventChanges(position, lastIncreaseEvent);
-      } else if (
-        lastDecreaseEvent &&
-        lastDecreaseEvent.decreasedAtTime > position.decreasedAtTime &&
-        lastDecreaseEvent.decreasedAtTime > (lastIncreaseEvent?.increasedAtTime || 0)
-      ) {
-        position = applyEventChanges(position, lastDecreaseEvent);
-      }
-
-      if (
-        pendingUpdate &&
-        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtTime > position.increasedAtTime) ||
-          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtTime > position.decreasedAtTime))
-      ) {
-        position.pendingUpdate = pendingUpdate;
       }
 
       if (position.sizeInUsd > 0) {
@@ -202,7 +153,7 @@ export class Positions extends Module {
       },
     };
 
-    const positionsData = await this.sdk.executeMulticall(request).then((res) => {
+    const positions = await this.sdk.executeMulticall(request).then((res) => {
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
@@ -241,13 +192,13 @@ export class Positions extends Module {
       }, {} as PositionsData);
     });
 
-    const optimisticPositionsData = this.getOptimisticPositions({
-      positionsData: positionsData,
+    const positionsData = this.getPositionsData({
+      positionsData: positions,
       allPositionsKeys: keysAndPrices?.allPositionsKeys,
     });
 
     return {
-      positionsData: optimisticPositionsData,
+      positionsData,
     };
   }
 
@@ -701,55 +652,4 @@ export class Positions extends Module {
 
     return positionsInfoData;
   }
-}
-
-function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
-  const { account, marketAddress, collateralAddress, isLong } = parsePositionKey(pendingUpdate.positionKey);
-
-  return {
-    key: pendingUpdate.positionKey,
-    contractKey: hashedPositionKey(account, marketAddress, collateralAddress, isLong),
-    account,
-    marketAddress,
-    collateralTokenAddress: collateralAddress,
-    isLong,
-    sizeInUsd: pendingUpdate.sizeDeltaUsd ?? 0n,
-    collateralAmount: pendingUpdate.collateralDeltaAmount ?? 0n,
-    sizeInTokens: pendingUpdate.sizeDeltaInTokens ?? 0n,
-    increasedAtTime: pendingUpdate.updatedAtTime,
-    decreasedAtTime: 0n,
-    pendingBorrowingFeesUsd: 0n,
-    fundingFeeAmount: 0n,
-    claimableLongTokenAmount: 0n,
-    claimableShortTokenAmount: 0n,
-    data: "0x",
-    isOpening: true,
-    pendingUpdate: pendingUpdate,
-  };
-}
-
-function applyEventChanges(position: Position, event: PositionIncreaseEvent | PositionDecreaseEvent) {
-  const nextPosition = { ...position };
-
-  nextPosition.sizeInUsd = event.sizeInUsd;
-  nextPosition.sizeInTokens = event.sizeInTokens;
-  nextPosition.collateralAmount = event.collateralAmount;
-  nextPosition.pendingBorrowingFeesUsd = 0n;
-  nextPosition.fundingFeeAmount = 0n;
-  nextPosition.claimableLongTokenAmount = 0n;
-  nextPosition.claimableShortTokenAmount = 0n;
-  nextPosition.pendingUpdate = undefined;
-  nextPosition.isOpening = false;
-
-  // eslint-disable-next-line local-rules/no-logical-bigint
-  if ((event as PositionIncreaseEvent).increasedAtTime) {
-    nextPosition.increasedAtTime = (event as PositionIncreaseEvent).increasedAtTime;
-  }
-
-  // eslint-disable-next-line local-rules/no-logical-bigint
-  if ((event as PositionDecreaseEvent).decreasedAtTime) {
-    nextPosition.decreasedAtTime = (event as PositionDecreaseEvent).decreasedAtTime;
-  }
-
-  return nextPosition;
 }
