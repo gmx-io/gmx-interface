@@ -397,7 +397,8 @@ export default function DashboardV2() {
     },
   ];
 
-  const totalStatsStartDate = chainId === MORPH_L2 ? t`15 May 2024` : t`01 Jan 2024`;
+  // const totalStatsStartDate = chainId === MORPH_L2 ? t`15 May 2024` : t`01 Jan 2024`;
+  const totalStatsStartDate = t`27 Nov 2024`;
 
   let stableGlp = 0;
   let totalGlp = 0;
