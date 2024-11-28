@@ -1875,14 +1875,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <Button variant="semi-clear" to="/buy_glp#redeem">
                   <Trans>Sell TLP</Trans>
                 </Button>
-                {hasInsurance && (
+                {/* {hasInsurance && (
                   <Button
                     variant="semi-clear"
                     to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
                   >
                     <Trans>Purchase Insurance</Trans>
                   </Button>
-                )}
+                )} */}
               </div>
             </div>
           </div>
