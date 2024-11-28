@@ -23,7 +23,7 @@
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
     "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './src/abis/*.json'",
-    "postinstall": "yarn typechain && cd ./sdk && echo \"Building SDK\" && yarn build",
+    "postinstall": "yarn typechain && cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "yarn tsx scripts/prebuild"
   },
   "dependencies": {
