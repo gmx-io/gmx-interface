@@ -33,6 +33,23 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "ada-bch-dot-icp-listing",
+    title: "ADA, BCH, DOT, and ICP markets added on Arbitrum",
+    isActive: true,
+    startDate: "28 Nov 2024, 16:00",
+    endDate: "4 Dec 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="ADA" />
+        /USD, <TokenSymbolWithIcon symbol="BCH" />
+        /USD, <TokenSymbolWithIcon symbol="DOT" />
+        /USD and <TokenSymbolWithIcon symbol="ICP" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />
+        or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "gmx-pendle-listing",
     title: "GMX single-sided and PENDLE markets added on Arbitrum",
     isActive: true,
