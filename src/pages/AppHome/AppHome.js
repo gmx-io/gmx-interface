@@ -87,6 +87,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
                 padding: mobile ? "2rem 2rem" : "1.5rem 3rem",
                 borderRadius: "4rem",
                 width: "fit-content",
+                backdropFilter: "blur(5px)",
               }}
             />
           </div>
@@ -124,6 +125,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
               height: "100%",
               display: "flex",
               flexDirection: "column",
+              backdropFilter: "blur(5px)",
             }}
           >
             <h2 style={{ fontWeight: "400", fontSize: mobile ? "1.8rem" : "2rem" }}>Become a Liquidity Provider</h2>
@@ -177,6 +179,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
               height: "100%",
               display: "flex",
               flexDirection: "column",
+              backdropFilter: "blur(5px)",
             }}
           >
             <h2 style={{ fontWeight: "400", marginBottom: 0, fontSize: mobile ? "1.8rem" : "2rem" }}>Buy TMX Token</h2>
