@@ -70,7 +70,7 @@ export default function DefiOptions({ mobile }) {
               Trade
             </span>
           </motion.div>
-          <h2 style={{ color: "#9DDFF3", marginBottom: "1rem" }}>Leverage trading made simple.</h2>
+          <h2 style={{ fontWeight: 400, color: "#9DDFF3", marginBottom: "1rem" }}>Leverage trading made simple.</h2>
           <div className="token-list" style={{ marginTop: "2rem" }}>
             <motion.div
               variants={tokenItemVariants}
@@ -127,7 +127,7 @@ export default function DefiOptions({ mobile }) {
               Get Leverage
             </span>
           </motion.div>
-          <h2 style={{ color: "rgb(219 190 176)", marginBottom: "1rem" }}>
+          <h2 style={{ fontWeight: 400, color: "rgb(219 190 176)", marginBottom: "1rem" }}>
             Trade with up to 100x leverage. Available on multiple chains.
           </h2>
           <motion.div
@@ -185,7 +185,9 @@ export default function DefiOptions({ mobile }) {
               Swap
             </span>
           </motion.div>
-          <h2 style={{ color: "rgb(161 167 240)", marginBottom: "1rem" }}>Instant token swaps with great rates.</h2>
+          <h2 style={{ fontWeight: 400, color: "rgb(161 167 240)", marginBottom: "1rem" }}>
+            Instant token swaps with great rates.
+          </h2>
           <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
             <div
               className="token-item"

@@ -84,7 +84,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
                 border: "1px solid rgba(255,255,255,0.2)",
                 padding: mobile ? "2rem 2rem" : "1.5rem 3rem",
                 borderRadius: "4rem",
-                width: mobile ? "auto" : tablet ? "fit-content" : "auto",
+                width: "fit-content",
               }}
             />
           </div>
@@ -97,7 +97,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           gap: mobile ? "4rem" : "8rem",
           fontSize: mobile ? "1.5rem" : "2rem",
           marginTop: mobile ? "-500px" : "-400px",
-          padding: mobile ? "8px 1rem" : "8px 16rem",
+          padding: mobile ? "8px 2rem" : "8px 16rem",
           cursor: "pointer",
         }}
       >
@@ -213,23 +213,12 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
 
       <div
         style={{
-          background:
-            "linear-gradient(90deg, rgba(123,128,184,0.2) 0%, rgba(123,128,184,0.5) 50%, rgba(123,128,184,0.2) 100%)",
-          height: "1px",
-          margin: mobile ? "10rem 1rem -8rem 1rem" : "18rem 6rem -4rem 6rem",
-        }}
-      />
-
-      <div
-        style={{
-          background: "linear-gradient(-72deg, rgba(15,85,232,0.2), rgba(157,223,243,0.2))",
-          border: "1px solid rgba(255,255,255,0.2)",
-          padding: mobile ? "1.5rem" : "2rem",
-          borderRadius: "2rem",
+          padding: mobile ? "2.5rem" : "3.5rem",
+          borderRadius: "3rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: mobile ? "1rem" : "2rem",
+          gap: mobile ? "2rem" : "3rem",
           margin: mobile ? "18rem 1rem 6rem 1rem" : "18rem 6rem 12rem 6rem",
         }}
       >
@@ -237,8 +226,8 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           src={morphRocket}
           alt="morph-rocket"
           style={{
-            height: mobile ? "60px" : "80px",
-            width: mobile ? "60px" : "80px",
+            height: mobile ? "80px" : "120px",
+            width: mobile ? "80px" : "120px",
             animation: "float 3s ease-in-out infinite",
           }}
         />
@@ -246,28 +235,46 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: "flex-start",
           }}
         >
-          <h2
+          <div
             style={{
-              margin: 0,
-              fontSize: mobile ? "1.8rem" : "2.5rem",
-              background: "linear-gradient(90deg, #0F55E8, #9DDFF3)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              display: "flex",
+              flexDirection: mobile ? "column" : "row",
+              alignItems: "center",
+              gap: "1rem",
             }}
           >
-            Now Live on Morph L2!
-          </h2>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: mobile ? "2.5rem" : "3.5rem",
+                fontWeight: 500,
+                color: "rgb(210, 210, 210)",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              Now Live on{" "}
+            </h2>
+            <a href="https://morphl2.io" target="_blank" rel="noopener noreferrer">
+              <img
+                style={{ height: "8rem", width: "auto" }}
+                src="https://morphl2brand.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ffcab2c10-8da9-4414-aa63-4998ddf62e78%2Fdd757d90-b4fb-4c1d-9ccb-e4f3dab3b78d%2FMorph.logo_Horizontal_Green.png?table=block&id=83fb712b-a47d-4c64-8d9f-6bd1a9e9c68e&spaceId=fcab2c10-8da9-4414-aa63-4998ddf62e78&width=1170&userId=&cache=v2"
+                alt="Morph"
+              />
+            </a>
+          </div>
           <p
             style={{
-              margin: "0.5rem 0 0 0",
-              color: "#7B80B8",
-              fontSize: mobile ? "1rem" : "inherit",
+              margin: mobile ? "0.5rem 0 0 0" : "-1.2rem 0 0 0",
+              color: "rgb(210, 210, 210)",
+              fontSize: mobile ? "1.4rem" : "1.8rem",
             }}
           >
-            Experience lightning-fast trades with near-zero fees
+            Lightning-fast trades with <br style={{ display: mobile ? "block" : "none" }} />
+            near-zero fees
           </p>
         </div>
       </div>
@@ -290,7 +297,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
       >
         <h2
           style={{
-            fontSize: mobile ? "3rem" : "5rem", // Increased from 2rem/4rem
+            fontSize: mobile ? "3rem" : "5rem",
             textAlign: "center",
             background: "linear-gradient(90deg, #0F55E8, #9DDFF3)",
             WebkitBackgroundClip: "text",
@@ -311,13 +318,14 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           {/* Vertical Timeline Line */}
           <div
             style={{
+              display: mobile ? "none" : "block",
               position: "absolute",
               left: mobile ? "1rem" : "50%",
-              transform: mobile ? "none" : "translateX(-50%)",
+              transform: mobile ? "translateX(20px)" : "translateX(-50%)",
               width: "4px",
               height: "100%",
               background: "linear-gradient(180deg, #0F55E8, #9DDFF3)",
-              zIndex: 0,
+              zIndex: 2,
             }}
           />
 
@@ -345,24 +353,19 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
                 items: ["NFT options", "Forex", "Add Compliant Pool Options"],
               },
             ].map((phase, index) => (
-              <motion.div
+              <div
                 key={phase.phase}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
                 style={{
                   display: "flex",
-                  justifyContent: mobile ? "flex-start" : index % 2 === 0 ? "flex-start" : "flex-end",
+                  justifyContent: mobile ? "center" : index % 2 === 0 ? "flex-start" : "flex-end",
                   marginBottom: mobile ? "2rem" : "4rem",
                   position: "relative",
                 }}
               >
                 {/* Phase Content */}
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
+                <div
                   style={{
-                    width: mobile ? "calc(100% - 2rem)" : "45%",
+                    width: mobile ? "calc(100% - 4rem)" : "45%",
                     marginLeft: mobile ? "2rem" : "0",
                     background: "rgba(15,85,232,0.1)",
                     borderRadius: "1rem",
@@ -370,111 +373,79 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
                     border: "1px solid rgba(157,223,243,0.2)",
                     position: "relative",
                     transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
                   {/* Phase Icon */}
-                  <motion.div
-                    whileHover={{
-                      scale: 1.2,
-                      boxShadow: "0 0 20px rgba(157,223,243,0.5)",
-                    }}
-                    transition={{ duration: 0.3 }}
-                    animate={{ y: "-50%" }}
+                  <div
                     style={{
-                      position: "absolute",
-                      left: mobile ? "-2.5rem" : index % 2 === 0 ? "calc(100% + 2.5rem)" : "auto",
-                      right: mobile ? "auto" : index % 2 === 0 ? "auto" : "calc(100% + 2.5rem)",
-                      top: "50%",
-                      width: mobile ? "2rem" : "3rem",
-                      height: mobile ? "2rem" : "3rem",
+                      width: mobile ? "6rem" : "8rem",
+                      height: mobile ? "6rem" : "8rem",
                       background: "linear-gradient(45deg, #0F55E8, #9DDFF3)",
                       borderRadius: "50%",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      border: "4px solid #1a1c2a",
-                      cursor: "pointer",
+                      border: "2px solid #1a1c2a",
+                      marginLeft: mobile ? "-3rem" : "-6rem",
+                      marginRight: mobile ? "1rem" : "0",
                     }}
                   >
-                    <span style={{ color: "white", fontSize: mobile ? "1rem" : "1.4rem" }}>{index + 1}</span>
-                  </motion.div>
+                    <span style={{ fontSize: mobile ? "2.8rem" : "4rem" }}>{phase.emoji}</span>
+                  </div>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <h3
+                  <div style={{ flex: 1 }}>
+                    <div
                       style={{
-                        color: "#9DDFF3",
-                        fontSize: mobile ? "1.4rem" : "2rem", // Increased from 1.2rem/1.8rem
-                        margin: 0,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "1rem",
+                        marginLeft: mobile ? "0" : "2rem",
                       }}
                     >
-                      {phase.phase}
-                    </h3>
-                    <span style={{ fontSize: mobile ? "1.4rem" : "2rem" }}>{phase.emoji}</span>
-                  </div>
-                  <ul
-                    style={{
-                      listStyle: "none",
-                      padding: 0,
-                      margin: 0,
-                    }}
-                  >
-                    {phase.items.map((item, i) => (
-                      <motion.li
-                        key={item}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.2 + i * 0.1 }}
+                      <h3
                         style={{
-                          color: "#7B80B8",
-                          marginBottom: "0.5rem",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.5rem",
-                          cursor: "pointer",
-                          marginLeft: mobile ? "1rem" : "3rem",
-                          fontSize: mobile ? "1.2rem" : "1.4rem",
+                          color: "#9DDFF3",
+                          fontSize: mobile ? "1.4rem" : "2rem",
+                          margin: "0 0 1rem 0",
                         }}
                       >
-                        <motion.span
-                          whileHover={{ scale: 1.5 }}
+                        {phase.phase}
+                      </h3>
+                    </div>
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: 0,
+                        marginLeft: mobile ? "0" : "2rem",
+                      }}
+                    >
+                      {phase.items.map((item, i) => (
+                        <li
+                          key={item}
                           style={{
-                            display: "inline-block",
-                            width: "8px",
-                            height: "2px",
-                            background: "#9DDFF3",
-                            borderRadius: "1px",
+                            color: "#7B80B8",
+                            marginBottom: "-0.5rem",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                            fontSize: mobile ? "1.2rem" : "1.4rem",
                           }}
-                        />
-                        {item}
-                      </motion.li>
-                    ))}
-                  </ul>
-                </motion.div>
-              </motion.div>
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </div>
-
-      <h2
-        style={{
-          fontSize: mobile ? "3rem" : "5rem",
-          textAlign: "center",
-          background: "linear-gradient(90deg, #0F55E8, #9DDFF3)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          marginBottom: mobile ? "1.5rem" : "4rem",
-        }}
-      >
-        Coming Soon
-      </h2>
 
       <div
         style={{
@@ -511,6 +482,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
             fontSize: mobile ? "1.2rem" : "1.6rem",
             boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
             zIndex: 1,
+            fontWeight: 600,
           }}
         >
           Coming Soon
