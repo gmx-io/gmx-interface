@@ -102,7 +102,7 @@ export default function DefiOptions({ mobile }) {
         transition={{ duration: 0.3, delay: 0.1 }}
       >
         <Link
-          to="/leverage"
+          to="/trade"
           className="defi-card"
           style={{
             display: "block",
