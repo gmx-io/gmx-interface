@@ -13,11 +13,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
-import {
-  getAvailableUsdLiquidityForPosition,
-  getMarketIndexName,
-  getMarketPoolName,
-} from "domain/synthetics/markets/utils";
+import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
