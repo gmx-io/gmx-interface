@@ -725,7 +725,8 @@ export default function DashboardV2() {
                           <TooltipComponent
                             position="right-bottom"
                             className="nowrap"
-                            handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                            // handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                            handle={"$0.00 [Coming soon]"}
                             renderContent={() => (
                               <>
                                 <StatsTooltipRow
