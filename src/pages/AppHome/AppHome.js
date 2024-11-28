@@ -30,12 +30,14 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           autoPlay
           muted
           loop
+          playsInline
           style={{
             position: "absolute",
             width: "100%",
             height: "100%",
             objectFit: "cover",
             objectPosition: "left",
+            pointerEvents: "none",
           }}
         >
           <source src="/video/t3-galaxy-background-4.mp4" type="video/mp4" />
