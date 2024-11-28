@@ -1,7 +1,7 @@
 .Footer-wrapper {
   text-align: center;
   padding-top: 1rem;
-  background: #0c100f;
+  background: transparent;
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);

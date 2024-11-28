@@ -69,7 +69,7 @@
 }
 
 .App-header-drawer {
-  background: #0c100f 0% 0% no-repeat padding-box;
+  background: rgba(0, 0, 0, 0.5) 0% 0% no-repeat padding-box;
   box-shadow: 0.8rem 0.3rem 0.6rem #00000029;
   opacity: 1;
   backdrop-filter: blur(2.7rem);
@@ -107,8 +107,16 @@
   color: black;
 }
 
-.App-header-link-container a {
-  color: rgb(77, 83, 134) !important;
+@media (max-width: 600px) {
+  .App-header-link-container a {
+    color: white !important;
+  }
+}
+
+@media (min-width: 601px) {
+  .App-header-link-container a {
+    color: rgb(77, 83, 134) !important;
+  }
 }
 
 .App-header-link-container a.active {

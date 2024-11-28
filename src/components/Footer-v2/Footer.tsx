@@ -1,21 +1,30 @@
 import { SOCIAL_LINKS } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NavLink } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "2rem" }}>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          {SOCIAL_LINKS.map((platform) => {
-            return (
-              <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
-                <img src={platform.icon} alt={platform.name} />
-              </ExternalLink>
-            );
-          })}
+    <footer style={{ backgroundColor: "transparent", color: "#ffffff", padding: "3rem 0", textAlign: "center" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1rem" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "2rem", marginBottom: "2rem" }}>
+          {SOCIAL_LINKS.map((platform) => (
+            <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
+              <img src={platform.icon} alt={platform.name} style={{ width: "30px", height: "30px" }} />
+            </ExternalLink>
+          ))}
         </div>
-        <p className="text">Copyright © T3 Finance Limited. All rights reserved.</p>
+        <div
+          style={{ display: "flex", justifyContent: "center", gap: "2rem", fontSize: "1.2rem", marginBottom: "2rem" }}
+        >
+          <NavLink to="/terms-and-conditions" style={{ color: "#9DDFF3", textDecoration: "none" }}>
+            Terms and Conditions
+          </NavLink>
+          <NavLink to="/referral-terms" style={{ color: "#9DDFF3", textDecoration: "none" }}>
+            Referral Terms
+          </NavLink>
+        </div>
+        <p style={{ fontSize: "0.9rem", color: "#7B80B8" }}>Copyright © T3 Finance Limited. All rights reserved.</p>
       </div>
-    </div>
+    </footer>
   );
 }
