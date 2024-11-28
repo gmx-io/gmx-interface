@@ -28,6 +28,7 @@ import { useChainId } from "lib/chains";
 import { userAnalytics } from "lib/userAnalytics";
 import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
 import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { formatAmountForMetrics } from "lib/metrics";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
@@ -165,6 +166,7 @@ export const useTradeboxPoolWarnings = (
             pool: marketPoolName,
             type: isLong ? "Long" : "Short",
             orderType: isLimit ? "Limit" : "Market",
+            sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd) ?? 0,
             tradeType: hasExistingPosition ? "IncreaseSize" : "InitialTrade",
             leverage: formatLeverage(increaseAmounts?.estimatedLeverage) || "",
             chain: getChainName(chainId),
@@ -181,6 +183,7 @@ export const useTradeboxPoolWarnings = (
     chainId,
     hasExistingPosition,
     increaseAmounts?.estimatedLeverage,
+    increaseAmounts?.sizeDeltaUsd,
     isFirstOrder,
     isLimit,
     isLong,

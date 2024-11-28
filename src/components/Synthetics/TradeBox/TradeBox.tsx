@@ -753,7 +753,8 @@ export function TradeBox(p: Props) {
           pair = marketInfo.name;
         }
 
-        let sizeDeltaUsd = 0n;
+        let sizeDeltaUsd: bigint | undefined = undefined;
+        let amountUsd: bigint | undefined = undefined;
         let priceImpactDeltaUsd = 0n;
         let priceImpactBps = 0n;
 
@@ -762,7 +763,7 @@ export function TradeBox(p: Props) {
           priceImpactDeltaUsd = increaseAmounts.positionPriceImpactDeltaUsd;
           priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
         } else if (isSwap && swapAmounts) {
-          sizeDeltaUsd = swapAmounts.usdOut;
+          amountUsd = swapAmounts.usdOut;
           priceImpactDeltaUsd = swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
           priceImpactBps = fees?.swapPriceImpact?.bps ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
@@ -785,6 +786,7 @@ export function TradeBox(p: Props) {
           openInterestPercent,
           tradeType,
           tradeMode,
+          amountUsd,
         });
       }
     },
