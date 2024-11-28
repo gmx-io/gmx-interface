@@ -424,7 +424,7 @@ export class Markets extends Module {
       const fullMarketInfo: MarketInfo = {
         ...marketValues,
         ...marketConfig,
-        ...claimableFundingData,
+        ...claimableFundingData[marketAddress],
         ...market,
         longToken,
         shortToken,
