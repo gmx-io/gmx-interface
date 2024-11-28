@@ -98,7 +98,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           flexDirection: mobile ? "column" : "row",
           gap: mobile ? "4rem" : "8rem",
           fontSize: mobile ? "1.5rem" : "2rem",
-          marginTop: mobile ? (window.matchMedia("(max-height: 700px)").matches ? "-300px" : "-450px") : "-400px",
+          marginTop: mobile ? (window.matchMedia("(max-height: 700px)").matches ? "-300px" : "-425px") : "-400px",
           padding: mobile ? "8px 2rem" : "8px 16rem",
           cursor: "pointer",
         }}
