@@ -143,11 +143,11 @@ export const useTradeboxPoolWarnings = (
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;
 
   const isFirstOrder = !accountStats || accountStats.closedCount === 0;
-  const marketIndexName = marketInfo ? getMarketIndexName(marketInfo) : "";
+  const marketName = marketInfo ? marketInfo.name : "";
   const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
   useEffect(() => {
-    if (!marketIndexName || !marketPoolName) {
+    if (!marketName || !marketPoolName) {
       return;
     }
 
@@ -162,7 +162,7 @@ export const useTradeboxPoolWarnings = (
           data: {
             action: "WarningShown",
             message: "InsufficientLiquidity",
-            pair: marketIndexName,
+            pair: marketName,
             pool: marketPoolName,
             type: isLong ? "Long" : "Short",
             orderType: isLimit ? "Limit" : "Market",
@@ -174,7 +174,7 @@ export const useTradeboxPoolWarnings = (
           },
         },
         {
-          dedupKey: marketIndexName,
+          dedupKey: marketName,
           dedupInterval: 1000 * 60 * 5, // 5m
         }
       );
@@ -187,7 +187,7 @@ export const useTradeboxPoolWarnings = (
     isFirstOrder,
     isLimit,
     isLong,
-    marketIndexName,
+    marketName,
     marketPoolName,
     showHasInsufficientLiquidityAndPositionWarning,
     showHasNoSufficientLiquidityInAnyMarketWarning,
