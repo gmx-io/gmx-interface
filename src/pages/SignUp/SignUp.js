@@ -15,7 +15,7 @@ const SignUp = () => {
           <div style={{ padding: "12px" }}>
             <label className="connect-wallet-title">Connect Wallet</label>
           </div>
-          <label className="connect-wallet-description">Select your favourite wallet to log in T3 Finance</label>
+          <label className="connect-wallet-description">Select your favourite wallet to log in t3 Finance</label>
         </div>
         <div style={{ marginTop: "35px" }}>
           <WalletConnectSection

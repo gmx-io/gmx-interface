@@ -19,7 +19,7 @@ export default function Footer() {
             );
           })}
         </div>
-        <p className="text">Copyright © T3 Finance Limited. All rights reserved.</p>
+        <p className="text">Copyright © t3 Finance Limited. All rights reserved.</p>
       </div>
     </div>
   );

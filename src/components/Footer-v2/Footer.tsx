@@ -23,7 +23,7 @@ export default function Footer() {
             Referral Terms
           </NavLink>
         </div>
-        <p style={{ fontSize: "0.9rem", color: "#7B80B8" }}>Copyright © T3 Finance Limited. All rights reserved.</p>
+        <p style={{ fontSize: "0.9rem", color: "#7B80B8" }}>Copyright © t3 Finance Limited. All rights reserved.</p>
       </div>
     </footer>
   );

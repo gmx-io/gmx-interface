@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 function SEO(props) {
   const { children, ...customMeta } = props;
   const meta = {
-    title: "T3.Finance | Decentralized Perpetual Exchange",
+    title: "t3.finance | Decentralized Perpetual Exchange",
     description:
       "Trade spot or perpetual cryptocurrencies with up to 50x leverage directly from your wallet on Optimism.",
     // image: "https://gmx.io/og.png",
@@ -17,7 +17,7 @@ function SEO(props) {
         <meta name="robots" content="follow, index" />
         <meta content={meta.description} name="description" />
         <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="T3" />
+        <meta property="og:site_name" content="t3" />
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />

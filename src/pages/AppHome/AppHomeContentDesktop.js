@@ -19,7 +19,7 @@ export default function AppHomeContentDesktop() {
         </h2>
         <br />
         <span className="content-desc" style={{ fontFamily: "Relative" }}>
-          Provide liquidity to T3's trading pools and earn fees from every trade. Join our growing network of liquidity
+          Provide liquidity to t3's trading pools and earn fees from every trade. Join our growing network of liquidity
           providers and earn passive income from the platform's success.
         </span>
         <HeaderLink className="btn text-white orange-cta content-title-desktop-cta" to="/earn">
@@ -41,8 +41,8 @@ export default function AppHomeContentDesktop() {
         <span style={{ fontSize: "14px", color: "#FFB547" }}> (Coming Soon)</span>
         <br />
         <span className="content-desc" style={{ fontFamily: "Relative" }}>
-          Invest in T3's growth by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium
-          features as a T3 Pro member. Be part of our ecosystem's future.
+          Invest in t3's growth by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium
+          features as a t3 Pro member. Be part of our ecosystem's future.
         </span>
         <button
           className="btn text-white orange-cta content-title-desktop-cta"

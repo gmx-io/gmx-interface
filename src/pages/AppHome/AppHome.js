@@ -137,7 +137,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
                 flex: 1,
               }}
             >
-              Provide liquidity to T3's trading pools and earn fees from every trade. Join our growing network of
+              Provide liquidity to t3's trading pools and earn fees from every trade. Join our growing network of
               liquidity providers and earn passive income from the platform's success.
             </p>
             <Button
@@ -192,8 +192,8 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
                 flex: 1,
               }}
             >
-              Invest in T3's growth by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium
-              features as a T3 Pro member. Be part of our ecosystem's future.
+              Join t3 by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium features as a t3
+              Pro member. Be part of our ecosystem's future.
             </p>
             <Button
               disabled

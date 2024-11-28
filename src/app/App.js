@@ -798,7 +798,7 @@ function FullApp() {
               <label className="connect-wallet-title">Connect Wallet</label>
             </div>
             <label style={{ fontSize: "15px" }} className="connect-wallet-description">
-              Select your favourite wallet to log in T3 Finance
+              Select your favourite wallet to log in t3 Finance
             </label>
           </div>
          
