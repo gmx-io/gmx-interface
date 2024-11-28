@@ -1,69 +1,654 @@
-import { useContext } from "react";
-import Footer from "components/Footer/Footer";
-import "./AppHome.css";
-import { BsArrowRight } from "react-icons/bs";
-
+import Button from "components/Button/Button";
 import { Trans } from "@lingui/macro";
-import { HeaderLink } from "components/Header/HeaderLink";
-import arrow from "img/arrow-narrow-right.svg";
-import mobilet3light from "img/t3-mobile-light-bg.svg";
-import mobilet3dark from "img/t3-mobile-dark-bg.svg";
-import { ThemeContext } from "store/theme-provider";
-import AppHomeContent from "./AppHomeContent";
-import AppHomeContentDesktop from "./AppHomeContentDesktop";
+import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
+import tmxImg from "img/ic_tmx.svg";
+
+import Footer from "components/Footer-v2/Footer";
+import "./AppHome.css";
+import { useBreakpoints } from "../../hooks/useBreakpoints";
+import morphRocket from "../../img/morph-rocket.svg";
+import { TradeNowButton } from "./TradeNowButton";
+import DefiOptions from "components/DefiOptions/DefiOptions";
 
 export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
-  const theme = useContext(ThemeContext);
-  const TradeNowButton = () => {
-    return (
-      <HeaderLink
-        className="btn text-white"
-        to="/trade"
-        redirectPopupTimestamp={redirectPopupTimestamp}
-        showRedirectModal={showRedirectModal}
-      >
-        <Trans>Trade Now</Trans>
-        <BsArrowRight className="arrow" style={{ marginLeft: "1rem" }} src={arrow} alt="arrow" color={"white"} />
-      </HeaderLink>
-    );
+  const cardVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.2 },
+    },
   };
 
+  const { mobile, tablet, ...breakpoints } = useBreakpoints();
+
   return (
-    <div className="main">
-      <div className="hero">
-        <div className="hero-inner">
-          <div className="hero-title">
-            <Trans>Decentralized</Trans>
+    <>
+      <div style={{ height: "100vh", width: "100vw", position: "relative" }}>
+        <video
+          autoPlay
+          muted
+          loop
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "left",
+          }}
+        >
+          <source src="/video/t3-galaxy-background-4.mp4" type="video/mp4" />
+        </video>
+        <div
+          style={{
+            position: "absolute",
+            top: mobile ? "25%" : "30%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backdropFilter: "blur(3px)",
+            padding: mobile ? "1rem" : "2rem",
+            borderRadius: "1rem",
+            zIndex: 1,
+            width: mobile ? "90%" : "auto",
+          }}
+        >
+          <div style={{ textAlign: "center", color: "white" }}>
+            <div
+              style={{
+                fontSize: mobile ? "3.5rem" : "7rem",
+                fontWeight: "bold",
+                marginBottom: mobile ? "1rem" : "2rem",
+              }}
+            >
+              <span>
+                <Trans>Decentralized</Trans>
+              </span>
+              <div
+                style={{ display: "flex", gap: mobile ? "0.5rem" : "1rem", flexDirection: mobile ? "column" : "row" }}
+              >
+                <span style={{ color: "#FF7028" }}>
+                  {" "}
+                  <Trans>Perpetual</Trans>
+                </span>
+                <Trans>Exchange</Trans>
+              </div>
+            </div>
             <br />
-            <span className="Home-title-subtext">
-              <Trans>Perpetual</Trans>
-            </span>
-            <br />
-            <Trans>Exchange</Trans>
+            <TradeNowButton
+              showRedirectModal={showRedirectModal}
+              redirectPopupTimestamp={redirectPopupTimestamp}
+              style={{
+                fontSize: mobile ? "2rem" : "3rem",
+                background: "linear-gradient(-72deg, rgba(15,85,232,0.2), rgba(157,223,243,0.2))",
+                border: "1px solid rgba(255,255,255,0.2)",
+                padding: mobile ? "2rem 2rem" : "1.5rem 3rem",
+                borderRadius: "4rem",
+                width: mobile ? "auto" : tablet ? "fit-content" : "auto",
+              }}
+            />
           </div>
-          <TradeNowButton />
         </div>
-        <AppHomeContentDesktop />
       </div>
-      <div className="mobile">
-        <div className="image">
-          <img src={theme.isDark ? mobilet3dark : mobilet3light} alt="" />
-        </div>
-        <div className="text">
-          <p>
-            <Trans>Decentralized </Trans>
-            <br />
-            <span className="subtext">
-              <Trans>Perpetual</Trans>
-            </span>
-            <br />
-            <Trans>Exchange</Trans>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: mobile ? "column" : "row",
+          gap: mobile ? "4rem" : "8rem",
+          fontSize: mobile ? "1.5rem" : "2rem",
+          marginTop: mobile ? "-500px" : "-400px",
+          padding: mobile ? "8px 1rem" : "8px 16rem",
+          cursor: "pointer",
+        }}
+      >
+        <NavLink to="/earn" style={{ flex: 1 }}>
+          <motion.div
+            variants={cardVariants}
+            initial="initial"
+            animate="animate"
+            whileHover="hover"
+            style={{
+              background: "linear-gradient(-72deg, rgba(157,223,243,0.2), rgba(15,85,232,0.2))",
+              border: "1px solid rgba(255,255,255,0.2)",
+              padding: mobile
+                ? "1.5rem 2rem 4rem 2rem"
+                : breakpoints.tablet
+                ? "2rem 4rem 7rem 4rem"
+                : "2rem 6rem 7rem 6rem",
+              borderRadius: mobile ? "2rem" : "4rem",
+              position: "relative",
+              cursor: "pointer",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <h2 style={{ fontWeight: "400", fontSize: mobile ? "1.8rem" : "2rem" }}>Become a Liquidity Provider</h2>
+            <p
+              style={{
+                fontFamily: "Relative, sans-serif",
+                color: "#7B80B8",
+                fontSize: mobile ? "1.2rem" : "inherit",
+                flex: 1,
+              }}
+            >
+              Provide liquidity to T3's trading pools and earn fees from every trade. Join our growing network of
+              liquidity providers and earn passive income from the platform's success.
+            </p>
+            <Button
+              style={{
+                fontSize: mobile ? "1.5rem" : "2rem",
+                color: "white",
+                background: "#FF7028",
+                padding: mobile ? "1rem 2.5rem" : "1.5rem 3.5rem",
+                borderRadius: "3rem",
+                position: "absolute",
+                left: "50%",
+                bottom: 0,
+                transform: "translate(-50%, 50%)",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Buy TLP
+            </Button>
+          </motion.div>
+        </NavLink>
+        <NavLink to="/" style={{ flex: 1 }}>
+          <motion.div
+            variants={cardVariants}
+            initial="initial"
+            animate="animate"
+            whileHover="hover"
+            style={{
+              background: "linear-gradient(-72deg, rgba(15,85,232,0.2), rgba(157,223,243,0.2))",
+              border: "1px solid rgba(255,255,255,0.2)",
+              padding: mobile
+                ? "1.5rem 2rem 4rem 2rem"
+                : breakpoints.tablet
+                ? "2rem 4rem 7rem 4rem"
+                : "2rem 6rem 7rem 6rem",
+              borderRadius: mobile ? "2rem" : "4rem",
+              position: "relative",
+              cursor: "pointer",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <h2 style={{ fontWeight: "400", marginBottom: 0, fontSize: mobile ? "1.8rem" : "2rem" }}>Buy TMX Token</h2>
+            <span style={{ fontSize: mobile ? "1.2rem" : "1.5rem", color: "rgb(189 81 27)" }}>(Coming Soon)</span>
+            <p
+              style={{
+                fontFamily: "Relative, sans-serif",
+                color: "#7B80B8",
+                fontSize: mobile ? "1.2rem" : "inherit",
+                flex: 1,
+              }}
+            >
+              Invest in T3's growth by holding TMX tokens. Earn platform fees, exclusive rewards, and unlock premium
+              features as a T3 Pro member. Be part of our ecosystem's future.
+            </p>
+            <Button
+              disabled
+              style={{
+                fontSize: mobile ? "1.5rem" : "2rem",
+                color: "white",
+                background: "#59280F",
+                padding: mobile ? "1rem 2.5rem" : "1.5rem 3.5rem",
+                borderRadius: "3rem",
+                position: "absolute",
+                left: "50%",
+                bottom: 0,
+                transform: "translate(-50%, 50%)",
+                cursor: "not-allowed",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Buy TMX
+            </Button>
+          </motion.div>
+        </NavLink>
+      </div>
+
+      <div
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(123,128,184,0.2) 0%, rgba(123,128,184,0.5) 50%, rgba(123,128,184,0.2) 100%)",
+          height: "1px",
+          margin: mobile ? "10rem 1rem -8rem 1rem" : "18rem 6rem -4rem 6rem",
+        }}
+      />
+
+      <div
+        style={{
+          background: "linear-gradient(-72deg, rgba(15,85,232,0.2), rgba(157,223,243,0.2))",
+          border: "1px solid rgba(255,255,255,0.2)",
+          padding: mobile ? "1.5rem" : "2rem",
+          borderRadius: "2rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: mobile ? "1rem" : "2rem",
+          margin: mobile ? "18rem 1rem 6rem 1rem" : "18rem 6rem 12rem 6rem",
+        }}
+      >
+        <img
+          src={morphRocket}
+          alt="morph-rocket"
+          style={{
+            height: mobile ? "60px" : "80px",
+            width: mobile ? "60px" : "80px",
+            animation: "float 3s ease-in-out infinite",
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: mobile ? "1.8rem" : "2.5rem",
+              background: "linear-gradient(90deg, #0F55E8, #9DDFF3)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Now Live on Morph L2!
+          </h2>
+          <p
+            style={{
+              margin: "0.5rem 0 0 0",
+              color: "#7B80B8",
+              fontSize: mobile ? "1rem" : "inherit",
+            }}
+          >
+            Experience lightning-fast trades with near-zero fees
           </p>
-          <TradeNowButton />
         </div>
-        <AppHomeContent />
+      </div>
+
+      <div
+        style={{
+          width: "100%",
+        }}
+      >
+        <DefiOptions mobile={mobile} />
+      </div>
+
+      <div
+        style={{
+          padding: mobile ? "1rem" : "4rem",
+          borderRadius: "2rem",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: mobile ? "3rem" : "5rem", // Increased from 2rem/4rem
+            textAlign: "center",
+            background: "linear-gradient(90deg, #0F55E8, #9DDFF3)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            marginBottom: mobile ? "1.5rem" : "4rem",
+          }}
+        >
+          Roadmap
+        </h2>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            position: "relative",
+            padding: "2rem 0",
+          }}
+        >
+          {/* Vertical Timeline Line */}
+          <div
+            style={{
+              position: "absolute",
+              left: mobile ? "1rem" : "50%",
+              transform: mobile ? "none" : "translateX(-50%)",
+              width: "4px",
+              height: "100%",
+              background: "linear-gradient(180deg, #0F55E8, #9DDFF3)",
+              zIndex: 0,
+            }}
+          />
+
+          {/* Timeline Content */}
+          <div style={{ width: "100%", maxWidth: "1000px", position: "relative", zIndex: 1 }}>
+            {[
+              {
+                phase: "Ignition Phase",
+                emoji: "🚀",
+                items: ["MorphL2 Mainnet", "Add Exchange Features", "Add Your Favorite Meme Coin on ~100x Leverage"],
+              },
+              {
+                phase: "Growth Phase",
+                emoji: "⚡",
+                items: ["Launch TMX", "Easy multi-chain bridge", "Easy onboard/offboard"],
+              },
+              {
+                phase: "Launchpad Phase",
+                emoji: "🛠️",
+                items: ["Tradfi integrations", "Realworld asset integrations", "Onchain options"],
+              },
+              {
+                phase: "Expansion Phase",
+                emoji: "✨",
+                items: ["NFT options", "Forex", "Add Compliant Pool Options"],
+              },
+            ].map((phase, index) => (
+              <motion.div
+                key={phase.phase}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2 }}
+                style={{
+                  display: "flex",
+                  justifyContent: mobile ? "flex-start" : index % 2 === 0 ? "flex-start" : "flex-end",
+                  marginBottom: mobile ? "2rem" : "4rem",
+                  position: "relative",
+                }}
+              >
+                {/* Phase Content */}
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{
+                    width: mobile ? "calc(100% - 2rem)" : "45%",
+                    marginLeft: mobile ? "2rem" : "0",
+                    background: "rgba(15,85,232,0.1)",
+                    borderRadius: "1rem",
+                    padding: mobile ? "1rem" : "2rem",
+                    border: "1px solid rgba(157,223,243,0.2)",
+                    position: "relative",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {/* Phase Icon */}
+                  <motion.div
+                    whileHover={{
+                      scale: 1.2,
+                      boxShadow: "0 0 20px rgba(157,223,243,0.5)",
+                    }}
+                    transition={{ duration: 0.3 }}
+                    animate={{ y: "-50%" }}
+                    style={{
+                      position: "absolute",
+                      left: mobile ? "-2.5rem" : index % 2 === 0 ? "calc(100% + 2.5rem)" : "auto",
+                      right: mobile ? "auto" : index % 2 === 0 ? "auto" : "calc(100% + 2.5rem)",
+                      top: "50%",
+                      width: mobile ? "2rem" : "3rem",
+                      height: mobile ? "2rem" : "3rem",
+                      background: "linear-gradient(45deg, #0F55E8, #9DDFF3)",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      border: "4px solid #1a1c2a",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span style={{ color: "white", fontSize: mobile ? "1rem" : "1.4rem" }}>{index + 1}</span>
+                  </motion.div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <h3
+                      style={{
+                        color: "#9DDFF3",
+                        fontSize: mobile ? "1.4rem" : "2rem", // Increased from 1.2rem/1.8rem
+                        margin: 0,
+                      }}
+                    >
+                      {phase.phase}
+                    </h3>
+                    <span style={{ fontSize: mobile ? "1.4rem" : "2rem" }}>{phase.emoji}</span>
+                  </div>
+                  <ul
+                    style={{
+                      listStyle: "none",
+                      padding: 0,
+                      margin: 0,
+                    }}
+                  >
+                    {phase.items.map((item, i) => (
+                      <motion.li
+                        key={item}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.2 + i * 0.1 }}
+                        style={{
+                          color: "#7B80B8",
+                          marginBottom: "0.5rem",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                          cursor: "pointer",
+                          marginLeft: mobile ? "1rem" : "3rem",
+                          fontSize: mobile ? "1.2rem" : "1.4rem",
+                        }}
+                      >
+                        <motion.span
+                          whileHover={{ scale: 1.5 }}
+                          style={{
+                            display: "inline-block",
+                            width: "8px",
+                            height: "2px",
+                            background: "#9DDFF3",
+                            borderRadius: "1px",
+                          }}
+                        />
+                        {item}
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <h2
+        style={{
+          fontSize: mobile ? "3rem" : "5rem",
+          textAlign: "center",
+          background: "linear-gradient(90deg, #0F55E8, #9DDFF3)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          marginBottom: mobile ? "1.5rem" : "4rem",
+        }}
+      >
+        Coming Soon
+      </h2>
+
+      <div
+        style={{
+          padding: mobile ? "2rem" : "4rem",
+          background: "linear-gradient(-72deg, rgba(15,85,232,0.1), rgba(157,223,243,0.1))",
+          borderRadius: "2rem",
+          margin: mobile ? "2rem 1rem" : "2rem 6rem",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: mobile ? "2.5rem" : "4rem",
+            textAlign: "center",
+            background: "linear-gradient(90deg, #0F55E8, #9DDFF3)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            marginBottom: mobile ? "2rem" : "4rem",
+            filter: "blur(8px)",
+          }}
+        >
+          Tokenomics
+        </h2>
+        <div
+          style={{
+            position: "absolute",
+            top: "45px",
+            right: "-65px",
+            backgroundColor: "#FF7028",
+            color: "white",
+            padding: "8px 80px",
+            transform: "rotate(45deg)",
+            fontSize: mobile ? "1.2rem" : "1.6rem",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            zIndex: 1,
+          }}
+        >
+          Coming Soon
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: mobile ? "column" : "row",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+            filter: "blur(6px)",
+            gap: mobile ? "2rem" : 0,
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: mobile ? "300px" : "500px",
+              height: mobile ? "300px" : "500px",
+            }}
+          >
+            {/* Circular Progress Background */}
+            <svg
+              viewBox="0 0 200 200"
+              style={{
+                position: "absolute",
+                transform: "rotate(-90deg)",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              {[
+                { percentage: 50, color: "rgba(157,223,243,0.5)", offset: 0 },
+                { percentage: 12, color: "rgba(123,128,184,0.5)", offset: 50 },
+                { percentage: 20, color: "rgba(15,85,232,0.5)", offset: 62 },
+                { percentage: 5, color: "rgba(255,112,40,0.5)", offset: 82 },
+                { percentage: 2, color: "rgba(75,85,99,0.5)", offset: 87 },
+                { percentage: 5, color: "rgba(55,65,81,0.5)", offset: 89 },
+                { percentage: 4, color: "rgba(31,41,55,0.5)", offset: 94 },
+                { percentage: 2, color: "rgba(17,24,39,0.5)", offset: 98 },
+              ].map((segment, index) => {
+                const radius = 90;
+                const circumference = 2 * Math.PI * radius;
+                const offset = (segment.offset / 100) * circumference;
+                const length = (segment.percentage / 100) * circumference;
+
+                return (
+                  <circle
+                    key={index}
+                    cx="100"
+                    cy="100"
+                    r={radius}
+                    fill="none"
+                    stroke={segment.color}
+                    strokeWidth="20"
+                    strokeDasharray={`${length} ${circumference}`}
+                    strokeDashoffset={-offset}
+                    style={{
+                      transition: "stroke-dashoffset 1s ease-in-out",
+                    }}
+                  />
+                );
+              })}
+              {/* Center Circle */}
+              <circle cx="100" cy="100" r="60" fill="#1a1c2a" stroke="rgba(157,223,243,0.2)" strokeWidth="2" />
+            </svg>
+
+            {/* Center Content */}
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                textAlign: "center",
+                color: "white",
+                borderRadius: "50%",
+              }}
+            >
+              <img
+                src={tmxImg}
+                alt="TMX"
+                style={{
+                  width: mobile ? "60px" : "100px",
+                  height: mobile ? "60px" : "100px",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Legend */}
+          <div
+            style={{
+              marginLeft: mobile ? 0 : "4rem",
+              display: "grid",
+              gridTemplateColumns: mobile ? "repeat(2, 1fr)" : "1fr",
+              gap: "1rem",
+              fontSize: mobile ? "0.9rem" : "inherit",
+            }}
+          >
+            {[
+              { label: "Public Sale", color: "rgba(157,223,243,0.5)" },
+              { label: "Liquidity", color: "rgba(123,128,184,0.5)" },
+              { label: "Ecosystem", color: "rgba(15,85,232,0.5)" },
+              { label: "Private Sale", color: "rgba(255,112,40,0.5)" },
+              { label: "Rewards", color: "rgba(75,85,99,0.5)" },
+              { label: "Marketing", color: "rgba(55,65,81,0.5)" },
+              { label: "Team", color: "rgba(31,41,55,0.5)" },
+              { label: "Advisors", color: "rgba(17,24,39,0.5)" },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    background: item.color,
+                  }}
+                />
+                <div style={{ color: "#7B80B8" }}>{item.label}</div>
+                <div style={{ color: "white", marginLeft: "auto" }}>...</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }

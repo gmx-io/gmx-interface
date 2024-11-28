@@ -1,5 +1,6 @@
 import { SOCIAL_LINKS } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NavLink } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -13,6 +14,10 @@ export default function Footer() {
               </ExternalLink>
             );
           })}
+        </div>
+        <div style={{ display: "flex", gap: "1rem", marginTop: "2rem", fontSize: "1rem" }}>
+          <NavLink to="/terms-and-conditions">Terms and Conditions</NavLink>
+          <NavLink to="/referral-terms">Referral Terms</NavLink>
         </div>
         <p className="text">Copyright © T3 Finance Limited. All rights reserved.</p>
       </div>

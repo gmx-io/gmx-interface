@@ -1,0 +1,35 @@
+.landing-content {
+  display: flex;
+  overflow: scroll;
+  padding: 2%;
+  margin-bottom: 6rem;
+}
+
+.content-title {
+  color: #ffffff;
+  display: grid;
+  font-weight: bold;
+  grid-gap: 17px;
+  font-size: large;
+  padding: 35px;
+}
+
+#light .content-title {
+  color: #000000;
+}
+.content-desc {
+  font-weight: normal;
+  font-size: medium;
+}
+
+@media (max-width: 1000px) {
+  .landing-content {
+    display: block;
+    text-align: center;
+    margin-bottom: 10rem;
+  }
+
+  .content-title img {
+    margin: 0 auto;
+  }
+}
