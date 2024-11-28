@@ -349,7 +349,7 @@ describe("TradeHistoryRow helpers", () => {
       "value": "$83.95",
     },
     {
-      "key": "Min. required Collateral",
+      "key": "Min. Required Collateral",
       "value": "$64.41",
     },
     "",
@@ -369,7 +369,7 @@ describe("TradeHistoryRow helpers", () => {
     },
     "",
     {
-      "key": "Returned collateral",
+      "key": "Returned Collateral",
       "value": "$66.08",
     },
   ],

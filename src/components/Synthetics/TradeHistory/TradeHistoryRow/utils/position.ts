@@ -630,7 +630,7 @@ export const formatPositionMessage = (
         }),
         "",
         infoRow(t`Collateral at Liquidation`, formattedLeftoverCollateral),
-        infoRow(t`Min. required Collateral`, formattedMinCollateral),
+        infoRow(t`Min. Required Collateral`, formattedMinCollateral),
         "",
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
@@ -641,7 +641,7 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Returned collateral`, formattedReturnedCollateral)
+        infoRow(t`Returned Collateral`, formattedReturnedCollateral)
       ),
       isActionError: true,
       pnl: formattedPnl,

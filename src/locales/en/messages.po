@@ -274,8 +274,8 @@ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Returned collateral"
-msgstr "Returned collateral"
+#~ msgid "Returned collateral"
+#~ msgstr "Returned collateral"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
@@ -631,6 +631,10 @@ msgstr "Search Token"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr "Buy GMX using Decentralized Exchange Aggregators:"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Min. Required Collateral"
+msgstr "Min. Required Collateral"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -2535,6 +2539,10 @@ msgstr "Funding Fee Rate"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Returned Collateral"
+msgstr "Returned Collateral"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -5082,8 +5090,8 @@ msgid "There is no liquidation price, as the position's collateral value will in
 msgstr "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Min. required Collateral"
-msgstr "Min. required Collateral"
+#~ msgid "Min. required Collateral"
+#~ msgstr "Min. required Collateral"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx

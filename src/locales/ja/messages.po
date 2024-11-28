@@ -274,8 +274,8 @@ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Returned collateral"
-msgstr ""
+#~ msgid "Returned collateral"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
@@ -630,6 +630,10 @@ msgstr "トークン検索"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Min. Required Collateral"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -2534,6 +2538,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Returned Collateral"
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -5079,8 +5087,8 @@ msgid "There is no liquidation price, as the position's collateral value will in
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Min. required Collateral"
-msgstr "最低必要担保"
+#~ msgid "Min. required Collateral"
+#~ msgstr "最低必要担保"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx

@@ -33,6 +33,20 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "trading-fees-reduction",
+    title: "Trading fees will be reduced on 4 Dec 2024",
+    isActive: true,
+    startDate: "28 Nov 2024, 00:00",
+    endDate: "18 Dec 2024, 00:00",
+    bodyText: (
+      <>
+        Open and Close fees will be reduced by 25% for SOL/USD, DOGE/USD, LINK/USD markets on 4 Dec 2024.
+        <br />
+        <ExternalLink href="https://x.com/GMX_IO/status/1861743953537569043">Learn more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: "gmx-pendle-listing",
     title: "GMX single-sided and PENDLE markets added on Arbitrum",
     isActive: true,
