@@ -525,15 +525,15 @@ export function useTotalGmxSupply() {
 }
 
 export function useTotalGmxStaked() {
-  const stakedGmxTrackerAddressMorph = getContract(MORPH_L2, "StakedGmxTracker");
+  const stakedGmxTrackerAddressMorph = getContract(MORPH_MAINNET, "StakedGmxTracker");
 
   const stakedGmxTrackerAddressOptimism = getContract(OPTIMISM_MAINNET, "StakedGmxTracker");
   let totalStakedGmx = useRef(bigNumberify(0));
   const { data: stakedGmxSupplyMorph, mutate: updateStakedGmxSupplyMorph } = useSWR<BigNumber>(
     [
-      `StakeV2:stakedGmxSupply:${MORPH_L2}`,
-      MORPH_L2,
-      getContract(MORPH_L2, "GMX"),
+      `StakeV2:stakedGmxSupply:${MORPH_MAINNET}`,
+      MORPH_MAINNET,
+      getContract(MORPH_MAINNET, "GMX"),
       "balanceOf",
       stakedGmxTrackerAddressMorph,
     ],

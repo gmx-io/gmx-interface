@@ -78,7 +78,7 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
   }
 
   // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
-  const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&limit=${limit}`;
+  const url = `${TF_TV_DATAFEED_API}/charthistory?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&limit=${limit}`;
 
   try {
     const response = await fetch(url);
@@ -88,13 +88,30 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
     // const prices = await response.json().then(({ prices }) => prices);
     // return prices.map(formatBarInfo);
     const data = await response.json();
-    const lastData = data.map(formatCustomBarData);
+    const lastData = data.map(formatAlpacaBarData);
     lastData.shift();
     return lastData;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(`Error fetching data: ${error}`);
   }
+}
+
+
+
+function formatAlpacaBarData(bar) {
+  const t = new Date(bar.t).getTime() / 1000;
+  const open = bar.o;
+  const close = bar.c;
+  const high = bar.h;
+  const low = bar.l;
+  return {
+    time: t + timezoneOffset,
+    open,
+    close,
+    high,
+    low,
+  };
 }
 
 function formatCustomBarData(bar) {
@@ -115,7 +132,7 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
   const from = Math.floor(Date.now() / 1000 - timeDiff);
   // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
 
-  const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&from=${from}`;
+  const url = `${TF_TV_DATAFEED_API}/charthistory?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&from=${from}`;
 
   const TIMEOUT = 60000;
   const res: Response = await new Promise(async (resolve, reject) => {
@@ -161,7 +178,7 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
 
   // prices = prices.map(formatBarInfo);
   // return prices;
-  const bardata = json.map(formatCustomBarData);
+  const bardata = json.map(formatAlpacaBarData);
   return bardata;
 }
 
