@@ -751,7 +751,8 @@ export default function DashboardV2() {
                       <div className="label">
                         <Trans>Supply</Trans>
                       </div>
-                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} TMX</div>
+                      {/* <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} TMX</div> */}
+                      <div>0 TMX</div> 
                     </div>
                     <div className="App-card-row">
                       <div className="label">
