@@ -78,10 +78,11 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
-  const { account: currentAccount } = useWallet();
+  // const { account: currentAccount } = useWallet();
   const provider = getProvider(undefined, chainId);
   const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
+  const currentAccount = undefined;
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);

@@ -1,7 +1,6 @@
-import { useMemo } from "react";
 import { ethers } from "ethers";
+import { useMemo } from "react";
 
-import { isMarketEnabled } from "config/markets";
 import { convertTokenAddress, getToken } from "config/tokens";
 
 import { MarketsData } from "./types";
@@ -23,13 +22,13 @@ export function useMarkets(chainId: number): MarketsResult {
       throw new Error(`Static markets data for chain ${chainId} not found`);
     }
 
-    return Object.values(markets).reduce(
-      (acc: MarketsResult, enabledMarketConfig) => {
+    return Object.entries(markets).reduce(
+      (acc: MarketsResult, [marketAddress, enabledMarketConfig]) => {
         const market = enabledMarketConfig;
 
-        if (!isMarketEnabled(chainId, market.marketTokenAddress)) {
-          return acc;
-        }
+        // if (!isMarketEnabled(chainId, marketAddress)) {
+        //   return acc;
+        // }
 
         try {
           const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
@@ -41,8 +40,8 @@ export function useMarkets(chainId: number): MarketsResult {
 
           const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
 
-          acc.marketsAddresses!.push(market.marketTokenAddress);
-          acc.marketsData![market.marketTokenAddress] = {
+          acc.marketsAddresses!.push(marketAddress);
+          acc.marketsData![marketAddress] = {
             ...market,
             isSameCollaterals,
             isSpotOnly,

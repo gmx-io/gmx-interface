@@ -16,7 +16,9 @@ export async function buildMarketsConfigsRequest(
 ) {
   const request: MarketConfigMulticallRequestConfig = {};
   for (const marketAddress of marketsAddresses || []) {
-    const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
+    const fixedAddress = marketAddress.replace("1-", "");
+
+    const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[fixedAddress];
 
     if (!prebuiltHashedKeys) {
       throw new Error(

@@ -8,6 +8,7 @@
 import { parse } from "date-fns";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { getIsFlagEnabled } from "config/ab";
 
 const p = (date: string) => parse(date, "dd MMM yyyy", new Date());
 
@@ -532,6 +533,517 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+
+    // ------ DUPLICATED MARKETS ------
+
+    // BTC/USD [WBTC.e-USDC]
+    ...(getIsFlagEnabled("testMoreMarkets")
+      ? {
+          "1-0x47c031236e19d024b42f8AE6780E44A573170703": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x47c031236e19d024b42f8AE6780E44A573170703",
+            indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // ETH/USD [WETH-USDC]
+          "1-0x70d95587d40A2caf56bd97485aB3Eec10Bee6336": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+            indexTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // DOGE/USD [WETH-USDC]
+          "1-0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4",
+            indexTokenAddress: "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // SOL/USD [SOL-USDC]
+          "1-0x09400D9DB990D5ed3f35D7be61DfAEB900Af03C9": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x09400D9DB990D5ed3f35D7be61DfAEB900Af03C9",
+            indexTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+            longTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // LTC/USD [WETH-USDC]
+          "1-0xD9535bB5f58A1a75032416F2dFe7880C30575a41": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xD9535bB5f58A1a75032416F2dFe7880C30575a41",
+            indexTokenAddress: "0xB46A094Bc4B0adBD801E14b9DB95e05E28962764",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // UNI/USD [UNI-USDC]
+          "1-0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50",
+            indexTokenAddress: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+            longTokenAddress: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // LINK/USD [LINK-USDC]
+          "1-0x7f1fa204bb700853D36994DA19F830b6Ad18455C": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x7f1fa204bb700853D36994DA19F830b6Ad18455C",
+            indexTokenAddress: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+            longTokenAddress: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // ARB/USD [ARB-USDC]
+          "1-0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407",
+            indexTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+            longTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // SWAP-ONLY [USDC-USDC.e]
+          "1-0x9C2433dFD71096C435Be9465220BB2B189375eA7": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x9C2433dFD71096C435Be9465220BB2B189375eA7",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            shortTokenAddress: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+          },
+          // SWAP-ONLY [USDC-USDT]
+          "1-0xB686BcB112660343E6d15BDb65297e110C8311c4": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xB686BcB112660343E6d15BDb65297e110C8311c4",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            shortTokenAddress: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+          },
+          // SWAP-ONLY [USDC-DAI]
+          "1-0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xe2fEDb9e6139a182B98e7C2688ccFa3e9A53c665",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            shortTokenAddress: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+          },
+          // XRP/USD [WETH-USDC]
+          "1-0x0CCB4fAa6f1F1B30911619f1184082aB4E25813c": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x0CCB4fAa6f1F1B30911619f1184082aB4E25813c",
+            indexTokenAddress: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // BNB/USD [BNB-USDC]
+          "1-0x2d340912Aa47e33c90Efb078e69E70EFe2B34b9B": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x2d340912Aa47e33c90Efb078e69E70EFe2B34b9B",
+            indexTokenAddress: "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+            longTokenAddress: "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // AAVE [AAVE-USDC]
+          "1-0x1CbBa6346F110c8A5ea739ef2d1eb182990e4EB2": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x1CbBa6346F110c8A5ea739ef2d1eb182990e4EB2",
+            indexTokenAddress: "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+            longTokenAddress: "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // ATOM [WETH-USDC]
+          "1-0x248C35760068cE009a13076D573ed3497A47bCD4": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x248C35760068cE009a13076D573ed3497A47bCD4",
+            indexTokenAddress: "0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // NEAR [WETH-USDC]
+          "1-0x63Dc80EE90F26363B3FCD609007CC9e14c8991BE": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x63Dc80EE90F26363B3FCD609007CC9e14c8991BE",
+            indexTokenAddress: "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // AVAX [WAVAX-USDC]
+          "1-0x7BbBf946883a5701350007320F525c5379B8178A": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x7BbBf946883a5701350007320F525c5379B8178A",
+            indexTokenAddress: "0x565609fAF65B92F7be02468acF86f8979423e514",
+            longTokenAddress: "0x565609fAF65B92F7be02468acF86f8979423e514",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // OP [OP-USDC]
+          "1-0x4fDd333FF9cA409df583f306B6F5a7fFdE790739": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x4fDd333FF9cA409df583f306B6F5a7fFdE790739",
+            indexTokenAddress: "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
+            longTokenAddress: "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // BTC/USD [WBTC.e-WBTC.e]
+          "1-0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77",
+            indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+          },
+          // ETH/USD [WETH-WETH]
+          "1-0x450bb6774Dd8a756274E0ab4107953259d2ac541": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x450bb6774Dd8a756274E0ab4107953259d2ac541",
+            indexTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          },
+          // GMX/USD [GMX-USDC]
+          "1-0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da",
+            indexTokenAddress: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+            longTokenAddress: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // PEPE [PEPE-USDC]
+          "1-0x2b477989A149B17073D9C9C82eC9cB03591e20c6": {
+            enabled: true,
+            listingDate: p("17 Jul 2024"),
+            marketTokenAddress: "0x2b477989A149B17073D9C9C82eC9cB03591e20c6",
+            indexTokenAddress: "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+            longTokenAddress: "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // WIF [WIF-USDC]
+          "1-0x0418643F94Ef14917f1345cE5C460C37dE463ef7": {
+            enabled: true,
+            listingDate: p("17 Jul 2024"),
+            marketTokenAddress: "0x0418643F94Ef14917f1345cE5C460C37dE463ef7",
+            indexTokenAddress: "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
+            longTokenAddress: "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // ETH/USD [wstETH-USDe]
+          "1-0x0Cf1fb4d1FF67A3D8Ca92c9d6643F8F9be8e03E5": {
+            enabled: true,
+            listingDate: p("31 Jul 2024"),
+            marketTokenAddress: "0x0Cf1fb4d1FF67A3D8Ca92c9d6643F8F9be8e03E5",
+            indexTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            longTokenAddress: "0x5979D7b546E38E414F7E9822514be443A4800529",
+            shortTokenAddress: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+          },
+          // SWAP-ONLY [wstETH-WETH]
+          "1-0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8": {
+            enabled: true,
+            listingDate: p("31 Jul 2024"),
+            marketTokenAddress: "0xb56E5E2eB50cf5383342914b0C85Fe62DbD861C8",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0x5979D7b546E38E414F7E9822514be443A4800529",
+            shortTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          },
+          // SWAP-ONLY [USDe-USDC]
+          "1-0x45aD16Aaa28fb66Ef74d5ca0Ab9751F2817c81a4": {
+            enabled: true,
+            listingDate: p("31 Jul 2024"),
+            marketTokenAddress: "0x45aD16Aaa28fb66Ef74d5ca0Ab9751F2817c81a4",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // SHIB/USD [WETH-USDC]
+          "1-0xB62369752D8Ad08392572db6d0cc872127888beD": {
+            enabled: true,
+            listingDate: p("7 Aug 2024"),
+            marketTokenAddress: "0xB62369752D8Ad08392572db6d0cc872127888beD",
+            indexTokenAddress: "0x3E57D02f9d196873e55727382974b02EdebE6bfd",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // STX/USD [wBTC-USDC]
+          "1-0xD9377d9B9a2327C7778867203deeA73AB8a68b6B": {
+            enabled: true,
+            listingDate: p("14 Aug 2024"),
+            marketTokenAddress: "0xD9377d9B9a2327C7778867203deeA73AB8a68b6B",
+            indexTokenAddress: "0xBaf07cF91D413C0aCB2b7444B9Bf13b4e03c9D71",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // ORDI/USD [wBTC-USDC]
+          "1-0x93385F7C646A3048051914BDFaC25F4d620aeDF1": {
+            enabled: true,
+            listingDate: p("14 Aug 2024"),
+            marketTokenAddress: "0x93385F7C646A3048051914BDFaC25F4d620aeDF1",
+            indexTokenAddress: "0x1E15d08f3CA46853B692EE28AE9C7a0b88a9c994",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // BTC/USD [tBTC]
+          "1-0xd62068697bCc92AF253225676D618B0C9f17C663": {
+            enabled: true,
+            listingDate: p("11 Sep 2024"),
+            marketTokenAddress: "0xd62068697bCc92AF253225676D618B0C9f17C663",
+            indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+            longTokenAddress: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
+            shortTokenAddress: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
+          },
+          //  EIGEN/USD [WETH-USDC]
+          "1-0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791": {
+            enabled: true,
+            listingDate: p("10 Oct 2024"),
+            marketTokenAddress: "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791",
+            indexTokenAddress: "0x606C3e5075e5555e79Aa15F1E9FACB776F96C248",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          //  SATS/USD [WBTC-USDC]
+          "1-0x8ea4Fb801493DaD8724F90Fb2e279534fa591366": {
+            enabled: true,
+            listingDate: p("10 Oct 2024"),
+            marketTokenAddress: "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366",
+            indexTokenAddress: "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // POL/USD [ETH-USDC]
+          "1-0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4": {
+            enabled: true,
+            listingDate: p("17 Oct 2024"),
+            marketTokenAddress: "0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4",
+            indexTokenAddress: "0x9c74772b713a1B032aEB173E28683D937E51921c",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // AAVE/USD [ETH-USDC]
+          "1-0x77B2eC357b56c7d05a87971dB0188DBb0C7836a5": {
+            enabled: true,
+            listingDate: p("17 Oct 2024"),
+            marketTokenAddress: "0x77B2eC357b56c7d05a87971dB0188DBb0C7836a5",
+            indexTokenAddress: "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // PEPE/USD [ETH-USDC]
+          "1-0x0Bb2a83F995E1E1eae9D7fDCE68Ab1ac55b2cc85": {
+            enabled: true,
+            listingDate: p("17 Oct 2024"),
+            marketTokenAddress: "0x0Bb2a83F995E1E1eae9D7fDCE68Ab1ac55b2cc85",
+            indexTokenAddress: "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // UNI/USD [ETH-USDC]
+          "1-0xD8471b9Ea126272E6d32B5e4782Ed76DB7E554a4": {
+            enabled: true,
+            listingDate: p("17 Oct 2024"),
+            marketTokenAddress: "0xD8471b9Ea126272E6d32B5e4782Ed76DB7E554a4",
+            indexTokenAddress: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // APE/USD [APE-USDC]
+          "1-0xdAB21c4d1F569486334C93685Da2b3F9b0A078e8": {
+            enabled: true,
+            listingDate: p("24 Oct 2024"),
+            marketTokenAddress: "0xdAB21c4d1F569486334C93685Da2b3F9b0A078e8",
+            indexTokenAddress: "0x7f9FBf9bDd3F4105C478b996B648FE6e828a1e98",
+            longTokenAddress: "0x7f9FBf9bDd3F4105C478b996B648FE6e828a1e98",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // SUI/USD [WETH-USDC]
+          "1-0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797": {
+            enabled: true,
+            listingDate: p("24 Oct 2024"),
+            marketTokenAddress: "0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797",
+            indexTokenAddress: "0x197aa2DE1313c7AD50184234490E12409B2a1f95",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // SEI/USD [WETH-USDC]
+          "1-0xB489711B1cB86afDA48924730084e23310EB4883": {
+            enabled: true,
+            listingDate: p("24 Oct 2024"),
+            marketTokenAddress: "0xB489711B1cB86afDA48924730084e23310EB4883",
+            indexTokenAddress: "0x55e85A147a1029b985384822c0B2262dF8023452",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // APT/USD [WETH-USDC]
+          "1-0x66A69c8eb98A7efE22A22611d1967dfec786a708": {
+            enabled: true,
+            listingDate: p("31 Oct 2024"),
+            marketTokenAddress: "0x66A69c8eb98A7efE22A22611d1967dfec786a708",
+            indexTokenAddress: "0x3f8f0dCE4dCE4d0D1d0871941e79CDA82cA50d0B",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // TIA/USD [WETH-USDC]
+          "1-0xBeB1f4EBC9af627Ca1E5a75981CE1AE97eFeDA22": {
+            enabled: true,
+            listingDate: p("31 Oct 2024"),
+            marketTokenAddress: "0xBeB1f4EBC9af627Ca1E5a75981CE1AE97eFeDA22",
+            indexTokenAddress: "0x38676f62d166f5CE7De8433F51c6B3D6D9d66C19",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // TRX/USD [WETH-USDC]
+          "1-0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1": {
+            enabled: true,
+            listingDate: p("7 Nov 2024"),
+            marketTokenAddress: "0x3680D7bFE9260D3c5DE81AEB2194c119a59A99D1",
+            indexTokenAddress: "0xb06aa7E4af937C130dDade66f6ed7642716fe07A",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // TON/USD [WETH-USDC]
+          "1-0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c": {
+            enabled: true,
+            listingDate: p("7 Nov 2024"),
+            marketTokenAddress: "0x15c6eBD4175ffF9EE3c2615c556fCf62D2d9499c",
+            indexTokenAddress: "0xB2f7cefaeEb08Aa347705ac829a7b8bE2FB560f3",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // WLD/USD [WETH-USDC]
+          "1-0x872b5D567a2469Ed92D252eaCB0EB3BB0769e05b": {
+            enabled: true,
+            listingDate: p("15 Nov 2024"),
+            marketTokenAddress: "0x872b5D567a2469Ed92D252eaCB0EB3BB0769e05b",
+            indexTokenAddress: "0x75B9AdD873641b253718810E6c65dB6d72311FD0",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // BONK/USD [WETH-USDC]
+          "1-0xFaC5fF56c269432706d47DC82Ab082E9AE7D989E": {
+            enabled: true,
+            listingDate: p("15 Nov 2024"),
+            marketTokenAddress: "0xFaC5fF56c269432706d47DC82Ab082E9AE7D989E",
+            indexTokenAddress: "0x1FD10E767187A92f0AB2ABDEEF4505e319cA06B2",
+            longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // TAO/USD [WBTC-USDC]
+          "1-0xe55e1A29985488A2c8846a91E925c2B7C6564db1": {
+            enabled: true,
+            listingDate: p("15 Nov 2024"),
+            marketTokenAddress: "0xe55e1A29985488A2c8846a91E925c2B7C6564db1",
+            indexTokenAddress: "0x938aef36CAaFbcB37815251B602168087eC14648",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // BOME/USD [WBTC/USDC]
+          "1-0x71237F8C3d1484495A136022E16840b70fF84a69": {
+            enabled: true,
+            listingDate: p("21 Nov 2024"),
+            marketTokenAddress: "0x71237F8C3d1484495A136022E16840b70fF84a69",
+            indexTokenAddress: "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // FLOKI/USD [WBTC/USDC]
+          "1-0xfD46a5702D4d97cE0164375744c65F0c31A3901b": {
+            enabled: true,
+            listingDate: p("21 Nov 2024"),
+            marketTokenAddress: "0xfD46a5702D4d97cE0164375744c65F0c31A3901b",
+            indexTokenAddress: "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // MEME/USD [WBTC/USDC]
+          "1-0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C": {
+            enabled: true,
+            listingDate: p("21 Nov 2024"),
+            marketTokenAddress: "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C",
+            indexTokenAddress: "0xaF770F03518686a365300ab35AD860e99967B2f0",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // MEW/USD [WBTC/USDC]
+          "1-0x71B7fF592a974e2B501D8A7a11f5c42DcD365244": {
+            enabled: true,
+            listingDate: p("21 Nov 2024"),
+            marketTokenAddress: "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244",
+            indexTokenAddress: "0x5503CF72f54b6d692d36BBCD391516A7dE068687",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // GMX [GMX]
+          "1-0xbD48149673724f9cAeE647bb4e9D9dDaF896Efeb": {
+            enabled: true,
+            listingDate: p("22 Nov 2024"),
+            marketTokenAddress: "0xbD48149673724f9cAeE647bb4e9D9dDaF896Efeb",
+            indexTokenAddress: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+            longTokenAddress: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+            shortTokenAddress: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+          },
+          // PENDLE/USD [PENDLE/USDC]
+          "1-0x784292E87715d93afD7cb8C941BacaFAAA9A5102": {
+            enabled: true,
+            listingDate: p("22 Nov 2024"),
+            marketTokenAddress: "0x784292E87715d93afD7cb8C941BacaFAAA9A5102",
+            indexTokenAddress: "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8",
+            longTokenAddress: "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // ADA/USD [WBTC/USDC]
+          "1-0xcaCb964144f9056A8f99447a303E60b4873Ca9B4": {
+            enabled: true,
+            listingDate: p("28 Nov 2024"),
+            marketTokenAddress: "0xcaCb964144f9056A8f99447a303E60b4873Ca9B4",
+            indexTokenAddress: "0x53186c8419BEB83fE4Da74F7875041a1287337ED",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // BCH/USD [WBTC/USDC]
+          "1-0x62feB8Ec060A7dE5b32BbbF4AC70050f8a043C17": {
+            enabled: true,
+            listingDate: p("28 Nov 2024"),
+            marketTokenAddress: "0x62feB8Ec060A7dE5b32BbbF4AC70050f8a043C17",
+            indexTokenAddress: "0xc33D9C096e74aa4f571E9417b69a19C4A1e72ef2",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // DOT/USD [WBTC/USDC]
+          "1-0x7B2D09fca2395713dcc2F67323e4876F27b9ecB2": {
+            enabled: true,
+            listingDate: p("28 Nov 2024"),
+            marketTokenAddress: "0x7B2D09fca2395713dcc2F67323e4876F27b9ecB2",
+            indexTokenAddress: "0xE958f107b467d5172573F761d26931D658C1b436",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+          // ICP/USD [WBTC/USDC]
+          "1-0xdc4e96A251Ff43Eeac710462CD8A9D18Dc802F18": {
+            enabled: true,
+            listingDate: p("28 Nov 2024"),
+            marketTokenAddress: "0xdc4e96A251Ff43Eeac710462CD8A9D18Dc802F18",
+            indexTokenAddress: "0xdaf0A71608938F762e37eC5F72F670Cc44703454",
+            longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          },
+        }
+      : {}),
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

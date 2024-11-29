@@ -318,6 +318,8 @@ function useMarketsValuesRequest({
         syntheticsReaderAddress,
       }),
     parseResponse: (res) => {
+      console.log("PARSE MARKETS INFO", res);
+
       const result = marketsAddresses!.reduce(
         (acc, marketAddress) => {
           const readerErrors = res.errors[`${marketAddress}-reader`];
