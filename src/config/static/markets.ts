@@ -532,6 +532,33 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // XLM/USD [WBTC/USDC]
+    "0xe902D1526c834D5001575b2d0Ef901dfD0aa097A": {
+      enabled: true,
+      listingDate: p("29 Nov 2024"),
+      marketTokenAddress: "0xe902D1526c834D5001575b2d0Ef901dfD0aa097A",
+      indexTokenAddress: "0xc5dbD52Ae5a927Cf585B884011d0C7631C9974c6",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // RENDER/USD [WETH/USDC]
+    "0x4c505e0062459cf8F60FfF13279c92ea15aE6e2D": {
+      enabled: true,
+      listingDate: p("29 Nov 2024"),
+      marketTokenAddress: "0x4c505e0062459cf8F60FfF13279c92ea15aE6e2D",
+      indexTokenAddress: "0x82BB89fcc64c5d4016C5Ed1AB016bB0D1C20D6C3",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // SOL/USD [SOL]
+    "0xf22CFFA7B4174554FF9dBf7B5A8c01FaaDceA722": {
+      enabled: true,
+      listingDate: p("29 Nov 2024"),
+      marketTokenAddress: "0xf22CFFA7B4174554FF9dBf7B5A8c01FaaDceA722",
+      indexTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      longTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      shortTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
