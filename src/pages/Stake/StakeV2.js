@@ -1321,7 +1321,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           return (
             <Trans>
               Boost your rewards with Multiplier Points.&nbsp;
-              <ExternalLink href="https://docs.t3.money/tmx/rewards#multiplier-points">More info</ExternalLink>.
+              <ExternalLink href="https://docs.t3.money/dex/tokenomics/rewards">More info</ExternalLink>.
             </Trans>
           );
         }}
@@ -1631,11 +1631,18 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="label">
                   <Trans>Total Supply</Trans>
                 </div>
-                {!totalGmxSupply && "..."}
+                {/* {!totalGmxSupply && "..."}
                 {totalGmxSupply && (
                   <div>
                     {formatAmount(totalGmxSupply, 18, 0, true)} TMX ($
                     {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
+                  </div>
+                )} */}
+                  {!totalGmxSupply && "..."}
+                {totalGmxSupply && (
+                  <div>
+                    {"0"} TMX ($
+                    {"0.00"})
                   </div>
                 )}
               </div>
@@ -1793,11 +1800,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             APRs are updated weekly on Wednesday and will depend on the fees collected for the week.{" "}
                             <br />
                             <br />
-                            Historical TLP APRs can be checked in this{" "}
+                            {/* Historical TLP APRs can be checked in this{" "}
                             <ExternalLink href="https://dune.com/saulius/gmx-analytics">
                               community dashboard
                             </ExternalLink>
-                            .
+                            . */}
                           </Trans>
                         </>
                       );

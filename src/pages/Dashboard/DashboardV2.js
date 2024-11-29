@@ -574,9 +574,9 @@ export default function DashboardV2() {
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Long Positions`}
-                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
-                          avaxValue={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
-                          total={positionStatsInfo?.totalLongPositionSizes}
+                          arbitrumValue={0.00}
+                          avaxValue={0.00}
+                          total={0.00}
                         />
                       )}
                     />
@@ -599,9 +599,9 @@ export default function DashboardV2() {
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Short Positions`}
-                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
-                          avaxValue={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
-                          total={positionStatsInfo?.totalShortPositionSizes}
+                          arbitrumValue={0.00}
+                          avaxValue={0.00}
+                          total={0.00}
                         />
                       )}
                     />
@@ -649,9 +649,9 @@ export default function DashboardV2() {
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Total Fees`}
-                          arbitrumValue={totalFees?.[ARBITRUM]}
-                          avaxValue={totalFees?.[AVALANCHE]}
-                          total={totalFees?.total}
+                          arbitrumValue={0.00}
+                          avaxValue={0.00}
+                          total={0.00}
                           decimalsForConversion={0}
                         />
                       )}
@@ -670,9 +670,9 @@ export default function DashboardV2() {
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Total Volume`}
-                          arbitrumValue={totalVolume?.[ARBITRUM]}
-                          avaxValue={totalVolume?.[AVALANCHE]}
-                          total={totalVolume?.total}
+                          arbitrumValue={0.00}
+                          avaxValue={0.00}
+                          total={0.00}
                         />
                       )}
                     />
@@ -731,12 +731,14 @@ export default function DashboardV2() {
                               <>
                                 <StatsTooltipRow
                                   label={t`Price on Morph`}
-                                  value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                                  // value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                                  value={"0.00"}
                                   showDollar={true}
                                 />
                                 <StatsTooltipRow
                                   label={t`Price on Optimism`}
-                                  value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                  // value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                  value={"0.00"}
                                   showDollar={true}
                                 />
                               </>
@@ -777,7 +779,8 @@ export default function DashboardV2() {
                       <div className="label">
                         <Trans>Market Cap</Trans>
                       </div>
-                      <div>${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}</div>
+                      {/* <div>${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}</div> */}
+                      <div>$0.00</div>
                     </div>
                   </div>
                 </div>
