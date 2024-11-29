@@ -78,6 +78,7 @@ export function initSwapMetricData({
   fromToken,
   toToken,
   swapAmounts,
+  initialCollateralAllowance,
   executionFee,
   orderType,
   hasReferralCode,
@@ -88,6 +89,7 @@ export function initSwapMetricData({
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
   swapAmounts: SwapAmounts | undefined;
+  initialCollateralAllowance: bigint | undefined;
   executionFee: ExecutionFee | undefined;
   orderType: OrderType | undefined;
   allowedSlippage: number | undefined;
@@ -105,6 +107,8 @@ export function initSwapMetricData({
     }),
     metricType: orderType === OrderType.LimitSwap ? "limitSwap" : "swap",
     initialCollateralTokenAddress: fromToken?.address,
+    initialCollateralAllowance: initialCollateralAllowance?.toString(),
+    initialCollateralBalance: fromToken?.balance?.toString(),
     hasReferralCode,
     initialCollateralSymbol: fromToken?.symbol,
     toTokenAddress: toToken?.address,
@@ -125,6 +129,7 @@ export function initSwapMetricData({
 export function initIncreaseOrderMetricData({
   fromToken,
   increaseAmounts,
+  initialCollateralAllowance,
   hasExistingPosition,
   leverage,
   executionFee,
@@ -139,6 +144,7 @@ export function initIncreaseOrderMetricData({
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
+  initialCollateralAllowance: bigint | undefined;
   leverage: string | undefined;
   executionFee: ExecutionFee | undefined;
   orderType: OrderType;
@@ -173,6 +179,8 @@ export function initIncreaseOrderMetricData({
     marketPoolName: marketInfo ? getMarketPoolName(marketInfo) : undefined,
     leverage,
     initialCollateralTokenAddress: fromToken?.address,
+    initialCollateralAllowance: initialCollateralAllowance?.toString(),
+    initialCollateralBalance: fromToken?.balance?.toString(),
     initialCollateralSymbol: fromToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(increaseAmounts?.initialCollateralAmount, fromToken?.decimals),
     swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
