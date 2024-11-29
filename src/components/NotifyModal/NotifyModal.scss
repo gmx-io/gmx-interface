@@ -1,7 +1,7 @@
 .NotifyModal {
   max-width: 31rem;
   line-height: 1.5;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,8 +16,6 @@
 }
 
 .NotifyModal-bullet {
-  line-height: 2rem;
-  font-size: var(--font-sm);
   display: flex;
   align-items: center;
   gap: 1.2rem;
@@ -31,17 +29,14 @@
 
 .NotifyModal-terms {
   margin-top: 2rem;
-  font-size: 1rem;
   text-align: center;
   color: var(--text-gray);
 }
 
-.NotifyModal-notifi {
+.NotifyModal-notify {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  font-size: 1rem;
-  line-height: 2rem;
   margin-top: 1.2rem;
 }
 

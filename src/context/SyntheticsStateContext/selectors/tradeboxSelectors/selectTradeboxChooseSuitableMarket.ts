@@ -1,15 +1,16 @@
+import { createSelector } from "context/SyntheticsStateContext/utils";
 import { chooseSuitableMarket, PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { TradeType } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { selectTradeboxSetTradeConfig, selectTradeboxTradeType } from ".";
-import { selectPositionsInfoData, selectTokensData } from "../globalSelectors";
+import { selectOrdersInfoData, selectPositionsInfoData, selectTokensData } from "../globalSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
-import { createSelector } from "context/SyntheticsStateContext/utils";
 
 export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
   const getMaxLongShortLiquidityPool = q(selectTradeboxGetMaxLongShortLiquidityPool);
   const tradeType = q(selectTradeboxTradeType);
   const positionsInfo = q(selectPositionsInfoData);
+  const ordersInfo = q(selectOrdersInfoData);
   const tokensData = q(selectTokensData);
   const setTradeConfig = q(selectTradeboxSetTradeConfig);
 
@@ -30,6 +31,7 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
       maxShortLiquidityPool,
       isSwap: tradeType === TradeType.Swap,
       positionsInfo,
+      ordersInfo,
       preferredTradeType: preferredTradeType ?? tradeType,
       currentTradeType,
     });

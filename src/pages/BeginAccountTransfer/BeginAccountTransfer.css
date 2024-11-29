@@ -1,7 +1,7 @@
 .ValidationRow {
   display: grid;
   grid-template-columns: auto 1fr;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
 }
 
 .ValidationRow-icon-container {
@@ -16,7 +16,7 @@
 
 .BeginAccountTransfer .ValidationRow {
   margin-bottom: 1.5rem;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
 }
 
 .BeginAccountTransfer-validations {
@@ -26,7 +26,7 @@
 .BeginAccountTransfer .Modal .App-cta {
   display: block;
   text-align: center;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
 }
 
 .BeginAccountTransfer .soft-error {

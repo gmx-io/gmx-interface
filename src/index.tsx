@@ -1,4 +1,5 @@
 import "regenerator-runtime/runtime";
+import "lib/polyfills";
 import "styles/tailwind.css";
 import "lib/monkeyPatching";
 

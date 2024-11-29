@@ -47,7 +47,8 @@
 
     input {
       padding: 0.2rem 0.5rem 0.35rem;
-      font-size: 1.4rem;
+      font-size: var(--font-size-body-medium);
+      line-height: var(--line-height-body-medium);
       border-radius: 4px;
       max-width: 7rem;
     }

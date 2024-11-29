@@ -5,7 +5,7 @@
   margin-bottom: 4.65rem;
 }
 .Page-subtitle {
-  font-size: var(--font-lg);
+  font-size: var(--font-size-body-large);
   font-weight: 500;
   margin: 1.5rem 0;
 }
@@ -15,7 +15,7 @@
 .body-text {
   margin: 0px;
   font-weight: 400;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   line-height: 2.4rem;
   margin-bottom: 1.5rem;
   color: var(--color-gray-300);
@@ -24,7 +24,7 @@
 .body-title {
   font-weight: 500;
   margin-bottom: 1.5rem;
-  font-size: var(--font-lg);
+  font-size: var(--font-size-body-large);
 }
 
 .list-style-none {

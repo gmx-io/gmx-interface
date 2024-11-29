@@ -27,11 +27,6 @@ $tabs-threshold: 990px;
   margin-left: 1rem;
 }
 
-.Leaderboard-Title__description {
-  color: rgb(183, 183, 189);
-  line-height: 2.15rem;
-}
-
 .GlobalLeaderboards .LeaderboardContainer__competition-tabs .Tab {
   width: 40rem;
   margin: 0 auto;
@@ -454,6 +449,10 @@ $tabs-threshold: 990px;
   .text-right {
     text-align: right;
     padding-right: 2rem;
+  }
+
+  .Exchange-list-header {
+    font-size: var(--font-size-body-medium);
   }
 
   .Exchange-list-header .text-right {

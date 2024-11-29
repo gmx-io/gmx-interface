@@ -145,7 +145,9 @@ import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 import SwapIcon from "img/swap.svg?react";
 
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
 import "./TradeBox.scss";
 
@@ -176,6 +178,7 @@ export function TradeBox(p: Props) {
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
   const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
 
@@ -739,6 +742,78 @@ export function TradeBox(p: Props) {
     [leverageOption, maxAllowedLeverage, setLeverageOption]
   );
 
+  useEffect(
+    function tradeBoxInteractionStartedEffect() {
+      if (fromTokenInputValue.length > 0) {
+        let pair = "";
+
+        if (isSwap) {
+          pair = `${fromToken?.symbol}/${toToken?.symbol}`;
+        } else if (marketInfo) {
+          pair = marketInfo.name;
+        }
+
+        let sizeDeltaUsd: bigint | undefined = undefined;
+        let amountUsd: bigint | undefined = undefined;
+        let priceImpactDeltaUsd = 0n;
+        let priceImpactBps = 0n;
+
+        if (isIncrease && increaseAmounts) {
+          sizeDeltaUsd = increaseAmounts.sizeDeltaUsd;
+          priceImpactDeltaUsd = increaseAmounts.positionPriceImpactDeltaUsd;
+          priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
+        } else if (isSwap && swapAmounts) {
+          amountUsd = swapAmounts.usdOut;
+          priceImpactDeltaUsd = swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
+          priceImpactBps = fees?.swapPriceImpact?.bps ?? 0n;
+        } else if (isTrigger && decreaseAmounts) {
+          sizeDeltaUsd = decreaseAmounts.sizeDeltaUsd;
+          priceImpactDeltaUsd = decreaseAmounts.positionPriceImpactDeltaUsd;
+          priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
+        }
+
+        const openInterestPercent = isLong
+          ? chartHeaderInfo?.longOpenInterestPercentage
+          : chartHeaderInfo?.shortOpenInterestPercentage;
+        const fundingRate1h = isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort;
+
+        sendTradeBoxInteractionStartedEvent({
+          pair,
+          sizeDeltaUsd,
+          priceImpactDeltaUsd,
+          priceImpactBps,
+          fundingRate1h,
+          openInterestPercent,
+          tradeType,
+          tradeMode,
+          amountUsd,
+        });
+      }
+    },
+    [
+      chainId,
+      chartHeaderInfo?.fundingRateLong,
+      chartHeaderInfo?.fundingRateShort,
+      chartHeaderInfo?.longOpenInterestPercentage,
+      chartHeaderInfo?.shortOpenInterestPercentage,
+      decreaseAmounts,
+      fees?.positionPriceImpact?.bps,
+      fees?.swapPriceImpact?.bps,
+      fromToken?.symbol,
+      fromTokenInputValue,
+      increaseAmounts,
+      isIncrease,
+      isLong,
+      isSwap,
+      isTrigger,
+      marketInfo,
+      swapAmounts,
+      toToken?.symbol,
+      tradeMode,
+      tradeType,
+    ]
+  );
+
   const onSwitchTokens = useCallback(() => {
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
     switchTokenAddresses();
@@ -766,6 +841,7 @@ export function TradeBox(p: Props) {
 
   const onSubmit = useCallback(async () => {
     if (!account) {
+      sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
       return;
     }

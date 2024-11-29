@@ -20,11 +20,6 @@ export async function prepareOrderTxn(
   simulationPromise?: Promise<any>,
   metricId?: OrderMetricId
 ) {
-  if (!getIsFlagEnabled("testParallelSimulation")) {
-    await simulationPromise;
-    return { gasLimit: undefined, gasPriceData: undefined };
-  }
-
   if (!contract.runner?.provider) {
     helperToast.error(t`Error preparing transaction. Provider is not defined`);
     throw new Error("Provider is not defined");
@@ -40,22 +35,22 @@ export async function prepareOrderTxn(
       ? Promise.resolve(undefined)
       : getGasPrice(contract.runner.provider, chainId).catch(makeCatchTransactionError(chainId, metricId, "gasPrice")),
     // subaccount
-    Promise.all(
-      customSignerContracts.map((cntrct) =>
-        getIsFlagEnabled("testRemoveGasRequests")
-          ? Promise.resolve(undefined)
-          : getGasLimit(cntrct, method, params, value).catch(makeCatchTransactionError(chainId, metricId, "gasLimit"))
-      )
-    ),
-    Promise.all(
-      customSignerContracts.map((cntrct) =>
-        getIsFlagEnabled("testRemoveGasRequests")
-          ? Promise.resolve(undefined)
-          : getGasPrice(cntrct.runner!.provider!, chainId).catch(
+    getIsFlagEnabled("testRemoveGasRequests")
+      ? Promise.resolve(undefined)
+      : Promise.all(
+          customSignerContracts.map((cntrct) =>
+            getGasLimit(cntrct, method, params, value).catch(makeCatchTransactionError(chainId, metricId, "gasLimit"))
+          )
+        ),
+    getIsFlagEnabled("testRemoveGasRequests")
+      ? Promise.resolve(undefined)
+      : Promise.all(
+          customSignerContracts.map((cntrct) =>
+            getGasPrice(cntrct.runner!.provider!, chainId).catch(
               makeCatchTransactionError(chainId, metricId, "gasPrice")
             )
-      )
-    ),
+          )
+        ),
     customSigners?.length
       ? getBestNonce([contract.runner as Wallet, ...customSigners]).catch(
           makeCatchTransactionError(chainId, metricId, "bestNonce")

@@ -29,14 +29,14 @@
 }
 
 .ExchangeWalletTokens-top-row {
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   display: grid;
   grid-template-columns: auto auto;
 }
 
 .ExchangeWalletTokens-content-row {
   margin-top: 0.31rem;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   opacity: 0.7;
   display: grid;
   grid-template-columns: auto auto;

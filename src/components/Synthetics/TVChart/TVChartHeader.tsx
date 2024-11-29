@@ -127,7 +127,7 @@ function TVChartHeaderInfoMobile() {
         </div>
 
         <div>
-          <div className="mb-4 whitespace-nowrap text-[1.25rem]">
+          <div className="mb-4 whitespace-nowrap">
             <span className="opacity-70">
               <Trans>Open Interest</Trans>
             </span>
@@ -193,7 +193,7 @@ function TVChartHeaderInfoMobile() {
             >
               {detailsVisible ? <BiChevronDown size={22} /> : <BiChevronRight size={22} />}
             </span>
-            <div className="ExchangeChart-avg-price mr-4">{avgPrice}</div>
+            <div className="mr-4">{avgPrice}</div>
             <div className="ExchangeChart-daily-change">{dayPriceDelta}</div>
           </div>
         </div>
@@ -295,17 +295,17 @@ function TVChartHeaderInfoDesktop() {
     if (isSwap) {
       return (
         <>
-          <div>
+          <div className="text-body-small">
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h High</Trans>
             </div>
-            <div>${high24}</div>
+            <div className="Chart-header-value">${high24}</div>
           </div>
           <div>
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h Low</Trans>
             </div>
-            <div>${low24}</div>
+            <div className="Chart-header-value">${low24}</div>
           </div>
         </>
       );
@@ -457,8 +457,8 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="ExchangeChart-avg-price mb-4">{avgPrice}</div>
-            <div className="ExchangeChart-daily-change">{dayPriceDelta}</div>
+            <div className="text-body-medium mb-4">{avgPrice}</div>
+            <div className="text-body-small">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
         </div>

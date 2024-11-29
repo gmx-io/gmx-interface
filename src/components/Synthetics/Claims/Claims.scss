@@ -8,7 +8,7 @@
 
 .Claims-card {
   background: var(--color-slate-800);
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
   margin-bottom: 0.8rem;
   padding-bottom: 1rem;
   border-radius: 0.4rem;
@@ -39,7 +39,7 @@
 .Claims-claim-button.primary {
   cursor: pointer;
   border-radius: 4px;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-medium);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -60,7 +60,7 @@
 
 .Claims-claim-button.secondary {
   cursor: pointer;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-medium);
   font-weight: normal;
   letter-spacing: 0px;
   text-decoration: none;

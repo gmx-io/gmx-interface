@@ -2,7 +2,7 @@ import { FromNewToOldArray, Bar } from "domain/tradingview/types";
 import { UserFeedback } from "domain/synthetics/userFeedback";
 import type { Address } from "viem";
 
-export type UiReportPayload = {
+export type EventPayload = {
   isError: boolean;
   version: string;
   event: string;
@@ -19,6 +19,7 @@ export type CounterPayload = {
   version: string;
   isDev: boolean;
   host: string;
+  url: string;
   abFlags: { [key: string]: boolean };
   customFields?: { [key: string]: any };
 };
@@ -29,14 +30,26 @@ export type TimingPayload = {
   time: number;
   isDev: boolean;
   host: string;
+  url: string;
   abFlags: { [key: string]: boolean };
   customFields?: { [key: string]: any };
+};
+
+export type UserAnalyticsEventPayload = {
+  event: string;
+  distinctId: string;
+  customFields: { [key: string]: any };
+};
+
+export type UserAnalyticsProfilePayload = {
+  distinctId: string;
+  customFields: { [key: string]: any };
 };
 
 export type BatchReportItem =
   | {
       type: "event";
-      payload: UiReportPayload;
+      payload: EventPayload;
     }
   | {
       type: "counter";
@@ -45,6 +58,14 @@ export type BatchReportItem =
   | {
       type: "timing";
       payload: TimingPayload;
+    }
+  | {
+      type: "userAnalyticsEvent";
+      payload: UserAnalyticsEventPayload;
+    }
+  | {
+      type: "userAnalyticsProfile";
+      payload: UserAnalyticsProfilePayload;
     };
 
 export type BatchReportBody = {
@@ -57,26 +78,8 @@ export interface OracleFetcher {
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
-  fetchPostEvent(body: UiReportPayload, debug?: boolean): Promise<Response>;
   fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
-  fetchPostTiming(
-    body: {
-      event: string;
-      time: number;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response>;
-  fetchPostCounter(
-    body: {
-      event: string;
-      abFlags: Record<string, boolean>;
-      customFields?: Record<string, boolean | string | number>;
-    },
-    debug?: boolean
-  ): Promise<Response>;
 }
 export type TickersResponse = {
   minPrice: string;

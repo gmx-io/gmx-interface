@@ -124,9 +124,15 @@ export function AprInfo({
   ]);
 
   const aprNode = useMemo(() => {
-    const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+    const isIncentiveApr = incentiveApr !== undefined && incentiveApr > 0;
+    const node =
+      isBaseAprReadyToBeShown || isIncentiveApr ? (
+        <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>
+      ) : (
+        <>{t`NA`}</>
+      );
 
-    if (incentiveApr !== undefined && incentiveApr > 0) {
+    if (isIncentiveApr) {
       return (
         <div className="inline-flex flex-nowrap">
           {node}
@@ -136,7 +142,7 @@ export function AprInfo({
     } else {
       return node;
     }
-  }, [apy, incentiveApr, totalApr]);
+  }, [apy, incentiveApr, totalApr, isBaseAprReadyToBeShown]);
 
   return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown || isLidoApr || isEthenaSatsIncentive) ? (
     <TooltipWithPortal

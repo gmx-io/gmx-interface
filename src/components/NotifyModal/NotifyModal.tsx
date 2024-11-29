@@ -18,9 +18,11 @@ export function NotifyModal() {
   return (
     <Modal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX Alerts`}>
       <div className="NotifyModal">
-        <Trans>
-          Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and&nbsp;more.
-        </Trans>
+        <p className="text-body-medium">
+          <Trans>
+            Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and&nbsp;more.
+          </Trans>
+        </p>
         <NotifyBulletList />
         <Button
           variant="primary-action"
@@ -32,7 +34,7 @@ export function NotifyModal() {
           <Trans>Discover GMX Alerts</Trans>
           <ExternalLinkIcon />
         </Button>
-        <div className="NotifyModal-terms">
+        <div className="NotifyModal-terms text-caption">
           <Trans>
             <span>
               Notifications are provided by Notifi and not affiliated with&nbsp;GMX. By subscribing, you agree that info
@@ -43,7 +45,7 @@ export function NotifyModal() {
             <ExternalLink href="https://notifi.network/terms">Terms of Use</ExternalLink>.
           </Trans>
         </div>
-        <div className="NotifyModal-notifi">
+        <div className="NotifyModal-notify text-caption">
           <Trans>Powered by</Trans>
           <NotifiLogoIcon />
         </div>
@@ -64,7 +66,7 @@ const NotifyBulletList = memo(function NotifyBulletList() {
         t`Liquidation Risk Alerts`,
         t`Trading Pair Price Alerts`,
       ].map((item, i) => (
-        <div key={i} className="NotifyModal-bullet">
+        <div key={i} className="NotifyModal-bullet text-body-medium">
           <ArrowBulletIcon />
           <div className="NotifyModal-bullet-text">{item}</div>
         </div>
