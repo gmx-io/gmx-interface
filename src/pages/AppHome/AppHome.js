@@ -341,7 +341,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
               {
                 phase: "Ignition Phase",
                 emoji: "🚀",
-                items: ["MorphL2 Mainnet", "Add Exchange Features", "Add Your Favorite Meme Coin on ~100x Leverage"],
+                items: ["MorphL2 Mainnet", "Add Exchange Features", "Add Your Favorite Meme Coin on ~50x Leverage"],
               },
               {
                 phase: "Growth Phase",

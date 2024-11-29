@@ -762,15 +762,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     //   imageUrl: "https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734",
     // },
 
-    {
-      name: "Wrapped Bitcoin",
-      symbol: "WBTC",
-      address: "0x803DcE4D3f4Ae2e17AF6C51343040dEe320C149D",
-      decimals: 8,
-      isStable: false,
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
-    },
+    // {
+    //   name: "Wrapped Bitcoin",
+    //   symbol: "WBTC",
+    //   address: "0x803DcE4D3f4Ae2e17AF6C51343040dEe320C149D",
+    //   decimals: 8,
+    //   isStable: false,
+    //   isShortable: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
+    // },
     // {
     //   name: "TMX",
     //   symbol: "TMX",

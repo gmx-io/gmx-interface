@@ -128,7 +128,7 @@ export default function DefiOptions({ mobile }) {
             </span>
           </motion.div>
           <h2 style={{ fontWeight: 400, color: "rgb(219 190 176)", marginBottom: "1rem" }}>
-            Trade with up to 100x leverage. Available on multiple chains.
+            Trade with up to 50x leverage. Available on multiple chains.
           </h2>
           <motion.div
             className="leverage-preview"
@@ -143,7 +143,7 @@ export default function DefiOptions({ mobile }) {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <div style={{ fontSize: "1.2rem", fontWeight: "500" }}>ETH/USD</div>
-                <div style={{ color: "#7B80B8", fontSize: "0.9rem" }}>100x max</div>
+                <div style={{ color: "#7B80B8", fontSize: "0.9rem" }}>50x max</div>
               </div>
               {/* <div style={{ color: "#FF7028", fontSize: "0.9rem" }}>0.01% fee</div> */}
             </div>
