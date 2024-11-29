@@ -68,7 +68,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
       </div>
       <TableScrollFadeContainer>
         <table className="w-[max(100%,900px)]">
-          <thead className="text-body-large">
+          <thead>
             <TableTheadTr bordered>
               <TableTh>
                 <Trans>MARKETS</Trans>

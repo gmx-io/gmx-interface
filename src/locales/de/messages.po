@@ -2975,6 +2975,10 @@ msgstr ""
 msgid "Swap {0} to {1}"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "High price impact. Review execution price."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "Der Wechsel von {0} zu {1} ist mit hohen Gebühren verbunden."
@@ -5372,8 +5376,8 @@ msgid "Volume traded by your referred traders."
 msgstr "Von den von dir empfohlenen Tradern gehandeltes Volumen."
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "High price impact, review execution price."
-msgstr ""
+#~ msgid "High price impact, review execution price."
+#~ msgstr ""
 
 #: src/pages/Dashboard/GlpCard.tsx
 msgid "Stablecoin Percentage"
