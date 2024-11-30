@@ -86,4 +86,4 @@ export const defaultChartProps = {
   },
 };
 
-export const availableNetworksForChart = [ARBITRUM, AVALANCHE, SEPOLIA_TESTNET, OPTIMISM_MAINNET, MORPH_MAINNET, MORPH_L2];
+export const availableNetworksForChart = [ARBITRUM, AVALANCHE, SEPOLIA_TESTNET, OPTIMISM_MAINNET, MORPH_MAINNET];
