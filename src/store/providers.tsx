@@ -95,7 +95,7 @@ export function Providers({ children }: ProvidersProps) {
 
   const enabledNetworks = [MORPH_HOLESKY, MORPH_MAINNET];
   if (process.env.NODE_ENV === "development") {
-    enabledNetworks.push(SEPOLIA_TESTNET, OPTIMISM_MAINNET, OPTIMISM_MAINNET);
+    enabledNetworks.push(SEPOLIA_TESTNET, OPTIMISM_MAINNET);
   }
   const DynamicNetworks = getDynamicChain(enabledNetworks);
 
