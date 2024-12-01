@@ -124,6 +124,7 @@ export function AppHeaderUser({
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
         </div>
+        {/* NOTE: Active dynamic wallet implementation Nov 2024 */}
         <DynamicWidget
           variant="modal"
           buttonClassName="connect-wallet-btn-dynamic"
