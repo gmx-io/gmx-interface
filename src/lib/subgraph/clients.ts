@@ -5,7 +5,7 @@ import {
   AVALANCHE,
   BLAST_SEPOLIA_TESTNET,
   ETH_MAINNET,
-  MORPH_L2,
+  MORPH_HOLESKY,
   MORPH_MAINNET,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
@@ -36,7 +36,7 @@ export function getGmxGraphClient(chainId: number) {
     return null;
   } else if (chainId === BLAST_SEPOLIA_TESTNET) {
     return null;
-  } else if (chainId === MORPH_L2) {
+  } else if (chainId === MORPH_HOLESKY) {
     return null;
   } else if (chainId === MORPH_MAINNET) {
     return null;

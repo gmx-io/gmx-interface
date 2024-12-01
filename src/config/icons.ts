@@ -5,7 +5,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BLAST_SEPOLIA_TESTNET,
-  MORPH_L2,
+  MORPH_HOLESKY,
   MORPH_MAINNET,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
@@ -63,7 +63,7 @@ const ICONS = {
     gmx: tmxImg,
     glp: tlpImg,
   },
-  [MORPH_L2]: {
+  [MORPH_HOLESKY]: {
     network: morphIcn,
     gmx: tmxImg,
     glp: tlpImg,

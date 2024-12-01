@@ -36,7 +36,7 @@ import SEO from "components/Common/SEO";
 import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, AVALANCHE, getChainName, MORPH_L2 } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, MORPH_HOLESKY } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { dynamicContractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
@@ -397,7 +397,7 @@ export default function DashboardV2() {
     },
   ];
 
-  // const totalStatsStartDate = chainId === MORPH_L2 ? t`15 May 2024` : t`01 Jan 2024`;
+  // const totalStatsStartDate = chainId === MORPH_HOLESKY ? t`15 May 2024` : t`01 Jan 2024`;
   const totalStatsStartDate = t`27 Nov 2024`;
 
   let stableGlp = 0;
@@ -572,12 +572,7 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <StatsTooltip
-                          title={t`Long Positions`}
-                          arbitrumValue={0.00}
-                          avaxValue={0.00}
-                          total={0.00}
-                        />
+                        <StatsTooltip title={t`Long Positions`} arbitrumValue={0.0} avaxValue={0.0} total={0.0} />
                       )}
                     />
                   </div>
@@ -597,12 +592,7 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <StatsTooltip
-                          title={t`Short Positions`}
-                          arbitrumValue={0.00}
-                          avaxValue={0.00}
-                          total={0.00}
-                        />
+                        <StatsTooltip title={t`Short Positions`} arbitrumValue={0.0} avaxValue={0.0} total={0.0} />
                       )}
                     />
                   </div>
@@ -649,9 +639,9 @@ export default function DashboardV2() {
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Total Fees`}
-                          arbitrumValue={0.00}
-                          avaxValue={0.00}
-                          total={0.00}
+                          arbitrumValue={0.0}
+                          avaxValue={0.0}
+                          total={0.0}
                           decimalsForConversion={0}
                         />
                       )}
@@ -668,12 +658,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(totalVolume?.[chainId], USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <StatsTooltip
-                          title={t`Total Volume`}
-                          arbitrumValue={0.00}
-                          avaxValue={0.00}
-                          total={0.00}
-                        />
+                        <StatsTooltip title={t`Total Volume`} arbitrumValue={0.0} avaxValue={0.0} total={0.0} />
                       )}
                     />
                   </div>
@@ -752,7 +737,7 @@ export default function DashboardV2() {
                         <Trans>Supply</Trans>
                       </div>
                       {/* <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} TMX</div> */}
-                      <div>0 TMX</div> 
+                      <div>0 TMX</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">

@@ -11,7 +11,7 @@ import {
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
-  MORPH_L2,
+  MORPH_HOLESKY,
   getChainName,
   MORPH_MAINNET,
 } from "config/chains";
@@ -62,9 +62,9 @@ if (isDevelopment()) {
     color: "#264f79",
   });
   NETWORK_OPTIONS.push({
-    label: getChainName(MORPH_L2),
-    value: MORPH_L2,
-    icon: getIcon(MORPH_L2, "network"),
+    label: getChainName(MORPH_HOLESKY),
+    value: MORPH_HOLESKY,
+    icon: getIcon(MORPH_HOLESKY, "network"),
     color: "#264f79",
   });
   NETWORK_OPTIONS.push({
@@ -167,7 +167,7 @@ export function AppHeaderUser({
       {chainId === OPTIMISM_GOERLI_TESTNET ||
       chainId === SEPOLIA_TESTNET ||
       chainId === BLAST_SEPOLIA_TESTNET ||
-      chainId === MORPH_L2 ? (
+      chainId === MORPH_HOLESKY ? (
         <div className="App-header-faucet">
           <FaucetDropdown />
         </div>

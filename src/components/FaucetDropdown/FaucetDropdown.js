@@ -4,7 +4,7 @@ import { helperToast } from "lib/helperToast";
 import { FaChevronDown, FaParachuteBox } from "react-icons/fa";
 import "./FaucetDropdown.css";
 import { ethers } from "ethers";
-import { getExplorerUrl, MORPH_L2 } from "config/chains";
+import { getExplorerUrl, MORPH_HOLESKY } from "config/chains";
 import Token from "abis/Token.json";
 import { getTokenBySymbol, getTokens } from "config/tokens";
 import { useDynamicChainId } from "lib/chains";
@@ -44,7 +44,7 @@ function FaucetDropdown() {
     const getToken = async () => {
       const token = getTokens(chainId);
       const faucetTokens = [...token];
-      if (chainId === MORPH_L2) {
+      if (chainId === MORPH_HOLESKY) {
         const tmx = faucetTokens.find((token) => token.name === "TMX");
         if (!tmx) {
           faucetTokens.push(TMX_FAUCET);
