@@ -55,6 +55,7 @@ import PositionRouter from "abis/PositionRouter.json";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
+import PrivacyPolicy from "pages/PrivacyPolicy/PrivacyPolicy";
 import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
@@ -648,6 +649,9 @@ function FullApp() {
                 <Route exact path="/terms-and-conditions">
                   <TermsAndConditions />
                 </Route>
+                <Route exact path="/privacy-policy">
+                  <PrivacyPolicy />
+                </Route>
                 <Route path="*">
                   <PageNotFound />
                 </Route>
@@ -750,6 +754,9 @@ function FullApp() {
                 </Route>
                 <Route exact path="/terms-and-conditions">
                   <TermsAndConditions />
+                </Route>
+                <Route exact path="/privacy-policy">
+                  <PrivacyPolicy />
                 </Route>
                 <Route path="*">
                   <PageNotFound />
