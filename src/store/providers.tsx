@@ -1,5 +1,5 @@
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
-import { MORPH_L2, MORPH_MAINNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getDynamicChain } from "config/chains";
+import { MORPH_HOLESKY, MORPH_MAINNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getDynamicChain } from "config/chains";
 import * as React from "react";
 import { EthersExtension } from "@dynamic-labs/ethers-v5";
 
@@ -27,7 +27,6 @@ export function Providers({ children }: ProvidersProps) {
       }
       .wallet-list-item__tile{
         padding: 7px;
-        
       }
 
       .dynamic-widget-card{
@@ -82,24 +81,35 @@ export function Providers({ children }: ProvidersProps) {
      .dynamic-widget-card, .evm-network-control__container, .dropdown{
         background-color : #111320;
      }
-     
+     .dynamic-widget-inline-controls__network-picker-list {
+        min-width: 170px;
+     }
+    .dynamic-widget-inline-controls__network-picker-list .network-action .network {
+      align-items: center;
+    }
 `
          : ""
      }
 
     `;
 
-  const DynamicNetworks = getDynamicChain([OPTIMISM_MAINNET, SEPOLIA_TESTNET, MORPH_L2, MORPH_MAINNET]);
+  const enabledNetworks = [MORPH_HOLESKY, MORPH_MAINNET];
+  if (process.env.NODE_ENV === "development") {
+    enabledNetworks.push(SEPOLIA_TESTNET, OPTIMISM_MAINNET);
+  }
+  const DynamicNetworks = getDynamicChain(enabledNetworks);
 
   return (
     <DynamicContextProvider
       theme={themeContext.isLight ? "light" : "dark"}
       settings={{
         cssOverrides,
-        environmentId: "8e7e23bc-43e3-4eb1-ba85-401166cee40e",
+        environmentId: process.env.REACT_APP_DYNAMIC_ENVIRONMENT_ID || "8e7e23bc-43e3-4eb1-ba85-401166cee40e",
         evmNetworks: DynamicNetworks,
         walletConnectorExtensions: [EthersExtension],
         walletConnectors: [EthereumWalletConnectors],
+        privacyPolicyUrl: "https://t3.money/privacy-policy",
+        termsOfServiceUrl: "https://t3.money/terms-and-conditions",
       }}
     >
       {children}

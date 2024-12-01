@@ -97,8 +97,6 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
   }
 }
 
-
-
 function formatAlpacaBarData(bar) {
   const t = new Date(bar.t).getTime() / 1000;
   const open = bar.o;
@@ -114,16 +112,16 @@ function formatAlpacaBarData(bar) {
   };
 }
 
-function formatCustomBarData(bar) {
-  const { time: t, open, close, high, low } = bar;
-  return {
-    time: t + timezoneOffset,
-    open,
-    close,
-    high,
-    low,
-  };
-}
+// function formatCustomBarData(bar) {
+//   const { time: t, open, close, high, low } = bar;
+//   return {
+//     time: t + timezoneOffset,
+//     open,
+//     close,
+//     high,
+//     low,
+//   };
+// }
 
 export async function getChartPricesFromStats(chainId, symbol, period) {
   symbol = getNormalizedTokenSymbol(symbol);

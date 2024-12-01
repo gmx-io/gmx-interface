@@ -918,7 +918,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const chainName = getChainName(chainId);
 
-  const hasInsurance = true;
+  // const hasInsurance = true;
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
@@ -1148,8 +1148,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
+  // eslint-disable-next-line no-unused-vars
   let totalSupplyUsd;
   if (totalGmxSupply && !totalGmxSupply.isZero() && gmxPrice) {
+    // eslint-disable-next-line no-unused-vars
     totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
@@ -1638,7 +1640,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
                   </div>
                 )} */}
-                  {!totalGmxSupply && "..."}
+                {!totalGmxSupply && "..."}
                 {totalGmxSupply && (
                   <div>
                     {"0"} TMX ($

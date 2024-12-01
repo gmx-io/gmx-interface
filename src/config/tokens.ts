@@ -11,7 +11,7 @@ import {
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   BLAST_SEPOLIA_TESTNET,
-  MORPH_L2,
+  MORPH_HOLESKY,
   OPBNB_TESTNET,
   MORPH_MAINNET,
 } from "./chains";
@@ -661,7 +661,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
     },
   ],
-  [MORPH_L2]: [
+  [MORPH_HOLESKY]: [
     {
       name: "Ethereum",
       symbol: "ETH",
@@ -971,24 +971,24 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   ],
-  [MORPH_L2]: [
+  [MORPH_HOLESKY]: [
     {
       name: "GMX",
       symbol: "GMX",
-      address: getContract(MORPH_L2, "GMX"),
+      address: getContract(MORPH_HOLESKY, "GMX"),
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
     },
     {
       name: "Escrowed GMX",
       symbol: "esGMX",
-      address: getContract(MORPH_L2, "ES_GMX"),
+      address: getContract(MORPH_HOLESKY, "ES_GMX"),
       decimals: 18,
     },
     {
       name: "GMX LP",
       symbol: "GLP",
-      address: getContract(MORPH_L2, "GLP"),
+      address: getContract(MORPH_HOLESKY, "GLP"),
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -1128,19 +1128,19 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   },
-  [MORPH_L2]: {
+  [MORPH_HOLESKY]: {
     GMX: {
       name: "GMX",
       symbol: "GMX",
       decimals: 18,
-      address: getContract(MORPH_L2, "GMX"),
+      address: getContract(MORPH_HOLESKY, "GMX"),
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
     },
     GLP: {
       name: "GMX LP",
       symbol: "GLP",
       decimals: 18,
-      address: getContract(MORPH_L2, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
+      address: getContract(MORPH_HOLESKY, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   },
@@ -1372,7 +1372,7 @@ export const ICONLINKS = {
       reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
     },
   },
-  [MORPH_L2]: {
+  [MORPH_HOLESKY]: {
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
       avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
@@ -1471,7 +1471,7 @@ const CHAIN_IDS = [
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
   BLAST_SEPOLIA_TESTNET,
-  MORPH_L2,
+  MORPH_HOLESKY,
   MORPH_MAINNET,
   OPBNB_TESTNET,
 ];

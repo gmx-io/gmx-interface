@@ -204,7 +204,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
             </div>
           </Menu.Item>
           <div className="setting-dropdown-divider" />
-          <Menu.Item>
+          {/* <Menu.Item>
             <div className="setting-dropdown-menu-item menu-item last-dropdown-menu">
               <div className="menu-item-group">
                 <span className="setting-dropdown-item-label">
@@ -221,7 +221,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
                 <span className={`${themeToggle.isDark ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
               </Switch>
             </div>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu.Items>
       </Menu>
     </div>
@@ -308,7 +308,7 @@ function SettingModalContent({ setActiveModal, openSettings }) {
           </div>
         </div>
         <div className="setting-dropdown-divider" />
-        <div className="setting-option">
+        {/* <div className="setting-option">
           <div className="menu-item-group">
             <span className="setting-option-img-label">
               <Trans>Dark mode</Trans>
@@ -323,7 +323,7 @@ function SettingModalContent({ setActiveModal, openSettings }) {
             <span className="sr-only">Enable Dark Mode</span>
             <span className={`${themeToggle.isDark ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
           </Switch>
-        </div>
+        </div> */}
       </div>
     </div>
   );

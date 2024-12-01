@@ -1,0 +1,35 @@
+.center {
+  text-align: center;
+}
+.section {
+  margin-bottom: 4.65rem;
+}
+.Page-subtitle {
+  font-size: var(--font-lg);
+  font-weight: 500;
+  margin: 1.5rem 0;
+}
+.content {
+  margin-top: 4.65rem;
+}
+.body-text {
+  margin: 0px;
+  font-weight: 400;
+  font-size: var(--font-base);
+  line-height: 2.4rem;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.body-title {
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  font-size: var(--font-lg);
+}
+
+.list-style-none {
+  list-style: none;
+}
+.list-style-none li {
+  padding-bottom: 0;
+}

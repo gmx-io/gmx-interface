@@ -19,26 +19,19 @@ module.exports = {
         ],
       },
     },
+    devServer: (config) => {
+      console.log("\n\nconfig", config, "\n\n");
+      console.log("\n\nconfig.devServer", config.devServer, "\n\n");
+      config.headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
+      };
+
+      config.allowedHosts = "all";
+
+      return config;
+    },
+    eslint: null,
   },
-  eslint: null,
-  //   eslint: {
-  //     configure: {
-  //       rules: {
-  //         'no-unused-vars': 'off',
-  //       },
-  //     },
-  //   },
-  //   plugins: [
-  //     {
-  //       plugin: CracoLessPlugin,
-  //       options: {
-  //         lessLoaderOptions: {
-  //           lessOptions: {
-  //             modifyVars: { '@primary-color': '#2abdd2' },
-  //             javascriptEnabled: true,
-  //           },
-  //         },
-  //       },
-  //     },
-  //   ],
 };

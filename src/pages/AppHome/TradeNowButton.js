@@ -1,20 +1,25 @@
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useBreakpoints } from "hooks/useBreakpoints";
 
 export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...props }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const { mobile } = useBreakpoints();
 
   const rocketVariants = {
-    initial: { x: 0, y: 0, rotate: 0 },
-    hover: {
-      x: 5,
-      y: 0,
-      rotate: -45,
+    initial: { x: 5, y: 0, rotate: 0 },
+    move: {
+      x: [5, 6, 4, 5, 4, 5],
+      y: [0, -1, 1, 0, 1, 0],
+      rotate: [0, 5, -5, 0, 5, 0],
       transition: {
-        duration: 0.3,
-        ease: "easeOut",
+        repeat: Infinity,
+        repeatType: "mirror",
+        duration: 2,
+        ease: "easeInOut",
+        type: "spring",
+        stiffness: 120,
+        damping: 10,
       },
     },
   };
@@ -25,8 +30,6 @@ export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...p
       to="/trade"
       redirectPopupTimestamp={redirectPopupTimestamp}
       showRedirectModal={showRedirectModal}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       {...props}
       style={{
         display: "flex",
@@ -35,11 +38,18 @@ export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...p
         gap: "8px",
         width: "fit-content",
         margin: "0 auto",
+        fontSize: mobile ? "2rem" : "3rem",
+        background: "linear-gradient(-72deg, rgba(15,85,232,0.2), rgba(157,223,243,0.2))",
+        border: "1px solid rgba(255,255,255,0.2)",
+        padding: mobile ? "2rem 2rem" : "1.5rem 3rem",
+        borderRadius: "4rem",
+        width: "fit-content",
+        backdropFilter: "blur(5px)",
         ...(props?.style || {}),
       }}
     >
       <Trans>Trade Now</Trans>
-      <motion.span variants={rocketVariants} initial="initial" animate={isHovered ? "hover" : "initial"}>
+      <motion.span variants={rocketVariants} initial="initial" animate="move">
         🚀
       </motion.span>
     </HeaderLink>
