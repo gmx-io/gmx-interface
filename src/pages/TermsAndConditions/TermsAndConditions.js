@@ -31,6 +31,31 @@ export default function TermsAndConditions() {
                 and conditions by which you may access t3.money ("the Site") and t3.money ("the Interface"). Please do
                 not use the Site or Interface if you disagree with any of these Terms.
               </p>
+              <p className="body-text">
+                By accepting these Terms, you acknowledge that you are not using the platform in any way that breaks any
+                laws. It is against our terms of service to use our service illegally.
+              </p>
+              <p className="body-text">Trading is not supported or limited in these jurisdictions:</p>
+              <ul className="body-text">
+                <li>China</li>
+                <li>Canada</li>
+                <li>United Kingdom</li>
+                <li>Australia</li>
+                <li>Belgium</li>
+                <li>Philippines</li>
+                <li>Thailand</li>
+                <li>European Union</li>
+                <li>United States</li>
+                <li>Japan</li>
+                <li>India</li>
+                <li>Morocco</li>
+                <li>Nepal</li>
+                <li>Singapore</li>
+              </ul>
+              <p className="body-text">
+                If you are not sure if your jurisdiction is supported, please contact us at support@t3.money. If your
+                jurisdiction is not supported, you are not allowed to use the TMX Protocol or the Interface.
+              </p>
             </div>
             <div className="section">
               <h3 className="body-title">1. USE OF THE SITE AND THE INTERFACE</h3>
