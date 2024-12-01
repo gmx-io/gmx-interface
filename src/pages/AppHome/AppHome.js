@@ -222,9 +222,18 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           style={{
             height: mobile ? "80px" : "120px",
             width: mobile ? "80px" : "120px",
-            animation: "float 3s ease-in-out infinite",
+            animation: "float 3s ease-in-out infinite, move 3s ease-in-out infinite, move 2s linear infinite",
           }}
         />
+        <style>
+          {`
+            @keyframes move {
+              0% { transform: translateY(3px); }
+              50% { transform: translateY(-3px); }
+              100% { transform: translateY(3px); }
+            }
+          `}
+        </style>
         <div
           style={{
             display: "flex",
