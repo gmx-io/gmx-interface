@@ -7,9 +7,9 @@ export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...p
   const { mobile } = useBreakpoints();
 
   const rocketVariants = {
-    initial: { x: 10, y: 0, rotate: 0 },
+    initial: { x: 5, y: 0, rotate: 0 },
     move: {
-      x: [10, 11, 9, 10, 9, 10],
+      x: [5, 6, 4, 5, 4, 5],
       y: [0, -1, 1, 0, 1, 0],
       rotate: [0, 5, -5, 0, 5, 0],
       transition: {
