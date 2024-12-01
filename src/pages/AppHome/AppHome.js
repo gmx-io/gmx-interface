@@ -77,19 +77,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
               </div>
             </div>
             <br />
-            <TradeNowButton
-              showRedirectModal={showRedirectModal}
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              style={{
-                fontSize: mobile ? "2rem" : "3rem",
-                background: "linear-gradient(-72deg, rgba(15,85,232,0.2), rgba(157,223,243,0.2))",
-                border: "1px solid rgba(255,255,255,0.2)",
-                padding: mobile ? "2rem 2rem" : "1.5rem 3rem",
-                borderRadius: "4rem",
-                width: "fit-content",
-                backdropFilter: "blur(5px)",
-              }}
-            />
+            <TradeNowButton showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
           </div>
         </div>
       </div>

@@ -2,21 +2,24 @@ import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
 import { motion } from "framer-motion";
 import { useBreakpoints } from "hooks/useBreakpoints";
-import { useState } from "react";
 
 export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...props }) => {
-  const [isHovered, setIsHovered] = useState(false);
   const { mobile } = useBreakpoints();
 
   const rocketVariants = {
-    initial: { x: 0, y: 0, rotate: 0 },
-    hover: {
-      x: 5,
-      y: 0,
-      rotate: -45,
+    initial: { x: 10, y: 0, rotate: 0 },
+    move: {
+      x: [10, 11, 9, 10, 9, 10],
+      y: [0, -1, 1, 0, 1, 0],
+      rotate: [0, 5, -5, 0, 5, 0],
       transition: {
-        duration: 0.3,
-        ease: "easeOut",
+        repeat: Infinity,
+        repeatType: "mirror",
+        duration: 2,
+        ease: "easeInOut",
+        type: "spring",
+        stiffness: 120,
+        damping: 10,
       },
     },
   };
@@ -27,8 +30,6 @@ export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...p
       to="/trade"
       redirectPopupTimestamp={redirectPopupTimestamp}
       showRedirectModal={showRedirectModal}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       {...props}
       style={{
         display: "flex",
@@ -48,7 +49,7 @@ export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...p
       }}
     >
       <Trans>Trade Now</Trans>
-      <motion.span variants={rocketVariants} initial="initial" animate={isHovered ? "hover" : "initial"}>
+      <motion.span variants={rocketVariants} initial="initial" animate="move">
         🚀
       </motion.span>
     </HeaderLink>
