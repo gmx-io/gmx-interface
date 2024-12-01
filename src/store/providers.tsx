@@ -93,7 +93,12 @@ export function Providers({ children }: ProvidersProps) {
 
     `;
 
-  const DynamicNetworks = getDynamicChain([OPTIMISM_MAINNET, SEPOLIA_TESTNET, MORPH_L2, MORPH_MAINNET]);
+  const DynamicNetworks = getDynamicChain([
+    // OPTIMISM_MAINNET, // Enables Optimism Mainnet
+    // SEPOLIA_TESTNET, // Enables Sepolia Testnet
+    MORPH_L2, // Enables Morph L2
+    MORPH_MAINNET, // Enables Morph Mainnet
+  ]);
 
   return (
     <DynamicContextProvider
