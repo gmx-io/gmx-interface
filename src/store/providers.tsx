@@ -27,7 +27,6 @@ export function Providers({ children }: ProvidersProps) {
       }
       .wallet-list-item__tile{
         padding: 7px;
-        
       }
 
       .dynamic-widget-card{
@@ -82,7 +81,12 @@ export function Providers({ children }: ProvidersProps) {
      .dynamic-widget-card, .evm-network-control__container, .dropdown{
         background-color : #111320;
      }
-     
+     .dynamic-widget-inline-controls__network-picker-list {
+        min-width: 170px;
+     }
+    .dynamic-widget-inline-controls__network-picker-list .network-action .network {
+      align-items: center;
+    }
 `
          : ""
      }
@@ -96,7 +100,7 @@ export function Providers({ children }: ProvidersProps) {
       theme={themeContext.isLight ? "light" : "dark"}
       settings={{
         cssOverrides,
-        environmentId: "8e7e23bc-43e3-4eb1-ba85-401166cee40e",
+        environmentId: process.env.REACT_APP_DYNAMIC_ENVIRONMENT_ID || "8e7e23bc-43e3-4eb1-ba85-401166cee40e",
         evmNetworks: DynamicNetworks,
         walletConnectorExtensions: [EthersExtension],
         walletConnectors: [EthereumWalletConnectors],
