@@ -56,6 +56,11 @@ export default function TermsAndConditions() {
                 If you are not sure if your jurisdiction is supported, please contact us at support@t3.money. If your
                 jurisdiction is not supported, you are not allowed to use the TMX Protocol or the Interface.
               </p>
+              <p className="body-text">
+                Laws and regulations are subject to change, so please check back periodically. This list is not
+                exhaustive, and if at any time regulators ban functionality covered by TMX Protocol or the Interface,
+                the terms of service disallowing illegal activity continues to apply.
+              </p>
             </div>
             <div className="section">
               <h3 className="body-title">1. USE OF THE SITE AND THE INTERFACE</h3>
