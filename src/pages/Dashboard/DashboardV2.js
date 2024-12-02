@@ -537,7 +537,7 @@ export default function DashboardV2() {
                     />
                   </div>
                 </div>
-                <div className="App-card-row">
+                {/* <div className="App-card-row">
                   <div className="label">
                     <Trans>24h Volume</Trans>
                   </div>
@@ -556,7 +556,7 @@ export default function DashboardV2() {
                       )}
                     />
                   </div>
-                </div>
+                </div> */}
                 {/* <div className="App-card-row">
                   <div className="label">
                     <Trans>Long Positions</Trans>
