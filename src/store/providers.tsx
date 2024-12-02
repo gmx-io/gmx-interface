@@ -108,8 +108,8 @@ export function Providers({ children }: ProvidersProps) {
         evmNetworks: DynamicNetworks,
         walletConnectorExtensions: [EthersExtension],
         walletConnectors: [EthereumWalletConnectors],
-        privacyPolicyUrl: "https://t3.money/privacy-policy",
-        termsOfServiceUrl: "https://t3.money/terms-and-conditions",
+        privacyPolicyUrl: "https://t3.money/#/privacy-policy",
+        termsOfServiceUrl: "https://t3.money/#/terms-and-conditions",
       }}
     >
       {children}
