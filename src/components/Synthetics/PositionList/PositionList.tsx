@@ -117,7 +117,7 @@ export function PositionList(p: Props) {
             {positions.length === 0 && (
               <TableTr hoverable={false} bordered={false}>
                 <TableTd colSpan={15}>
-                  <div className="text-gray-400">{isLoading ? t`Loading...` : t`No open positions`}</div>
+                  <div className="text-slate-100">{isLoading ? t`Loading...` : t`No open positions`}</div>
                 </TableTd>
               </TableTr>
             )}

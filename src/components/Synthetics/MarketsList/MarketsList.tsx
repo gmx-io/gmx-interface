@@ -108,7 +108,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
 
             {indexTokensStats.length > 0 && !currentData.length && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
-                <TableTd colSpan={6} className="align-top text-gray-400">
+                <TableTd colSpan={6} className="align-top text-slate-100">
                   <Trans>No markets found.</Trans>
                 </TableTd>
               </TableTr>

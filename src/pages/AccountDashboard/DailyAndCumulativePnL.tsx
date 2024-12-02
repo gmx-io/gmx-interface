@@ -139,7 +139,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
           </div>
         )}
         {!loading && !error && clusteredPnlData.length === 0 && (
-          <div className="absolute grid size-full place-items-center text-gray-400">
+          <div className="absolute grid size-full place-items-center text-slate-100">
             <Trans>No data available</Trans>
           </div>
         )}

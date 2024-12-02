@@ -108,8 +108,8 @@ input[type="number"] {
 }
 
 input {
-  font-size: 2rem;
-  color: var(--color-slate-100);
+  font-size: var(--font-size-body-medium);
+  color: var(--color-white);
   outline: none;
   background: none;
   padding: 1.25rem;
