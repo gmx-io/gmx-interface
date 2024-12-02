@@ -86,7 +86,7 @@ export const defaultChartProps = {
     timeFormatter: {
       format: (date) => formatTVTime(date),
       formatLocal: (date) => formatTVTime(date),
-      parse: (date) => lightFormat(parse(date, "h:mm a", new Date()), "YYYY-MM-DD"),
+      parse: (date) => lightFormat(parse(date, "HH:mm", new Date()), "YYYY-MM-DD"),
     },
     dateFormatter: {
       format: (date) => formatTVDate(date),

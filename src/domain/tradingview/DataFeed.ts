@@ -333,8 +333,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         supports_marks: false,
         supports_timescale_marks: false,
         supports_time: true,
-        // @ts-ignore
-        reset_cache_timeout: 100,
       });
     }, 0);
   }

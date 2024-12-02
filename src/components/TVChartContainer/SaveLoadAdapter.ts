@@ -25,59 +25,20 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
     this.setTvCharts = setTvCharts;
     this.currentAppVersion = currentAppVersion;
   }
-  getAllStudyTemplates(): Promise<StudyTemplateMetaInfo[]> {
-    return Promise.resolve([]);
-  }
-  removeStudyTemplate(): Promise<void> {
-    return Promise.resolve();
-  }
-  saveStudyTemplate(): Promise<void> {
-    return Promise.resolve();
-  }
-  getStudyTemplateContent(): Promise<string> {
-    return Promise.resolve("");
-  }
-  getDrawingTemplates(): Promise<string[]> {
-    return Promise.resolve([]);
-  }
-  loadDrawingTemplate(): Promise<string> {
-    return Promise.resolve("");
-  }
-  removeDrawingTemplate(): Promise<void> {
-    return Promise.resolve();
-  }
-  saveDrawingTemplate(): Promise<void> {
-    return Promise.resolve();
-  }
-  getChartTemplateContent(): Promise<ChartTemplate> {
-    return Promise.resolve({});
-  }
-  getAllChartTemplates(): Promise<string[]> {
-    return Promise.resolve([]);
-  }
-  saveChartTemplate(): Promise<void> {
-    return Promise.resolve();
-  }
-  removeChartTemplate(): Promise<void> {
-    return Promise.resolve();
-  }
-  saveLineToolsAndGroups(): Promise<void> {
-    return Promise.resolve();
-  }
-  loadLineToolsAndGroups(): Promise<Partial<LineToolsAndGroupsState> | null> {
-    return Promise.resolve(null);
-  }
 
   getAllCharts(): Promise<ChartMetaInfo[]> {
     const charts = this.charts || [];
-    const filteredCharts = charts
-      .filter((chart) => {
-        if (!chart.appVersion) {
-          chart.appVersion = 1;
-        }
-        return chart.appVersion === this.currentAppVersion;
-      })
-      .filter((chart) => chart.id) as ChartMetaInfo[];
+    const filteredCharts = charts.filter((chart) => {
+      if (!chart.id) {
+        return false;
+      }
+
+      if (!chart.appVersion) {
+        chart.appVersion = 1;
+      }
+
+      return chart.appVersion === this.currentAppVersion;
+    }) as ChartMetaInfo[];
 
     return Promise.resolve(filteredCharts);
   }
@@ -121,5 +82,50 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
       }
     }
     return Promise.reject();
+  }
+
+  // Dummy implementations to satisfy the interface
+
+  getAllStudyTemplates(): Promise<StudyTemplateMetaInfo[]> {
+    return Promise.resolve([]);
+  }
+  removeStudyTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  saveStudyTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  getStudyTemplateContent(): Promise<string> {
+    return Promise.resolve("");
+  }
+  getDrawingTemplates(): Promise<string[]> {
+    return Promise.resolve([]);
+  }
+  loadDrawingTemplate(): Promise<string> {
+    return Promise.resolve("");
+  }
+  removeDrawingTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  saveDrawingTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  getChartTemplateContent(): Promise<ChartTemplate> {
+    return Promise.resolve({});
+  }
+  getAllChartTemplates(): Promise<string[]> {
+    return Promise.resolve([]);
+  }
+  saveChartTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  removeChartTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  saveLineToolsAndGroups(): Promise<void> {
+    return Promise.resolve();
+  }
+  loadLineToolsAndGroups(): Promise<Partial<LineToolsAndGroupsState> | null> {
+    return Promise.resolve(null);
   }
 }
