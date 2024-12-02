@@ -41,10 +41,10 @@ export function RedirectPopupModal({
         <ExternalLink href="https://docs.t3.money/tmx/app-links">docs</ExternalLink>.
         <br />
         <br />
-        By clicking Agree you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">
+        By clicking Agree you accept the <ExternalLink href="https://t3.money/#/terms-and-conditions">
           T&Cs
         </ExternalLink>{" "}
-        and <ExternalLink href="https://gmx.io/#/referral-terms">Referral T&Cs</ExternalLink>.
+        and <ExternalLink href="https://t3.money/#/referral-terms">Referral T&Cs</ExternalLink>.
         <br />
         <br />
       </Trans>

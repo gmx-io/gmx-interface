@@ -1436,7 +1436,7 @@ export function getHomeUrl() {
     return "http://localhost:3010";
   }
 
-  return "https://gmx.io";
+  return "https://t3.money";
 }
 
 export function getAppBaseUrl() {
@@ -1460,7 +1460,7 @@ export function getTradePageUrl() {
     return "http://localhost:3010/#/trade";
   }
 
-  return "https://app.gmx.io/#/trade";
+  return "https://t3.money/#/trade";
 }
 
 export function importImage(name) {
