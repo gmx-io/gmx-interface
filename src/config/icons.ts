@@ -15,7 +15,7 @@ import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
 import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
-import morphIcn from "img/ic_morph_l2.svg";
+import morphIcn from "img/morph_logo.svg";
 
 import optimismIcn from "img/icn_opt_24.svg";
 import tmxImg from "img/ic_tmx.svg";

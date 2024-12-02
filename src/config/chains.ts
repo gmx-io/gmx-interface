@@ -10,7 +10,7 @@ import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
 
 import optimismIcn from "img/icn_opt_24.svg";
 import blastIcn from "img/icn_blast.svg";
-import morphIcn from "img/ic_morph_l2.svg";
+import morphIcn from "img/morph_logo.svg";
 
 const { parseEther } = ethers.utils;
 
@@ -30,7 +30,7 @@ export const MORPH_MAINNET = 2818;
 export const OPBNB_TESTNET = 5611;
 
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = OPTIMISM_MAINNET;
+export const DEFAULT_CHAIN_ID = MORPH_MAINNET;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE, OPTIMISM_MAINNET];
