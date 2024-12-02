@@ -2170,6 +2170,10 @@ msgstr ""
 msgid "Trading Volume"
 msgstr ""
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Reserved for Vesting"
@@ -2979,8 +2983,8 @@ msgid "Debug values are not available"
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr ""
+#~ msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/StakeV2.tsx
@@ -3307,6 +3311,10 @@ msgstr "存取失败"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "要求市场交换"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
@@ -3710,6 +3718,7 @@ msgstr ""
 msgid "Structured Products"
 msgstr "结构化产品"
 
+#: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -6736,7 +6745,6 @@ msgstr ""
 msgid "View on Arbitrum"
 msgstr ""
 
-#: src/domain/synthetics/markets/createShiftTxn.ts
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
 msgstr ""

@@ -3,13 +3,16 @@ import Button from "components/Button/Button";
 import { useAffiliateCodes } from "domain/referrals/hooks";
 import { Token } from "domain/tokens";
 
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import { toJpeg } from "html-to-image";
 import shareBgImg from "img/position-share-bg.png";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import useLoadImage from "lib/useLoadImage";
-import { useEffect, useRef, useState } from "react";
+import { userAnalytics } from "lib/userAnalytics";
+import { SharePositionActionEvent } from "lib/userAnalytics/types";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { FiTwitter } from "react-icons/fi";
 import { RiFileDownloadLine } from "react-icons/ri";
@@ -90,6 +93,13 @@ function PositionShare({
   async function handleDownload() {
     const element = cardRef.current;
     if (!element) return;
+    userAnalytics.pushEvent<SharePositionActionEvent>({
+      event: "SharePositionAction",
+      data: {
+        action: "Download",
+      },
+    });
+
     const imgBlob = await toJpeg(element, config)
       .then(() => toJpeg(element, config))
       .then(() => toJpeg(element, config));
@@ -98,10 +108,30 @@ function PositionShare({
 
   function handleCopy() {
     if (!uploadedImageInfo) return;
+
+    userAnalytics.pushEvent<SharePositionActionEvent>({
+      event: "SharePositionAction",
+      data: {
+        action: "Copy",
+      },
+    });
+
     const url = getShareURL(uploadedImageInfo, userAffiliateCode);
     copyToClipboard(url as string);
     helperToast.success(t`Link copied to clipboard.`);
   }
+
+  const trackShareTwitter = useCallback(() => {
+    userAnalytics.pushEvent<SharePositionActionEvent>(
+      {
+        event: "SharePositionAction",
+        data: {
+          action: "ShareTwitter",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
 
   return (
     <Modal
@@ -133,10 +163,12 @@ function PositionShare({
           <RiFileDownloadLine className="icon" />
           <Trans>Download</Trans>
         </Button>
-        <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-15" to={tweetLink}>
-          <FiTwitter className="icon" />
-          <Trans>Tweet</Trans>
-        </Button>
+        <TrackingLink onClick={trackShareTwitter}>
+          <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-15" to={tweetLink}>
+            <FiTwitter className="icon" />
+            <Trans>Tweet</Trans>
+          </Button>
+        </TrackingLink>
       </div>
     </Modal>
   );

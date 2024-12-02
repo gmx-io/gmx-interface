@@ -221,6 +221,7 @@ export function createDecreaseEncodedPayload({
           acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
+          validFromTime: 0n,
           minOutputAmount,
         },
         orderType: p.orderType,

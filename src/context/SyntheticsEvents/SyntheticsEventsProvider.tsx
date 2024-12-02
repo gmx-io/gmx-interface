@@ -67,6 +67,8 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
+import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -169,6 +171,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
       sendOrderCreatedMetric(metricId);
 
+      if (!isMarketOrderType(data.orderType)) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+      }
+
       setOrderStatuses((old) =>
         setByKey(old, data.key, {
           key: data.key,
@@ -216,6 +222,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderExecutedMetric(metricId);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
       }
 
       setOrderStatuses((old) => {
@@ -258,6 +265,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : getPositionOrderMetricId(order);
 
         sendOrderCancelledMetric(metricId, eventData);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
       }
 
       // If pending user order is cancelled, reset the pending position state
@@ -387,6 +395,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
 
         sendOrderExecutedMetric(metricId);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
 
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
@@ -401,7 +410,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGMSwapMetricId(depositStatuses[key].data!);
 
         sendOrderExecutedMetric(metricId);
-
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -415,7 +424,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGMSwapMetricId(depositStatuses[key].data!);
 
         sendOrderCancelledMetric(metricId, eventData);
-
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -429,6 +438,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
 
         sendOrderCancelledMetric(metricId, eventData);
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
 
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
@@ -670,7 +680,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         isLong: eventData.boolItems.items.isLong,
-        increasedAtBlock: BigInt(txnParams.blockNumber),
+        increasedAtTime: eventData.uintItems.items.increasedAtTime,
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -733,7 +743,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         pnlUsd: eventData.intItems.items.pnlUsd,
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
-        decreasedAtBlock: BigInt(txnParams.blockNumber),
+        decreasedAtTime: eventData.uintItems.items.decreasedAtTime,
         orderType: Number(eventData.uintItems.items.orderType),
         orderKey: eventData.bytes32Items.items.orderKey,
       };
@@ -842,6 +852,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               [spender]: { value, createdAt: Date.now() },
             },
           }));
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: {
+              action: "ApproveSuccess",
+            },
+          });
         }
       );
 

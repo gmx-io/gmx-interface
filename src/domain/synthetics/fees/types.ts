@@ -19,8 +19,7 @@ export type SwapFeeItem = FeeItem & {
 };
 
 export type GasLimitsConfig = {
-  depositSingleToken: bigint;
-  depositMultiToken: bigint;
+  depositToken: bigint;
   withdrawalMultiToken: bigint;
   shift: bigint;
   singleSwap: bigint;

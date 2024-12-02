@@ -19,6 +19,7 @@ type Params = {
   spender: string;
   chainId: number;
   onApproveSubmitted?: () => void;
+  onApproveFail?: (error: Error) => void;
   getTokenInfo?: (infoTokens: InfoTokens, tokenAddress: string) => TokenInfo;
   infoTokens?: InfoTokens;
   pendingTxns?: any[];
@@ -34,6 +35,7 @@ export function approveTokens({
   spender,
   chainId,
   onApproveSubmitted,
+  onApproveFail,
   getTokenInfo,
   infoTokens,
   pendingTxns,
@@ -70,6 +72,7 @@ export function approveTokens({
       }
     })
     .catch((e) => {
+      onApproveFail?.(e);
       // eslint-disable-next-line no-console
       console.error(e);
       let failMsg;

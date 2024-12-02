@@ -453,8 +453,8 @@ function TVChartHeaderInfoDesktop() {
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="text-body-large mb-4">{avgPrice}</div>
-            <div className="text-body-medium">{dayPriceDelta}</div>
+            <div className="text-body-medium mb-4">{avgPrice}</div>
+            <div className="text-body-small">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
         </div>

@@ -86,6 +86,7 @@ export function GmList({
   const chainId = useSelector(selectChainId);
   const marketsInfo = useSelector(selectGlvAndMarketsInfoData);
   const glvsLoading = useSelector(selectGlvInfoLoading);
+
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit });
   const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId)!;
@@ -524,7 +525,7 @@ function GmListItem({
         </div>
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTd>
-      <TableTd className="text-body-large">{formatUsdPrice(token.prices?.minPrice)}</TableTd>
+      <TableTd>{formatUsdPrice(token.prices?.minPrice)}</TableTd>
       <TableTd>
         <TokenValuesInfoCell
           token={formatTokenAmount(totalSupply, token.decimals, token.symbol, {

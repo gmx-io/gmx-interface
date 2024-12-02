@@ -186,7 +186,7 @@ export function LeaderboardAccountsTable({
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1000px]">
           <thead>
-            <TableTheadTr bordered className="text-body-large">
+            <TableTheadTr bordered className="text-body-medium">
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
@@ -343,7 +343,7 @@ const TableRow = memo(
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
     return (
-      <TableTr bordered={false} key={account.account} className={big ? "text-body-large" : undefined}>
+      <TableTr bordered={false} key={account.account} className={big ? "text-body-medium" : undefined}>
         <TableTd className={getCellClassname(rank, activeCompetition, pinned)}>
           <span className={getWinnerRankClassname(rank, activeCompetition)}>
             <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />

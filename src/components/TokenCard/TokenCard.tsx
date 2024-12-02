@@ -28,6 +28,9 @@ import sparkleIcon from "img/sparkle.svg";
 import { GlvList, useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { RawIncentivesStats } from "lib/oracleKeeperFetcher";
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageProtocolReadMoreEvent, LandingPageProtocolTokenEvent } from "lib/userAnalytics/types";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -76,6 +79,7 @@ const BuyLink = ({
   children,
   network,
   showRedirectModal,
+  onClick,
 }: {
   chainId: number;
   active: boolean;
@@ -84,6 +88,7 @@ const BuyLink = ({
   children: React.ReactNode;
   network: number;
   showRedirectModal: undefined | ((to: string) => void);
+  onClick?: () => void | Promise<void>;
 }) => {
   const changeNetwork = useCallback(
     (network) => {
@@ -105,18 +110,57 @@ const BuyLink = ({
   const isHome = isHomeSite();
   if (isHome && showRedirectModal) {
     return (
-      <HeaderLink to={to} className={className} showRedirectModal={showRedirectModal}>
+      <HeaderLink onClick={onClick} to={to} className={className} showRedirectModal={showRedirectModal}>
         {children}
       </HeaderLink>
     );
   }
 
-  return (
+  const LinkComponent = (
     <Link to={to} className={className} onClick={() => changeNetwork(network)}>
       {children}
     </Link>
   );
+
+  return onClick ? <TrackingLink onClick={onClick}>{LinkComponent}</TrackingLink> : LinkComponent;
 };
+
+async function sendUserAnalyticsProtocolTokenEvent(
+  chain: "Arbitrum" | "Avalanche",
+  type: "GMX" | "GM" | "GLV" | "GLP"
+) {
+  if (isHomeSite()) {
+    await userAnalytics.pushEvent<LandingPageProtocolTokenEvent>(
+      {
+        event: "LandingPageAction",
+        data: {
+          action: "ProtocolTokenAction",
+          chain,
+          type,
+        },
+      },
+      { instantSend: true }
+    );
+  }
+}
+
+const trackGMXBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GMX");
+const trackGMXBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GMX");
+const trackGLPBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLP");
+const trackGLPBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLP");
+const trackGLVBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLV");
+const trackGLVBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLV");
+const trackGMBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GM");
+const trackGMBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GM");
+
+async function sendUserAnalyticsProtocolReadMoreEvent() {
+  if (isHomeSite()) {
+    await userAnalytics.pushEvent<LandingPageProtocolReadMoreEvent>(
+      { event: "LandingPageAction", data: { action: "ProtocolReadMore" } },
+      { instantSend: true }
+    );
+  }
+}
 
 export default function TokenCard({ showRedirectModal }: Props) {
   const { chainId } = useChainId();
@@ -255,9 +299,10 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               className="default-btn"
-              to="/buy_gmx"
+              to={`/buy_gmx?${userAnalytics.getSessionIdUrlParam()}`}
               network={ARBITRUM}
               showRedirectModal={showRedirectModal}
+              onClick={trackGMXBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
@@ -265,21 +310,24 @@ export default function TokenCard({ showRedirectModal }: Props) {
               chainId={chainId}
               active={active}
               className="default-btn"
-              to="/buy_gmx"
+              to={`/buy_gmx?${userAnalytics.getSessionIdUrlParam()}`}
               network={AVALANCHE}
               showRedirectModal={showRedirectModal}
+              onClick={trackGMXBuyAvalanche}
             >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
-          <Button
-            className="!py-11 tracking-normal"
-            newTab
-            variant="secondary"
-            to="https://docs.gmx.io/docs/category/tokenomics"
-          >
-            <Trans>Read more</Trans>
-          </Button>
+          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+            <Button
+              className="!py-11 tracking-normal"
+              newTab
+              variant="primary"
+              to="https://docs.gmx.io/docs/category/tokenomics"
+            >
+              <Trans>Read more</Trans>
+            </Button>
+          </TrackingLink>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -311,36 +359,40 @@ export default function TokenCard({ showRedirectModal }: Props) {
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink
-              to="/pools?pickBestGlv=1"
+              to={`/pools?pickBestGlv=1&${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={ARBITRUM}
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
+              onClick={trackGLVBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
             {isGlvEnabled(AVALANCHE) && (
               <BuyLink
-                to="/pools?pickBestGlv=1"
+                to={`/pools?pickBestGlv=1&${userAnalytics.getSessionIdUrlParam()}`}
                 className="default-btn"
                 network={AVALANCHE}
                 chainId={chainId}
                 active={active}
                 showRedirectModal={showRedirectModal}
+                onClick={trackGLVBuyAvalanche}
               >
                 <Trans>View on Avalanche</Trans>
               </BuyLink>
             )}
           </div>
-          <a
-            href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
-            target="_blank"
-            rel="noreferrer"
-            className="default-btn read-more"
-          >
-            <Trans>Read more</Trans>
-          </a>
+          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+            <a
+              href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
+              target="_blank"
+              rel="noreferrer"
+              className="default-btn read-more"
+            >
+              <Trans>Read more</Trans>
+            </a>
+          </TrackingLink>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -367,35 +419,39 @@ export default function TokenCard({ showRedirectModal }: Props) {
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink
-              to="/pools"
+              to={`/pools?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={ARBITRUM}
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
+              onClick={trackGMBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
 
             <BuyLink
-              to="/pools"
+              to={`/pools?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={AVALANCHE}
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
+              onClick={trackGMBuyAvalanche}
             >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
-          <a
-            href="https://docs.gmx.io/docs/providing-liquidity/v2"
-            target="_blank"
-            rel="noreferrer"
-            className="default-btn read-more"
-          >
-            <Trans>Read more</Trans>
-          </a>
+          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+            <a
+              href="https://docs.gmx.io/docs/providing-liquidity/v2"
+              target="_blank"
+              rel="noreferrer"
+              className="default-btn read-more"
+            >
+              <Trans>Read more</Trans>
+            </a>
+          </TrackingLink>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -425,34 +481,38 @@ export default function TokenCard({ showRedirectModal }: Props) {
         <div className="Home-token-card-option-action">
           <div className="buy">
             <BuyLink
-              to="/buy_glp"
+              to={`/buy_glp?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={ARBITRUM}
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
+              onClick={trackGLPBuyArbitrum}
             >
               <Trans>View on Arbitrum</Trans>
             </BuyLink>
             <BuyLink
-              to="/buy_glp"
+              to={`/buy_glp?${userAnalytics.getSessionIdUrlParam()}`}
               className="default-btn"
               network={AVALANCHE}
               chainId={chainId}
               active={active}
               showRedirectModal={showRedirectModal}
+              onClick={trackGLPBuyAvalanche}
             >
               <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
-          <a
-            href="https://docs.gmx.io/docs/providing-liquidity/v1"
-            target="_blank"
-            rel="noreferrer"
-            className="default-btn read-more"
-          >
-            <Trans>Read more</Trans>
-          </a>
+          <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
+            <a
+              href="https://docs.gmx.io/docs/providing-liquidity/v1"
+              target="_blank"
+              rel="noreferrer"
+              className="default-btn read-more"
+            >
+              <Trans>Read more</Trans>
+            </a>
+          </TrackingLink>
         </div>
       </div>
     </div>

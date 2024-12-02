@@ -21,6 +21,7 @@ import { decodeReferralCode, encodeReferralCode } from "../utils";
 
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
+export * from "./useReferralCodeFromUrl";
 
 export function useUserReferralInfoRequest(
   signer: Signer | undefined,

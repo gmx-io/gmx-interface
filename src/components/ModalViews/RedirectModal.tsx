@@ -5,6 +5,8 @@ import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
 
 export function RedirectPopupModal({
   redirectModalVisible,
@@ -16,6 +18,12 @@ export function RedirectPopupModal({
   const [, setRedirectPopupTimestamp] = useRedirectPopupTimestamp();
   const onClickAgree = () => {
     if (shouldHideRedirectModal) {
+      userAnalytics.pushEvent<LandingPageAgreementConfirmationEvent>({
+        event: "LandingPageAction",
+        data: {
+          action: "AgreementConfirmationAgreeClick",
+        },
+      });
       setRedirectPopupTimestamp(Date.now());
     }
   };
