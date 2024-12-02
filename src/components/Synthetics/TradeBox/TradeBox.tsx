@@ -618,6 +618,7 @@ export function TradeBox(p: Props) {
   });
   const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
+  const prefix = toToken ? getTokenVisualMultiplier(toToken) : "";
   const submitButtonText = useMemo(() => {
     if (buttonErrorText) {
       return buttonErrorText;
@@ -631,7 +632,10 @@ export function TradeBox(p: Props) {
       if (isSwap) {
         return t`Swap ${fromToken?.symbol}`;
       } else {
-        return `${localizedTradeTypeLabels[tradeType!]} ${toToken?.symbol}`;
+        if (!toToken?.symbol) {
+          return `${localizedTradeTypeLabels[tradeType!]} ...`;
+        }
+        return `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken.symbol}`;
       }
     } else if (isLimit) {
       return t`Create Limit order`;
@@ -649,6 +653,7 @@ export function TradeBox(p: Props) {
     toToken?.symbol,
     decreaseAmounts?.triggerOrderType,
     stage,
+    prefix,
   ]);
 
   const submitButtonState = useTradeboxButtonState({
