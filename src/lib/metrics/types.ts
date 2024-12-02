@@ -264,6 +264,8 @@ export type SwapMetricData = {
   hasReferralCode: boolean | undefined;
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
+  initialCollateralAllowance: string | undefined;
+  initialCollateralBalance: string | undefined;
   toTokenAddress: string | undefined;
   toTokenSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
@@ -282,6 +284,8 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   leverage: string | undefined;
   isFirstOrder: boolean | undefined;
   isLeverageEnabled: boolean | undefined;
+  initialCollateralAllowance: string | undefined;
+  initialCollateralBalance: string | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
