@@ -322,7 +322,7 @@ export default function TokenCard({ showRedirectModal }: Props) {
             <Button
               className="!py-11 tracking-normal"
               newTab
-              variant="primary"
+              variant="secondary"
               to="https://docs.gmx.io/docs/category/tokenomics"
             >
               <Trans>Read more</Trans>
@@ -384,14 +384,14 @@ export default function TokenCard({ showRedirectModal }: Props) {
             )}
           </div>
           <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-            <a
-              href="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
+            <Button
+              className="!py-11 tracking-normal"
+              newTab
+              variant="secondary"
+              to="https://docs.gmx.io/docs/providing-liquidity/v2/#glv-pools"
             >
               <Trans>Read more</Trans>
-            </a>
+            </Button>
           </TrackingLink>
         </div>
       </div>
@@ -443,14 +443,14 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </BuyLink>
           </div>
           <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-            <a
-              href="https://docs.gmx.io/docs/providing-liquidity/v2"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
+            <Button
+              className="!py-11 tracking-normal"
+              newTab
+              variant="secondary"
+              to="https://docs.gmx.io/docs/providing-liquidity/v2"
             >
               <Trans>Read more</Trans>
-            </a>
+            </Button>
           </TrackingLink>
         </div>
       </div>
@@ -504,14 +504,14 @@ export default function TokenCard({ showRedirectModal }: Props) {
             </BuyLink>
           </div>
           <TrackingLink onClick={sendUserAnalyticsProtocolReadMoreEvent}>
-            <a
-              href="https://docs.gmx.io/docs/providing-liquidity/v1"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
+            <Button
+              className="!py-11 tracking-normal"
+              newTab
+              variant="secondary"
+              to="https://docs.gmx.io/docs/providing-liquidity/v1"
             >
               <Trans>Read more</Trans>
-            </a>
+            </Button>
           </TrackingLink>
         </div>
       </div>

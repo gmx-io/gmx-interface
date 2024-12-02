@@ -128,14 +128,14 @@ function TVChartHeaderInfoMobile() {
 
         <div>
           <div className="mb-4 whitespace-nowrap">
-            <span className="opacity-70">
+            <span className="text-slate-100">
               <Trans>Open Interest</Trans>
             </span>
-            <span className="opacity-70">{" ("}</span>
+            <span className="text-slate-100">{" ("}</span>
             <span className="positive">{longOIPercentage}</span>
-            <span className="opacity-70">/</span>
+            <span className="text-slate-100">/</span>
             <span className="negative">{shortOIPercentage}</span>
-            <span className="opacity-70">{")"}</span>
+            <span className="text-slate-100">{")"}</span>
           </div>
           <div className="flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-8">{longOIValue}</div>
@@ -437,7 +437,7 @@ function TVChartHeaderInfoDesktop() {
             style={leftStyles}
             onClick={scrollToLeft}
           >
-            {scrollLeft > 0 && <BiChevronLeft className="opacity-70" size={24} />}
+            {scrollLeft > 0 && <BiChevronLeft className="text-slate-100" size={24} />}
           </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
@@ -448,7 +448,7 @@ function TVChartHeaderInfoDesktop() {
             style={rightStyles}
             onClick={scrollToRight}
           >
-            {scrollRight > 0 && <BiChevronRight className="opacity-70" size={24} />}
+            {scrollRight > 0 && <BiChevronRight className="text-slate-100" size={24} />}
           </div>
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>

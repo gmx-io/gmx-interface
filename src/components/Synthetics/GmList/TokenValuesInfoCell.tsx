@@ -2,7 +2,7 @@ export function TokenValuesInfoCell({ token, usd }: { token?: string; usd?: stri
   return (
     <>
       {token && <div className="whitespace-nowrap">{token}</div>}
-      {usd && <div className="whitespace-nowrap text-12 text-slate-100 opacity-70">({usd})</div>}
+      {usd && <div className="whitespace-nowrap text-12 text-slate-100">({usd})</div>}
     </>
   );
 }

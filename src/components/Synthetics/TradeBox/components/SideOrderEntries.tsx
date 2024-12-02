@@ -129,7 +129,7 @@ function SideOrderEntry({
             "hover:focus-within:border-cold-blue-500": !priceError,
           })}
         >
-          <span className="cursor-pointer opacity-70">$</span>
+          <span className="cursor-pointer text-slate-100">$</span>
 
           <NumberInput
             value={entry.price.input}
@@ -173,7 +173,7 @@ function SideOrderEntry({
             "hover:focus-within:border-cold-blue-500": !sizeError,
           })}
         >
-          <span className="cursor-pointer opacity-70">$</span>
+          <span className="cursor-pointer text-slate-100">$</span>
           <TooltipWithPortal
             disabled={!sizeTooltipMsg}
             content={sizeTooltipMsg}

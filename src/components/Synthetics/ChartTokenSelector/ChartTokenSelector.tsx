@@ -169,7 +169,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
     ? cx("px-6 first-of-type:pl-15 last-of-type:pr-15")
     : "px-8 first-of-type:pl-16 last-of-type:pr-16";
   const thClassName = cx(
-    "text-body-medium sticky top-0 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
+    "text-body-medium sticky top-0 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100 first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );

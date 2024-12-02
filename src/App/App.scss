@@ -1025,7 +1025,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: var(--color-white);
+  color: var(--color-slate-100);
   opacity: 0.5;
 }
 
@@ -1041,11 +1041,13 @@ button.App-button {
 .rc-slider-tooltip-inner {
   box-shadow: none;
   padding: 0.465rem 0.8rem;
-  background: var(--color-slate-600);
+
+  background: rgb(49, 54, 85) !important;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25) !important;
 }
 
 .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-  border-top-color: var(--color-slate-600);
+  border-top-color: rgb(49, 54, 85) !important;
 }
 
 .header-connect-btn {

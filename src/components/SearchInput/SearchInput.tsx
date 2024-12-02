@@ -66,7 +66,7 @@ export default function SearchInput({
         })}
         style={STYLE}
       />
-      {value.length > 0 && (
+      {
         <button
           className={cx("group absolute bottom-0 right-0 top-0 flex items-center", {
             "pr-8": size === "m",
@@ -84,7 +84,7 @@ export default function SearchInput({
             <CrossIconComponent className="w-16 text-slate-100" />
           </div>
         </button>
-      )}
+      }
     </div>
   );
 }
