@@ -19,9 +19,6 @@ export default function Footer() {
           <NavLink to="/terms-and-conditions" style={{ color: "#9DDFF3", textDecoration: "none" }}>
             Terms and Conditions
           </NavLink>
-          {/* <NavLink to="/referral-terms" style={{ color: "#9DDFF3", textDecoration: "none" }}>
-            Referral Terms
-          </NavLink> */}
         </div>
         <p style={{ fontSize: "0.9rem", color: "#7B80B8" }}>Copyright © t3 Finance Limited. All rights reserved.</p>
       </div>
