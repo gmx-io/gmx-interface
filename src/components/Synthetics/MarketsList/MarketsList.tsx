@@ -61,7 +61,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
           size="s"
           value={searchText}
           setValue={setSearchText}
-          className="*:!text-16"
+          className="*:!text-body-medium"
           placeholder="Search Market"
           autoFocus={false}
         />

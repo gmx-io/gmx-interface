@@ -138,7 +138,7 @@ export function GmList({
           <img src={currentIcons?.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
           <SearchInput
             size="s"
-            className="*:!text-16"
+            className="*:!text-body-medium"
             value={searchText}
             setValue={setSearchText}
             placeholder="Search Pool"
