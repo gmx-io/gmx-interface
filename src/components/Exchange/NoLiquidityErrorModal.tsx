@@ -43,7 +43,12 @@ export default function NoLiquidityErrorModal({
     modalError === "BUFFER" ? t`${shortCollateralToken.symbol} Required` : t`${fromToken.symbol} Pool Capacity Reached`;
 
   return (
-    <Modal isVisible={Boolean(modalError)} setIsVisible={setModalError} label={label} className="Error-modal text-15">
+    <Modal
+      isVisible={Boolean(modalError)}
+      setIsVisible={setModalError}
+      label={label}
+      className="Error-modal text-body-medium"
+    >
       <div>
         <Trans>
           You need to select {swapTokenSymbol} as the "Pay" token to use it for collateral to initiate this trade.

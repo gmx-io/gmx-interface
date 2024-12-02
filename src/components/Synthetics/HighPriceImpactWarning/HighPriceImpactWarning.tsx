@@ -24,8 +24,8 @@ export function HighPriceImpactWarning({ priceImpactWarningState, className }: P
           setIsChecked={priceImpactWarningState.setIsHighPositionImpactAccepted}
           qa="high-price-impact-warning"
         >
-          <span className="text-body-small text-yellow-500">
-            <Trans>High price impact. Review execution price.</Trans>
+          <span className="text-body-medium text-yellow-500">
+            <Trans>High price impact. Review execution price</Trans>
           </span>
         </Checkbox>
       )}
@@ -37,7 +37,7 @@ export function HighPriceImpactWarning({ priceImpactWarningState, className }: P
           setIsChecked={priceImpactWarningState.setIsHighSwapImpactAccepted}
           qa="high-swap-impact-warning"
         >
-          <span className="text-14 text-yellow-500">
+          <span className="text-body-medium text-yellow-500">
             <Trans>Acknowledge high Swap Price Impact</Trans>
           </span>
         </Checkbox>

@@ -196,11 +196,11 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-16 last-of-type:pr-16") : "px-16";
   const thClassName = cx(
-    "sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
-  const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
+  const tdClassName = cx("text-body-medium last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -227,7 +227,7 @@ function MarketTokenSelectorInternal(props: Props) {
       </SelectorBaseMobileHeaderContent>
       <div
         className={cx({
-          "w-[630px]": !isMobile,
+          "w-[650px]": !isMobile,
         })}
       >
         {!isMobile && (
@@ -518,17 +518,17 @@ function MarketTokenListItem({
         {marketInfo && !isSmallMobile && (
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
-            <div className="inline-flex flex-wrap items-center">
-              <span className="text-slate-100">{indexName && indexName}</span>
-              <span className="ml-3 text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+            <div className="inline-flex flex-wrap items-center whitespace-nowrap">
+              <span className="text-body-medium text-slate-100">{indexName && indexName}</span>
+              <span className="text-body-medium ml-3 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
             </div>
           </div>
         )}
         {marketInfo && isSmallMobile && (
-          <div className="inline-flex flex-col items-start">
+          <div className="inline-flex flex-col items-start whitespace-nowrap">
             <TokenIcon symbol={iconName} displaySize={16} importSize={40} />
-            <span>{indexName && indexName}</span>
-            <span className="text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+            <span className="text-body-medium">{indexName && indexName}</span>
+            <span className="text-body-medium leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
           </div>
         )}
       </td>
