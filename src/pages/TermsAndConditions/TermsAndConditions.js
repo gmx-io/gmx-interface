@@ -12,7 +12,7 @@ export default function TermsAndConditions() {
           <div className="Page-title-section center">
             <div className="Page-title">TMX</div>
             <div className="Page-subtitle">Terms and Conditions</div>
-            <div className="Page-description">Last modified: August 1st, 2022</div>
+            <div className="Page-description">Last modified: December 1st, 2024</div>
           </div>
           <div className="content">
             <div className="section">

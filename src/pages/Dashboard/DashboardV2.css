@@ -4,9 +4,16 @@
 
 .DashboardV2-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  
+  place-items: center;
+
+  grid-template-columns: 1fr;
   grid-gap: 1.5rem;
   margin-top: 0.8rem;
+}
+
+.dashboard-overview {
+  width: calc(50% + 3.2rem);
 }
 
 .DashboardV2-token-cards {
