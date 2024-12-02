@@ -7,7 +7,7 @@ import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
 export const MAX_PERCENTAGE = 100n;
-export const PERCENTAGE_DECEMALS = 0;
+export const PERCENTAGE_DECIMALS = 0;
 
 export function getDefaultEntryField(
   decimals: number | undefined,
@@ -54,7 +54,7 @@ export function getDefaultEntry<T extends SidecarOrderEntryBase>(
     id: uniqueId(`${prefix}_`),
     price: getDefaultEntryField(USD_DECIMALS),
     sizeUsd: getDefaultEntryField(USD_DECIMALS),
-    percentage: getDefaultEntryField(PERCENTAGE_DECEMALS, { value: MAX_PERCENTAGE }),
+    percentage: getDefaultEntryField(PERCENTAGE_DECIMALS, { value: MAX_PERCENTAGE }),
     mode: "keepPercentage",
     order: null,
     txnType: null,

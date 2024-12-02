@@ -10,20 +10,15 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { PERCENTAGE_DECEMALS } from "domain/synthetics/sidecarOrders/utils";
-import { USD_DECIMALS } from "config/factors";
-import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { PERCENTAGE_DECIMALS } from "domain/synthetics/sidecarOrders/utils";
+import { formatAmount, formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 import { SideOrderEntries } from "../components/SideOrderEntries";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import {
-  selectSelectedMarketPriceDecimals,
-  selectSelectedMarketVisualMultiplier,
-} from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 
 export function LimitAndTPSLRows() {
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
-  const marketDecimals = useSelector(selectSelectedMarketPriceDecimals);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
 
   function renderSideOrders(type: "stopLoss" | "takeProfit" | "limit") {
@@ -75,24 +70,17 @@ export function LimitAndTPSLRows() {
                   entriesInfo?.entries?.map((entry, index) => {
                     if (!entry || !entry.decreaseAmounts || entry.txnType === "cancel") return;
 
-                    const price =
-                      entry.price?.value &&
-                      formatAmount(
-                        entry.price.value,
-                        USD_DECIMALS,
-                        marketDecimals,
-                        undefined,
-                        undefined,
-                        visualMultiplier
-                      );
+                    const price = formatUsdPrice(entry.price?.value ?? undefined, {
+                      visualMultiplier,
+                    });
                     const percentage =
-                      entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECEMALS, 0);
+                      entry.percentage?.value && formatAmount(entry.percentage.value, PERCENTAGE_DECIMALS, 0);
 
                     return (
                       <div className="mb-5 flex justify-between whitespace-nowrap" key={index}>
                         {(price && percentage && (
                           <span className="mr-15 whitespace-nowrap">
-                            At ${price}, {isStopLoss ? "SL" : "TP"} {percentage}%:
+                            At {price}, {isStopLoss ? "SL" : "TP"} {percentage}%:
                           </span>
                         )) ||
                           null}
