@@ -9,7 +9,7 @@
   }
 
   &-group-name {
-    font-size: var(--font-sm);
+    font-size: var(--font-size-body-small);
 
     display: flex;
     align-items: center;
@@ -19,7 +19,7 @@
   }
 
   &-option {
-    font-size: var(--font-sm);
+    font-size: var(--font-size-body-small);
 
     display: flex;
     align-items: center;
@@ -37,7 +37,7 @@
   }
 
   &-clear {
-    font-size: var(--font-sm);
+    font-size: var(--font-size-body-small);
     padding: 0.5rem 1rem;
     padding-top: 1rem;
 

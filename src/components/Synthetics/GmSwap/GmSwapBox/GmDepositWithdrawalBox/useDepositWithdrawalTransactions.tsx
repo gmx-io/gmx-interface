@@ -12,7 +12,8 @@ import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
-import { Operation } from "../types";
+import { t } from "@lingui/macro";
+import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
   initGMSwapMetricData,
@@ -21,8 +22,8 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
-import { helperToast } from "lib/helperToast";
-import { t } from "@lingui/macro";
+import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
+import { Operation } from "../types";
 
 interface Props {
   marketInfo?: MarketInfo;
@@ -33,17 +34,21 @@ interface Props {
   shortToken: TokenData | undefined;
 
   marketTokenAmount: bigint | undefined;
+  marketTokenUsd: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
 
   glvTokenAmount: bigint | undefined;
+  glvTokenUsd: bigint | undefined;
 
   shouldDisableValidation?: boolean;
 
   tokensData: TokensData | undefined;
   executionFee: ExecutionFee | undefined;
   selectedMarketForGlv?: string;
+  selectedMarketInfoForGlv?: MarketInfo;
   isMarketTokenDeposit?: boolean;
+  isFirstBuy: boolean;
 }
 
 export const useDepositWithdrawalTransactions = ({
@@ -55,14 +60,18 @@ export const useDepositWithdrawalTransactions = ({
   shortToken,
   shortTokenAmount,
   glvTokenAmount,
+  glvTokenUsd,
 
   marketTokenAmount,
+  marketTokenUsd,
   shouldDisableValidation,
   tokensData,
   executionFee,
   selectedMarketForGlv,
+  selectedMarketInfoForGlv,
   glvInfo,
   isMarketTokenDeposit,
+  isFirstBuy,
 }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chainId = useSelector(selectChainId);
@@ -86,6 +95,9 @@ export const useDepositWithdrawalTransactions = ({
               shortTokenAmount,
               marketTokenAmount,
               glvTokenAmount,
+              marketName: selectedMarketInfoForGlv?.name,
+              glvTokenUsd: glvTokenUsd,
+              isFirstBuy,
             })
           : initGMSwapMetricData({
               longToken,
@@ -97,6 +109,8 @@ export const useDepositWithdrawalTransactions = ({
               longTokenAmount,
               shortTokenAmount,
               marketTokenAmount,
+              marketTokenUsd,
+              isFirstBuy,
             });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -114,6 +128,8 @@ export const useDepositWithdrawalTransactions = ({
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
+
+      sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
       const initialLongTokenAddress = longToken?.address || marketInfo.longTokenAddress;
       const initialShortTokenAddress = marketInfo.isSameCollaterals
@@ -142,7 +158,8 @@ export const useDepositWithdrawalTransactions = ({
           isMarketTokenDeposit: isMarketTokenDeposit ?? false,
         })
           .then(makeTxnSentMetricsHandler(metricData.metricId))
-          .catch(makeTxnErrorMetricsHandler(metricData.metricId));
+          .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+          .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
       }
 
       return createDepositTxn(chainId, signer, {
@@ -164,28 +181,33 @@ export const useDepositWithdrawalTransactions = ({
         setPendingDeposit,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
-      account,
-      executionFee,
-      longToken,
-      longTokenAmount,
-      marketInfo,
-      marketToken,
-      marketTokenAmount,
-      shortToken,
-      shortTokenAmount,
-      signer,
-      tokensData,
-      shouldDisableValidation,
-      chainId,
-      setPendingDeposit,
-      setPendingTxns,
-      selectedMarketForGlv,
       glvInfo,
-      isMarketTokenDeposit,
+      selectedMarketForGlv,
+      longToken,
+      shortToken,
+      executionFee,
+      longTokenAmount,
+      shortTokenAmount,
+      marketTokenAmount,
       glvTokenAmount,
+      selectedMarketInfoForGlv?.name,
+      glvTokenUsd,
+      isFirstBuy,
+      marketToken,
+      marketInfo,
+      marketTokenUsd,
+      account,
+      tokensData,
+      signer,
+      chainId,
+      shouldDisableValidation,
+      setPendingTxns,
+      setPendingDeposit,
+      isMarketTokenDeposit,
     ]
   );
 
@@ -205,6 +227,9 @@ export const useDepositWithdrawalTransactions = ({
               shortTokenAmount,
               marketTokenAmount,
               glvTokenAmount,
+              marketName: selectedMarketInfoForGlv?.name,
+              glvTokenUsd,
+              isFirstBuy,
             })
           : initGMSwapMetricData({
               longToken,
@@ -216,6 +241,8 @@ export const useDepositWithdrawalTransactions = ({
               longTokenAmount,
               shortTokenAmount,
               marketTokenAmount,
+              marketTokenUsd,
+              isFirstBuy,
             });
 
       if (
@@ -278,24 +305,28 @@ export const useDepositWithdrawalTransactions = ({
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
-      account,
-      executionFee,
-      longToken,
-      longTokenAmount,
-      marketInfo,
-      marketToken,
-      marketTokenAmount,
-      shortToken,
-      shortTokenAmount,
-      signer,
-      tokensData,
-      shouldDisableValidation,
-      chainId,
-      setPendingWithdrawal,
-      setPendingTxns,
-      selectedMarketForGlv,
       glvInfo,
+      selectedMarketForGlv,
+      longToken,
+      shortToken,
+      executionFee,
+      longTokenAmount,
+      shortTokenAmount,
+      marketTokenAmount,
       glvTokenAmount,
+      selectedMarketInfoForGlv?.name,
+      glvTokenUsd,
+      isFirstBuy,
+      marketToken,
+      marketInfo,
+      marketTokenUsd,
+      account,
+      tokensData,
+      signer,
+      chainId,
+      shouldDisableValidation,
+      setPendingTxns,
+      setPendingWithdrawal,
     ]
   );
 

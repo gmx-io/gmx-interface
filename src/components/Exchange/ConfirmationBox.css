@@ -23,7 +23,7 @@
   margin: 0;
 }
 .order-list li button {
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-small);
   background: none;
   border: none;
   color: var(--color-white);

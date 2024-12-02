@@ -1,7 +1,7 @@
 .Tab.Tab__block {
   display: grid;
   grid-auto-flow: column;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-medium);
   border-radius: 3px;
   overflow: hidden;
   color: var(--color-gray-300);
@@ -55,7 +55,7 @@
 .Tab.Tab__inline .Tab-option {
   display: inline-block;
   margin-right: 1.5rem;
-  font-size: var(--font-base);
+  font-size: var(--font-size-body-medium);
 }
 
 .Tab.Tab__inline .Tab-option:not(.disabled):not(.active):hover {

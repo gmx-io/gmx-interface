@@ -1,20 +1,20 @@
 import { isDevelopment } from "config/env";
 import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
+import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import {
   BatchReportItem,
   CounterPayload,
+  EventPayload,
   OracleFetcher,
   TimingPayload,
-  UiReportPayload,
 } from "lib/oracleKeeperFetcher/types";
-import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { getAppVersion } from "lib/version";
 import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
 import {
   METRIC_COUNTER_DISPATCH_NAME,
-  METRIC_TIMING_DISPATCH_NAME,
   METRIC_EVENT_DISPATCH_NAME,
+  METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
 import { prepareErrorMetricData } from "./errorReporting";
 import { getStorageItem, setStorageItem } from "./storage";
@@ -80,11 +80,33 @@ export class Metrics {
     this.wallets = await getWalletNames();
   }
 
+  pushBatchItem = (item: BatchReportItem) => {
+    if (this.debug) {
+      // eslint-disable-next-line no-console
+      console.log(`Metrics: push ${item.type}`, item.payload);
+    }
+
+    this.queue.push(item);
+  };
+
+  sendBatchItems = (items: BatchReportItem[], logEvents = false) => {
+    if (logEvents && this.debug) {
+      // eslint-disable-next-line no-console
+      console.log(`Metrics: send batch items`, items);
+    }
+
+    if (!this.fetcher) {
+      return Promise.reject(new Error("Metrics: fetcher is not initialized"));
+    }
+
+    return this.fetcher.fetchPostBatchReport({ items }, this.debug);
+  };
+
   // Require Generic type to be specified
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
     const { time, isError, data, event } = params;
 
-    const payload = {
+    const payload: EventPayload = {
       isDev: isDevelopment(),
       host: window.location.host,
       url: window.location.href,
@@ -97,7 +119,7 @@ export class Metrics {
         ...this.globalMetricData,
         wallets: this.wallets,
       },
-    } as UiReportPayload;
+    };
 
     if (this.debug) {
       // eslint-disable-next-line no-console
@@ -111,33 +133,37 @@ export class Metrics {
   };
 
   pushCounter<T extends { event: string; data?: object } = never>(event: T["event"], data?: T["data"]) {
+    const payload: CounterPayload = {
+      event,
+      isDev: isDevelopment(),
+      host: window.location.host,
+      url: window.location.href,
+      version: getAppVersion(),
+      abFlags: this.globalMetricData.abFlags,
+      customFields: data ? this.serializeCustomFields(data) : undefined,
+    };
+
     this.queue.push({
       type: "counter",
-      payload: {
-        event,
-        isDev: isDevelopment(),
-        host: window.location.host,
-        url: window.location.href,
-        version: getAppVersion(),
-        abFlags: this.globalMetricData.abFlags,
-        customFields: data ? this.serializeCustomFields(data) : undefined,
-      } as CounterPayload,
+      payload,
     });
   }
 
   pushTiming<T extends { event: string; data?: object } = never>(event: T["event"], time: number, data?: T["data"]) {
+    const payload: TimingPayload = {
+      event,
+      isDev: isDevelopment(),
+      host: window.location.host,
+      url: window.location.href,
+      version: getAppVersion(),
+      time,
+      abFlags: this.globalMetricData.abFlags,
+      customFields: data ? this.serializeCustomFields(data) : undefined,
+    };
+
     this.queue.push({
       type: "timing",
-      payload: {
-        event,
-        isDev: isDevelopment(),
-        host: window.location.host,
-        url: window.location.href,
-        version: getAppVersion(),
-        time,
-        abFlags: this.globalMetricData.abFlags,
-        customFields: data ? this.serializeCustomFields(data) : undefined,
-      } as TimingPayload,
+      payload,
     });
   }
 
@@ -201,8 +227,7 @@ export class Metrics {
       console.log(`Metrics: send batch metrics: ${items.length} items`);
     }
 
-    return this.fetcher
-      .fetchPostBatchReport({ items }, this.debug)
+    return this.sendBatchItems(items, this.debug)
       .then(async (res) => {
         if (res.status === 400) {
           const errorData = await res.json();

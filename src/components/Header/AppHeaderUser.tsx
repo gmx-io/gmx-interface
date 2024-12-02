@@ -3,20 +3,23 @@ import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 
 import { Trans } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
+import { useTradePageVersion } from "lib/useTradePageVersion";
+import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
+import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import { NotifyButton } from "../NotifyButton/NotifyButton";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useTradePageVersion } from "lib/useTradePageVersion";
+import { useCallback } from "react";
 
 type Props = {
   openSettings: () => void;
@@ -66,18 +69,45 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   const selectorLabel = getChainName(chainId);
 
+  const trackLaunchApp = useCallback(() => {
+    userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
+      {
+        event: "LandingPageAction",
+        data: {
+          action: "LaunchApp",
+          buttonPosition: "StickyHeader",
+        },
+      },
+      { instantSend: true }
+    );
+  }, []);
+
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        <div data-qa="trade" className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
-          <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
+        <div
+          data-qa="trade"
+          className={cx("App-header-trade-link text-body-medium", { "homepage-header": isHomeSite() })}
+        >
+          <HeaderLink
+            className="default-btn"
+            onClick={trackLaunchApp}
+            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParam() : ""}`}
+            showRedirectModal={showRedirectModal}
+          >
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
         </div>
 
         {showConnectionOptions && openConnectModal ? (
           <>
-            <ConnectWalletButton onClick={openConnectModal} imgSrc={connectWalletImg}>
+            <ConnectWalletButton
+              onClick={() => {
+                sendUserAnalyticsConnectWalletClickEvent("Header");
+                openConnectModal();
+              }}
+              imgSrc={connectWalletImg}
+            >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             {!small && <NotifyButton />}
@@ -99,8 +129,13 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   return (
     <div className="App-header-user">
-      <div data-qa="trade" className={cx("App-header-trade-link")}>
-        <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
+      <div data-qa="trade" className="App-header-trade-link text-body-medium">
+        <HeaderLink
+          className="default-btn"
+          onClick={trackLaunchApp}
+          to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParam() : ""}`}
+          showRedirectModal={showRedirectModal}
+        >
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
         </HeaderLink>
       </div>

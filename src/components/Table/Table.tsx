@@ -31,7 +31,7 @@ export function TableTheadTr({
   return (
     <tr
       {...props}
-      className={cx({
+      className={cx(props.className, {
         "border-b border-slate-700": bordered,
       })}
     />

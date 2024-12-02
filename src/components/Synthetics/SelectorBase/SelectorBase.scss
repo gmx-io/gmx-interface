@@ -22,7 +22,7 @@
     position: relative;
     z-index: 1000;
 
-    font-size: var(--font-sm);
+    font-size: var(--font-size-body-small);
 
     border-radius: var(--border-radius-sm);
     background-color: var(--dark-blue-bg);
@@ -72,7 +72,7 @@
     text-align: unset;
 
     color: inherit;
-    font-size: var(--font-md);
+    font-size: var(--font-size-body-medium);
 
     border: 1px solid var(--color-gray-800);
     border-radius: var(--border-radius-sm);

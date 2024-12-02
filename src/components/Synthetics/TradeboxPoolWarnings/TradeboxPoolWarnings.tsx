@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode, useCallback } from "react";
+import { ReactNode, useCallback, useEffect } from "react";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -18,6 +18,13 @@ import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { getChainName } from "config/chains";
+import { formatLeverage } from "domain/synthetics/positions/utils";
+import { useChainId } from "lib/chains";
+import { userAnalytics } from "lib/userAnalytics";
+import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
+import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { formatAmountForMetrics } from "lib/metrics";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
@@ -27,12 +34,14 @@ export const useTradeboxPoolWarnings = (
   withActions = true,
   textColor: "text-yellow-500" | "text-gray-300" = "text-gray-300"
 ) => {
+  const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const { marketInfo, setCollateralAddress, setMarketAddress } = useSelector(selectTradeboxState);
+  const accountStats = useSelector(selectAccountStats);
 
-  const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
+  const { isLong, isIncrease, isLimit } = useSelector(selectTradeboxTradeFlags);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const hasExistingOrder = useSelector(selectTradeboxHasExistingLimitOrder);
 
@@ -41,6 +50,18 @@ export const useTradeboxPoolWarnings = (
       return marketInfo && market.marketTokenAddress === marketInfo.marketTokenAddress;
     },
     [marketInfo]
+  );
+
+  const hasEnoughLiquidity = useCallback(
+    (marketInfo: MarketInfo) => {
+      const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
+      const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+
+      return isLong
+        ? longLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0)
+        : shortLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0);
+    },
+    [increaseAmounts, isLong]
   );
 
   const WithActon = useCallback(
@@ -54,11 +75,7 @@ export const useTradeboxPoolWarnings = (
     [withActions]
   );
 
-  if (!marketInfo) {
-    return null;
-  }
-
-  const indexToken = marketInfo.indexToken;
+  const indexToken = marketInfo?.indexToken;
   const marketWithPosition = marketsOptions?.marketWithPosition;
   const collateralWithPosition = marketsOptions?.collateralWithPosition;
 
@@ -66,11 +83,8 @@ export const useTradeboxPoolWarnings = (
   const isNoSufficientLiquidityInMarketWithPosition = marketsOptions?.isNoSufficientLiquidityInMarketWithPosition;
   const minOpenFeesMarket = (marketsOptions?.minOpenFeesMarket?.marketAddress &&
     getByKey(marketsInfoData, marketsOptions?.minOpenFeesMarket.marketAddress)) as MarketInfo | undefined;
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
-  const isOutPositionLiquidity = isLong
-    ? longLiquidity < (increaseAmounts?.sizeDeltaUsd || 0)
-    : shortLiquidity < (increaseAmounts?.sizeDeltaUsd || 0);
+
+  const isOutPositionLiquidity = marketInfo !== undefined && !hasEnoughLiquidity(marketInfo);
   const marketWithOrder = marketsOptions?.marketWithOrder;
 
   const positionFeeBeforeDiscountBps =
@@ -106,6 +120,7 @@ export const useTradeboxPoolWarnings = (
     !marketWithPosition &&
     !hasExistingOrder &&
     marketWithOrder &&
+    hasEnoughLiquidity(marketWithOrder) &&
     !isSelectedMarket(marketWithOrder);
 
   const canShowHasBetterExecutionFeesWarning =
@@ -123,6 +138,60 @@ export const useTradeboxPoolWarnings = (
 
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;
 
+  const isFirstOrder = !accountStats || accountStats.closedCount === 0;
+  const marketName = marketInfo ? marketInfo.name : "";
+  const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
+
+  useEffect(() => {
+    if (!marketName || !marketPoolName) {
+      return;
+    }
+
+    if (
+      showHasNoSufficientLiquidityInAnyMarketWarning ||
+      showHasInsufficientLiquidityAndPositionWarning ||
+      showHasInsufficientLiquidityAndPositionWarning
+    ) {
+      userAnalytics.pushEvent<TradeBoxWarningShownEvent>(
+        {
+          event: "TradeBoxAction",
+          data: {
+            action: "WarningShown",
+            message: "InsufficientLiquidity",
+            pair: marketName,
+            pool: marketPoolName,
+            type: isLong ? "Long" : "Short",
+            orderType: isLimit ? "Limit" : "Market",
+            sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd) ?? 0,
+            tradeType: hasExistingPosition ? "IncreaseSize" : "InitialTrade",
+            leverage: formatLeverage(increaseAmounts?.estimatedLeverage) || "",
+            chain: getChainName(chainId),
+            isFirstOrder,
+          },
+        },
+        {
+          dedupKey: marketName,
+          dedupInterval: 1000 * 60 * 5, // 5m
+        }
+      );
+    }
+  }, [
+    chainId,
+    hasExistingPosition,
+    increaseAmounts?.estimatedLeverage,
+    increaseAmounts?.sizeDeltaUsd,
+    isFirstOrder,
+    isLimit,
+    isLong,
+    marketName,
+    marketPoolName,
+    showHasInsufficientLiquidityAndPositionWarning,
+    showHasNoSufficientLiquidityInAnyMarketWarning,
+  ]);
+
+  const showHasExistingOrderButNoLiquidityWarning =
+    !hasExistingOrder && marketWithOrder && !hasEnoughLiquidity(marketWithOrder);
+
   if (
     !showHasExistingPositionWarning &&
     !showHasNoSufficientLiquidityInAnyMarketWarning &&
@@ -130,7 +199,8 @@ export const useTradeboxPoolWarnings = (
     !showHasInsufficientLiquidityAndNoPositionWarning &&
     !showHasExistingOrderWarning &&
     !showHasBetterOpenFeesWarning &&
-    !showHasExistingPositionButNotEnoughLiquidityWarning
+    !showHasExistingPositionButNotEnoughLiquidityWarning &&
+    !showHasExistingOrderButNoLiquidityWarning
   ) {
     return null;
   }
@@ -184,15 +254,17 @@ export const useTradeboxPoolWarnings = (
         <Trans>
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
-            >
-              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
-            </span>
-            .
-          </WithActon>
+          {hasEnoughLiquidity(minOpenFeesMarket) && (
+            <WithActon>
+              <span
+                className="clickable muted underline"
+                onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
+              >
+                Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
+              </span>
+              .
+            </WithActon>
+          )}
         </Trans>
       </AlertInfo>
     );
@@ -238,6 +310,17 @@ export const useTradeboxPoolWarnings = (
             </span>
             .
           </WithActon>
+        </Trans>
+      </AlertInfo>
+    );
+  }
+
+  if (showHasExistingOrderButNoLiquidityWarning) {
+    warning.push(
+      <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
+        <Trans>
+          You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool but it lacks
+          liquidity for this order.
         </Trans>
       </AlertInfo>
     );

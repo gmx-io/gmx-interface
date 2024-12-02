@@ -37,7 +37,7 @@ import {
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
 } from "domain/synthetics/markets";
-import { getLargestRelatedExistingPosition } from "domain/synthetics/markets/chooseSuitableMarket";
+import { getLargestRelatedExistingPositionOrOrder } from "domain/synthetics/markets/chooseSuitableMarket";
 import { PositionOrderInfo } from "domain/synthetics/orders/types";
 import { isIncreaseOrderType } from "domain/synthetics/orders/utils";
 import {
@@ -133,18 +133,24 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   if (!hasExistingPosition) {
     if (positionsInfo) {
-      const availablePosition = getLargestRelatedExistingPosition({
+      const availablePositionOrOrder = getLargestRelatedExistingPositionOrOrder({
         isLong,
+        ordersInfo,
         indexTokenAddress: indexToken.address,
         positionsInfo: positionsInfo,
       });
 
-      if (availablePosition) {
-        result.marketWithPosition = getByKey(marketsInfoData, availablePosition.marketAddress);
-        result.collateralWithPosition = availablePosition.collateralToken;
-        if (increaseSizeUsd != undefined) {
-          result.isNoSufficientLiquidityInMarketWithPosition =
-            getAvailableUsdLiquidityForPosition(result.marketWithPosition!, isLong) <= increaseSizeUsd;
+      if (availablePositionOrOrder) {
+        if (availablePositionOrOrder.type === "position") {
+          result.marketWithPosition = getByKey(marketsInfoData, availablePositionOrOrder.marketAddress);
+          result.collateralWithPosition = tokensData?.[availablePositionOrOrder.collateralTokenAddress];
+          if (increaseSizeUsd != undefined) {
+            result.isNoSufficientLiquidityInMarketWithPosition =
+              getAvailableUsdLiquidityForPosition(result.marketWithPosition!, isLong) <= increaseSizeUsd;
+          }
+        } else {
+          result.marketWithOrder = getByKey(marketsInfoData, availablePositionOrOrder.marketAddress);
+          result.collateralWithOrder = tokensData?.[availablePositionOrOrder.collateralTokenAddress];
         }
       }
     }

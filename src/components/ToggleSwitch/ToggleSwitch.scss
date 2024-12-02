@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: var(--font-sm);
+  font-size: var(--font-size-body-medium);
 
   &_disabled .Switch-toggle {
     opacity: 0.5;
