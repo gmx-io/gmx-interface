@@ -216,7 +216,7 @@ function MarketTokenSelectorInternal(props: Props) {
       <SelectorBaseMobileHeaderContent>
         <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
           <SearchInput
-            className="w-full"
+            className="w-full *:!text-body-medium"
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
@@ -234,7 +234,7 @@ function MarketTokenSelectorInternal(props: Props) {
           <>
             <div className="m-16 flex justify-between gap-16">
               <SearchInput
-                className="w-full"
+                className="w-full *:!text-body-medium"
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}

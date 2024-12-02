@@ -171,6 +171,7 @@ export function PoolSelector({
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
               value={searchKeyword}
+              className="*:!text-body-medium"
               setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={_handleKeyDown}
