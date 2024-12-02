@@ -498,7 +498,7 @@ export default function DashboardV2() {
         </div>
         <div className="DashboardV2-content">
           <div className="DashboardV2-cards">
-            <div className="App-card">
+            <div className="App-card dashboard-overview">
               <div className="App-card-title">
                 <Trans>Overview</Trans>
               </div>
@@ -557,7 +557,7 @@ export default function DashboardV2() {
                     />
                   </div>
                 </div>
-                <div className="App-card-row">
+                {/* <div className="App-card-row">
                   <div className="label">
                     <Trans>Long Positions</Trans>
                   </div>
@@ -596,7 +596,7 @@ export default function DashboardV2() {
                       )}
                     />
                   </div>
-                </div>
+                </div> */}
                 {feesSummary?.lastUpdatedAt ? (
                   <div className="App-card-row">
                     <div className="label">
@@ -621,7 +621,7 @@ export default function DashboardV2() {
                 ) : null}
               </div>
             </div>
-            <div className="App-card">
+            {/* <div className="App-card">
               <div className="App-card-title">
                 <Trans>Total Stats</Trans>
               </div>
@@ -670,7 +670,7 @@ export default function DashboardV2() {
                   <div>${0}</div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="Tab-title-section">
             <div className="Page-title">

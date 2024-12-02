@@ -643,9 +643,9 @@ function FullApp() {
                 <Route exact path="/">
                   <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
                 </Route>
-                <Route exact path="/referral-terms">
+                {/* <Route exact path="/referral-terms">
                   <ReferralTerms />
-                </Route>
+                </Route> */}
                 <Route exact path="/terms-and-conditions">
                   <TermsAndConditions />
                 </Route>
@@ -749,9 +749,9 @@ function FullApp() {
                 <Route exact path="/complete_account_transfer/:sender/:receiver">
                   <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
                 </Route>
-                <Route exact path="/referral-terms">
+                {/* <Route exact path="/referral-terms">
                   <ReferralTerms />
-                </Route>
+                </Route> */}
                 <Route exact path="/terms-and-conditions">
                   <TermsAndConditions />
                 </Route>
