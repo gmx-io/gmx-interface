@@ -1475,12 +1475,196 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
-          <div className="App-card StakeV2-gmx-card">
+          <div className="App-card">
             <div className="App-card-title">
-              TMX <img src={currentIcons.gmx} width="40" alt="TMX Token Icon" />
+              TLP ({chainName}) <img src={currentIcons.glp} width="40" alt="GLP Token Icon" />
             </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Price</Trans>
+                </div>
+                <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 3, true)}</div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Wallet</Trans>
+                </div>
+                <div>
+                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} TLP ($
+                  {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Staked</Trans>
+                </div>
+                <div>
+                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} TLP ($
+                  {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>APR</Trans>
+                </div>
+                <div>
+                  <Tooltip
+                    handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
+                    position="right-bottom"
+                    renderContent={() => {
+                      return (
+                        <>
+                          <StatsTooltipRow
+                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
+                            value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
+                            showDollar={false}
+                          />
+
+                          {processedData?.glpAprForEsGmx.gt(0) && (
+                            <StatsTooltipRow
+                              label="Escrowed TMX APR"
+                              value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
+                              showDollar={false}
+                            />
+                          )}
+
+                          <br />
+
+                          <Trans>
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.{" "}
+                            <br />
+                            <br />
+                            {/* Historical TLP APRs can be checked in this{" "}
+                            <ExternalLink href="https://dune.com/saulius/gmx-analytics">
+                              community dashboard
+                            </ExternalLink>
+                            . */}
+                          </Trans>
+                        </>
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Rewards</Trans>
+                </div>
+                <div>
+                  <Tooltip
+                    handle={`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
+                    position="right-bottom"
+                    renderContent={() => {
+                      return (
+                        <>
+                          <StatsTooltipRow
+                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                            value={`${formatKeyAmount(
+                              processedData,
+                              "feeGlpTrackerRewards",
+                              18,
+                              4
+                            )} ($${formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Escrowed TMX"
+                            value={`${formatKeyAmount(
+                              processedData,
+                              "stakedGlpTrackerRewards",
+                              18,
+                              4
+                            )} ($${formatKeyAmount(
+                              processedData,
+                              "stakedGlpTrackerRewardsUsd",
+                              USD_DECIMALS,
+                              2,
+                              true
+                            )})`}
+                            showDollar={false}
+                          />
+                        </>
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Total Staked</Trans>
+                </div>
+                <div>
+                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} TLP ($
+                  {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Total Supply</Trans>
+                </div>
+                <div>
+                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} TLP ($
+                  {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-buttons m-0">
+                <Button variant="semi-clear" to="/buy_glp">
+                  <Trans>Buy TLP</Trans>
+                </Button>
+                <Button variant="semi-clear" to="/buy_glp#redeem">
+                  <Trans>Sell TLP</Trans>
+                </Button>
+                {/* {hasInsurance && (
+                  <Button
+                    variant="semi-clear"
+                    to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
+                  >
+                    <Trans>Purchase Insurance</Trans>
+                  </Button>
+                )} */}
+              </div>
+            </div>
+          </div>
+          <div className="App-card StakeV2-gmx-card" style={{ position: "relative" }}>
+            <div
+              style={{
+                position: "absolute",
+                top: "0",
+                right: "0",
+                width: "150px",
+                height: "150px",
+                overflow: "hidden",
+                zIndex: 1,
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  right: "-50px",
+                  width: "200px",
+                  backgroundColor: "#FF7028",
+                  color: "white",
+                  padding: "8px 0 8px 16px",
+                  transform: "rotate(45deg)",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                }}
+              >
+                Coming Soon
+              </div>
+            </div>
+            <div className="App-card-title" style={{ filter: "blur(4px)" }}>
+              TMX <img src={currentIcons.gmx} width="40" alt="TMX Token Icon" />
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content" style={{ filter: "blur(4px)" }}>
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Price</Trans>
@@ -1743,161 +1927,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     </Button>
                   )}
                 </div>
-              </div>
-            </div>
-          </div>
-          <div className="App-card">
-            <div className="App-card-title">
-              TLP ({chainName}) <img src={currentIcons.glp} width="40" alt="GLP Token Icon" />
-            </div>
-            <div className="App-card-divider"></div>
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Price</Trans>
-                </div>
-                <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 3, true)}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Wallet</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} TLP ($
-                  {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Staked</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} TLP ($
-                  {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>APR</Trans>
-                </div>
-                <div>
-                  <Tooltip
-                    handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <>
-                          <StatsTooltipRow
-                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
-                            value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
-                            showDollar={false}
-                          />
-
-                          {processedData?.glpAprForEsGmx.gt(0) && (
-                            <StatsTooltipRow
-                              label="Escrowed TMX APR"
-                              value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
-                              showDollar={false}
-                            />
-                          )}
-
-                          <br />
-
-                          <Trans>
-                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.{" "}
-                            <br />
-                            <br />
-                            {/* Historical TLP APRs can be checked in this{" "}
-                            <ExternalLink href="https://dune.com/saulius/gmx-analytics">
-                              community dashboard
-                            </ExternalLink>
-                            . */}
-                          </Trans>
-                        </>
-                      );
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Rewards</Trans>
-                </div>
-                <div>
-                  <Tooltip
-                    handle={`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <>
-                          <StatsTooltipRow
-                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                            value={`${formatKeyAmount(
-                              processedData,
-                              "feeGlpTrackerRewards",
-                              18,
-                              4
-                            )} ($${formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
-                            showDollar={false}
-                          />
-                          <StatsTooltipRow
-                            label="Escrowed TMX"
-                            value={`${formatKeyAmount(
-                              processedData,
-                              "stakedGlpTrackerRewards",
-                              18,
-                              4
-                            )} ($${formatKeyAmount(
-                              processedData,
-                              "stakedGlpTrackerRewardsUsd",
-                              USD_DECIMALS,
-                              2,
-                              true
-                            )})`}
-                            showDollar={false}
-                          />
-                        </>
-                      );
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Total Staked</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} TLP ($
-                  {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Total Supply</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} TLP ($
-                  {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-buttons m-0">
-                <Button variant="semi-clear" to="/buy_glp">
-                  <Trans>Buy TLP</Trans>
-                </Button>
-                <Button variant="semi-clear" to="/buy_glp#redeem">
-                  <Trans>Sell TLP</Trans>
-                </Button>
-                {/* {hasInsurance && (
-                  <Button
-                    variant="semi-clear"
-                    to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
-                  >
-                    <Trans>Purchase Insurance</Trans>
-                  </Button>
-                )} */}
               </div>
             </div>
           </div>
