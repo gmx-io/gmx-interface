@@ -12,6 +12,7 @@ import RewardRouter from "abis/RewardRouter.json";
 import RewardReader from "abis/RewardReader.json";
 import Token from "abis/Token.json";
 import GlpManager from "abis/GlpManager.json";
+import { getIcons } from "config/icons";
 
 import { ethers } from "ethers";
 import {
@@ -916,6 +917,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   //const {  library } = useWeb3React();
   const { chainId } = useDynamicChainId();
 
+  const currentIcons = getIcons(chainId);
   const chainName = getChainName(chainId);
 
   // const hasInsurance = true;
@@ -1474,7 +1476,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
-            <div className="App-card-title">TMX</div>
+            <div className="App-card-title">
+              TMX <img src={currentIcons.gmx} width="40" alt="TMX Token Icon" />
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1743,7 +1747,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">TLP ({chainName})</div>
+            <div className="App-card-title">
+              TLP ({chainName}) <img src={currentIcons.glp} width="40" alt="GLP Token Icon" />
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
