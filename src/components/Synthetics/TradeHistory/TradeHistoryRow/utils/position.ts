@@ -576,13 +576,14 @@ export const formatPositionMessage = (
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
     const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
 
-    const liquidationFeeUsd = convertToUsd(
-      tradeAction.liquidationFeeAmount,
-      tradeAction.initialCollateralToken?.decimals,
-      tradeAction.collateralTokenPriceMin!
-    );
+    const liquidationFeeUsd =
+      convertToUsd(
+        tradeAction.liquidationFeeAmount,
+        tradeAction.initialCollateralToken?.decimals,
+        tradeAction.collateralTokenPriceMin!
+      ) ?? 0n;
 
-    const formattedLiquidationFee = formatDeltaUsd(liquidationFeeUsd ? liquidationFeeUsd * -1n : undefined);
+    const formattedLiquidationFee = formatDeltaUsd(liquidationFeeUsd ? liquidationFeeUsd * -1n : 0n);
     const returnedCollateralUsd =
       initialCollateralUsd !== undefined &&
       tradeAction.basePnlUsd !== undefined &&
