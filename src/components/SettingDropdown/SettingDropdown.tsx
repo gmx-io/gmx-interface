@@ -11,7 +11,7 @@ import emailIcon from "img/ic_email.svg";
 import emailSuccess from "img/email_success.svg";
 import settingsIcon from "img/ic_setting.svg";
 import languageIcon from "img/ic_language.svg";
-import darkModeIcon from "img/ic_dark_mode.svg";
+// import darkModeIcon from "img/ic_dark_mode.svg";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
@@ -96,7 +96,7 @@ function NavIcons() {
 }
 
 function DesktopDropdown({ setActiveModal, openSettings }) {
-  const themeToggle = useContext(ThemeContext);
+  // const themeToggle = useContext(ThemeContext);
   // const [enabledDarkMode, setEnabledDarkMode] = useState(false);
   //const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
@@ -229,7 +229,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
 }
 
 function SettingModalContent({ setActiveModal, openSettings }) {
-  const themeToggle = useContext(ThemeContext);
+  // const themeToggle = useContext(ThemeContext);
   //const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
 
