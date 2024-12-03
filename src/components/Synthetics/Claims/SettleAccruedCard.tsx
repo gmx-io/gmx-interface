@@ -15,7 +15,6 @@ type Props = {
   style?: CSSProperties;
 };
 
-const tooltipText = msg`Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the "Settle" button, or after the Position is increased, decreased or closed.`;
 const buttonText = msg`Settle`;
 const button2Text = msg`Show details`;
 const title = msg`Accrued`;
@@ -28,13 +27,26 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
   const sections = useMemo(
     () =>
       [
-        { usd: fundingFees, buttonText: _(buttonText), tooltipText: _(tooltipText), onButtonClick: onSettleClick },
+        {
+          usd: fundingFees,
+          buttonText: _(buttonText),
+          tooltipText: (
+            <Trans>
+              Accrued positive funding fees in positions not yet claimable.
+              <br />
+              <br />
+              They become available after modifying the position by increasing, decreasing, closing it, depositing or
+              withdrawing collateral, or by settling the fees using the "Settle" button.
+            </Trans>
+          ),
+          onButtonClick: onSettleClick,
+        },
         {
           usd: priceImpactDifference,
           buttonText: _(button2Text),
           tooltipText: (
             <Trans>
-              Accrued Price Impact Rebates. They will become Claimable after some time.
+              Accrued price impact rebates. They will become claimable after approximately ten days.
               <br />
               <br />
               <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
