@@ -225,7 +225,7 @@ export function GmList({
             {!currentData.length && !isLoading && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                 <TableTd colSpan={7} className="align-top">
-                  <div className="text-gray-400">
+                  <div className="text-body-medium text-gray-400">
                     <Trans>No pools matched.</Trans>
                   </div>
                 </TableTd>

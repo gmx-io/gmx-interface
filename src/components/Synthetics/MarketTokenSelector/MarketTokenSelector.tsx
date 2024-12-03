@@ -290,7 +290,7 @@ function MarketTokenSelectorInternal(props: Props) {
               ))}
               {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={6} className="text-gray-400">
+                  <TableTd colSpan={6} className="text-body-medium text-gray-400">
                     <Trans>No pools matched.</Trans>
                   </TableTd>
                 </TableTr>

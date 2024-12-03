@@ -198,7 +198,7 @@ export function PoolSelector({
           })}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-16 text-gray-400">
+          <div className="text-body-medium text-gray-400">
             <Trans>No pools matched.</Trans>
           </div>
         )}

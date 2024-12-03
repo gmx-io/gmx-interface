@@ -266,7 +266,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
               ))}
               {options && options.length > 0 && !sortedTokens?.length && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={isSwap ? 2 : 3} className="text-gray-400">
+                  <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-gray-400">
                     <Trans>No markets matched.</Trans>
                   </TableTd>
                 </TableTr>
