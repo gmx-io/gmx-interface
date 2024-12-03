@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcon } from "config/icons";
+import { getTokenVisualMultiplier } from "config/tokens";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -10,7 +11,7 @@ import { stripBlacklistedWords } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatRatePercentage, formatUsd, formatUsdPrice } from "lib/numbers";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -140,24 +141,21 @@ function useFilterSortMarkets({
   orderBy: string;
   direction: string;
 }) {
-  const fuse = useFuse(
-    () =>
-      indexTokensStats.map((indexTokenStat, index) => ({
-        id: index,
-        name: stripBlacklistedWords(indexTokenStat.token.name),
-        symbol: indexTokenStat.token.symbol,
-        address: indexTokenStat.token.address,
-      })),
-    indexTokensStats.map((indexTokenStat) => indexTokenStat.token.address)
-  );
-
   const filteredMarkets = useMemo(() => {
     if (!searchText.trim()) {
       return indexTokensStats;
     }
 
-    return fuse.search(searchText).map((result) => indexTokensStats[result.item.id]);
-  }, [indexTokensStats, searchText, fuse]);
+    return searchBy(
+      indexTokensStats,
+      [
+        (item) => stripBlacklistedWords(item.token.name),
+        (item) => `${getTokenVisualMultiplier(item.token)}${item.token.symbol}`,
+        (item) => item.token.address,
+      ],
+      searchText
+    );
+  }, [indexTokensStats, searchText]);
 
   const sortedMarkets = useMemo(() => {
     if (orderBy === "unspecified" || direction === "unspecified") {
