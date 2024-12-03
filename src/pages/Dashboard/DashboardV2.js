@@ -687,142 +687,6 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={currentIcons.gmx} width="40" alt="TMX Token Icon" />
-                      </div>
-                      <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">TMX</div>
-                        <div className="App-card-title-mark-subtitle">TMX</div>
-                      </div>
-                      <div>
-                        <AssetDropdown assetSymbol="TMX" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Price</Trans>
-                      </div>
-                      <div>
-                        {!gmxPrice && "..."}
-                        {gmxPrice && (
-                          <TooltipComponent
-                            position="right-bottom"
-                            className="nowrap"
-                            // handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                            handle={"$0.00 [Coming soon]"}
-                            renderContent={() => (
-                              <>
-                                <StatsTooltipRow
-                                  label={t`Price on Morph`}
-                                  // value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
-                                  value={"0.00"}
-                                  showDollar={true}
-                                />
-                                <StatsTooltipRow
-                                  label={t`Price on Optimism`}
-                                  // value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
-                                  value={"0.00"}
-                                  showDollar={true}
-                                />
-                              </>
-                            )}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Supply</Trans>
-                      </div>
-                      {/* <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} TMX</div> */}
-                      <div>0 TMX</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Total Staked</Trans>
-                      </div>
-                      <div>
-                        <TooltipComponent
-                          position="right-bottom"
-                          className="nowrap"
-                          handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
-                          renderContent={() => (
-                            <StatsTooltip
-                              title={t`Staked`}
-                              arbitrumValue={arbitrumStakedGmx}
-                              avaxValue={avaxStakedGmx}
-                              total={totalStakedGmx}
-                              decimalsForConversion={GMX_DECIMALS}
-                              showDollar={false}
-                            />
-                          )}
-                        />
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Market Cap</Trans>
-                      </div>
-                      {/* <div>${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}</div> */}
-                      <div>$0.00</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
-                  {gmxDistributionData.length > 0 && (
-                    <PieChart width={210} height={210}>
-                      <Pie
-                        data={gmxDistributionData}
-                        cx={100}
-                        cy={100}
-                        innerRadius={73}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                        paddingAngle={2}
-                        onMouseEnter={onGMXDistributionChartEnter}
-                        onMouseOut={onGMXDistributionChartLeave}
-                        onMouseLeave={onGMXDistributionChartLeave}
-                      >
-                        {gmxDistributionData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={entry.color}
-                            style={{
-                              filter:
-                                gmxActiveIndex === index
-                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})`
-                                  : "none",
-                              cursor: "pointer",
-                            }}
-                            stroke={entry.color}
-                            strokeWidth={gmxActiveIndex === index ? 1 : 1}
-                          />
-                        ))}
-                      </Pie>
-                      <text
-                        x={"50%"}
-                        y={"50%"}
-                        fill={themeContext.theme === "light" ? "#000000" : "white"}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <Trans>Distribution</Trans>
-                      </text>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  )}
-                </div>
-              </div>
-              <div className="App-card">
-                <div className="stats-block">
-                  <div className="App-card-title">
-                    <div className="App-card-title-mark">
-                      <div className="App-card-title-mark-icon">
                         <img src={currentIcons.glp} width="40" alt="TLP Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
@@ -910,6 +774,153 @@ export default function DashboardV2() {
                         dominantBaseline="middle"
                       >
                         TLP Pool
+                      </text>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  )}
+                </div>
+              </div>
+              <div className="App-card" style={{ position: "relative", overflow: "hidden" }}>
+                <div
+                  className="coming-soon-ribbon"
+                  style={{
+                    position: "absolute",
+                    top: "20px",
+                    right: "-60px",
+                    backgroundColor: "#FF7028",
+                    color: "white",
+                    padding: "8px 60px",
+                    transform: "rotate(45deg)",
+                    zIndex: 1,
+                    textAlign: "center",
+                    fontSize: "10px",
+                    fontWeight: "bold",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                    width: "200px",
+                  }}
+                >
+                  Coming Soon
+                </div>
+                <div className="stats-block" style={{ filter: "blur(4px)" }}>
+                  <div className="App-card-title">
+                    <div className="App-card-title-mark">
+                      <div className="App-card-title-mark-icon">
+                        <img src={currentIcons.gmx} width="40" alt="TMX Token Icon" />
+                      </div>
+                      <div className="App-card-title-mark-info">
+                        <div className="App-card-title-mark-title">TMX</div>
+                        <div className="App-card-title-mark-subtitle">TMX</div>
+                      </div>
+                      <div>
+                        <AssetDropdown assetSymbol="TMX" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Price</Trans>
+                      </div>
+                      <div>
+                        {!gmxPrice && "..."}
+                        {gmxPrice && (
+                          <TooltipComponent
+                            position="right-bottom"
+                            className="nowrap"
+                            handle={"$0.00 [Coming soon]"}
+                            renderContent={() => (
+                              <>
+                                <StatsTooltipRow label={t`Price on Morph`} value={"0.00"} showDollar={true} />
+                                <StatsTooltipRow label={t`Price on Optimism`} value={"0.00"} showDollar={true} />
+                              </>
+                            )}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Supply</Trans>
+                      </div>
+                      <div>0 TMX</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Total Staked</Trans>
+                      </div>
+                      <div>
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
+                          renderContent={() => (
+                            <StatsTooltip
+                              title={t`Staked`}
+                              arbitrumValue={arbitrumStakedGmx}
+                              avaxValue={avaxStakedGmx}
+                              total={totalStakedGmx}
+                              decimalsForConversion={GMX_DECIMALS}
+                              showDollar={false}
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Market Cap</Trans>
+                      </div>
+                      <div>$0.00</div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="stats-piechart"
+                  onMouseLeave={onGMXDistributionChartLeave}
+                  style={{ filter: "blur(4px)" }}
+                >
+                  {gmxDistributionData.length > 0 && (
+                    <PieChart width={210} height={210}>
+                      <Pie
+                        data={gmxDistributionData}
+                        cx={100}
+                        cy={100}
+                        innerRadius={73}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        startAngle={90}
+                        endAngle={-270}
+                        paddingAngle={2}
+                        onMouseEnter={onGMXDistributionChartEnter}
+                        onMouseOut={onGMXDistributionChartLeave}
+                        onMouseLeave={onGMXDistributionChartLeave}
+                      >
+                        {gmxDistributionData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={entry.color}
+                            style={{
+                              filter:
+                                gmxActiveIndex === index
+                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})`
+                                  : "none",
+                              cursor: "pointer",
+                            }}
+                            stroke={entry.color}
+                            strokeWidth={gmxActiveIndex === index ? 1 : 1}
+                          />
+                        ))}
+                      </Pie>
+                      <text
+                        x={"50%"}
+                        y={"50%"}
+                        fill={themeContext.theme === "light" ? "#000000" : "white"}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <Trans>Distribution</Trans>
                       </text>
                       <Tooltip content={<CustomTooltip />} />
                     </PieChart>

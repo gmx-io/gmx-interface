@@ -1397,23 +1397,29 @@ export const ICONLINKS = {
   [MORPH_MAINNET]: {
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      // avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      morph: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      // avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      morph: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
     },
     USDT: {
       coingecko: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
-      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      // avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      morph: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
     },
     TMX: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+      // coingecko: "https://www.coingecko.com/en/coins/gmx",
+      // arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+      morph: "https://explorer.morphl2.io/address/0x5682453dC23cB0Ff914Da3A079072202405D1bce",
     },
     TLP: {
-      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
-      reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
+      // arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
+      // reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
+      // morph: "https://portfolio.nansen.ai/dashboard/gmx?chain=MORPH",
+      morph: "https://explorer.morphl2.io/address/0x95FF8e2d0B9355E856391C2E234995A1F7F896c5",
     },
   },
   [OPBNB_TESTNET]: {
