@@ -3,6 +3,7 @@ import { useEffect, useMemo } from "react";
 import { useMedia } from "react-use";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
+import { USD_DECIMALS } from "config/factors";
 import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import {
@@ -11,13 +12,13 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { isIncreaseOrderType, isSwapOrderType, PositionOrderInfo } from "domain/synthetics/orders";
+import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
 
-import { USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -32,6 +33,7 @@ const DEFAULT_PERIOD = "5m";
 export function TVChart() {
   const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
+  const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
@@ -172,6 +174,7 @@ export function TVChart() {
             setPeriod={setPeriod}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
             visualMultiplier={visualMultiplier}
+            setIsCandlesLoaded={setIsCandlesLoaded}
           />
         )}
       </div>

@@ -3,8 +3,6 @@ import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
@@ -39,6 +37,7 @@ type Props = {
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
   visualMultiplier?: number;
+  setIsCandlesLoaded?: (isCandlesLoaded: boolean) => void;
 };
 
 export default function TVChartContainer({
@@ -49,6 +48,7 @@ export default function TVChartContainer({
   setPeriod,
   supportedResolutions,
   visualMultiplier,
+  setIsCandlesLoaded,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -56,7 +56,6 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
 
   const [tradePageVersion] = useTradePageVersion();
 
@@ -66,9 +65,11 @@ export default function TVChartContainer({
 
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);
-    newDatafeed.addEventListener("candlesLoad.success", () => {
-      setIsCandlesLoaded(true);
-    });
+    if (setIsCandlesLoaded) {
+      newDatafeed.addEventListener("candlesLoad.success", () => {
+        setIsCandlesLoaded(true);
+      });
+    }
     setDatafeed((prev) => {
       if (prev) {
         prev.destroy();
