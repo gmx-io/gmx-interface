@@ -40,7 +40,10 @@ export const appEventsData: EventData[] = [
     endDate: "18 Dec 2024, 00:00",
     bodyText: (
       <>
-        Open and Close fees will be reduced by 25% for SOL/USD, DOGE/USD, LINK/USD markets on 4 Dec 2024.
+        Open and close fees will be reduced by 25% for <TokenSymbolWithIcon symbol="SOL" />
+        /USD, <TokenSymbolWithIcon symbol="DOGE" />
+        /USD, and <TokenSymbolWithIcon symbol="LINK" />
+        /USD markets on Arbitrum starting 4 Dec 2024.
         <br />
         <ExternalLink href="https://x.com/GMX_IO/status/1861743953537569043">Learn more</ExternalLink>.
       </>
