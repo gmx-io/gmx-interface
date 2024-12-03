@@ -8,7 +8,7 @@ import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
-import { getErrorMessage } from "./transactionErrors";
+import { extractError, getErrorMessage } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
 
 export async function callContract(
@@ -105,7 +105,7 @@ export async function callContract(
           : await getGasPrice(cntrct.runner!.provider!, chainId);
       }
 
-      if (!getIsFlagEnabled("testRemoveGasRequests")) {
+      async function initGasParams() {
         const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
           txnInstance.gasLimit = gasLimit;
         });
@@ -122,11 +122,25 @@ export async function callContract(
         await Promise.all([gasLimitPromise, gasPriceDataPromise]);
       }
 
+      if (!getIsFlagEnabled("testRemoveGasRequests")) {
+        await initGasParams();
+      }
+
       if (opts.metricId) {
         sendOrderTxnSubmittedMetric(opts.metricId);
       }
 
-      return cntrct[method](...params, txnInstance);
+      return cntrct[method](...params, txnInstance).catch(async (e) => {
+        const [message] = extractError(e);
+
+        // Fallback to gas requests in case of low gas price
+        if (message?.includes("max fee per gas less than block base fee")) {
+          await initGasParams();
+          return cntrct[method](...params, txnInstance);
+        }
+
+        throw e;
+      });
     });
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {

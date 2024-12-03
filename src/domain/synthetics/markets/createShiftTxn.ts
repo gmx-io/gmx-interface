@@ -13,6 +13,7 @@ import { applySlippageToMinOut } from "../trade";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 type Params = {
   account: string;
@@ -24,6 +25,7 @@ type Params = {
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
+  blockTimestampData: BlockTimestampData | undefined;
   metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingShift: SetPendingShift;
@@ -67,6 +69,7 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
         errorTitle: t`Shift error.`,
         value: p.executionFee,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 
