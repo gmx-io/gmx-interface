@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcon } from "config/icons";
+import { getTokenVisualMultiplier } from "config/tokens";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -147,7 +148,11 @@ function useFilterSortMarkets({
 
     return searchBy(
       indexTokensStats,
-      [(item) => stripBlacklistedWords(item.token.name), (item) => item.token.symbol, (item) => item.token.address],
+      [
+        (item) => stripBlacklistedWords(item.token.name),
+        (item) => `${getTokenVisualMultiplier(item.token)}${item.token.symbol}`,
+        (item) => item.token.address,
+      ],
       searchText
     );
   }, [indexTokensStats, searchText]);
