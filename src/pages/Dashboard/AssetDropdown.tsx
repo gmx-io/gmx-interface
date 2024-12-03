@@ -57,7 +57,7 @@ function AssetDropdown({ assetSymbol, assetInfo }: Props) {
         </Menu.Item>
         <Menu.Item>
           <>
-            {coingecko && (
+            {false && coingecko && (
               <ExternalLink href={coingecko} className="asset-item">
                 <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>
