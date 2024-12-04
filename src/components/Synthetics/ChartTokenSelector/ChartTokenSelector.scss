@@ -1,0 +1,5 @@
+$center-tds-selector: "td:not(.ChartTokenSelector-td-custom-hover-flag)";
+
+.ChartTokenSelector-hover-row:has(#{$center-tds-selector}:hover) #{$center-tds-selector} {
+  background-color: var(--color-cold-blue-900);
+}
