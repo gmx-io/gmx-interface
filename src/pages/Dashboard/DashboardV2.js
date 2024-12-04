@@ -327,7 +327,7 @@ export default function DashboardV2() {
                     <br />
                     <br />
                     Get lower fees to{" "}
-                    <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
+                    <Link to="/buy_tlp" target="_blank" rel="noopener noreferrer">
                       buy TLP
                     </Link>{" "}
                     with {tokenInfo.symbol}, and to{" "}
@@ -354,7 +354,7 @@ export default function DashboardV2() {
               )}
               <br />
               <div>
-                <ExternalLink href="https://docs.t3.money/tmx/glp">
+                <ExternalLink href="https://docs.t3.money/dex/liquidity">
                   <Trans>More Info</Trans>
                 </ExternalLink>
               </div>

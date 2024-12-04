@@ -75,10 +75,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
+              <BuyLink to="/buy_tmx" className="default-btn" network={ARBITRUM}>
                 <Trans>Buy on Arbitrum</Trans>
               </BuyLink>
-              <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
+              <BuyLink to="/buy_tmx" className="default-btn" network={AVALANCHE}>
                 <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
@@ -103,19 +103,24 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
           <div className="Home-token-card-option-action">
             <div className="buy">
               {chainId === OPTIMISM_GOERLI_TESTNET ? (
-                <BuyLink to="/buy_glp" className="default-btn" network={SEPOLIA_TESTNET}>
+                <BuyLink to="/buy_tlp" className="default-btn" network={SEPOLIA_TESTNET}>
                   <Trans>{`Buy on Optimism-Goerli`}</Trans>
                 </BuyLink>
               ) : (
-                <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
+                <BuyLink to="/buy_tlp" className="default-btn" network={AVALANCHE}>
                   <Trans>Buy on Avalanche</Trans>
                 </BuyLink>
               )}
-              <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
+              <BuyLink to="/buy_tlp" className="default-btn" network={ARBITRUM}>
                 <Trans>Buy on Arbitrum</Trans>
               </BuyLink>
             </div>
-            <a href="https://docs.t3.money/tmx/glp" target="_blank" rel="noreferrer" className="default-btn read-more">
+            <a
+              href="https://docs.t3.money/dex/liquidity"
+              target="_blank"
+              rel="noreferrer"
+              className="default-btn read-more"
+            >
               <Trans>Read more</Trans>
             </a>
           </div>

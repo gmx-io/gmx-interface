@@ -1467,7 +1467,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           <div className="Page-description">
             <Trans>
               Stake <ExternalLink href="https://docs.t3.money/tmx/tokenomics">TMX</ExternalLink> and{" "}
-              <ExternalLink href="https://docs.t3.money/tmx/glp">TLP</ExternalLink> to earn rewards.
+              <ExternalLink href="https://docs.t3.money/dex/liquidity">TLP</ExternalLink> to earn rewards.
             </Trans>
           </div>
           {earnMsg && <div className="Page-description">{earnMsg}</div>}
@@ -1613,10 +1613,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-buttons m-0">
-                <Button variant="semi-clear" to="/buy_glp">
+                <Button variant="semi-clear" to="/buy_tlp">
                   <Trans>Buy TLP</Trans>
                 </Button>
-                <Button variant="semi-clear" to="/buy_glp#redeem">
+                <Button variant="semi-clear" to="/buy_tlp#redeem">
                   <Trans>Sell TLP</Trans>
                 </Button>
                 {/* {hasInsurance && (
@@ -1838,7 +1838,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider" />
               <div className="App-card-buttons m-0">
-                {/* <Button variant="semi-clear" to="/buy_gmx">
+                {/* <Button variant="semi-clear" to="/buy_tmx">
                   <Trans>Buy GMX</Trans>
                 </Button> */}
                 {active && (

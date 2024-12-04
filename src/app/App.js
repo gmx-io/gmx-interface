@@ -708,7 +708,7 @@ function FullApp() {
                     connectWallet={connectWallet}
                   />
                 </Route>
-                <Route exact path="/buy_glp">
+                <Route exact path="/buy_tlp">
                   <BuyGlp
                     savedSlippageAmount={savedSlippageAmount}
                     setPendingTxns={setPendingTxns}
@@ -716,7 +716,7 @@ function FullApp() {
                     savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                   />
                 </Route>
-                <Route exact path="/buy_gmx">
+                <Route exact path="/buy_tmx">
                   <BuyGMX />
                 </Route>
                 <Route exact path="/referrals">

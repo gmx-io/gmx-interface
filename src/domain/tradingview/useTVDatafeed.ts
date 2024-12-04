@@ -86,6 +86,8 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             activeTicker.current = ticker;
           }
 
+          // console.log("getBars", ticker, resolution, isStable, periodParams, shouldRefetchBars.current);
+
           try {
             if (!ticker) {
               onErrorCallback("Invalid ticker!");
