@@ -868,6 +868,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             onClickMax={marketTokenInputClickMax}
           >
             <PoolSelector
+              chainId={chainId}
               label={t`Pool`}
               className="-mr-4"
               selectedIndexName={indexName}

@@ -3,6 +3,7 @@ import type { TokensData } from "domain/synthetics/tokens";
 import type { TokenFavoriteKey } from "domain/synthetics/tokens/useTokensFavorites";
 
 export type CommonPoolSelectorProps = {
+  chainId: number;
   label?: string;
   className?: string;
   selectedMarketAddress?: string;
@@ -15,6 +16,10 @@ export type CommonPoolSelectorProps = {
   onSelectMarket: (market: GlvOrMarketInfo) => void;
   showAllPools?: boolean;
   showIndexIcon?: boolean;
+  /**
+   * @default true
+   */
+  withFilters?: boolean;
   favoriteKey: TokenFavoriteKey;
 };
 

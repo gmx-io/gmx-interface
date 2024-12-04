@@ -18,6 +18,7 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
       {tokensFavoritesTabOptions.map((option) => (
         <Button
           key={option}
+          type="button"
           variant={tab === option ? "secondary" : "ghost"}
           className="!text-body-large !py-7"
           onClick={() => setTab(option)}
