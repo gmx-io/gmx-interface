@@ -2,6 +2,7 @@ export const USD_DECIMALS = 30;
 
 export const BASIS_POINTS_DIVISOR = 10000;
 export const BASIS_POINTS_DIVISOR_BIGINT = 10000n;
+export const MICROPERCENT_DIVISOR_BIGINT = 100000n;
 
 /**
  * @deprecated for v2: calculate leverage based on marketInfo.minCollateralFactor

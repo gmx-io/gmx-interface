@@ -145,14 +145,14 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                         <div>
                           (
                           {formatPercentage(bigMath.abs(fullPositionPriceImpactBps), {
-                            decimals: 3,
+                            displayDecimals: 3,
                           })}{" "}
                           of position size)
                         </div>
                         <div>
                           (
                           {formatPercentage(bigMath.abs(fullCollateralPriceImpactBps), {
-                            decimals: 3,
+                            displayDecimals: 3,
                           })}{" "}
                           of collateral)
                         </div>

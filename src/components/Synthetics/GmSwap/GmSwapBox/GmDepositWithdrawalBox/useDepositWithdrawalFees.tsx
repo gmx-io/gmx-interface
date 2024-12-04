@@ -50,7 +50,7 @@ export const useDepositWithdrawalFees = ({
     const basisUsd = isDeposit
       ? (amounts?.longTokenUsd ?? 0n) + (amounts?.shortTokenUsd ?? 0n)
       : amounts?.marketTokenUsd || 0n;
-
+    debugger; // eslint-disable-line
     const swapFee = getFeeItem(amounts.swapFeeUsd * -1n, basisUsd);
     const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
     const uiFee = getFeeItem(amounts.uiFeeUsd * -1n, basisUsd, {

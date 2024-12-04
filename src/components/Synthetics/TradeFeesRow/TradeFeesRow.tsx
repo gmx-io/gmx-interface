@@ -70,7 +70,7 @@ export function TradeFeesRow(p: Props) {
           label: (
             <>
               <div className="text-white">{t`Swap Price Impact`}:</div>
-              <div>({formatPercentage(bigMath.abs(p.swapPriceImpact!.bps))} of swap amount)</div>
+              <div>({formatPercentage(bigMath.abs(p.swapPriceImpact!.precisePercentage))} of swap amount)</div>
             </>
           ),
           value: formatDeltaUsd(p.swapPriceImpact!.deltaUsd),
@@ -89,7 +89,7 @@ export function TradeFeesRow(p: Props) {
               }`}
               :
             </div>
-            <div>({formatPercentage(bigMath.abs(swap.bps))} of swap amount)</div>
+            <div>({formatPercentage(bigMath.abs(swap.precisePercentage))} of swap amount)</div>
           </>
         ),
         value: formatDeltaUsd(swap.deltaUsd),
@@ -103,7 +103,12 @@ export function TradeFeesRow(p: Props) {
             <>
               <div className="text-white">{t`Swap Profit Fee`}:</div>
               <div>
-                ({formatPercentage(p.swapProfitFee?.bps === undefined ? undefined : bigMath.abs(p.swapProfitFee.bps))}{" "}
+                (
+                {formatPercentage(
+                  p.swapProfitFee?.precisePercentage === undefined
+                    ? undefined
+                    : bigMath.abs(p.swapProfitFee.precisePercentage)
+                )}{" "}
                 of collateral)
               </div>
             </>
@@ -122,8 +127,8 @@ export function TradeFeesRow(p: Props) {
               <div className="text-white">{feesTypeName}:</div>
               <div>
                 (
-                {formatPercentage(bigMath.abs(p.positionFee!.bps), {
-                  decimals: 3,
+                {formatPercentage(bigMath.abs(p.positionFee!.precisePercentage), {
+                  displayDecimals: 3,
                 })}{" "}
                 of position size)
               </div>
@@ -142,8 +147,8 @@ export function TradeFeesRow(p: Props) {
               <div className="text-white">{t`UI Fee`}:</div>
               <div>
                 (
-                {formatPercentage(bigMath.abs(p!.uiFee!.bps), {
-                  decimals: 3,
+                {formatPercentage(bigMath.abs(p!.uiFee!.precisePercentage), {
+                  displayDecimals: 3,
                 })}{" "}
                 of {p.feesType === "swap" ? "swap amount" : "position size"})
               </div>
@@ -163,8 +168,8 @@ export function TradeFeesRow(p: Props) {
                 <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
                 <div>
                   (
-                  {formatPercentage(bigMath.abs(p.uiSwapFee.bps), {
-                    decimals: 3,
+                  {formatPercentage(bigMath.abs(p.uiSwapFee.precisePercentage), {
+                    displayDecimals: 3,
                   })}{" "}
                   of swap amount)
                 </div>
@@ -197,8 +202,8 @@ export function TradeFeesRow(p: Props) {
                 <div className="text-white">{t`Borrow Fee`}:</div>
                 <div>
                   (
-                  {formatPercentage(bigMath.abs(p.borrowFee.bps), {
-                    decimals: 3,
+                  {formatPercentage(bigMath.abs(p.borrowFee.precisePercentage), {
+                    displayDecimals: 3,
                   })}{" "}
                   of collateral)
                 </div>
@@ -218,8 +223,8 @@ export function TradeFeesRow(p: Props) {
                 <div className="text-white">{t`Funding Fee`}:</div>
                 <div>
                   (
-                  {formatPercentage(bigMath.abs(p.fundingFee.bps), {
-                    decimals: 3,
+                  {formatPercentage(bigMath.abs(p.fundingFee.precisePercentage), {
+                    displayDecimals: 3,
                   })}{" "}
                   of collateral)
                 </div>

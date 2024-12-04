@@ -5,7 +5,9 @@ import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "./bigmath";
 import { getPlusOrMinusSymbol } from "./utils";
 
-export const PRECISION = expandDecimals(1, 30);
+const PRECISION_DECIMALS = 30;
+export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
+export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -231,13 +233,13 @@ export function formatDeltaUsd(
 
 export function formatPercentage(
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; signed?: boolean; decimals?: number } = {}
+  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean } = {}
 ) {
-  const { fallbackToZero = false, signed = false, decimals = 2 } = opts;
+  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true } = opts;
 
   if (typeof percentage !== "bigint") {
     if (fallbackToZero) {
-      return `${formatAmount(0n, 2, 2)}%`;
+      return `${formatAmount(0n, bps ? PERCENT_PRECISION_DECIMALS : 2, displayDecimals)}%`;
     }
 
     return undefined;
@@ -245,7 +247,7 @@ export function formatPercentage(
 
   const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), 2, decimals)}%`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? PERCENT_PRECISION_DECIMALS : 2, displayDecimals)}%`;
 }
 
 export function formatTokenAmount(
