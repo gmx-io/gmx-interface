@@ -76,8 +76,8 @@ msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Position Fee"
-msgstr "ポジション手数料"
+#~ msgid "Position Fee"
+#~ msgstr "ポジション手数料"
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What would have made your rating a 9 or 10?"
@@ -272,6 +272,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#~ msgid "Returned collateral"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
@@ -626,6 +630,10 @@ msgstr "トークン検索"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Min. Required Collateral"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -1625,6 +1633,7 @@ msgstr ""
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close Fee"
 msgstr ""
 
@@ -2535,6 +2544,10 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Returned Collateral"
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "この取引を始めるには担保用に{swapTokenSymbol}を\"支払い\"トークンとして選択する必要があります。"
@@ -2606,6 +2619,7 @@ msgid "The order may not execute at the desired {priceText} as its acceptable pr
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr ""
 
@@ -3683,8 +3697,8 @@ msgid "Unstake esGMX"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "PnL after Fees and Price Impact"
-msgstr "手数料と価格インパクトを差し引いた損益"
+#~ msgid "PnL after Fees and Price Impact"
+#~ msgstr "手数料と価格インパクトを差し引いた損益"
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
@@ -4542,6 +4556,10 @@ msgstr ""
 msgid "Leverage Trading Terminal"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#~ msgid "Liquidation fee"
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr ""
@@ -5078,8 +5096,8 @@ msgid "There is no liquidation price, as the position's collateral value will in
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Min. required Collateral"
-msgstr "最低必要担保"
+#~ msgid "Min. required Collateral"
+#~ msgstr "最低必要担保"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
@@ -5305,6 +5323,10 @@ msgstr ""
 #: src/pages/Buy/Buy.tsx
 #: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Collateral at Liquidation"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -5898,6 +5920,10 @@ msgstr "注文のサイズがポジションを超えています"
 msgid "Order update submitted!"
 msgstr "注文更新の申し込み済!"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#~ msgid "Close fee"
+#~ msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable withdraw failed."
 msgstr ""
@@ -6244,8 +6270,8 @@ msgid "Your transfer has been completed."
 msgstr "移転は完了しました。"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Leftover Collateral Excluding Impact"
-msgstr "影響なしの残りの担保"
+#~ msgid "Leftover Collateral Excluding Impact"
+#~ msgstr "影響なしの残りの担保"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
