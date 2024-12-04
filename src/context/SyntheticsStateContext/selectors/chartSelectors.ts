@@ -1,4 +1,10 @@
 import { getToken } from "config/tokens";
+import { getBorrowingFactorPerPeriod } from "domain/synthetics/fees";
+import { getFundingFactorPerPeriod } from "domain/synthetics/fees/utils/index";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { getTokenData } from "domain/synthetics/tokens";
+import { bigMath } from "lib/bigmath";
+import { CHART_PERIODS } from "lib/legacy";
 import { createSelector } from "../utils";
 import { selectChainId, selectTokensData } from "./globalSelectors";
 import {
@@ -8,12 +14,6 @@ import {
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
 } from "./tradeboxSelectors";
-import { getTokenData } from "domain/synthetics/tokens";
-import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
-import { getBorrowingFactorPerPeriod } from "domain/synthetics/fees";
-import { getFundingFactorPerPeriod } from "../../../domain/synthetics/fees/utils/index";
-import { CHART_PERIODS } from "lib/legacy";
-import { bigMath } from "lib/bigmath";
 
 export const selectChartToken = createSelector(function selectChartToken(q) {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);

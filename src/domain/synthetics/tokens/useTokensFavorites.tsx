@@ -1,3 +1,4 @@
+import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import noop from "lodash/noop";
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo } from "react";
@@ -9,11 +10,13 @@ import {
   GM_TOKEN_SELECTOR_FILTER_TAB_KEY,
   TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY,
 } from "config/localStorage";
+
+import type { TokenCategory } from "domain/tokens/types";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 
-export type TokenFavoritesTabOption = "all" | "favorites";
+export type TokenFavoritesTabOption = "all" | "favorites" | TokenCategory;
 export type TokenFavoritesType = "gm" | "index";
 export type TokenFavoriteKey =
   | "chart-token-selector"
@@ -169,11 +172,23 @@ export function useTokensFavorites(key: TokenFavoriteKey): TokenFavoritesState {
   };
 }
 
-export const tokensFavoritesTabOptions = ["all", "favorites"];
-export const tokensFavoritesTabOptionLabels = {
+export const tokensFavoritesTabOptions: TokenFavoritesTabOption[] = [
+  "all",
+  "favorites",
+  "meme",
+  "layer1",
+  "layer2",
+  "defi",
+];
+
+export const tokensFavoritesTabOptionLabels: Record<TokenFavoritesTabOption, MessageDescriptor> = {
   all: msg({
     message: "All",
     comment: "Filter option for tokens favorites",
   }),
   favorites: msg`Favorites`,
+  meme: msg`Meme`,
+  layer1: msg`Layer 1`,
+  layer2: msg`Layer 2`,
+  defi: msg`DeFi`,
 };

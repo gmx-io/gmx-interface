@@ -36,13 +36,16 @@
       bottom: auto;
       position: absolute;
 
-      width: calc(100vw - 2 * var(--default-container-padding-mobile));
+      width: 100vw;
 
       bottom: 0;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
 
       height: 80vh;
+
+      border: 1px solid var(--color-gray-800);
+      border-bottom: none;
 
       @include slide-up;
     }

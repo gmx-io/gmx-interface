@@ -1,13 +1,16 @@
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { MarketInfo, MarketsInfoData, getUsedLiquidity } from "domain/synthetics/markets";
-import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
+
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import {
+  MarketInfo,
+  MarketsInfoData,
+  getMaxLeverageByMinCollateralFactor,
+  getUsedLiquidity,
+} from "domain/synthetics/markets";
+import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
-
 import { CHART_PERIODS } from "lib/legacy";
-import { BN_ZERO } from "lib/numbers";
-
 export type MarketStat = {
   marketInfo: MarketInfo;
   poolValueUsd: bigint;
@@ -33,6 +36,9 @@ export type IndexTokenStat = {
   marketsStats: MarketStat[];
   bestNetFeeLongMarketAddress: string;
   bestNetFeeShortMarketAddress: string;
+  totalOpenInterestLong: bigint;
+  totalOpenInterestShort: bigint;
+  maxUiAllowedLeverage: number;
 };
 
 export type IndexTokensStats = {
@@ -72,15 +78,18 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
       indexMap[marketInfo.indexTokenAddress] = {
         token: indexToken,
         price,
-        totalPoolValue: BN_ZERO,
-        totalUtilization: BN_ZERO,
-        totalUsedLiquidity: BN_ZERO,
-        totalMaxLiquidity: BN_ZERO,
+        totalPoolValue: 0n,
+        totalUtilization: 0n,
+        totalUsedLiquidity: 0n,
+        totalMaxLiquidity: 0n,
         marketsStats: [],
         bestNetFeeLong: ethers.MinInt256,
         bestNetFeeShort: ethers.MinInt256,
         bestNetFeeLongMarketAddress: marketInfo.marketTokenAddress,
         bestNetFeeShortMarketAddress: marketInfo.marketTokenAddress,
+        totalOpenInterestLong: 0n,
+        totalOpenInterestShort: 0n,
+        maxUiAllowedLeverage: 1,
       };
     }
 
@@ -106,9 +115,15 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     const netFeeLong = borrowingRateLong + fundingRateLong;
     const netFeeShort = borrowingRateShort + fundingRateShort;
 
-    indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue + poolValueUsd;
-    indexTokenStats.totalUsedLiquidity = indexTokenStats.totalUsedLiquidity + usedLiquidity;
-    indexTokenStats.totalMaxLiquidity = indexTokenStats.totalMaxLiquidity + maxLiquidity;
+    indexTokenStats.totalPoolValue += poolValueUsd;
+    indexTokenStats.totalUsedLiquidity += usedLiquidity;
+    indexTokenStats.totalMaxLiquidity += maxLiquidity;
+    indexTokenStats.totalOpenInterestLong += marketInfo.longInterestUsd;
+    indexTokenStats.totalOpenInterestShort += marketInfo.shortInterestUsd;
+    indexTokenStats.maxUiAllowedLeverage = Math.max(
+      indexTokenStats.maxUiAllowedLeverage,
+      getMaxLeverageByMinCollateralFactor(marketInfo.minCollateralFactor) / 2 / BASIS_POINTS_DIVISOR
+    );
     if (netFeeLong > indexTokenStats.bestNetFeeLong) {
       indexTokenStats.bestNetFeeLong = netFeeLong;
       indexTokenStats.bestNetFeeLongMarketAddress = marketInfo.marketTokenAddress;
