@@ -15,6 +15,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "./prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 const { ZeroAddress } = ethers;
 
@@ -30,10 +31,11 @@ export type SwapOrderParams = {
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
   allowedSlippage: number;
-  setPendingTxns: (txns: any) => void;
-  setPendingOrder: SetPendingOrder;
   skipSimulation: boolean;
   metricId: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
+  setPendingTxns: (txns: any) => void;
+  setPendingOrder: SetPendingOrder;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -82,6 +84,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
           metricId: p.metricId,
+          blockTimestampData: p.blockTimestampData,
         })
       : undefined;
 

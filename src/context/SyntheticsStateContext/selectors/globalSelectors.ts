@@ -44,6 +44,7 @@ export const selectSetIsCandlesLoaded = (s: SyntheticsState) => s.globals.setIsC
 
 export const selectGasLimits = (s: SyntheticsState) => s.globals.gasLimits;
 export const selectGasPrice = (s: SyntheticsState) => s.globals.gasPrice;
+export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
 export const selectKeepLeverage = (s: SyntheticsState) => s.globals.keepLeverage ?? true;
 export const selectSetKeepLeverage = (s: SyntheticsState) => s.globals.setKeepLeverage;

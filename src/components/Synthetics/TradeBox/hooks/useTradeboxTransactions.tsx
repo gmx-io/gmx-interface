@@ -3,7 +3,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -62,6 +62,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
@@ -140,6 +141,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         setPendingOrder,
         metricId: metricData.metricId,
         skipSimulation: shouldDisableValidationForTesting,
+        blockTimestampData,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -162,6 +164,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingTxns,
       setPendingOrder,
       shouldDisableValidationForTesting,
+      blockTimestampData,
     ]
   );
 
@@ -222,6 +225,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         signer,
         subaccount,
         metricId: metricData.metricId,
+        blockTimestampData,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -310,6 +314,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       account,
       collateralToken,
       signer,
+      blockTimestampData,
       chainId,
       shouldDisableValidationForTesting,
       setPendingTxns,
@@ -397,6 +402,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingOrder,
           setPendingPosition,
         },
+        blockTimestampData,
         metricData.metricId
       )
         .then(makeTxnSentMetricsHandler(metricData.metricId))
@@ -404,24 +410,25 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
-      account,
-      allowedSlippage,
-      chainId,
       collateralToken,
       decreaseAmounts,
-      executionFee,
-      isLong,
-      marketInfo,
-      referralCodeForTxn,
       selectedPosition,
+      executionFee,
+      referralCodeForTxn,
+      subaccount,
+      triggerPrice,
+      marketInfo,
+      allowedSlippage,
+      isLong,
+      account,
+      tokensData,
+      signer,
+      blockTimestampData,
+      chainId,
+      autoCancelOrdersLimit,
+      setPendingTxns,
       setPendingOrder,
       setPendingPosition,
-      setPendingTxns,
-      signer,
-      subaccount,
-      tokensData,
-      triggerPrice,
-      autoCancelOrdersLimit,
     ]
   );
 

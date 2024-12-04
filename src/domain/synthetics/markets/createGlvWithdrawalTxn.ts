@@ -68,6 +68,7 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 

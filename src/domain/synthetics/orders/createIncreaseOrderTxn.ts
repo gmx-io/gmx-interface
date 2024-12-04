@@ -20,6 +20,7 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 const { ZeroAddress } = ethers;
 
@@ -89,6 +90,7 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams,
   cancelOrderParams,
   updateOrderParams,
+  blockTimestampData,
 }: {
   chainId: number;
   signer: Signer;
@@ -98,6 +100,7 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
   updateOrderParams?: SecondaryUpdateOrderParams[];
+  blockTimestampData: BlockTimestampData | undefined;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
@@ -226,6 +229,7 @@ export async function createIncreaseOrderTxn({
         value: totalWntAmount,
         errorTitle: t`Order error.`,
         metricId,
+        blockTimestampData,
       })
     : undefined;
 

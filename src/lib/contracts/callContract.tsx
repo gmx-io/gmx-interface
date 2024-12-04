@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getIsFlagEnabled } from "config/ab";
 import { getExplorerUrl } from "config/chains";
 import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
@@ -7,7 +8,7 @@ import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
-import { getErrorMessage } from "./transactionErrors";
+import { extractError, getErrorMessage } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
 
 export async function callContract(
@@ -104,26 +105,42 @@ export async function callContract(
           : await getGasPrice(cntrct.runner!.provider!, chainId);
       }
 
-      const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
-        txnInstance.gasLimit = gasLimit;
-      });
+      async function initGasParams() {
+        const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
+          txnInstance.gasLimit = gasLimit;
+        });
 
-      const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
-        if ("gasPrice" in gasPriceData) {
-          txnInstance.gasPrice = gasPriceData.gasPrice;
-        } else {
-          txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
-          txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
-        }
-      });
+        const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
+          if ("gasPrice" in gasPriceData) {
+            txnInstance.gasPrice = gasPriceData.gasPrice;
+          } else {
+            txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
+            txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
+          }
+        });
 
-      await Promise.all([gasLimitPromise, gasPriceDataPromise]);
+        await Promise.all([gasLimitPromise, gasPriceDataPromise]);
+      }
+
+      if (!getIsFlagEnabled("testRemoveGasRequests")) {
+        await initGasParams();
+      }
 
       if (opts.metricId) {
         sendOrderTxnSubmittedMetric(opts.metricId);
       }
 
-      return cntrct[method](...params, txnInstance);
+      return cntrct[method](...params, txnInstance).catch(async (e) => {
+        const [message] = extractError(e);
+
+        // Fallback to gas requests in case of low gas price
+        if (message?.includes("max fee per gas less than block base fee")) {
+          await initGasParams();
+          return cntrct[method](...params, txnInstance);
+        }
+
+        throw e;
+      });
     });
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {

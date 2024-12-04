@@ -46,6 +46,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { BlockTimestampData, useBlockTimestamp } from "lib/useBlockTimestamp";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -84,6 +85,7 @@ export type SyntheticsState = {
 
     gasLimits: ReturnType<typeof useGasLimits>;
     gasPrice: ReturnType<typeof useGasPrice>;
+    blockTimestampData: BlockTimestampData | undefined;
 
     lastWeekAccountStats?: PeriodAccountStats;
     lastMonthAccountStats?: PeriodAccountStats;
@@ -236,6 +238,8 @@ export function SyntheticsStateContextProvider({
     enabled: pageType === "trade",
   });
 
+  const { blockTimestampData } = useBlockTimestamp(chainId);
+
   // TODO move closingPositionKey to positionSellerState
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
   const positionEditorState = usePositionEditorState(chainId);
@@ -292,6 +296,7 @@ export function SyntheticsStateContextProvider({
         setIsCandlesLoaded,
         isLargeAccount,
         isFirstOrder,
+        blockTimestampData,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -330,6 +335,7 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isLargeAccount,
     isFirstOrder,
+    blockTimestampData,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

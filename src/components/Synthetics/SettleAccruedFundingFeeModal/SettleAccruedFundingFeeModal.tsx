@@ -28,6 +28,8 @@ import { shouldPreSelectPosition } from "./utils";
 
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import "./SettleAccruedFundingFeeModal.scss";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 type Props = {
   allowedSlippage: number;
@@ -44,6 +46,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
   const [isUntouched, setIsUntouched] = useState(true);
 
   const { executionFee, feeUsd } = useMemo(() => {
@@ -149,7 +152,8 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       {
         setPendingTxns,
         setPendingFundingFeeSettlement,
-      }
+      },
+      blockTimestampData
     )
       .then(handleOnClose)
       .finally(() => {
@@ -158,6 +162,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [
     account,
     allowedSlippage,
+    blockTimestampData,
     chainId,
     executionFee,
     handleOnClose,
