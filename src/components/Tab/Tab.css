@@ -59,7 +59,7 @@
 }
 
 .Tab.Tab__inline .Tab-option:not(.disabled):not(.active):hover {
-  opacity: 0.8;
+  color: var(--color-white);
 }
 
 .Tab.Tab__inline .Tab-option.active {
