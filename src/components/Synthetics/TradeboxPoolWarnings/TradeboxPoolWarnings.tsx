@@ -13,11 +13,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
-import {
-  getAvailableUsdLiquidityForPosition,
-  getMarketIndexName,
-  getMarketPoolName,
-} from "domain/synthetics/markets/utils";
+import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -28,6 +24,7 @@ import { useChainId } from "lib/chains";
 import { userAnalytics } from "lib/userAnalytics";
 import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
 import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { formatAmountForMetrics } from "lib/metrics";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
@@ -142,11 +139,11 @@ export const useTradeboxPoolWarnings = (
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;
 
   const isFirstOrder = !accountStats || accountStats.closedCount === 0;
-  const marketIndexName = marketInfo ? getMarketIndexName(marketInfo) : "";
+  const marketName = marketInfo ? marketInfo.name : "";
   const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
   useEffect(() => {
-    if (!marketIndexName || !marketPoolName) {
+    if (!marketName || !marketPoolName) {
       return;
     }
 
@@ -161,10 +158,11 @@ export const useTradeboxPoolWarnings = (
           data: {
             action: "WarningShown",
             message: "InsufficientLiquidity",
-            pair: marketIndexName,
+            pair: marketName,
             pool: marketPoolName,
             type: isLong ? "Long" : "Short",
             orderType: isLimit ? "Limit" : "Market",
+            sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd) ?? 0,
             tradeType: hasExistingPosition ? "IncreaseSize" : "InitialTrade",
             leverage: formatLeverage(increaseAmounts?.estimatedLeverage) || "",
             chain: getChainName(chainId),
@@ -172,7 +170,7 @@ export const useTradeboxPoolWarnings = (
           },
         },
         {
-          dedupKey: marketIndexName,
+          dedupKey: marketName,
           dedupInterval: 1000 * 60 * 5, // 5m
         }
       );
@@ -181,10 +179,11 @@ export const useTradeboxPoolWarnings = (
     chainId,
     hasExistingPosition,
     increaseAmounts?.estimatedLeverage,
+    increaseAmounts?.sizeDeltaUsd,
     isFirstOrder,
     isLimit,
     isLong,
-    marketIndexName,
+    marketName,
     marketPoolName,
     showHasInsufficientLiquidityAndPositionWarning,
     showHasNoSufficientLiquidityInAnyMarketWarning,

@@ -890,8 +890,8 @@ msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr "({0}% of {feesTypeName})"
+#~ msgid "({0}% of {feesTypeName})"
+#~ msgstr "({0}% of {feesTypeName})"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -1716,6 +1716,10 @@ msgstr "Forfeit profit not checked"
 msgid "Buy GM"
 msgstr "Buy GM"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of close fee"
+msgstr "of close fee"
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
@@ -2465,6 +2469,7 @@ msgid "Traders Referred on Arbitrum"
 msgstr "Traders Referred on Arbitrum"
 
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
@@ -5639,6 +5644,10 @@ msgstr "Buy or Transfer ETH to Arbitrum"
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr "Expected execution price for the order, including the current price impact, once the limit order executes."
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of open fee"
+msgstr "of open fee"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx

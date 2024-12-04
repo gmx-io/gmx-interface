@@ -6,7 +6,7 @@ import { BiChevronDown } from "react-icons/bi";
 import { getNormalizedTokenSymbol } from "config/tokens";
 
 import { getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -16,8 +16,8 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
   GlvInfo,
   MarketInfo,
-  getMarketIndexName,
   getGlvOrMarketAddress,
+  getMarketIndexName,
   getMarketPoolName,
   isMarketInfo,
 } from "domain/synthetics/markets";
@@ -114,24 +114,16 @@ export function GmPoolsSelectorForGlvMarket({
   const selectedMarketInfo = selectedPool?.marketInfo;
   const marketInfo = selectedMarketInfo && isMarketInfo(selectedMarketInfo) ? selectedMarketInfo : undefined;
 
-  const fuse = useFuse(
-    () =>
-      marketsOptions.map((item, index) => {
-        const indexTokenName = stripBlacklistedWords((item.marketInfo as MarketInfo).indexToken.name);
-        const indexTokenSymbol = (item.marketInfo as MarketInfo).indexToken.symbol;
-
-        return {
-          id: index,
-          indexTokenName,
-          indexTokenSymbol,
-        };
-      }),
-    marketsOptions?.map((item) => (item.marketInfo as MarketInfo).marketTokenAddress)
-  );
-
   const filteredOptions = useMemo(() => {
     const textMatched = searchKeyword.trim()
-      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      ? searchBy(
+          marketsOptions,
+          [
+            (item) => stripBlacklistedWords((item.marketInfo as MarketInfo).indexToken.name),
+            (item) => (item.marketInfo as MarketInfo).indexToken.symbol,
+          ],
+          searchKeyword
+        )
       : marketsOptions;
 
     const tabMatched = textMatched?.filter((item) => {
@@ -143,7 +135,7 @@ export function GmPoolsSelectorForGlvMarket({
     });
 
     return tabMatched;
-  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   const onSelectGmPool = useCallback(
     function onSelectOption(option: MarketOption) {

@@ -600,9 +600,7 @@ export function PositionItem(p: Props) {
                 <div>{renderNetValue()}</div>
               </div>
               <div className="App-card-row">
-                <div className="label">
-                  <Trans>PnL</Trans>
-                </div>
+                <div className="label">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
                 <div>
                   <span
                     className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {

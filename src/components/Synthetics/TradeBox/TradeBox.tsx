@@ -612,9 +612,13 @@ export function TradeBox(p: Props) {
   ]);
 
   const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows(priceImpactWarningState);
-  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({ positionKey: selectedPositionKey });
+  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
+    positionKey: selectedPositionKey,
+    isCreatingNewAutoCancel: isTrigger,
+  });
   const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
+  const prefix = toToken ? getTokenVisualMultiplier(toToken) : "";
   const submitButtonText = useMemo(() => {
     if (buttonErrorText) {
       return buttonErrorText;
@@ -628,7 +632,10 @@ export function TradeBox(p: Props) {
       if (isSwap) {
         return t`Swap ${fromToken?.symbol}`;
       } else {
-        return `${localizedTradeTypeLabels[tradeType!]} ${toToken?.symbol}`;
+        if (!toToken?.symbol) {
+          return `${localizedTradeTypeLabels[tradeType!]} ...`;
+        }
+        return `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken.symbol}`;
       }
     } else if (isLimit) {
       return t`Create Limit order`;
@@ -646,6 +653,7 @@ export function TradeBox(p: Props) {
     toToken?.symbol,
     decreaseAmounts?.triggerOrderType,
     stage,
+    prefix,
   ]);
 
   const submitButtonState = useTradeboxButtonState({
@@ -753,7 +761,8 @@ export function TradeBox(p: Props) {
           pair = marketInfo.name;
         }
 
-        let sizeDeltaUsd = 0n;
+        let sizeDeltaUsd: bigint | undefined = undefined;
+        let amountUsd: bigint | undefined = undefined;
         let priceImpactDeltaUsd = 0n;
         let priceImpactBps = 0n;
 
@@ -762,7 +771,7 @@ export function TradeBox(p: Props) {
           priceImpactDeltaUsd = increaseAmounts.positionPriceImpactDeltaUsd;
           priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
         } else if (isSwap && swapAmounts) {
-          sizeDeltaUsd = swapAmounts.usdOut;
+          amountUsd = swapAmounts.usdOut;
           priceImpactDeltaUsd = swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
           priceImpactBps = fees?.swapPriceImpact?.bps ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
@@ -785,6 +794,7 @@ export function TradeBox(p: Props) {
           openInterestPercent,
           tradeType,
           tradeMode,
+          amountUsd,
         });
       }
     },

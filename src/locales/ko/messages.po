@@ -890,8 +890,8 @@ msgid "Open {0} in Coingecko"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr ""
+#~ msgid "({0}% of {feesTypeName})"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -1716,6 +1716,10 @@ msgstr "상실 이익이 확인되지 않았습니다."
 msgid "Buy GM"
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of close fee"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr "{0} {longOrShortText}을 증가, +{1} USD, {2} 가격: {3} USD"
@@ -2465,6 +2469,7 @@ msgid "Traders Referred on Arbitrum"
 msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "수수료 제외한 PnL"
@@ -5635,6 +5640,10 @@ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of open fee"
 msgstr ""
 
 #: src/pages/Dashboard/MarketsListV1.tsx
