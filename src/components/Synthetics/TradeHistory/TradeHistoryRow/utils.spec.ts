@@ -337,12 +337,22 @@ describe("TradeHistoryRow helpers", () => {
       },
     },
     {
-      "key": "Position Fee",
+      "key": "Close Fee",
       "value": {
         "state": "error",
         "text": "-$4.50",
       },
     },
+    "",
+    {
+      "key": "Collateral at Liquidation",
+      "value": "$83.95",
+    },
+    {
+      "key": "Min. Required Collateral",
+      "value": "$64.41",
+    },
+    "",
     {
       "key": "Price Impact",
       "value": {
@@ -350,22 +360,17 @@ describe("TradeHistoryRow helpers", () => {
         "text": "-$16.82",
       },
     },
-    "",
     {
-      "key": "PnL after Fees and Price Impact",
+      "key": "Liquidation Fee",
       "value": {
         "state": "error",
-        "text": "-$126.31",
+        "text": "-$1.04",
       },
     },
     "",
     {
-      "key": "Leftover Collateral Excluding Impact",
-      "value": "$83.95",
-    },
-    {
-      "key": "Min. required Collateral",
-      "value": "$64.41",
+      "key": "Returned Collateral",
+      "value": "$66.08",
     },
   ],
   "priceImpact": "-$16.82",

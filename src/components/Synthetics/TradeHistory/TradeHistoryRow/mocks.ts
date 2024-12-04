@@ -4751,6 +4751,10 @@ export const liquidated = prepare({
     type: "bigint",
     hex: "0x00",
   },
+  liquidationFeeAmount: {
+    type: "bigint",
+    hex: "0x100000",
+  },
   reason: null,
   transaction: {
     timestamp: 1693795129,
