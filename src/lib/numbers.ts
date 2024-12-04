@@ -229,8 +229,11 @@ export function formatDeltaUsd(
   return `${symbol}${sign}$${deltaUsdStr}${percentageStr}`;
 }
 
-export function formatPercentage(percentage?: bigint, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
-  const { fallbackToZero = false, signed = false } = opts;
+export function formatPercentage(
+  percentage?: bigint,
+  opts: { fallbackToZero?: boolean; signed?: boolean; decimals?: number } = {}
+) {
+  const { fallbackToZero = false, signed = false, decimals = 2 } = opts;
 
   if (typeof percentage !== "bigint") {
     if (fallbackToZero) {
@@ -242,7 +245,7 @@ export function formatPercentage(percentage?: bigint, opts: { fallbackToZero?: b
 
   const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), 2, 2)}%`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), 2, decimals)}%`;
 }
 
 export function formatTokenAmount(

@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
 import { FeeItem } from "domain/synthetics/fees";
-import { formatDeltaUsd } from "lib/numbers";
+import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -12,6 +12,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import "./GmFees.scss";
 import { bigMath } from "lib/bigmath";
+import { Operation } from "../GmSwapBox/types";
 
 type Props = {
   totalFees?: FeeItem;
@@ -19,13 +20,21 @@ type Props = {
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
   shiftFee?: FeeItem;
-  isDeposit: boolean;
+  operation: Operation;
+};
+
+const operationTexts = {
+  [Operation.Deposit]: t`buy`,
+  [Operation.Withdrawal]: t`sell`,
+  [Operation.Shift]: t`shift`,
 };
 
 export function GmFees(p: Props) {
   const totalFeesUsd = p.totalFees?.deltaUsd;
 
   let value: ReactNode = useMemo(() => {
+    const operationText = operationTexts[p.operation];
+
     if (p.totalFees?.deltaUsd === undefined) {
       return "-";
     } else if (
@@ -46,8 +55,19 @@ export function GmFees(p: Props) {
             <div>
               {bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 && (
                 <StatsTooltipRow
-                  label={t`Price Impact`}
-                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd, p.swapPriceImpact?.bps)!}
+                  label={
+                    <div>
+                      <div>{t`Price Impact`}:</div>
+                      <div>
+                        (
+                        {formatPercentage(p.swapPriceImpact?.bps, {
+                          decimals: 3,
+                        })}{" "}
+                        of {operationText} amount)
+                      </div>
+                    </div>
+                  }
+                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd)!}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(
                     p.swapPriceImpact === undefined ? undefined : p.swapPriceImpact.deltaUsd
@@ -58,8 +78,19 @@ export function GmFees(p: Props) {
               {p.swapFee && (
                 <>
                   <StatsTooltipRow
-                    label={p.isDeposit ? t`Buy Fee` : t`Sell Fee`}
-                    value={formatDeltaUsd(p.swapFee.deltaUsd, p.swapFee.bps)!}
+                    label={
+                      <div>
+                        <div>{p.operation === Operation.Deposit ? t`Buy Fee` : t`Sell Fee`}:</div>
+                        <div>
+                          (
+                          {formatPercentage(p.swapFee.bps, {
+                            decimals: 3,
+                          })}{" "}
+                          of {operationText} amount)
+                        </div>
+                      </div>
+                    }
+                    value={formatDeltaUsd(p.swapFee.deltaUsd)!}
                     showDollar={false}
                     textClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
                   />
@@ -68,8 +99,19 @@ export function GmFees(p: Props) {
 
               {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0 && (
                 <StatsTooltipRow
-                  label={t`UI Fee`}
-                  value={formatDeltaUsd(p.uiFee?.deltaUsd, p.uiFee?.bps)!}
+                  label={
+                    <div>
+                      <div>{t`UI Fee`}:</div>
+                      <div>
+                        (
+                        {formatPercentage(p.uiFee?.bps, {
+                          decimals: 3,
+                        })}{" "}
+                        of {operationText} amount)
+                      </div>
+                    </div>
+                  }
+                  value={formatDeltaUsd(p.uiFee?.deltaUsd)!}
                   showDollar={false}
                   textClassName="text-red-500"
                 />
@@ -77,8 +119,19 @@ export function GmFees(p: Props) {
 
               {p.shiftFee !== undefined && (
                 <StatsTooltipRow
-                  label={t`Shift Fee`}
-                  value={formatDeltaUsd(p.shiftFee.deltaUsd, p.shiftFee.bps)!}
+                  label={
+                    <div>
+                      <div>{t`Shift Fee`}:</div>
+                      <div>
+                        (
+                        {formatPercentage(p.shiftFee.bps, {
+                          decimals: 3,
+                        })}{" "}
+                        of {operationText} amount)
+                      </div>
+                    </div>
+                  }
+                  value={formatDeltaUsd(p.shiftFee.deltaUsd)!}
                   showDollar={false}
                 />
               )}
@@ -93,7 +146,7 @@ export function GmFees(p: Props) {
       </span>
     );
   }, [
-    p.isDeposit,
+    p.operation,
     p.shiftFee,
     p.swapFee,
     p.swapPriceImpact,

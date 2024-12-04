@@ -120,7 +120,13 @@ export function TradeFeesRow(p: Props) {
           label: (
             <>
               <div className="text-white">{feesTypeName}:</div>
-              <div>({formatPercentage(bigMath.abs(p.positionFee!.bps))} of position size)</div>
+              <div>
+                (
+                {formatPercentage(bigMath.abs(p.positionFee!.bps), {
+                  decimals: 3,
+                })}{" "}
+                of position size)
+              </div>
             </>
           ),
           value: formatDeltaUsd(p.positionFee?.deltaUsd),
@@ -135,8 +141,11 @@ export function TradeFeesRow(p: Props) {
             <>
               <div className="text-white">{t`UI Fee`}:</div>
               <div>
-                ({formatPercentage(bigMath.abs(p!.uiFee!.bps))} of{" "}
-                {p.feesType === "swap" ? "swap amount" : "position size"})
+                (
+                {formatPercentage(bigMath.abs(p!.uiFee!.bps), {
+                  decimals: 3,
+                })}{" "}
+                of {p.feesType === "swap" ? "swap amount" : "position size"})
               </div>
             </>
           ),
@@ -152,7 +161,13 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
-                <div>({formatPercentage(bigMath.abs(p.uiSwapFee.bps))} of swap amount)</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.uiSwapFee.bps), {
+                    decimals: 3,
+                  })}{" "}
+                  of swap amount)
+                </div>
               </>
             ),
             value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
@@ -180,7 +195,13 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-white">{t`Borrow Fee`}:</div>
-                <div>({formatPercentage(bigMath.abs(p.borrowFee.bps))} of collateral)</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.borrowFee.bps), {
+                    decimals: 3,
+                  })}{" "}
+                  of collateral)
+                </div>
               </>
             ),
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
@@ -195,7 +216,13 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-white">{t`Funding Fee`}:</div>
-                <div>({formatPercentage(bigMath.abs(p.fundingFee.bps))} of collateral)</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.fundingFee.bps), {
+                    decimals: 3,
+                  })}{" "}
+                  of collateral)
+                </div>
               </>
             ),
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
