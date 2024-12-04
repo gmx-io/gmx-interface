@@ -53,7 +53,7 @@ import VaultV2b from "abis/VaultV2b.json";
 import Reader from "abis/ReaderV2.json";
 import PositionRouter from "abis/PositionRouter.json";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
-import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
+// import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import PrivacyPolicy from "pages/PrivacyPolicy/PrivacyPolicy";
 import { useLocalStorage } from "react-use";

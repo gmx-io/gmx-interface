@@ -43,7 +43,6 @@ export const TradeNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...p
         border: "1px solid rgba(255,255,255,0.2)",
         padding: mobile ? "2rem 2rem" : "1.5rem 3rem",
         borderRadius: "4rem",
-        width: "fit-content",
         backdropFilter: "blur(5px)",
         ...(props?.style || {}),
       }}
