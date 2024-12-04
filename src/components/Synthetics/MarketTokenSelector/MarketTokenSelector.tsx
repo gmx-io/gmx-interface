@@ -6,7 +6,7 @@ import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
 import {
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,
@@ -34,6 +34,7 @@ import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
@@ -214,7 +215,7 @@ function MarketTokenSelectorInternal(props: Props) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
+        <div className="mt-16 flex flex-col gap-8">
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -222,7 +223,10 @@ function MarketTokenSelectorInternal(props: Props) {
             onKeyDown={handleKeyDown}
             placeholder="Search Pool"
           />
-          <FavoriteTabs favoritesKey="gm-token-selector" />
+
+          <ButtonRowScrollFadeContainer>
+            <FavoriteTabs favoritesKey="gm-token-selector" />
+          </ButtonRowScrollFadeContainer>
         </div>
       </SelectorBaseMobileHeaderContent>
       <div
@@ -352,13 +356,24 @@ function useFilterSortTokensInfo({
         )
       : sortedMarketsByIndexToken;
 
-    const tabMatched = textMatched.filter((item) => {
-      if (tab === "favorites") {
-        return favoriteTokens?.includes(item.address);
-      }
+    let tabMatched = textMatched;
 
-      return true;
-    });
+    if (tab === "all") {
+      tabMatched = textMatched;
+    } else if (tab === "favorites") {
+      tabMatched = tabMatched.filter((item) => favoriteTokens?.includes(item.address));
+    } else {
+      const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
+      tabMatched = tabMatched.filter((item) => {
+        const marketInfo = getByKey(marketsInfoData, item?.address)!;
+
+        if (isGlvInfo(marketInfo)) {
+          return false;
+        }
+
+        return categoryTokenAddresses.includes(marketInfo.indexTokenAddress);
+      });
+    }
 
     return tabMatched.map((market) => {
       const marketInfo = getByKey(marketsInfoData, market?.address)!;
@@ -395,13 +410,14 @@ function useFilterSortTokensInfo({
     sortedMarketsByIndexToken,
     searchKeyword,
     tab,
-    favoriteTokens,
     marketsInfoData,
+    favoriteTokens,
+    chainId,
     marketTokensData,
     glvTokensApyData,
     marketsTokensAPRData,
-    marketsTokensIncentiveAprData,
     glvTokensIncentiveAprData,
+    marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
   ]);
 

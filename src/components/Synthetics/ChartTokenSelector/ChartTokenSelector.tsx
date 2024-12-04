@@ -261,7 +261,7 @@ function MarketsList() {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-row items-center gap-16">
+        <div className="mt-16 flex flex-col gap-8">
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -685,7 +685,7 @@ function MarketListItem({
             onClick={handleSelectShort}
           >
             <div className="flex items-center justify-end gap-4">
-              <LongIcon width={12} className="relative top-1 opacity-70" />
+              <ShortIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
             </div>
           </td>

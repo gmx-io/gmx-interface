@@ -169,7 +169,7 @@ export function MarketSelector({
         headerContent={
           <div className="mt-16">
             <SearchInput
-              className="*:!text-body-medium"
+              className="mb-8 *:!text-body-medium"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Market`}

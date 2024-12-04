@@ -280,6 +280,7 @@ export function GmShiftBox({
           onFocus={handleSelectedTokenFocus}
         >
           <PoolSelector
+            chainId={chainId}
             selectedMarketAddress={selectedMarketAddress}
             markets={shiftAvailableMarkets}
             onSelectMarket={handleSelectedTokenSelectMarket}
@@ -305,6 +306,7 @@ export function GmShiftBox({
           onFocus={handleToTokenFocus}
         >
           <PoolSelector
+            chainId={chainId}
             selectedMarketAddress={toMarketAddress}
             markets={shiftAvailableRelatedMarkets}
             onSelectMarket={handleToTokenSelectMarket}
