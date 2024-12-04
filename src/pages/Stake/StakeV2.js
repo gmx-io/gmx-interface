@@ -1842,17 +1842,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Buy GMX</Trans>
                 </Button> */}
                 {active && (
-                  <Button variant="semi-clear" onClick={() => showStakeGmxModal()}>
+                  <Button disabled variant="semi-clear" onClick={() => showStakeGmxModal()}>
                     <Trans>Stake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="semi-clear" onClick={() => showUnstakeGmxModal()}>
+                  <Button disabled variant="semi-clear" onClick={() => showUnstakeGmxModal()}>
                     <Trans>Unstake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="semi-clear" to="/begin_account_transfer">
+                  <Button disabled variant="semi-clear" to="/begin_account_transfer">
                     <Trans>Transfer Account</Trans>
                   </Button>
                 )}
