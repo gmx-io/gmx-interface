@@ -362,6 +362,10 @@ msgstr "Failed Take-Profit"
 msgid "Max pool USD exceeded"
 msgstr "Max pool USD exceeded"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "sell"
+msgstr "sell"
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Positions"
@@ -4964,6 +4968,10 @@ msgstr "Transaction"
 msgid "Invalid liq. price"
 msgstr "Invalid liq. price"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "buy"
+msgstr "buy"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
 msgstr "Start unrealized pnl"
@@ -6721,6 +6729,10 @@ msgstr "The available liquidity will be the lesser of the difference between the
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral Code does not exist"
 msgstr "Referral Code does not exist"
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "shift"
+msgstr "shift"
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX staking calculator"

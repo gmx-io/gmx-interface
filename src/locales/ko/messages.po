@@ -362,6 +362,10 @@ msgstr ""
 msgid "Max pool USD exceeded"
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "sell"
+msgstr ""
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Positions"
@@ -4961,6 +4965,10 @@ msgstr "거래"
 msgid "Invalid liq. price"
 msgstr "유효하지 않은 청산가"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "buy"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
 msgstr ""
@@ -6715,6 +6723,10 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.jsx
 msgid "Referral Code does not exist"
 msgstr "추천인 코드가 존재하지 않습니다"
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "shift"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX staking calculator"
