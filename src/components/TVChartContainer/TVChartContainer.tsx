@@ -170,7 +170,6 @@ export default function TVChartContainer({
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
 
-    // tvWidgetRef.current.activeChart().dataReady()
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({

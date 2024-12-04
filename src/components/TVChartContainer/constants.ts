@@ -3,7 +3,7 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { lightFormat, parse } from "date-fns";
 import { formatTVDate, formatTVTime } from "lib/dates";
-import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
+import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
 const RED = "#fa3c58";
 const GREEN = "#0ecc83";
@@ -102,7 +102,23 @@ export const defaultChartProps = {
       return {
         format: (price) => {
           const bn = numberToBigint(price, USD_DECIMALS);
-          return formatAmount(bn, USD_DECIMALS, calculateDisplayDecimals(bn));
+          let displayDecimals = calculateDisplayDecimals(bn);
+
+          // Custom float formatting to avoid floating point precision issues like 256.999
+          const roundedFloat = Math.round(price * 10 ** displayDecimals) / 10 ** displayDecimals;
+
+          // Special case for stablecoins because calculateDisplayDecimals is not accurate for them
+          if (roundedFloat === 1) {
+            displayDecimals = 4;
+          }
+
+          let [whole, decimals = ""] = String(roundedFloat).split(".");
+
+          decimals = decimals.slice(0, displayDecimals).padEnd(displayDecimals, "0");
+
+          const formattedFloat = `${whole}.${decimals}`;
+
+          return formattedFloat;
         },
       };
     },
