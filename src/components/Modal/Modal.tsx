@@ -93,45 +93,47 @@ export default function Modal({
     // @ts-ignore
     <AnimatePresence>
       {isVisible && (
-        <motion.div
-          className={cx("Modal", className)}
-          ref={modalRef}
-          style={style}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          variants={FADE_VARIANTS}
-          transition={TRANSITION}
-        >
-          <div
-            className="Modal-backdrop"
-            style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
-            onClick={() => setIsVisible(false)}
-          />
-          <div className="Modal-content" onClick={stopPropagation} data-qa={qa}>
-            <div className="Modal-header-wrapper">
-              <div className="Modal-title-bar">
-                <div className="Modal-title">{label}</div>
-                <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
-                  <MdClose fontSize={20} className="Modal-close-icon" />
+        <RemoveScroll>
+          <motion.div
+            className={cx("Modal", className)}
+            ref={modalRef}
+            style={style}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={FADE_VARIANTS}
+            transition={TRANSITION}
+          >
+            <div
+              className="Modal-backdrop"
+              style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
+              onClick={() => setIsVisible(false)}
+            />
+            <div className="Modal-content flex flex-col border" onClick={stopPropagation} data-qa={qa}>
+              <div className="Modal-header-wrapper">
+                <div className="Modal-title-bar">
+                  <div className="Modal-title">{label}</div>
+                  <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
+                    <MdClose fontSize={20} className="Modal-close-icon" />
+                  </div>
+                </div>
+                {headerContent}
+              </div>
+              {!noDivider && <div className="divider" />}
+              <div className="overflow-auto">
+                <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalBodyRef}>
+                  {children}
                 </div>
               </div>
-              {headerContent}
+              {footerContent && (
+                <>
+                  <div className="divider" />
+                  <div>{footerContent}</div>
+                </>
+              )}
             </div>
-            {!noDivider && <div className="divider" />}
-            <RemoveScroll className="overflow-auto">
-              <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalBodyRef}>
-                {children}
-              </div>
-            </RemoveScroll>
-            {footerContent && (
-              <>
-                <div className="divider" />
-                <div>{footerContent}</div>
-              </>
-            )}
-          </div>
-        </motion.div>
+          </motion.div>
+        </RemoveScroll>
       )}
     </AnimatePresence>
   );

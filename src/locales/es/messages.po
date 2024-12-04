@@ -47,10 +47,6 @@ msgstr "Desconectar"
 msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
 msgstr ""
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You have an existing order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -74,10 +70,6 @@ msgstr "No hay suficiente liquidez en un único token para tu volumen. Por favor
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#~ msgid "Position Fee"
-#~ msgstr "Comisión de Posición"
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What would have made your rating a 9 or 10?"
@@ -269,14 +261,6 @@ msgstr "Ver estado."
 msgid "Buyable"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#~ msgid "Returned collateral"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
@@ -353,10 +337,6 @@ msgstr "Superados cortos Máx. de {0}"
 msgid "Insufficient GM balance"
 msgstr ""
 
-#: src/components/Synthetics/Claims/ClaimableCard.tsx
-#~ msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take-Profit"
 msgstr ""
@@ -406,10 +386,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "View status"
 msgstr ""
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You can get {0} better open cost {zeroPriceImpactMessage} in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-#~ msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
@@ -522,10 +498,6 @@ msgstr "Tendrá que estar en esta página para aceptar la transferencia, <0>haga
 msgid "Don't show this message again for 30 days."
 msgstr "No muestres este mensaje de nuevo en los próximos 30 días."
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
-#~ msgstr ""
-
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
 msgstr ""
@@ -545,10 +517,6 @@ msgstr "en liquidez"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Network Fee buffer below {0}% may result in failed orders."
 msgstr ""
-
-#: src/components/Synthetics/Claims/ClaimableCard.tsx
-#~ msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
@@ -825,10 +793,6 @@ msgstr ""
 msgid "Pay"
 msgstr "Pagar"
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid ", <0>zero price impact</0>"
-#~ msgstr ""
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Limit Price."
@@ -908,10 +872,6 @@ msgstr "Intercambiar en 1inch"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "({0}% of {feesTypeName})"
-#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -1719,6 +1679,10 @@ msgstr ""
 msgid "not staked"
 msgstr "no stakeado"
 
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+msgid "Layer 2"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates Distribution History"
@@ -1787,10 +1751,6 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr ""
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "and zero price impact"
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
@@ -2028,10 +1988,6 @@ msgstr "Aprobando {0}..."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Positive funding fees can be claimed under the claims tab."
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -2496,10 +2452,6 @@ msgstr "GyP Después de Comisiones"
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction sent."
 msgstr "Transacción enviada."
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order.<0><1>Switch anyway to {1} market pool</1>.</0>"
-#~ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter up to 10 coins"
@@ -3002,10 +2954,6 @@ msgstr ""
 msgid "Swap {0} to {1}"
 msgstr ""
 
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "High price impact. Review execution price."
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "Las comisiones son altas para intercambiar de {0} a {1}."
@@ -3014,19 +2962,11 @@ msgstr "Las comisiones son altas para intercambiar de {0} a {1}."
 msgid "Debug values are not available"
 msgstr ""
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.<0><1>Switch to {1} market pool</1>.</0>"
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim failed."
 msgstr "Reclamación fallida."
-
-#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-#~ msgid "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
-#~ msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "{col3}"
@@ -3238,10 +3178,6 @@ msgstr "La página web es una instancia desplegada y mantenida del código abier
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit failed."
 msgstr ""
-
-#: src/components/Synthetics/Claims/ClaimableCard.tsx
-#~ msgid "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
-#~ msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
@@ -3725,10 +3661,6 @@ msgstr ""
 msgid "Unstake esGMX"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#~ msgid "PnL after Fees and Price Impact"
-#~ msgstr "GyP después de Comisiones e Impacto de Precio"
-
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr ""
@@ -4201,10 +4133,6 @@ msgstr "Kit de Medios"
 msgid "Reduce Liquidation Risks"
 msgstr "Reducir Riesgos de Liquidación"
 
-#: src/pages/Stake/StakeV2.tsx
-#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
-#~ msgstr ""
-
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "collateral"
 msgstr "garantía"
@@ -4429,10 +4357,6 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total activo: {openTotal}, ejecutado: {executedTotal}, cancelado: {cancelledTotal}"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-#~ msgid "You have an existing order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
-#~ msgstr ""
-
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
 msgid "24h Low"
@@ -4584,10 +4508,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Leverage Trading Terminal"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#~ msgid "Liquidation fee"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
@@ -4985,6 +4905,10 @@ msgstr "Precio de liquidación inválido"
 msgid "buy"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "AVAILABLE LIQ."
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
 msgstr ""
@@ -5052,10 +4976,6 @@ msgstr "Acción"
 msgid "Supply"
 msgstr "Suministros"
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "LONG LIQ."
-msgstr ""
-
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -5115,13 +5035,13 @@ msgstr ""
 msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#~ msgid "Min. required Collateral"
-#~ msgstr "Garantía mínima requerida"
-
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
+msgstr ""
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "24H%"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -5174,10 +5094,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You can get a {0} / 1h better net rate in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
-#~ msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -5409,10 +5325,6 @@ msgstr ""
 msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
 
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "High price impact, review execution price."
-#~ msgstr ""
-
 #: src/pages/Dashboard/GlpCard.tsx
 msgid "Stablecoin Percentage"
 msgstr "Porcentaje de Stablecoin"
@@ -5595,12 +5507,12 @@ msgstr ""
 msgid "Min order: 10 USD"
 msgstr "Orden Mín. 10 USD"
 
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "SHORT LIQ."
-msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Claim submitted."
+msgstr ""
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "OPEN INTEREST"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -5732,10 +5644,6 @@ msgstr "Ecosistema"
 #: src/components/Exchange/SwapBox.jsx
 msgid "High USDG Slippage, Long Anyway"
 msgstr "Alto Deslizamiento de USDG, ir Largo de todas formas"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
-#~ msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet total"
@@ -5931,10 +5839,6 @@ msgstr "El tamaño de la orden supera la posición"
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Order update submitted!"
 msgstr "La actualización de la orden se ha enviado"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#~ msgid "Close fee"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable withdraw failed."
@@ -6277,10 +6181,6 @@ msgstr ""
 msgid "Your transfer has been completed."
 msgstr "Su transferencia ha sido completada."
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#~ msgid "Leftover Collateral Excluding Impact"
-#~ msgstr "Garantía restante sin impacto"
-
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
 msgstr ""
@@ -6299,6 +6199,10 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
+msgstr ""
+
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+msgid "Meme"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
@@ -6509,10 +6413,6 @@ msgstr ""
 msgid "COMPETITION Airdrop"
 msgstr ""
 
-#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-#~ msgid "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
-#~ msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter Receiver Address"
@@ -6555,6 +6455,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Reducción activa: {0}, ejecutada: {1}, cancelada: {2}"
+
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+msgid "Layer 1"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
@@ -6936,6 +6840,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
+msgstr ""
+
+#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+msgid "DeFi"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -7524,6 +7432,10 @@ msgstr ""
 msgid "Top-Up"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LAST PRICE"
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Ask Price (Exit)"
 msgstr ""
@@ -7604,10 +7516,6 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
 msgstr "Generar Código de Referido"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You can get {0} better open cost{zeroPriceImpactMessage} and a {1} / 1h better net rate in the {2} market pool.<0><1>Switch to {3} market pool</1>.</0>"
-#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Activate Subaccount"
@@ -7809,10 +7717,6 @@ msgstr ""
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 msgstr ""
 
-#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-#~ msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."
 msgstr ""
@@ -7828,6 +7732,10 @@ msgstr "Proyectos Comunitarios"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
+msgstr ""
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "24H VOL."
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
