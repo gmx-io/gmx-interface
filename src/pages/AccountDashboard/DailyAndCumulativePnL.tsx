@@ -62,7 +62,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
   return (
     <div className="flex flex-col rounded-4 bg-slate-800" ref={cardRef}>
       <div className="flex items-center justify-between border-b border-b-gray-950 px-16">
-        <div className="py-8">
+        <div className="text-body-large py-8">
           <Trans>Daily and Cumulative PnL</Trans>
         </div>
         <div className="flex flex-wrap items-stretch justify-end gap-8 py-8">
