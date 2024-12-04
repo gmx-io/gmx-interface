@@ -39,6 +39,10 @@ export function useConfigureMetrics() {
   useEffect(() => {
     const bowser = Bowser.parse(window.navigator.userAgent);
 
+    const browserName = bowser.browser.name;
+    const browserVersion = bowser.browser.version;
+    const platform = bowser.platform.type;
+
     metrics.setGlobalMetricData({
       isMobileMetamask,
       isWindowVisible,
@@ -47,9 +51,10 @@ export function useConfigureMetrics() {
       isMobile: getIsMobileUserAgent(),
       isHomeSite: isHomeSite(),
       isLargeAccount,
-      browserName: bowser.browser.name,
-      browserVersion: bowser.browser.version,
-      platform: bowser.platform.type,
+      browserName,
+      browserVersion,
+      platform,
+      isInited: Boolean(browserName && browserVersion && platform),
     });
   }, [active, isMobileMetamask, isWindowVisible, isLargeAccount]);
 

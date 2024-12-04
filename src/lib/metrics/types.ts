@@ -13,6 +13,7 @@ export type GlobalMetricData = {
   browserName?: string;
   browserVersion?: string;
   platform?: string;
+  isInited?: boolean;
 };
 
 export enum OrderStage {

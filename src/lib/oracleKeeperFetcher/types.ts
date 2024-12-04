@@ -12,6 +12,7 @@ export type EventPayload = {
   time?: number;
   isDev?: boolean;
   customFields?: any;
+  isMissedGlobalMetricData?: boolean;
 };
 
 export type CounterPayload = {
