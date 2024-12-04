@@ -1,0 +1,47 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.vscode
+.yarn
+
+# lingui
+/src/locales/**/*.js
+/src/locales/en/messages.po
+/src/locales/_build/
+
+# testing
+/coverage
+
+# production
+/build
+
+/stats.html
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# For publish
+.npmrc
+
+typechain-types
+
+package-lock.json
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+/.idea/
