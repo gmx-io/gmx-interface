@@ -45,7 +45,7 @@ export function useConfigureUserAnalyticsProfile() {
     let sessionIdParam = query.get(SESSION_ID_KEY);
     if (sessionIdParam) {
       userAnalytics.setSessionId(sessionIdParam);
-      const urlParams = new URLSearchParams(window.location.search);
+      const urlParams = new URLSearchParams(history.location.search);
       if (urlParams.has(SESSION_ID_KEY)) {
         urlParams.delete(SESSION_ID_KEY);
         history.replace({

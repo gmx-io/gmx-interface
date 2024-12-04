@@ -111,6 +111,7 @@ export function initSwapMetricData({
     toTokenSymbol: toToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(swapAmounts?.amountIn, fromToken?.decimals),
     minOutputAmount: formatAmountForMetrics(swapAmounts?.minOutputAmount, toToken?.decimals),
+    amountUsd: formatAmountForMetrics(swapAmounts?.usdOut),
     swapPath: swapAmounts?.swapPathStats?.swapPath,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     allowedSlippage,

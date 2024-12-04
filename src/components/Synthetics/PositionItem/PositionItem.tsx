@@ -260,7 +260,7 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <AiOutlineEdit fontSize={16} />
+              <AiOutlineEdit className="text-slate-100" fontSize={16} />
             </span>
           )}
         </div>
@@ -600,9 +600,7 @@ export function PositionItem(p: Props) {
                 <div>{renderNetValue()}</div>
               </div>
               <div className="App-card-row">
-                <div className="label">
-                  <Trans>PnL</Trans>
-                </div>
+                <div className="label">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
                 <div>
                   <span
                     className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
@@ -768,7 +766,7 @@ function PositionItemOrdersLarge({
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-gray-300",
+          "text-slate-100",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"

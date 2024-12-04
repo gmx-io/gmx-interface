@@ -147,7 +147,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                 />
                 <TokenIcon symbol={token.symbol} displaySize={24} />
                 <span>
-                  <span className="opacity-70">{prefix}:</span> {token.symbol}
+                  <span className="text-slate-100">{prefix}:</span> {token.symbol}
                 </span>
               </span>
             </TableTd>

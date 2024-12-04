@@ -1,7 +1,6 @@
 import { ComponentType, memo, useCallback, useMemo } from "react";
 
-import { EMPTY_ARRAY } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import Checkbox from "components/Checkbox/Checkbox";
 
@@ -16,24 +15,13 @@ export function useFilteredFlatItems<T>({
   options: Item<T>[] | Group<T>[];
   search: string;
 }): Item<T>[] | null {
-  const fuse = useFuse(
-    () =>
-      isGrouped
-        ? EMPTY_ARRAY
-        : (options as Item<T>[]).map((item) => ({
-            id: item,
-            text: item.text,
-          })),
-    [options, isGrouped]
-  );
-
   return useMemo(() => {
     if (isGrouped) {
       return null;
     }
 
-    return fuse.search(search).map((result) => result.item.id);
-  }, [fuse, isGrouped, search]);
+    return searchBy(options as Item<T>[], ["text"], search);
+  }, [options, isGrouped, search]);
 }
 
 type FlatItemsProps<T> = {

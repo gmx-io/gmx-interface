@@ -270,8 +270,8 @@ msgid "Buyable"
 msgstr "Buyable"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
-msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
+#~ msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
@@ -511,8 +511,8 @@ msgid "Don't show this message again for 30 days."
 msgstr "Don't show this message again for 30 days."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
-msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
+#~ msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
@@ -676,8 +676,8 @@ msgid "Max pool amount reached"
 msgstr "Max pool amount reached"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Bid Price (Exit)"
-msgstr "Bid Price (Exit)"
+#~ msgid "Bid Price (Exit)"
+#~ msgstr "Bid Price (Exit)"
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
@@ -767,8 +767,8 @@ msgid "Unrealized PnL"
 msgstr "Unrealized PnL"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Open Interest Balance"
-msgstr "Open Interest Balance"
+#~ msgid "Open Interest Balance"
+#~ msgstr "Open Interest Balance"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "This value may be higher on other websites due to the collateral of positions being included in the calculation."
@@ -890,8 +890,8 @@ msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr "({0}% of {feesTypeName})"
+#~ msgid "({0}% of {feesTypeName})"
+#~ msgstr "({0}% of {feesTypeName})"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -1433,8 +1433,8 @@ msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Short Open Interest"
-msgstr "Short Open Interest"
+#~ msgid "Short Open Interest"
+#~ msgstr "Short Open Interest"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
@@ -1543,8 +1543,8 @@ msgid "Fees for the past"
 msgstr "Fees for the past"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
-msgstr "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+#~ msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+#~ msgstr "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
@@ -1716,6 +1716,10 @@ msgstr "Forfeit profit not checked"
 msgid "Buy GM"
 msgstr "Buy GM"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of close fee"
+msgstr "of close fee"
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
@@ -1783,8 +1787,8 @@ msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Long Open Interest"
-msgstr "Long Open Interest"
+#~ msgid "Long Open Interest"
+#~ msgstr "Long Open Interest"
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol risk explorer and stats"
@@ -1983,8 +1987,8 @@ msgid "You will receive at least {0} {1} if this order is executed. The executio
 msgstr "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
-msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+#~ msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+#~ msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2466,6 +2470,7 @@ msgstr "Traders Referred on Arbitrum"
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
 
@@ -2909,7 +2914,6 @@ msgstr "No claims match the selected filters"
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2974,6 +2978,10 @@ msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
 msgstr "Swap {0} to {1}"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "High price impact. Review execution price."
+#~ msgstr "High price impact. Review execution price."
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}."
@@ -3043,8 +3051,8 @@ msgstr "Liquidated"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The ask price is used for opening longs and closing shorts."
-msgstr "The ask price is used for opening longs and closing shorts."
+#~ msgid "The ask price is used for opening longs and closing shorts."
+#~ msgstr "The ask price is used for opening longs and closing shorts."
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3098,6 +3106,10 @@ msgstr "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Initial Collateral"
 msgstr "Initial Collateral"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
+msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Size"
@@ -3275,7 +3287,6 @@ msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} p
 msgid "Community-led Telegram groups."
 msgstr "Community-led Telegram groups."
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr "{longShortText} {0} Open Interest"
@@ -3711,6 +3722,10 @@ msgstr "Net Rate / 1h"
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "High price impact. Review execution price"
+msgstr "High price impact. Review execution price"
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr "Trading incentives program is live on {avalancheLink}."
@@ -3771,7 +3786,6 @@ msgstr "Trigger price for the order."
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4162,8 +4176,8 @@ msgid "Reduce Liquidation Risks"
 msgstr "Reduce Liquidation Risks"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
-msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
+#~ msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "collateral"
@@ -4486,7 +4500,6 @@ msgstr "Wallet total accrued Fees"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
@@ -4516,7 +4529,6 @@ msgstr "Save on Costs"
 msgid "Buy order cancelled"
 msgstr "Buy order cancelled"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr "{longShortText} {0} Reserve"
@@ -5161,8 +5173,8 @@ msgid "Cancel"
 msgstr "Cancel"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Bid Price (Entry)"
-msgstr "Bid Price (Entry)"
+#~ msgid "Bid Price (Entry)"
+#~ msgstr "Bid Price (Entry)"
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Redemption time not yet reached"
@@ -5375,8 +5387,8 @@ msgid "Volume traded by your referred traders."
 msgstr "Volume traded by your referred traders."
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "High price impact, review execution price."
-msgstr "High price impact, review execution price."
+#~ msgid "High price impact, review execution price."
+#~ msgstr "High price impact, review execution price."
 
 #: src/pages/Dashboard/GlpCard.tsx
 msgid "Stablecoin Percentage"
@@ -5632,6 +5644,10 @@ msgstr "Buy or Transfer ETH to Arbitrum"
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr "Expected execution price for the order, including the current price impact, once the limit order executes."
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of open fee"
+msgstr "of open fee"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -6687,7 +6703,6 @@ msgstr "Select a Pay token"
 msgid "Swap {0} submitted!"
 msgstr "Swap {0} submitted!"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
@@ -6757,6 +6772,10 @@ msgstr "Sell GM"
 msgid "View on Arbitrum"
 msgstr "View on Arbitrum"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
+msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
+
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
 msgstr "Shift error."
@@ -6787,7 +6806,6 @@ msgstr "Shift error."
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6906,7 +6924,6 @@ msgstr "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>
 msgid "Voting Power"
 msgstr "Voting Power"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
 msgstr "The long reserve accounts for the PnL of open positions, while the open interest does not."
@@ -7468,7 +7485,6 @@ msgstr "Depositing..."
 msgid "Expected Available Actions"
 msgstr "Expected Available Actions"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -7489,8 +7505,8 @@ msgid "Top-Up"
 msgstr "Top-Up"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Ask Price (Exit)"
-msgstr "Ask Price (Exit)"
+#~ msgid "Ask Price (Exit)"
+#~ msgstr "Ask Price (Exit)"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
@@ -7503,6 +7519,10 @@ msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
 msgstr "Orders ({ordersCount})"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
+msgstr "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
@@ -7659,8 +7679,8 @@ msgid "No open positions at GMX currently"
 msgstr "No open positions at GMX currently"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Ask Price (Entry)"
-msgstr "Ask Price (Entry)"
+#~ msgid "Ask Price (Entry)"
+#~ msgstr "Ask Price (Entry)"
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
@@ -7966,8 +7986,8 @@ msgstr "This is the maximum top-up amount that will be sent from your Main accou
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The bid price is used for opening shorts and closing longs."
-msgstr "The bid price is used for opening shorts and closing longs."
+#~ msgid "The bid price is used for opening shorts and closing longs."
+#~ msgstr "The bid price is used for opening shorts and closing longs."
 
 #: src/components/Exchange/OrdersToa.jsx
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"

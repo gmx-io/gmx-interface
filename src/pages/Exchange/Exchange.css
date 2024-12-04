@@ -31,6 +31,7 @@
 
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.5rem;
+  color: var(--color-slate-100);
 }
 
 .Exchange-empty-positions-list-note.small {
@@ -277,9 +278,9 @@
 }
 
 .ExchangeChart-info-label {
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
-  opacity: 0.7;
   white-space: nowrap;
 }
 
@@ -581,7 +582,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-label {
-  color: var(--color-gray-300);
+  color: var(--color-slate-100);
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {

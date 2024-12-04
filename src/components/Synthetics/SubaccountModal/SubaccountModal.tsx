@@ -822,7 +822,7 @@ const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
 
     return (
       <div>
-        <div className="SubaccountModal-input-row flex text-gray-300">
+        <div className="SubaccountModal-input-row flex text-slate-100">
           <div className="SubaccountModal-input-row-label">
             <TooltipWithPortal position="top-start" handle={label} renderContent={renderTooltipContent} />
           </div>

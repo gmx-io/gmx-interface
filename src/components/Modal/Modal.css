@@ -41,7 +41,7 @@
 }
 
 .divider {
-  border-bottom: 1px solid var(--color-gray-800);
+  border-bottom: 1px solid var(--color-gray-700);
 }
 
 .Modal.non-scrollable .Modal-content {
@@ -80,7 +80,7 @@
 }
 
 .Modal-close-icon {
-  opacity: 0.6;
+  color: var(--color-slate-100);
   cursor: pointer;
   text-align: right;
 }

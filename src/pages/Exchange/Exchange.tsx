@@ -943,7 +943,7 @@ export const Exchange = forwardRef(
       if (cancelOrderIdList.length === 0) return;
       return (
         <button
-          className="muted cancel-order-btn text-15"
+          className="muted cancel-order-btn text-body-medium"
           disabled={isCancelMultipleOrderProcessing}
           type="button"
           onClick={onMultipleCancelClick}

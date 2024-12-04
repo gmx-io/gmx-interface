@@ -234,9 +234,8 @@ export function TradeFeesRow(p: Props) {
                   :
                 </div>
                 <div>
-                  <Trans>
-                    ({formatAmount(estimatedRebatesPercentage, 2, 0)}% of {feesTypeName})
-                  </Trans>
+                  ({formatAmount(estimatedRebatesPercentage, 2, 0)}%{" "}
+                  {p.feesType === "increase" ? t`of open fee` : t`of close fee`})
                 </div>
               </>
             ),

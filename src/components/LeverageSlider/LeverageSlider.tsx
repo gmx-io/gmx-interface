@@ -98,7 +98,7 @@ const LeverageSliderHandle = forwardRef<Handle, HandleProps>(function LeverageSl
     <SliderTooltip
       prefixCls="rc-slider-tooltip"
       overlay={`${parseFloat(displayValue.toString()).toFixed(2)}x`}
-      visible={dragging}
+      visible
       placement="top"
       key={index}
       data-qa={"leverage-slider-tooltip"}

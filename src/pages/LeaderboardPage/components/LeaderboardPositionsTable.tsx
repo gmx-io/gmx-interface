@@ -114,7 +114,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
       <div className="TableBox__head">
         <SearchInput
           placeholder={t`Search Address`}
-          className="max-w-lg *:!text-16"
+          className="max-w-lg *:!text-14"
           value={search}
           setValue={setSearch}
           onKeyDown={handleKeyDown}
@@ -426,7 +426,7 @@ const TableCell = memo(({ children, className }: { children: ReactNode; classNam
 const EmptyRow = memo(() => {
   return (
     <TableTr hoverable={false} bordered={false} className="h-47">
-      <TableTd colSpan={7} className="align-top text-gray-400">
+      <TableTd colSpan={7} className="align-top text-slate-100">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>

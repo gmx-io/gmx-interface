@@ -14,7 +14,7 @@ export function useTriggerOrdersConsent() {
   const element = (
     <div className="PositionEditor-allow-higher-slippage">
       <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-        <span className="text-14 text-yellow-500">
+        <span className="text-body-medium text-yellow-500">
           <Trans>I am aware of the trigger orders</Trans>
         </span>
       </Checkbox>

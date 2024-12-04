@@ -148,7 +148,12 @@ export function TradeBoxOneClickTrading() {
     onCloseClick = handleCloseOfferClick;
     content = (
       <OneClickAlertInfo>
-        <TooltipWithPortal shouldStopPropagation={IS_TOUCH} position="top-start" renderContent={renderTooltipContent}>
+        <TooltipWithPortal
+          shouldStopPropagation={IS_TOUCH}
+          position="top-start"
+          renderContent={renderTooltipContent}
+          handleClassName="text-body-medium"
+        >
           <Trans>One-Click Trading</Trans>
         </TooltipWithPortal>
       </OneClickAlertInfo>
@@ -171,9 +176,9 @@ export function TradeBoxOneClickTrading() {
             {onCloseClick && (
               <button
                 className={cx(
-                  "-my-4 rounded-4 p-4 text-gray-500",
+                  "-my-4 rounded-4 p-4 text-slate-100",
                   "hover:bg-[#50577e99] hover:text-slate-100 focus:bg-[#50577e99] focus:text-slate-100",
-                  "active:bg-[#50577eb3] active:text-gray-300"
+                  "active:bg-[#50577eb3] active:text-slate-100"
                 )}
                 onClick={onCloseClick}
               >
@@ -191,7 +196,7 @@ export function TradeBoxOneClickTrading() {
 
 function OneClickAlertInfo({ children }: { children: ReactNode }) {
   return (
-    <AlertInfo type="info" className="!mb-0 text-[1.2rem]">
+    <AlertInfo type="info" className="text-body-medium !mb-0">
       {children}
     </AlertInfo>
   );

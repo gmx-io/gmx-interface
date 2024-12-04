@@ -136,7 +136,7 @@ export default function ChartTokenSelector(props: Props) {
             <div className="chart-token-menu">
               <Popover.Panel as="div" className="menu-items chart-token-menu-items">
                 <SearchInput
-                  className="m-15"
+                  className="m-15 *:!text-body-medium"
                   value={searchKeyword}
                   setValue={setSearchKeyword}
                   onKeyDown={(e) => {

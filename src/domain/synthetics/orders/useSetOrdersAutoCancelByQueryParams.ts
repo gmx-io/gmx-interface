@@ -42,7 +42,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
         return;
       }
 
-      const allowedAutoCancelOrders = Number(maxAutoCancelOrders) - 1;
+      const allowedAutoCancelOrders = Number(maxAutoCancelOrders);
 
       const tpSlOrders = Object.values(ordersInfoData || {}).filter(
         (order) => isLimitDecreaseOrderType(order.orderType) || isStopLossOrderType(order.orderType)

@@ -1,12 +1,10 @@
+import { createSelector } from "context/SyntheticsStateContext/utils";
 import { chooseSuitableMarket, PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { TradeType } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { selectTradeboxSetTradeConfig, selectTradeboxTradeType } from ".";
 import { selectOrdersInfoData, selectPositionsInfoData, selectTokensData } from "../globalSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
-import { createSelector } from "context/SyntheticsStateContext/utils";
-import { userAnalytics } from "lib/userAnalytics";
-import { TradeBoxMarketSelectedEvent } from "lib/userAnalytics/types";
 
 export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
   const getMaxLongShortLiquidityPool = q(selectTradeboxGetMaxLongShortLiquidityPool);
@@ -45,13 +43,6 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
       toTokenAddress: suitableParams.indexTokenAddress,
       marketAddress: suitableParams.marketTokenAddress,
       tradeType: suitableParams.tradeType,
-    });
-
-    userAnalytics.pushEvent<TradeBoxMarketSelectedEvent>({
-      event: "TradeBoxAction",
-      data: {
-        action: "MarketSelected",
-      },
     });
 
     return suitableParams;

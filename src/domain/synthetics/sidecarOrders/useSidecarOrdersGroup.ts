@@ -13,7 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "lib/bigmath";
 import { usePrevious } from "lib/usePrevious";
 import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
-import { MAX_PERCENTAGE, PERCENTAGE_DECEMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
+import { MAX_PERCENTAGE, PERCENTAGE_DECIMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   prefix,
@@ -74,12 +74,12 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         if (nextField) {
           sizeUsd = getDefaultEntryField(USD_DECIMALS, nextField);
         }
-        percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, {
+        percentage = getDefaultEntryField(PERCENTAGE_DECIMALS, {
           value: getPercentageBySizeUsd(sizeUsd.value),
         });
       } else if (field === "percentage") {
         if (nextField) {
-          percentage = getDefaultEntryField(PERCENTAGE_DECEMALS, nextField);
+          percentage = getDefaultEntryField(PERCENTAGE_DECIMALS, nextField);
         }
         sizeUsd = getDefaultEntryField(USD_DECIMALS, {
           value: getSizeUsdByPercentage(percentage.value),

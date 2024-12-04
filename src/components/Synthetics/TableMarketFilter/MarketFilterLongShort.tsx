@@ -176,7 +176,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
             <div className="inline-flex items-center">
               <span className="subtext">[{poolName}]</span>
             </div>
-            {collateralSymbol && <span className="text-gray-300"> ({collateralSymbol})</span>}
+            {collateralSymbol && <span className="text-slate-100"> ({collateralSymbol})</span>}
           </>
         );
       }

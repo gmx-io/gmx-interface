@@ -85,19 +85,13 @@ export type DisconnectWalletEvent = {
   };
 };
 
-export type TradeBoxMarketSelectedEvent = {
-  event: "TradeBoxAction";
-  data: {
-    action: "MarketSelected";
-  };
-};
-
 export type TradeBoxInteractionStartedEvent = {
   event: "TradeBoxAction";
   data: {
     action: "InteractionStarted";
     pair: string;
-    sizeDeltaUsd: number;
+    sizeDeltaUsd?: number;
+    amountUsd?: number;
     priceImpactDeltaUsd: number;
     priceImpactBps: number;
     netRate1h: number;
@@ -130,7 +124,10 @@ export type TradeBoxConfirmClickEvent = {
     type: "Short" | "Long" | "Swap";
     orderType: "Limit" | "Market" | "TPSL";
     tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
+    sizeDeltaUsd?: number;
+    amountUsd?: number;
     leverage: string;
+    isLeverageEnabled?: boolean;
     is1CT: boolean;
     chain: string;
     isFirstOrder: boolean;
@@ -152,11 +149,13 @@ export type TradeBoxResultEvent = {
     type: "Short" | "Long" | "Swap";
     orderType: "Limit" | "Market" | "TPSL";
     tradeType: "InitialTrade" | "IncreaseSize" | "DecreaseSize" | "ClosePosition";
+    sizeDeltaUsd?: number;
+    amountUsd?: number;
     leverage: string;
     is1CT: boolean;
     chain: string;
     isFirstOrder: boolean;
-    isLeverageEnabled: boolean;
+    isLeverageEnabled?: boolean;
     isUserError: boolean;
   };
 };
@@ -179,6 +178,7 @@ export type TradeBoxWarningShownEvent = {
     type: "Short" | "Long" | "Swap";
     orderType: "Limit" | "Market" | "TPSL";
     tradeType: "InitialTrade" | "IncreaseSize";
+    sizeDeltaUsd: number;
     leverage: string;
     chain: "Arbitrum" | "Avalanche";
     isFirstOrder: boolean;

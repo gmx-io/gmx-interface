@@ -36,6 +36,7 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
     openInterestPercent?: number;
     tradeType: TradeType;
     tradeMode: TradeMode;
+    amountUsd?: bigint;
   }) => {
     const {
       pair,
@@ -46,6 +47,7 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
       openInterestPercent,
       tradeType,
       tradeMode,
+      amountUsd,
     } = p;
 
     userAnalytics.pushEvent<TradeBoxInteractionStartedEvent>(
@@ -54,7 +56,8 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
         data: {
           action: "InteractionStarted",
           pair,
-          sizeDeltaUsd: formatAmountForMetrics(sizeDeltaUsd) ?? 0,
+          sizeDeltaUsd: formatAmountForMetrics(sizeDeltaUsd),
+          amountUsd: formatAmountForMetrics(amountUsd),
           priceImpactDeltaUsd: formatAmountForMetrics(priceImpactDeltaUsd) ?? 0,
           priceImpactBps: priceImpactBps !== undefined ? Number(priceImpactBps) : 0,
           netRate1h: parseFloat(formatRatePercentage(fundingRate1h)),
@@ -83,11 +86,12 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
         event: "TradeBoxAction",
         data: {
           action: "IncreasePositionConfirmClick",
-          pair: metricData.marketIndexName || "",
+          pair: metricData.marketName || "",
           pool: metricData.marketPoolName || "",
           type: metricData.isLong ? "Long" : "Short",
           orderType: metricData.orderType === OrderType.MarketIncrease ? "Market" : "Limit",
           tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
+          sizeDeltaUsd: metricData.sizeDeltaUsd,
           leverage: metricData.leverage || "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
@@ -102,11 +106,12 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
         event: "TradeBoxAction",
         data: {
           action: "DecreasePositionConfirmClick",
-          pair: metricData.marketIndexName || "",
+          pair: metricData.marketName || "",
           pool: metricData.marketPoolName || "",
           type: metricData.isLong ? "Long" : "Short",
           orderType: metricData.orderType === OrderType.MarketDecrease ? "Market" : "TPSL",
           tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
+          sizeDeltaUsd: metricData.sizeDeltaUsd,
           leverage: "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
@@ -124,10 +129,11 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           type: "Swap",
           orderType: metricData.orderType === OrderType.MarketSwap ? "Market" : "Limit",
           tradeType: "InitialTrade",
+          amountUsd: metricData.amountUsd,
           leverage: "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
-          isFirstOrder: false,
+          isFirstOrder: metricData.isFirstOrder ?? false,
         },
       });
       break;
@@ -183,11 +189,12 @@ export function sendUserAnalyticsOrderResultEvent(
         event: "TradeBoxAction",
         data: {
           action: isSuccess ? "IncreasePositionSuccess" : "IncreasePositionFail",
-          pair: metricData.marketIndexName || "",
+          pair: metricData.marketName || "",
           pool: metricData.marketPoolName || "",
           type: metricData.isLong ? "Long" : "Short",
           orderType: metricData.orderType === OrderType.MarketIncrease ? "Market" : "Limit",
           tradeType: metricData.hasExistingPosition ? "IncreaseSize" : "InitialTrade",
+          sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
           leverage: metricData.leverage || "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
@@ -204,16 +211,16 @@ export function sendUserAnalyticsOrderResultEvent(
         event: "TradeBoxAction",
         data: {
           action: isSuccess ? "DecreasePositionSuccess" : "DecreasePositionFail",
-          pair: metricData.marketIndexName || "",
+          pair: metricData.marketName || "",
           pool: metricData.marketPoolName || "",
           type: metricData.isLong ? "Long" : "Short",
           orderType: metricData.orderType === OrderType.MarketDecrease ? "Market" : "TPSL",
           tradeType: metricData.isFullClose ? "ClosePosition" : "DecreaseSize",
+          sizeDeltaUsd: metricData.sizeDeltaUsd || 0,
           leverage: "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
           isFirstOrder: false,
-          isLeverageEnabled: false,
           isUserError,
         },
       });
@@ -228,11 +235,11 @@ export function sendUserAnalyticsOrderResultEvent(
           type: "Swap",
           orderType: metricData.orderType === OrderType.MarketSwap ? "Market" : "Limit",
           tradeType: "InitialTrade",
+          amountUsd: metricData.amountUsd,
           leverage: "",
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
-          isLeverageEnabled: false,
           isUserError,
         },
       });

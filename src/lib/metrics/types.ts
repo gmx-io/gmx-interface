@@ -273,6 +273,7 @@ export type SwapMetricData = {
   allowedSlippage: number | undefined;
   orderType: OrderType | undefined;
   isFirstOrder: boolean | undefined;
+  amountUsd: number | undefined;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
