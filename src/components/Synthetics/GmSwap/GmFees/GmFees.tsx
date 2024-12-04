@@ -61,6 +61,7 @@ export function GmFees(p: Props) {
                       <div>
                         (
                         {formatPercentage(p.swapPriceImpact?.precisePercentage, {
+                          bps: false,
                           displayDecimals: 3,
                         })}{" "}
                         of {operationText} amount)
@@ -84,6 +85,7 @@ export function GmFees(p: Props) {
                         <div>
                           (
                           {formatPercentage(p.swapFee.precisePercentage, {
+                            bps: false,
                             displayDecimals: 3,
                           })}{" "}
                           of {operationText} amount)
@@ -105,6 +107,7 @@ export function GmFees(p: Props) {
                       <div>
                         (
                         {formatPercentage(p.uiFee?.precisePercentage, {
+                          bps: false,
                           displayDecimals: 3,
                         })}{" "}
                         of {operationText} amount)
@@ -125,6 +128,7 @@ export function GmFees(p: Props) {
                       <div>
                         (
                         {formatPercentage(p.shiftFee.precisePercentage, {
+                          bps: false,
                           displayDecimals: 3,
                         })}{" "}
                         of {operationText} amount)

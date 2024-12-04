@@ -239,7 +239,7 @@ export function formatPercentage(
 
   if (typeof percentage !== "bigint") {
     if (fallbackToZero) {
-      return `${formatAmount(0n, bps ? PERCENT_PRECISION_DECIMALS : 2, displayDecimals)}%`;
+      return `${formatAmount(0n, bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
     }
 
     return undefined;
@@ -247,7 +247,7 @@ export function formatPercentage(
 
   const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? PERCENT_PRECISION_DECIMALS : 2, displayDecimals)}%`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
 }
 
 export function formatTokenAmount(
