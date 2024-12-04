@@ -9,7 +9,7 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
-import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -52,6 +52,7 @@ export function InfoRows({
   selectedMarketForGlv?: string;
   disablePoolSelector?: boolean;
 }) {
+  const chainId = useSelector(selectChainId);
   const markets = values(useSelector(selectGlvAndMarketsInfoData));
 
   const onSelectMarket = useCallback(
@@ -78,6 +79,7 @@ export function InfoRows({
           value={
             glvInfo ? (
               <GmPoolsSelectorForGlvMarket
+                chainId={chainId}
                 label={t`Pool`}
                 className="-mr-4"
                 isDeposit={isDeposit}
@@ -95,6 +97,7 @@ export function InfoRows({
               />
             ) : (
               <PoolSelector
+                chainId={chainId}
                 label={t`Pool`}
                 className="-mr-4"
                 selectedIndexName={indexName}
@@ -103,6 +106,7 @@ export function InfoRows({
                 marketTokensData={marketTokensData}
                 isSideMenu
                 showBalances
+                withFilters={false}
                 onSelectMarket={onSelectMarketOrGlv}
                 favoriteKey="gm-pool-selector"
               />
