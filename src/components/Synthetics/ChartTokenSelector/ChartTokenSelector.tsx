@@ -193,7 +193,12 @@ function MarketsList(props: { options: Token[] | undefined }) {
     <>
       <SelectorBaseMobileHeaderContent>
         <div className="mt-16 flex flex-row items-center gap-16">
-          <SearchInput className="w-full" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={handleKeyDown} />
+          <SearchInput
+            className="w-full *:!text-body-medium"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={handleKeyDown}
+          />
           {!isSwap && <FavoriteTabs favoritesKey="chart-token-selector" />}
         </div>
       </SelectorBaseMobileHeaderContent>
@@ -206,7 +211,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
           <>
             <div className="m-16 flex justify-between gap-16">
               <SearchInput
-                className="w-full"
+                className="w-full *:!text-body-medium"
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
@@ -261,7 +266,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
               ))}
               {options && options.length > 0 && !sortedTokens?.length && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={isSwap ? 2 : 3} className="text-slate-100">
+                  <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-slate-100">
                     <Trans>No markets matched.</Trans>
                   </TableTd>
                 </TableTr>

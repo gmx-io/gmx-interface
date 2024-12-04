@@ -305,7 +305,7 @@ function AffiliatesStats({
           slimHeader
           title={
             <div className="referral-table-header">
-              <p className="title">
+              <p className="title text-body-large">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="sub-title">
                   {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${currentRebatePercentage}% rebate)`}

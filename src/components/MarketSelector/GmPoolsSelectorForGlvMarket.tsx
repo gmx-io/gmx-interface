@@ -193,6 +193,7 @@ export function GmPoolsSelectorForGlvMarket({
         headerContent={
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
+              className="*:!text-body-medium"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
@@ -218,7 +219,7 @@ export function GmPoolsSelectorForGlvMarket({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-16 text-slate-100">
+          <div className="text-body-medium text-slate-100">
             <Trans>No pools matched.</Trans>
           </div>
         )}

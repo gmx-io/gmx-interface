@@ -210,7 +210,12 @@ export default function TokenSelector(props: Props) {
         label={props.label}
         footerContent={footerContent}
         headerContent={
-          <SearchInput className="mt-15" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={_handleKeyDown} />
+          <SearchInput
+            className="mt-15 *:!text-body-medium"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={_handleKeyDown}
+          />
         }
       >
         {missedCoinsPlace && (

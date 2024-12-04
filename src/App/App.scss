@@ -395,11 +395,12 @@ button.App-connect-wallet:hover {
 }
 
 .Page-title {
-  font-size: var(--font-xl);
+  font-size: var(--font-size-h1);
+  line-height: var(--line-height-h1);
+
   margin-bottom: 0.8rem;
   font-weight: bold;
   display: inline-block;
-  line-height: 1;
   .Page-title-icon {
     width: 24px;
     vertical-align: baseline;
@@ -408,8 +409,8 @@ button.App-connect-wallet:hover {
 
 .Page-description {
   color: var(--color-slate-100);
-  font-size: var(--font-size-body-large);
-  line-height: var(--line-height-body-large);
+  font-size: var(--font-size-body-medium);
+  line-height: var(--line-height-body-medium);
 }
 
 .Page-description span,
