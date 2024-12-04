@@ -161,6 +161,7 @@ export function MarketSelector({
         headerContent={
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
+              className="*:!text-body-medium"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Market`}

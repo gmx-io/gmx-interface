@@ -137,7 +137,7 @@ export function GmList({
           <img src={currentIcons?.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
           <SearchInput
             size="s"
-            className="*:!text-16"
+            className="*:!text-body-medium"
             value={searchText}
             setValue={setSearchText}
             placeholder="Search Pool"
@@ -151,7 +151,7 @@ export function GmList({
       <TableScrollFadeContainer>
         <table className="w-[max(100%,1100px)]">
           <thead>
-            <TableTheadTr bordered className="text-body-large">
+            <TableTheadTr bordered>
               <TableTh>
                 <Trans>POOL</Trans>
               </TableTh>
@@ -224,7 +224,7 @@ export function GmList({
             {!currentData.length && !isLoading && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                 <TableTd colSpan={7} className="align-top">
-                  <div className="text-gray-400">
+                  <div className="text-body-medium text-gray-400">
                     <Trans>No pools matched.</Trans>
                   </div>
                 </TableTd>

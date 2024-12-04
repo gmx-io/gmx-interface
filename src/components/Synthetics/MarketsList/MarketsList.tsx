@@ -62,14 +62,14 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
           size="s"
           value={searchText}
           setValue={setSearchText}
-          className="*:!text-16"
+          className="*:!text-body-medium"
           placeholder="Search Market"
           autoFocus={false}
         />
       </div>
       <TableScrollFadeContainer>
         <table className="w-[max(100%,900px)]">
-          <thead className="text-body-large">
+          <thead>
             <TableTheadTr bordered>
               <TableTh>
                 <Trans>MARKETS</Trans>
@@ -109,7 +109,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
 
             {indexTokensStats.length > 0 && !currentData.length && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
-                <TableTd colSpan={6} className="align-top text-gray-400">
+                <TableTd colSpan={6} className="text-body-medium align-top text-gray-400">
                   <Trans>No markets found.</Trans>
                 </TableTd>
               </TableTr>
