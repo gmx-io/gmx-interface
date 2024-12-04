@@ -176,6 +176,7 @@ export default function TVChartContainer({
       tvWidgetRef.current!.applyOverrides({
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
+        "mainSeriesProperties.statusViewStyle.showExchange": false,
       });
       tvWidgetRef.current
         ?.activeChart()
