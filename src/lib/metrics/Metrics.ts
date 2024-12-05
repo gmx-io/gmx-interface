@@ -116,7 +116,7 @@ export class Metrics {
       version: getAppVersion(),
       isError: Boolean(isError),
       time,
-      isMissedGlobalMetricData: !this.globalMetricData.isInited || !this.wallets,
+      isMissedGlobalMetricData: !this.getIsGlobalPropsInited(),
       customFields: {
         ...(data ? this.serializeCustomFields(data) : {}),
         ...this.globalMetricData,
@@ -213,7 +213,7 @@ export class Metrics {
       return sleep(BATCH_INTERVAL_MS).then(this._processQueue);
     }
 
-    if ((!this.globalMetricData.isInited || !this.wallets) && this.initGlobalPropsRetries > 0) {
+    if (!this.getIsGlobalPropsInited() && this.initGlobalPropsRetries > 0) {
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: global properties are not inited");
@@ -408,6 +408,10 @@ export class Metrics {
     }
 
     return event as CachedMetricData & TData;
+  };
+
+  getIsGlobalPropsInited = () => {
+    return this.globalMetricData.isInited && this.wallets;
   };
 
   startTimer = (label: string, fromLocalStorage = false) => {

@@ -777,6 +777,10 @@ export function TradeBox(p: Props) {
           : chartHeaderInfo?.shortOpenInterestPercentage;
         const fundingRate1h = isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort;
 
+        if (!pair) {
+          return;
+        }
+
         sendTradeBoxInteractionStartedEvent({
           pair,
           sizeDeltaUsd,

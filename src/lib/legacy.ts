@@ -87,7 +87,7 @@ export function deserialize(data) {
 }
 
 export function isHomeSite() {
-  return true;
+  return import.meta.env.VITE_APP_IS_HOME_SITE === "true";
 }
 
 export function getMarginFee(sizeDelta: bigint) {
