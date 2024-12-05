@@ -76,8 +76,8 @@ msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Position Fee"
-msgstr "Комиссия за позицию"
+#~ msgid "Position Fee"
+#~ msgstr "Комиссия за позицию"
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What would have made your rating a 9 or 10?"
@@ -271,6 +271,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#~ msgid "Returned collateral"
 #~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -626,6 +630,10 @@ msgstr "Искать Токен"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Min. Required Collateral"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -1625,6 +1633,7 @@ msgstr ""
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close Fee"
 msgstr ""
 
@@ -2540,6 +2549,10 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Returned Collateral"
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
 msgstr "Вам необходимо выбрать {swapTokenSymbol} в качестве \"Оплата\" токена, чтобы использовать его в качестве залога для инициирования этой сделки."
@@ -2611,6 +2624,7 @@ msgid "The order may not execute at the desired {priceText} as its acceptable pr
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr ""
 
@@ -3696,8 +3710,8 @@ msgid "Unstake esGMX"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "PnL after Fees and Price Impact"
-msgstr "PnL после уплаты комиссии и влияния цены"
+#~ msgid "PnL after Fees and Price Impact"
+#~ msgstr "PnL после уплаты комиссии и влияния цены"
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
@@ -4559,6 +4573,10 @@ msgstr ""
 msgid "Leverage Trading Terminal"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#~ msgid "Liquidation fee"
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr ""
@@ -5095,8 +5113,8 @@ msgid "There is no liquidation price, as the position's collateral value will in
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Min. required Collateral"
-msgstr "Минимально требуемый залог"
+#~ msgid "Min. required Collateral"
+#~ msgstr "Минимально требуемый залог"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
@@ -5322,6 +5340,10 @@ msgstr ""
 #: src/pages/Buy/Buy.tsx
 #: src/pages/Home/Home.tsx
 msgid "Protocol Tokens"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Collateral at Liquidation"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -5919,6 +5941,10 @@ msgstr "Размер ордера превышает позицию"
 msgid "Order update submitted!"
 msgstr "Обновление ордера принято!"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#~ msgid "Close fee"
+#~ msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable withdraw failed."
 msgstr ""
@@ -6265,8 +6291,8 @@ msgid "Your transfer has been completed."
 msgstr "Ваш перевод был завершен."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Leftover Collateral Excluding Impact"
-msgstr "Оставшийся Залог без влияния"
+#~ msgid "Leftover Collateral Excluding Impact"
+#~ msgstr "Оставшийся Залог без влияния"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
