@@ -101,8 +101,6 @@ export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: S
     return undefined;
   }
 
-  console.log("routes", routes);
-
   let bestPath = routes[0].path;
   let bestUsdOut = 0n;
 
