@@ -41,6 +41,7 @@ import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
 import Tab from "components/Tab/Tab";
 import Footer from "components/Footer/Footer";
+import Banner from "components/Banner/Banner";
 
 import "./Exchange.css";
 import { dynamicContractFetcher } from "lib/contracts";
@@ -956,6 +957,15 @@ export const Exchange = forwardRef((props, ref) => {
   return (
     <div className="Exchange page-layout">
       {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
+      <div className="Exchange-content">
+        <Banner id="bridge-notice">
+          <Trans>
+            Need to bridge tokens to Morph? <ExternalLink href="https://meson.fi/">Meson Bridge</ExternalLink> for
+            transfers from multiple chains, or{" "}
+            <ExternalLink href="https://bridge.morphl2.io/">Morph Bridge</ExternalLink> for direct transfers.
+          </Trans>
+        </Banner>
+      </div>
       <div className="Exchange-content">
         <div className="Exchange-left">
           {renderChart()}

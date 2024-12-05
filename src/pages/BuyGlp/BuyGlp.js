@@ -9,6 +9,7 @@ import { Trans } from "@lingui/macro";
 import { getNativeToken } from "config/tokens";
 import { useDynamicChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Banner from "../../components/Banner/Banner";
 
 export default function BuyGlp(props) {
   const { chainId } = useDynamicChainId();
@@ -41,6 +42,13 @@ export default function BuyGlp(props) {
           </div>
         </div>
       </div>
+      <Banner id="bridge-notice">
+        <Trans>
+          Need to bridge tokens to Morph? <ExternalLink href="https://meson.fi/">Meson Bridge</ExternalLink> for
+          transfers from multiple chains, or <ExternalLink href="https://bridge.morphl2.io/">Morph Bridge</ExternalLink>{" "}
+          for direct transfers.
+        </Trans>
+      </Banner>
       <GlpSwap {...props} isBuying={isBuying} setIsBuying={setIsBuying} />
       <Footer />
     </div>
