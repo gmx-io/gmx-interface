@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import partition from "lodash/partition";
 import React, { useCallback, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 import type { Address } from "viem";
@@ -16,6 +17,7 @@ import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selec
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
+  TokenOption,
   selectTradeboxChooseSuitableMarket,
   selectTradeboxGetMaxLongShortLiquidityPool,
   selectTradeboxMarketInfo,
@@ -71,7 +73,7 @@ export default function ChartTokenSelector(props: Props) {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
-  const chevronClassName = oneRowLabels === undefined ? undefined : oneRowLabels ? "mt-4" : "mt-2 self-start";
+  const chevronClassName = oneRowLabels === undefined ? undefined : oneRowLabels ? "!mt-4" : "!-mt-1 self-start";
 
   return (
     <SelectorBase
@@ -169,7 +171,6 @@ function MarketsList() {
     options,
     searchKeyword,
     tab,
-    isSwap,
     favoriteTokens,
     direction,
     orderBy,
@@ -384,7 +385,6 @@ function useFilterSortTokens({
   options,
   searchKeyword,
   tab,
-  isSwap,
   favoriteTokens,
   direction,
   orderBy,
@@ -397,7 +397,6 @@ function useFilterSortTokens({
   options: Token[] | undefined;
   searchKeyword: string;
   tab: TokenFavoritesTabOption;
-  isSwap: boolean;
   favoriteTokens: string[];
   direction: SortDirection;
   orderBy: SortField;
@@ -433,67 +432,35 @@ function useFilterSortTokens({
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
   const sortedTokens = useMemo(() => {
-    if (isSwap || orderBy === "unspecified" || direction === "unspecified") {
-      return filteredTokens;
-    }
+    const [favorites, nonFavorites] = partition(filteredTokens, (token) => favoriteTokens.includes(token.address));
 
-    const directionMultiplier = direction === "asc" ? 1 : -1;
-
-    return filteredTokens?.slice().sort((a, b) => {
-      if (orderBy === "marketVolume") {
-        // they are by default sorted by market volume so we just pass directionMultiplier
-        return directionMultiplier;
-      }
-
-      if (orderBy === "lastPrice") {
-        const aMidPrice = tokensData?.[a.address]?.prices ? getMidPrice(tokensData[a.address].prices) : 0n;
-        const bMidPrice = tokensData?.[b.address]?.prices ? getMidPrice(tokensData[b.address].prices) : 0n;
-        return aMidPrice > bMidPrice ? directionMultiplier : -directionMultiplier;
-      }
-
-      if (orderBy === "24hChange") {
-        const aChange = dayPriceDeltaMap?.[a.address]?.deltaPercentage || 0;
-        const bChange = dayPriceDeltaMap?.[b.address]?.deltaPercentage || 0;
-        return aChange > bChange ? directionMultiplier : -directionMultiplier;
-      }
-
-      if (orderBy === "24hVolume") {
-        const aVolume = dayVolumes?.[a.address] || 0n;
-        const bVolume = dayVolumes?.[b.address] || 0n;
-        return aVolume > bVolume ? directionMultiplier : -directionMultiplier;
-      }
-
-      if (orderBy === "combinedAvailableLiquidity") {
-        const { maxLongLiquidityPool: aLongLiq, maxShortLiquidityPool: aShortLiq } = getMaxLongShortLiquidityPool(a);
-        const { maxLongLiquidityPool: bLongLiq, maxShortLiquidityPool: bShortLiq } = getMaxLongShortLiquidityPool(b);
-
-        const aTotalLiq = aLongLiq.maxLongLiquidity + aShortLiq.maxShortLiquidity;
-        const bTotalLiq = bLongLiq.maxLongLiquidity + bShortLiq.maxShortLiquidity;
-        return aTotalLiq > bTotalLiq ? directionMultiplier : -directionMultiplier;
-      }
-
-      if (orderBy === "combinedOpenInterest") {
-        const aOI =
-          (indexTokenStatsMap?.[a.address]?.totalOpenInterestLong || 0n) +
-          (indexTokenStatsMap?.[a.address]?.totalOpenInterestShort || 0n);
-        const bOI =
-          (indexTokenStatsMap?.[b.address]?.totalOpenInterestLong || 0n) +
-          (indexTokenStatsMap?.[b.address]?.totalOpenInterestShort || 0n);
-        return aOI > bOI ? directionMultiplier : -directionMultiplier;
-      }
-
-      return 0;
+    const sorter = tokenSortingComparatorBuilder({
+      chainId,
+      orderBy,
+      direction,
+      tokensData,
+      dayPriceDeltaMap,
+      dayVolumes,
+      indexTokenStatsMap,
+      getMaxLongShortLiquidityPool,
     });
+
+    const sortedFavorites = favorites.slice().sort(sorter);
+
+    const sortedNonFavorites = nonFavorites.slice().sort(sorter);
+
+    return [...sortedFavorites, ...sortedNonFavorites];
   }, [
-    isSwap,
-    direction,
     filteredTokens,
-    getMaxLongShortLiquidityPool,
+    chainId,
     orderBy,
+    direction,
     tokensData,
     dayPriceDeltaMap,
     dayVolumes,
     indexTokenStatsMap,
+    getMaxLongShortLiquidityPool,
+    favoriteTokens,
   ]);
 
   return sortedTokens;
@@ -709,4 +676,79 @@ function MarketListItem({
       )}
     </tr>
   );
+}
+
+function tokenSortingComparatorBuilder({
+  chainId,
+  orderBy,
+  direction,
+  tokensData,
+  dayPriceDeltaMap,
+  dayVolumes,
+  indexTokenStatsMap,
+  getMaxLongShortLiquidityPool,
+}: {
+  chainId: number;
+  orderBy: SortField;
+  direction: SortDirection;
+  tokensData: TokensData | undefined;
+  dayPriceDeltaMap: PriceDeltaMap | undefined;
+  dayVolumes: Record<Address, bigint> | undefined;
+  indexTokenStatsMap: Partial<IndexTokensStats> | undefined;
+  getMaxLongShortLiquidityPool: (token: Token) => {
+    maxLongLiquidityPool: TokenOption;
+    maxShortLiquidityPool: TokenOption;
+  };
+}) {
+  const directionMultiplier = direction === "asc" ? 1 : -1;
+
+  return (a: Token, b: Token) => {
+    if (orderBy === "marketVolume") {
+      // they are by default sorted by market volume so we just pass directionMultiplier
+      return directionMultiplier;
+    }
+
+    const aAddress = convertTokenAddress(chainId, a.address, "wrapped");
+    const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
+
+    if (orderBy === "lastPrice") {
+      const aMidPrice = tokensData?.[aAddress]?.prices ? getMidPrice(tokensData[aAddress].prices) : 0n;
+      const bMidPrice = tokensData?.[bAddress]?.prices ? getMidPrice(tokensData[bAddress].prices) : 0n;
+      return aMidPrice > bMidPrice ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "24hChange") {
+      // Price delta map uses native addresses
+      const aChange = dayPriceDeltaMap?.[a.address]?.deltaPercentage || 0;
+      const bChange = dayPriceDeltaMap?.[b.address]?.deltaPercentage || 0;
+      return aChange > bChange ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "24hVolume") {
+      const aVolume = dayVolumes?.[aAddress] || 0n;
+      const bVolume = dayVolumes?.[bAddress] || 0n;
+      return aVolume > bVolume ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "combinedAvailableLiquidity") {
+      const { maxLongLiquidityPool: aLongLiq, maxShortLiquidityPool: aShortLiq } = getMaxLongShortLiquidityPool(a);
+      const { maxLongLiquidityPool: bLongLiq, maxShortLiquidityPool: bShortLiq } = getMaxLongShortLiquidityPool(b);
+
+      const aTotalLiq = aLongLiq.maxLongLiquidity + aShortLiq.maxShortLiquidity;
+      const bTotalLiq = bLongLiq.maxLongLiquidity + bShortLiq.maxShortLiquidity;
+      return aTotalLiq > bTotalLiq ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "combinedOpenInterest") {
+      const aOI =
+        (indexTokenStatsMap?.[aAddress]?.totalOpenInterestLong || 0n) +
+        (indexTokenStatsMap?.[aAddress]?.totalOpenInterestShort || 0n);
+      const bOI =
+        (indexTokenStatsMap?.[bAddress]?.totalOpenInterestLong || 0n) +
+        (indexTokenStatsMap?.[bAddress]?.totalOpenInterestShort || 0n);
+      return aOI > bOI ? directionMultiplier : -directionMultiplier;
+    }
+
+    return 0;
+  };
 }
