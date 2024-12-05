@@ -434,7 +434,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     return Promise.race([
       this.oracleFetcher
         .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
-        .then((bars) => bars.toReversed()),
+        .then((bars) => bars.slice().reverse()),
       sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
     ])
       .catch((ex) => {

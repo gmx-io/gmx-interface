@@ -110,6 +110,8 @@ export const defaultChartProps = {
           // Special case for stablecoins because calculateDisplayDecimals is not accurate for them
           if (roundedFloat === 1) {
             displayDecimals = 4;
+          } else if (roundedFloat === 0) {
+            displayDecimals = 2;
           }
 
           let [whole, decimals = ""] = String(roundedFloat).split(".");

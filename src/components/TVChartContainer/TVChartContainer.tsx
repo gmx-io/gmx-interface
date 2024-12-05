@@ -7,6 +7,7 @@ import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeper
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
+import { sleep } from "lib/sleep";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage, useMedia } from "react-use";
@@ -128,7 +129,18 @@ export default function TVChartContainer({
       tvWidgetRef.current.setSymbol(
         getSymbolName(chartToken.symbol, visualMultiplier),
         tvWidgetRef.current.activeChart().resolution(),
-        () => null
+        async () => {
+          const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
+          if (!priceScale) {
+            return;
+          }
+
+          // Force Price Scale width to recalculate
+          const initialAutoScale = priceScale.isAutoScale();
+          priceScale.setAutoScale(!initialAutoScale);
+          await sleep(0);
+          priceScale.setAutoScale(initialAutoScale);
+        }
       );
     }
   }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
