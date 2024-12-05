@@ -59,8 +59,6 @@ import {
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
-import "./ChartTokenSelector.scss";
-
 type Props = {
   selectedToken: Token | undefined;
   oneRowLabels?: boolean;
@@ -582,11 +580,11 @@ function MarketListItem({
   return (
     <tr
       key={token.symbol}
-      className="ChartTokenSelector-hover-row group/row cursor-pointer"
+      className="group/row cursor-pointer hover:bg-cold-blue-900"
       onClick={handleSelectLargePosition}
     >
       <td
-        className={cx("pr-4 text-center hover:!bg-cold-blue-700", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
+        className={cx("pr-4 text-center hover:bg-cold-blue-700", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
@@ -626,39 +624,21 @@ function MarketListItem({
       )}
       {!isMobile ? (
         <>
-          <td
-            className={cx(
-              tdClassName,
-              "ChartTokenSelector-td-custom-hover-flag",
-              "bg-slate-800 hover:bg-cold-blue-900"
-            )}
-            onClick={handleSelectLong}
-          >
-            <div className="flex items-center justify-end gap-4">
+          <td className={cx(tdClassName, "group text-right hover:bg-cold-blue-700")} onClick={handleSelectLong}>
+            <div className="inline-flex items-center justify-end gap-4">
               <LongIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
             </div>
           </td>
-          <td
-            className={cx(
-              tdClassName,
-              "ChartTokenSelector-td-custom-hover-flag",
-              "bg-slate-800 hover:bg-cold-blue-900"
-            )}
-            onClick={handleSelectShort}
-          >
-            <div className="flex items-center justify-end gap-4">
+          <td className={cx(tdClassName, "group hover:bg-cold-blue-700")} onClick={handleSelectShort}>
+            <div className="inline-flex items-center justify-end gap-4">
               <ShortIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
             </div>
           </td>
         </>
       ) : (
-        <td
-          colSpan={2}
-          className={cx(tdClassName, "ChartTokenSelector-td-custom-hover-flag", "bg-slate-800 hover:bg-cold-blue-900")}
-          onClick={handleSelectLong}
-        >
+        <td colSpan={2} className={cx(tdClassName)}>
           <div className="flex items-center justify-end gap-4">
             <LongIcon width={12} className="relative top-1 opacity-70" />
             {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
