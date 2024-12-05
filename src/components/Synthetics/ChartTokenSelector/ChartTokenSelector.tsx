@@ -586,12 +586,7 @@ function MarketListItem({
       onClick={handleSelectLargePosition}
     >
       <td
-        className={cx(
-          "ChartTokenSelector-td-custom-hover-flag",
-          "pr-4 text-center hover:bg-cold-blue-900",
-          rowVerticalPadding,
-          isMobile ? "pl-8" : "pl-16"
-        )}
+        className={cx("pr-4 text-center hover:!bg-cold-blue-700", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
