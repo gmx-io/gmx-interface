@@ -1,13 +1,12 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import keys from "lodash/keys";
 import values from "lodash/values";
 import React, { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol, getTokenVisualMultiplier } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -37,7 +36,7 @@ import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/t
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 import { sortGmTokensByField } from "./sortGmTokensByField";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
@@ -138,7 +137,7 @@ export function GmList({
           <img src={currentIcons?.network} width="16" className="ml-5 mr-10" alt="Network Icon" />
           <SearchInput
             size="s"
-            className="*:!text-16"
+            className="*:!text-body-medium"
             value={searchText}
             setValue={setSearchText}
             placeholder="Search Pool"
@@ -152,7 +151,7 @@ export function GmList({
       <TableScrollFadeContainer>
         <table className="w-[max(100%,1100px)]">
           <thead>
-            <TableTheadTr bordered className="text-body-large">
+            <TableTheadTr bordered>
               <TableTh>
                 <Trans>POOL</Trans>
               </TableTh>
@@ -225,7 +224,7 @@ export function GmList({
             {!currentData.length && !isLoading && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                 <TableTd colSpan={7} className="align-top">
-                  <div className="text-gray-400">
+                  <div className="text-body-medium text-gray-400">
                     <Trans>No pools matched.</Trans>
                   </div>
                 </TableTd>
@@ -276,44 +275,42 @@ function useFilterSortPools({
 }) {
   const chainId = useSelector(selectChainId);
 
-  const fuse = useFuse(
-    () =>
-      values(marketsInfo).map((market) => {
-        let name = "";
-        let symbol = "";
-        if (isGlvInfo(market)) {
-          const longTokenSymbol = market.longToken.symbol;
-          symbol = `${market.glvToken.symbol} ${longTokenSymbol}`;
-
-          const displayName = getGlvDisplayName(market);
-          const subtitle = getGlvMarketSubtitle(chainId, market.glvTokenAddress);
-          const longTokenName = stripBlacklistedWords(market.longToken.name);
-
-          name = [displayName, subtitle, longTokenName].filter(Boolean).join(" ");
-        } else if (market.isSpotOnly) {
-          symbol = "SWAP-ONLY";
-          name = getMarketPoolName(market);
-        } else {
-          symbol = market.indexToken.symbol;
-          name = stripBlacklistedWords(market.indexToken.name);
-        }
-
-        return {
-          id: getGlvOrMarketAddress(market),
-          name,
-          symbol,
-        };
-      }),
-    [chainId, keys(marketsInfo).join(",")]
-  );
-
   const sortedTokens = useMemo(() => {
     if (!marketsInfo || !marketTokensData) {
       return [];
     }
 
     if (searchText.trim()) {
-      return fuse.search(searchText).map((result) => marketTokensData[result.item.id]);
+      return searchBy(
+        values(marketTokensData),
+        [
+          (marketToken) => {
+            const market = getByKey(marketsInfo, marketToken?.address)!;
+            let name = "";
+            let symbol = "";
+            if (isGlvInfo(market)) {
+              const longTokenSymbol = market.longToken.symbol;
+              symbol = `${market.glvToken.symbol} ${longTokenSymbol}`;
+
+              const displayName = getGlvDisplayName(market);
+              const subtitle = getGlvMarketSubtitle(chainId, market.glvTokenAddress);
+              const longTokenName = stripBlacklistedWords(market.longToken.name);
+
+              name = [displayName, subtitle, longTokenName].filter(Boolean).join(" ");
+            } else if (market.isSpotOnly) {
+              symbol = "SWAP-ONLY";
+              name = getMarketPoolName(market);
+            } else {
+              symbol = market.indexToken.symbol;
+              const prefix = getTokenVisualMultiplier(market.indexToken);
+              name = `${prefix}${stripBlacklistedWords(market.indexToken.name)}`;
+            }
+
+            return `${name} ${symbol}`;
+          },
+        ],
+        searchText
+      );
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
@@ -344,7 +341,6 @@ function useFilterSortPools({
     glvTokensIncentiveAprData,
     glvTokensApyData,
     marketsTokensLidoAprData,
-    fuse,
   ]);
 
   const filteredTokens = useMemo(() => {

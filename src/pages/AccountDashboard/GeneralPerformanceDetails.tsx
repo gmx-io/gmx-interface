@@ -29,7 +29,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
 
   return (
     <div className="overflow-hidden rounded-4 bg-slate-800">
-      <div className=" p-16">
+      <div className="text-body-large p-16">
         <Trans>General Performance Details</Trans>
       </div>
 

@@ -154,7 +154,7 @@ export function TableOptionsFilter<T>({
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement} asButton={asButton}>
       <SearchInput
-        className="TableOptionsFilter-search"
+        className="TableOptionsFilter-search *:!text-body-medium"
         placeholder={placeholder}
         value={search}
         setValue={setSearch}

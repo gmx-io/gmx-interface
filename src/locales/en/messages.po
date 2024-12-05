@@ -270,8 +270,8 @@ msgid "Buyable"
 msgstr "Buyable"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
-msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
+#~ msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #~ msgid "Returned collateral"
@@ -515,8 +515,8 @@ msgid "Don't show this message again for 30 days."
 msgstr "Don't show this message again for 30 days."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
-msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
+#~ msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
@@ -898,8 +898,8 @@ msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr "({0}% of {feesTypeName})"
+#~ msgid "({0}% of {feesTypeName})"
+#~ msgstr "({0}% of {feesTypeName})"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -1725,6 +1725,10 @@ msgstr "Forfeit profit not checked"
 msgid "Buy GM"
 msgstr "Buy GM"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of close fee"
+msgstr "of close fee"
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
@@ -2475,6 +2479,7 @@ msgstr "Traders Referred on Arbitrum"
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
 
@@ -2989,6 +2994,10 @@ msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgid "Swap {0} to {1}"
 msgstr "Swap {0} to {1}"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "High price impact. Review execution price."
+#~ msgstr "High price impact. Review execution price."
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "Fees are high to swap from {0} to {1}."
@@ -3112,6 +3121,10 @@ msgstr "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Initial Collateral"
 msgstr "Initial Collateral"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
+msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Size"
@@ -3725,6 +3738,10 @@ msgstr "Net Rate / 1h"
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "High price impact. Review execution price"
+msgstr "High price impact. Review execution price"
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr "Trading incentives program is live on {avalancheLink}."
@@ -4176,8 +4193,8 @@ msgid "Reduce Liquidation Risks"
 msgstr "Reduce Liquidation Risks"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
-msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
+#~ msgstr "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "collateral"
@@ -5397,8 +5414,8 @@ msgid "Volume traded by your referred traders."
 msgstr "Volume traded by your referred traders."
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "High price impact, review execution price."
-msgstr "High price impact, review execution price."
+#~ msgid "High price impact, review execution price."
+#~ msgstr "High price impact, review execution price."
 
 #: src/pages/Dashboard/GlpCard.tsx
 msgid "Stablecoin Percentage"
@@ -5654,6 +5671,10 @@ msgstr "Buy or Transfer ETH to Arbitrum"
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr "Expected execution price for the order, including the current price impact, once the limit order executes."
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of open fee"
+msgstr "of open fee"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -6783,6 +6804,10 @@ msgstr "Sell GM"
 msgid "View on Arbitrum"
 msgstr "View on Arbitrum"
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
+msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
+
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
 msgstr "Shift error."
@@ -7529,6 +7554,10 @@ msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
 msgstr "Orders ({ordersCount})"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
+msgstr "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."

@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "outDir": "./build",
+    "lib": ["esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "declaration": true,
+    "moduleResolution": "node",
+    "composite": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "baseUrl": "./src",
+    "paths": {
+      "utils/*": ["utils/*"],
+      "modules/*": ["modules/*"],
+      "configs/*": ["configs/*"],
+      "types/*": ["types/*"],
+      "abis/*": ["abis/*"],
+      "prebuilt": ["prebuild/index"]
+    },
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
+  },
+  "include": ["./src", "./src/**/*.json", "./scripts"]
+}

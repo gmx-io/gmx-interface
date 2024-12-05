@@ -35,7 +35,7 @@ export default function PageTitle({
         {showNetworkIcon && <img className="Page-title__icon" src={currentNetworkIcon} alt="Current Network Icon" />}
         {afterTitle}
       </div>
-      <div className="text-body-large text-gray-300">{subtitle}</div>
+      <div className="text-body-medium text-gray-300">{subtitle}</div>
     </div>
   );
 }
