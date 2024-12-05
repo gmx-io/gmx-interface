@@ -703,6 +703,10 @@ function tokenSortingComparatorBuilder({
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
   return (a: Token, b: Token) => {
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      return 0;
+    }
+
     if (orderBy === "marketVolume") {
       // they are by default sorted by market volume so we just pass directionMultiplier
       return directionMultiplier;

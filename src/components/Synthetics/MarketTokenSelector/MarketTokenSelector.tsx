@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import partition from "lodash/partition";
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
@@ -423,42 +424,17 @@ function useFilterSortTokensInfo({
   ]);
 
   const sortedTokensInfo = useMemo(() => {
-    if (orderBy === "unspecified" || direction === "unspecified") {
-      return filteredTokensInfo;
-    }
+    const [favorites, nonFavorites] = partition(filteredTokensInfo, (token) =>
+      favoriteTokens.includes(token.market.address)
+    );
 
-    const directionMultiplier = direction === "asc" ? 1 : -1;
+    const comparator = marketSortingComparatorBuilder({ chainId, orderBy, direction });
 
-    return filteredTokensInfo.slice().sort((a, b) => {
-      if (orderBy === "buyable") {
-        const mintableA = a.mintableInfo?.mintableUsd ?? 0n;
-        const mintableB = b.mintableInfo?.mintableUsd ?? 0n;
-        return mintableA > mintableB ? directionMultiplier : -directionMultiplier;
-      }
+    const sortedFavorites = favorites.sort(comparator);
+    const sortedNonFavorites = nonFavorites.sort(comparator);
 
-      if (orderBy === "sellable") {
-        const sellableA = a.sellableInfo?.totalAmount ?? 0n;
-        const sellableB = b.sellableInfo?.totalAmount ?? 0n;
-        return sellableA > sellableB ? directionMultiplier : -directionMultiplier;
-      }
-
-      if (orderBy === "apy") {
-        let aprA = a.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(a.marketInfo)))) {
-          aprA += a.apr ?? 0n;
-        }
-
-        let aprB = b.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(b.marketInfo)))) {
-          aprB += b.apr ?? 0n;
-        }
-
-        return aprA > aprB ? directionMultiplier : -directionMultiplier;
-      }
-
-      return 0;
-    });
-  }, [orderBy, direction, filteredTokensInfo, chainId]);
+    return [...sortedFavorites, ...sortedNonFavorites];
+  }, [orderBy, direction, filteredTokensInfo, chainId, favoriteTokens]);
 
   return sortedTokensInfo;
 }
@@ -562,4 +538,65 @@ function MarketTokenListItem({
       </td>
     </tr>
   );
+}
+
+function marketSortingComparatorBuilder({
+  chainId,
+  orderBy,
+  direction,
+}: {
+  chainId: number;
+  orderBy: SortField;
+  direction: SortDirection;
+}) {
+  const directionMultiplier = direction === "asc" ? 1 : -1;
+
+  return (
+    a: {
+      mintableInfo: { mintableUsd: bigint };
+      sellableInfo: { totalAmount: bigint };
+      incentiveApr: bigint | undefined;
+      apr: bigint | undefined;
+      marketInfo: GlvOrMarketInfo;
+    },
+    b: {
+      mintableInfo: { mintableUsd: bigint };
+      sellableInfo: { totalAmount: bigint };
+      incentiveApr: bigint | undefined;
+      apr: bigint | undefined;
+      marketInfo: GlvOrMarketInfo;
+    }
+  ) => {
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      return 0;
+    }
+
+    if (orderBy === "buyable") {
+      const mintableA = a.mintableInfo?.mintableUsd ?? 0n;
+      const mintableB = b.mintableInfo?.mintableUsd ?? 0n;
+      return mintableA > mintableB ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "sellable") {
+      const sellableA = a.sellableInfo?.totalAmount ?? 0n;
+      const sellableB = b.sellableInfo?.totalAmount ?? 0n;
+      return sellableA > sellableB ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "apy") {
+      let aprA = a.incentiveApr ?? 0n;
+      if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(a.marketInfo)))) {
+        aprA += a.apr ?? 0n;
+      }
+
+      let aprB = b.incentiveApr ?? 0n;
+      if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(b.marketInfo)))) {
+        aprB += b.apr ?? 0n;
+      }
+
+      return aprA > aprB ? directionMultiplier : -directionMultiplier;
+    }
+
+    return 0;
+  };
 }
