@@ -1,10 +1,8 @@
-import type Fuse from "fuse.js";
 import isEqual from "lodash/isEqual";
 import { ComponentType, memo, useCallback, useMemo } from "react";
 
 import { definedOrThrow } from "lib/guards";
-import { EMPTY_ARRAY } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import Checkbox from "components/Checkbox/Checkbox";
 
@@ -142,20 +140,6 @@ export function useFilteredGroups<T>({
   value?: T[] | T;
   options: Item<T>[] | Group<T>[];
 }): FilteredGroup<T>[] | null {
-  const fuse = useFuse(
-    () =>
-      !isGrouped
-        ? EMPTY_ARRAY
-        : (options as Group<T>[]).flatMap((group, groupIndex) =>
-            group.items.map((item, itemIndex) => ({
-              id: `${groupIndex}_${itemIndex}`,
-              text: item.text,
-            }))
-          ),
-
-    [options, isGrouped]
-  );
-
   return useMemo(() => {
     if (!isGrouped) return null;
 
@@ -166,9 +150,8 @@ export function useFilteredGroups<T>({
       search,
       value,
       multiple,
-      fuse,
     });
-  }, [isGrouped, search, multiple, options, value, fuse]);
+  }, [isGrouped, search, multiple, options, value]);
 }
 
 function filterGroups<T>({
@@ -176,23 +159,23 @@ function filterGroups<T>({
   search,
   value,
   multiple,
-  fuse,
 }: {
   groups: Group<T>[];
   search: string;
   value?: T[] | T;
   multiple?: boolean;
-  fuse: Fuse<{ id: string; text: string }>;
 }): FilteredGroup<T>[] {
-  const matchedItems = fuse.search(search).map((result) => result.item);
+  const matchedItems = searchBy(
+    groups.flatMap((group) => group.items),
+    ["text"],
+    search
+  );
 
   return groups
-    .map((group, groupIndex) => {
+    .map((group) => {
       const items = !search.trim()
         ? group.items
-        : group.items.filter((item, itemIndex) =>
-            matchedItems.some((matchedItem) => matchedItem.id === `${groupIndex}_${itemIndex}`)
-          );
+        : group.items.filter((item) => matchedItems.some((matchedItem) => matchedItem === item));
 
       let isEverythingSelected: boolean | undefined;
       let isEverythingFilteredSelected: boolean | undefined;

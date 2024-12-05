@@ -9,7 +9,13 @@ import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContex
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMemo } from "react";
 
-export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: string }) {
+export function useMaxAutoCancelOrdersState({
+  positionKey,
+  isCreatingNewAutoCancel,
+}: {
+  positionKey?: string;
+  isCreatingNewAutoCancel?: boolean;
+}) {
   const { isAutoCancelTPSL: isEnabledAutoCancel } = useSettings();
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const { stopLoss, takeProfit } = useSidecarOrders();
@@ -18,9 +24,9 @@ export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: str
 
   const shouldCountDraftSidecarOrders = positionKey === selectedPositionKey;
 
-  let draftOrdersCount = 0;
+  let draftOrdersCount = isCreatingNewAutoCancel ? 1 : 0;
   if (shouldCountDraftSidecarOrders) {
-    draftOrdersCount = [...stopLoss.entries, ...takeProfit.entries].filter(
+    draftOrdersCount += [...stopLoss.entries, ...takeProfit.entries].filter(
       (entry) => entry.txnType === "create"
     ).length;
   }
@@ -36,7 +42,7 @@ export function useMaxAutoCancelOrdersState({ positionKey }: { positionKey?: str
     };
   }
 
-  const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders) - 1;
+  const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders);
   const autoCancelOrdersLimit = allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length;
   const showWarning = autoCancelOrdersLimit < draftOrdersCount;
 

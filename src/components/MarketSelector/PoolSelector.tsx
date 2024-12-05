@@ -16,7 +16,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -97,20 +97,17 @@ export function PoolSelector({
     [marketsOptions, selectedMarketAddress]
   );
 
-  const fuse = useFuse(
-    () =>
-      marketsOptions.map((item, index) => ({
-        id: index,
-        name: isGlvInfo(item.marketInfo) ? getGlvDisplayName(item.marketInfo) : item.name,
-        longTokenName: stripBlacklistedWords(item.marketInfo.longToken.name),
-        shortTokenName: stripBlacklistedWords(item.marketInfo.shortToken.name),
-      })),
-    marketsOptions?.map((item) => item.indexName)
-  );
-
   const filteredOptions = useMemo(() => {
     const textMatched = searchKeyword.trim()
-      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      ? searchBy(
+          marketsOptions,
+          [
+            (item) => (isGlvInfo(item.marketInfo) ? getGlvDisplayName(item.marketInfo) : item.name),
+            (item) => stripBlacklistedWords(item.marketInfo.longToken.name),
+            (item) => stripBlacklistedWords(item.marketInfo.shortToken.name),
+          ],
+          searchKeyword
+        )
       : marketsOptions;
 
     const tabMatched = textMatched?.filter((item) => {
@@ -122,7 +119,7 @@ export function PoolSelector({
     });
 
     return tabMatched;
-  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);
@@ -171,6 +168,7 @@ export function PoolSelector({
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
               value={searchKeyword}
+              className="*:!text-body-medium"
               setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={_handleKeyDown}
@@ -197,7 +195,7 @@ export function PoolSelector({
           })}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-16 text-gray-400">
+          <div className="text-body-medium text-gray-400">
             <Trans>No pools matched.</Trans>
           </div>
         )}

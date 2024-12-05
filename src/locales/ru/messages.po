@@ -270,8 +270,8 @@ msgid "Buyable"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
-msgstr ""
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power.</1>"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #~ msgid "Returned collateral"
@@ -515,8 +515,8 @@ msgid "Don't show this message again for 30 days."
 msgstr "Не показывайте это сообщение снова в течение 30 дней."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
-msgstr ""
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before staking.</1>"
+#~ msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Shift GM Tokens between eligible pools without paying buy/sell fees."
@@ -898,8 +898,8 @@ msgid "Open {0} in Coingecko"
 msgstr "Открыть {0} в Coingecko"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr ""
+#~ msgid "({0}% of {feesTypeName})"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -1725,6 +1725,10 @@ msgstr "Неустойка за непроверенную прибыль"
 msgid "Buy GM"
 msgstr "Купить GM"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of close fee"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr "Увеличить {0} {longOrShortText}, +{1} USD, {2} Цена: {3} USD"
@@ -2475,6 +2479,7 @@ msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "PnL После уплаты Комиссии"
 
@@ -2989,6 +2994,10 @@ msgstr ""
 msgid "Swap {0} to {1}"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "High price impact. Review execution price."
+#~ msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "При обмене с {0} на {1} взимается высокая комиссия."
@@ -3112,6 +3121,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Initial Collateral"
 msgstr "Первоначальный Залог"
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Size"
@@ -3722,6 +3735,10 @@ msgstr "Чистая ставка / 1ч"
 msgid "Claim esGMX Rewards"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "High price impact. Review execution price"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr ""
@@ -4173,8 +4190,8 @@ msgid "Reduce Liquidation Risks"
 msgstr "Снизить Риски Ликвидации"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
-msgstr ""
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0><1> voting power before claiming.</1>"
+#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "collateral"
@@ -5394,8 +5411,8 @@ msgid "Volume traded by your referred traders."
 msgstr "Объем сделок, совершенных привлеченными вами трейдерами."
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "High price impact, review execution price."
-msgstr ""
+#~ msgid "High price impact, review execution price."
+#~ msgstr ""
 
 #: src/pages/Dashboard/GlpCard.tsx
 msgid "Stablecoin Percentage"
@@ -5650,6 +5667,10 @@ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "of open fee"
 msgstr ""
 
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -6777,6 +6798,10 @@ msgstr "Продать GM"
 msgid "View on Arbitrum"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
+msgstr ""
+
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
 msgstr ""
@@ -7522,6 +7547,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.tsx
+msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx

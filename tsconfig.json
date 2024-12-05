@@ -21,6 +21,11 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "./src",
+    "paths": {
+      "sdk": ["../sdk/src/index.ts"],
+      "sdk/*": ["../sdk/src/*"]
+    }
   },
-  "include": ["src", "scripts"],
+  "references": [{ "path": "./sdk" }],
+  "include": ["src", "scripts"]
 }

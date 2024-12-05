@@ -17,12 +17,11 @@ import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/choose
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { TradeType } from "domain/synthetics/trade";
-import type { Token } from "domain/tokens";
-import { stripBlacklistedWords } from "domain/tokens/utils";
+import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { getByKey } from "lib/objects";
+import { searchBy } from "lib/searchBy";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -193,7 +192,12 @@ function MarketsList(props: { options: Token[] | undefined }) {
     <>
       <SelectorBaseMobileHeaderContent>
         <div className="mt-16 flex flex-row items-center gap-16">
-          <SearchInput className="w-full" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={handleKeyDown} />
+          <SearchInput
+            className="w-full *:!text-body-medium"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={handleKeyDown}
+          />
           {!isSwap && <FavoriteTabs favoritesKey="chart-token-selector" />}
         </div>
       </SelectorBaseMobileHeaderContent>
@@ -206,7 +210,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
           <>
             <div className="m-16 flex justify-between gap-16">
               <SearchInput
-                className="w-full"
+                className="w-full *:!text-body-medium"
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
@@ -261,7 +265,7 @@ function MarketsList(props: { options: Token[] | undefined }) {
               ))}
               {options && options.length > 0 && !sortedTokens?.length && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={isSwap ? 2 : 3} className="text-gray-400">
+                  <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-gray-400">
                     <Trans>No markets matched.</Trans>
                   </TableTd>
                 </TableTr>
@@ -291,16 +295,15 @@ function useFilterSortTokens({
   direction: SortDirection;
   orderBy: SortField;
 }) {
-  const fuse = useFuse(
-    () =>
-      options?.map((item, index) => ({ id: index, name: stripBlacklistedWords(item.name), symbol: item.symbol })) ||
-      EMPTY_ARRAY,
-    options?.map((item) => item.address)
-  );
-
   const filteredTokens: Token[] | undefined = useMemo(() => {
     const textMatched =
-      searchKeyword.trim() && options ? fuse.search(searchKeyword).map((result) => options[result.item.id]) : options;
+      searchKeyword.trim() && options
+        ? searchBy(
+            options,
+            [(item) => stripBlacklistedWords(item.name), (item) => `${getTokenVisualMultiplier(item)}${item.symbol}`],
+            searchKeyword
+          )
+        : options;
 
     const tabMatched = textMatched?.filter((item) => {
       if (tab === "favorites") {
@@ -311,7 +314,7 @@ function useFilterSortTokens({
     });
 
     return tabMatched;
-  }, [favoriteTokens, fuse, options, searchKeyword, tab]);
+  }, [favoriteTokens, options, searchKeyword, tab]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
