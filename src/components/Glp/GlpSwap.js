@@ -961,6 +961,19 @@ export default function GlpSwap(props) {
                     />
                   )}
                 </div>
+                {!isBuying && (
+                  <Tooltip
+                    handle={"Bought TLP Recently?"}
+                    position="right-bottom"
+                    renderContent={() => {
+                      return (
+                        <div className="text-white" style={{ float: "right" }}>
+                          <Trans>Note: There is an 8-hour waiting period to sell recently supplied TLP.</Trans>
+                        </div>
+                      );
+                    }}
+                  />
+                )}
               </div>
             </div>
             <div className="GlpSwap-cta Exchange-swap-button-container">
