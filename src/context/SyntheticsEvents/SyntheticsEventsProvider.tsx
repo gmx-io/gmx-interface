@@ -78,11 +78,10 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
-  // const { account: currentAccount } = useWallet();
+  const { account: currentAccount } = useWallet();
   const provider = getProvider(undefined, chainId);
   const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
-  const currentAccount = undefined;
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
@@ -100,7 +99,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       ...glvData,
     };
 
-    const marketTokensAddressesString = Object.keys(glvAndGmMarketsData).join("-");
+    const marketTokensAddressesString = Object.keys(glvAndGmMarketsData).join(":");
 
     return {
       glvAndGmMarketsData,
@@ -815,7 +814,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         chainId,
         wsProvider,
         currentAccount,
-        marketTokensAddressesString.split("-"),
+        marketTokensAddressesString.split(":").filter((s) => !s.includes("1-")),
         (tokenAddress, amount) => {
           setTokensBalancesUpdates((old) => {
             const oldDiff = old[tokenAddress]?.diff || 0n;

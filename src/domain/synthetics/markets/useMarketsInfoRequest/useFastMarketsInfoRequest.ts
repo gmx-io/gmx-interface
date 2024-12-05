@@ -10,7 +10,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
     data: fastMarketInfoData,
     error,
     isLoading,
-  } = useSWR<FastMarketInfoData>(null, {
+  } = useSWR<FastMarketInfoData>([chainId, "useFastMarketsInfoRequest"], {
     refreshInterval: undefined,
     fetcher: async () => {
       try {

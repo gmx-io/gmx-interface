@@ -65,7 +65,8 @@ export function useMarketTokensDataRequest(
 
     request: () =>
       marketsAddresses!.reduce((requests, marketAddress) => {
-        const fixedAddress = marketAddress.replace("1-", "");
+        // eslint-disable-next-line es-x/no-string-prototype-replaceall
+        const fixedAddress = marketAddress.replaceAll("1-", "");
         const market = getByKey(marketsData, fixedAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market);
 

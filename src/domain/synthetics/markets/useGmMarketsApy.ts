@@ -55,7 +55,10 @@ type SwrResult = {
 
 function useMarketAddresses(marketsInfoData: GlvAndGmMarketsInfoData | undefined) {
   return useMemo(
-    () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
+    () =>
+      Object.keys(marketsInfoData || {}).filter(
+        (address) => !marketsInfoData![address].isDisabled && !address.includes("1-")
+      ),
     [marketsInfoData]
   );
 }

@@ -1,6 +1,8 @@
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForCollateral, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
+
+const MAX_MARKETS_PER_TOKEN = 5;
 
 export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   const graph: MarketsGraph = {
@@ -8,7 +10,34 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
     edges: [],
   };
 
-  for (const market of markets) {
+  const sortedMarkets = markets.sort((a, b) => {
+    const liquidityA = getAvailableUsdLiquidityForCollateral(a, true) + getAvailableUsdLiquidityForCollateral(a, false);
+    const liquidityB = getAvailableUsdLiquidityForCollateral(b, true) + getAvailableUsdLiquidityForCollateral(b, false);
+
+    return Number(liquidityB) - Number(liquidityA);
+  });
+
+  const sortedMarketsByTokens: { [token: string]: MarketInfo[] } = {};
+
+  for (const market of sortedMarkets) {
+    const { longTokenAddress, shortTokenAddress } = market;
+
+    sortedMarketsByTokens[longTokenAddress] = sortedMarketsByTokens[longTokenAddress] || [];
+
+    if (sortedMarketsByTokens[longTokenAddress].length < MAX_MARKETS_PER_TOKEN) {
+      sortedMarketsByTokens[longTokenAddress].push(market);
+    }
+
+    sortedMarketsByTokens[shortTokenAddress] = sortedMarketsByTokens[shortTokenAddress] || [];
+
+    if (sortedMarketsByTokens[shortTokenAddress].length < MAX_MARKETS_PER_TOKEN) {
+      sortedMarketsByTokens[shortTokenAddress].push(market);
+    }
+  }
+
+  const marketsForGraph = Object.values(sortedMarketsByTokens).flat();
+
+  for (const market of marketsForGraph) {
     const { longTokenAddress, shortTokenAddress, marketTokenAddress, isSameCollaterals, isDisabled } = market;
 
     if (isSameCollaterals || isDisabled) {
@@ -71,6 +100,8 @@ export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: S
   if (routes.length === 0) {
     return undefined;
   }
+
+  console.log("routes", routes);
 
   let bestPath = routes[0].path;
   let bestUsdOut = 0n;

@@ -410,6 +410,8 @@ function useMarketsValuesRequest({
         }
       );
 
+      console.log("MARKETS ADDRESSES", marketsAddresses?.length);
+
       return result;
     },
   });

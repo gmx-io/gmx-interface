@@ -16,7 +16,8 @@ export async function buildMarketsConfigsRequest(
 ) {
   const request: MarketConfigMulticallRequestConfig = {};
   for (const marketAddress of marketsAddresses || []) {
-    const fixedAddress = marketAddress.replace("1-", "");
+    // eslint-disable-next-line es-x/no-string-prototype-replaceall
+    const fixedAddress = marketAddress.replaceAll("1-", "");
 
     const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[fixedAddress];
 

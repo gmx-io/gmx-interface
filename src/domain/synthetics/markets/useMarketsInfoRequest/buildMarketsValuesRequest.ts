@@ -31,7 +31,8 @@ export async function buildMarketsValuesRequest(
   const request: MarketValuesMulticallRequestConfig = {};
 
   for (const marketAddress of marketsAddresses || []) {
-    const fixedAddress = marketAddress.replace("1-", "");
+    // eslint-disable-next-line es-x/no-string-prototype-replaceall
+    const fixedAddress = marketAddress.replaceAll("1-", "");
 
     const market = getByKey(marketsData, marketAddress)!;
     const marketPrices = getContractMarketPrices(tokensData!, market)!;
