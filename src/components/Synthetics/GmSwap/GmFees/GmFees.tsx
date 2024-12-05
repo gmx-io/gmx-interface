@@ -23,16 +23,16 @@ type Props = {
   operation: Operation;
 };
 
-const operationTexts = {
-  [Operation.Deposit]: t`buy`,
-  [Operation.Withdrawal]: t`sell`,
-  [Operation.Shift]: t`shift`,
-};
-
 export function GmFees(p: Props) {
   const totalFeesUsd = p.totalFees?.deltaUsd;
 
   let value: ReactNode = useMemo(() => {
+    const operationTexts = {
+      [Operation.Deposit]: t`buy`,
+      [Operation.Withdrawal]: t`sell`,
+      [Operation.Shift]: t`shift`,
+    };
+
     const operationText = operationTexts[p.operation];
 
     if (p.totalFees?.deltaUsd === undefined) {

@@ -121,7 +121,11 @@ export function TradeFeesRow(p: Props) {
                 {formatPercentage(
                   p.swapProfitFee?.precisePercentage === undefined
                     ? undefined
-                    : bigMath.abs(p.swapProfitFee.precisePercentage)
+                    : bigMath.abs(p.swapProfitFee.precisePercentage),
+                  {
+                    displayDecimals: 3,
+                    bps: false,
+                  }
                 )}{" "}
                 of collateral)
               </div>
