@@ -1,5 +1,5 @@
 import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
-import { applyFactor, getBasisPoints } from "lib/numbers";
+import { applyFactor, getBasisPoints, PRECISION } from "lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { bigMath } from "lib/bigmath";
@@ -88,6 +88,7 @@ export function getTradeFees(p: {
           marketAddress: step.marketAddress,
           deltaUsd: step.swapFeeUsd * -1n,
           bps: step.usdIn != 0n ? getBasisPoints(step.swapFeeUsd * -1n, step.usdIn) : 0n,
+          precisePercentage: step.usdIn != 0n ? bigMath.mulDiv(step.swapFeeUsd * -1n, PRECISION, step.usdIn) : 0n,
         }))
       : undefined;
 
