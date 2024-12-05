@@ -109,7 +109,7 @@ export default function Modal({
               style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
               onClick={() => setIsVisible(false)}
             />
-            <div className="Modal-content flex flex-col border" onClick={stopPropagation} data-qa={qa}>
+            <div className="Modal-content flex flex-col" onClick={stopPropagation} data-qa={qa}>
               <div className="Modal-header-wrapper">
                 <div className="Modal-title-bar">
                   <div className="Modal-title">{label}</div>
