@@ -217,7 +217,7 @@ class NetworkDropdown extends BasePage {
   dropdown = this.locator("networks-dropdown");
   settings = this.locator("networks-dropdown-settings");
 
-  async switchNetwork(network: "Arbitrum" | "Avalanche" | "Arbitrum Goerli" | "Avalanche Fuji") {
+  async switchNetwork(network: "Arbitrum" | "Avalanche" | "Avalanche Fuji") {
     await this.handle.click();
     await this.dropdown.waitForVisible();
     const item = await this.locator(`networks-dropdown-${network}`);
