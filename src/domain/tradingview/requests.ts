@@ -28,7 +28,18 @@ export const getTokenChartPrice = async (chainId: number, symbol: string, period
 export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
   try {
     const indexPricesUrl = getServerUrl(chainId, "/prices");
-    const response = await fetch(indexPricesUrl);
+    // TODO - mocked in development
+    const response =
+      process.env.NODE_ENV === "development"
+        ? {
+            ok: true,
+            status: "Ok",
+            json: () =>
+              Promise.resolve({
+                "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "1234567890", // Mock price data
+              }),
+          }
+        : await fetch(indexPricesUrl);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
