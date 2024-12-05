@@ -350,8 +350,8 @@ msgid "Insufficient GM balance"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
-msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
-msgstr ""
+#~ msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take-Profit"
@@ -705,6 +705,10 @@ msgstr "Du kannst deine Claim-Historie <0>hier</0> einsehen."
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum allowed actions is required"
+msgstr ""
+
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -7568,6 +7572,10 @@ msgstr "Über"
 msgid "Total accrued Fees"
 msgstr ""
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr ""
@@ -7785,8 +7793,8 @@ msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{to
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
-msgstr ""
+#~ msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."

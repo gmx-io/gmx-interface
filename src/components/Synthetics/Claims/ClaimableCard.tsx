@@ -33,8 +33,8 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
               Claimable positive funding fees.
               <br />
               <br />
-              They become available after modifying the position by increasing, decreasing, closing it, depositing or
-              withdrawing collateral, or by settling the fees using the "Settle" button.
+              They become available after modifying the position by increasing or decreasing it, depositing or
+              withdrawing collateral, or settling the fees using the "Settle" button.
             </Trans>
           ),
           onButtonClick: onClaimClick,

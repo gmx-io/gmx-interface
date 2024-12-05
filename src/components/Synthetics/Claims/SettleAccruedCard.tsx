@@ -35,8 +35,8 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
               Accrued positive funding fees in positions not yet claimable.
               <br />
               <br />
-              They become available after modifying the position by increasing, decreasing, closing it, depositing or
-              withdrawing collateral, or by settling the fees using the "Settle" button.
+              They become available after modifying the position by increasing or decreasing it, depositing or
+              withdrawing collateral, or settling the fees using the "Settle" button.
             </Trans>
           ),
           onButtonClick: onSettleClick,
@@ -56,7 +56,6 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
             </Trans>
           ),
           onButtonClick: onAccruedPositionPriceImpactRebateClick,
-          buttonStyle: "secondary",
         },
       ] as const,
     [_, fundingFees, onAccruedPositionPriceImpactRebateClick, onSettleClick, priceImpactDifference]
