@@ -1173,384 +1173,388 @@ export const MARKETS: Record<string, Record<string, MarketUiConfig>> = {
       shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
     },
 
-    // BTC/USD [BTC-USDC]
-    "1-0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937",
-      indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // ETH/USD [ETH-USDC]
-    "1-0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7",
-      indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // DOGE/USD [WAVAX-USDC]
-    "1-0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027",
-      indexTokenAddress: "0xC301E6fe31062C557aEE806cc6A841aE989A3ac6",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // SOL/USD [SOL-USDC]
-    "1-0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70",
-      indexTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
-      longTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // LTC/USD [WAVAX-USDC]
-    "1-0xA74586743249243D3b77335E15FE768bA8E1Ec5A": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xA74586743249243D3b77335E15FE768bA8E1Ec5A",
-      indexTokenAddress: "0x8E9C35235C38C44b5a53B56A41eaf6dB9a430cD6",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // AVAX/USD [WAVAX-USDC]
-    "1-0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",
-      indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // SWAP-ONLY [USDC-USDT.e]
-    "1-0xf3652Eba45DC761e7ADd4091627d5Cda21F61613": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xf3652Eba45DC761e7ADd4091627d5Cda21F61613",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
-    },
-    // SWAP-ONLY [USDC-USDC.e]
-    "1-0x297e71A931C5825867E8Fb937Ae5cda9891C2E99": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x297e71A931C5825867E8Fb937Ae5cda9891C2E99",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
-    },
-    // SWAP-ONLY [USDT-USDT.e]
-    "1-0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
-      shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
-    },
-    // SWAP-ONLY [USDC-DAI.e]
-    "1-0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
-    },
-    // XRP/USD [WAVAX-USDC]
-    "1-0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25",
-      indexTokenAddress: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // BTC/USD [BTC-BTC]
-    "1-0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12",
-      indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      shortTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-    },
-    // ETH/USD [ETH-ETH]
-    "1-0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533",
-      indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      shortTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-    },
-    // AVAX/USD [AVAX-AVAX]
-    "1-0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5",
-      indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-    },
-    // BTC/USD [BTC-USDC]
-    "1-1-0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937",
-      indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // ETH/USD [ETH-USDC]
-    "1-1-0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7",
-      indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // DOGE/USD [WAVAX-USDC]
-    "1-1-0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027",
-      indexTokenAddress: "0xC301E6fe31062C557aEE806cc6A841aE989A3ac6",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // SOL/USD [SOL-USDC]
-    "1-1-0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70",
-      indexTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
-      longTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // LTC/USD [WAVAX-USDC]
-    "1-1-0xA74586743249243D3b77335E15FE768bA8E1Ec5A": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xA74586743249243D3b77335E15FE768bA8E1Ec5A",
-      indexTokenAddress: "0x8E9C35235C38C44b5a53B56A41eaf6dB9a430cD6",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // AVAX/USD [WAVAX-USDC]
-    "1-1-0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",
-      indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // SWAP-ONLY [USDC-USDT.e]
-    "1-1-0xf3652Eba45DC761e7ADd4091627d5Cda21F61613": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xf3652Eba45DC761e7ADd4091627d5Cda21F61613",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
-    },
-    // SWAP-ONLY [USDC-USDC.e]
-    "1-1-0x297e71A931C5825867E8Fb937Ae5cda9891C2E99": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x297e71A931C5825867E8Fb937Ae5cda9891C2E99",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
-    },
-    // SWAP-ONLY [USDT-USDT.e]
-    "1-1-0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
-      shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
-    },
-    // SWAP-ONLY [USDC-DAI.e]
-    "1-1-0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
-    },
-    // XRP/USD [WAVAX-USDC]
-    "1-1-0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25",
-      indexTokenAddress: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // BTC/USD [BTC-BTC]
-    "1-1-0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12",
-      indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      shortTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-    },
-    // ETH/USD [ETH-ETH]
-    "1-1-0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533",
-      indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      shortTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-    },
-    // AVAX/USD [AVAX-AVAX]
-    "1-1-0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5",
-      indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-    },
-    // BTC/USD [BTC-USDC]
-    "1-1-1-0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937",
-      indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // ETH/USD [ETH-USDC]
-    "1-1-1-0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7",
-      indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // DOGE/USD [WAVAX-USDC]
-    "1-1-1-0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027",
-      indexTokenAddress: "0xC301E6fe31062C557aEE806cc6A841aE989A3ac6",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // SOL/USD [SOL-USDC]
-    "1-1-1-0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70",
-      indexTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
-      longTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // LTC/USD [WAVAX-USDC]
-    "1-1-1-0xA74586743249243D3b77335E15FE768bA8E1Ec5A": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xA74586743249243D3b77335E15FE768bA8E1Ec5A",
-      indexTokenAddress: "0x8E9C35235C38C44b5a53B56A41eaf6dB9a430cD6",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // AVAX/USD [WAVAX-USDC]
-    "1-1-1-0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",
-      indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // SWAP-ONLY [USDC-USDT.e]
-    "1-1-1-0xf3652Eba45DC761e7ADd4091627d5Cda21F61613": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xf3652Eba45DC761e7ADd4091627d5Cda21F61613",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
-    },
-    // SWAP-ONLY [USDC-USDC.e]
-    "1-1-1-0x297e71A931C5825867E8Fb937Ae5cda9891C2E99": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x297e71A931C5825867E8Fb937Ae5cda9891C2E99",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
-    },
-    // SWAP-ONLY [USDT-USDT.e]
-    "1-1-1-0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
-      shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
-    },
-    // SWAP-ONLY [USDC-DAI.e]
-    "1-1-1-0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
-      longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      shortTokenAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
-    },
-    // XRP/USD [WAVAX-USDC]
-    "1-1-1-0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25",
-      indexTokenAddress: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // BTC/USD [BTC-BTC]
-    "1-1-1-0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12",
-      indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      shortTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-    },
-    // ETH/USD [ETH-ETH]
-    "1-1-1-0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533",
-      indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-      shortTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
-    },
-    // AVAX/USD [AVAX-AVAX]
-    "1-1-1-0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
-      enabled: true,
-      listingDate: DEFAULT_LISTING,
-      marketTokenAddress: "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5",
-      indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-    },
+    ...(getIsFlagEnabled("testMoreMarkets")
+      ? {
+          // BTC/USD [BTC-USDC]
+          "1-0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937",
+            indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // ETH/USD [ETH-USDC]
+          "1-0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7",
+            indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // DOGE/USD [WAVAX-USDC]
+          "1-0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027",
+            indexTokenAddress: "0xC301E6fe31062C557aEE806cc6A841aE989A3ac6",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // SOL/USD [SOL-USDC]
+          "1-0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70",
+            indexTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
+            longTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // LTC/USD [WAVAX-USDC]
+          "1-0xA74586743249243D3b77335E15FE768bA8E1Ec5A": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xA74586743249243D3b77335E15FE768bA8E1Ec5A",
+            indexTokenAddress: "0x8E9C35235C38C44b5a53B56A41eaf6dB9a430cD6",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // AVAX/USD [WAVAX-USDC]
+          "1-0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",
+            indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // SWAP-ONLY [USDC-USDT.e]
+          "1-0xf3652Eba45DC761e7ADd4091627d5Cda21F61613": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xf3652Eba45DC761e7ADd4091627d5Cda21F61613",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+          },
+          // SWAP-ONLY [USDC-USDC.e]
+          "1-0x297e71A931C5825867E8Fb937Ae5cda9891C2E99": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x297e71A931C5825867E8Fb937Ae5cda9891C2E99",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+          },
+          // SWAP-ONLY [USDT-USDT.e]
+          "1-0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+            shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+          },
+          // SWAP-ONLY [USDC-DAI.e]
+          "1-0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+          },
+          // XRP/USD [WAVAX-USDC]
+          "1-0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25",
+            indexTokenAddress: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // BTC/USD [BTC-BTC]
+          "1-0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12",
+            indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            shortTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+          },
+          // ETH/USD [ETH-ETH]
+          "1-0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533",
+            indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            shortTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+          },
+          // AVAX/USD [AVAX-AVAX]
+          "1-0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5",
+            indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+          },
+          // BTC/USD [BTC-USDC]
+          "1-1-0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937",
+            indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // ETH/USD [ETH-USDC]
+          "1-1-0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7",
+            indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // DOGE/USD [WAVAX-USDC]
+          "1-1-0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027",
+            indexTokenAddress: "0xC301E6fe31062C557aEE806cc6A841aE989A3ac6",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // SOL/USD [SOL-USDC]
+          "1-1-0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70",
+            indexTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
+            longTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // LTC/USD [WAVAX-USDC]
+          "1-1-0xA74586743249243D3b77335E15FE768bA8E1Ec5A": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xA74586743249243D3b77335E15FE768bA8E1Ec5A",
+            indexTokenAddress: "0x8E9C35235C38C44b5a53B56A41eaf6dB9a430cD6",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // AVAX/USD [WAVAX-USDC]
+          "1-1-0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",
+            indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // SWAP-ONLY [USDC-USDT.e]
+          "1-1-0xf3652Eba45DC761e7ADd4091627d5Cda21F61613": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xf3652Eba45DC761e7ADd4091627d5Cda21F61613",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+          },
+          // SWAP-ONLY [USDC-USDC.e]
+          "1-1-0x297e71A931C5825867E8Fb937Ae5cda9891C2E99": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x297e71A931C5825867E8Fb937Ae5cda9891C2E99",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+          },
+          // SWAP-ONLY [USDT-USDT.e]
+          "1-1-0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+            shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+          },
+          // SWAP-ONLY [USDC-DAI.e]
+          "1-1-0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+          },
+          // XRP/USD [WAVAX-USDC]
+          "1-1-0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25",
+            indexTokenAddress: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // BTC/USD [BTC-BTC]
+          "1-1-0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12",
+            indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            shortTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+          },
+          // ETH/USD [ETH-ETH]
+          "1-1-0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533",
+            indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            shortTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+          },
+          // AVAX/USD [AVAX-AVAX]
+          "1-1-0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5",
+            indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+          },
+          // BTC/USD [BTC-USDC]
+          "1-1-1-0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xFb02132333A79C8B5Bd0b64E3AbccA5f7fAf2937",
+            indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // ETH/USD [ETH-USDC]
+          "1-1-1-0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7",
+            indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // DOGE/USD [WAVAX-USDC]
+          "1-1-1-0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x8970B527E84aA17a33d38b65e9a5Ab5817FC0027",
+            indexTokenAddress: "0xC301E6fe31062C557aEE806cc6A841aE989A3ac6",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // SOL/USD [SOL-USDC]
+          "1-1-1-0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xd2eFd1eA687CD78c41ac262B3Bc9B53889ff1F70",
+            indexTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
+            longTokenAddress: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // LTC/USD [WAVAX-USDC]
+          "1-1-1-0xA74586743249243D3b77335E15FE768bA8E1Ec5A": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xA74586743249243D3b77335E15FE768bA8E1Ec5A",
+            indexTokenAddress: "0x8E9C35235C38C44b5a53B56A41eaf6dB9a430cD6",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // AVAX/USD [WAVAX-USDC]
+          "1-1-1-0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",
+            indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // SWAP-ONLY [USDC-USDT.e]
+          "1-1-1-0xf3652Eba45DC761e7ADd4091627d5Cda21F61613": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xf3652Eba45DC761e7ADd4091627d5Cda21F61613",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+          },
+          // SWAP-ONLY [USDC-USDC.e]
+          "1-1-1-0x297e71A931C5825867E8Fb937Ae5cda9891C2E99": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x297e71A931C5825867E8Fb937Ae5cda9891C2E99",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+          },
+          // SWAP-ONLY [USDT-USDT.e]
+          "1-1-1-0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xA7b768d6a1f746fd5a513D440DF2970ff099B0fc",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+            shortTokenAddress: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+          },
+          // SWAP-ONLY [USDC-DAI.e]
+          "1-1-1-0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xDf8c9BD26e7C1A331902758Eb013548B2D22ab3b",
+            indexTokenAddress: "0x0000000000000000000000000000000000000000",
+            longTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+            shortTokenAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+          },
+          // XRP/USD [WAVAX-USDC]
+          "1-1-1-0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0xD1cf931fa12783c1dd5AbB77a0706c27CF352f25",
+            indexTokenAddress: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+          },
+          // BTC/USD [BTC-BTC]
+          "1-1-1-0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x3ce7BCDB37Bf587d1C17B930Fa0A7000A0648D12",
+            indexTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            longTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+            shortTokenAddress: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+          },
+          // ETH/USD [ETH-ETH]
+          "1-1-1-0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x2A3Cf4ad7db715DF994393e4482D6f1e58a1b533",
+            indexTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            longTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+            shortTokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+          },
+          // AVAX/USD [AVAX-AVAX]
+          "1-1-1-0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
+            enabled: true,
+            listingDate: DEFAULT_LISTING,
+            marketTokenAddress: "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5",
+            indexTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+            shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+          },
+        }
+      : {}),
   },
   [AVALANCHE_FUJI]: {
     // AVAX/USD [WAVAX-USDC]
