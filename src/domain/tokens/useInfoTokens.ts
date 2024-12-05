@@ -50,8 +50,15 @@ export function useInfoTokens(
   const indexPricesUrl = getServerUrl(chainId, "/prices");
 
   const { data: indexPrices } = useSWR([indexPricesUrl], {
-    // @ts-ignore spread args incorrect type
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (...args) => {
+      if (process.env.NODE_ENV === "development") {
+        return Promise.resolve({
+          "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": "1234567890", // Mock price data
+        });
+      }
+      // @ts-ignore spread args incorrect type
+      return fetch(...args).then((res) => res.json());
+    },
     refreshInterval: 500,
     refreshWhenHidden: true,
   });
