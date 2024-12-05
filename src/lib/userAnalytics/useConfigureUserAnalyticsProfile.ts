@@ -13,6 +13,8 @@ import { useUtmParams } from "domain/utm";
 import { isDevelopment } from "config/env";
 import useRouteQuery from "lib/useRouteQuery";
 import { useHistory } from "react-router-dom";
+import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -20,6 +22,7 @@ export function useConfigureUserAnalyticsProfile() {
   const currentLanguage = useLingui().i18n.locale;
   const referralCode = useReferralCodeFromUrl();
   const utmParams = useUtmParams();
+  const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const { chainId } = useChainId();
   const { account, active } = useWallet();
 
@@ -58,12 +61,16 @@ export function useConfigureUserAnalyticsProfile() {
   useEffect(() => {
     const bowser = Bowser.parse(window.navigator.userAgent);
 
+    const browserName = bowser.browser.name;
+    const platform = bowser.platform.type;
+
     userAnalytics.setCommonEventParams({
-      platform: bowser.platform.type,
-      browserName: bowser.browser.name,
+      platform,
+      browserName,
       ordersCount,
       isWalletConnected: active,
       isTest: isDevelopment(),
+      isInited: Boolean(browserName && platform),
     });
   }, [active, ordersCount]);
 
@@ -80,4 +87,8 @@ export function useConfigureUserAnalyticsProfile() {
       utm: utmParams?.utmString,
     });
   }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString]);
+
+  useEffect(() => {
+    userAnalytics.setDebug(showDebugValues || false);
+  }, [showDebugValues]);
 }
