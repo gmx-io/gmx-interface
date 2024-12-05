@@ -129,6 +129,7 @@ export type TradeBoxConfirmClickEvent = {
     leverage: string;
     isLeverageEnabled?: boolean;
     is1CT: boolean;
+    isTPSLCreated?: boolean;
     chain: string;
     isFirstOrder: boolean;
   };
@@ -153,6 +154,7 @@ export type TradeBoxResultEvent = {
     amountUsd?: number;
     leverage: string;
     is1CT: boolean;
+    isTPSLCreated?: boolean;
     chain: string;
     isFirstOrder: boolean;
     isLeverageEnabled?: boolean;

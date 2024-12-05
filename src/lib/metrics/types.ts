@@ -287,6 +287,7 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   isLeverageEnabled: boolean | undefined;
   initialCollateralAllowance: string | undefined;
   initialCollateralBalance: string | undefined;
+  isTPSLCreated: boolean | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
