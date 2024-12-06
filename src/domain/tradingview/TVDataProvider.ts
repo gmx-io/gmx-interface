@@ -100,7 +100,6 @@ export class TVDataProvider {
     periodParams: PeriodParams,
     shouldRefetchBars: boolean
   ) {
-    console.log("TVDataProvider.getBars", ticker, resolution, isStable, periodParams, shouldRefetchBars);
     const period = SUPPORTED_RESOLUTIONS[resolution];
     const { from, to } = periodParams;
 
