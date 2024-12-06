@@ -65,12 +65,14 @@ export function useMarketTokensDataRequest(
 
     request: () =>
       marketsAddresses!.reduce((requests, marketAddress) => {
-        const market = getByKey(marketsData, marketAddress)!;
+        // eslint-disable-next-line es-x/no-string-prototype-replaceall
+        const fixedAddress = marketAddress.replaceAll("1-", "");
+        const market = getByKey(marketsData, fixedAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market);
 
         if (marketPrices) {
           const marketProps = {
-            marketToken: market.marketTokenAddress,
+            marketToken: fixedAddress,
             longToken: market.longTokenAddress,
             shortToken: market.shortTokenAddress,
             indexToken: market.indexTokenAddress,
@@ -111,7 +113,7 @@ export function useMarketTokensDataRequest(
         }
 
         requests[`${marketAddress}-tokenData`] = {
-          contractAddress: marketAddress,
+          contractAddress: fixedAddress,
           abi: TokenAbi.abi,
           calls: {
             totalSupply: {

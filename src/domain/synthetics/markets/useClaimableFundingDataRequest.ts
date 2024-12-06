@@ -30,6 +30,8 @@ export function useClaimableFundingDataRequest(chainId: number) {
       }
 
       return marketsAddresses.reduce((request, marketAddress) => {
+        // eslint-disable-next-line es-x/no-string-prototype-replaceall
+        const fixedAddress = marketAddress.replaceAll("1-", "");
         const market = getByKey(marketsData, marketAddress);
 
         if (!market) {
@@ -39,11 +41,11 @@ export function useClaimableFundingDataRequest(chainId: number) {
         const keys = hashDataMap({
           claimableFundingAmountLong: [
             ["bytes32", "address", "address", "address"],
-            [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account as string],
+            [CLAIMABLE_FUNDING_AMOUNT, fixedAddress, market.longTokenAddress, account as string],
           ],
           claimableFundingAmountShort: [
             ["bytes32", "address", "address", "address"],
-            [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account as string],
+            [CLAIMABLE_FUNDING_AMOUNT, fixedAddress, market.shortTokenAddress, account as string],
           ],
         });
 

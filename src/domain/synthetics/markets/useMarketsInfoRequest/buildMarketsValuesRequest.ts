@@ -31,6 +31,9 @@ export async function buildMarketsValuesRequest(
   const request: MarketValuesMulticallRequestConfig = {};
 
   for (const marketAddress of marketsAddresses || []) {
+    // eslint-disable-next-line es-x/no-string-prototype-replaceall
+    const fixedAddress = marketAddress.replaceAll("1-", "");
+
     const market = getByKey(marketsData, marketAddress)!;
     const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
@@ -41,7 +44,7 @@ export async function buildMarketsValuesRequest(
     }
 
     const marketProps = {
-      marketToken: market.marketTokenAddress,
+      marketToken: fixedAddress,
       indexToken: market.indexTokenAddress,
       longToken: market.longTokenAddress,
       shortToken: market.shortTokenAddress,
@@ -53,7 +56,7 @@ export async function buildMarketsValuesRequest(
       calls: {
         marketInfo: {
           methodName: "getMarketInfo",
-          params: [dataStoreAddress, marketPrices, marketAddress],
+          params: [dataStoreAddress, marketPrices, fixedAddress],
         },
         marketTokenPriceMax: {
           methodName: "getMarketTokenPrice",
@@ -82,11 +85,11 @@ export async function buildMarketsValuesRequest(
       },
     };
 
-    const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
+    const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[fixedAddress];
 
     if (!prebuiltHashedKeys) {
       throw new Error(
-        `No pre-built hashed market keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
+        `No pre-built hashed market keys found for the market ${fixedAddress}. Run \`yarn prebuild\` to generate them.`
       );
     }
 

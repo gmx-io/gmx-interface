@@ -125,6 +125,7 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
 const URGENT_WINDOW_MS = 50;
 const BACKGROUND_WINDOW_MS = FREQUENT_UPDATE_INTERVAL - FREQUENT_MULTICALL_REFRESH_INTERVAL;
+let numberOfCalls = 0;
 
 const throttledExecuteUrgentChainsMulticalls = throttle(executeChainsMulticalls, URGENT_WINDOW_MS, {
   leading: false,
@@ -159,7 +160,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
 
   const callResultHandler: CallResultHandler = (destination, callResult, callError) => {
     resolvedCallsCount++;
-
+    numberOfCalls++;
     const { callGroupName, callName } = destination;
 
     if (callResult) {
@@ -174,6 +175,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     }
 
     if (resolvedCallsCount === requestCallsCount) {
+      console.log("batches number of calls", numberOfCalls);
       return resolve(requestResult);
     }
   };
@@ -190,7 +192,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
       // There are two main reasons for this:
       // 1. Single token backed pools have many pairs with the same method signatures
       // 2. The majority of pools have USDC as the short token, which means they all have some common calls
-      const callId = getCallId(callGroup.contractAddress, call.methodName, call.params);
+      const callId = getCallId(callGroupName, call.methodName, call.params);
 
       if (!store.current[chainId]) {
         store.current[chainId] = {};
@@ -248,6 +250,8 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
 
   return promise.then((result) => {
     const duration = performance.now() - durationStart;
+
+    console.log("batches timing", duration);
 
     if (result.success) {
       emitMetricTiming<MulticallBatchedTiming>({

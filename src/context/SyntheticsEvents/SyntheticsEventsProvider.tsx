@@ -99,7 +99,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       ...glvData,
     };
 
-    const marketTokensAddressesString = Object.keys(glvAndGmMarketsData).join("-");
+    const marketTokensAddressesString = Object.keys(glvAndGmMarketsData).join(":");
 
     return {
       glvAndGmMarketsData,
@@ -814,7 +814,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         chainId,
         wsProvider,
         currentAccount,
-        marketTokensAddressesString.split("-"),
+        marketTokensAddressesString.split(":").filter((s) => !s.includes("1-")),
         (tokenAddress, amount) => {
           setTokensBalancesUpdates((old) => {
             const oldDiff = old[tokenAddress]?.diff || 0n;
