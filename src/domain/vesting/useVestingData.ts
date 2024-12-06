@@ -4,7 +4,7 @@ import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, getVestingData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
 import useSWR from "swr";
-import ReaderV2 from "abis/ReaderV2.json";
+import ReaderV2 from "sdk/abis/ReaderV2.json";
 import { useMemo } from "react";
 
 export default function useVestingData(account?: string) {

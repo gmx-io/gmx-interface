@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
