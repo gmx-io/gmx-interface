@@ -1,5 +1,5 @@
-import DataStore from "sdk/abis/DataStore.json";
-import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
+import DataStore from "abis/DataStore.json";
+import SyntheticsReader from "abis/SyntheticsReader.json";
 
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";

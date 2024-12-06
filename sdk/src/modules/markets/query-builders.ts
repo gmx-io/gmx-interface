@@ -3,8 +3,8 @@ import { TokensData } from "types/tokens";
 import { getContractMarketPrices } from "utils/markets";
 import { getByKey } from "utils/objects";
 
-import DataStore from "sdk/abis/DataStore.json";
-import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
+import DataStore from "abis/DataStore.json";
+import SyntheticsReader from "abis/SyntheticsReader.json";
 
 import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
 import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "../../prebuilt";

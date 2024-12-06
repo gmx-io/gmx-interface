@@ -1,8 +1,8 @@
 import { Abi, Address, decodeErrorResult, encodeFunctionData, withRetry } from "viem";
 
-import CustomErrors from "sdk/abis/CustomErrors.json";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
-import Multicall from "sdk/abis/Multicall.json";
+import CustomErrors from "abis/CustomErrors.json";
+import ExchangeRouter from "abis/ExchangeRouter.json";
+import Multicall from "abis/Multicall.json";
 
 import { getContract } from "configs/contracts";
 import { convertTokenAddress } from "configs/tokens";

@@ -18,7 +18,7 @@ import {
   withdrawalGasLimitKey,
 } from "configs/dataStore";
 
-import DataStore from "sdk/abis/DataStore.json";
+import DataStore from "abis/DataStore.json";
 
 import type { IncreasePositionAmounts } from "types/amounts";
 import type { GasLimitsConfig } from "types/fees";

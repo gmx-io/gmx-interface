@@ -5,7 +5,7 @@ import type { DecreasePositionSwapType, OrderType } from "types/orders";
 import type { Token, TokensData } from "types/tokens";
 import type { PriceOverrides } from "./createIncreaseOrderTxn";
 
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import ExchangeRouter from "abis/ExchangeRouter.json";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { isMarketOrderType } from "utils/orders";
 import { convertToContractPrice } from "utils/tokens";

@@ -1,4 +1,4 @@
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "configs/contracts";
 
 import type { GmxSdk } from "../../../index";

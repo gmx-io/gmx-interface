@@ -1,7 +1,9 @@
-import WETH from "sdk/abis/WETH.json";
-import { getWrappedToken } from "configs/tokens";
-import { GmxSdk } from "../../../index";
 import { Abi, Address } from "viem";
+
+import WETH from "abis/WETH.json";
+import { getWrappedToken } from "configs/tokens";
+
+import type { GmxSdk } from "../../../index";
 
 export type WrapOrUnwrapParams = {
   amount: bigint;
