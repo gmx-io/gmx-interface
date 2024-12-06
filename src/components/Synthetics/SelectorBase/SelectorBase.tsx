@@ -17,6 +17,7 @@ import "./SelectorBase.scss";
 type Props = PropsWithChildren<{
   handleClassName?: string;
   chevronClassName?: string;
+  desktopPanelClassName?: string;
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
@@ -200,7 +201,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             <FloatingPortal>
               <Popover.Panel
                 static
-                className="SelectorBase-panel"
+                className={cx("SelectorBase-panel", props.desktopPanelClassName)}
                 ref={refs.setFloating}
                 style={floatingStyles}
                 onPointerDown={suppressPointerDown}
