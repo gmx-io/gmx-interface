@@ -33,6 +33,20 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "funding-rates-decrease",
+    title: "Funding rates decreased",
+    isActive: true,
+    bodyText: (
+      <>New parameters have been introduced to improve funding rates while maintaining a balanced open interest.</>
+    ),
+    link: {
+      text: "Read more",
+      href: "https://x.com/GMX_IO/status/1865043231798427916",
+    },
+    startDate: "06 Dec 2024, 19:00",
+    endDate: "13 Dec 2024, 00:00",
+  },
+  {
     id: "trading-fees-reduction",
     title: "Trading fees are reduced",
     isActive: true,
