@@ -1,7 +1,7 @@
 import Loader from "components/Common/Loader";
 import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
-import { isChartAvailabeForToken } from "config/tokens";
+import { isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Token, TokenPrices, getMidPrice } from "domain/tokens";
@@ -118,7 +118,7 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
-      if (isChartAvailabeForToken(chainId, symbol)) {
+      if (isChartAvailableForToken(chainId, symbol)) {
         tvWidgetRef.current.setSymbol(
           getSymbolName(symbol, visualMultiplier),
           tvWidgetRef.current.activeChart().resolution(),

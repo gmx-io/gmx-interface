@@ -1,6 +1,5 @@
-import { useMemo } from "react";
 import cx from "classnames";
-import { BigNumberish } from "ethers";
+import { useMemo } from "react";
 
 import { bigMath } from "lib/bigmath";
 import { formatPercentageDisplay } from "lib/numbers";
@@ -10,8 +9,8 @@ import "./ShareBar.scss";
 const PERCENTAGE_HIDE_THRESHOLD = 25;
 
 export type Props = {
-  share?: BigNumberish;
-  total?: BigNumberish;
+  share?: string | number | bigint;
+  total?: string | number | bigint;
   warningThreshold?: number; // 0-100
   className?: string;
   showPercentage?: boolean;

@@ -17,7 +17,7 @@ import {
   getTokenBySymbol,
   getTokenVisualMultiplier,
   getTokens,
-  isChartAvailabeForToken,
+  isChartAvailableForToken,
 } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useChainId } from "lib/chains";
@@ -169,7 +169,7 @@ function buildFeeder({
       resolveSymbol(symbolNameWithMultiplier, onSymbolResolvedCallback) {
         let { symbolName, visualMultiplier } = parseSymbolName(symbolNameWithMultiplier);
 
-        if (!isChartAvailabeForToken(chainId, symbolName)) {
+        if (!isChartAvailableForToken(chainId, symbolName)) {
           symbolName = getNativeToken(chainId).symbol;
         }
 
