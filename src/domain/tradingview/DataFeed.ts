@@ -87,6 +87,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     const token = getTokenBySymbol(this.chainId, symbolName);
+    const priceDecimals = token.priceDecimals ?? 2;
+
     const prefix = visualMultiplier !== 1 ? getTokenVisualMultiplier(token) : "";
 
     const symbolInfo: LibrarySymbolInfo = {
@@ -106,7 +108,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       exchange: "GMX",
       listed_exchange: "GMX",
       format: "price",
-      pricescale: Infinity,
+      pricescale: Math.max(1, 10 ** priceDecimals / visualMultiplier),
     };
 
     setTimeout(() => {
