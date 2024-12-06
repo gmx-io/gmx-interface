@@ -6,7 +6,7 @@ function SEO(props) {
     title: "t3.money | Decentralized Perpetual Exchange",
     description:
       "Trade spot or perpetual cryptocurrencies with up to 50x leverage directly from your wallet on Optimism.",
-    // image: "https://gmx.io/og.png",
+    image: "https://t3.money/og.png",
     type: "exchange",
     ...customMeta,
   };
