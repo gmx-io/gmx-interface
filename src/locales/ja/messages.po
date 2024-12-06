@@ -48,6 +48,7 @@ msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
