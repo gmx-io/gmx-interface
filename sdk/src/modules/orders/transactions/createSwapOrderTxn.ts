@@ -1,6 +1,6 @@
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "configs/tokens";

@@ -2,8 +2,8 @@ import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokensMap, getV2Tokens, getWrappedToken } from "configs/tokens";
 import { TokenBalancesData, TokenPricesData, TokensData, Token as TToken } from "types/tokens";
 
-import Multicall from "abis/Multicall.json";
-import Token from "abis/Token.json";
+import Multicall from "sdk/abis/Multicall.json";
+import Token from "sdk/abis/Token.json";
 
 import { Module } from "../base";
 import { parseContractPrice } from "utils/tokens";

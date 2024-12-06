@@ -8,11 +8,11 @@ import {
   getStakingData,
 } from "lib/legacy";
 
-import GlpManager from "abis/GlpManager.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import RewardReader from "abis/RewardReader.json";
-import Token from "abis/Token.json";
-import Vault from "abis/Vault.json";
+import GlpManager from "sdk/abis/GlpManager.json";
+import ReaderV2 from "sdk/abis/ReaderV2.json";
+import RewardReader from "sdk/abis/RewardReader.json";
+import Token from "sdk/abis/Token.json";
+import Vault from "sdk/abis/Vault.json";
 
 import { useGmxPrice } from "domain/legacy";
 

@@ -8,7 +8,7 @@ import { getContract } from "config/contracts";
 import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";
 
-import RewardRouter from "abis/RewardRouter.json";
+import RewardRouter from "sdk/abis/RewardRouter.json";
 
 import "./CompleteAccountTransfer.css";
 

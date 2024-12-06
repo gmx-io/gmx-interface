@@ -1,7 +1,7 @@
 import { getContract } from "configs/contracts";
 import { Module } from "../base";
 
-import GovToken from "abis/GovToken.json";
+import GovToken from "sdk/abis/GovToken.json";
 
 export class Accounts extends Module {
   get govTokenAddress() {

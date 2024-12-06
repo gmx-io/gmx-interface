@@ -1,4 +1,4 @@
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "sdk/abis/CustomErrors.json";
 
 import type { GmxSdk } from "index";
 import { sleep } from "./common";

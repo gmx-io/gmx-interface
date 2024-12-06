@@ -17,7 +17,7 @@ import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 
-import PositionRouter from "abis/PositionRouter.json";
+import PositionRouter from "sdk/abis/PositionRouter.json";
 import Tooltip from "../Tooltip/Tooltip";
 
 import { getChainName, IS_NETWORK_DISABLED } from "config/chains";

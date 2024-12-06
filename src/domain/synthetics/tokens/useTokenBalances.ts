@@ -6,8 +6,8 @@ import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
 
-import Multicall from "abis/Multicall.json";
-import Token from "abis/Token.json";
+import Multicall from "sdk/abis/Multicall.json";
+import Token from "sdk/abis/Token.json";
 import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,

@@ -1,8 +1,8 @@
 import { zeroAddress, zeroHash } from "viem";
 
-import DataStore from "abis/DataStore.json";
-import ReferralStorage from "abis/ReferralStorage.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import DataStore from "sdk/abis/DataStore.json";
+import ReferralStorage from "sdk/abis/ReferralStorage.json";
+import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 
 import { getContract } from "configs/contracts";
 import {

@@ -26,13 +26,13 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 
-import GlpManager from "abis/GlpManager.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import RewardReader from "abis/RewardReader.json";
-import RewardRouter from "abis/RewardRouter.json";
-import RewardTracker from "abis/RewardTracker.json";
-import VaultV2 from "abis/VaultV2.json";
-import Vester from "abis/Vester.json";
+import GlpManager from "sdk/abis/GlpManager.json";
+import ReaderV2 from "sdk/abis/ReaderV2.json";
+import RewardReader from "sdk/abis/RewardReader.json";
+import RewardRouter from "sdk/abis/RewardRouter.json";
+import RewardTracker from "sdk/abis/RewardTracker.json";
+import VaultV2 from "sdk/abis/VaultV2.json";
+import Vester from "sdk/abis/Vester.json";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";

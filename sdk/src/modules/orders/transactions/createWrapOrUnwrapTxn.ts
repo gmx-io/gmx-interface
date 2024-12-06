@@ -1,4 +1,4 @@
-import WETH from "abis/WETH.json";
+import WETH from "sdk/abis/WETH.json";
 import { getWrappedToken } from "configs/tokens";
 import { GmxSdk } from "../../../index";
 import { Abi, Address } from "viem";

@@ -19,7 +19,7 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import type { GasLimitsConfig } from "./types";
 
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 
 export function useGasLimits(chainId: number): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
