@@ -5,7 +5,7 @@ function SEO(props) {
   const meta = {
     title: "t3.money | Decentralized Perpetual Exchange",
     description:
-      "Trade spot or perpetual cryptocurrencies with up to 50x leverage directly from your wallet on Optimism.",
+      "Trade spot or perpetual cryptocurrencies with up to 50x leverage directly from your wallet on Morph L2.",
     image: "https://t3.money/og.png",
     type: "exchange",
     ...customMeta,
