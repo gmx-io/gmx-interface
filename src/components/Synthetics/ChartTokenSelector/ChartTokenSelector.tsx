@@ -157,6 +157,7 @@ function MarketsList() {
   const indexTokenStatsMap = useSelector(selectIndexTokenStatsMap).indexMap;
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
+  const isSmallMobile = useMedia("(max-width: 400px)");
 
   const close = useSelectorClose();
 
@@ -323,7 +324,7 @@ function MarketsList() {
                             <Trans>24H VOL.</Trans>
                           </Sorter>
                         </th>
-                        <th className={thClassName}>
+                        <th className={thClassName} colSpan={2}>
                           <Sorter {...getSorterProps("combinedOpenInterest")}>
                             <Trans>OPEN INTEREST</Trans>
                           </Sorter>
@@ -332,7 +333,7 @@ function MarketsList() {
                     )}
                     <th className={thClassName} colSpan={2}>
                       <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
-                        <Trans>AVAILABLE LIQ.</Trans>
+                        {isSmallMobile ? <Trans>AVAIL. LIQ.</Trans> : <Trans>AVAILABLE LIQ.</Trans>}
                       </Sorter>
                     </th>
                   </>
@@ -584,7 +585,7 @@ function MarketListItem({
       onClick={handleSelectLargePosition}
     >
       <td
-        className={cx("pr-4 text-center hover:bg-cold-blue-700", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
+        className={cx("pr-4 text-center", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
@@ -612,15 +613,23 @@ function MarketListItem({
           {isMobile && <span>{dayPriceDeltaComponent}</span>}
         </div>
       </td>
-      {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
       {!isMobile && (
-        <td className={tdClassName}>{dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}</td>
-      )}
-      {!isMobile && (
-        <td className={tdClassName}>
-          {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)} /{" "}
-          {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
-        </td>
+        <>
+          <td className={tdClassName}>{dayPriceDeltaComponent}</td>
+          <td className={tdClassName}>{dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}</td>
+          <td className={tdClassName}>
+            <span className="inline-flex items-center gap-4">
+              <LongIcon width={12} className="relative top-1 opacity-70" />
+              {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)}
+            </span>
+          </td>
+          <td className={tdClassName}>
+            <span className="inline-flex items-center gap-4">
+              <ShortIcon width={12} className="relative top-1 opacity-70" />
+              {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
+            </span>
+          </td>
+        </>
       )}
       {!isMobile ? (
         <>
