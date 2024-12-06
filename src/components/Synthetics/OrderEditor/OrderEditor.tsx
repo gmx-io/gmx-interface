@@ -618,6 +618,7 @@ export function OrderEditor(p: Props) {
                 label={t`Acceptable Price`}
                 value={formatAcceptablePrice(acceptablePrice, {
                   visualMultiplier: indexToken?.visualMultiplier,
+                  displayDecimals: indexToken?.priceDecimals,
                 })}
               />
 
@@ -626,6 +627,7 @@ export function OrderEditor(p: Props) {
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
+                    displayDecimals: indexToken?.priceDecimals,
                   })}
                 />
               )}
