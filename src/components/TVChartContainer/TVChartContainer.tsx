@@ -1,18 +1,23 @@
 import Loader from "components/Common/Loader";
-import { USD_DECIMALS } from "config/factors";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
-import { isChartAvailabeForToken } from "config/tokens";
+import { isChartAvailableForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { Token, TokenPrices, getMidPrice } from "domain/tokens";
-import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import { TvDatafeed } from "domain/tradingview/useTVDatafeed";
+import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
+import { TokenPrices } from "domain/tokens";
+import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
-import { bigintToNumber } from "lib/numbers";
+import { sleep } from "lib/sleep";
 import { useTradePageVersion } from "lib/useTradePageVersion";
-import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage, useMedia } from "react-use";
-import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
+import type {
+  ChartData,
+  ChartingLibraryWidgetOptions,
+  IChartingLibraryWidget,
+  IPositionLineAdapter,
+  ResolutionString,
+} from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 
@@ -22,37 +27,29 @@ export type ChartLine = {
 };
 
 type Props = {
-  symbol?: string;
   chainId: number;
   chartLines: ChartLine[];
-  onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
-  dataProvider?: TVDataProvider;
-  datafeed: TvDatafeed;
   chartToken:
     | ({
         symbol: string;
       } & TokenPrices)
     | { symbol: string };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
-  oraclePriceDecimals?: number;
   visualMultiplier?: number;
+  setIsCandlesLoaded?: (isCandlesLoaded: boolean) => void;
 };
 
 export default function TVChartContainer({
-  symbol,
+  chartToken,
   chainId,
   chartLines,
-  onSelectToken,
-  dataProvider,
-  datafeed,
   period,
   setPeriod,
-  chartToken,
   supportedResolutions,
-  oraclePriceDecimals,
   visualMultiplier,
+  setIsCandlesLoaded,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -61,23 +58,29 @@ export default function TVChartContainer({
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
 
-  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
+  const [tradePageVersion] = useTradePageVersion();
 
-  const isMobile = useMedia("(max-width: 550px)");
-  const symbolRef = useRef(symbol);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+
+  const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
 
   useEffect(() => {
-    if (chartToken && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
-      const averagePrice = getMidPrice(chartToken);
-
-      const formattedPrice = bigintToNumber(averagePrice, USD_DECIMALS);
-      dataProvider?.setCurrentChartToken({
-        price: formattedPrice,
-        ticker: chartToken.symbol,
-        isChartReady: chartReady,
+    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);
+    if (setIsCandlesLoaded) {
+      newDatafeed.addEventListener("candlesLoad.success", () => {
+        setIsCandlesLoaded(true);
       });
     }
-  }, [chartToken, chartReady, dataProvider, chainId, oraclePriceDecimals]);
+    setDatafeed((prev) => {
+      if (prev) {
+        prev.destroy();
+      }
+      return newDatafeed;
+    });
+  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, tradePageVersion]);
+
+  const isMobile = useMedia("(max-width: 550px)");
+  const symbolRef = useRef(chartToken.symbol);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
@@ -117,29 +120,46 @@ export default function TVChartContainer({
   );
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
-      if (isChartAvailabeForToken(chainId, symbol)) {
-        tvWidgetRef.current.setSymbol(
-          getSymbolName(symbol, visualMultiplier),
-          tvWidgetRef.current.activeChart().resolution(),
-          () => null
-        );
-      }
+    if (
+      chartReady &&
+      tvWidgetRef.current &&
+      chartToken.symbol &&
+      isChartAvailableForToken(chainId, chartToken.symbol)
+    ) {
+      tvWidgetRef.current.setSymbol(
+        getSymbolName(chartToken.symbol, visualMultiplier),
+        tvWidgetRef.current.activeChart().resolution(),
+        async () => {
+          const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
+          if (!priceScale) {
+            return;
+          }
+
+          // Force Price Scale width to recalculate
+          const initialAutoScale = priceScale.isAutoScale();
+          priceScale.setAutoScale(!initialAutoScale);
+          await sleep(0);
+          priceScale.setAutoScale(initialAutoScale);
+        }
+      );
     }
-  }, [symbol, chartReady, period, chainId, datafeed, visualMultiplier]);
+  }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
+
+  useLayoutEffect(() => {
+    if (symbolRef.current) {
+      datafeed?.prefetchBars(symbolRef.current);
+    }
+  }, [datafeed]);
 
   useEffect(() => {
-    dataProvider?.resetCache();
-    if (symbolRef.current) {
-      dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
-    }
+    if (!datafeed) return;
 
-    const widgetOptions = {
+    const widgetOptions: ChartingLibraryWidgetOptions = {
       debug: false,
       symbol: symbolRef.current && getSymbolName(symbolRef.current, visualMultiplier), // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
-      datafeed: datafeed,
+      datafeed,
       theme: defaultChartProps.theme,
-      container: chartContainerRef.current,
+      container: chartContainerRef.current!,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
       loading_screen: defaultChartProps.loading_screen,
@@ -147,30 +167,27 @@ export default function TVChartContainer({
       disabled_features: isMobile
         ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMobile)
         : defaultChartProps.disabled_features,
-      client_id: defaultChartProps.clientId,
-      user_id: defaultChartProps.userId,
+      client_id: defaultChartProps.client_id,
+      user_id: defaultChartProps.user_id,
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
       overrides: defaultChartProps.overrides,
-      interval: getObjectKeyFromValue(period, supportedResolutions),
-      favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) },
+      interval: getObjectKeyFromValue(period, supportedResolutions) as ResolutionString,
+      favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,
-      save_load_adapter: new SaveLoadAdapter(
-        chainId,
-        tvCharts,
-        setTvCharts,
-        onSelectToken,
-        tradePageVersion,
-        setTradePageVersion
-      ),
+      load_last_chart: true,
+      auto_save_delay: 1,
+      save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts, tradePageVersion),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
+        "mainSeriesProperties.statusViewStyle.showExchange": false,
       });
       tvWidgetRef.current
         ?.activeChart()
@@ -181,6 +198,12 @@ export default function TVChartContainer({
             setPeriod(period);
           }
         });
+
+      tvWidgetRef.current?.subscribe("onAutoSaveNeeded", () => {
+        tvWidgetRef.current?.saveChartToServer(undefined, undefined, {
+          chartName: `gmx-chart-v${tradePageVersion}`,
+        });
+      });
 
       tvWidgetRef.current?.activeChart().dataReady(() => {
         setChartDataLoading(false);
@@ -197,7 +220,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, dataProvider]);
+  }, [chainId, datafeed]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

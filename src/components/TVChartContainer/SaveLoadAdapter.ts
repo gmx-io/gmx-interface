@@ -1,43 +1,45 @@
-import { ChartData } from "charting_library";
-import { getTokenBySymbol } from "config/tokens";
-import { Token } from "domain/tokens";
+import type {
+  ChartData,
+  ChartMetaInfo,
+  ChartTemplate,
+  IExternalSaveLoadAdapter,
+  LineToolsAndGroupsState,
+  StudyTemplateMetaInfo,
+} from "charting_library";
 
 type ChartDataInfo = ChartData & {
   appVersion?: number;
 };
 
-export class SaveLoadAdapter {
-  chainId: number;
-  charts: ChartDataInfo[] | undefined;
-  setTvCharts: (a: ChartDataInfo[]) => void;
-  onSelectToken: (token: Token) => void;
-  currentAppVersion: number;
-  setTradePageVersion: (version: number) => void;
+export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
+  private charts: ChartDataInfo[] | undefined;
+  private setTvCharts: (a: ChartDataInfo[]) => void;
+  private currentAppVersion: number;
 
   constructor(
-    chainId: number,
     charts: ChartDataInfo[] | undefined,
     setTvCharts: (a: ChartDataInfo[]) => void,
-    onSelectToken: (token: Token) => void,
-    currentAppVersion: number,
-    setTradePageVersion: (version: number) => void
+    currentAppVersion: number
   ) {
     this.charts = charts;
     this.setTvCharts = setTvCharts;
-    this.chainId = chainId;
-    this.onSelectToken = onSelectToken;
     this.currentAppVersion = currentAppVersion;
-    this.setTradePageVersion = setTradePageVersion;
   }
 
-  getAllCharts() {
+  getAllCharts(): Promise<ChartMetaInfo[]> {
     const charts = this.charts || [];
     const filteredCharts = charts.filter((chart) => {
+      if (!chart.id) {
+        return false;
+      }
+
       if (!chart.appVersion) {
         chart.appVersion = 1;
       }
+
       return chart.appVersion === this.currentAppVersion;
-    });
+    }) as ChartMetaInfo[];
+
     return Promise.resolve(filteredCharts);
   }
 
@@ -62,12 +64,6 @@ export class SaveLoadAdapter {
       this.removeChart(chartData.id);
     }
 
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    const offsetMinutes = new Date().getTimezoneOffset();
-    const offsetSeconds = offsetMinutes * 60;
-    const adjustedTimestamp = currentTimestamp - offsetSeconds;
-
-    chartData.timestamp = adjustedTimestamp;
     if (this.charts) {
       this.charts.push(chartData);
       this.setTvCharts(this.charts);
@@ -80,15 +76,56 @@ export class SaveLoadAdapter {
     if (!this.charts) return Promise.reject();
     for (let i = 0; i < this.charts.length; ++i) {
       if (this.charts[i].id === id) {
-        const { content, symbol, appVersion = 1 } = this.charts[i];
-        if (this.currentAppVersion !== appVersion) {
-          this.setTradePageVersion(appVersion);
-        }
-        const tokenInfo = getTokenBySymbol(this.chainId, symbol);
-        this.onSelectToken(tokenInfo);
+        const { content } = this.charts[i];
+
         return Promise.resolve(content);
       }
     }
     return Promise.reject();
+  }
+
+  // Dummy implementations to satisfy the interface
+
+  getAllStudyTemplates(): Promise<StudyTemplateMetaInfo[]> {
+    return Promise.resolve([]);
+  }
+  removeStudyTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  saveStudyTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  getStudyTemplateContent(): Promise<string> {
+    return Promise.resolve("");
+  }
+  getDrawingTemplates(): Promise<string[]> {
+    return Promise.resolve([]);
+  }
+  loadDrawingTemplate(): Promise<string> {
+    return Promise.resolve("");
+  }
+  removeDrawingTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  saveDrawingTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  getChartTemplateContent(): Promise<ChartTemplate> {
+    return Promise.resolve({});
+  }
+  getAllChartTemplates(): Promise<string[]> {
+    return Promise.resolve([]);
+  }
+  saveChartTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  removeChartTemplate(): Promise<void> {
+    return Promise.resolve();
+  }
+  saveLineToolsAndGroups(): Promise<void> {
+    return Promise.resolve();
+  }
+  loadLineToolsAndGroups(): Promise<Partial<LineToolsAndGroupsState> | null> {
+    return Promise.resolve(null);
   }
 }

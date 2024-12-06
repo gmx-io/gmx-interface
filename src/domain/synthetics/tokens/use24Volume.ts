@@ -5,7 +5,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { TIMEZONE_OFFSET_SEC } from "domain/prices";
+import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 
 import { getSubgraphUrl } from "config/subgraph";
 import graphqlFetcher from "lib/graphqlFetcher";

@@ -1,4 +1,4 @@
-import { Bar as BarType, LibrarySymbolInfo } from "charting_library";
+import type { Bar as BarType, LibrarySymbolInfo, ResolutionString } from "charting_library";
 
 export type Bar = BarType & {
   ticker?: string;
@@ -11,7 +11,7 @@ export type SymbolInfo = LibrarySymbolInfo & {
 };
 
 export type TvParamsCache = {
-  resolution: string;
+  resolution: ResolutionString;
   countBack: number;
 };
 
@@ -34,6 +34,7 @@ export type FromOldToNewArray<T> = Flavor<Omit<T[], "reverse">, "FromOldToNewArr
  *
  * Try to use `FromOldToNewArray` instead of this type when possible.
  */
-export type FromNewToOldArray<T> = Flavor<Omit<T[], "reverse">, "FromNewToOldArray"> & {
+export type FromNewToOldArray<T> = Flavor<Omit<T[], "reverse" | "toReversed">, "FromNewToOldArray"> & {
   reverse(): FromOldToNewArray<T>;
+  toReversed(): FromOldToNewArray<T>;
 };

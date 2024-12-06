@@ -12,12 +12,10 @@ import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getPriceDecimals, getToken, getV1Tokens } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { getTokenInfo } from "domain/tokens/utils";
-import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import ChartTokenSelector from "./ChartTokenSelector";
-import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -75,9 +73,6 @@ export default function ExchangeTVChart(props) {
   // eslint-disable-next-line react/hook-use-state
   const [currentSeries] = useState();
 
-  const dataProvider = useRef();
-  const { datafeed } = useTVDatafeed({ dataProvider: dataProvider.current });
-
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
 
@@ -85,12 +80,6 @@ export default function ExchangeTVChart(props) {
     maxPrice: null,
     minPrice: null,
   });
-
-  useEffect(() => {
-    dataProvider.current = new TVDataProvider({
-      resolutions: SUPPORTED_RESOLUTIONS_V1,
-    });
-  }, []);
 
   useEffect(() => {
     const tmp = getChartToken(swapOption, fromToken, toToken, chainId);
@@ -375,14 +364,11 @@ export default function ExchangeTVChart(props) {
           <TVChartContainer
             chartLines={chartLines}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
-            symbol={chartToken.symbol}
+            chartToken={chartToken}
             chainId={chainId}
             onSelectToken={onSelectToken}
-            dataProvider={dataProvider.current}
-            datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
-            chartToken={chartToken}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
           />
         ) : (

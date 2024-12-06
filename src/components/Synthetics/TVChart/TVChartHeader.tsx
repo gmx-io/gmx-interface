@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce, useMedia } from "react-use";
 
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getToken, isChartAvailabeForToken } from "config/tokens";
+import { getToken, isChartAvailableForToken } from "config/tokens";
 
 import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -34,7 +34,7 @@ function TVChartHeaderInfoMobile() {
   const chartTokenAddress = chartToken?.address;
 
   const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
-    isChartAvailabeForToken(chainId, token.symbol)
+    isChartAvailableForToken(chainId, token.symbol)
   );
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
@@ -222,7 +222,7 @@ function TVChartHeaderInfoDesktop() {
   const chartTokenAddress = chartToken?.address;
 
   const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
-    isChartAvailabeForToken(chainId, token.symbol)
+    isChartAvailableForToken(chainId, token.symbol)
   );
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
