@@ -124,7 +124,6 @@ export default function ChartTokenSelector(props: Props) {
 }
 
 type SortField =
-  | "marketVolume"
   | "lastPrice"
   | "24hChange"
   | "24hVolume"
@@ -302,9 +301,7 @@ function MarketsList() {
             <thead className="bg-slate-800">
               <tr>
                 <th className={thClassName} colSpan={2}>
-                  <Sorter {...getSorterProps("marketVolume")}>
-                    <Trans>Market</Trans>
-                  </Sorter>
+                  <Trans>Market</Trans>
                 </th>
                 {!isSwap && (
                   <>
@@ -688,17 +685,14 @@ function tokenSortingComparatorBuilder({
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
   return (a: Token, b: Token) => {
-    if (orderBy === "unspecified" || direction === "unspecified") {
-      return 0;
-    }
-
-    if (orderBy === "marketVolume") {
-      // they are by default sorted by market volume so we just pass directionMultiplier
-      return directionMultiplier;
-    }
-
     const aAddress = convertTokenAddress(chainId, a.address, "wrapped");
     const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
+
+    if (orderBy === "24hVolume" || orderBy === "unspecified" || direction === "unspecified") {
+      const aVolume = dayVolumes?.[aAddress] || 0n;
+      const bVolume = dayVolumes?.[bAddress] || 0n;
+      return aVolume > bVolume ? directionMultiplier : -directionMultiplier;
+    }
 
     if (orderBy === "lastPrice") {
       const aMidPrice = tokensData?.[aAddress]?.prices ? getMidPrice(tokensData[aAddress].prices) : 0n;
@@ -711,12 +705,6 @@ function tokenSortingComparatorBuilder({
       const aChange = dayPriceDeltaMap?.[a.address]?.deltaPercentage || 0;
       const bChange = dayPriceDeltaMap?.[b.address]?.deltaPercentage || 0;
       return aChange > bChange ? directionMultiplier : -directionMultiplier;
-    }
-
-    if (orderBy === "24hVolume") {
-      const aVolume = dayVolumes?.[aAddress] || 0n;
-      const bVolume = dayVolumes?.[bAddress] || 0n;
-      return aVolume > bVolume ? directionMultiplier : -directionMultiplier;
     }
 
     if (orderBy === "combinedAvailableLiquidity") {
