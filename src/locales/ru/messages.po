@@ -1296,6 +1296,10 @@ msgstr ""
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr "Если у вас есть существующая позиция, позиция будет закрыта по цене {0} USD.<0/><1/>Цена выхода будет меняться в зависимости от цены актива.<2/><3/><4>Подробнее</4>."
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "AVAIL. LIQ."
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Submitted"
 msgstr "Перевод Подтверждён"
