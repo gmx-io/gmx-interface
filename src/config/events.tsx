@@ -43,7 +43,7 @@ export const appEventsData: EventData[] = [
       text: "Read more",
       href: "https://x.com/GMX_IO/status/1865043231798427916",
     },
-    startDate: "06 Dec 2024, 00:00",
+    startDate: "06 Dec 2024, 19:00",
     endDate: "13 Dec 2024, 00:00",
   },
   {
