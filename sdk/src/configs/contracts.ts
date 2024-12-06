@@ -1,5 +1,5 @@
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { type Address, zeroAddress } from "viem";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export const XGMT_EXCLUDED_ACCOUNTS = [
   "0x330eef6b9b1ea6edd620c825c9919dc8b611d5d5",
@@ -9,62 +9,6 @@ export const XGMT_EXCLUDED_ACCOUNTS = [
 ];
 
 const CONTRACTS = {
-  [ARBITRUM_GOERLI]: {
-    // arbitrum testnet
-    Vault: zeroAddress,
-    Router: zeroAddress,
-    VaultReader: zeroAddress,
-    Reader: zeroAddress,
-    GlpManager: zeroAddress,
-    RewardRouter: zeroAddress,
-    RewardReader: zeroAddress,
-    GlpRewardRouter: zeroAddress,
-    NATIVE_TOKEN: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
-    GLP: zeroAddress,
-    GMX: zeroAddress,
-    ES_GMX: zeroAddress,
-    BN_GMX: zeroAddress,
-    USDG: zeroAddress,
-    ES_GMX_IOU: zeroAddress,
-
-    StakedGmxTracker: zeroAddress,
-    BonusGmxTracker: zeroAddress,
-    FeeGmxTracker: zeroAddress,
-    StakedGlpTracker: zeroAddress,
-    FeeGlpTracker: zeroAddress,
-
-    StakedGmxDistributor: zeroAddress,
-    StakedGlpDistributor: zeroAddress,
-
-    GmxVester: zeroAddress,
-    GlpVester: zeroAddress,
-    AffiliateVester: zeroAddress,
-
-    OrderBook: zeroAddress,
-    OrderExecutor: zeroAddress,
-    OrderBookReader: zeroAddress,
-
-    PositionRouter: zeroAddress,
-    PositionManager: zeroAddress,
-
-    TraderJoeGmxAvaxPool: zeroAddress,
-    ReferralStorage: "0x995E905E471D53B7c5d0dbf6406860Cb3C029e95",
-    ReferralReader: zeroAddress,
-
-    // Synthetics
-    DataStore: "0xbA2314b0f71ebC705aeEBeA672cc3bcEc510D03b",
-    EventEmitter: "0x2fbE45fCb58B7106CF0a3Be9225D5Ed5A1004cc4",
-    ExchangeRouter: "0xFE98518C9c8F1c5a216E999816c2dE3199f295D2",
-    SubaccountRouter: "0x4Ae6ecDD55ee1066477Ee4B5Fc9f4D04C4CE66E9",
-    DepositVault: "0x838a9bdf8736eD522A60F5f715e4F3FC2BC91A08",
-    WithdrawalVault: "0xaAac001C2a2727Ff2d484C4Ad7d2079C7094e7Ef",
-    OrderVault: "0x82aFd2590814a7Ce3d7ea6b63F80481F8b227bA9",
-    SyntheticsReader: "0xab747a7bb64B74D78C6527C1F148808a19120475",
-    SyntheticsRouter: "0xa960786Bc30F8587279df6116F9E0B15C5b034dE",
-    Timelock: zeroAddress,
-
-    Multicall: "0x6d85594c9BD6b0833bC85AE62B360654A1e52D70",
-  },
   [ARBITRUM]: {
     // arbitrum mainnet
     Vault: "0x489ee077994B6658eAfA855C308275EAd8097C4A",

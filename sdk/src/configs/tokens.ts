@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import { Token } from "types/tokens";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -794,209 +794,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformToken: true,
     },
   ],
-  [ARBITRUM_GOERLI]: [
-    {
-      name: "Ethereum",
-      symbol: "ETH",
-      decimals: 18,
-      address: zeroAddress,
-      isNative: true,
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-    },
-    {
-      name: "Wrapped Ethereum",
-      symbol: "WETH",
-      decimals: 18,
-      address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
-      isWrapped: true,
-      baseSymbol: "ETH",
-      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
-      explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
-    },
-    {
-      name: "Bitcoin",
-      symbol: "BTC",
-      decimals: 8,
-      address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-    },
-    {
-      name: "USD Coin",
-      symbol: "USDC",
-      decimals: 6,
-      address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
-    },
-    {
-      name: "Tether",
-      symbol: "USDT",
-      decimals: 6,
-      address: "0xBFcBcdCbcc1b765843dCe4DF044B92FE68182a62",
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
-      explorerUrl: "https://goerli.arbiscan.io/address/0xBFcBcdCbcc1b765843dCe4DF044B92FE68182a62",
-    },
-    {
-      name: "Dai",
-      symbol: "DAI",
-      address: "0x7b7c6c49fA99b37270077FBFA398748c27046984",
-      decimals: 18,
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
-      explorerUrl: "https://goerli.arbiscan.io/address/0x7b7c6c49fA99b37270077FBFA398748c27046984",
-    },
-    {
-      name: "Solana",
-      symbol: "SOL",
-      decimals: 18,
-      priceDecimals: 3,
-      address: "0x9A98a11279FaeB0fF695dFEC3C4B8a29138d0a2f",
-      isSynthetic: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/solana",
-    },
-    {
-      name: "Test token",
-      symbol: "TEST",
-      decimals: 18,
-      address: "0x13C52ccB49fE3228356D0C355641961646A0D9B2",
-      isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
-    },
-    {
-      name: "BNB",
-      symbol: "BNB",
-      isSynthetic: true,
-      priceDecimals: 3,
-      decimals: 18,
-      address: "0xa076E6db62f61bd1A4fC283F84739D2b0c80e2a3",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/binancecoin",
-    },
-    {
-      name: "Cardano",
-      symbol: "ADA",
-      decimals: 18,
-      priceDecimals: 5,
-      address: "0x5F8a8f06da2848f846A2b5e3e42A4A2eEC5f337B",
-      isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/cardano",
-    },
-    {
-      name: "TRON",
-      symbol: "TRX",
-      decimals: 18,
-      priceDecimals: 5,
-      address: "0x7a9Ba06548D0499f6Debf97809CC351c1e85795D",
-      isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tron",
-    },
-    {
-      name: "Polygon",
-      symbol: "MATIC",
-      decimals: 18,
-      priceDecimals: 4,
-      address: "0xd98D28787F5598749331052f952196428F61e3aD",
-      isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/polygon",
-    },
-    {
-      name: "Polkadot",
-      symbol: "DOT",
-      decimals: 18,
-      priceDecimals: 4,
-      address: "0x7361D58cBc6495B6419397dFd5ebE2e2017F23E9",
-      isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/polkadot",
-    },
-    {
-      name: "Uniswap",
-      symbol: "UNI",
-      decimals: 18,
-      priceDecimals: 4,
-      address: "0x6DEbb9cC48819941F797a2F0c63f9168C19fD057",
-      isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
-    },
-    {
-      name: "Dogecoin",
-      symbol: "DOGE",
-      isSynthetic: true,
-      isShortable: true,
-      decimals: 8,
-      priceDecimals: 5,
-      address: "0x3e2fA75b78edF836299127FBAA776304B4712972",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
-    },
-    {
-      name: "Chainlink",
-      symbol: "LINK",
-      decimals: 18,
-      priceDecimals: 4,
-      address: "0x55602A94239a7926D92da5C53Fb96E80372382aa",
-      isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
-    },
-    {
-      name: "XRP",
-      symbol: "XRP",
-      decimals: 6,
-      priceDecimals: 5,
-      address: "0xF1C2093383453831e8c90ecf809691123116dAaC",
-      isSynthetic: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
-    },
-    {
-      name: "GMX",
-      symbol: "GMX",
-      address: "",
-      decimals: 18,
-      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-      isPlatformToken: true,
-    },
-    {
-      name: "Escrowed GMX",
-      symbol: "esGMX",
-      address: "",
-      decimals: 18,
-      isPlatformToken: true,
-    },
-    {
-      name: "GMX LP",
-      symbol: "GLP",
-      address: "",
-      decimals: 18,
-      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
-      isPlatformToken: true,
-    },
-    /** Placeholder tokens */
-    {
-      name: "GMX Market tokens",
-      symbol: "GM",
-      address: "<market-token-address>",
-      decimals: 18,
-      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
-      isPlatformToken: true,
-    },
-    {
-      name: "GLV Market tokens",
-      symbol: "GLV",
-      address: "<market-token-address>",
-      decimals: 18,
-      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
-      isPlatformToken: true,
-    },
-  ],
   [AVALANCHE_FUJI]: [
     {
       name: "Avalanche",
@@ -1258,7 +1055,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI];
+const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];

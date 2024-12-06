@@ -10,6 +10,7 @@ export type ExecutionFee = {
 export type FeeItem = {
   deltaUsd: bigint;
   bps: bigint;
+  precisePercentage: bigint;
 };
 
 export type SwapFeeItem = FeeItem & {
