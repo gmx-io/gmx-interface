@@ -196,10 +196,11 @@ function MarketTokenSelectorInternal(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
   const isSmallMobile = useMedia("(max-width: 560px)");
 
-  const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
+  const rowVerticalPadding = isMobile ? "py-8" : cx("h-50 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-16 last-of-type:pr-16") : "px-16";
   const thClassName = cx(
     "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "first-of-type:!pl-37",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -497,27 +498,17 @@ function MarketTokenListItem({
 
   return (
     <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
-      <td
-        className={cx("rounded-4 pl-16 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
-        onClick={handleFavoriteClick}
-      >
+      <td className={cx("pl-16 pr-4", rowVerticalPadding)} onClick={handleFavoriteClick}>
         <FavoriteStar isFavorite={isFavorite} />
       </td>
-      <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>
-        {marketInfo && !isSmallMobile && (
+      <td className={cx("pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>
+        {marketInfo && (
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
-            <div className="inline-flex flex-wrap items-center whitespace-nowrap">
+            <div className="inline-flex flex-wrap items-center gap-x-3 whitespace-nowrap">
               <span className="text-body-medium text-slate-100">{indexName && indexName}</span>
-              <span className="text-body-medium ml-3 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+              <span className="text-body-medium leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
             </div>
-          </div>
-        )}
-        {marketInfo && isSmallMobile && (
-          <div className="inline-flex flex-col items-start whitespace-nowrap">
-            <TokenIcon symbol={iconName} displaySize={16} importSize={40} />
-            <span className="text-body-medium">{indexName && indexName}</span>
-            <span className="text-body-medium leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
           </div>
         )}
       </td>
