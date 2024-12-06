@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 function SEO(props) {
   const { children, ...customMeta } = props;
   const meta = {
-    title: "t3.finance | Decentralized Perpetual Exchange",
+    title: "t3.money | Decentralized Perpetual Exchange",
     description:
       "Trade spot or perpetual cryptocurrencies with up to 50x leverage directly from your wallet on Optimism.",
     // image: "https://gmx.io/og.png",
