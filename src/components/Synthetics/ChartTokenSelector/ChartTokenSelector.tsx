@@ -242,7 +242,7 @@ function MarketsList() {
     ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8")
     : cx("px-5 first-of-type:pl-16 last-of-type:pr-16");
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400",
+    "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400",
     "first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
     isMobile ? "first-of-type:!pl-40" : "first-of-type:!pl-37",
     rowVerticalPadding,
@@ -309,7 +309,7 @@ function MarketsList() {
                   <>
                     <th className={thClassName}>
                       <Sorter {...getSorterProps("lastPrice")}>
-                        <Trans>LAST PRICE</Trans>
+                        {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
                       </Sorter>
                     </th>
                     {!isMobile && (
