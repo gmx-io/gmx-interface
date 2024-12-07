@@ -1465,10 +1465,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <Trans>Earn</Trans>
           </div>
           <div className="Page-description">
-            <Trans>
-              Stake <ExternalLink href="https://docs.t3.money/tmx/tokenomics">TMX</ExternalLink> and{" "}
-              <ExternalLink href="https://docs.t3.money/dex/liquidity">TLP</ExternalLink> to earn rewards.
-            </Trans>
+            <Trans>Stake TMX and TLP to earn rewards.</Trans>
           </div>
           {earnMsg && <div className="Page-description">{earnMsg}</div>}
         </div>
