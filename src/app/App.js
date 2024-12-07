@@ -639,8 +639,8 @@ function FullApp() {
                   }}
                 >
                   <span>
-                    t3 is now live on MorphL2! 🎉 <span style={{ fontWeight: "bold" }}>Buy TLP</span> today to
-                    contribute to the network and earn fees and rewards.
+                    t3 is now live on Morph! 🎉 <span style={{ fontWeight: "bold" }}>Buy TLP</span> today to contribute
+                    to the network and earn fees and rewards.
                   </span>
                 </div>
               </Banner>
