@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Banner.css";
 
-function Banner({ children, className = "", id = "default" }) {
+function Banner({ children, className = "", id = "default", dismissable = true }) {
   const [isVisible, setIsVisible] = useState(true);
   const storageKey = `banner-${id}-dismissed`;
 
@@ -20,7 +20,14 @@ function Banner({ children, className = "", id = "default" }) {
   return (
     <div className={`custom-banner ${className}`}>
       <div className="custom-banner-content">{children}</div>
-      <button className="custom-banner-dismiss" onClick={handleDismiss} aria-label="Dismiss banner">
+      <button
+        className="custom-banner-dismiss"
+        onClick={handleDismiss}
+        aria-label="Dismiss banner"
+        style={{
+          display: dismissable ? "block" : "none",
+        }}
+      >
         ×
       </button>
     </div>

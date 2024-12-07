@@ -4,7 +4,7 @@ import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
 
 import useScrollToTop from "lib/useScrollToTop";
-import { Switch, Route, HashRouter as Router, useLocation, useHistory } from "react-router-dom";
+import { Switch, Route, HashRouter as Router, useLocation, useHistory, NavLink } from "react-router-dom";
 
 import {
   DEFAULT_SLIPPAGE_AMOUNT,
@@ -13,6 +13,8 @@ import {
   isHomeSite,
   REFERRAL_CODE_QUERY_PARAM,
 } from "lib/legacy";
+
+import Banner from "components/Banner/Banner";
 
 import Home from "pages/Home/Home";
 import AppHome from "pages/AppHome/AppHome";
@@ -626,6 +628,23 @@ function FullApp() {
       <div id={themeContext.theme}>
         <div className="App">
           <div className="App-content">
+            <NavLink to="/buy_tlp">
+              <Banner id="morph-launch" className="morph-launch-banner" dismissable={false}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "1rem",
+                  }}
+                >
+                  <span>
+                    t3 is now live on MorphL2! 🎉 <span style={{ fontWeight: "bold" }}>Buy TLP</span> today to
+                    contribute to the network and earn fees and rewards.
+                  </span>
+                </div>
+              </Banner>
+            </NavLink>
             <Header
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
               openSettings={openSettings}

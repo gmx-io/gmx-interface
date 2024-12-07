@@ -30,6 +30,7 @@ import VaultV2 from "abis/VaultV2.json";
 import Router from "abis/Router.json";
 import Token from "abis/Token.json";
 
+import Banner from "components/Banner/Banner";
 import Checkbox from "components/Checkbox/Checkbox";
 import SwapTab from "components/Exchange/SwapTab";
 import { getChartToken } from "components/Exchange/ExchangeTVChart";
@@ -929,6 +930,16 @@ export const SwapBox = forwardRef((props, ref) => {
   return (
     <div className="Exchange Exchangeswap page-layout">
       {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
+      <div className="Exchange-content">
+        <Banner id="bridge-notice">
+          <Trans>
+            Need to bridge tokens to Morph? <ExternalLink href="https://meson.fi/">Meson Bridge</ExternalLink> for
+            transfers from multiple chains, or{" "}
+            <ExternalLink href="https://bridge.morphl2.io/">Morph Bridge</ExternalLink> for direct transfers.
+          </Trans>
+        </Banner>
+      </div>
+      <br />
       <div className="Exchange-content">
         <div className="Exchange-right">
           <SwapTab

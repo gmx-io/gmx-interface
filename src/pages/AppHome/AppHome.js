@@ -8,7 +8,8 @@ import Footer from "components/Footer-v2/Footer";
 import "./AppHome.css";
 import { useBreakpoints } from "../../hooks/useBreakpoints";
 import morphRocket from "../../img/morph-rocket.svg";
-import { TradeNowButton } from "./TradeNowButton";
+// import { TradeNowButton } from "./TradeNowButton";
+import { BuyTLPNowButton } from "./BuyTLPNowButton";
 import DefiOptions from "components/DefiOptions/DefiOptions";
 
 export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
@@ -45,6 +46,17 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
         <div
           style={{
             position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "150px",
+            background: "linear-gradient(to bottom, transparent, rgba(0, 0, 0, 1))",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
             top: mobile ? "25%" : "30%",
             left: "50%",
             transform: "translate(-50%, -50%)",
@@ -77,7 +89,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
               </div>
             </div>
             <br />
-            <TradeNowButton showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+            <BuyTLPNowButton showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
           </div>
         </div>
       </div>
