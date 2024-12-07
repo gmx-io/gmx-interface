@@ -35,10 +35,6 @@ export default function BuyGlp(props) {
               Purchase <ExternalLink href="https://docs.t3.money/dex/liquidity">TLP tokens</ExternalLink> to earn{" "}
               {nativeTokenSymbol} fees from swaps and leverages trading.
             </Trans>
-            <br />
-            <Trans>
-              View <Link to="/earn">earn</Link> page.
-            </Trans>
           </div>
         </div>
       </div>
