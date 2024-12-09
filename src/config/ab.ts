@@ -90,3 +90,10 @@ export function getIsFlagEnabled(flag: AbFlag): boolean {
 export function getAbFlags(): Record<AbFlag, boolean> {
   return mapValues(abStorage, ({ enabled }) => enabled);
 }
+
+export function getAbFlagUrlParams(): string {
+  return Object.entries(abStorage)
+    .filter(([, { enabled }]) => enabled)
+    .map(([flag]) => `${flag}=1`)
+    .join("&");
+}

@@ -13,7 +13,7 @@ import { useUtmParams } from "domain/utm";
 import { isDevelopment } from "config/env";
 import useRouteQuery from "lib/useRouteQuery";
 import { useHistory } from "react-router-dom";
-import { getIsFlagEnabled } from "config/ab";
+import { AbFlag, getAbFlags, getIsFlagEnabled, setAbFlagEnabled } from "config/ab";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -42,19 +42,37 @@ export function useConfigureUserAnalyticsProfile() {
   const totalVolume = accountStats?.volume;
   const ordersCount = accountStats?.closedCount;
 
-  useEffect(() => {
-    let sessionIdParam = query.get(SESSION_ID_KEY);
-    if (sessionIdParam) {
-      userAnalytics.setSessionId(sessionIdParam);
-      const urlParams = new URLSearchParams(history.location.search);
-      if (urlParams.has(SESSION_ID_KEY)) {
-        urlParams.delete(SESSION_ID_KEY);
+  useEffect(
+    function handleUrlParamsEff() {
+      let isUrlParamsChanged = false;
+
+      const sessionIdParam = query.get(SESSION_ID_KEY);
+
+      if (sessionIdParam) {
+        userAnalytics.setSessionId(sessionIdParam);
+        query.delete(SESSION_ID_KEY);
+        isUrlParamsChanged = true;
+      }
+
+      const abFlags = getAbFlags();
+
+      Object.keys(abFlags).forEach((flag) => {
+        const urlFlagValue = query.get(flag);
+        if (urlFlagValue) {
+          setAbFlagEnabled(flag as AbFlag, urlFlagValue === "1");
+          query.delete(flag);
+          isUrlParamsChanged = true;
+        }
+      });
+
+      if (isUrlParamsChanged) {
         history.replace({
-          search: urlParams.toString(),
+          search: query.toString(),
         });
       }
-    }
-  }, [query, history]);
+    },
+    [query, history]
+  );
 
   useEffect(() => {
     const bowser = Bowser.parse(window.navigator.userAgent);

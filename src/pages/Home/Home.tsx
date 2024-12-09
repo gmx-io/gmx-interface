@@ -54,7 +54,7 @@ function LaunchExchangeButton({
         );
       }}
       className="default-btn"
-      to={`/trade?${userAnalytics.getSessionIdUrlParam()}`}
+      to={`/trade?${userAnalytics.getSessionIdUrlParams()}`}
       showRedirectModal={showRedirectModal}
     >
       <Trans>Launch App</Trans>

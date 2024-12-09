@@ -1,3 +1,4 @@
+import { getAbFlagUrlParams } from "config/ab";
 import { BatchReportItem } from "lib/oracleKeeperFetcher";
 import { metrics } from "../metrics/Metrics";
 
@@ -92,8 +93,11 @@ export class UserAnalytics {
     this.setLastEventTime(Date.now());
   }
 
-  getSessionIdUrlParam() {
-    return `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+  getSessionIdUrlParams() {
+    const sessionIdParam = `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+    const abFlagsParams = getAbFlagUrlParams();
+
+    return [sessionIdParam, abFlagsParams].filter(Boolean).join("&");
   }
 
   getOrSetSessionId() {
