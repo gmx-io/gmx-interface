@@ -64,11 +64,9 @@ function Section({
           )}
         </span>
       </div>
-      {usd > 0 && (
-        <button className={`Claims-claim-button ${buttonClassname}`} onClick={onButtonClick}>
-          {buttonText}
-        </button>
-      )}
+      <button className={`Claims-claim-button ${buttonClassname}`} disabled={usd <= 0} onClick={onButtonClick}>
+        {buttonText}
+      </button>
     </div>
   );
 }
