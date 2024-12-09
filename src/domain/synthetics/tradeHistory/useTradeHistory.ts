@@ -242,6 +242,7 @@ function createRawTradeActionTransformer(
         positionFeeAmount: rawAction.positionFeeAmount ? BigInt(rawAction.positionFeeAmount) : undefined,
         borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigInt(rawAction.borrowingFeeAmount) : undefined,
         fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
+        liquidationFeeAmount: rawAction.liquidationFeeAmount ? BigInt(rawAction.liquidationFeeAmount) : undefined,
 
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,
@@ -445,6 +446,7 @@ export async function fetchTradeActions({
             positionFeeAmount
             borrowingFeeAmount
             fundingFeeAmount
+            liquidationFeeAmount
             pnlUsd
             basePnlUsd
 

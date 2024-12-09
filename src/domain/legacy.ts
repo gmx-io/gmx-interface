@@ -14,15 +14,7 @@ import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
 import Vault from "abis/Vault.json";
 
-import {
-  ARBITRUM,
-  ARBITRUM_GOERLI,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  getChainName,
-  getConstant,
-  getHighExecutionFee,
-} from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName, getConstant, getHighExecutionFee } from "config/chains";
 import { getContract } from "config/contracts";
 import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
@@ -423,7 +415,7 @@ export function useExecutionFee(active, chainId, infoTokens) {
 
   let multiplier = 0n;
 
-  if (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) {
+  if (chainId === ARBITRUM) {
     multiplier = 2150000n;
   }
 

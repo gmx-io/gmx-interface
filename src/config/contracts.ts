@@ -2,7 +2,7 @@ import { Contract, ContractRunner, ethers, InterfaceAbi } from "ethers";
 import { DataStore__factory } from "typechain-types/factories/DataStore__factory";
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
 import { GlvRouter__factory } from "typechain-types";
 
 const { ZeroAddress } = ethers;
@@ -79,62 +79,6 @@ const CONTRACTS = {
     XGMT_GMX_IOU: "0xeB3733DFe3b68C9d26898De2493A3Bb59FDb4A7B",
     GMT_USDG_GMX_IOU: "0x481312655F81b5e249780A6a49735335BF6Ca7f4",
     XGMT_USDG_GMX_IOU: "0x8095F1A92526C304623483018aA28cC6E62EB1e1",
-  },
-  [ARBITRUM_GOERLI]: {
-    // arbitrum testnet
-    Vault: ZeroAddress,
-    Router: ZeroAddress,
-    VaultReader: ZeroAddress,
-    Reader: ZeroAddress,
-    GlpManager: ZeroAddress,
-    RewardRouter: ZeroAddress,
-    RewardReader: ZeroAddress,
-    GlpRewardRouter: ZeroAddress,
-    NATIVE_TOKEN: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
-    GLP: ZeroAddress,
-    GMX: ZeroAddress,
-    ES_GMX: ZeroAddress,
-    BN_GMX: ZeroAddress,
-    USDG: ZeroAddress,
-    ES_GMX_IOU: ZeroAddress,
-
-    StakedGmxTracker: ZeroAddress,
-    BonusGmxTracker: ZeroAddress,
-    FeeGmxTracker: ZeroAddress,
-    StakedGlpTracker: ZeroAddress,
-    FeeGlpTracker: ZeroAddress,
-
-    StakedGmxDistributor: ZeroAddress,
-    StakedGlpDistributor: ZeroAddress,
-
-    GmxVester: ZeroAddress,
-    GlpVester: ZeroAddress,
-    AffiliateVester: ZeroAddress,
-
-    OrderBook: ZeroAddress,
-    OrderExecutor: ZeroAddress,
-    OrderBookReader: ZeroAddress,
-
-    PositionRouter: ZeroAddress,
-    PositionManager: ZeroAddress,
-
-    TraderJoeGmxAvaxPool: ZeroAddress,
-    ReferralStorage: "0x995E905E471D53B7c5d0dbf6406860Cb3C029e95",
-    ReferralReader: ZeroAddress,
-
-    // Synthetics
-    DataStore: "0xbA2314b0f71ebC705aeEBeA672cc3bcEc510D03b",
-    EventEmitter: "0x2fbE45fCb58B7106CF0a3Be9225D5Ed5A1004cc4",
-    ExchangeRouter: "0xFE98518C9c8F1c5a216E999816c2dE3199f295D2",
-    SubaccountRouter: "0x4Ae6ecDD55ee1066477Ee4B5Fc9f4D04C4CE66E9",
-    DepositVault: "0x838a9bdf8736eD522A60F5f715e4F3FC2BC91A08",
-    WithdrawalVault: "0xaAac001C2a2727Ff2d484C4Ad7d2079C7094e7Ef",
-    OrderVault: "0x82aFd2590814a7Ce3d7ea6b63F80481F8b227bA9",
-    SyntheticsReader: "0xab747a7bb64B74D78C6527C1F148808a19120475",
-    SyntheticsRouter: "0xa960786Bc30F8587279df6116F9E0B15C5b034dE",
-    Timelock: ZeroAddress,
-
-    Multicall: "0x6d85594c9BD6b0833bC85AE62B360654A1e52D70",
   },
   [ARBITRUM]: {
     // arbitrum mainnet

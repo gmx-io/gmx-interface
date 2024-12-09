@@ -110,7 +110,7 @@
       }
     },
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.js", "./src/**/*.jsx"],
       "rules": {
         "local-rules/no-bigint-negation": "error",
         "local-rules/no-logical-bigint": "error"
