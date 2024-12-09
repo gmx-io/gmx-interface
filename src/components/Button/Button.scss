@@ -139,7 +139,7 @@
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    opacity: 0.8;
+    background-color: var(--color-button-disabled);
   }
 
   &.slim {
