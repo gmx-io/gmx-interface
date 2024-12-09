@@ -12,6 +12,7 @@ export type LandingPageLaunchAppEvent = {
   data: {
     action: "LaunchApp";
     buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains";
+    shouldSeeConfirmationDialog: boolean;
   };
 };
 
@@ -52,21 +53,6 @@ export type ConnectWalletClickEvent = {
   data: {
     action: "ConnectWalletClick";
     position: "ActionButton" | "Header";
-  };
-};
-
-export type WalletProviderSelectedEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "WalletProviderSelected";
-    provider: string; // ProviderName
-  };
-};
-
-export type ConnectWalletDialogCloseEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "DialogClose";
   };
 };
 

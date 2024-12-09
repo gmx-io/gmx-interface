@@ -11,9 +11,10 @@ type AbStorage = {
 
 const abFlagsConfig = {
   // testExampleAb: 0.5,
+  testRemoveConfirmationModal: 0.25,
 };
 
-export type AbFlag = string; //keyof typeof abFlagsConfig;
+export type AbFlag = keyof typeof abFlagsConfig;
 
 const flags: AbFlag[] = Object.keys(abFlagsConfig) as AbFlag[];
 
@@ -88,4 +89,10 @@ export function getIsFlagEnabled(flag: AbFlag): boolean {
 
 export function getAbFlags(): Record<AbFlag, boolean> {
   return mapValues(abStorage, ({ enabled }) => enabled);
+}
+
+export function getAbFlagUrlParams(): string {
+  return Object.entries(abStorage)
+    .map(([flag, { enabled }]) => `${flag}=${enabled ? 1 : 0}`)
+    .join("&");
 }
