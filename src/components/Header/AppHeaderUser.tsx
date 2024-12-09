@@ -131,6 +131,7 @@ export function AppHeaderUser({
         ) : (
           <LanguagePopupHome />
         )}
+        {menuToggle}
       </div>
     );
   }
