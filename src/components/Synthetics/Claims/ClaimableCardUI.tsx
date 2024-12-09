@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
+import Button from "components/Button/Button";
 import Tooltip from "components/Tooltip/Tooltip";
 import { formatDeltaUsd } from "lib/numbers";
 import { CSSProperties, ReactNode, useCallback, useMemo } from "react";
@@ -10,7 +11,6 @@ type Section = {
   tooltipText: ReactNode;
   onButtonClick: () => void;
   usd: bigint;
-  buttonStyle?: "primary" | "secondary";
 };
 
 type Props = {
@@ -40,17 +40,9 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
   );
 }
 
-function Section({
-  buttonStyle = "primary",
-  buttonText,
-  onButtonClick,
-  tooltipText,
-  title,
-  usd,
-}: Section & { title: string }) {
+function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section & { title: string }) {
   const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
   const usdFormatted = useMemo(() => formatDeltaUsd(usd), [usd]);
-  const buttonClassname = buttonStyle === "primary" ? "primary App-button-option App-card-option" : "secondary";
 
   return (
     <div className="Claims-row">
@@ -65,9 +57,9 @@ function Section({
         </span>
       </div>
       {usd > 0 && (
-        <button className={`Claims-claim-button ${buttonClassname}`} onClick={onButtonClick}>
+        <Button variant="secondary" onClick={onButtonClick}>
           {buttonText}
-        </button>
+        </Button>
       )}
     </div>
   );

@@ -54,7 +54,7 @@
   }
 
   &.secondary {
-    background-color: var(--color-slate-600);
+    background-color: var(--color-slate-700);
     border-radius: var(--border-radius-sm);
     color: var(--color-white);
     padding: 1.1rem 1.25rem;
@@ -83,7 +83,7 @@
     }
 
     &:not([disabled], .disabled):active {
-      background: #50577e;
+      background: #737998;
     }
   }
 

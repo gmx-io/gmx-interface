@@ -936,12 +936,8 @@ table.Exchange-list-small td {
 }
 
 .chart-positions:hover {
-  opacity: 0.8;
+  color: var(--color-white);
 }
-.chart-positions.span:hover {
-  opacity: 1;
-}
-
 .position-list-collateral {
   display: flex;
   align-items: flex-end;

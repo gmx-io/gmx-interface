@@ -1,6 +1,6 @@
 .App-header-network {
   position: relative;
-  border: 1px solid var(--color-gray-700);
+  border: 1px solid var(--color-stroke-primary);
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
   display: inline-flex;
@@ -25,7 +25,7 @@
 
 .network-dropdown-divider {
   margin-bottom: 0.8rem;
-  border-bottom: 1px solid var(--color-gray-700);
+  border-bottom: 1px solid var(--color-stroke-primary);
 }
 .App-header-network:hover {
   background: var(--dark-blue-hover);

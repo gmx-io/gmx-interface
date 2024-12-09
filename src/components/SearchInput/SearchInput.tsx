@@ -50,7 +50,7 @@ export default function SearchInput({
   }, [setValue]);
 
   return (
-    <div className={cx("relative cursor-pointer rounded-4 border border-gray-700 p-0", className)}>
+    <div className={cx("stroke-primary relative cursor-pointer rounded-4 border p-0", className)}>
       <input
         ref={inputRef}
         data-qa={qa}

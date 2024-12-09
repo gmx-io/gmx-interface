@@ -49,12 +49,12 @@ const colors = {
     500: "#f3b50c",
   },
   red: {
-    400: "#ff637a",
-    500: "#ff506a",
+    400: "#FE6C81",
+    500: "#FB3C58",
   },
   green: {
-    300: "#56dba8",
-    500: "#0ecc83",
+    300: "#8CF3CB",
+    500: "#0FDE8D",
   },
   white: "#ffffff",
   black: "#000000",
@@ -81,6 +81,26 @@ function injectColorsPlugin({ addBase, theme }) {
 
   addBase({
     ":root": extractColorVars(theme("colors")),
+  });
+}
+
+/**
+ * @type {import('tailwindcss/types/config').PluginCreator}
+ * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
+ */
+function injectSemanticColorsPlugin({ addBase, addComponents }) {
+  addBase({
+    ":root": {
+      "--color-stroke-primary": '#252A47',
+      "--color-button-secondary": '#23263E',
+      "--color-button-disabled": '#1B1D34',
+    },
+  });
+
+  addComponents({
+    ".stroke-primary": {
+      border: "1px solid var(--color-stroke-primary)",
+    },
   });
 }
 
@@ -189,5 +209,5 @@ module.exports = {
       ),
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
+  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectSemanticColorsPlugin],
 };

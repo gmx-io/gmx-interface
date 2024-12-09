@@ -41,7 +41,7 @@
 }
 
 .divider {
-  border-bottom: 1px solid var(--color-gray-700);
+  border-bottom: 1px solid var(--color-stroke-primary);
 }
 
 .Modal.non-scrollable .Modal-content {

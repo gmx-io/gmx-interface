@@ -4,6 +4,7 @@
   padding: 0.1rem 1.5rem;
   align-items: center;
   flex: 1;
+  justify-content: space-between;
 }
 
 .Claims-card {
@@ -34,50 +35,6 @@
 
 .Claims-col .muted {
   margin-bottom: 0.2rem;
-}
-
-.Claims-claim-button.primary {
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: var(--font-size-body-medium);
-  line-height: 2rem;
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-white);
-  padding-left: 16px;
-  padding-right: 16px;
-  text-decoration: none;
-  box-sizing: border-box;
-  position: relative;
-  min-height: 36px;
-  display: inline-flex !important;
-  align-items: center;
-  border: none;
-  background: rgb(43, 55, 94);
-  margin-left: auto;
-  height: 0;
-}
-
-.Claims-claim-button.secondary {
-  cursor: pointer;
-  font-size: var(--font-size-body-medium);
-  font-weight: normal;
-  letter-spacing: 0px;
-  text-decoration: none;
-  box-sizing: border-box;
-  position: relative;
-  min-height: 36px;
-  display: inline-flex !important;
-  align-items: center;
-  border: none;
-  margin-left: auto;
-  height: 0;
-  background-color: transparent;
-
-  color: var(--color-gray-300);
-  &:hover {
-    color: var(--color-white);
-  }
 }
 
 .Claims-col-title {
