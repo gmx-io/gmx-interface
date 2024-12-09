@@ -131,7 +131,7 @@ export default function OrdersList(props) {
 
     return (
       <tr>
-        <td colSpan="5">
+        <td colSpan="5" className="text-slate-100">
           <Trans>No open orders</Trans>
         </td>
       </tr>

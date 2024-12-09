@@ -54,7 +54,7 @@
   }
 
   &.secondary {
-    background-color: color-mix(in srgb, var(--color-slate-600) 47%, transparent);
+    background-color: var(--color-slate-700);
     border-radius: var(--border-radius-sm);
     color: var(--color-white);
     padding: 1.1rem 1.25rem;
@@ -79,11 +79,11 @@
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: #50577e99;
+      background-color: #50577e;
     }
 
     &:not([disabled], .disabled):active {
-      background: #50577eb3;
+      background: #737998;
     }
   }
 
@@ -122,7 +122,7 @@
   }
 
   &.link {
-    color: var(--color-gray-300);
+    color: var(--color-slate-100);
     text-decoration: underline;
     padding: 0;
 
@@ -139,7 +139,7 @@
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    opacity: 0.8;
+    background-color: var(--color-button-disabled);
   }
 
   &.slim {

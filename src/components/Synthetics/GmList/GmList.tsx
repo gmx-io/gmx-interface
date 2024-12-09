@@ -224,7 +224,7 @@ export function GmList({
             {!currentData.length && !isLoading && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                 <TableTd colSpan={7} className="align-top">
-                  <div className="text-body-medium text-gray-400">
+                  <div className="text-body-medium text-slate-100">
                     <Trans>No pools matched.</Trans>
                   </div>
                 </TableTd>
@@ -514,7 +514,7 @@ function GmListItem({
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
               </div>
             </div>
-            <div className="text-12 tracking-normal text-gray-400">
+            <div className="text-12 tracking-normal text-slate-100">
               [{getMarketPoolName({ longToken, shortToken })}]
             </div>
           </div>
