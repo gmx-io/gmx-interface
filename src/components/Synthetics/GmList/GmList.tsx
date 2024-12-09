@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
-import { getNormalizedTokenSymbol, getTokenVisualMultiplier } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol, getTokenVisualMultiplier } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -49,7 +49,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
-import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
@@ -129,8 +129,8 @@ export function GmList({
 
   return (
     <div className="rounded-4 bg-slate-800">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center px-16 py-8">
+      <div className="flex flex-wrap items-center justify-between gap-8 px-16 py-8">
+        <div className="flex items-center ">
           <span className="text-16">
             <Trans>Pools</Trans>
           </span>
@@ -144,8 +144,10 @@ export function GmList({
             autoFocus={false}
           />
         </div>
-        <div className="pr-16">
-          <FavoriteTabs favoritesKey="gm-list" />
+        <div className="max-w-full">
+          <ButtonRowScrollFadeContainer>
+            <FavoriteTabs favoritesKey="gm-list" />
+          </ButtonRowScrollFadeContainer>
         </div>
       </div>
       <TableScrollFadeContainer>
@@ -357,11 +359,21 @@ function useFilterSortPools({
 
       const marketOrGlvTokenAddress = getGlvOrMarketAddress(market);
 
-      const favoriteMatch = tab === "favorites" ? favoriteTokens?.includes(marketOrGlvTokenAddress) : true;
+      if (tab === "all") {
+        return true;
+      } else if (tab === "favorites") {
+        return favoriteTokens?.includes(marketOrGlvTokenAddress);
+      } else {
+        const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
 
-      return favoriteMatch;
+        if (isGlvInfo(market)) {
+          return false;
+        }
+
+        return categoryTokenAddresses.includes(market.indexTokenAddress);
+      }
     });
-  }, [favoriteTokens, marketsInfo, searchText, sortedTokens, tab]);
+  }, [chainId, favoriteTokens, marketsInfo, searchText, sortedTokens, tab]);
 
   return filteredTokens;
 }
