@@ -321,7 +321,7 @@ export function GmShiftBox({
         <ExchangeInfo className={isHighPriceImpact ? undefined : "mb-10"} dividerClassName="App-card-divider">
           <ExchangeInfo.Group>
             <GmFees
-              isDeposit={true}
+              operation={Operation.Shift}
               totalFees={fees?.totalFees}
               swapPriceImpact={fees?.swapPriceImpact}
               uiFee={fees?.uiFee}

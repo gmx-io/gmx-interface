@@ -1,7 +1,6 @@
 import { JsonRpcProvider, Network, WebSocketProvider } from "ethers";
 import {
   ARBITRUM,
-  ARBITRUM_GOERLI,
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
@@ -39,12 +38,6 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
 
   if (chainId === AVALANCHE) {
     return new ethers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws", network, { staticNetwork: network });
-  }
-
-  if (chainId === ARBITRUM_GOERLI) {
-    return new ethers.WebSocketProvider("wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j", network, {
-      staticNetwork: network,
-    });
   }
 
   if (chainId === AVALANCHE_FUJI) {

@@ -141,6 +141,7 @@ export function initIncreaseOrderMetricData({
   isLong,
   isFirstOrder,
   isLeverageEnabled,
+  isTPSLCreated,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -157,6 +158,7 @@ export function initIncreaseOrderMetricData({
   isLong: boolean | undefined;
   isFirstOrder: boolean | undefined;
   isLeverageEnabled: boolean | undefined;
+  isTPSLCreated: boolean | undefined;
 }) {
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
@@ -170,6 +172,7 @@ export function initIncreaseOrderMetricData({
     }),
     requestId: getRequestId(),
     is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
+    isTPSLCreated,
     metricType: orderType === OrderType.LimitIncrease ? "limitOrder" : "increasePosition",
     hasReferralCode,
     hasExistingPosition,

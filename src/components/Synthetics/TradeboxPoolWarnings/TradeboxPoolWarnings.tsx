@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useEffect } from "react";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectTradeboxAvailableMarketsOptions,
+  selectTradeboxFromToken,
   selectTradeboxHasExistingLimitOrder,
   selectTradeboxHasExistingPosition,
   selectTradeboxIncreasePositionAmounts,
@@ -40,6 +41,7 @@ export const useTradeboxPoolWarnings = (
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const { marketInfo, setCollateralAddress, setMarketAddress } = useSelector(selectTradeboxState);
   const accountStats = useSelector(selectAccountStats);
+  const fromToken = useSelector(selectTradeboxFromToken);
 
   const { isLong, isIncrease, isLimit } = useSelector(selectTradeboxTradeFlags);
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
@@ -143,7 +145,13 @@ export const useTradeboxPoolWarnings = (
   const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
   useEffect(() => {
-    if (!marketName || !marketPoolName) {
+    if (
+      !marketName ||
+      !marketPoolName ||
+      fromToken?.balance === undefined ||
+      increaseAmounts?.initialCollateralAmount === undefined ||
+      fromToken.balance < increaseAmounts.initialCollateralAmount
+    ) {
       return;
     }
 
@@ -177,8 +185,10 @@ export const useTradeboxPoolWarnings = (
     }
   }, [
     chainId,
+    fromToken?.balance,
     hasExistingPosition,
     increaseAmounts?.estimatedLeverage,
+    increaseAmounts?.initialCollateralAmount,
     increaseAmounts?.sizeDeltaUsd,
     isFirstOrder,
     isLimit,

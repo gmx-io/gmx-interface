@@ -55,21 +55,6 @@ export type ConnectWalletClickEvent = {
   };
 };
 
-export type WalletProviderSelectedEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "WalletProviderSelected";
-    provider: string; // ProviderName
-  };
-};
-
-export type ConnectWalletDialogCloseEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "DialogClose";
-  };
-};
-
 export type ConnectWalletResultEvent = {
   event: "ConnectWalletAction";
   data: {
@@ -129,6 +114,7 @@ export type TradeBoxConfirmClickEvent = {
     leverage: string;
     isLeverageEnabled?: boolean;
     is1CT: boolean;
+    isTPSLCreated?: boolean;
     chain: string;
     isFirstOrder: boolean;
   };
@@ -153,6 +139,7 @@ export type TradeBoxResultEvent = {
     amountUsd?: number;
     leverage: string;
     is1CT: boolean;
+    isTPSLCreated?: boolean;
     chain: string;
     isFirstOrder: boolean;
     isLeverageEnabled?: boolean;

@@ -1,9 +1,8 @@
-import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji, Chain } from "viem/chains";
+import { arbitrum, avalanche, avalancheFuji, Chain } from "viem/chains";
 
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
-export const ARBITRUM_GOERLI = 421613;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -63,7 +62,6 @@ export const GAS_PRICE_BUFFER_MAP = {
 
 const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE_FUJI]: avalancheFuji,
-  [ARBITRUM_GOERLI]: arbitrumGoerli,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
 };
@@ -101,9 +99,5 @@ export const EXECUTION_FEE_CONFIG_V2: {
   [ARBITRUM]: {
     shouldUseMaxPriorityFeePerGas: false,
     defaultBufferBps: 3000, // 30%
-  },
-  [ARBITRUM_GOERLI]: {
-    shouldUseMaxPriorityFeePerGas: false,
-    defaultBufferBps: 1000, // 10%
   },
 };

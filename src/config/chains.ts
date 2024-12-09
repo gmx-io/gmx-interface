@@ -1,16 +1,8 @@
 import { ethers } from "ethers";
-import sample from "lodash/sample";
 import type { NetworkMetadata } from "lib/wallets";
+import sample from "lodash/sample";
 import { isDevelopment } from "./env";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BSС_MAINNET,
-  BSС_TESTNET,
-  ETH_MAINNET,
-  ARBITRUM_GOERLI,
-} from "./static/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 
 export * from "./static/chains";
 
@@ -38,7 +30,6 @@ export const IS_NETWORK_DISABLED = {
 export const CHAIN_NAMES_MAP = {
   [BSС_MAINNET]: "BSC",
   [BSС_TESTNET]: "BSC Testnet",
-  [ARBITRUM_GOERLI]: "Arbitrum Goerli",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
@@ -125,10 +116,6 @@ export const EXECUTION_FEE_CONFIG_V2: {
     shouldUseMaxPriorityFeePerGas: false,
     defaultBufferBps: 3000, // 30%
   },
-  [ARBITRUM_GOERLI]: {
-    shouldUseMaxPriorityFeePerGas: false,
-    defaultBufferBps: 1000, // 10%
-  },
 };
 
 const constants = {
@@ -146,20 +133,6 @@ const constants = {
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 8,
     v2: false,
-  },
-
-  [ARBITRUM_GOERLI]: {
-    nativeTokenSymbol: "ETH",
-    wrappedTokenSymbol: "WETH",
-    defaultCollateralSymbol: "USDC",
-    defaultFlagOrdersEnabled: false,
-    positionReaderPropsLength: 9,
-    v2: true,
-
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
-    // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
   },
 
   [ARBITRUM]: {
@@ -233,11 +206,6 @@ export const RPC_PROVIDERS = {
     "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
-  [ARBITRUM_GOERLI]: [
-    "https://goerli-rollup.arbitrum.io/rpc",
-    // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
-    // "https://arbitrum-goerli.public.blastapi.io",
-  ],
   [AVALANCHE]: [
     "https://api.avax.network/ext/bc/C/rpc",
     "https://avalanche-c-chain-rpc.publicnode.com",
@@ -259,7 +227,6 @@ export const FALLBACK_PROVIDERS = {
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-  [ARBITRUM_GOERLI]: ["https://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"],
 };
 
 export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
@@ -284,17 +251,6 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     },
     rpcUrls: RPC_PROVIDERS[BSС_TESTNET],
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM_GOERLI]: {
-    chainId: "0x" + ARBITRUM_GOERLI.toString(16),
-    chainName: "Arbitrum Goerli Testnet",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[ARBITRUM_GOERLI],
-    blockExplorerUrls: ["https://goerli.arbiscan.io/"],
   },
   [ARBITRUM]: {
     chainId: "0x" + ARBITRUM.toString(16),
@@ -379,8 +335,6 @@ export function getExplorerUrl(chainId) {
     return "https://bscscan.com/";
   } else if (chainId === BSС_TESTNET) {
     return "https://testnet.bscscan.com/";
-  } else if (chainId === ARBITRUM_GOERLI) {
-    return "https://goerli.arbiscan.io/";
   } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {

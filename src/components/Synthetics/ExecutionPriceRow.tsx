@@ -44,14 +44,20 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     }
   }, [isIncrease, isLong, triggerOrderType]);
 
-  const fullPositionPriceImpactBps =
-    fees?.positionPriceImpact?.bps !== undefined && fees?.priceImpactDiff?.bps !== undefined
-      ? fees.positionPriceImpact.bps - fees.priceImpactDiff.bps
+  const fullPositionPriceImpactPercentage =
+    fees?.positionPriceImpact?.precisePercentage !== undefined && fees?.priceImpactDiff?.precisePercentage !== undefined
+      ? fees.positionPriceImpact.precisePercentage - fees.priceImpactDiff.precisePercentage
       : undefined;
 
   const fullCollateralPriceImpactBps =
     fees?.positionCollateralPriceImpact?.bps !== undefined && fees?.collateralPriceImpactDiff?.bps !== undefined
       ? fees.positionCollateralPriceImpact.bps - fees.collateralPriceImpactDiff.bps
+      : undefined;
+
+  const fullCollateralPriceImpactPercentage =
+    fees?.positionCollateralPriceImpact?.precisePercentage !== undefined &&
+    fees?.collateralPriceImpactDiff?.precisePercentage !== undefined
+      ? fees.positionCollateralPriceImpact.precisePercentage - fees.collateralPriceImpactDiff.precisePercentage
       : undefined;
 
   const positionPriceImpactDeltaUsd =
@@ -134,16 +140,30 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                 : t`Expected execution price for the order, including the current price impact.`}
               <br />
               <br />
-              {fullPositionPriceImpactBps !== undefined &&
+              {fullPositionPriceImpactPercentage !== undefined &&
                 positionPriceImpactDeltaUsd !== undefined &&
-                fullCollateralPriceImpactBps !== undefined && (
+                fullCollateralPriceImpactPercentage !== undefined && (
                   <StatsTooltipRow
                     textClassName={getPositiveOrNegativeClass(positionPriceImpactDeltaUsd, "text-green-500")}
                     label={
                       <>
                         <div className="text-white">{t`Price Impact`}:</div>
-                        <div>({formatPercentage(bigMath.abs(fullPositionPriceImpactBps))} of position size)</div>
-                        <div>({formatPercentage(bigMath.abs(fullCollateralPriceImpactBps))} of collateral)</div>
+                        <div>
+                          (
+                          {formatPercentage(bigMath.abs(fullPositionPriceImpactPercentage), {
+                            displayDecimals: 3,
+                            bps: false,
+                          })}{" "}
+                          of position size)
+                        </div>
+                        <div>
+                          (
+                          {formatPercentage(bigMath.abs(fullCollateralPriceImpactPercentage), {
+                            bps: false,
+                            displayDecimals: 3,
+                          })}{" "}
+                          of collateral)
+                        </div>
                       </>
                     }
                     value={formatDeltaUsd(positionPriceImpactDeltaUsd)}
@@ -156,7 +176,14 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                   label={
                     <>
                       <div className="text-white">{t`Price Impact Rebates`}:</div>
-                      <div>({formatPercentage(bigMath.abs(fees.priceImpactDiff.bps))} of position size)</div>
+                      <div>
+                        (
+                        {formatPercentage(bigMath.abs(fees.priceImpactDiff.precisePercentage), {
+                          displayDecimals: 3,
+                          bps: false,
+                        })}{" "}
+                        of position size)
+                      </div>
                     </>
                   }
                   value={formatDeltaUsd(fees.priceImpactDiff.deltaUsd)}
