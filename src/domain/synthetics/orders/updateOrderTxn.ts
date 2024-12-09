@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "domain/synthetics/subaccount/getSubaccountContract";

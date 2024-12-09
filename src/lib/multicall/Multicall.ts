@@ -7,7 +7,7 @@ import { isWebWorker } from "config/env";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "sdk/abis/CustomErrors.json";
 import {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,

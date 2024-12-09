@@ -1,4 +1,4 @@
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { MarketInfo } from "../markets";

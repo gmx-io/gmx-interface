@@ -5,7 +5,7 @@ import { useMulticall } from "lib/multicall";
 import { BN_ZERO } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 import { useMemo } from "react";
 
 export default function useUiFeeFactorRequest(chainId: number) {

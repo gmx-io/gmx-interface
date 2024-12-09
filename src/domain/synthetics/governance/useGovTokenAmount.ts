@@ -2,7 +2,7 @@ import useSWR from "swr";
 
 import { contractFetcher } from "lib/contracts";
 import { getContract } from "config/contracts";
-import GovToken from "abis/GovToken.json";
+import GovToken from "sdk/abis/GovToken.json";
 import useWallet from "lib/wallets/useWallet";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 

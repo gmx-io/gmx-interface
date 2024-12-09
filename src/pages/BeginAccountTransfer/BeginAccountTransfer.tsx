@@ -8,10 +8,10 @@ import useSWR from "swr";
 import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 
-import RewardRouter from "abis/RewardRouter.json";
-import RewardTracker from "abis/RewardTracker.json";
-import Token from "abis/Token.json";
-import Vester from "abis/Vester.json";
+import RewardRouter from "sdk/abis/RewardRouter.json";
+import RewardTracker from "sdk/abis/RewardTracker.json";
+import Token from "sdk/abis/Token.json";
+import Vester from "sdk/abis/Vester.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 
