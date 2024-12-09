@@ -19,6 +19,7 @@ import { GmSwapFees } from "domain/synthetics/trade";
 
 import { HighPriceImpactRow } from "../HighPriceImpactRow";
 import { showMarketToast } from "../showMarketToast";
+import { Operation } from "../types";
 
 export function InfoRows({
   indexName,
@@ -113,7 +114,7 @@ export function InfoRows({
       <ExchangeInfo.Group>
         <div className="GmSwapBox-info-section">
           <GmFees
-            isDeposit={isDeposit}
+            operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
             totalFees={fees?.totalFees}
             swapFee={fees?.swapFee}
             swapPriceImpact={fees?.swapPriceImpact}

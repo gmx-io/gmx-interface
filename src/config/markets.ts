@@ -1,7 +1,7 @@
 import mapValues from "lodash/mapValues";
 
 import { isDevelopment } from "config/env";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 import { MARKETS, DEFAULT_LISTING } from "./static/markets";
 export * from "./static/markets";
@@ -46,7 +46,6 @@ export const GLV_MARKETS: {
       shortening: "GLV",
     },
   },
-  [ARBITRUM_GOERLI]: {},
   [AVALANCHE]: {
     "0x901eE57f7118A7be56ac079cbCDa7F22663A3874": {
       name: undefined,

@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 /*
   A temporary solution before positions sorting logic is updated 
@@ -90,5 +90,4 @@ export const SORTED_MARKETS = {
     "0xE446E8f7074c0A97bb7cd448fA2CC3346045F514",
     "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
   ],
-  [ARBITRUM_GOERLI]: [],
 };
