@@ -353,6 +353,10 @@ msgstr "Max {0} short exceeded"
 msgid "Insufficient GM balance"
 msgstr "Insufficient GM balance"
 
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+#~ msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
+#~ msgstr "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take-Profit"
 msgstr "Failed Take-Profit"
@@ -543,8 +547,8 @@ msgid "Max Network Fee buffer below {0}% may result in failed orders."
 msgstr "Max Network Fee buffer below {0}% may result in failed orders."
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
-msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
-msgstr "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
+#~ msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
+#~ msgstr "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
@@ -714,6 +718,10 @@ msgstr "You can check your claim history <0>here</0>."
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum allowed actions is required"
 msgstr "Maximum allowed actions is required"
+
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
+msgstr "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2022,8 +2030,8 @@ msgid "Deposited {0} into {positionText}"
 msgstr "Deposited {0} into {positionText}"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Positive funding fees can be claimed under the claims tab."
-msgstr "Positive funding fees can be claimed under the claims tab."
+#~ msgid "Positive funding fees can be claimed under the claims tab."
+#~ msgstr "Positive funding fees can be claimed under the claims tab."
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -3020,8 +3028,8 @@ msgid "Claim failed."
 msgstr "Claim failed."
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
-msgstr "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
+#~ msgid "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
+#~ msgstr "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "{col3}"
@@ -3201,6 +3209,10 @@ msgstr "Edit {0}"
 msgid "Vest with GMX on Arbitrum"
 msgstr "Vest with GMX on Arbitrum"
 
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
+msgstr "Claimable price impact rebates.<0/><1/><2>Read more</2>."
+
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
@@ -3231,8 +3243,8 @@ msgid "Deposit failed."
 msgstr "Deposit failed."
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
-msgid "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
-msgstr "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
+#~ msgid "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
+#~ msgstr "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
 
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
@@ -3709,6 +3721,10 @@ msgstr "You have an active Limit Order to Increase {longOrShortText} {sizeInToke
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr "Claiming Price Impact Rebate..."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Negative funding fees are automatically settled against the collateral and impact the liquidation price. Positive funding fees can be claimed under the claims tab."
+msgstr "Negative funding fees are automatically settled against the collateral and impact the liquidation price. Positive funding fees can be claimed under the claims tab."
 
 #: src/pages/Stake/StakeV2.tsx
 msgid "Unstake esGMX"
@@ -5749,8 +5765,8 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
-msgstr "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
+#~ msgid "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
+#~ msgstr "Negative funding fees and borrow fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet total"
@@ -6532,8 +6548,8 @@ msgid "COMPETITION Airdrop"
 msgstr "COMPETITION Airdrop"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
-msgstr "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
+#~ msgid "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
+#~ msgstr "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/NftWallet/NftWallet.jsx
@@ -7514,6 +7530,10 @@ msgstr "Transaction failed"
 msgid "COLLATERAL"
 msgstr "COLLATERAL"
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
+msgstr "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Depositing..."
@@ -7606,6 +7626,10 @@ msgstr "About"
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Total accrued Fees"
 msgstr "Total accrued Fees"
+
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
+msgstr "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
@@ -7822,6 +7846,10 @@ msgstr "Total Stats"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1><2>{toTokenText} </2>{toTokenIcon}"
+
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+#~ msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
+#~ msgstr "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing, decreasing, closing it, depositing or withdrawing collateral, or by settling the fees using the \"Settle\" button."
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."

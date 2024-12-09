@@ -56,11 +56,9 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
           )}
         </span>
       </div>
-      {usd > 0 && (
-        <Button variant="secondary" onClick={onButtonClick}>
-          {buttonText}
-        </Button>
-      )}
+      <Button variant="secondary" disabled={usd <= 0} onClick={onButtonClick}>
+        {buttonText}
+      </Button>
     </div>
   );
 }
