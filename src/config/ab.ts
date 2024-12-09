@@ -93,7 +93,6 @@ export function getAbFlags(): Record<AbFlag, boolean> {
 
 export function getAbFlagUrlParams(): string {
   return Object.entries(abStorage)
-    .filter(([, { enabled }]) => enabled)
-    .map(([flag]) => `${flag}=1`)
+    .map(([flag, { enabled }]) => `${flag}=${enabled ? 1 : 0}`)
     .join("&");
 }
