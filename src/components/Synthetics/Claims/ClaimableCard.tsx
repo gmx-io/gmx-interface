@@ -15,7 +15,6 @@ type Props = {
   style?: CSSProperties;
 };
 
-const tooltipText = msg`Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under "Accrued".`;
 const buttonText = msg`Claim`;
 const title = msg`Claimable`;
 
@@ -29,7 +28,15 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
       [
         {
           buttonText: _(buttonText),
-          tooltipText: _(tooltipText),
+          tooltipText: (
+            <Trans>
+              Claimable positive funding fees.
+              <br />
+              <br />
+              They become available after modifying the position by increasing or decreasing it, depositing or
+              withdrawing collateral, or settling the fees using the "Settle" button.
+            </Trans>
+          ),
           onButtonClick: onClaimClick,
           usd: totalClaimableFundingUsd,
         },
@@ -37,7 +44,7 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
           buttonText: _(buttonText),
           tooltipText: (
             <Trans>
-              Claimable Price Impact Rebates.
+              Claimable price impact rebates.
               <br />
               <br />
               <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
