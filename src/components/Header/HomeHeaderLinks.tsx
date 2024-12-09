@@ -8,6 +8,8 @@ import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { Link } from "react-router-dom";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+import { shouldShowRedirectModal } from "lib/legacy";
 
 type Props = {
   small?: boolean;
@@ -18,6 +20,8 @@ type Props = {
 type HomeLink = { label: string; link: string; isHomeLink?: boolean | false; onClick?: () => void };
 
 export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Props) {
+  const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
+
   const HOME_MENUS: HomeLink[] = [
     {
       label: t`App`,
@@ -30,6 +34,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pr
             data: {
               action: "LaunchApp",
               buttonPosition: "MenuButton",
+              shouldSeeConfirmationDialog: shouldShowRedirectModal(redirectPopupTimestamp),
             },
           },
           { instantSend: true }

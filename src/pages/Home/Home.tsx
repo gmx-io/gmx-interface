@@ -7,7 +7,7 @@ import { USD_DECIMALS } from "config/factors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useUserStat } from "domain/legacy";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { getTotalVolumeSum } from "lib/legacy";
+import { getTotalVolumeSum, shouldShowRedirectModal } from "lib/legacy";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 
 import Footer from "components/Footer/Footer";
@@ -27,6 +27,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
 import { useEffect } from "react";
 import "./Home.css";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 function LaunchExchangeButton({
   showRedirectModal,
@@ -35,6 +36,8 @@ function LaunchExchangeButton({
   showRedirectModal: (to: string) => void;
   position: "Title" | "Chains";
 }) {
+  const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
+
   return (
     <HeaderLink
       onClick={async () => {
@@ -44,6 +47,7 @@ function LaunchExchangeButton({
             data: {
               action: "LaunchApp",
               buttonPosition: position,
+              shouldSeeConfirmationDialog: shouldShowRedirectModal(redirectPopupTimestamp),
             },
           },
           { instantSend: true }

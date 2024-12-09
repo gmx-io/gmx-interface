@@ -9,7 +9,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
-import { getAccountUrl, isHomeSite } from "lib/legacy";
+import { getAccountUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
@@ -20,6 +20,7 @@ import { NotifyButton } from "../NotifyButton/NotifyButton";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
 import { useCallback } from "react";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 type Props = {
   openSettings: () => void;
@@ -58,6 +59,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
   const [tradePageVersion] = useTradePageVersion();
+  const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
 
@@ -70,11 +72,12 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
         data: {
           action: "LaunchApp",
           buttonPosition: "StickyHeader",
+          shouldSeeConfirmationDialog: shouldShowRedirectModal(redirectPopupTimestamp),
         },
       },
       { instantSend: true }
     );
-  }, []);
+  }, [redirectPopupTimestamp]);
 
   if (!active || !account) {
     return (

@@ -13,6 +13,7 @@ import { useUtmParams } from "domain/utm";
 import { isDevelopment } from "config/env";
 import useRouteQuery from "lib/useRouteQuery";
 import { useHistory } from "react-router-dom";
+import { getIsFlagEnabled } from "config/ab";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -64,6 +65,7 @@ export function useConfigureUserAnalyticsProfile() {
       ordersCount,
       isWalletConnected: active,
       isTest: isDevelopment(),
+      ABTestAgreementConfirmation: getIsFlagEnabled("testRemoveConfirmationModal") ? "Experimental" : "Control",
     });
   }, [active, ordersCount]);
 

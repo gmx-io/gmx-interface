@@ -7,6 +7,7 @@ type CommonEventParams = {
   ordersCount?: number;
   isWalletConnected?: boolean;
   isTest: boolean;
+  ABTestAgreementConfirmation: "Control" | "Experimental";
 };
 
 type ProfileProps = {

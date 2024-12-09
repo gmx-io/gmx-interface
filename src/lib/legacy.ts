@@ -27,6 +27,7 @@ import {
 } from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
+import { getIsFlagEnabled } from "config/ab";
 
 const { ZeroAddress } = ethers;
 
@@ -1483,6 +1484,10 @@ export function getOrderError(account, order, positionsMap, position) {
 }
 
 export function shouldShowRedirectModal(timestamp?: number): boolean {
+  if (getIsFlagEnabled("testRemoveConfirmationModal")) {
+    return false;
+  }
+
   if (!timestamp) {
     return true;
   }
