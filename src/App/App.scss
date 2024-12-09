@@ -99,13 +99,6 @@ $app-card-padding: 1.5rem;
   /* z-index: 2; */
 }
 
-.App-header-menu-icon-block {
-  margin-right: 1.2rem;
-  margin-left: 0px;
-  display: flex;
-  align-items: center;
-}
-
 .App-header-menu-icon {
   color: var(--color-white);
   font-size: 2rem;
@@ -1236,11 +1229,6 @@ button.App-button {
   }
   .App-header-trade-link a {
     padding: 0 0.8rem;
-  }
-
-  .App-header-menu-icon-block {
-    margin-left: 0;
-    margin-right: 0.4rem;
   }
 
   .mobile-cross-menu {
