@@ -55,21 +55,6 @@ export type ConnectWalletClickEvent = {
   };
 };
 
-export type WalletProviderSelectedEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "WalletProviderSelected";
-    provider: string; // ProviderName
-  };
-};
-
-export type ConnectWalletDialogCloseEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "DialogClose";
-  };
-};
-
 export type ConnectWalletResultEvent = {
   event: "ConnectWalletAction";
   data: {
