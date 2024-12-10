@@ -235,7 +235,7 @@ export async function createIncreaseOrderTxn({
       })
     : undefined;
 
-  const txpParams = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -254,11 +254,11 @@ export async function createIncreaseOrderTxn({
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
     metricId,
-    gasLimit: txpParams.gasLimit,
-    gasPriceData: gasPriceData ?? txpParams.gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: gasPriceData ?? txnParams.gasPriceData,
     bestNonce: subaccount?.bestNonce,
-    customSignersGasLimits: txpParams.customSignersGasLimits,
-    customSignersGasPrices: txpParams.customSignersGasPrices,
+    customSignersGasLimits: txnParams.customSignersGasLimits,
+    customSignersGasPrices: txnParams.customSignersGasPrices,
     setPendingTxns: p.setPendingTxns,
   });
 

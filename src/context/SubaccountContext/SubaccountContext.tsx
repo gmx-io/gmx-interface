@@ -293,7 +293,7 @@ export function useSubaccountDefaultNetworkFee() {
   return useSubaccountSelector((s) => s.defaultNetworkFee) ?? 0n;
 }
 
-export function useSubaccountCustomSigners() {
+function useSubaccountCustomSigners() {
   const { chainId } = useChainId();
   const privateKey = useSubaccountPrivateKey();
 
