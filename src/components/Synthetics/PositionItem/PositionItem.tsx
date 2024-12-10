@@ -247,12 +247,9 @@ export function PositionItem(p: Props) {
                   <br />
                   <br />
                   <Trans>
-                    Negative funding fees and borrow fees are settled against the collateral automatically and will
-                    influence the time to liquidation, as shown under the liquidation price tooltip.
+                    Negative funding fees are automatically settled against the collateral and impact the liquidation
+                    price. Positive funding fees can be claimed under the claims tab.
                   </Trans>
-                  <br />
-                  <br />
-                  <Trans>Positive funding fees can be claimed under the claims tab.</Trans>
                 </>
               );
             }}
@@ -600,9 +597,7 @@ export function PositionItem(p: Props) {
                 <div>{renderNetValue()}</div>
               </div>
               <div className="App-card-row">
-                <div className="label">
-                  <Trans>PnL</Trans>
-                </div>
+                <div className="label">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
                 <div>
                   <span
                     className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {

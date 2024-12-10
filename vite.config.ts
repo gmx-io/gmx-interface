@@ -42,6 +42,7 @@ export default defineConfig({
       styles: path.resolve(__dirname, "src/styles"),
       "typechain-types": path.resolve(__dirname, "src/typechain-types"),
       prebuilt: path.resolve(__dirname, "src/prebuilt"),
+      sdk: path.resolve(__dirname, "sdk/src"),
     },
   },
   build: {
@@ -59,7 +60,7 @@ export default defineConfig({
   test: {
     environment: "happy-dom",
     globalSetup: "./vitest.global-setup.js",
-    exclude: ["./autotests", "node_modules"],
+    exclude: ["./autotests", "node_modules", "./sdk"],
     setupFiles: ["@vitest/web-worker"],
   },
 });

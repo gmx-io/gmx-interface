@@ -5,3 +5,6 @@ yarn lingui:generate
 yarn lint-staged
 yarn test:ci
 yarn tscheck
+
+cd sdk
+yarn test

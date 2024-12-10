@@ -47,6 +47,8 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { getContract } from "config/contracts";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -90,6 +92,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokenAddresses: fromToken ? [fromToken.address] : [],
+  });
+
+  const initialCollateralAllowance = getByKey(tokensAllowanceData, fromToken?.address);
+
   const onSubmitSwap = useCallback(
     function onSubmitSwap() {
       const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
@@ -104,6 +113,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         orderType,
         subaccount,
         isFirstOrder,
+        initialCollateralAllowance,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -165,6 +175,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingOrder,
       shouldDisableValidationForTesting,
       blockTimestampData,
+      initialCollateralAllowance,
     ]
   );
 
@@ -187,6 +198,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isLong,
         isFirstOrder,
         isLeverageEnabled,
+        initialCollateralAllowance,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -325,6 +337,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
+      initialCollateralAllowance,
     ]
   );
 

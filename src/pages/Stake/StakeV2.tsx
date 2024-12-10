@@ -7,13 +7,13 @@ import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import GlpManager from "abis/GlpManager.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import RewardReader from "abis/RewardReader.json";
-import RewardRouter from "abis/RewardRouter.json";
-import Token from "abis/Token.json";
-import Vault from "abis/Vault.json";
-import Vester from "abis/Vester.json";
+import GlpManager from "sdk/abis/GlpManager.json";
+import ReaderV2 from "sdk/abis/ReaderV2.json";
+import RewardReader from "sdk/abis/RewardReader.json";
+import RewardRouter from "sdk/abis/RewardRouter.json";
+import Token from "sdk/abis/Token.json";
+import Vault from "sdk/abis/Vault.json";
+import Vester from "sdk/abis/Vester.json";
 
 import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
@@ -231,16 +231,6 @@ function StakeModal(props: {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-        {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
-            <Trans>
-              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
-              </ExternalLink>
-              <span>&nbsp;voting power before staking.</span>
-            </Trans>
-          </AlertInfo>
-        ) : null}
         <BuyInputSection
           topLeftLabel={t`Stake`}
           topRightLabel={t`Max`}
@@ -288,6 +278,17 @@ function StakeModal(props: {
               <Trans>You will earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action.</Trans>
             </AlertInfo>
           )}
+
+        {isUndelegatedGovToken ? (
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
+            <Trans>
+              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
+              </ExternalLink>{" "}
+              voting power before staking.
+            </Trans>
+          </AlertInfo>
+        ) : null}
 
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -961,16 +962,6 @@ function ClaimModal(props: {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
-        {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
-            <Trans>
-              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
-              </ExternalLink>
-              <span>&nbsp;voting power before claiming.</span>
-            </Trans>
-          </AlertInfo>
-        ) : null}
         <div className="CompoundModal-menu">
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
@@ -1019,6 +1010,16 @@ function ClaimModal(props: {
             />
           </div>
         )}
+        {isUndelegatedGovToken ? (
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
+            <Trans>
+              <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
+                Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
+              </ExternalLink>
+              voting power before claiming.
+            </Trans>
+          </AlertInfo>
+        ) : null}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -1782,7 +1783,7 @@ export default function StakeV2() {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM</ExternalLink> or{" "}
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
-            {earnMsg && <div className="Page-description mt-8">{earnMsg}</div>}
+            {earnMsg && <div className="Page-descriptionж">{earnMsg}</div>}
             {incentivesMessage}
           </div>
         }
@@ -1865,8 +1866,8 @@ export default function StakeV2() {
                                 <Trans>
                                   <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                                     Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
-                                  </ExternalLink>
-                                  <span>&nbsp;voting power.</span>
+                                  </ExternalLink>{" "}
+                                  voting power.
                                 </Trans>
                               </AlertInfo>
                             ) : null}

@@ -1,13 +1,13 @@
 import { ClientConfig, createPublicClient, http } from "viem";
 import type { BatchOptions } from "viem/_types/clients/transports/http";
-import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
+import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { isWebWorker } from "config/env";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "sdk/abis/CustomErrors.json";
 import {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -25,7 +25,6 @@ export const MAX_TIMEOUT = 20000;
 
 const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE_FUJI]: avalancheFuji,
-  [ARBITRUM_GOERLI]: arbitrumGoerli,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
 };
@@ -69,18 +68,6 @@ const BATCH_CONFIGS: Record<
   [AVALANCHE_FUJI]: {
     http: {
       batchSize: 40,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
-  [ARBITRUM_GOERLI]: {
-    http: {
-      batchSize: 0,
       wait: 0,
     },
     client: {

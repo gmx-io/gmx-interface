@@ -33,6 +33,39 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "trading-fees-reduction",
+    title: "Trading fees are reduced",
+    isActive: true,
+    startDate: "28 Nov 2024, 00:00",
+    endDate: "18 Dec 2024, 00:00",
+    bodyText: (
+      <>
+        Open and close fees are reduced by 25% for <TokenSymbolWithIcon symbol="SOL" />
+        /USD, <TokenSymbolWithIcon symbol="DOGE" />
+        /USD, and <TokenSymbolWithIcon symbol="LINK" />
+        /USD markets on Arbitrum.
+        <br />
+        <ExternalLink href="https://x.com/GMX_IO/status/1861743953537569043">Learn more</ExternalLink>.
+      </>
+    ),
+  },
+  {
+    id: "render-sol-xlm-listing",
+    title: "RENDER, SOL single-sided, and XLM markets added on Arbitrum",
+    isActive: true,
+    startDate: "29 Nov 2024, 16:00",
+    endDate: "5 Dec 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="RENDER" />
+        /USD, <TokenSymbolWithIcon symbol="SOL" />
+        /USD, and <TokenSymbolWithIcon symbol="XLM" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="WETH" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "ada-bch-dot-icp-listing",
     title: "ADA, BCH, DOT, and ICP markets added on Arbitrum",
     isActive: true,

@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for accurate versioning
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -34,18 +34,19 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org/"
           always-auth: true
+          scope: "@gmx-io"
           auth-token: ${{ secrets.NPM_TOKEN }}
-
-      - name: Install Yarn
-        run: npm install --global yarn@3.1.0
 
       - name: Install dependencies
         working-directory: ./sdk
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build package
         working-directory: ./sdk
-        run: yarn build
+        run: |
+          yarn prepare
+          yarn prebuild
+          yarn build
 
       - name: Bump version
         working-directory: ./sdk
@@ -55,9 +56,10 @@ jobs:
               echo "Custom version not specified"
               exit 1
             fi
-            yarn version --new-version "${{ github.event.inputs.custom_version }}" --no-git-tag-version
+            yarn version "${{ github.event.inputs.custom_version }}"
           else
-            yarn version --${{ github.event.inputs.version_type }} --no-git-tag-version
+            yarn version ${{ github.event.inputs.version_type }}
+          fi
 
       - name: Commit version bump
         working-directory: ./sdk
@@ -67,10 +69,15 @@ jobs:
           git add package.json
           git commit -m "Bump SDK version to $(jq -r .version package.json)"
 
-      - name: Publish package
+      - run: npm publish --access public
         working-directory: ./sdk
-        run: yarn publish --non-interactive
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push changes
         run: |
+          if [ "${{ github.event.inputs.version_type }}" == "custom" ]; then
+            exit 0
+          fi
+
           git push origin HEAD:${{ github.ref_name }}

@@ -124,8 +124,6 @@ export function PositionSeller(p: Props) {
   const isVisible = Boolean(position);
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-
-  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
   const setDefaultReceiveToken = useSelector(selectPositionSellerSetDefaultReceiveToken);
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.market.indexTokenAddress));
 
@@ -159,6 +157,11 @@ export function PositionSeller(p: Props) {
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isTrigger = orderOption === OrderOption.Trigger;
+
+  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
+    positionKey: position?.key,
+    isCreatingNewAutoCancel: isTrigger,
+  });
 
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;

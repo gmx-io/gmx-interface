@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import GlvRouter from "abis/GlvRouter.json";
+import GlvRouter from "sdk/abis/GlvRouter.json";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Signer, ethers } from "ethers";

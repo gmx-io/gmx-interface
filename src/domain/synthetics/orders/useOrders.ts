@@ -21,8 +21,8 @@ import {
   isVisibleOrder,
 } from "./utils";
 
-import DataStore from "abis/DataStore.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import DataStore from "sdk/abis/DataStore.json";
+import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 
 type OrdersResult = {
   ordersData?: OrdersData;

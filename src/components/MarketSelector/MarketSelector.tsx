@@ -13,7 +13,7 @@ import { stripBlacklistedWords } from "domain/tokens/utils";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -104,19 +104,16 @@ export function MarketSelector({
 
   const marketInfo = marketsOptions.find((option) => option.indexName === selectedIndexName)?.marketInfo;
 
-  const fuse = useFuse(
-    () =>
-      marketsOptions.map((item, index) => ({
-        id: index,
-        name: item.indexName,
-        indexTokenName: item.marketInfo.isSpotOnly ? "" : stripBlacklistedWords(item.marketInfo.indexToken.name),
-      })),
-    marketsOptions?.map((item) => item.marketInfo.indexToken.address)
-  );
-
   const filteredOptions = useMemo(() => {
     const textMatched = searchKeyword.trim()
-      ? fuse.search(searchKeyword).map((result) => marketsOptions[result.item.id])
+      ? searchBy(
+          marketsOptions,
+          [
+            "indexName",
+            (item) => (item.marketInfo.isSpotOnly ? "" : stripBlacklistedWords(item.marketInfo.indexToken.name)),
+          ],
+          searchKeyword
+        )
       : marketsOptions;
 
     const tabMatched = textMatched?.filter((item) => {
@@ -128,7 +125,7 @@ export function MarketSelector({
     });
 
     return tabMatched;
-  }, [favoriteTokens, fuse, marketsOptions, searchKeyword, tab]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -164,6 +161,7 @@ export function MarketSelector({
         headerContent={
           <div className="mt-16 flex items-center gap-16">
             <SearchInput
+              className="*:!text-body-medium"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Market`}

@@ -114,7 +114,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
       <div className="TableBox__head">
         <SearchInput
           placeholder={t`Search Address`}
-          className="max-w-lg *:!text-16"
+          className="max-w-lg *:!text-14"
           value={search}
           setValue={setSearch}
           onKeyDown={handleKeyDown}

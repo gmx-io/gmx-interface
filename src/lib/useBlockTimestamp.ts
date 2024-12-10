@@ -1,4 +1,4 @@
-import Multicall from "abis/Multicall.json";
+import Multicall from "sdk/abis/Multicall.json";
 import { getContract } from "config/contracts";
 import { useMemo } from "react";
 import { useMulticall } from "./multicall";

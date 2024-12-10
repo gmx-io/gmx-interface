@@ -3,7 +3,7 @@ import { MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY, MAX_AUTO_CANCEL_ORDE
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 import { useMemo } from "react";
 
 export type PositionsConstantsResult = {

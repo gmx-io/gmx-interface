@@ -7,7 +7,7 @@ import { callContract } from "lib/contracts";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 
-import GlvRouter from "abis/GlvRouter.json";
+import GlvRouter from "sdk/abis/GlvRouter.json";
 import { CreateDepositParams } from "./createDepositTxn";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 

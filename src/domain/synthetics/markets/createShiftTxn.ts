@@ -10,7 +10,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { BlockTimestampData } from "lib/useBlockTimestamp";

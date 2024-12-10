@@ -14,7 +14,7 @@ import { stripBlacklistedWords } from "domain/tokens/utils";
 import dropDownIcon from "img/DROP_DOWN.svg";
 import { bigMath } from "lib/bigmath";
 import { expandDecimals, formatAmount } from "lib/numbers";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -104,29 +104,28 @@ export default function TokenSelector(props: Props) {
     }
   }, [isModalVisible]);
 
-  const fuse = useFuse(
-    () =>
-      visibleTokens.map((token, index) => {
-        let name = token.name;
-        if (token.isMarketToken) {
-          const indexTokenAddress = getMarketUiConfig(props.chainId, token.address)?.indexTokenAddress;
-          const indexToken = getToken(props.chainId, indexTokenAddress);
-          name = indexToken.name ? `GM ${indexToken.name}` : name;
-        }
-        name = stripBlacklistedWords(name);
-
-        return { id: index, name, symbol: token.symbol };
-      }),
-    visibleTokens.map((item) => item.address)
-  );
-
   const filteredTokens = useMemo(() => {
     if (!searchKeyword.trim()) {
       return visibleTokens;
     }
 
-    return fuse.search(searchKeyword).map((result) => visibleTokens[result.item.id]);
-  }, [fuse, searchKeyword, visibleTokens]);
+    return searchBy(
+      visibleTokens,
+      [
+        (item) => {
+          let name = item.name;
+          if (item.isMarketToken) {
+            const indexTokenAddress = getMarketUiConfig(props.chainId, item.address)?.indexTokenAddress;
+            const indexToken = getToken(props.chainId, indexTokenAddress);
+            name = indexToken.name ? `GM ${indexToken.name}` : name;
+          }
+          return stripBlacklistedWords(name);
+        },
+        "symbol",
+      ],
+      searchKeyword
+    );
+  }, [props.chainId, searchKeyword, visibleTokens]);
 
   const sortedFilteredTokens = useMemo(() => {
     const tokensWithBalance: ExtendedToken[] = [];
@@ -210,7 +209,12 @@ export default function TokenSelector(props: Props) {
         label={props.label}
         footerContent={footerContent}
         headerContent={
-          <SearchInput className="mt-15" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={_handleKeyDown} />
+          <SearchInput
+            className="mt-15 *:!text-body-medium"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={_handleKeyDown}
+          />
         }
       >
         {missedCoinsPlace && (

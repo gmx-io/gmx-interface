@@ -5,7 +5,9 @@ import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "./bigmath";
 import { getPlusOrMinusSymbol } from "./utils";
 
-export const PRECISION = expandDecimals(1, 30);
+const PRECISION_DECIMALS = 30;
+export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
+export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -229,12 +231,15 @@ export function formatDeltaUsd(
   return `${symbol}${sign}$${deltaUsdStr}${percentageStr}`;
 }
 
-export function formatPercentage(percentage?: bigint, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
-  const { fallbackToZero = false, signed = false } = opts;
+export function formatPercentage(
+  percentage?: bigint,
+  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean } = {}
+) {
+  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true } = opts;
 
   if (typeof percentage !== "bigint") {
     if (fallbackToZero) {
-      return `${formatAmount(0n, 2, 2)}%`;
+      return `${formatAmount(0n, bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
     }
 
     return undefined;
@@ -242,7 +247,7 @@ export function formatPercentage(percentage?: bigint, opts: { fallbackToZero?: b
 
   const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), 2, 2)}%`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
 }
 
 export function formatTokenAmount(
@@ -516,7 +521,7 @@ export function numberToBigint(value: number, decimals: number) {
 
 export function calculateDisplayDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
   if (price === undefined || price === 0n) return 2;
-  const priceNumber = bigintToNumber(price * BigInt(visualMultiplier), decimals);
+  const priceNumber = bigintToNumber(bigMath.abs(price) * BigInt(visualMultiplier), decimals);
 
   if (isNaN(priceNumber)) return 2;
   if (priceNumber >= 1000) return 2;

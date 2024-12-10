@@ -18,7 +18,7 @@ import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
 import { getPositionKey, parsePositionKey } from "./utils";
 
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 

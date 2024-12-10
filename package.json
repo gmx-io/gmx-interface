@@ -22,8 +22,8 @@
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
-    "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './src/abis/*.json'",
-    "postinstall": "yarn typechain",
+    "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './sdk/src/abis/*.json'",
+    "postinstall": "yarn typechain && cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "yarn tsx scripts/prebuild"
   },
   "dependencies": {
@@ -64,7 +64,6 @@
     "eth-testing": "1.9.1",
     "ethers": "6.12.1",
     "framer-motion": "11.1.9",
-    "fuse.js": "7.0.0",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
     "html-to-image": "^1.10.8",
@@ -164,6 +163,10 @@
     "vitest": "2.0.5"
   },
   "lint-staged": {
+    "sdk/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix --max-warnings=0 ./sdk",
+      "prettier --write"
+    ],
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix --max-warnings=0 ./src",
       "prettier --write"

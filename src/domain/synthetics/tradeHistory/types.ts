@@ -33,6 +33,7 @@ export type RawTradeAction = {
   positionFeeAmount?: string;
   borrowingFeeAmount?: string;
   fundingFeeAmount?: string;
+  liquidationFeeAmount?: string;
   pnlUsd?: string;
   basePnlUsd?: string;
 
@@ -80,6 +81,7 @@ export type PositionTradeAction = {
   priceImpactUsd?: bigint;
   priceImpactDiffUsd?: bigint;
   positionFeeAmount?: bigint;
+  liquidationFeeAmount?: bigint;
   borrowingFeeAmount?: bigint;
   fundingFeeAmount?: bigint;
   pnlUsd?: bigint;

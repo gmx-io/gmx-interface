@@ -1,4 +1,4 @@
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { affiliateRewardKey } from "config/dataStore";
 import { useMarkets } from "domain/synthetics/markets";

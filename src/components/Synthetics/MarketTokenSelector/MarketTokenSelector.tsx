@@ -26,7 +26,7 @@ import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/t
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useFuse } from "lib/useFuse";
+import { searchBy } from "lib/searchBy";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
@@ -196,11 +196,11 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-16 last-of-type:pr-16") : "px-16";
   const thClassName = cx(
-    "sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
     rowVerticalPadding,
     rowHorizontalPadding
   );
-  const tdClassName = cx("last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
+  const tdClassName = cx("text-body-medium last-of-type:text-right", rowVerticalPadding, rowHorizontalPadding);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -216,7 +216,7 @@ function MarketTokenSelectorInternal(props: Props) {
       <SelectorBaseMobileHeaderContent>
         <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
           <SearchInput
-            className="w-full"
+            className="w-full *:!text-body-medium"
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
@@ -227,14 +227,14 @@ function MarketTokenSelectorInternal(props: Props) {
       </SelectorBaseMobileHeaderContent>
       <div
         className={cx({
-          "w-[630px]": !isMobile,
+          "w-[650px]": !isMobile,
         })}
       >
         {!isMobile && (
           <>
             <div className="m-16 flex justify-between gap-16">
               <SearchInput
-                className="w-full"
+                className="w-full *:!text-body-medium"
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
@@ -290,7 +290,7 @@ function MarketTokenSelectorInternal(props: Props) {
               ))}
               {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={6} className="text-gray-400">
+                  <TableTd colSpan={6} className="text-body-medium text-gray-400">
                     <Trans>No pools matched.</Trans>
                   </TableTd>
                 </TableTr>
@@ -334,25 +334,22 @@ function useFilterSortTokensInfo({
   orderBy: SortField;
   direction: SortDirection;
 }) {
-  const fuse = useFuse(
-    () =>
-      sortedMarketsByIndexToken.map((market, index) => {
-        const marketInfo = getByKey(marketsInfoData, market?.address)!;
-        return {
-          id: index,
-          marketName: isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name,
-        };
-      }),
-    sortedMarketsByIndexToken.map((market) => market.address)
-  );
-
   const filteredTokensInfo = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
       return [];
     }
 
     const textMatched = searchKeyword.trim()
-      ? fuse.search(searchKeyword).map((result) => sortedMarketsByIndexToken[result.item.id])
+      ? searchBy(
+          sortedMarketsByIndexToken,
+          [
+            (item) => {
+              const marketInfo = getByKey(marketsInfoData, item?.address)!;
+              return isGlvInfo(marketInfo) ? getGlvDisplayName(marketInfo) : marketInfo.name;
+            },
+          ],
+          searchKeyword
+        )
       : sortedMarketsByIndexToken;
 
     const tabMatched = textMatched.filter((item) => {
@@ -397,7 +394,6 @@ function useFilterSortTokensInfo({
   }, [
     sortedMarketsByIndexToken,
     searchKeyword,
-    fuse,
     tab,
     favoriteTokens,
     marketsInfoData,
@@ -518,17 +514,17 @@ function MarketTokenListItem({
         {marketInfo && !isSmallMobile && (
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
-            <div className="inline-flex flex-wrap items-center">
-              <span className="text-slate-100">{indexName && indexName}</span>
-              <span className="ml-3 text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+            <div className="inline-flex flex-wrap items-center whitespace-nowrap">
+              <span className="text-body-medium text-slate-100">{indexName && indexName}</span>
+              <span className="text-body-medium ml-3 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
             </div>
           </div>
         )}
         {marketInfo && isSmallMobile && (
-          <div className="inline-flex flex-col items-start">
+          <div className="inline-flex flex-col items-start whitespace-nowrap">
             <TokenIcon symbol={iconName} displaySize={16} importSize={40} />
-            <span>{indexName && indexName}</span>
-            <span className="text-12 leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+            <span className="text-body-medium">{indexName && indexName}</span>
+            <span className="text-body-medium leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
           </div>
         )}
       </td>
