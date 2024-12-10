@@ -60,6 +60,7 @@ export type ConnectWalletResultEvent = {
   data: {
     action: "ConnectedSuccessfully" | "ConnectionFail";
     provider: string; // ProviderName
+    ordersCount: number | undefined;
   };
 };
 
