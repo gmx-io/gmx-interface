@@ -94,6 +94,24 @@ export function AppHeaderLinks({
       </motion.div>
       <motion.div
         className="App-header-link-container"
+        data-tour="step-2"
+        style={{ display: "flex", alignItems: "center" }}
+        variants={linkVariants}
+        initial="initial"
+        whileHover="hover"
+        whileTap="tap"
+      >
+        <HeaderLink
+          to="/leaderboard"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+          style={{ width: "100%" }}
+        >
+          <Trans>Leaderboard</Trans>
+        </HeaderLink>
+      </motion.div>
+      <motion.div
+        className="App-header-link-container"
         style={{ display: "flex", alignItems: "center", color: mobile ? "white" : "initial" }}
         variants={linkVariants}
         initial="initial"

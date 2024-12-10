@@ -156,7 +156,8 @@
 .reward-programs-section {
   margin-top: 2rem;
   background: rgba(13, 14, 22, 0.6);
-  border-radius: 4px;
+  border: 1px solid rgba(49, 54, 85, 0.5);
+  border-radius: 0.75rem;
   padding: 2rem;
   backdrop-filter: blur(10px);
 }
@@ -196,22 +197,21 @@
   border-color: #ff7028;
 }
 
-.reward-content {
-  padding: 2rem;
-  background: rgba(13, 14, 22, 0.4);
-  border-radius: 4px;
-}
-
 .reward-overview {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
+  margin-bottom: 3rem;
+  background: rgba(49, 54, 85, 0.3);
+  border: 1px solid rgba(49, 54, 85, 0.5);
+  border-radius: 0.75rem;
+  padding: 2rem;
 }
 
 .overview-card {
-  background: rgba(49, 54, 85, 0.3);
-  border-radius: 4px;
-  padding: 1.5rem;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .overview-card h3 {
@@ -240,7 +240,17 @@
   left: 0;
 }
 
+.reward-programs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
 .reward-program {
+  background: rgba(49, 54, 85, 0.3);
+  border: 1px solid rgba(49, 54, 85, 0.5);
+  border-radius: 0.75rem;
+  padding: 2rem;
   color: #fff;
 }
 
@@ -253,11 +263,14 @@
 .reward-description {
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 2rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .reward-table {
   background: rgba(49, 54, 85, 0.3);
-  border-radius: 4px;
+  border: 1px solid rgba(49, 54, 85, 0.5);
+  border-radius: 0.75rem;
   overflow: hidden;
 }
 
@@ -289,35 +302,28 @@
   font-size: 1.1rem;
 }
 
+@media (max-width: 1200px) {
+  .reward-programs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .protocol-tokens-container {
     padding: 1rem;
   }
 
-  .page-title {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+  .reward-overview {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
   }
 
-  .tokens-grid {
+  .reward-programs-grid {
     grid-template-columns: 1fr;
   }
 
-  .token-description {
-    min-height: auto;
-  }
-
-  .reward-tabs {
-    flex-direction: column;
-  }
-
-  .reward-tab {
-    width: 100%;
-    text-align: center;
-  }
-
-  .reward-content {
-    padding: 1rem;
+  .reward-program {
+    padding: 1.5rem;
   }
 
   .reward-table-header,

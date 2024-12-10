@@ -33,7 +33,7 @@ import NftWallet from "pages/NftWallet/NftWallet";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
-import ProtocolTokens from "pages/ProtocolTokens/ProtocolTokens";
+import RewardsProgram from "pages/RewardsProgram/RewardsProgram";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -697,8 +697,8 @@ function FullApp() {
                     savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                   />
                 </Route>
-                <Route exact path="/buy">
-                  <ProtocolTokens />
+                <Route exact path="/rewards">
+                  <RewardsProgram />
                 </Route>
                 <Route exact path="/dashboard">
                   <Dashboard />
