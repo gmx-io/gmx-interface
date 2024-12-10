@@ -1,8 +1,8 @@
-import { HASHED_MARKET_CONFIG_KEYS } from "prebuilt";
+import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
 import { MarketConfigMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
 
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 
 export async function buildMarketsConfigsRequest(
   chainId: number,
