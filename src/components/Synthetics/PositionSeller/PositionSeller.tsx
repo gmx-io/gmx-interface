@@ -86,7 +86,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 import "./PositionSeller.scss";
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectBlockTimestampData, selectGasPriceData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -293,6 +293,7 @@ export function PositionSeller(p: Props) {
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+  const gasPriceData = useSelector(selectGasPriceData);
 
   function onSubmit() {
     if (!account) {
@@ -375,6 +376,7 @@ export function PositionSeller(p: Props) {
         setPendingPosition,
       },
       blockTimestampData,
+      gasPriceData,
       metricData.metricId
     )
       .then(makeTxnSentMetricsHandler(metricData.metricId))

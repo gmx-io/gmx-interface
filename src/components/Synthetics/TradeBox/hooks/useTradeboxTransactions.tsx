@@ -3,7 +3,11 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectBlockTimestampData,
+  selectGasPriceData,
+  selectIsFirstOrder,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -65,6 +69,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
   const blockTimestampData = useSelector(selectBlockTimestampData);
+  const gasPriceData = useSelector(selectGasPriceData);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
@@ -152,6 +157,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         metricId: metricData.metricId,
         skipSimulation: shouldDisableValidationForTesting,
         blockTimestampData,
+        gasPriceData,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -167,6 +173,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       allowedSlippage,
       subaccount,
       isFirstOrder,
+      initialCollateralAllowance,
       account,
       tokensData,
       signer,
@@ -175,7 +182,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingOrder,
       shouldDisableValidationForTesting,
       blockTimestampData,
-      initialCollateralAllowance,
+      gasPriceData,
     ]
   );
 
@@ -238,6 +245,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         subaccount,
         metricId: metricData.metricId,
         blockTimestampData,
+        gasPriceData,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -322,12 +330,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isLong,
       isFirstOrder,
       isLeverageEnabled,
+      initialCollateralAllowance,
       tokensData,
       account,
       collateralToken,
       signer,
-      blockTimestampData,
       chainId,
+      blockTimestampData,
+      gasPriceData,
       shouldDisableValidationForTesting,
       setPendingTxns,
       setPendingOrder,
@@ -337,7 +347,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
-      initialCollateralAllowance,
     ]
   );
 
@@ -416,6 +425,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingPosition,
         },
         blockTimestampData,
+        gasPriceData,
         metricData.metricId
       )
         .then(makeTxnSentMetricsHandler(metricData.metricId))
@@ -436,12 +446,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       account,
       tokensData,
       signer,
-      blockTimestampData,
       chainId,
       autoCancelOrdersLimit,
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
+      blockTimestampData,
+      gasPriceData,
     ]
   );
 

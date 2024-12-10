@@ -14,9 +14,9 @@ export type BlockTimestampResult = {
   blockTimestampData?: BlockTimestampData;
 };
 
-export function useBlockTimestamp(chainId: number): BlockTimestampResult {
+export function useBlockTimestamp(chainId: number, { skip }: { skip?: boolean } = {}): BlockTimestampResult {
   const { data } = useMulticall(chainId, "useBlockTimestamp", {
-    key: [],
+    key: !skip ? [] : null,
 
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
 

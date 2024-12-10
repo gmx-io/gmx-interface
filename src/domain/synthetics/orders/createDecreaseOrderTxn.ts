@@ -5,7 +5,7 @@ import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } f
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract, GasPriceData } from "lib/contracts";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
@@ -59,6 +59,7 @@ export async function createDecreaseOrderTxn(
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
   blockTimestampData: BlockTimestampData | undefined,
+  gasPriceData: GasPriceData | undefined,
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
@@ -113,7 +114,7 @@ export async function createDecreaseOrderTxn(
     })
   );
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -133,12 +134,12 @@ export async function createDecreaseOrderTxn(
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
-    gasLimit,
-    gasPriceData,
+    customSignersGasLimits: txnParams.customSignersGasLimits,
+    customSignersGasPrices: txnParams.customSignersGasPrices,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: gasPriceData ?? txnParams.gasPriceData,
     metricId,
-    bestNonce,
+    bestNonce: txnParams.bestNonce,
     setPendingTxns: callbacks.setPendingTxns,
   });
 

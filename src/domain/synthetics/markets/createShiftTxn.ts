@@ -4,7 +4,7 @@ import { Signer, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { SetPendingShift } from "context/SyntheticsEvents";
-import { callContract } from "lib/contracts";
+import { callContract, GasPriceData } from "lib/contracts";
 
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
@@ -27,6 +27,7 @@ type Params = {
   skipSimulation?: boolean;
   blockTimestampData: BlockTimestampData | undefined;
   metricId?: OrderMetricId;
+  gasPriceData: GasPriceData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingShift: SetPendingShift;
 };
@@ -73,7 +74,7 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -89,8 +90,8 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit,
-    gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingShift({

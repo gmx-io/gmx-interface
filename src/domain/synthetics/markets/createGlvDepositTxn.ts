@@ -103,7 +103,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -119,8 +119,8 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit,
-    gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({

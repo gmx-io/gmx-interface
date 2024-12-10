@@ -1,10 +1,9 @@
 import { Trans } from "@lingui/macro";
-import DataStore from "sdk/abis/DataStore.json";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
 import { getContract } from "config/contracts";
 import {
-  SUBACCOUNT_ORDER_ACTION,
   maxAllowedSubaccountActionCountKey,
+  SUBACCOUNT_ORDER_ACTION,
   subaccountActionCountKey,
   subaccountAutoTopUpAmountKey,
   subaccountListKey,
@@ -19,21 +18,23 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { STRING_FOR_SIGNING } from "domain/synthetics/subaccount/constants";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
+import { useBestNonce } from "lib/contracts/useBestNonce";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { clientToSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import DataStore from "sdk/abis/DataStore.json";
 import { createContext, useContextSelector } from "use-context-selector";
-import { clientToSigner } from "lib/wallets/useEthersSigner";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
-import { useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
@@ -292,7 +293,7 @@ export function useSubaccountDefaultNetworkFee() {
   return useSubaccountSelector((s) => s.defaultNetworkFee) ?? 0n;
 }
 
-function useSubaccountCustomSigners() {
+export function useSubaccountCustomSigners() {
   const { chainId } = useChainId();
   const privateKey = useSubaccountPrivateKey();
 
@@ -316,7 +317,20 @@ function useSubaccountCustomSigners() {
   }, [chainId, privateKey, primary, secondary]);
 }
 
+export function useSubaccountSigner() {
+  const { walletClient } = useWallet();
+
+  return useMemo(() => {
+    if (!walletClient) {
+      return undefined;
+    }
+
+    return clientToSigner(walletClient);
+  }, [walletClient]);
+}
+
 export function useSubaccount(requiredBalance: bigint | null, requiredActions = 1) {
+  const { chainId } = useChainId();
   const address = useSubaccountAddress();
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
@@ -327,19 +341,31 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
   const { remaining } = useSubaccountActionCounts();
   const { walletClient } = useWallet();
 
+  const signer = useMemo(() => {
+    if (!walletClient) {
+      return undefined;
+    }
+
+    return clientToSigner(walletClient);
+  }, [walletClient]);
+
+  const { data: bestNonce } = useBestNonce(
+    chainId,
+    signer && subaccountCustomSigners ? [signer, ...subaccountCustomSigners] : undefined
+  );
+
   return useMemo(() => {
     if (
       !address ||
       !active ||
       !privateKey ||
       !walletClient ||
+      !signer ||
       insufficientFunds ||
       remaining === undefined ||
       remaining < Math.max(1, requiredActions)
     )
       return null;
-
-    const signer = clientToSigner(walletClient);
 
     const wallet = new ethers.Wallet(privateKey, signer.provider);
     return {
@@ -347,16 +373,19 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
       active,
       signer: wallet,
       customSigners: subaccountCustomSigners,
+      bestNonce,
     };
   }, [
     address,
     active,
     privateKey,
-    insufficientFunds,
     walletClient,
+    signer,
+    insufficientFunds,
     remaining,
     requiredActions,
     subaccountCustomSigners,
+    bestNonce,
   ]);
 }
 

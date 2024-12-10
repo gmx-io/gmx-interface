@@ -5,7 +5,7 @@ import { convertTokenAddress } from "config/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract, GasPriceData } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { OrderMetricId } from "lib/metrics/types";
 import { SwapPricingType } from "../orders";
@@ -30,6 +30,7 @@ export type CreateWithdrawalParams = {
   skipSimulation?: boolean;
   tokensData: TokensData;
   blockTimestampData: BlockTimestampData | undefined;
+  gasPriceData: GasPriceData | undefined;
   metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
@@ -94,7 +95,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -110,8 +111,8 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit,
-    gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingWithdrawal({

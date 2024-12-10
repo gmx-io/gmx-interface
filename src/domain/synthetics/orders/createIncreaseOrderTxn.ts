@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -7,9 +6,11 @@ import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { GasPriceData, callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 import concat from "lodash/concat";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToPrice } from "../trade";
@@ -20,7 +21,6 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 const { ZeroAddress } = ethers;
 
@@ -91,6 +91,7 @@ export async function createIncreaseOrderTxn({
   cancelOrderParams,
   updateOrderParams,
   blockTimestampData,
+  gasPriceData,
 }: {
   chainId: number;
   signer: Signer;
@@ -101,6 +102,7 @@ export async function createIncreaseOrderTxn({
   cancelOrderParams?: SecondaryCancelOrderParams[];
   updateOrderParams?: SecondaryUpdateOrderParams[];
   blockTimestampData: BlockTimestampData | undefined;
+  gasPriceData: GasPriceData | undefined;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
@@ -233,7 +235,7 @@ export async function createIncreaseOrderTxn({
       })
     : undefined;
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const txpParams = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -251,12 +253,12 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
     metricId,
-    gasLimit,
-    gasPriceData,
-    bestNonce,
+    gasLimit: txpParams.gasLimit,
+    gasPriceData: gasPriceData ?? txpParams.gasPriceData,
+    bestNonce: subaccount?.bestNonce,
+    customSignersGasLimits: txpParams.customSignersGasLimits,
+    customSignersGasPrices: txpParams.customSignersGasPrices,
     setPendingTxns: p.setPendingTxns,
   });
 

@@ -4,7 +4,7 @@ import { getIsFlagEnabled } from "config/ab";
 import { getExplorerUrl } from "config/chains";
 import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
-import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
+import { sendOrderTxnSubmittedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
@@ -93,7 +93,12 @@ export async function callContract(
         throw new Error("No provider found on contract.");
       }
 
-      async function retrieveGasLimit() {
+      async function retrieveGasLimit(force?: boolean) {
+        // disable gas limits for testRemoveGasRequests flag (keep it for 1ct)
+        if (!force && getIsFlagEnabled("testRemoveGasRequests") && !customSignerContracts.length) {
+          return undefined;
+        }
+
         return customGasLimits[i] !== undefined
           ? (customGasLimits[i] as bigint | number)
           : await getGasLimit(cntrct, method, params, opts.value);
@@ -105,8 +110,8 @@ export async function callContract(
           : await getGasPrice(cntrct.runner!.provider!, chainId);
       }
 
-      async function initGasParams() {
-        const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
+      async function initGasParams(force?: boolean) {
+        const gasLimitPromise = retrieveGasLimit(force).then((gasLimit) => {
           txnInstance.gasLimit = gasLimit;
         });
 
@@ -122,10 +127,6 @@ export async function callContract(
         await Promise.all([gasLimitPromise, gasPriceDataPromise]);
       }
 
-      if (!getIsFlagEnabled("testRemoveGasRequests")) {
-        await initGasParams();
-      }
-
       if (opts.metricId) {
         sendOrderTxnSubmittedMetric(opts.metricId);
       }
@@ -135,7 +136,8 @@ export async function callContract(
 
         // Fallback to gas requests in case of low gas price
         if (message?.includes("max fee per gas less than block base fee")) {
-          await initGasParams();
+          sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
+          await initGasParams(true);
           return cntrct[method](...params, txnInstance);
         }
 
