@@ -42,6 +42,7 @@ export class UserAnalytics {
   commonEventParams: CommonEventParams = {} as CommonEventParams;
   debug = false;
   earlyEventsQueue: UserAnalyticsEventItem[] = [];
+  initCommonParamsRetries = 3;
 
   setCommonEventParams = (params: CommonEventParams) => {
     this.commonEventParams = { ...this.commonEventParams, ...params };
@@ -185,11 +186,13 @@ export class UserAnalytics {
       return;
     }
 
-    if (!this.getIsCommonParamsInited()) {
+    if (!this.getIsCommonParamsInited() && this.initCommonParamsRetries > 0) {
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("UserAnalytics: processQueue waiting for common params");
       }
+
+      this.initCommonParamsRetries--;
 
       return sleep(PROCESS_QUEUE_INTERVAL_MS).then(this.processQueue);
     }

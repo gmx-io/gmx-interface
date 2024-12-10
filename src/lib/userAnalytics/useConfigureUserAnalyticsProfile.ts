@@ -1,20 +1,20 @@
 import { useLingui } from "@lingui/react";
-import Bowser from "bowser";
+import { isDevelopment } from "config/env";
+import { USD_DECIMALS } from "config/factors";
+import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { useReferralCodeFromUrl } from "domain/referrals";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
+import { useUtmParams } from "domain/utm";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmountForMetrics } from "lib/metrics";
+import { useBowser } from "lib/useBowser";
+import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo } from "react";
-import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
-import { formatAmountForMetrics } from "lib/metrics";
-import { USD_DECIMALS } from "config/factors";
-import { useReferralCodeFromUrl } from "domain/referrals";
-import { useUtmParams } from "domain/utm";
-import { isDevelopment } from "config/env";
-import useRouteQuery from "lib/useRouteQuery";
 import { useHistory } from "react-router-dom";
-import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -25,6 +25,7 @@ export function useConfigureUserAnalyticsProfile() {
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const { chainId } = useChainId();
   const { account, active } = useWallet();
+  const { data: bowser } = useBowser();
 
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
@@ -59,20 +60,15 @@ export function useConfigureUserAnalyticsProfile() {
   }, [query, history]);
 
   useEffect(() => {
-    const bowser = Bowser.parse(window.navigator.userAgent);
-
-    const browserName = bowser.browser.name;
-    const platform = bowser.platform.type;
-
     userAnalytics.setCommonEventParams({
-      platform,
-      browserName,
+      platform: bowser?.platform.type,
+      browserName: bowser?.browser.name,
       ordersCount,
       isWalletConnected: active,
       isTest: isDevelopment(),
-      isInited: Boolean(browserName && platform),
+      isInited: Boolean(bowser),
     });
-  }, [active, ordersCount]);
+  }, [active, ordersCount, bowser]);
 
   useEffect(() => {
     if (last30DVolume === undefined || totalVolume === undefined) {
