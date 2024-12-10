@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { ReactNode } from "react";
 
-import "./Tab.css";
+import "./Tab.scss";
 
 type Props = {
   options: (string | number)[];
