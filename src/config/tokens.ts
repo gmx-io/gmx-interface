@@ -1271,7 +1271,7 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
   return tokenSymbol;
 }
 
-export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
+export function isChartAvailableForToken(chainId: number, tokenSymbol: string) {
   let token;
 
   try {
@@ -1326,4 +1326,8 @@ export function isSimilarToken(tokenA: Token, tokenB: Token) {
 
 export function getTokenVisualMultiplier(token: Token): string {
   return token.visualPrefix || token.visualMultiplier?.toString() || "";
+}
+
+export function getStableTokens(chainId: number) {
+  return getTokens(chainId).filter((t) => t.isStable);
 }
