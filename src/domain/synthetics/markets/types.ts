@@ -112,6 +112,13 @@ export type MarketInfo = Market &
     virtualMarketId: string;
     virtualLongTokenId: string;
     virtualShortTokenId: string;
+
+    optimalUsageFactorLong: bigint;
+    optimalUsageFactorShort: bigint;
+    baseBorrowingFactorLong: bigint;
+    baseBorrowingFactorShort: bigint;
+    aboveOptimalUsageBorrowingFactorLong: bigint;
+    aboveOptimalUsageBorrowingFactorShort: bigint;
   };
 
 export type FastMarketInfo = Omit<MarketInfo, keyof MarketPoolTokens | keyof Market> & {

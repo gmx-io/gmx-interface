@@ -102,6 +102,12 @@ export type MarketConfig = Pick<
   | "virtualMarketId"
   | "virtualLongTokenId"
   | "virtualShortTokenId"
+  | "optimalUsageFactorLong"
+  | "optimalUsageFactorShort"
+  | "baseBorrowingFactorLong"
+  | "baseBorrowingFactorShort"
+  | "aboveOptimalUsageBorrowingFactorLong"
+  | "aboveOptimalUsageBorrowingFactorShort"
 >;
 
 export type MarketValuesMulticallRequestConfig = MulticallRequestConfig<{
@@ -187,7 +193,13 @@ export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
       | "swapImpactExponentFactor"
       | "virtualMarketId"
       | "virtualLongTokenId"
-      | "virtualShortTokenId",
+      | "virtualShortTokenId"
+      | "optimalUsageFactorLong"
+      | "optimalUsageFactorShort"
+      | "baseBorrowingFactorLong"
+      | "baseBorrowingFactorShort"
+      | "aboveOptimalUsageBorrowingFactorLong"
+      | "aboveOptimalUsageBorrowingFactorShort",
       {
         methodName: string;
         params: any[];
@@ -452,6 +464,11 @@ function useMarketsConfigsRequest({
             return acc;
           }
 
+          if (marketAddress === "0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da") {
+            // eslint-disable-next-line no-console
+            console.log("market info", marketAddress, dataStoreValues);
+          }
+
           acc[marketAddress] = {
             isDisabled: dataStoreValues.isDisabled.returnValues[0],
             maxLongPoolUsdForDeposit: dataStoreValues.maxLongPoolUsdForDeposit.returnValues[0],
@@ -509,6 +526,14 @@ function useMarketsConfigsRequest({
             virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
             virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
             virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
+
+            optimalUsageFactorLong: dataStoreValues.optimalUsageFactorLong.returnValues[0],
+            optimalUsageFactorShort: dataStoreValues.optimalUsageFactorShort.returnValues[0],
+            baseBorrowingFactorLong: dataStoreValues.baseBorrowingFactorLong.returnValues[0],
+            baseBorrowingFactorShort: dataStoreValues.baseBorrowingFactorShort.returnValues[0],
+            aboveOptimalUsageBorrowingFactorLong: dataStoreValues.aboveOptimalUsageBorrowingFactorLong.returnValues[0],
+            aboveOptimalUsageBorrowingFactorShort:
+              dataStoreValues.aboveOptimalUsageBorrowingFactorShort.returnValues[0],
           };
 
           return acc;

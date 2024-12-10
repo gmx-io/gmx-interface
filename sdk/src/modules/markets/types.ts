@@ -96,6 +96,12 @@ export type MarketConfig = Pick<
   | "virtualMarketId"
   | "virtualLongTokenId"
   | "virtualShortTokenId"
+  | "optimalUsageFactorLong"
+  | "optimalUsageFactorShort"
+  | "baseBorrowingFactorLong"
+  | "baseBorrowingFactorShort"
+  | "aboveOptimalUsageBorrowingFactorLong"
+  | "aboveOptimalUsageBorrowingFactorShort"
 >;
 
 export type MarketValuesMulticallRequestConfig = MulticallRequestConfig<{
@@ -181,7 +187,13 @@ export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
       | "swapImpactExponentFactor"
       | "virtualMarketId"
       | "virtualLongTokenId"
-      | "virtualShortTokenId",
+      | "virtualShortTokenId"
+      | "optimalUsageFactorLong"
+      | "optimalUsageFactorShort"
+      | "baseBorrowingFactorLong"
+      | "baseBorrowingFactorShort"
+      | "aboveOptimalUsageBorrowingFactorLong"
+      | "aboveOptimalUsageBorrowingFactorShort",
       {
         methodName: string;
         params: any[];
