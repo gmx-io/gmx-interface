@@ -252,7 +252,9 @@ export function SyntheticsStateContextProvider({
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
-  const { data: gasPriceData } = useGasPriceData(chainId, signer?.provider || subaccountSigner?.provider);
+  const { data: gasPriceData } = useGasPriceData(chainId, signer?.provider || subaccountSigner?.provider, {
+    skip: !["trade", "pools"].includes(pageType),
+  });
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
