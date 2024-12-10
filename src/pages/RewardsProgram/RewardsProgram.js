@@ -77,7 +77,10 @@ export default function RewardsProgram() {
           stats={[<Trans>Coming Q2 2024</Trans>]}
           buttons={[
             { label: "Buy TMX", disabled: true },
-            { label: "Read more", onClick: () => window.open("https://docs.t3.money/tokenomics/tmx", "_blank") },
+            {
+              label: "Read more",
+              onClick: () => window.open("https://docs.t3.money/dex/tokenomics/tmx-token", "_blank"),
+            },
           ]}
           comingSoon={true}
         />
@@ -94,7 +97,7 @@ export default function RewardsProgram() {
                 window.location.hash = "/buy_tlp";
               },
             },
-            { label: "Read more", onClick: () => window.open("https://docs.t3.money/tokenomics/tlp", "_blank") },
+            { label: "Read more", onClick: () => window.open("https://docs.t3.money/dex/liquidity", "_blank") },
           ]}
         />
       </div>
