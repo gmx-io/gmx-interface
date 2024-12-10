@@ -1,4 +1,3 @@
-import { isDevelopment } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
@@ -540,8 +539,8 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
     return;
   }
 
-  if (price < 0n && isDevelopment()) {
-    throw new Error("formatUsdPrice accept only non-negative bigints");
+  if (price < 0n) {
+    return "NA";
   }
 
   const decimals = calculateDisplayDecimals(price, undefined, opts.visualMultiplier);
