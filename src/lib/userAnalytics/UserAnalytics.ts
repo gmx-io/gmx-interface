@@ -1,4 +1,4 @@
-import { getAbFlagUrlParams } from "config/ab";
+import { AbFlag, getAbFlagUrlParams } from "config/ab";
 import { BatchReportItem } from "lib/oracleKeeperFetcher";
 import { metrics } from "../metrics/Metrics";
 
@@ -8,7 +8,9 @@ type CommonEventParams = {
   ordersCount?: number;
   isWalletConnected?: boolean;
   isTest: boolean;
-  ABTestAgreementConfirmation: "Control" | "Experimental";
+  abFlags: {
+    [key in AbFlag]: boolean;
+  };
 };
 
 type ProfileProps = {

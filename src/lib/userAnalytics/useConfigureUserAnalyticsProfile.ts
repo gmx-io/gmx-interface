@@ -1,19 +1,19 @@
 import { useLingui } from "@lingui/react";
 import Bowser from "bowser";
-import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
-import { useChainId } from "lib/chains";
-import { getTimePeriodsInSeconds } from "lib/dates";
-import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo } from "react";
-import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
-import { formatAmountForMetrics } from "lib/metrics";
+import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
+import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { useReferralCodeFromUrl } from "domain/referrals";
+import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useUtmParams } from "domain/utm";
-import { isDevelopment } from "config/env";
+import { useChainId } from "lib/chains";
+import { getTimePeriodsInSeconds } from "lib/dates";
+import { formatAmountForMetrics } from "lib/metrics";
 import useRouteQuery from "lib/useRouteQuery";
+import useWallet from "lib/wallets/useWallet";
+import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
-import { AbFlag, getAbFlags, getIsFlagEnabled, setAbFlagEnabled } from "config/ab";
+import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -83,7 +83,7 @@ export function useConfigureUserAnalyticsProfile() {
       ordersCount,
       isWalletConnected: active,
       isTest: isDevelopment(),
-      ABTestAgreementConfirmation: getIsFlagEnabled("testRemoveConfirmationModal") ? "Experimental" : "Control",
+      abFlags: getAbFlags(),
     });
   }, [active, ordersCount]);
 
