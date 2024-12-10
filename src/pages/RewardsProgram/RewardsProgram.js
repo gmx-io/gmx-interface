@@ -5,6 +5,7 @@ import tlpImg from "img/ic_tlp.svg";
 
 import { TokenCard } from "./TokenCard";
 import { RewardProgram } from "./RewardProgram";
+import Banner from "components/Banner/Banner";
 
 export default function RewardsProgram() {
   return (
@@ -17,6 +18,13 @@ export default function RewardsProgram() {
         <h2 className="section-title">
           <Trans>TLP Reward Programs</Trans>
         </h2>
+
+        <Banner id="rewards-draft-notice" className="rewards-draft-banner" dismissable={false}>
+          <Trans>
+            These reward programs are in draft form and subject to change. Final terms will be announced at program
+            launch.
+          </Trans>
+        </Banner>
 
         <div className="reward-overview">
           <div className="overview-card">
