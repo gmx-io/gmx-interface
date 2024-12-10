@@ -8,9 +8,9 @@ import { PRECISION } from "lib/numbers";
 
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
 
-import Reader from "abis/Reader.json";
-import YieldToken from "abis/YieldToken.json";
-import YieldFarm from "abis/YieldFarm.json";
+import Reader from "sdk/abis/Reader.json";
+import YieldToken from "sdk/abis/YieldToken.json";
+import YieldFarm from "sdk/abis/YieldFarm.json";
 
 import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";

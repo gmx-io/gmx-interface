@@ -4,8 +4,8 @@ import mapKeys from "lodash/mapKeys";
 import useSWR from "swr";
 import { useEnsName } from "wagmi";
 
-import OrderBook from "abis/OrderBook.json";
-import OrderBookReader from "abis/OrderBookReader.json";
+import OrderBook from "sdk/abis/OrderBook.json";
+import OrderBookReader from "sdk/abis/OrderBookReader.json";
 
 import { t } from "@lingui/macro";
 import { getServerBaseUrl } from "config/backend";

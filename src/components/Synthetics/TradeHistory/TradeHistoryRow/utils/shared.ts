@@ -14,7 +14,7 @@ import { TradeActionType } from "domain/synthetics/tradeHistory/types";
 
 import { CustomErrorName } from "./CustomErrorName";
 
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "sdk/abis/CustomErrors.json";
 
 export function getOrderActionText(eventName: TradeActionType) {
   let actionText = "";

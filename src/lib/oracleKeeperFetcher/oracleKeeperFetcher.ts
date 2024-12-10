@@ -1,7 +1,6 @@
 import { isLocal } from "config/env";
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol } from "config/tokens";
-import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
 import {
@@ -14,10 +13,10 @@ import {
 } from "./types";
 
 function parseOracleCandle(rawCandle: number[]): Bar {
-  const [timestamp, open, high, low, close] = rawCandle;
+  const [time, open, high, low, close] = rawCandle;
 
   return {
-    time: timestamp + TIMEZONE_OFFSET_SEC,
+    time,
     open,
     high,
     low,

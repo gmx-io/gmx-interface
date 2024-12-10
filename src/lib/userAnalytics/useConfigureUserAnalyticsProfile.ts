@@ -1,14 +1,16 @@
 import { useLingui } from "@lingui/react";
-import Bowser from "bowser";
 import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
+import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { useReferralCodeFromUrl } from "domain/referrals";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useUtmParams } from "domain/utm";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
+import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo } from "react";
@@ -21,8 +23,10 @@ export function useConfigureUserAnalyticsProfile() {
   const currentLanguage = useLingui().i18n.locale;
   const referralCode = useReferralCodeFromUrl();
   const utmParams = useUtmParams();
+  const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const { chainId } = useChainId();
   const { account, active } = useWallet();
+  const { data: bowser } = useBowser();
 
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
@@ -75,17 +79,16 @@ export function useConfigureUserAnalyticsProfile() {
   );
 
   useEffect(() => {
-    const bowser = Bowser.parse(window.navigator.userAgent);
-
     userAnalytics.setCommonEventParams({
-      platform: bowser.platform.type,
-      browserName: bowser.browser.name,
+      platform: bowser?.platform.type,
+      browserName: bowser?.browser.name,
       ordersCount,
       isWalletConnected: active,
       isTest: isDevelopment(),
+      isInited: Boolean(bowser),
       ...getAbFlags(),
     });
-  }, [active, ordersCount]);
+  }, [active, ordersCount, bowser]);
 
   useEffect(() => {
     if (last30DVolume === undefined || totalVolume === undefined) {
@@ -100,4 +103,8 @@ export function useConfigureUserAnalyticsProfile() {
       utm: utmParams?.utmString,
     });
   }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString]);
+
+  useEffect(() => {
+    userAnalytics.setDebug(showDebugValues || false);
+  }, [showDebugValues]);
 }

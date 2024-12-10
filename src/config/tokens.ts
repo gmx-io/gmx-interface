@@ -265,7 +265,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Wrapped AVAX (Wormhole)",
       symbol: "AVAX",
       assetSymbol: "WAVAX (Wormhole)",
-      priceDecimals: 3,
+      priceDecimals: 4,
       address: "0x565609fAF65B92F7be02468acF86f8979423e514",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
@@ -287,7 +287,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "PEPE",
       address: "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
       decimals: 18,
-      priceDecimals: 8,
+      priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/29850/standard/pepe-token.jpeg?1696528776",
       coingeckoUrl: "https://www.coingecko.com/en/coins/pepe",
       visualMultiplier: 1000,
@@ -342,7 +342,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       assetSymbol: "SHIB",
       address: "0x3E57D02f9d196873e55727382974b02EdebE6bfd",
       decimals: 18,
-      priceDecimals: 8,
+      priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/11939/standard/shiba.png?1696511800",
       coingeckoUrl: "https://www.coingecko.com/en/coins/shiba-inu",
       isSynthetic: true,
@@ -371,7 +371,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "SATS",
       address: "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
       decimals: 6,
-      priceDecimals: 9,
+      priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/30666/standard/_dD8qr3M_400x400.png?1702913020",
       coingeckoUrl: "https://www.coingecko.com/en/coins/sats-ordinals",
       isSynthetic: true,
@@ -382,7 +382,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Polygon",
       symbol: "POL",
       decimals: 18,
-      priceDecimals: 4,
+      priceDecimals: 5,
       address: "0x9c74772b713a1B032aEB173E28683D937E51921c",
       imageUrl: "https://assets.coingecko.com/coins/images/32440/standard/polygon.png?1698233684",
       coingeckoUrl: "https://www.coingecko.com/en/coins/polygon",
@@ -442,7 +442,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "TRX",
       address: "0xb06aa7E4af937C130dDade66f6ed7642716fe07A",
       decimals: 6,
-      priceDecimals: 6,
+      priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/1094/standard/tron-logo.png?1696502193",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tron",
       isSynthetic: true,
@@ -472,7 +472,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "BONK",
       address: "0x1FD10E767187A92f0AB2ABDEEF4505e319cA06B2",
       decimals: 5,
-      priceDecimals: 8,
+      priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/28600/standard/bonk.jpg?1696527587",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bonk",
       isSynthetic: true,
@@ -494,7 +494,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "BOME",
       address: "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
       decimals: 6,
-      priceDecimals: 7,
+      priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/36071/standard/bome.png?1710407255",
       coingeckoUrl: "https://www.coingecko.com/en/coins/book-of-meme",
       isSynthetic: true,
@@ -504,7 +504,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "FLOKI",
       address: "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
       decimals: 9,
-      priceDecimals: 7,
+      priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/16746/standard/PNG_image.png?1696516318",
       coingeckoUrl: "https://www.coingecko.com/en/coins/floki",
       isSynthetic: true,
@@ -516,7 +516,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "MEME",
       address: "0xaF770F03518686a365300ab35AD860e99967B2f0",
       decimals: 18,
-      priceDecimals: 7,
+      priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/32528/standard/memecoin_%282%29.png?1698912168",
       coingeckoUrl: "https://www.coingecko.com/en/coins/meme",
       isSynthetic: true,
@@ -545,7 +545,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "ADA",
       address: "0x53186c8419BEB83fE4Da74F7875041a1287337ED",
       decimals: 6,
-      priceDecimals: 5,
+      priceDecimals: 4,
       imageUrl: "https://assets.coingecko.com/coins/images/975/standard/cardano.png?1696502090",
       coingeckoUrl: "https://www.coingecko.com/en/coins/cardano",
       isSynthetic: true,
@@ -1271,7 +1271,7 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
   return tokenSymbol;
 }
 
-export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
+export function isChartAvailableForToken(chainId: number, tokenSymbol: string) {
   let token;
 
   try {
@@ -1326,4 +1326,8 @@ export function isSimilarToken(tokenA: Token, tokenB: Token) {
 
 export function getTokenVisualMultiplier(token: Token): string {
   return token.visualPrefix || token.visualMultiplier?.toString() || "";
+}
+
+export function getStableTokens(chainId: number) {
+  return getTokens(chainId).filter((t) => t.isStable);
 }
