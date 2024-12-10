@@ -1,4 +1,6 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import { RiMenuLine } from "react-icons/ri";
+import { FaTimes } from "react-icons/fa";
 import cx from "classnames";
 
 import { AppHeaderUser } from "./AppHeaderUser";
@@ -6,8 +8,6 @@ import { AppHeaderLinks } from "./AppHeaderLinks";
 
 import logoImg from "img/logo_GMX.svg";
 import logoSmallImg from "img/logo_GMX_small.svg";
-import { RiMenuLine } from "react-icons/ri";
-import { FaTimes } from "react-icons/fa";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
 
 import "./Header.scss";
@@ -30,8 +30,8 @@ const FADE_VARIANTS = {
 };
 
 const SLIDE_VARIANTS = {
-  hidden: { x: "-100%" },
-  visible: { x: 0 },
+  hidden: { right: "-100%" },
+  visible: { right: "0" },
 };
 
 const TRANSITION = { duration: 0.2 };
@@ -48,6 +48,10 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
   const isTradingIncentivesActive = false;
+
+  const toggleDrawer = useCallback(() => {
+    setIsDrawerVisible(!isDrawerVisible);
+  }, [isDrawerVisible]);
 
   useEffect(() => {
     if (isDrawerVisible) {
@@ -73,7 +77,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               exit="hidden"
               variants={FADE_VARIANTS}
               transition={TRANSITION}
-              onClick={() => setIsDrawerVisible(!isDrawerVisible)}
+              onClick={toggleDrawer}
             ></motion.div>
           )}
         </AnimatePresence>
@@ -124,11 +128,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               })}
             >
               <div className="App-header-container-left">
-                <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                  {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                  {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
-                </div>
-                <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                <div className="App-header-link-main clickable" onClick={toggleDrawer}>
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
                 </div>
@@ -139,6 +139,12 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
                   openSettings={openSettings}
                   small
                   showRedirectModal={showRedirectModal}
+                  menuToggle={
+                    <div className="App-header-menu-icon-block" onClick={toggleDrawer}>
+                      {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                      {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
+                    </div>
+                  }
                 />
               </div>
             </div>
