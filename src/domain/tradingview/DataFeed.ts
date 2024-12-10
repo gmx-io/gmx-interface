@@ -143,7 +143,11 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     const to = periodParams.to;
 
     const offset = Math.trunc(Math.max((Date.now() / 1000 - to) / RESOLUTION_TO_SECONDS[resolution], 0));
-    const countBack = Math.max(periodParams.countBack, 100);
+    // During a first data request we fetch regular amount of candles
+    const countBack = periodParams.firstDataRequest
+      ? periodParams.countBack
+      : // But for subsequent requests we aggressively fetch more candles so that user can scroll back in time faster
+        Math.max(periodParams.countBack * 2, 500);
 
     const token = getTokenBySymbol(this.chainId, symbolInfo.name);
     const isStable = token.isStable;
@@ -201,7 +205,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       }
     }
 
-    onResult(barsToReturn);
+    onResult(barsToReturn, { noData: offset + countBack >= 10_000 });
 
     metrics.pushEvent<LoadingSuccessEvent>({
       event: "candlesLoad.success",
