@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Trans } from "@lingui/macro";
 import "./RewardsProgram.css";
 import tmxImg from "img/ic_tmx.svg";
@@ -36,7 +35,7 @@ export default function RewardsProgram() {
               <li>Reward structure guaranteed for 6 months</li>
               <li>Minimum $1,000 TLP purchase required</li>
               <li>Fee accrual begins immediately</li>
-              <li>TLP fees unlock 2 weeks after purchase</li>
+              <li>TLP bonuses are distributed 12 months after TLP purchase</li>
               <li>Separate purchases receive separate reward levels</li>
             </ul>
           </div>
@@ -45,6 +44,9 @@ export default function RewardsProgram() {
         <h2 className="section-title">
           <Trans>Leaderboards</Trans>
         </h2>
+
+        <div>Rewards bonuses paid in pre-launch TMX tokens.</div>
+        <br />
 
         <div className="reward-programs-grid">
           <RewardProgram
@@ -88,7 +90,7 @@ export default function RewardsProgram() {
         <TokenCard
           icon={tlpImg}
           title="TLP"
-          description="TLP is the liquidity provider token for T3 markets. Accrues 70% of all platform fees."
+          description="TLP is the liquidity provider token for T3 markets. Accrues 70% of all platform fees (90% for first 6 months)."
           stats={[<Trans>APR: Uncapped</Trans>, <Trans>90% of fees distributed to LPs for first 6 months</Trans>]}
           buttons={[
             {
