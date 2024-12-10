@@ -693,13 +693,6 @@ table.Position-list .Exchange-list-item-active {
   margin-top: 1.5rem;
 }
 
-.Exchange-swap-option-tabs.Tab.Tab__block .Tab-option-icon {
-  margin-top: -0.155rem;
-  transform: scale(0.75);
-  vertical-align: middle;
-  margin-right: 0.8rem;
-}
-
 .Exchange-swap-section-top {
   display: grid;
   grid-template-columns: auto auto;

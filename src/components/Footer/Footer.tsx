@@ -16,15 +16,19 @@ import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 import "./Footer.css";
 
-type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: number };
+type Props = {
+  showRedirectModal?: (to: string) => void;
+  redirectPopupTimestamp?: number;
+  isMobileTradePage?: boolean;
+};
 
-export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Props) {
+export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileTradePage }: Props) {
   const isHome = isHomeSite();
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
   return (
     <>
-      <div className={cx("Footer-wrapper", { home: isHome })}>
+      <div className={cx("Footer-wrapper", { home: isHome, "mobile-trade-page": isMobileTradePage })}>
         <div className="Footer-logo">
           <img src={logoImg} alt="MetaMask" />
         </div>
