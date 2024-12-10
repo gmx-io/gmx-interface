@@ -6,7 +6,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { TIMEZONE_OFFSET_SEC } from "domain/prices";
+import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { getSubsquidGraphClient } from "lib/subgraph/clients";
 
 type PositionVolumeInfosResponse = Record<Address, bigint>;
