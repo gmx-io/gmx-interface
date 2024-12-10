@@ -1,0 +1,327 @@
+.protocol-tokens-container {
+  max-width: 1200px;
+  min-height: calc(100vh - 120px);
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+.tokens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.token-card {
+  background: #0e1020;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  padding: 2rem;
+  position: relative;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.token-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.token-card.coming-soon {
+  filter: blur(3px);
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}
+
+.token-card.coming-soon:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.token-card.coming-soon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.token-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.token-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.token-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.token-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  min-height: 80px;
+  font-size: 1.2rem;
+}
+
+.token-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.stat-item {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+}
+
+.token-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.token-button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #ff7028;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.token-button.secondary {
+  background: rgba(49, 54, 85, 0.5);
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
+}
+
+.token-button:hover:not(.disabled) {
+  background: #ff8442;
+  transform: translateY(-1px);
+}
+
+.token-button.secondary:hover:not(.disabled) {
+  background: rgba(49, 54, 85, 0.7);
+}
+
+.token-button.disabled {
+  background: rgba(49, 54, 85, 0.5);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.coming-soon-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #ff7028;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Reward Programs Section */
+.reward-programs-section {
+  margin-top: 2rem;
+  background: rgba(13, 14, 22, 0.6);
+  border-radius: 4px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+.reward-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.reward-tab {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  background: rgba(49, 54, 85, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+  border: none;
+  cursor: pointer;
+  /* transition: all 0.2s ease; */
+}
+
+.reward-tab:hover {
+  background: rgba(49, 54, 85, 0.4);
+}
+
+.reward-tab.active {
+  background: #ff7028;
+  color: white;
+  border-color: #ff7028;
+}
+
+.reward-content {
+  padding: 2rem;
+  background: rgba(13, 14, 22, 0.4);
+  border-radius: 4px;
+}
+
+.reward-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.overview-card {
+  background: rgba(49, 54, 85, 0.3);
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
+.overview-card h3 {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.overview-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.overview-card li {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.overview-card li:before {
+  content: "•";
+  color: #ff7028;
+  position: absolute;
+  left: 0;
+}
+
+.reward-program {
+  color: #fff;
+}
+
+.reward-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.reward-description {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+.reward-table {
+  background: rgba(49, 54, 85, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.reward-table-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1rem;
+  background: rgba(49, 54, 85, 0.5);
+  color: #fff;
+  font-weight: 500;
+}
+
+.reward-table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0.75rem 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  border-top: 1px solid rgba(49, 54, 85, 0.5);
+}
+
+.reward-table-row:hover {
+  background: rgba(49, 54, 85, 0.4);
+}
+
+.reward-info {
+  padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .protocol-tokens-container {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tokens-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .token-description {
+    min-height: auto;
+  }
+
+  .reward-tabs {
+    flex-direction: column;
+  }
+
+  .reward-tab {
+    width: 100%;
+    text-align: center;
+  }
+
+  .reward-content {
+    padding: 1rem;
+  }
+
+  .reward-table-header,
+  .reward-table-row {
+    font-size: 0.9rem;
+  }
+}
