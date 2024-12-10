@@ -769,15 +769,15 @@ export function TradeBox(p: Props) {
         if (isIncrease && increaseAmounts) {
           sizeDeltaUsd = increaseAmounts.sizeDeltaUsd;
           priceImpactDeltaUsd = increaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
+          priceImpactBps = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         } else if (isSwap && swapAmounts) {
           amountUsd = swapAmounts.usdOut;
           priceImpactDeltaUsd = swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
-          priceImpactBps = fees?.swapPriceImpact?.bps ?? 0n;
+          priceImpactBps = fees?.swapPriceImpact?.precisePercentage ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
           sizeDeltaUsd = decreaseAmounts.sizeDeltaUsd;
           priceImpactDeltaUsd = decreaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
+          priceImpactBps = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         }
 
         const openInterestPercent = isLong
@@ -804,13 +804,9 @@ export function TradeBox(p: Props) {
     },
     [
       chainId,
-      chartHeaderInfo?.fundingRateLong,
-      chartHeaderInfo?.fundingRateShort,
-      chartHeaderInfo?.longOpenInterestPercentage,
-      chartHeaderInfo?.shortOpenInterestPercentage,
+      chartHeaderInfo,
       decreaseAmounts,
-      fees?.positionPriceImpact?.bps,
-      fees?.swapPriceImpact?.bps,
+      fees,
       fromToken?.symbol,
       fromTokenInputValue,
       increaseAmounts,
