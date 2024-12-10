@@ -1456,13 +1456,13 @@ export function TradeBox(p: Props) {
             : ""
         }
       >
-        {isMobile && <div className="h-[calc(100vh-86px)] w-full snap-start"></div>}
+        {isMobile && <div className="h-[calc(100dvh-86px)] w-full snap-start"></div>}
         <div
           ref={curtainRef}
           data-qa="tradebox"
           className={cx(
             isMobile
-              ? "text-body-medium pointer-events-auto flex max-h-[calc(100vh-86px)] snap-end flex-col rounded-4 border-x border-t border-gray-800 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]"
+              ? "text-body-medium pointer-events-auto flex max-h-[calc(100dvh-86px)] snap-end flex-col rounded-4 border-x border-t border-gray-800 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]"
               : "App-box SwapBox"
           )}
         >
