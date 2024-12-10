@@ -2,8 +2,9 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 import type { Address } from "viem";
 
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getByKey } from "sdk/utils/objects";
 
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
@@ -12,29 +13,27 @@ import { getSubsquidGraphClient } from "lib/subgraph/clients";
 type PositionVolumeInfosResponse = Record<Address, bigint>;
 
 const MARKET_VOLUMES_QUERY = gql`
-  query MarketVolumesInfoResolver($indexTokenAddresses: [String!]!, $timestamp: Float!) {
-    positionsVolume24hByIndexTokens(where: { timestamp: $timestamp, indexTokenAddresses: $indexTokenAddresses }) {
+  query MarketVolumesInfoResolver($timestamp: Float!) {
+    positionsVolume(where: { timestamp: $timestamp }) {
       volume
-      indexTokenAddress
+      market
     }
   }
 `;
 
-export function use24hVolumes(indexTokenAddresses: (Address | undefined)[]) {
+export function use24hVolumes() {
   const chainId = useSelector(selectChainId);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
 
   const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
 
   const variables = {
-    indexTokenAddresses: indexTokenAddresses
-      .filter((address): address is Address => Boolean(address))
-      .map((address) => convertTokenAddress(chainId, address, "wrapped")),
     timestamp: timestamp,
   };
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
-    variables.indexTokenAddresses.length > 0 ? [chainId, "24hVolume", variables.indexTokenAddresses] : null,
+    [chainId, "24hVolume"],
     async () => {
       const client = getSubsquidGraphClient(chainId);
 
@@ -42,22 +41,33 @@ export function use24hVolumes(indexTokenAddresses: (Address | undefined)[]) {
         return;
       }
 
-      const response = await client.query({
+      const response = await client.query<{ positionsVolume: { volume: string; market: Address }[] }>({
         query: MARKET_VOLUMES_QUERY,
         variables,
       });
 
-      return Object.fromEntries(
-        response.data?.positionsVolume24hByIndexTokens.flatMap(({ volume, indexTokenAddress }) => {
-          if (indexTokenAddress === convertTokenAddress(chainId, NATIVE_TOKEN_ADDRESS, "wrapped")) {
-            return [
-              [NATIVE_TOKEN_ADDRESS, BigInt(volume)],
-              [indexTokenAddress, BigInt(volume)],
-            ];
+      return response.data?.positionsVolume.reduce(
+        (acc, cur) => {
+          const marketInfo = getByKey(marketsInfoData, cur.market);
+
+          if (!marketInfo) {
+            return acc;
           }
 
-          return [[indexTokenAddress, BigInt(volume)]];
-        })
+          const indexTokenAddress = marketInfo?.indexTokenAddress;
+
+          if (!indexTokenAddress) {
+            return acc;
+          }
+
+          acc[indexTokenAddress] = (acc[indexTokenAddress] || 0n) + BigInt(cur.volume);
+          if (indexTokenAddress === convertTokenAddress(chainId, NATIVE_TOKEN_ADDRESS, "wrapped")) {
+            acc[NATIVE_TOKEN_ADDRESS] = acc[indexTokenAddress];
+          }
+
+          return acc;
+        },
+        {} as Record<Address, bigint>
       );
     },
     {

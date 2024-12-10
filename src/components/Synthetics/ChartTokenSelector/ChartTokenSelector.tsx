@@ -153,7 +153,7 @@ function MarketsList() {
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("chart-token-selector");
 
   const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, availableChartTokenAddresses);
-  const dayVolumes = use24hVolumes(availableChartTokenAddresses);
+  const dayVolumes = use24hVolumes();
   const indexTokenStatsMap = useSelector(selectIndexTokenStatsMap).indexMap;
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
