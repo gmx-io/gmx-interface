@@ -1,3 +1,4 @@
+import { useMedia } from "react-use";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
@@ -14,9 +15,6 @@ import logoImg from "img/ic_gmx_footer.svg";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
-
-import "./Footer.css";
-import { useMedia } from "react-use";
 
 type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: number };
 
