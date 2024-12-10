@@ -442,6 +442,30 @@ export async function buildMarketsConfigsRequest(
           methodName: "getBytes32",
           params: [prebuiltHashedKeys.virtualLongTokenId],
         },
+        optimalUsageFactorLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.optimalUsageFactorLong],
+        },
+        optimalUsageFactorShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.optimalUsageFactorShort],
+        },
+        baseBorrowingFactorLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.baseBorrowingFactorLong],
+        },
+        baseBorrowingFactorShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.baseBorrowingFactorShort],
+        },
+        aboveOptimalUsageBorrowingFactorLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorLong],
+        },
+        aboveOptimalUsageBorrowingFactorShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorShort],
+        },
       },
     };
   }

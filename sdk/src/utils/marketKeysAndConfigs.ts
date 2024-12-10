@@ -39,6 +39,9 @@ import {
   THRESHOLD_FOR_STABLE_FUNDING,
   VIRTUAL_MARKET_ID_KEY,
   VIRTUAL_TOKEN_ID_KEY,
+  OPTIMAL_USAGE_FACTOR,
+  BASE_BORROWING_FACTOR,
+  ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR,
 } from "configs/dataStore";
 import { MarketConfig } from "configs/markets";
 
@@ -236,6 +239,30 @@ export function hashMarketConfigKeys(market: MarketConfig) {
     virtualShortTokenId: [
       ["bytes32", "address"],
       [VIRTUAL_TOKEN_ID_KEY, market.shortTokenAddress],
+    ],
+    optimalUsageFactorLong: [
+      ["bytes32", "address", "bool"],
+      [OPTIMAL_USAGE_FACTOR, marketAddress, true],
+    ],
+    optimalUsageFactorShort: [
+      ["bytes32", "address", "bool"],
+      [OPTIMAL_USAGE_FACTOR, marketAddress, false],
+    ],
+    baseBorrowingFactorLong: [
+      ["bytes32", "address", "bool"],
+      [BASE_BORROWING_FACTOR, marketAddress, true],
+    ],
+    baseBorrowingFactorShort: [
+      ["bytes32", "address", "bool"],
+      [BASE_BORROWING_FACTOR, marketAddress, false],
+    ],
+    aboveOptimalUsageBorrowingFactorLong: [
+      ["bytes32", "address", "bool"],
+      [ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR, marketAddress, true],
+    ],
+    aboveOptimalUsageBorrowingFactorShort: [
+      ["bytes32", "address", "bool"],
+      [ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR, marketAddress, false],
     ],
   });
 }

@@ -241,6 +241,13 @@ export function mockMarketsInfoData(
       virtualLongTokenId: zeroAddress,
       virtualShortTokenId: zeroAddress,
 
+      optimalUsageFactorLong: 0n,
+      optimalUsageFactorShort: 0n,
+      baseBorrowingFactorLong: 0n,
+      baseBorrowingFactorShort: 0n,
+      aboveOptimalUsageBorrowingFactorLong: 0n,
+      aboveOptimalUsageBorrowingFactorShort: 0n,
+
       ...(overrides[key] || {}),
     };
 

@@ -273,6 +273,14 @@ export class Markets extends Module {
             virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
             virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
             virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
+
+            optimalUsageFactorLong: dataStoreValues.optimalUsageFactorLong.returnValues[0],
+            optimalUsageFactorShort: dataStoreValues.optimalUsageFactorShort.returnValues[0],
+            baseBorrowingFactorLong: dataStoreValues.baseBorrowingFactorLong.returnValues[0],
+            baseBorrowingFactorShort: dataStoreValues.baseBorrowingFactorShort.returnValues[0],
+            aboveOptimalUsageBorrowingFactorLong: dataStoreValues.aboveOptimalUsageBorrowingFactorLong.returnValues[0],
+            aboveOptimalUsageBorrowingFactorShort:
+              dataStoreValues.aboveOptimalUsageBorrowingFactorShort.returnValues[0],
           };
 
           return acc;

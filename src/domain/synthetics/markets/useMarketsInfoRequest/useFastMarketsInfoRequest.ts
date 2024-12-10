@@ -214,6 +214,13 @@ export function useFastMarketsInfoRequest(chainId: number) {
             virtualMarketId: mInfo.virtualMarketId,
             virtualLongTokenId: mInfo.virtualLongTokenId,
             virtualShortTokenId: mInfo.virtualShortTokenId,
+
+            optimalUsageFactorLong: mInfo.optimalUsageFactorLong,
+            optimalUsageFactorShort: mInfo.optimalUsageFactorShort,
+            baseBorrowingFactorLong: mInfo.baseBorrowingFactorLong,
+            baseBorrowingFactorShort: mInfo.baseBorrowingFactorShort,
+            aboveOptimalUsageBorrowingFactorLong: mInfo.aboveOptimalUsageBorrowingFactorLong,
+            aboveOptimalUsageBorrowingFactorShort: mInfo.aboveOptimalUsageBorrowingFactorShort,
           };
 
           return acc;
