@@ -122,7 +122,6 @@
 
 .token-button.secondary {
   background: rgba(49, 54, 85, 0.5);
-  /* border: 1px solid rgba(255, 255, 255, 0.1); */
 }
 
 .token-button:hover:not(.disabled) {
@@ -156,7 +155,6 @@
 .reward-programs-section {
   margin-top: 2rem;
   background: rgba(13, 14, 22, 0.6);
-  border: 1px solid rgba(49, 54, 85, 0.5);
   border-radius: 0.75rem;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -248,7 +246,6 @@
 
 .reward-program {
   background: rgba(49, 54, 85, 0.3);
-  border: 1px solid rgba(49, 54, 85, 0.5);
   border-radius: 0.75rem;
   padding: 2rem;
   color: #fff;
