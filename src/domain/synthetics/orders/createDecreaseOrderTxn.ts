@@ -139,7 +139,7 @@ export async function createDecreaseOrderTxn(
     gasLimit: txnParams.gasLimit,
     gasPriceData: gasPriceData ?? txnParams.gasPriceData,
     metricId,
-    bestNonce: txnParams.bestNonce,
+    bestNonce: subaccount?.bestNonce,
     setPendingTxns: callbacks.setPendingTxns,
   });
 

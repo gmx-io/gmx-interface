@@ -107,7 +107,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     customSigners: subaccount?.customSigners,
     customSignersGasLimits: txnParams.customSignersGasLimits,
     customSignersGasPrices: txnParams.customSignersGasPrices,
-    bestNonce: txnParams.bestNonce,
+    bestNonce: subaccount?.bestNonce,
     setPendingTxns: p.setPendingTxns,
     metricId: p.metricId,
     gasLimit: txnParams.gasLimit,

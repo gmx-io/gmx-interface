@@ -27,7 +27,7 @@ export async function prepareOrderTxn(
 
   const customSignerContracts = customSigners?.map((signer) => contract.connect(signer)) || [];
 
-  const [gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce] = await Promise.all([
+  const [gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices] = await Promise.all([
     getIsFlagEnabled("testRemoveGasRequests")
       ? Promise.resolve(undefined)
       : getGasLimit(contract, method, params, value).catch(makeCatchTransactionError(chainId, metricId, "gasLimit")),
@@ -55,7 +55,7 @@ export async function prepareOrderTxn(
     simulationPromise,
   ]);
 
-  return { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce };
+  return { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices };
 }
 
 export const makeCatchTransactionError =
