@@ -143,6 +143,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     const to = periodParams.to;
 
     const offset = Math.trunc(Math.max((Date.now() / 1000 - to) / RESOLUTION_TO_SECONDS[resolution], 0));
+    const countBack = Math.max(periodParams.countBack, 100);
 
     const token = getTokenBySymbol(this.chainId, symbolInfo.name);
     const isStable = token.isStable;
@@ -153,13 +154,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         bars = await this.fetchCandles(
           symbolInfo.name,
           resolution,
-          periodParams.countBack + offset,
+          countBack + offset,
           false,
           periodParams.firstDataRequest
         );
       } else {
         const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
-        bars = this.getStableCandles(currentCandleTime, resolution, periodParams.countBack + offset);
+        bars = this.getStableCandles(currentCandleTime, resolution, countBack + offset);
       }
     } catch (e) {
       onError(String(e));
