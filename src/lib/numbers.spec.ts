@@ -39,8 +39,8 @@ describe("formatUsdPrice", () => {
     expect(formatUsdPrice()).toBeUndefined();
   });
 
-  it("should return nothing if undefined or negative", () => {
-    expect(() => formatUsdPrice(-1n)).toThrowError();
+  it("should return NA if negative", () => {
+    expect(formatUsdPrice(-1n)).toBe("NA");
   });
 
   it("should calculate correct decimals if displayDecimals not passed", () =>
