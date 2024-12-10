@@ -83,7 +83,7 @@ export function useConfigureUserAnalyticsProfile() {
       ordersCount,
       isWalletConnected: active,
       isTest: isDevelopment(),
-      abFlags: getAbFlags(),
+      ...getAbFlags(),
     });
   }, [active, ordersCount]);
 

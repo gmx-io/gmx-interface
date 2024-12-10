@@ -8,9 +8,8 @@ type CommonEventParams = {
   ordersCount?: number;
   isWalletConnected?: boolean;
   isTest: boolean;
-  abFlags: {
-    [key in AbFlag]: boolean;
-  };
+} & {
+  [key in AbFlag]: boolean;
 };
 
 type ProfileProps = {
