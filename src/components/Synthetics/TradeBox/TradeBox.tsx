@@ -148,7 +148,7 @@ import SwapIcon from "img/swap.svg?react";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
-import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
+
 import "./TradeBox.scss";
 
 export type Props = {
@@ -1085,7 +1085,6 @@ export function TradeBox(p: Props) {
               missedCoinsPlace={MissedCoinsPlace.payToken}
               extendedSortSequence={sortedLongAndShortTokens}
               qa="collateral-selector"
-              footerContent={<MissedCoinsHint place={MissedCoinsPlace.payToken} className="!my-12 mx-15" withIcon />}
             />
           )}
         </BuyInputSection>
@@ -1152,6 +1151,7 @@ export function TradeBox(p: Props) {
           >
             {toTokenAddress && (
               <MarketSelector
+                chainId={chainId}
                 label={localizedTradeTypeLabels[tradeType!]}
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
@@ -1171,9 +1171,6 @@ export function TradeBox(p: Props) {
                 isSideMenu
                 missedCoinsPlace={MissedCoinsPlace.marketDropdown}
                 onSelectMarket={(_indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
-                footerContent={
-                  <MissedCoinsHint place={MissedCoinsPlace.marketDropdown} className="!my-12 mx-15" withIcon />
-                }
               />
             )}
           </BuyInputSection>
@@ -1286,6 +1283,7 @@ export function TradeBox(p: Props) {
             label={t`Market`}
             value={
               <MarketSelector
+                chainId={chainId}
                 label={t`Market`}
                 className="-mr-4"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}

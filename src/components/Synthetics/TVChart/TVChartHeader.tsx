@@ -4,13 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce, useMedia } from "react-use";
 
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getToken, isChartAvailableForToken } from "config/tokens";
+import { getToken } from "config/tokens";
 
-import { selectAvailableChartTokens, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
-import { Token } from "domain/tokens";
 
 import { useChainId } from "lib/chains";
 
@@ -28,14 +26,9 @@ const MIN_SCROLL_END_SPACE = 5; // px
 function TVChartHeaderInfoMobile() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
-  const availableTokens = useSelector(selectAvailableChartTokens);
 
   const { chainId } = useChainId();
   const chartTokenAddress = chartToken?.address;
-
-  const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
-    isChartAvailableForToken(chainId, token.symbol)
-  );
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -173,11 +166,7 @@ function TVChartHeaderInfoMobile() {
       <div className="grid grid-cols-[auto_100px]">
         <div>
           <div className="inline-flex">
-            <ChartTokenSelector
-              selectedToken={selectedTokenOption}
-              options={tokenOptions}
-              oneRowLabels={!isSmallMobile}
-            />
+            <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={!isSmallMobile} />
           </div>
 
           <div
@@ -216,14 +205,8 @@ function TVChartHeaderInfoDesktop() {
   const [scrollRight, setScrollRight] = useState(0);
   const [maxFadeArea, setMaxFadeArea] = useState(75);
 
-  const availableTokens = useSelector(selectAvailableChartTokens);
-
   const { chainId } = useChainId();
   const chartTokenAddress = chartToken?.address;
-
-  const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
-    isChartAvailableForToken(chainId, token.symbol)
-  );
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
 
@@ -314,24 +297,8 @@ function TVChartHeaderInfoDesktop() {
     return (
       <>
         <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <Trans>Available Liquidity</Trans>
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">{liquidityLong}</div>
-            <div className="flex flex-row items-center gap-4">{liquidityShort}</div>
-          </div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
-              <Trans>Net Rate / 1h</Trans>
-            </TooltipWithPortal>
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div>{netRateLong}</div>
-            <div>{netRateShort}</div>
-          </div>
+          <div className="ExchangeChart-info-label mb-4">24h Volume</div>
+          <div className="Chart-header-value">{dailyVolume}</div>
         </div>
         <div>
           <div className="mb-4 whitespace-nowrap text-[1.25rem]">
@@ -350,8 +317,24 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
         <div>
-          <div className="ExchangeChart-info-label mb-4">24h Volume</div>
-          <div className="Chart-header-value">{dailyVolume}</div>
+          <div className="ExchangeChart-info-label mb-4">
+            <Trans>Available Liquidity</Trans>
+          </div>
+          <div className="Chart-header-value flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-4">{liquidityLong}</div>
+            <div className="flex flex-row items-center gap-4">{liquidityShort}</div>
+          </div>
+        </div>
+        <div>
+          <div className="ExchangeChart-info-label mb-4">
+            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+              <Trans>Net Rate / 1h</Trans>
+            </TooltipWithPortal>
+          </div>
+          <div className="Chart-header-value flex flex-row items-center gap-8">
+            <div>{netRateLong}</div>
+            <div>{netRateShort}</div>
+          </div>
         </div>
       </>
     );
@@ -428,7 +411,7 @@ function TVChartHeaderInfoDesktop() {
   return (
     <div className="Chart-header mb-10 rounded-4">
       <div className="flex items-center justify-start pl-8">
-        <ChartTokenSelector selectedToken={selectedTokenOption} options={tokenOptions} oneRowLabels={false} />
+        <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
       </div>
       <div className="relative flex overflow-hidden">
         <div className="pointer-events-none absolute z-40 flex h-full w-full flex-row justify-between">

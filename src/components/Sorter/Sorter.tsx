@@ -27,7 +27,7 @@ export function Sorter(
 
   return (
     <button
-      className={cx("inline-flex items-center [text-transform:inherit]", {
+      className={cx("inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
         "text-blue-300": props.direction !== "unspecified",
       })}
       onClick={handleClick}

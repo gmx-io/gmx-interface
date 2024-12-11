@@ -1116,9 +1116,6 @@ table.Exchange-list-small td {
     padding: 0.465rem 0;
     font-size: 1.25rem;
   }
-  .Exchange-swap-box .TokenSelector .Modal {
-    margin: 0 0.5rem;
-  }
 
   .Exchange-swap-info-group {
     display: grid;
