@@ -423,7 +423,10 @@ function useFilterSortTokens({
       searchKeyword.trim() && options
         ? searchBy(
             options,
-            [(item) => stripBlacklistedWords(item.name), (item) => `${getTokenVisualMultiplier(item)}${item.symbol}`],
+            [
+              (item) => stripBlacklistedWords(item.name),
+              (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
+            ],
             searchKeyword
           )
         : options;
@@ -440,7 +443,7 @@ function useFilterSortTokens({
     const tabMatched = textMatched?.filter((item) => categoryTokenAddresses.includes(item.address));
 
     return tabMatched;
-  }, [chainId, favoriteTokens, options, searchKeyword, tab]);
+  }, [chainId, favoriteTokens, isSwap, options, searchKeyword, tab]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
@@ -722,8 +725,14 @@ function tokenSortingComparatorBuilder({
     }
 
     if (orderBy === "lastPrice") {
-      const aMidPrice = tokensData?.[aAddress]?.prices ? getMidPrice(tokensData[aAddress].prices) : 0n;
-      const bMidPrice = tokensData?.[bAddress]?.prices ? getMidPrice(tokensData[bAddress].prices) : 0n;
+      const aVisualMultiplier = BigInt(a.visualMultiplier ?? 1);
+      const bVisualMultiplier = BigInt(b.visualMultiplier ?? 1);
+
+      let aMidPrice = tokensData?.[aAddress]?.prices ? getMidPrice(tokensData[aAddress].prices) : 0n;
+      aMidPrice *= aVisualMultiplier;
+      let bMidPrice = tokensData?.[bAddress]?.prices ? getMidPrice(tokensData[bAddress].prices) : 0n;
+      bMidPrice *= bVisualMultiplier;
+
       return aMidPrice > bMidPrice ? directionMultiplier : -directionMultiplier;
     }
 
