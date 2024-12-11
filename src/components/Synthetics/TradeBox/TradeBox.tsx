@@ -764,20 +764,20 @@ export function TradeBox(p: Props) {
         let sizeDeltaUsd: bigint | undefined = undefined;
         let amountUsd: bigint | undefined = undefined;
         let priceImpactDeltaUsd = 0n;
-        let priceImpactBps = 0n;
+        let priceImpactPercentage = 0n;
 
         if (isIncrease && increaseAmounts) {
           sizeDeltaUsd = increaseAmounts.sizeDeltaUsd;
           priceImpactDeltaUsd = increaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactBps = fees?.positionPriceImpact?.precisePercentage ?? 0n;
+          priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         } else if (isSwap && swapAmounts) {
           amountUsd = swapAmounts.usdOut;
           priceImpactDeltaUsd = swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
-          priceImpactBps = fees?.swapPriceImpact?.precisePercentage ?? 0n;
+          priceImpactPercentage = fees?.swapPriceImpact?.precisePercentage ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
           sizeDeltaUsd = decreaseAmounts.sizeDeltaUsd;
           priceImpactDeltaUsd = decreaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactBps = fees?.positionPriceImpact?.precisePercentage ?? 0n;
+          priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         }
 
         const openInterestPercent = isLong
@@ -793,7 +793,7 @@ export function TradeBox(p: Props) {
           pair,
           sizeDeltaUsd,
           priceImpactDeltaUsd,
-          priceImpactBps,
+          priceImpactPercentage,
           fundingRate1h,
           openInterestPercent,
           tradeType,
