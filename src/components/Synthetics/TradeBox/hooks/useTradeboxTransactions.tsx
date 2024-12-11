@@ -206,6 +206,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isFirstOrder,
         isLeverageEnabled,
         initialCollateralAllowance,
+        isTPSLCreated: createSltpEntries.length > 0,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);

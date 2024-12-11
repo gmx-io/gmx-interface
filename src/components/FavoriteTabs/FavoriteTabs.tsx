@@ -1,8 +1,7 @@
-import { useCallback } from "react";
-
 import {
   TokenFavoriteKey,
   tokensFavoritesTabOptionLabels,
+  tokensFavoritesTabOptions,
   useTokensFavorites,
 } from "domain/synthetics/tokens/useTokensFavorites";
 import { useLocalizedMap } from "lib/i18n";
@@ -14,26 +13,19 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
 
   const localizedTabOptionLabels = useLocalizedMap(tokensFavoritesTabOptionLabels);
 
-  const handleAll = useCallback(() => {
-    setTab("all");
-  }, [setTab]);
-
-  const handleFavorites = useCallback(() => {
-    setTab("favorites");
-  }, [setTab]);
-
   return (
-    <div className="flex items-center gap-4">
-      <Button variant={tab === "all" ? "secondary" : "ghost"} className="!text-body-large !py-7" onClick={handleAll}>
-        {localizedTabOptionLabels.all}
-      </Button>
-      <Button
-        variant={tab === "favorites" ? "secondary" : "ghost"}
-        className="!text-body-large !py-7"
-        onClick={handleFavorites}
-      >
-        {localizedTabOptionLabels.favorites}
-      </Button>
+    <div className="flex items-center gap-4 whitespace-nowrap">
+      {tokensFavoritesTabOptions.map((option) => (
+        <Button
+          key={option}
+          type="button"
+          variant={tab === option ? "secondary" : "ghost"}
+          className="!text-body-medium !py-7"
+          onClick={() => setTab(option)}
+        >
+          {localizedTabOptionLabels[option]}
+        </Button>
+      ))}
     </div>
   );
 }

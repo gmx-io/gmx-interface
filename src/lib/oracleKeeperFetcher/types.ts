@@ -12,6 +12,7 @@ export type EventPayload = {
   time?: number;
   isDev?: boolean;
   customFields?: any;
+  isMissedGlobalMetricData?: boolean;
 };
 
 export type CounterPayload = {
@@ -46,27 +47,32 @@ export type UserAnalyticsProfilePayload = {
   customFields: { [key: string]: any };
 };
 
-export type BatchReportItem =
-  | {
-      type: "event";
-      payload: EventPayload;
-    }
-  | {
-      type: "counter";
-      payload: CounterPayload;
-    }
-  | {
-      type: "timing";
-      payload: TimingPayload;
-    }
-  | {
-      type: "userAnalyticsEvent";
-      payload: UserAnalyticsEventPayload;
-    }
-  | {
-      type: "userAnalyticsProfile";
-      payload: UserAnalyticsProfilePayload;
-    };
+export type UserAnalyticsEventItem = {
+  type: "userAnalyticsEvent";
+  payload: UserAnalyticsEventPayload;
+};
+
+export type UserAnalyticsProfileItem = {
+  type: "userAnalyticsProfile";
+  payload: UserAnalyticsProfilePayload;
+};
+
+export type EventItem = {
+  type: "event";
+  payload: EventPayload;
+};
+
+export type CounterItem = {
+  type: "counter";
+  payload: CounterPayload;
+};
+
+export type TimingItem = {
+  type: "timing";
+  payload: TimingPayload;
+};
+
+export type BatchReportItem = UserAnalyticsEventItem | UserAnalyticsProfileItem | EventItem | CounterItem | TimingItem;
 
 export type BatchReportBody = {
   items: BatchReportItem[];
