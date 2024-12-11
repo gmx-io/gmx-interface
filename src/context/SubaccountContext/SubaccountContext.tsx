@@ -342,7 +342,7 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
   const { walletClient } = useWallet();
 
   const wallet = useMemo(() => {
-    if (!walletClient) {
+    if (!walletClient || !privateKey) {
       return undefined;
     }
 
