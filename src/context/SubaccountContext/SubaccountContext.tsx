@@ -341,17 +341,20 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
   const { remaining } = useSubaccountActionCounts();
   const { walletClient } = useWallet();
 
-  const signer = useMemo(() => {
+  const wallet = useMemo(() => {
     if (!walletClient) {
       return undefined;
     }
 
-    return clientToSigner(walletClient);
-  }, [walletClient]);
+    const signer = clientToSigner(walletClient);
+    const wallet = new ethers.Wallet(privateKey, signer.provider);
+
+    return wallet;
+  }, [privateKey, walletClient]);
 
   const { data: bestNonce } = useBestNonce(
     chainId,
-    signer && subaccountCustomSigners ? [signer, ...subaccountCustomSigners] : undefined
+    wallet && subaccountCustomSigners ? [wallet, ...subaccountCustomSigners] : undefined
   );
 
   return useMemo(() => {
@@ -360,14 +363,13 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
       !active ||
       !privateKey ||
       !walletClient ||
-      !signer ||
+      !wallet ||
       insufficientFunds ||
       remaining === undefined ||
       remaining < Math.max(1, requiredActions)
     )
       return null;
 
-    const wallet = new ethers.Wallet(privateKey, signer.provider);
     return {
       address,
       active,
@@ -380,7 +382,7 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
     active,
     privateKey,
     walletClient,
-    signer,
+    wallet,
     insufficientFunds,
     remaining,
     requiredActions,

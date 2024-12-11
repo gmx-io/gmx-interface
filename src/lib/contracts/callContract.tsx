@@ -141,6 +141,12 @@ export async function callContract(
           return cntrct[method](...params, txnInstance);
         }
 
+        if (message?.includes("nonce") && opts.customSigners) {
+          sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
+          txnInstance.nonce = await getBestNonce([wallet, ...opts.customSigners]);
+          return cntrct[method](...params, txnInstance);
+        }
+
         throw e;
       });
     });
