@@ -6,7 +6,11 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectBlockTimestampData,
+  selectChainId,
+  selectGasPriceData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import {
@@ -44,6 +48,8 @@ export function useShiftTransactions({
   const { signer, account } = useWallet();
   const { setPendingShift } = useSyntheticsEvents();
   const [, setPendingTxns] = usePendingTxns();
+  const blockTimestampData = useSelector(selectBlockTimestampData);
+  const gasPriceData = useSelector(selectGasPriceData);
 
   const onCreateShift = useCallback(
     function onCreateShift() {
@@ -79,6 +85,8 @@ export function useShiftTransactions({
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
         tokensData,
+        blockTimestampData,
+        gasPriceData,
         setPendingTxns,
         setPendingShift,
       })
@@ -86,18 +94,20 @@ export function useShiftTransactions({
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
-      account,
-      executionFee,
       fromMarketToken,
-      fromMarketTokenAmount,
       marketToken,
       marketTokenAmount,
+      executionFee,
       signer,
+      account,
+      fromMarketTokenAmount,
       tokensData,
-      shouldDisableValidation,
       chainId,
-      setPendingShift,
+      shouldDisableValidation,
+      blockTimestampData,
+      gasPriceData,
       setPendingTxns,
+      setPendingShift,
     ]
   );
 
