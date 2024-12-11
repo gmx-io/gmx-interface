@@ -29,7 +29,7 @@ export function InterviewModal({ isVisible, setIsVisible }: Props) {
           </div>
           <div className="flex items-center gap-12 text-14">
             <ArrowBulletIcon />
-            <div className="text-gray-300">
+            <div className="text-slate-100">
               <Trans>
                 Discord account:{" "}
                 <span

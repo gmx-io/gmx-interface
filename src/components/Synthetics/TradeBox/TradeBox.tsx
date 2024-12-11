@@ -1,4 +1,4 @@
-import { Trans, msg, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
@@ -62,7 +62,6 @@ import {
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
-  TradeMode,
   TradeType,
   applySlippageToPrice,
   getIncreasePositionAmounts,
@@ -141,36 +140,16 @@ import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
-import SwapIcon from "img/swap.svg?react";
-
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
+import { tradeModeLabels, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
+
 import "./TradeBox.scss";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
-};
-
-const tradeTypeIcons = {
-  [TradeType.Long]: <LongIcon />,
-  [TradeType.Short]: <ShortIcon />,
-  [TradeType.Swap]: <SwapIcon />,
-};
-
-const tradeModeLabels = {
-  [TradeMode.Market]: msg`Market`,
-  [TradeMode.Limit]: msg`Limit`,
-  [TradeMode.Trigger]: msg`TP/SL`,
-};
-
-const tradeTypeLabels = {
-  [TradeType.Long]: msg`Long`,
-  [TradeType.Short]: msg`Short`,
-  [TradeType.Swap]: msg`Swap`,
 };
 
 export function TradeBox(p: Props) {
@@ -1447,6 +1426,7 @@ export function TradeBox(p: Props) {
             icons={tradeTypeIcons}
             options={Object.values(TradeType)}
             optionLabels={localizedTradeTypeLabels}
+            optionClassnames={tradeTypeClassNames}
             option={tradeType}
             onChange={onTradeTypeChange}
             className="SwapBox-option-tabs"

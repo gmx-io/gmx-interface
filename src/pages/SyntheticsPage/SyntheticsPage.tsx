@@ -2,7 +2,6 @@ import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
-import Helmet from "react-helmet";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getSyntheticsListSectionKey } from "config/localStorage";
@@ -240,15 +239,6 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <div className="Exchange page-layout">
-      <Helmet>
-        <style type="text/css">
-          {`
-            :root {
-              --main-bg-color: #08091b;
-             {
-         `}
-        </style>
-      </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart />
