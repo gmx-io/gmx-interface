@@ -1,10 +1,11 @@
 import { getChainName } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
-import { formatAmountForMetrics, metrics } from "lib/metrics";
+import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
-import { formatRatePercentage } from "lib/numbers";
+import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import {
   ConnectWalletClickEvent,
@@ -31,7 +32,7 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
     pair: string;
     sizeDeltaUsd?: bigint;
     priceImpactDeltaUsd?: bigint;
-    priceImpactBps?: bigint;
+    priceImpactPercentage?: bigint;
     fundingRate1h?: bigint;
     openInterestPercent?: number;
     tradeType: TradeType;
@@ -43,7 +44,7 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
       fundingRate1h,
       sizeDeltaUsd,
       priceImpactDeltaUsd,
-      priceImpactBps,
+      priceImpactPercentage,
       openInterestPercent,
       tradeType,
       tradeMode,
@@ -58,8 +59,9 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
           pair,
           sizeDeltaUsd: formatAmountForMetrics(sizeDeltaUsd),
           amountUsd: formatAmountForMetrics(amountUsd),
-          priceImpactDeltaUsd: formatAmountForMetrics(priceImpactDeltaUsd) ?? 0,
-          priceImpactBps: priceImpactBps !== undefined ? Number(priceImpactBps) : 0,
+          priceImpactDeltaUsd:
+            priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
+          priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
           netRate1h: parseFloat(formatRatePercentage(fundingRate1h)),
           openInterestPercent: openInterestPercent !== undefined ? Number(openInterestPercent) : 0,
           tradeType,

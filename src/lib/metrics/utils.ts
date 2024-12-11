@@ -8,7 +8,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { TxError } from "lib/contracts/transactionErrors";
-import { bigintToNumber, roundToOrder } from "lib/numbers";
+import { bigintToNumber, formatPercentage, roundToOrder } from "lib/numbers";
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
 import { prepareErrorMetricData } from "./errorReporting";
 import {
@@ -709,6 +709,21 @@ export function formatAmountForMetrics(
   }
 
   return bigintToNumber(amount, decimals);
+}
+
+export function formatPercentageForMetrics(percentage?: bigint, roundToDecimals = 2) {
+  if (percentage === undefined) {
+    return undefined;
+  }
+
+  const rounded = roundToOrder(percentage, roundToDecimals);
+  const formatted = formatPercentage(rounded, { bps: false, displayDecimals: roundToDecimals });
+
+  if (!formatted) {
+    return undefined;
+  }
+
+  return parseFloat(formatted);
 }
 
 export function getRequestId() {

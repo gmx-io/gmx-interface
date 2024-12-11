@@ -1,3 +1,4 @@
+import { AbFlag, getAbFlagUrlParams } from "config/ab";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 import { metrics } from "../metrics/Metrics";
@@ -9,6 +10,8 @@ type CommonEventParams = {
   isWalletConnected?: boolean;
   isTest: boolean;
   isInited?: boolean;
+} & {
+  [key in AbFlag]: boolean;
 };
 
 type ProfileProps = {
@@ -106,8 +109,11 @@ export class UserAnalytics {
     this.setLastEventTime(Date.now());
   }
 
-  getSessionIdUrlParam() {
-    return `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+  getSessionIdUrlParams() {
+    const sessionIdParam = `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+    const abFlagsParams = getAbFlagUrlParams();
+
+    return [sessionIdParam, abFlagsParams].filter(Boolean).join("&");
   }
 
   getOrSetSessionId() {

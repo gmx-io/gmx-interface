@@ -12,6 +12,7 @@ export type LandingPageLaunchAppEvent = {
   data: {
     action: "LaunchApp";
     buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains";
+    shouldSeeConfirmationDialog: boolean;
   };
 };
 
@@ -79,7 +80,7 @@ export type TradeBoxInteractionStartedEvent = {
     sizeDeltaUsd?: number;
     amountUsd?: number;
     priceImpactDeltaUsd: number;
-    priceImpactBps: number;
+    priceImpactPercentage: number;
     netRate1h: number;
     openInterestPercent: number;
     tradeType: TradeType;
