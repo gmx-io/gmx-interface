@@ -710,9 +710,9 @@ export function getExplorerUrl(chainId) {
     case MORPH_HOLESKY:
       return "https://explorer-holesky.morphl2.io/";
     case MORPH_MAINNET:
-      return "https://explorer.morphl2.io";
+      return "https://explorer.morphl2.io/";
     case OPBNB_TESTNET:
-      return "https://testnet.opbnbscan.com";
+      return "https://testnet.opbnbscan.com/";
     default:
       return "https://etherscan.io/";
   }
