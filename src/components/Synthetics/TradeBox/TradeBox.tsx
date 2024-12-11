@@ -1,7 +1,7 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 import { useKey, useLatest, useMedia, usePrevious } from "react-use";
@@ -1447,14 +1447,46 @@ export function TradeBox(p: Props) {
     buttonContent
   );
 
+  const curtainScrollContainerRef = useRef<HTMLDivElement>(null);
+  const handleBarRef = useRef<HTMLDivElement>(null);
+  const [isAboveHalf, setIsAboveHalf] = useState(false);
+  const isAboveHalfRef = useRef(false);
+
+  useEffect(() => {
+    const curtainScrollContainer = curtainScrollContainerRef.current;
+    if (!curtainScrollContainer) return;
+
+    const handleScroll = (e: Event) => {
+      const target = e.target! as HTMLDivElement;
+      if (target.scrollTop > 100) {
+        if (!isAboveHalfRef.current) {
+          setIsAboveHalf(true);
+          isAboveHalfRef.current = true;
+        }
+      } else {
+        if (isAboveHalfRef.current) {
+          setIsAboveHalf(false);
+          isAboveHalfRef.current = false;
+        }
+      }
+    };
+
+    curtainScrollContainer.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      curtainScrollContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <div
         className={
           isMobile
-            ? "pointer-events-none fixed bottom-0 left-0 right-0 top-0 z-[1000] snap-y snap-mandatory overflow-y-auto overscroll-none scrollbar-hide"
+            ? "pointer-events-none fixed bottom-0 left-0 right-0 top-0 z-[1000] touch-pan-y snap-y snap-mandatory overflow-y-auto overscroll-none scrollbar-hide"
             : ""
         }
+        ref={curtainScrollContainerRef}
       >
         {isMobile && <div className="h-[calc(100dvh-86px)] w-full snap-start"></div>}
         <div
@@ -1466,8 +1498,20 @@ export function TradeBox(p: Props) {
               : "App-box SwapBox"
           )}
         >
-          <div className={cx(isMobile ? "px-15 pb-15 pt-10" : "")}>
-            {isMobile && <div className="mx-auto mb-14 h-4 w-32 rounded-full bg-gray-900" />}
+          <div
+            className={cx(
+              isMobile ? "h-[80px] shrink-0 snap-y snap-mandatory overflow-y-auto px-15 scrollbar-hide" : ""
+            )}
+          >
+            {isMobile && (
+              <div
+                ref={handleBarRef}
+                className={cx(
+                  "mx-auto mb-14 mt-10 h-4 w-32 rounded-full bg-gray-900",
+                  isAboveHalf ? "snap-end" : "snap-start"
+                )}
+              />
+            )}
             <Tab
               icons={tradeTypeIcons}
               options={Object.values(TradeType)}
@@ -1478,9 +1522,10 @@ export function TradeBox(p: Props) {
               qa="trade-direction"
               theme="green"
             />
+            {isMobile && <div className="h-16" />}
           </div>
 
-          <div className={cx(isMobile ? "overflow-y-auto px-15 pb-10" : "")}>
+          <div className={cx(isMobile ? "overflow-y-auto px-15 pb-10 scrollbar-hide" : "")}>
             <Tab
               options={availableTradeModes}
               optionLabels={localizedTradeModeLabels}
@@ -1560,8 +1605,6 @@ export function TradeBox(p: Props) {
             </form>
           </div>
         </div>
-
-        <div className="h-[190px] w-full border-x border-gray-800 bg-slate-800"></div>
       </div>
     </>
   );
