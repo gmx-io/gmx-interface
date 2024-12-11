@@ -170,7 +170,6 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
 
   const suppressPointerDown = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
   }, []);
 
   if (props.disabled) {

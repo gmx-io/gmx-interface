@@ -297,24 +297,8 @@ function TVChartHeaderInfoDesktop() {
     return (
       <>
         <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <Trans>Available Liquidity</Trans>
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">{liquidityLong}</div>
-            <div className="flex flex-row items-center gap-4">{liquidityShort}</div>
-          </div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
-              <Trans>Net Rate / 1h</Trans>
-            </TooltipWithPortal>
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div>{netRateLong}</div>
-            <div>{netRateShort}</div>
-          </div>
+          <div className="ExchangeChart-info-label mb-4">24h Volume</div>
+          <div className="Chart-header-value">{dailyVolume}</div>
         </div>
         <div>
           <div className="mb-4 whitespace-nowrap text-[1.25rem]">
@@ -333,8 +317,24 @@ function TVChartHeaderInfoDesktop() {
           </div>
         </div>
         <div>
-          <div className="ExchangeChart-info-label mb-4">24h Volume</div>
-          <div className="Chart-header-value">{dailyVolume}</div>
+          <div className="ExchangeChart-info-label mb-4">
+            <Trans>Available Liquidity</Trans>
+          </div>
+          <div className="Chart-header-value flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-4">{liquidityLong}</div>
+            <div className="flex flex-row items-center gap-4">{liquidityShort}</div>
+          </div>
+        </div>
+        <div>
+          <div className="ExchangeChart-info-label mb-4">
+            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+              <Trans>Net Rate / 1h</Trans>
+            </TooltipWithPortal>
+          </div>
+          <div className="Chart-header-value flex flex-row items-center gap-8">
+            <div>{netRateLong}</div>
+            <div>{netRateShort}</div>
+          </div>
         </div>
       </>
     );

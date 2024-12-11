@@ -173,10 +173,11 @@ function MarketsList() {
     favoriteTokens,
     direction,
     orderBy,
-    tokensData: tokensData,
+    tokensData,
     dayPriceDeltaMap,
     dayVolumes,
     indexTokenStatsMap,
+    isSwap,
   });
 
   const sortedDetails = useMemo(() => {
@@ -237,7 +238,12 @@ function MarketsList() {
     [chooseSuitableMarket, close, marketsInfoData, tradeType]
   );
 
-  const rowVerticalPadding = isMobile ? "py-4" : cx("h-50 group-last-of-type/row:pb-8");
+  const rowVerticalPadding = cx({
+    "group-last-of-type/row:pb-8": !isMobile,
+    "h-50": !isMobile && !isSwap,
+    "py-4": (!isMobile && isSwap) || (isMobile && !isSwap),
+    "py-8": isMobile && isSwap,
+  });
   const rowHorizontalPadding = isMobile
     ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8")
     : cx("px-5 first-of-type:pl-16 last-of-type:pr-16");
@@ -260,6 +266,14 @@ function MarketsList() {
     [sortedTokens, handleMarketSelect]
   );
 
+  const placeholder = useMemo(() => {
+    if (isSwap) {
+      return t`Search Token`;
+    }
+
+    return t`Search Market`;
+  }, [isSwap]);
+
   return (
     <>
       <SelectorBaseMobileHeaderContent>
@@ -269,12 +283,11 @@ function MarketsList() {
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
+            placeholder={placeholder}
           />
-          {!isSwap && (
-            <ButtonRowScrollFadeContainer>
-              <FavoriteTabs favoritesKey="chart-token-selector" />
-            </ButtonRowScrollFadeContainer>
-          )}
+          <ButtonRowScrollFadeContainer>
+            <FavoriteTabs favoritesKey="chart-token-selector" />
+          </ButtonRowScrollFadeContainer>
         </div>
       </SelectorBaseMobileHeaderContent>
       <div className="Synths-ChartTokenSelector">
@@ -286,6 +299,7 @@ function MarketsList() {
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
+                placeholder={placeholder}
               />
               <FavoriteTabs favoritesKey="chart-token-selector" />
             </div>
@@ -389,6 +403,7 @@ function useFilterSortTokens({
   dayPriceDeltaMap,
   dayVolumes,
   indexTokenStatsMap,
+  isSwap,
 }: {
   chainId: number;
   options: Token[] | undefined;
@@ -401,6 +416,7 @@ function useFilterSortTokens({
   dayPriceDeltaMap: PriceDeltaMap | undefined;
   dayVolumes: Record<Address, bigint> | undefined;
   indexTokenStatsMap: Partial<IndexTokensStats> | undefined;
+  isSwap: boolean;
 }) {
   const filteredTokens: Token[] | undefined = useMemo(() => {
     const textMatched =
@@ -440,6 +456,7 @@ function useFilterSortTokens({
       dayVolumes,
       indexTokenStatsMap,
       getMaxLongShortLiquidityPool,
+      isSwap,
     });
 
     const sortedFavorites = favorites.slice().sort(sorter);
@@ -458,6 +475,7 @@ function useFilterSortTokens({
     indexTokenStatsMap,
     getMaxLongShortLiquidityPool,
     favoriteTokens,
+    isSwap,
   ]);
 
   return sortedTokens;
@@ -547,19 +565,12 @@ function MarketListItem({
 
   if (isSwap) {
     return (
-      <tr key={token.symbol} className="group/row">
-        <td
-          className={cx("rounded-4 pl-16 pr-4 text-center hover:bg-cold-blue-900", rowVerticalPadding)}
-          onClick={handleFavoriteClick}
-        >
+      <tr key={token.symbol} className="group/row cursor-pointer hover:bg-cold-blue-900">
+        <td className={cx("pl-16 pr-4 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
           <FavoriteStar isFavorite={isFavorite} />
         </td>
         <td
-          className={cx(
-            "text-body-medium w-full rounded-4 hover:bg-cold-blue-900",
-            rowVerticalPadding,
-            rowHorizontalPadding
-          )}
+          className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
           onClick={handleSelectLargePosition}
         >
           <span className="inline-flex items-center text-slate-100">
@@ -607,7 +618,11 @@ function MarketListItem({
 
       <td className={tdClassName}>
         <div className="flex flex-col gap-4">
-          <span>{tokenData ? formatUsdPrice(getMidPrice(tokenData.prices)) : "-"}</span>
+          <span>
+            {tokenData
+              ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
+              : "-"}
+          </span>
           {isMobile && <span>{dayPriceDeltaComponent}</span>}
         </div>
       </td>
@@ -669,6 +684,7 @@ function tokenSortingComparatorBuilder({
   dayVolumes,
   indexTokenStatsMap,
   getMaxLongShortLiquidityPool,
+  isSwap,
 }: {
   chainId: number;
   orderBy: SortField;
@@ -681,6 +697,7 @@ function tokenSortingComparatorBuilder({
     maxLongLiquidityPool: TokenOption;
     maxShortLiquidityPool: TokenOption;
   };
+  isSwap: boolean;
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
@@ -688,7 +705,17 @@ function tokenSortingComparatorBuilder({
     const aAddress = convertTokenAddress(chainId, a.address, "wrapped");
     const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
 
-    if (orderBy === "24hVolume" || orderBy === "unspecified" || direction === "unspecified") {
+    if (isSwap) {
+      // Swap tokens are already sorted by long and short tokens
+      return 0;
+    }
+
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      // Tokens are already sorted by pool size
+      return 0;
+    }
+
+    if (orderBy === "24hVolume") {
       const aVolume = dayVolumes?.[aAddress] || 0n;
       const bVolume = dayVolumes?.[bAddress] || 0n;
       return aVolume > bVolume ? directionMultiplier : -directionMultiplier;
