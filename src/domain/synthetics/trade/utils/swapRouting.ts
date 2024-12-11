@@ -8,6 +8,10 @@ export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
   const marketsByTokens: { [token: string]: MarketInfo[] } = {};
 
   for (const market of markets) {
+    if (market.isSameCollaterals || market.isDisabled) {
+      continue;
+    }
+
     const { longTokenAddress, shortTokenAddress } = market;
 
     marketsByTokens[longTokenAddress] = marketsByTokens[longTokenAddress] || [];
@@ -33,7 +37,7 @@ export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
     let marketsPerTokenCount = 0;
 
     for (const market of sortedMarkets) {
-      if (marketsPerTokenCount >= SWAP_GRAPH_MAX_MARKETS_PER_TOKEN || resultMarkets[market.marketTokenAddress]) {
+      if (marketsPerTokenCount > SWAP_GRAPH_MAX_MARKETS_PER_TOKEN || resultMarkets[market.marketTokenAddress]) {
         break;
       }
 
