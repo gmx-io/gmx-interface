@@ -65,12 +65,14 @@ export async function callContract(
       txnOpts.value = opts.value;
     }
 
-    if (opts.bestNonce) {
-      txnOpts.nonce = opts.bestNonce;
-    } else if (opts.customSigners) {
+    if (opts.customSigners?.length) {
       // If we send the transaction to multiple RPCs simultaneously,
       // we should specify a fixed nonce to avoid possible txn duplication.
-      txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
+      if (opts.bestNonce) {
+        txnOpts.nonce = opts.bestNonce;
+      } else {
+        txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
+      }
     }
 
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
@@ -82,6 +84,8 @@ export async function callContract(
     }
 
     const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
+
+    let isTxnExecuted = false;
 
     const customGasLimits = [opts.gasLimit].concat(opts.customSignersGasLimits || []);
     const customGasPrices = [opts.gasPriceData].concat(opts.customSignersGasPrices || []);
@@ -127,28 +131,35 @@ export async function callContract(
         await Promise.all([gasLimitPromise, gasPriceDataPromise]);
       }
 
+      await initGasParams();
+
       if (opts.metricId) {
         sendOrderTxnSubmittedMetric(opts.metricId);
       }
 
-      return cntrct[method](...params, txnInstance).catch(async (e) => {
-        const [message] = extractError(e);
+      return cntrct[method](...params, txnInstance)
+        .then((res) => {
+          isTxnExecuted = true;
+          return res;
+        })
+        .catch(async (e) => {
+          const [message] = extractError(e);
 
-        // Fallback to gas requests in case of low gas price
-        if (message?.includes("max fee per gas less than block base fee")) {
-          sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
-          await initGasParams(true);
-          return cntrct[method](...params, txnInstance);
-        }
+          // Fallback to gas requests in case of low gas price
+          if (message?.includes("max fee per gas less than block base fee")) {
+            sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
+            await initGasParams(true);
+            return cntrct[method](...params, txnInstance);
+          }
 
-        if (message?.includes("nonce") && opts.customSigners) {
-          sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
-          txnInstance.nonce = await getBestNonce([wallet, ...opts.customSigners]);
-          return cntrct[method](...params, txnInstance);
-        }
+          if (message?.includes("nonce") && opts.customSigners && !isTxnExecuted) {
+            sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
+            txnInstance.nonce = await getBestNonce([wallet, ...opts.customSigners]);
+            return cntrct[method](...params, txnInstance);
+          }
 
-        throw e;
-      });
+          throw e;
+        });
     });
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {
