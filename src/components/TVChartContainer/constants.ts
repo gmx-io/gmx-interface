@@ -66,6 +66,7 @@ const enabledFeatures: ChartingLibraryFeatureset[] = [
   "header_in_fullscreen_mode",
   "items_favoriting",
   "hide_left_toolbar_by_default",
+  "iframe_loading_same_origin",
 ];
 
 export const defaultChartProps = {
