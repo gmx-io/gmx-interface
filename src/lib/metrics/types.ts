@@ -13,6 +13,7 @@ export type GlobalMetricData = {
   browserName?: string;
   browserVersion?: string;
   platform?: string;
+  isInited?: boolean;
 };
 
 export enum OrderStage {
@@ -286,6 +287,7 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   isLeverageEnabled: boolean | undefined;
   initialCollateralAllowance: string | undefined;
   initialCollateralBalance: string | undefined;
+  isTPSLCreated: boolean | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {

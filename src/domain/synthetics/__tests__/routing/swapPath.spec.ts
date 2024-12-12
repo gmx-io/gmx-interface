@@ -117,14 +117,14 @@ describe("swapPath", () => {
         to: "ETH",
         expected: ["ETH-ETH-USDC"],
         expectedPaths: [
-          ["ETH-ETH-USDC"],
-          ["SOL-ETH-USDC"],
-          ["SPOT-USDC-DAI", "ETH-ETH-DAI"],
           ["SPOT-USDC-DAI", "SPOT-DAI-USDC", "ETH-ETH-USDC"],
           ["SPOT-USDC-DAI", "SPOT-DAI-USDC", "SOL-ETH-USDC"],
-          ["SPOT-DAI-USDC", "ETH-ETH-DAI"],
+          ["SPOT-USDC-DAI", "ETH-ETH-DAI"],
           ["SPOT-DAI-USDC", "SPOT-USDC-DAI", "ETH-ETH-USDC"],
           ["SPOT-DAI-USDC", "SPOT-USDC-DAI", "SOL-ETH-USDC"],
+          ["SPOT-DAI-USDC", "ETH-ETH-DAI"],
+          ["ETH-ETH-USDC"],
+          ["SOL-ETH-USDC"],
         ],
       },
       {
@@ -155,10 +155,10 @@ describe("swapPath", () => {
         to: "AVAX",
         expected: ["SPOT-USDC-DAI", "AVAX-AVAX-USDC"],
         expectedPaths: [
-          ["ETH-ETH-DAI", "ETH-ETH-USDC", "AVAX-AVAX-USDC"],
-          ["ETH-ETH-DAI", "SOL-ETH-USDC", "AVAX-AVAX-USDC"],
           ["SPOT-USDC-DAI", "AVAX-AVAX-USDC"],
           ["SPOT-DAI-USDC", "AVAX-AVAX-USDC"],
+          ["ETH-ETH-DAI", "ETH-ETH-USDC", "AVAX-AVAX-USDC"],
+          ["ETH-ETH-DAI", "SOL-ETH-USDC", "AVAX-AVAX-USDC"],
         ],
       },
       {
@@ -193,10 +193,10 @@ describe("swapPath", () => {
         },
         expected: ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
         expectedPaths: [
-          ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
-          ["AVAX-AVAX-USDC", "SOL-ETH-USDC", "ETH-ETH-DAI"],
           ["AVAX-AVAX-USDC", "SPOT-USDC-DAI"],
           ["AVAX-AVAX-USDC", "SPOT-DAI-USDC"],
+          ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
+          ["AVAX-AVAX-USDC", "SOL-ETH-USDC", "ETH-ETH-DAI"],
         ],
       },
       {
@@ -223,10 +223,10 @@ describe("swapPath", () => {
         expected: ["AVAX-AVAX-USDC", "SPOT-USDC-DAI"],
         expectedFee: BigInt(-2),
         expectedPaths: [
-          ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
-          ["AVAX-AVAX-USDC", "SOL-ETH-USDC", "ETH-ETH-DAI"],
           ["AVAX-AVAX-USDC", "SPOT-USDC-DAI"],
           ["AVAX-AVAX-USDC", "SPOT-DAI-USDC"],
+          ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
+          ["AVAX-AVAX-USDC", "SOL-ETH-USDC", "ETH-ETH-DAI"],
         ],
       },
       {

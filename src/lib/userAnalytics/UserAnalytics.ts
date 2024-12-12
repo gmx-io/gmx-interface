@@ -1,4 +1,6 @@
-import { BatchReportItem } from "lib/oracleKeeperFetcher";
+import { AbFlag, getAbFlagUrlParams } from "config/ab";
+import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
+import { sleep } from "lib/sleep";
 import { metrics } from "../metrics/Metrics";
 
 type CommonEventParams = {
@@ -7,6 +9,9 @@ type CommonEventParams = {
   ordersCount?: number;
   isWalletConnected?: boolean;
   isTest: boolean;
+  isInited?: boolean;
+} & {
+  [key in AbFlag]: boolean;
 };
 
 type ProfileProps = {
@@ -34,20 +39,25 @@ const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
 const MAX_DEDUP_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
 const USER_ANALYTICS_DEDUP_EVENTS_STORAGE = "USER_ANALYTICS_DEDUP_EVENTS_STORAGE";
 
+const PROCESS_QUEUE_INTERVAL_MS = 1000;
+
 export class UserAnalytics {
   commonEventParams: CommonEventParams = {} as CommonEventParams;
+  debug = false;
+  earlyEventsQueue: UserAnalyticsEventItem[] = [];
+  initCommonParamsRetries = 3;
 
   setCommonEventParams = (params: CommonEventParams) => {
     this.commonEventParams = { ...this.commonEventParams, ...params };
   };
 
+  getIsCommonParamsInited = () => {
+    return this.commonEventParams.isInited;
+  };
+
   getLastEventTime() {
     const lastEventTime = localStorage.getItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY);
     return parseInt(lastEventTime as string) || 0;
-  }
-
-  setLastEventTime(time: number) {
-    localStorage.setItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY, time.toString());
   }
 
   getDedupEventsStorage() {
@@ -56,6 +66,14 @@ export class UserAnalytics {
 
     return dedupEventsStorage;
   }
+
+  setDebug = (val: boolean) => {
+    this.debug = val;
+  };
+
+  setLastEventTime = (time: number) => {
+    localStorage.setItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY, time.toString());
+  };
 
   shouldSkipEvent(key: string, event: string, dedupInterval: number = MAX_DEDUP_INTERVAL) {
     const dedupEventsStorage = this.getDedupEventsStorage();
@@ -91,8 +109,11 @@ export class UserAnalytics {
     this.setLastEventTime(Date.now());
   }
 
-  getSessionIdUrlParam() {
-    return `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+  getSessionIdUrlParams() {
+    const sessionIdParam = `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+    const abFlagsParams = getAbFlagUrlParams();
+
+    return [sessionIdParam, abFlagsParams].filter(Boolean).join("&");
   }
 
   getOrSetSessionId() {
@@ -124,7 +145,7 @@ export class UserAnalytics {
 
     this.setLastEventTime(Date.now());
 
-    const item: BatchReportItem = {
+    const item: UserAnalyticsEventItem = {
       type: "userAnalyticsEvent",
       payload: {
         event: params.event,
@@ -136,6 +157,12 @@ export class UserAnalytics {
         },
       },
     };
+
+    if (!this.getIsCommonParamsInited()) {
+      this.earlyEventsQueue.push(item);
+      this.processQueue();
+      return;
+    }
 
     if (options.instantSend) {
       await metrics.sendBatchItems([item], true);
@@ -158,6 +185,40 @@ export class UserAnalytics {
         },
       },
     });
+  };
+
+  processQueue = async () => {
+    if (this.earlyEventsQueue.length === 0) {
+      return;
+    }
+
+    if (!this.getIsCommonParamsInited() && this.initCommonParamsRetries > 0) {
+      if (this.debug) {
+        // eslint-disable-next-line no-console
+        console.log("UserAnalytics: processQueue waiting for common params");
+      }
+
+      this.initCommonParamsRetries--;
+
+      return sleep(PROCESS_QUEUE_INTERVAL_MS).then(this.processQueue);
+    }
+
+    const items = this.earlyEventsQueue.map(this.fillCommonParams);
+
+    await metrics.sendBatchItems(items, true);
+  };
+
+  fillCommonParams = (item: UserAnalyticsEventItem): UserAnalyticsEventItem => {
+    return {
+      ...item,
+      payload: {
+        ...item.payload,
+        customFields: {
+          ...item.payload.customFields,
+          ...this.commonEventParams,
+        },
+      },
+    };
   };
 }
 

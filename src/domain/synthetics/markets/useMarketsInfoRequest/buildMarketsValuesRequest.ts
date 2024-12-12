@@ -6,10 +6,10 @@ import { MarketValuesMulticallRequestConfig } from "domain/synthetics/markets/us
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
 
-import { HASHED_MARKET_VALUES_KEYS } from "prebuilt";
+import { HASHED_MARKET_VALUES_KEYS } from "sdk/prebuilt";
 
-import DataStore from "abis/DataStore.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import DataStore from "sdk/abis/DataStore.json";
+import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 
 export async function buildMarketsValuesRequest(
   chainId: number,

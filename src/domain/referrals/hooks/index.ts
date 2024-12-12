@@ -3,8 +3,8 @@ import { BigNumberish, Signer, ethers, isAddress } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import ReferralStorage from "abis/ReferralStorage.json";
-import Timelock from "abis/Timelock.json";
+import ReferralStorage from "sdk/abis/ReferralStorage.json";
+import Timelock from "sdk/abis/Timelock.json";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";

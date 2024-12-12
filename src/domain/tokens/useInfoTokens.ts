@@ -15,7 +15,7 @@ import { PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { InfoTokens, Token, TokenInfo } from "./types";
 import { getSpread } from "./utils";
 
-import VaultReader from "abis/VaultReader.json";
+import VaultReader from "sdk/abis/VaultReader.json";
 
 export function useInfoTokens(
   signer: Signer | undefined,

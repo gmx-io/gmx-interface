@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "sdk/abis/CustomErrors.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,

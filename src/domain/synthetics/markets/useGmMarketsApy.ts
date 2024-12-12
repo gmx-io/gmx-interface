@@ -19,7 +19,7 @@ import { useMarketTokensData } from "./useMarketTokensData";
 import { getPoolUsdWithoutPnl, GlvInfoData, isMarketInfo } from "domain/synthetics/markets";
 import { getTokenBySymbolSafe } from "config/tokens";
 
-import TokenAbi from "abis/Token.json";
+import TokenAbi from "sdk/abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { convertToUsd } from "../tokens/utils";

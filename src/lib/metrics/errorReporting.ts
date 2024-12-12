@@ -1,4 +1,4 @@
-import CustomErrors from "abis/CustomErrors.json";
+import CustomErrors from "sdk/abis/CustomErrors.json";
 import cryptoJs from "crypto-js";
 import { extractDataFromError } from "lib/contracts/transactionErrors";
 import { ethers } from "ethers";

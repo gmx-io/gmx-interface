@@ -1,16 +1,16 @@
 import { getAbFlags } from "config/ab";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useBowser } from "lib/useBowser";
 import useIsWindowVisible from "lib/useIsWindowVisible";
 import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import Bowser from "bowser";
 import { useEffect } from "react";
-import { metrics } from "./Metrics";
 import { isHomeSite } from "../legacy";
-import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { metrics } from "./Metrics";
 
 export function useConfigureMetrics() {
   const { chainId } = useChainId();
@@ -20,6 +20,7 @@ export function useConfigureMetrics() {
   const isMobileMetamask = useIsMetamaskMobile();
   const isWindowVisible = useIsWindowVisible();
   const isLargeAccount = getIsLargeAccount();
+  const { data: bowser } = useBowser();
 
   useEffect(() => {
     metrics.subscribeToEvents();
@@ -37,8 +38,6 @@ export function useConfigureMetrics() {
   }, [showDebugValues]);
 
   useEffect(() => {
-    const bowser = Bowser.parse(window.navigator.userAgent);
-
     metrics.setGlobalMetricData({
       isMobileMetamask,
       isWindowVisible,
@@ -47,11 +46,12 @@ export function useConfigureMetrics() {
       isMobile: getIsMobileUserAgent(),
       isHomeSite: isHomeSite(),
       isLargeAccount,
-      browserName: bowser.browser.name,
-      browserVersion: bowser.browser.version,
-      platform: bowser.platform.type,
+      browserName: bowser?.browser.name,
+      browserVersion: bowser?.browser.version,
+      platform: bowser?.platform.type,
+      isInited: Boolean(bowser),
     });
-  }, [active, isMobileMetamask, isWindowVisible, isLargeAccount]);
+  }, [active, isMobileMetamask, isWindowVisible, isLargeAccount, bowser]);
 
   useEffect(() => {
     metrics.updateWalletNames();

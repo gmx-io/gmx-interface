@@ -1,4 +1,4 @@
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT } from "config/dataStore";
 import { useMulticall } from "lib/multicall";

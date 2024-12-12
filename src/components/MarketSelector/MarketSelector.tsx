@@ -3,10 +3,10 @@ import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
+import { getCategoryTokenAddresses } from "config/tokens";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
-
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords } from "domain/tokens/utils";
@@ -18,6 +18,7 @@ import { searchBy } from "lib/searchBy";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
@@ -25,6 +26,7 @@ import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import "./MarketSelector.scss";
 
 type Props = {
+  chainId: number;
   label?: string;
   className?: string;
   selectedIndexName?: string;
@@ -53,6 +55,7 @@ type MarketOption = {
 };
 
 export function MarketSelector({
+  chainId,
   selectedIndexName,
   className,
   selectedMarketLabel,
@@ -116,16 +119,21 @@ export function MarketSelector({
         )
       : marketsOptions;
 
-    const tabMatched = textMatched?.filter((item) => {
-      if (tab === "favorites") {
-        return favoriteTokens?.includes(item.marketInfo.indexToken.address);
-      }
+    if (tab === "all") {
+      return textMatched;
+    }
 
-      return true;
-    });
+    if (tab === "favorites") {
+      return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
+    }
+
+    const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
+    const tabMatched = textMatched?.filter((item) =>
+      categoryTokenAddresses.includes(item.marketInfo.indexToken.address)
+    );
 
     return tabMatched;
-  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
+  }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -159,15 +167,17 @@ export function MarketSelector({
         label={label}
         footerContent={footerContent}
         headerContent={
-          <div className="mt-16 flex items-center gap-16">
+          <div className="mt-16">
             <SearchInput
-              className="*:!text-body-medium"
+              className="mb-8 *:!text-body-medium"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Market`}
               onKeyDown={_handleKeyDown}
             />
-            <FavoriteTabs favoritesKey="market-selector" />
+            <ButtonRowScrollFadeContainer>
+              <FavoriteTabs favoritesKey="market-selector" />
+            </ButtonRowScrollFadeContainer>
           </div>
         }
       >

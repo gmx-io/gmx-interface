@@ -1,6 +1,53 @@
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForCollateral, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
+import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "config/markets";
+
+// limit the number of markets to most N=SWAP_GRAPH_MAX_MARKETS_PER_TOKEN liquid markets for each collateral
+export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
+  const marketsByTokens: { [token: string]: MarketInfo[] } = {};
+
+  for (const market of markets) {
+    if (market.isSameCollaterals || market.isDisabled) {
+      continue;
+    }
+
+    const { longTokenAddress, shortTokenAddress } = market;
+
+    marketsByTokens[longTokenAddress] = marketsByTokens[longTokenAddress] || [];
+    marketsByTokens[longTokenAddress].push(market);
+
+    marketsByTokens[shortTokenAddress] = marketsByTokens[shortTokenAddress] || [];
+    marketsByTokens[shortTokenAddress].push(market);
+  }
+
+  const resultMarkets: { [marketAddress: string]: MarketInfo } = {};
+
+  const tokenAddresses = Object.keys(marketsByTokens);
+
+  for (const tokenAddress of tokenAddresses) {
+    const markets = marketsByTokens[tokenAddress];
+
+    const sortedMarkets = markets.sort((m1, m2) => {
+      const liq1 = getAvailableUsdLiquidityForCollateral(m1, m1.longTokenAddress === tokenAddress);
+      const liq2 = getAvailableUsdLiquidityForCollateral(m2, m2.longTokenAddress === tokenAddress);
+      return Number(liq2 - liq1);
+    });
+
+    let marketsPerTokenCount = 0;
+
+    for (const market of sortedMarkets) {
+      if (marketsPerTokenCount > SWAP_GRAPH_MAX_MARKETS_PER_TOKEN || resultMarkets[market.marketTokenAddress]) {
+        break;
+      }
+
+      resultMarkets[market.marketTokenAddress] = market;
+      marketsPerTokenCount++;
+    }
+  }
+
+  return Object.values(resultMarkets);
+}
 
 export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   const graph: MarketsGraph = {
@@ -8,7 +55,9 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
     edges: [],
   };
 
-  for (const market of markets) {
+  const limitedMarkets = limitMarketsPerTokens(markets);
+
+  for (const market of limitedMarkets) {
     const { longTokenAddress, shortTokenAddress, marketTokenAddress, isSameCollaterals, isDisabled } = market;
 
     if (isSameCollaterals || isDisabled) {
@@ -77,7 +126,7 @@ export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: S
 
   for (const route of routes) {
     try {
-      const pathUsdOut = route.edged.reduce((prevUsdOut, edge) => {
+      const pathUsdOut = route.edges.reduce((prevUsdOut, edge) => {
         const { usdOut } = estimator(edge, prevUsdOut);
         return usdOut;
       }, usdIn);
@@ -125,7 +174,7 @@ export function findAllPaths(
 
     if (edge.to === to) {
       routes.push({
-        edged: pathEdges,
+        edges: pathEdges,
         path: path,
         liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: path, initialCollateralAddress: from }),
       });

@@ -1,5 +1,6 @@
 import cx from "classnames";
 import { useMemo } from "react";
+import type { Address } from "viem";
 
 import { selectChartHeaderInfo, selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -8,10 +9,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { USD_DECIMALS } from "config/factors";
 import { getToken } from "config/tokens";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { use24hPriceDelta } from "domain/synthetics/tokens";
-import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
+import { use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
-import { useChainId } from "lib/chains";
 import {
   formatAmountHuman,
   formatPercentageDisplay,
@@ -24,32 +23,33 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
 export function useChartHeaderFormattedValues() {
-  const dailyVolumeValue = use24hVolume();
+  const chainId = useSelector(selectChainId);
   const info = useSelector(selectChartHeaderInfo);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const { chartToken } = useSelector(selectChartToken);
-
-  const { chainId } = useChainId();
-  const chartTokenAddress = chartToken?.address;
-
+  const chartTokenAddress = chartToken?.address as Address;
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const visualMultiplier = isSwap ? 1 : selectedTokenOption?.visualMultiplier ?? 1;
 
-  const priceTokenSymbol = useMemo(() => {
+  const priceTokenAddress = useMemo(() => {
     if (selectedTokenOption?.isWrapped) {
-      return selectedTokenOption.baseSymbol;
+      return selectedTokenOption.address;
     }
 
-    return selectedTokenOption?.symbol;
+    return selectedTokenOption?.address;
   }, [selectedTokenOption]);
 
-  const dayPriceDeltaData = use24hPriceDelta(chainId, priceTokenSymbol);
+  const dailyVolumeValue = use24hVolume();
+  const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, [priceTokenAddress as Address]);
+  const dayPriceDeltaData = chartTokenAddress ? dayPriceDeltaMap?.[chartTokenAddress] : undefined;
 
   const avgPriceValue = bigMath.avg(chartToken?.prices?.maxPrice, chartToken?.prices?.minPrice);
 
