@@ -1,4 +1,4 @@
-import { getToken } from "config/tokens";
+import { getToken } from "sdk/configs/tokens";
 import { getBorrowingFactorPerPeriod } from "domain/synthetics/fees";
 import { getFundingFactorPerPeriod } from "domain/synthetics/fees/utils/index";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";

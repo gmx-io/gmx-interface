@@ -1,4 +1,4 @@
-import { getTokens } from "config/tokens";
+import { getTokens } from "sdk/configs/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import find from "lodash/find";

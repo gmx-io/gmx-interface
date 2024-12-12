@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "lib/bigmath";
 import { contractFetcher } from "lib/contracts";
 import { DEFAULT_MAX_USDG_AMOUNT, MAX_PRICE_DEVIATION_BASIS_POINTS, USDG_ADDRESS } from "lib/legacy";

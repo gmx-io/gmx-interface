@@ -23,7 +23,7 @@ import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { UI_VERSION, isDevelopment } from "config/env";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";

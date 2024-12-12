@@ -5,7 +5,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
 import { USD_DECIMALS } from "config/factors";
-import { getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";

@@ -1,5 +1,5 @@
 import { getExplorerUrl } from "config/chains";
-import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { ethers } from "ethers";
 import {
   DUST_BNB,

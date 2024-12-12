@@ -6,7 +6,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { BigNumberish } from "ethers";
 
 import { USD_DECIMALS } from "config/factors";
-import { getTokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getTokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { getUsd } from "domain/tokens";
 import { InfoTokens, Token } from "domain/tokens/types";
 import { bigMath } from "lib/bigmath";

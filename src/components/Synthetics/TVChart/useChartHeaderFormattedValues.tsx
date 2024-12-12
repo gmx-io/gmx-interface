@@ -7,9 +7,13 @@ import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContex
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { USD_DECIMALS } from "config/factors";
-import { getToken } from "config/tokens";
-import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { getToken } from "sdk/configs/tokens";
+import {
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { use24hPriceDeltaMap } from "domain/synthetics/tokens";
+import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
 import { bigMath } from "lib/bigmath";
 import {
   formatAmountHuman,
@@ -24,7 +28,6 @@ import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityToolti
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
@@ -35,6 +38,7 @@ export function useChartHeaderFormattedValues() {
   const { chartToken } = useSelector(selectChartToken);
   const chartTokenAddress = chartToken?.address as Address;
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const visualMultiplier = isSwap ? 1 : selectedTokenOption?.visualMultiplier ?? 1;
@@ -47,7 +51,10 @@ export function useChartHeaderFormattedValues() {
     return selectedTokenOption?.address;
   }, [selectedTokenOption]);
 
-  const dailyVolumeValue = use24hVolume();
+  const dailyVolumes = use24hVolumes();
+  const dailyVolumesValue = marketInfo?.marketTokenAddress
+    ? dailyVolumes?.byMarketToken?.[marketInfo?.marketTokenAddress]
+    : undefined;
   const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, [priceTokenAddress as Address]);
   const dayPriceDeltaData = chartTokenAddress ? dayPriceDeltaMap?.[chartTokenAddress] : undefined;
 
@@ -228,7 +235,9 @@ export function useChartHeaderFormattedValues() {
     );
   }, [info]);
 
-  const dailyVolume = dailyVolumeValue !== undefined ? `$${formatAmountHuman(dailyVolumeValue, USD_DECIMALS)}` : "...";
+  const dailyVolume = useMemo(() => {
+    return dailyVolumesValue !== undefined ? `$${formatAmountHuman(dailyVolumesValue, USD_DECIMALS)}` : "...";
+  }, [dailyVolumesValue]);
 
   return {
     avgPrice,

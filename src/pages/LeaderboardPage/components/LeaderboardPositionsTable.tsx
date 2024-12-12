@@ -32,7 +32,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
