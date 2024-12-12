@@ -321,6 +321,11 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("29 Nov 2024"),
     },
+    // FIL/USD [WBTC-USDC]
+    "0x262B5203f0fe00D9fe86ffecE01D0f54fC116180": {
+      enabled: true,
+      listingDate: p("12 Dec 2024"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
