@@ -4,6 +4,7 @@ import { getIsEquivalentTokens } from "domain/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";
 import { bigMath } from "lib/bigmath";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -11,10 +12,22 @@ export function getSwapAmountsByFromValue(p: {
   amountIn: bigint;
   triggerRatio?: TokensRatio;
   isLimit: boolean;
+  swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
+  acceptableSwapImpactBps?: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
+  const {
+    tokenIn,
+    tokenOut,
+    amountIn,
+    triggerRatio,
+    isLimit,
+    swapOptimizationOrder,
+    findSwapPath,
+    uiFeeFactor,
+    acceptableSwapImpactBps,
+  } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -57,7 +70,7 @@ export function getSwapAmountsByFromValue(p: {
     };
   }
 
-  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { byLiquidity: isLimit });
+  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { order: swapOptimizationOrder });
 
   const totalSwapVolume = getTotalSwapVolumeFromSwapStats(swapPathStats?.swapSteps);
   const swapUiFeeUsd = applyFactor(totalSwapVolume, uiFeeFactor);
@@ -96,6 +109,10 @@ export function getSwapAmountsByFromValue(p: {
     minOutputAmount = 0n;
   }
 
+  if (isLimit) {
+    minOutputAmount -= bigMath.mulDiv(minOutputAmount, acceptableSwapImpactBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
+  }
+
   return {
     amountIn,
     usdIn,
@@ -115,9 +132,21 @@ export function getSwapAmountsByToValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
+  swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
+  acceptableSwapImpactBps?: bigint;
   uiFeeFactor: bigint;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
+  const {
+    tokenIn,
+    tokenOut,
+    amountOut,
+    triggerRatio,
+    isLimit,
+    findSwapPath,
+    uiFeeFactor,
+    swapOptimizationOrder,
+    acceptableSwapImpactBps,
+  } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -125,7 +154,7 @@ export function getSwapAmountsByToValue(p: {
   const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
   const uiFeeUsd = applyFactor(usdOut, uiFeeFactor);
 
-  const minOutputAmount = amountOut;
+  let minOutputAmount = amountOut;
 
   let amountIn = 0n;
   let usdIn = 0n;
@@ -162,7 +191,7 @@ export function getSwapAmountsByToValue(p: {
   }
 
   const baseUsdIn = usdOut;
-  const swapPathStats = findSwapPath(baseUsdIn, { byLiquidity: isLimit });
+  const swapPathStats = findSwapPath(baseUsdIn, { order: swapOptimizationOrder });
 
   if (!swapPathStats) {
     return defaultAmounts;
@@ -194,6 +223,10 @@ export function getSwapAmountsByToValue(p: {
   if (amountIn < 0) {
     amountIn = 0n;
     usdIn = 0n;
+  }
+
+  if (isLimit) {
+    minOutputAmount -= bigMath.mulDiv(minOutputAmount, acceptableSwapImpactBps ?? 0n, 100n);
   }
 
   return {

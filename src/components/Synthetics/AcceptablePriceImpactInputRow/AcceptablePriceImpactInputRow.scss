@@ -1,4 +1,5 @@
-.AcceptablePriceImpactInputRow-handle {
+.AcceptablePriceImpactInputRow-handle,
+.AcceptableSwapImpactInputRow-handle {
   z-index: 1;
   cursor: pointer;
   position: relative;
@@ -17,6 +18,6 @@
   }
 }
 
-.AcceptablePriceImpactInputRow-na {
+.AcceptablePriceImpactInputRow-na .AcceptableSwapImpactInputRow-na {
   line-height: 2.3rem;
 }

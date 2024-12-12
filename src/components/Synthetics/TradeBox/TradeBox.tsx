@@ -113,7 +113,7 @@ import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
-import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
+import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
@@ -668,7 +668,7 @@ export function TradeBox(p: Props) {
   const { requiredActions } = useRequiredActions();
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
-  useTradeboxAvailablePriceImpactValues();
+  useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(setTriggerConsent);
 
   const prevIsISwap = usePrevious(isSwap);

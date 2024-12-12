@@ -133,15 +133,29 @@ export const makeSelectFindSwapPath = createSelectorFactory(
       const allPaths = q(selectAllPaths);
       const estimator = q(selectSwapEstimator);
 
-      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => {
+      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => {
         if (!allPaths?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
           return undefined;
         }
 
         let swapPath: string[] | undefined = undefined;
+        const sortedPaths = opts.order
+          ? [...allPaths].sort((a, b) => {
+              for (const field of opts.order ?? []) {
+                const aVal = field === "liquidity" ? a.liquidity : a.path.length;
+                const bVal = field === "liquidity" ? b.liquidity : b.path.length;
 
-        if (opts.byLiquidity) {
-          swapPath = allPaths[0].path;
+                if (aVal !== bVal) {
+                  return aVal < bVal ? -1 : 1;
+                }
+              }
+
+              return 0;
+            })
+          : allPaths;
+
+        if (opts.order) {
+          swapPath = sortedPaths[0].path;
         } else {
           swapPath = getBestSwapPath(allPaths, usdIn, estimator);
         }

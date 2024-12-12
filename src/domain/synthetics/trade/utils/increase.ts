@@ -94,6 +94,8 @@ export function getIncreasePositionAmounts(p: {
 
   const isLimit = Boolean(triggerPrice !== undefined && triggerPrice > 0);
 
+  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = isLimit ? ["length", "liquidity"] : undefined;
+
   if (isLimit && triggerPrice !== undefined) {
     values.triggerPrice = triggerPrice;
     values.triggerThresholdType = getTriggerThresholdType(OrderType.LimitIncrease, isLong);
@@ -144,6 +146,7 @@ export function getIncreasePositionAmounts(p: {
       isLimit: false,
       findSwapPath,
       uiFeeFactor,
+      swapOptimizationOrder,
     });
 
     values.swapPathStats = swapAmounts.swapPathStats;
@@ -289,6 +292,7 @@ export function getIncreasePositionAmounts(p: {
         isLimit: false,
         findSwapPath,
         uiFeeFactor,
+        swapOptimizationOrder,
       });
 
       values.swapPathStats = swapAmounts.swapPathStats;

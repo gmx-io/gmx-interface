@@ -8,6 +8,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
 import { bigMath } from "lib/bigmath";
+
 import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {
