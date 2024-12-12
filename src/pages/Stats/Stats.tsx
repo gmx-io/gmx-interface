@@ -8,8 +8,8 @@ import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { formatDistance } from "date-fns";
 
-import Reader from "abis/Reader.json";
-import VaultV2 from "abis/VaultV2.json";
+import Reader from "sdk/abis/Reader.json";
+import VaultV2 from "sdk/abis/VaultV2.json";
 import { BigNumberish } from "ethers";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 

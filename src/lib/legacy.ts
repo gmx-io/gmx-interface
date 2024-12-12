@@ -4,8 +4,8 @@ import mapKeys from "lodash/mapKeys";
 import useSWR from "swr";
 import { useEnsName } from "wagmi";
 
-import OrderBook from "abis/OrderBook.json";
-import OrderBookReader from "abis/OrderBookReader.json";
+import OrderBook from "sdk/abis/OrderBook.json";
+import OrderBookReader from "sdk/abis/OrderBookReader.json";
 
 import { t } from "@lingui/macro";
 import { getServerBaseUrl } from "config/backend";
@@ -27,6 +27,7 @@ import {
 } from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
+import { getIsFlagEnabled } from "config/ab";
 
 const { ZeroAddress } = ethers;
 
@@ -1483,6 +1484,10 @@ export function getOrderError(account, order, positionsMap, position) {
 }
 
 export function shouldShowRedirectModal(timestamp?: number): boolean {
+  if (getIsFlagEnabled("testRemoveConfirmationModal")) {
+    return false;
+  }
+
   if (!timestamp) {
     return true;
   }

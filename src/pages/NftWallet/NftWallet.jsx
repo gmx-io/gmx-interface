@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 
-import ERC721 from "abis/ERC721.json";
+import ERC721 from "sdk/abis/ERC721.json";
 
 import "./NftWallet.css";
 import { t, Trans } from "@lingui/macro";

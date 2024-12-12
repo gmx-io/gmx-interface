@@ -52,7 +52,6 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { useMedia } from "react-use";
-import { MissedCoinsModal } from "components/MissedCoinsModal/MissedCoinsModal";
 import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { getTokenVisualMultiplier } from "config/tokens";
@@ -369,7 +368,6 @@ export function SyntheticsPage(p: Props) {
 
       <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
-      <MissedCoinsModal />
       <Footer />
     </div>
   );

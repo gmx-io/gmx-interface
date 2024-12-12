@@ -24,10 +24,10 @@ import { USD_DECIMALS } from "config/factors";
 
 import { getContract } from "config/contracts";
 
-import Reader from "abis/ReaderV2.json";
-import Router from "abis/Router.json";
-import Token from "abis/Token.json";
-import VaultV2 from "abis/VaultV2.json";
+import Reader from "sdk/abis/ReaderV2.json";
+import Router from "sdk/abis/Router.json";
+import Token from "sdk/abis/Token.json";
+import VaultV2 from "sdk/abis/VaultV2.json";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";

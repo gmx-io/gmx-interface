@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
 import { getContract } from "config/contracts";
 import {

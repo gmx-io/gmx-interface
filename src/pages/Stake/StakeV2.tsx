@@ -7,13 +7,13 @@ import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import GlpManager from "abis/GlpManager.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import RewardReader from "abis/RewardReader.json";
-import RewardRouter from "abis/RewardRouter.json";
-import Token from "abis/Token.json";
-import Vault from "abis/Vault.json";
-import Vester from "abis/Vester.json";
+import GlpManager from "sdk/abis/GlpManager.json";
+import ReaderV2 from "sdk/abis/ReaderV2.json";
+import RewardReader from "sdk/abis/RewardReader.json";
+import RewardRouter from "sdk/abis/RewardRouter.json";
+import Token from "sdk/abis/Token.json";
+import Vault from "sdk/abis/Vault.json";
+import Vester from "sdk/abis/Vester.json";
 
 import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";

@@ -5,8 +5,8 @@ import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
 import { getContract } from "config/contracts";
 
-import Token from "abis/Token.json";
-import RewardReader from "abis/RewardReader.json";
+import Token from "sdk/abis/Token.json";
+import RewardReader from "sdk/abis/RewardReader.json";
 
 import Checkbox from "components/Checkbox/Checkbox";
 
