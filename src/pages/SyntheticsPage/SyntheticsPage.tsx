@@ -2,6 +2,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
+import { useMedia } from "react-use";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getSyntheticsListSectionKey } from "config/localStorage";
@@ -48,15 +49,10 @@ import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEdi
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
-import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
+import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import Tab from "components/Tab/Tab";
-import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
-import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
-import { useMeasureComponentMountTime } from "lib/metrics";
-import { useMedia } from "react-use";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 export type Props = {
   openSettings: () => void;
@@ -324,7 +320,7 @@ export function SyntheticsPage(p: Props) {
             absolute: isMobile && !isSwap,
           })}
         >
-          <TradeBox setPendingTxns={setPendingTxns} />
+          <TradeBoxResponsiveContainer />
           {isSwap && (
             <div className="w-full min-[1101px]:mt-10">
               <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
