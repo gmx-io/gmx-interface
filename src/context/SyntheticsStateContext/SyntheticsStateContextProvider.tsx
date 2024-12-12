@@ -1,6 +1,5 @@
 import { getKeepLeverageKey } from "config/localStorage";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccountSigner } from "context/SubaccountContext/SubaccountContext";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import { useIsLargeAccountTracker } from "domain/stats/isLargeAccount";
 import {
@@ -39,11 +38,8 @@ import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
-import { GasPriceData } from "lib/contracts";
-import { useGasPriceData } from "lib/contracts/useGasPriceData";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { BlockTimestampData, useBlockTimestamp } from "lib/useBlockTimestamp";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -88,8 +84,6 @@ export type SyntheticsState = {
 
     gasLimits: ReturnType<typeof useGasLimits>;
     gasPrice: ReturnType<typeof useGasPrice>;
-    gasPriceData: GasPriceData | undefined;
-    blockTimestampData: BlockTimestampData | undefined;
 
     lastWeekAccountStats?: PeriodAccountStats;
     lastMonthAccountStats?: PeriodAccountStats;
@@ -145,7 +139,6 @@ export function SyntheticsStateContextProvider({
   const account = isAccountPage ? checkSummedAccount : walletAccount;
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
-  const subaccountSigner = useSubaccountSigner();
 
   const markets = useMarkets(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
@@ -243,8 +236,6 @@ export function SyntheticsStateContextProvider({
     enabled: pageType === "trade",
   });
 
-  const { blockTimestampData } = useBlockTimestamp(chainId, { skip: !["trade", "pools"].includes(pageType) });
-
   // TODO move closingPositionKey to positionSellerState
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
   const positionEditorState = usePositionEditorState(chainId);
@@ -252,9 +243,6 @@ export function SyntheticsStateContextProvider({
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
-  const { data: gasPriceData } = useGasPriceData(chainId, signer?.provider || subaccountSigner?.provider, {
-    skip: !["trade", "pools"].includes(pageType),
-  });
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
@@ -294,7 +282,6 @@ export function SyntheticsStateContextProvider({
 
         gasLimits,
         gasPrice,
-        gasPriceData,
 
         keepLeverage,
         setKeepLeverage,
@@ -305,7 +292,6 @@ export function SyntheticsStateContextProvider({
         setIsCandlesLoaded,
         isLargeAccount,
         isFirstOrder,
-        blockTimestampData,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -336,7 +322,6 @@ export function SyntheticsStateContextProvider({
     missedCoinsModalPlace,
     gasLimits,
     gasPrice,
-    gasPriceData,
     keepLeverage,
     setKeepLeverage,
     lastWeekAccountStats,
@@ -345,7 +330,6 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isLargeAccount,
     isFirstOrder,
-    blockTimestampData,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

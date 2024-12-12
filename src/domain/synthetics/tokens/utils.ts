@@ -24,16 +24,12 @@ export function getTokenData(tokensData?: TokensData, address?: string, convertT
 }
 
 export function getNeedTokenApprove(
-  tokenAllowanceData: TokensAllowanceData | undefined,
-  tokenAddress: string | undefined,
-  amountToSpend: bigint | undefined
+  tokenAllowanceData: TokensAllowanceData,
+  tokenAddress: string,
+  amountToSpend: bigint
 ): boolean {
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined || amountToSpend === 0n) {
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS || tokenAllowanceData[tokenAddress] === undefined) {
     return false;
-  }
-
-  if (!tokenAllowanceData || !tokenAddress || tokenAllowanceData[tokenAddress] === undefined) {
-    return true;
   }
 
   return amountToSpend > tokenAllowanceData[tokenAddress];
