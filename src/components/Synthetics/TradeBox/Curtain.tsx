@@ -1,29 +1,34 @@
 import cx from "classnames";
 import { AnimationProps, DragHandlers, DraggableProps, PanInfo, motion, useDragControls } from "framer-motion";
-import { PropsWithChildren, useCallback, useRef } from "react";
+import { PropsWithChildren, useCallback, useMemo, useRef } from "react";
 import { useMedia } from "react-use";
+
+const HEADER_HEIGHT = 86;
 
 const DRAG_TRANSITION: DraggableProps["dragTransition"] = {
   power: 1,
   timeConstant: 100,
   modifyTarget: (target) => {
-    const half = (-window.innerHeight + 86) / 2;
+    const half = (-window.innerHeight + HEADER_HEIGHT) / 2;
 
-    return target > half ? -86 : -window.innerHeight + 86;
+    return target > half ? -HEADER_HEIGHT : -window.innerHeight + HEADER_HEIGHT;
   },
 };
 
-const DRAG_CONSTRAINTS: DraggableProps["dragConstraints"] = { bottom: -86, top: -window.innerHeight + 86 };
+const DRAG_CONSTRAINTS: DraggableProps["dragConstraints"] = {
+  bottom: -HEADER_HEIGHT,
+  top: -window.innerHeight + HEADER_HEIGHT,
+};
 const CURTAIN_DRAG_ELASTIC: DraggableProps["dragElastic"] = { bottom: 0.5, top: 0 };
 const INNER_DRAG_ELASTIC: DraggableProps["dragElastic"] = { bottom: 0, top: 0.5 };
 
-const INITIAL: AnimationProps["initial"] = { y: -86 };
+const INITIAL: AnimationProps["initial"] = { y: -HEADER_HEIGHT };
 
 export function Curtain({
   children,
   header,
   dataQa,
-  // headerHeight = 86,
+  // headerHeight = HEADER_HEIGHT,
 }: PropsWithChildren<{
   header: React.ReactNode;
   dataQa?: string;
@@ -71,6 +76,12 @@ export function Curtain({
     [curtainDragControls, isDraggingCurtain]
   );
 
+  const curtainStyle = useMemo(() => {
+    return {
+      maxHeight: `calc(100dvh - ${HEADER_HEIGHT}px)`,
+    };
+  }, []);
+
   return (
     <motion.div
       data-qa={dataQa}
@@ -87,9 +98,10 @@ export function Curtain({
       onPointerDown={handleCurtainPointerDown}
       className={cx(
         isMobile
-          ? "text-body-medium fixed left-0 right-0 top-[100dvh] z-[1000] flex max-h-[calc(100dvh-86px)] touch-none flex-col rounded-t-4 border-x border-b border-t border-gray-800 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]"
+          ? "text-body-medium fixed left-0 right-0 top-[100dvh] z-[1000] flex touch-none flex-col rounded-t-4 border-x border-b border-t border-gray-800 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)] will-change-transform"
           : "App-box SwapBox"
       )}
+      style={curtainStyle}
     >
       {header}
 
@@ -101,7 +113,7 @@ export function Curtain({
           onDrag={handleInnerDrag}
           dragConstraints={innerContainerRef}
           dragElastic={INNER_DRAG_ELASTIC}
-          className={cx(isMobile ? "touch-none px-15 pb-10" : "")}
+          className={cx(isMobile ? "touch-none px-15 pb-10 will-change-transform" : "")}
         >
           {children}
         </motion.div>
