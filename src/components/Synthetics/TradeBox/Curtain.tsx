@@ -1,7 +1,7 @@
 import cx from "classnames";
 import Button from "components/Button/Button";
 
-import { PropsWithChildren, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, useCallback, useMemo, useRef, useState } from "react";
 
 import LeftArrowIcon from "img/ic_arrowleft16.svg?react";
 
@@ -30,6 +30,14 @@ export function Curtain({
     };
   }, [isOpen]);
 
+  const headerClick = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const handleClick = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
+
   return (
     <div
       data-qa={dataQa}
@@ -38,10 +46,11 @@ export function Curtain({
       shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)] will-change-transform"
       style={curtainStyle}
     >
-      <div className=" flex items-stretch justify-between px-15 pb-8 pt-8">
-        {header}
-
-        <Button variant="secondary" className="!px-15 !py-8" onClick={() => setIsOpen((prev) => !prev)}>
+      <div className="flex items-stretch justify-between gap-8 px-15 pb-8 pt-8">
+        <div className="grow" onClick={headerClick}>
+          {header}
+        </div>
+        <Button variant="secondary" className="!px-15 !py-8" onClick={handleClick}>
           <LeftArrowIcon
             className={cx("rotate-90 transition-transform delay-150 duration-300 ease-out", isOpen && "-rotate-90")}
           />
