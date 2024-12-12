@@ -44,15 +44,13 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   );
 
   return (
-    <div className={cx(isInCurtain ? "shrink-0 px-15 pb-15 pt-10" : "")}>
-      {isInCurtain && <div className={cx("mx-auto mb-14 h-4 w-32 rounded-full bg-gray-900")} />}
+    <div className={cx(isInCurtain ? "" : "")}>
       <Tab
         icons={tradeTypeIcons}
         options={Object.values(TradeType)}
         optionLabels={localizedTradeTypeLabels}
         option={tradeType}
         onChange={onTradeTypeChange}
-        tabOptionClassName="!p-[10.5px]"
         qa="trade-direction"
         theme="green"
       />
