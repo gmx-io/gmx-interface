@@ -33,6 +33,20 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "fil-listing",
+    title: "Filecoin (FIL) market added on Arbitrum",
+    isActive: true,
+    startDate: "12 Dec 2024, 18:00",
+    endDate: "18 Dec 2024, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="FIL" />
+        /USD or <Link to="/pools">provide liquidity</Link> to this market using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC].
+      </>
+    ),
+  },
+  {
     id: "trading-fees-reduction",
     title: "Trading fees are reduced",
     isActive: true,
