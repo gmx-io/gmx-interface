@@ -18,7 +18,6 @@ import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
-import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestamp";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 import { withRetry } from "viem";
 import { isGlvEnabled } from "../markets/glv";
@@ -43,34 +42,26 @@ type SimulateExecuteParams = {
   errorTitle?: string;
   swapPricingType?: SwapPricingType;
   metricId?: OrderMetricId;
-  blockTimestampData: BlockTimestampData | undefined;
 };
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
   const provider = getProvider(undefined, chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");
+
   const multicall = getMulticallContract(chainId, provider);
   const exchangeRouter = getExchangeRouterContract(chainId, provider);
   const glvRouter = isGlvEnabled(chainId) ? getGlvRouterContract(chainId, provider) : getZeroAddressContract(provider);
 
-  let blockTimestamp: bigint;
-  let blockTag: string | number;
+  const result = await multicall.blockAndAggregate.staticCall([
+    { target: multicallAddress, callData: multicall.interface.encodeFunctionData("getCurrentBlockTimestamp") },
+  ]);
 
-  if (p.blockTimestampData) {
-    blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
-    blockTag = "latest";
-  } else {
-    const result = await multicall.blockAndAggregate.staticCall([
-      { target: multicallAddress, callData: multicall.interface.encodeFunctionData("getCurrentBlockTimestamp") },
-    ]);
-    const returnValues = multicall.interface.decodeFunctionResult(
-      "getCurrentBlockTimestamp",
-      result.returnData[0].returnData
-    );
-    blockTimestamp = returnValues[0];
-    blockTag = Number(result.blockNumber);
-  }
+  const blockNumber = Number(result.blockNumber);
+  const [blockTimestamp] = multicall.interface.decodeFunctionResult(
+    "getCurrentBlockTimestamp",
+    result.returnData[0].returnData
+  );
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
   const priceTimestamp = blockTimestamp + 10n;
@@ -139,7 +130,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       () => {
         return router.multicall.staticCall(simulationPayloadData, {
           value: p.value,
-          blockTag,
+          blockTag: blockNumber,
           from: p.account,
         });
       },

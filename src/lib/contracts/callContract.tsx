@@ -1,14 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIsFlagEnabled } from "config/ab";
 import { getExplorerUrl } from "config/chains";
 import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
-import { sendOrderTxnSubmittedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
+import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
-import { extractError, getErrorMessage } from "./transactionErrors";
+import { getErrorMessage } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
 
 export async function callContract(
@@ -93,12 +92,7 @@ export async function callContract(
         throw new Error("No provider found on contract.");
       }
 
-      async function retrieveGasLimit(force?: boolean) {
-        // disable gas limits for testRemoveGasRequests flag (keep it for 1ct)
-        if (!force && getIsFlagEnabled("testRemoveGasRequests") && !customSignerContracts.length) {
-          return undefined;
-        }
-
+      async function retrieveGasLimit() {
         return customGasLimits[i] !== undefined
           ? (customGasLimits[i] as bigint | number)
           : await getGasLimit(cntrct, method, params, opts.value);
@@ -110,45 +104,26 @@ export async function callContract(
           : await getGasPrice(cntrct.runner!.provider!, chainId);
       }
 
-      async function initGasParams(force?: boolean) {
-        const gasLimitPromise = retrieveGasLimit(force).then((gasLimit) => {
-          txnInstance.gasLimit = gasLimit;
-        });
+      const gasLimitPromise = retrieveGasLimit().then((gasLimit) => {
+        txnInstance.gasLimit = gasLimit;
+      });
 
-        const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
-          if ("gasPrice" in gasPriceData) {
-            txnInstance.gasPrice = gasPriceData.gasPrice;
-          } else {
-            txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
-            txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
-          }
-        });
+      const gasPriceDataPromise = retrieveGasPrice().then((gasPriceData) => {
+        if ("gasPrice" in gasPriceData) {
+          txnInstance.gasPrice = gasPriceData.gasPrice;
+        } else {
+          txnInstance.maxFeePerGas = gasPriceData.maxFeePerGas;
+          txnInstance.maxPriorityFeePerGas = gasPriceData.maxPriorityFeePerGas;
+        }
+      });
 
-        await Promise.all([gasLimitPromise, gasPriceDataPromise]);
-      }
+      await Promise.all([gasLimitPromise, gasPriceDataPromise]);
 
       if (opts.metricId) {
         sendOrderTxnSubmittedMetric(opts.metricId);
       }
 
-      return cntrct[method](...params, txnInstance).catch(async (e) => {
-        const [message] = extractError(e);
-
-        // Fallback to gas requests in case of low gas price
-        if (message?.includes("max fee per gas less than block base fee")) {
-          sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
-          await initGasParams(true);
-          return cntrct[method](...params, txnInstance);
-        }
-
-        if (message?.includes("nonce") && opts.customSigners) {
-          sendTxnErrorMetric(opts.metricId as OrderMetricId, e, "sendingFallback");
-          txnInstance.nonce = await getBestNonce([wallet, ...opts.customSigners]);
-          return cntrct[method](...params, txnInstance);
-        }
-
-        throw e;
-      });
+      return cntrct[method](...params, txnInstance);
     });
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {
