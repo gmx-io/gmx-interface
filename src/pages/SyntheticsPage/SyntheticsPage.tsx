@@ -49,7 +49,6 @@ import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEdi
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { TVChart } from "components/Synthetics/TVChart/TVChart";
-import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
@@ -58,6 +57,7 @@ import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { getTokenVisualMultiplier } from "config/tokens";
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
+import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 
 export type Props = {
   openSettings: () => void;
@@ -333,7 +333,7 @@ export function SyntheticsPage(p: Props) {
             absolute: isMobile && !isSwap,
           })}
         >
-          <TradeBox setPendingTxns={setPendingTxns} />
+          <TradeBoxResponsiveContainer />
           {isSwap && (
             <div className="w-full min-[1101px]:mt-10">
               <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
