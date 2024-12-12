@@ -986,8 +986,8 @@ msgid "GMX fundamentals"
 msgstr "GMX fundamentals"
 
 #: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
-msgid "You have set a high acceptable swap impact. The current Price Impact is {0}."
-msgstr "You have set a high acceptable swap impact. The current Price Impact is {0}."
+#~ msgid "You have set a high acceptable swap impact. The current Price Impact is {0}."
+#~ msgstr "You have set a high acceptable swap impact. The current Price Impact is {0}."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -2338,6 +2338,10 @@ msgstr "Borrow Fee Rate"
 msgid "Launch App"
 msgstr "Launch App"
 
+#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
+msgid "<0>Set recommended impact: {0}</0>."
+msgstr "<0>Set recommended impact: {0}</0>."
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
@@ -3261,7 +3265,6 @@ msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more
 msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
 msgstr "<0>Set Recommended Impact: {0}</0>."
 
@@ -8018,6 +8021,10 @@ msgstr "Accrued Price Impact Rebates"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Yesterday"
 msgstr "Yesterday"
+
+#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
+msgid "You have set a high acceptable swap impact. The current swap impact including fees is {0}."
+msgstr "You have set a high acceptable swap impact. The current swap impact including fees is {0}."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"

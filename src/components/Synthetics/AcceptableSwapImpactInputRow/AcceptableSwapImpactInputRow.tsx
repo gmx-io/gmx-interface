@@ -63,7 +63,7 @@ function AcceptableSwapImpactInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AcceptableSwapImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
+        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
       </span>
       .
     </Trans>
@@ -84,7 +84,7 @@ function AcceptableSwapImpactInputRowImpl({
   const highValueWarningText = (
     <p>
       <Trans>
-        You have set a high acceptable swap impact. The current Price Impact is{" "}
+        You have set a high acceptable swap impact. The current swap impact including fees is{" "}
         {formatPercentage(acceptableSwapImpactBps, { signed: true })}.
       </Trans>
       <br />
