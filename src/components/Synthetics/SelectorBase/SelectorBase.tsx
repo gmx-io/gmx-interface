@@ -111,7 +111,7 @@ export function SelectorBaseDesktopRow(
       <TooltipWithPortal
         as={TableTr}
         className={cx(
-          "SelectorBaseUtils-row underline decoration-dashed decoration-1 underline-offset-2",
+          "SelectorBaseUtils-row underline decoration-gray-400 decoration-dashed decoration-1 underline-offset-4",
           props.className
         )}
         content={props.message}
