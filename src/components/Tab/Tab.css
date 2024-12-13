@@ -4,8 +4,12 @@
   font-size: var(--font-size-body-medium);
   border-radius: 3px;
   overflow: hidden;
-  color: var(--color-slate-100);
-  background: var(--color-cold-blue-900);
+  color: var(--color-gray-300);
+  background: linear-gradient(
+    90deg,
+    var(--color-cold-blue-900) 0%,
+    color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%
+  );
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -29,7 +33,7 @@
 .Tab.Tab__block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: var(--color-cold-blue-500);
+  background: var(--primary-btn-bg);
   color: var(--color-white);
 }
 
@@ -52,15 +56,14 @@
   display: inline-block;
   margin-right: 1.5rem;
   font-size: var(--font-size-body-medium);
-  color: var(--color-slate-100);
 }
 
 .Tab.Tab__inline .Tab-option:not(.disabled):not(.active):hover {
-  color: var(--color-white);
+  opacity: 0.8;
 }
 
 .Tab.Tab__inline .Tab-option.active {
-  color: var(--color-white);
+  opacity: 1;
   pointer-events: none;
 }
 
