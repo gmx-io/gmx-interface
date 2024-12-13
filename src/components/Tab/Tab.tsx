@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { ReactNode } from "react";
 
-import "./Tab.scss";
+import "./Tab.css";
 
 type Props = {
   options: (string | number)[];
@@ -11,13 +11,6 @@ type Props = {
   type?: "block" | "inline";
   className?: string;
   optionLabels?: Record<string | number, ReactNode> | string[];
-  optionClassnames?: Record<
-    string | number,
-    {
-      active?: string;
-      regular?: string;
-    }
-  >;
   icons?: Record<string, ReactNode>;
   qa?: string;
 };
@@ -36,15 +29,10 @@ export default function Tab(props: Props) {
   return (
     <div data-qa={qa} className={cx("Tab", `Tab__${type}`, className)}>
       {options.map((opt) => {
-        const className = props.optionClassnames && props.optionClassnames[opt];
         const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
-
-        const optionClassName = opt === option ? className?.active : className?.regular;
         return (
           <div
-            className={cx("Tab-option flex items-center justify-center gap-8", optionClassName, {
-              active: opt === option,
-            })}
+            className={cx("Tab-option flex items-center justify-center gap-8", "muted", { active: opt === option })}
             onClick={() => onClick(opt)}
             key={opt}
             data-qa={`${qa}-tab-${opt}`}
