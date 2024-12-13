@@ -43,8 +43,8 @@ export function Curtain({
     <>
       <div
         className={cx(
-          "pointer-events-none fixed inset-0 z-[999] bg-black/70 transition-opacity duration-300",
-          isOpen ? "opacity-100" : "opacity-0"
+          "fixed inset-0 z-[999] bg-black/70 transition-opacity duration-300",
+          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
       />
       <RemoveScroll enabled={isOpen}>
