@@ -1410,7 +1410,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
       <Tab
         options={availableTradeModes}
         optionLabels={localizedTradeModeLabels}
-        className={cx(isInCurtain ? "mb-15" : "my-15")}
+        className={cx(isInCurtain ? "mb-8" : "mb-[10.5px] mt-15")}
         type="inline"
         option={tradeMode}
         onChange={onSelectTradeMode}

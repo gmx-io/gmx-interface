@@ -44,15 +44,14 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   );
 
   return (
-    <div className={cx(isInCurtain ? "" : "")}>
-      <Tab
-        icons={tradeTypeIcons}
-        options={Object.values(TradeType)}
-        optionLabels={localizedTradeTypeLabels}
-        option={tradeType}
-        onChange={onTradeTypeChange}
-        qa="trade-direction"
-      />
-    </div>
+    <Tab
+      icons={tradeTypeIcons}
+      options={Object.values(TradeType)}
+      optionLabels={localizedTradeTypeLabels}
+      option={tradeType}
+      onChange={onTradeTypeChange}
+      className={!isInCurtain ? "*:!p-[10.5px]" : ""}
+      qa="trade-direction"
+    />
   );
 }
