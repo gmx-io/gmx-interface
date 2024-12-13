@@ -63,7 +63,7 @@
     "eslint-config-recommended": "4.1.0",
     "eth-testing": "1.9.1",
     "ethers": "6.12.1",
-    "framer-motion": "11.14.1",
+    "framer-motion": "11.1.9",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
     "html-to-image": "^1.10.8",
