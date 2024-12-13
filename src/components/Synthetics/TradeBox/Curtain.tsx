@@ -1,7 +1,8 @@
 import cx from "classnames";
-import Button from "components/Button/Button";
-
 import { PropsWithChildren, useCallback, useMemo, useRef, useState } from "react";
+import { RemoveScroll } from "react-remove-scroll";
+
+import Button from "components/Button/Button";
 
 import LeftArrowIcon from "img/ic_arrowleft16.svg?react";
 
@@ -39,29 +40,42 @@ export function Curtain({
   }, []);
 
   return (
-    <div
-      data-qa={dataQa}
-      ref={curtainRef}
-      className="text-body-medium fixed left-0 right-0 z-[1000] flex flex-col rounded-t-4 border-x border-b border-t border-gray-800 bg-slate-800
+    <>
+      <div
+        className={cx(
+          "pointer-events-none fixed inset-0 z-[999] bg-black/70 transition-opacity duration-300",
+          isOpen ? "opacity-100" : "opacity-0"
+        )}
+      />
+      <RemoveScroll enabled={isOpen}>
+        <div
+          data-qa={dataQa}
+          ref={curtainRef}
+          className="text-body-medium fixed left-0 right-0 z-[1000] flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800
       shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)] will-change-transform"
-      style={curtainStyle}
-    >
-      <div className="flex items-stretch justify-between gap-8 px-15 pb-8 pt-8">
-        <div className="grow" onClick={headerClick}>
-          {header}
-        </div>
-        <Button variant="secondary" className="!px-15 !py-8" onClick={handleClick}>
-          <LeftArrowIcon
-            className={cx("rotate-90 transition-transform delay-150 duration-300 ease-out", isOpen && "-rotate-90")}
-          />
-        </Button>
-      </div>
+          style={curtainStyle}
+        >
+          <div className="flex items-stretch justify-between gap-8 px-15 pb-8 pt-8">
+            <div className="grow" onClick={headerClick}>
+              {header}
+            </div>
+            <Button variant="secondary" className="size-35 !px-0 !py-0" onClick={handleClick}>
+              <LeftArrowIcon
+                className={cx(
+                  "transition-transform delay-150 duration-500 ease-out",
+                  isOpen ? "-rotate-90" : "rotate-90"
+                )}
+              />
+            </Button>
+          </div>
 
-      <div ref={innerContainerRef} className="overflow-y-auto">
-        <div ref={innerRef} className="px-15 pb-10">
-          {children}
+          <div ref={innerContainerRef} className="overflow-y-auto">
+            <div ref={innerRef} className="px-15 pb-10">
+              {children}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </RemoveScroll>
+    </>
   );
 }
