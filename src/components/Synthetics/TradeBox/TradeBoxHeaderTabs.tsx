@@ -52,7 +52,6 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         option={tradeType}
         onChange={onTradeTypeChange}
         qa="trade-direction"
-        theme="green"
       />
     </div>
   );
