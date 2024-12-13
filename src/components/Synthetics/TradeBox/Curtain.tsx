@@ -55,7 +55,7 @@ export function Curtain({
       shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)] will-change-transform"
           style={curtainStyle}
         >
-          <div className="flex items-stretch justify-between gap-8 px-15 pb-8 pt-8">
+          <div className="flex items-stretch justify-between gap-4 px-15 pb-8 pt-8">
             <div className="grow" onClick={headerClick}>
               {header}
             </div>
