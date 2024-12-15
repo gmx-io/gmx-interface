@@ -1527,6 +1527,17 @@ export function isValidToken(chainId: number, address: string) {
   return address in TOKENS_MAP[chainId];
 }
 
+export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
+  if (!tokenSymbol) return 2;
+
+  try {
+    const token = getTokenBySymbol(chainId, tokenSymbol);
+    return token.priceDecimals ?? 2;
+  } catch (e) {
+    return 2;
+  }
+}
+
 export function getToken(chainId: number, address: string) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);

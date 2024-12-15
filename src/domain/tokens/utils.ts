@@ -13,7 +13,7 @@ import {
 } from "lib/legacy";
 import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
 import { getExplorerUrl } from "config/chains";
-import { InfoTokens, Token, TokenInfo } from "./types";
+import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;
@@ -116,6 +116,13 @@ export function getTokenInfo(
   }
 
   return infoTokens[tokenAddress];
+}
+
+export function getMidPrice(prices: TokenPrices) {
+  const minPrice = BigInt(prices.minPrice); // Convert to BigInt if needed
+  const maxPrice = BigInt(prices.maxPrice); // Convert to BigInt if needed
+  const sum = minPrice + maxPrice;
+  return sum / BigInt(2); // Explicitly cast 2 as BigInt
 }
 
 export function getLowestFeeTokenForBuyGlp(

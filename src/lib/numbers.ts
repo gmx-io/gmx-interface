@@ -81,6 +81,30 @@ export const formatAmount = (
   return amountStr;
 };
 
+
+
+export function bigintToNumber(value: bigint, decimals: number) {
+  // Ensure decimals is non-negative
+  if (decimals < 0) {
+    throw new Error("Decimals must be non-negative");
+  }
+
+  const negative = value < 0;
+  // Use Math.abs for clarity
+  value = negative ? -value : value; 
+  const precision = BigInt("1" + "0".repeat(decimals));
+  const int = value / precision;
+  const frac = value % precision;
+
+  // Check for potential precision loss
+  if (int > BigInt(Number.MAX_SAFE_INTEGER)) {
+    throw new Error("Value exceeds safe integer range");
+  }
+
+  const num = parseFloat(`${int}.${frac.toString().padStart(decimals, "0")}`);
+  return negative ? -num : num;
+}
+
 export const formatKeyAmount = (
   map: any,
   key: string,
