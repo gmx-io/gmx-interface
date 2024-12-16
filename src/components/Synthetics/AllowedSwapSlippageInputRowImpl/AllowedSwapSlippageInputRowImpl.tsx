@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { memo, useCallback, useMemo } from "react";
 
-import { HIGH_ACCEPTABLE_SWAP_IMPACT_BPS } from "config/factors";
+import { HIGH_ALLOWED_SWAP_SLIPPAGE_BPS } from "config/factors";
 import { formatPercentage } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -10,42 +10,44 @@ import PercentageInput from "components/PercentageInput/PercentageInput";
 import "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.scss";
 
 type Props = {
-  acceptableSwapImpactBps?: bigint;
-  recommendedAcceptableSwapImpactBps?: bigint;
+  allowedSwapSlippageBps?: bigint;
+  recommendedAllowedSwapSlippageBps?: bigint;
   initialSwapImpactFeeBps?: bigint;
-  setAcceptableSwapImpactBps: (value: bigint) => void;
+  setAllowedSwapSlippageBps: (value: bigint) => void;
+  totalSwapImpactBps: bigint;
   notAvailable?: boolean;
   className?: string;
 };
 
 const EMPTY_SUGGESTIONS: number[] = [];
 
-function AcceptableSwapImpactInputRowImpl({
-  acceptableSwapImpactBps,
-  recommendedAcceptableSwapImpactBps = acceptableSwapImpactBps,
-  initialSwapImpactFeeBps = acceptableSwapImpactBps,
-  setAcceptableSwapImpactBps,
+function AllowedSwapSlippageInputRowImpl({
+  allowedSwapSlippageBps,
+  recommendedAllowedSwapSlippageBps = allowedSwapSlippageBps,
+  initialSwapImpactFeeBps = allowedSwapSlippageBps,
+  setAllowedSwapSlippageBps,
   notAvailable = false,
+  totalSwapImpactBps,
   className,
 }: Props) {
   const setValue = useCallback(
     (value: number | undefined) => {
-      setAcceptableSwapImpactBps(BigInt(value ?? 0));
+      setAllowedSwapSlippageBps(BigInt(value ?? 0));
     },
-    [setAcceptableSwapImpactBps]
+    [setAllowedSwapSlippageBps]
   );
 
   const recommendedValue =
-    recommendedAcceptableSwapImpactBps !== undefined ? Number(recommendedAcceptableSwapImpactBps) : undefined;
+    recommendedAllowedSwapSlippageBps !== undefined ? Number(recommendedAllowedSwapSlippageBps) : undefined;
   const initialValue = initialSwapImpactFeeBps !== undefined ? Number(initialSwapImpactFeeBps) : undefined;
-  const value = acceptableSwapImpactBps !== undefined ? Number(acceptableSwapImpactBps) : undefined;
+  const value = allowedSwapSlippageBps !== undefined ? Number(allowedSwapSlippageBps) : undefined;
 
   const highValue = useMemo(() => {
     if (recommendedValue === undefined) {
       return undefined;
     }
 
-    return HIGH_ACCEPTABLE_SWAP_IMPACT_BPS + recommendedValue;
+    return HIGH_ALLOWED_SWAP_SLIPPAGE_BPS + recommendedValue;
   }, [recommendedValue]);
 
   const handleRecommendedValueClick = useCallback(() => {
@@ -54,16 +56,16 @@ function AcceptableSwapImpactInputRowImpl({
 
   if (notAvailable || recommendedValue === undefined || initialValue === undefined) {
     return (
-      <ExchangeInfoRow label={t`Acceptable Swap Impact`}>
-        <span className="AcceptableSwapImpactInputRow-na">{t`NA`}</span>
+      <ExchangeInfoRow label={t`Allowed Slippage`}>
+        <span className="AllowedSwapSlippageInputRow-na">{t`NA`}</span>
       </ExchangeInfoRow>
     );
   }
 
   const recommendedHandle = (
     <Trans>
-      <span className="AcceptableSwapImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
+      <span className="AllowedSwapSlippageInputRow-handle" onClick={handleRecommendedValueClick}>
+        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
       </span>
       .
     </Trans>
@@ -72,8 +74,8 @@ function AcceptableSwapImpactInputRowImpl({
   const lowValueWarningText = (
     <p>
       <Trans>
-        The current swap impact including fees is {formatPercentage(acceptableSwapImpactBps, { signed: true })}.
-        Consider adding a buffer of 1% to it so the order is more likely to be processed
+        The current swap impact including fees is {formatPercentage(totalSwapImpactBps, { signed: true })}. Consider
+        adding a buffer of 1% to it so the order is more likely to be processed
       </Trans>
       <br />
       <br />
@@ -84,8 +86,8 @@ function AcceptableSwapImpactInputRowImpl({
   const highValueWarningText = (
     <p>
       <Trans>
-        You have set a high acceptable swap impact. The current swap impact including fees is{" "}
-        {formatPercentage(acceptableSwapImpactBps, { signed: true })}.
+        You have set a high allowed slippage. The current swap impact including fees is{" "}
+        {formatPercentage(totalSwapImpactBps, { signed: true })}.
       </Trans>
       <br />
       <br />
@@ -94,7 +96,7 @@ function AcceptableSwapImpactInputRowImpl({
   );
 
   return (
-    <ExchangeInfoRow className={className} label={t`Acceptable Price Impact`}>
+    <ExchangeInfoRow className={className} label={t`Allowed Slippage`}>
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}
@@ -112,6 +114,6 @@ function AcceptableSwapImpactInputRowImpl({
   );
 }
 
-export const AcceptableSwapImpactInputRow = memo(
-  AcceptableSwapImpactInputRowImpl
-) as typeof AcceptableSwapImpactInputRowImpl;
+export const AllowedSwapSlippageInputRow = memo(
+  AllowedSwapSlippageInputRowImpl
+) as typeof AllowedSwapSlippageInputRowImpl;

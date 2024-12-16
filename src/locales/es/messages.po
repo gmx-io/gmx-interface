@@ -570,9 +570,8 @@ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
-msgid "Acceptable Price Impact"
-msgstr ""
+#~ msgid "Acceptable Price Impact"
+#~ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
@@ -781,8 +780,8 @@ msgid "Slippage should be less than -5%"
 msgstr ""
 
 #: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
-msgid "Acceptable Swap Impact"
-msgstr ""
+#~ msgid "Acceptable Swap Impact"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1258,6 +1257,10 @@ msgstr ""
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr ""
@@ -1585,8 +1588,8 @@ msgid "4-18 Places"
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
-msgstr ""
+#~ msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "MARKETS"
@@ -2338,9 +2341,9 @@ msgstr ""
 msgid "Launch App"
 msgstr "Abrir App"
 
-#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
-msgid "<0>Set recommended impact: {0}</0>."
-msgstr ""
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#~ msgid "<0>Set recommended impact: {0}</0>."
+#~ msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
@@ -2560,6 +2563,10 @@ msgstr "Precio no válido, ver advertencia"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
+msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -3265,6 +3272,7 @@ msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
 msgstr ""
 
@@ -3309,6 +3317,8 @@ msgstr "No hay operaciones todavía"
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed Slippage"
@@ -3787,7 +3797,7 @@ msgstr "Productos Estructurados"
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4360,6 +4370,10 @@ msgstr ""
 msgid "Decreasing"
 msgstr ""
 
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+msgid "You have set a high allowed slippage. The current swap impact including fees is {0}."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "Crear Código de Referido"
@@ -4392,8 +4406,8 @@ msgid "<0>Switch to:</0>"
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
-msgstr ""
+#~ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -5650,7 +5664,7 @@ msgstr ""
 msgid "Same as current active code"
 msgstr "Igual que el código activo actual"
 
-#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "The current swap impact including fees is {0}. Consider adding a buffer of 1% to it so the order is more likely to be processed"
 msgstr ""
 
@@ -6025,6 +6039,10 @@ msgstr "Actualizaciones e info adicional sobre las recompensas de stakear GMX"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
 msgstr "Órdenes Activas"
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "You have set a high acceptable price impact. The current price impact is {0}."
+msgstr ""
 
 #: src/domain/synthetics/trade/useHighExecutionFeeConsent.tsx
 msgid "Acknowledge very high network Fees"
@@ -6788,8 +6806,8 @@ msgid "GMX staking calculator"
 msgstr "Calculadora de GMX stakeado"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
-msgstr ""
+#~ msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
+#~ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
@@ -7615,6 +7633,11 @@ msgstr "Explorador de GMX para estadísticas y traders"
 msgid "Sell order cancelled"
 msgstr ""
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "Acceptable price impact"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 30 days"
 msgstr ""
@@ -8016,9 +8039,9 @@ msgstr ""
 msgid "Yesterday"
 msgstr ""
 
-#: src/components/Synthetics/AcceptableSwapImpactInputRow/AcceptableSwapImpactInputRow.tsx
-msgid "You have set a high acceptable swap impact. The current swap impact including fees is {0}."
-msgstr ""
+#: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#~ msgid "You have set a high acceptable swap impact. The current swap impact including fees is {0}."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"

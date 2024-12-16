@@ -83,8 +83,8 @@ function AcceptablePriceImpactInputRowImpl({
     priceImpactFeeBps >= 0 ? (
       <p>
         <Trans>
-          The current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider using -0.30%
-          Acceptable Price Impact so the order is more likely to be processed.
+          The current price impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider using -0.30%
+          acceptable price impact so the order is more likely to be processed.
         </Trans>
         <br />
         <br />
@@ -93,7 +93,7 @@ function AcceptablePriceImpactInputRowImpl({
     ) : (
       <p>
         <Trans>
-          The Current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider adding a buffer
+          The current price impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider adding a buffer
           of 0.30% to it so the order is more likely to be processed.
         </Trans>
         <br />
@@ -105,7 +105,7 @@ function AcceptablePriceImpactInputRowImpl({
   const highValueWarningText = (
     <p>
       <Trans>
-        You have set a high Acceptable Price Impact. The current Price Impact is{" "}
+        You have set a high acceptable price impact. The current price impact is{" "}
         {formatPercentage(priceImpactFeeBps, { signed: true })}.
       </Trans>
       <br />

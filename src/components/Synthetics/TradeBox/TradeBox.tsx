@@ -43,6 +43,8 @@ import {
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
+  selectTradeboxSetDefaultAllowedSwapSlippageBps,
+  selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAmount,
@@ -178,6 +180,9 @@ export function TradeBox(p: Props) {
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
   const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const setDefaultAllowedSwapSlippageBps = useSelector(selectTradeboxSetDefaultAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectTradeboxSetSelectedAllowedSwapSlippageBps);
+
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
@@ -305,24 +310,44 @@ export function TradeBox(p: Props) {
   const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
 
   const setFromTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, resetPriceImpactAndSwapSlippage?: boolean) => {
       setFromTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+
+      if (resetPriceImpactAndSwapSlippage) {
         setIsHighPositionImpactAcceptedRef.current(false);
         setIsHighSwapImpactAcceptedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setFromTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [
+      setFromTokenInputValueRaw,
+      setIsHighPositionImpactAcceptedRef,
+      setIsHighSwapImpactAcceptedRef,
+      setDefaultAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
+    ]
   );
   const setToTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, shouldPriceImpactAndSwapSlippage: boolean) => {
       setToTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+
+      if (shouldPriceImpactAndSwapSlippage) {
         setIsHighPositionImpactAcceptedRef.current(false);
         setIsHighSwapImpactAcceptedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [
+      setToTokenInputValueRaw,
+      setIsHighPositionImpactAcceptedRef,
+      setIsHighSwapImpactAcceptedRef,
+      setDefaultAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
+    ]
   );
 
   const userReferralInfo = useUserReferralInfo();

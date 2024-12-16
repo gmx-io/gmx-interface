@@ -13,7 +13,7 @@ export function getSwapAmountsByFromValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
-  acceptableSwapImpactBps?: bigint;
+  allowedSwapSlippageBps?: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
 }): SwapAmounts {
@@ -26,7 +26,7 @@ export function getSwapAmountsByFromValue(p: {
     swapOptimizationOrder,
     findSwapPath,
     uiFeeFactor,
-    acceptableSwapImpactBps,
+    allowedSwapSlippageBps,
   } = p;
 
   const priceIn = tokenIn.prices.minPrice;
@@ -94,7 +94,13 @@ export function getSwapAmountsByFromValue(p: {
     });
 
     usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-    usdOut = usdOut - swapPathStats.totalSwapFeeUsd - swapUiFeeUsd + swapPathStats.totalSwapPriceImpactDeltaUsd;
+
+    if (allowedSwapSlippageBps !== undefined) {
+      usdOut -= bigMath.mulDiv(usdOut, allowedSwapSlippageBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
+    } else {
+      usdOut = usdOut - swapPathStats.totalSwapFeeUsd - swapUiFeeUsd + swapPathStats.totalSwapPriceImpactDeltaUsd;
+    }
+
     amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
     minOutputAmount = amountOut;
   } else {
@@ -107,10 +113,6 @@ export function getSwapAmountsByFromValue(p: {
     amountOut = 0n;
     usdOut = 0n;
     minOutputAmount = 0n;
-  }
-
-  if (isLimit) {
-    minOutputAmount -= bigMath.mulDiv(minOutputAmount, acceptableSwapImpactBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
   }
 
   return {
@@ -133,7 +135,7 @@ export function getSwapAmountsByToValue(p: {
   isLimit: boolean;
   findSwapPath: FindSwapPath;
   swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
-  acceptableSwapImpactBps?: bigint;
+  allowedSwapSlippageBps?: bigint;
   uiFeeFactor: bigint;
 }): SwapAmounts {
   const {
@@ -145,7 +147,7 @@ export function getSwapAmountsByToValue(p: {
     findSwapPath,
     uiFeeFactor,
     swapOptimizationOrder,
-    acceptableSwapImpactBps,
+    allowedSwapSlippageBps,
   } = p;
 
   const priceIn = tokenIn.prices.minPrice;
@@ -211,7 +213,11 @@ export function getSwapAmountsByToValue(p: {
     });
 
     usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
-    usdIn = usdIn + swapPathStats.totalSwapFeeUsd + uiFeeUsd - swapPathStats.totalSwapPriceImpactDeltaUsd;
+    if (allowedSwapSlippageBps !== undefined) {
+      usdIn += bigMath.mulDiv(usdIn, allowedSwapSlippageBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
+    } else {
+      usdIn = usdIn + swapPathStats.totalSwapFeeUsd + uiFeeUsd - swapPathStats.totalSwapPriceImpactDeltaUsd;
+    }
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {
     const adjustedUsdIn = swapPathStats.usdOut > 0 ? bigMath.mulDiv(baseUsdIn, usdOut, swapPathStats.usdOut) : 0n;
@@ -223,10 +229,6 @@ export function getSwapAmountsByToValue(p: {
   if (amountIn < 0) {
     amountIn = 0n;
     usdIn = 0n;
-  }
-
-  if (isLimit) {
-    minOutputAmount -= bigMath.mulDiv(minOutputAmount, acceptableSwapImpactBps ?? 0n, 100n);
   }
 
   return {
