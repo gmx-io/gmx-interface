@@ -1,12 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import partition from "lodash/partition";
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
 import {
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,
@@ -34,6 +35,7 @@ import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
@@ -85,6 +87,7 @@ export default function MarketTokenSelector(props: Props) {
       popoverYOffset={18}
       popoverXOffset={-8}
       popoverPlacement="bottom-start"
+      chevronClassName="!-mt-1 self-start"
       label={
         <div className="inline-flex items-center">
           {currentMarketInfo ? (
@@ -193,10 +196,11 @@ function MarketTokenSelectorInternal(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
   const isSmallMobile = useMedia("(max-width: 560px)");
 
-  const rowVerticalPadding = isMobile ? "py-8" : cx("py-4 group-last-of-type/row:pb-8");
-  const rowHorizontalPadding = isSmallMobile ? cx("px-6 first-of-type:pl-16 last-of-type:pr-16") : "px-16";
+  const rowVerticalPadding = isMobile ? "py-8" : cx("h-50 group-last-of-type/row:pb-8");
+  const rowHorizontalPadding = isMobile ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8") : "px-16";
   const thClassName = cx(
     "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100 last-of-type:text-right",
+    isMobile ? "first-of-type:!pl-32" : "first-of-type:!pl-40",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -214,7 +218,7 @@ function MarketTokenSelectorInternal(props: Props) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col items-end gap-16 min-[400px]:flex-row min-[400px]:items-center">
+        <div className="mt-16 flex flex-col gap-8">
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -222,7 +226,10 @@ function MarketTokenSelectorInternal(props: Props) {
             onKeyDown={handleKeyDown}
             placeholder="Search Pool"
           />
-          <FavoriteTabs favoritesKey="gm-token-selector" />
+
+          <ButtonRowScrollFadeContainer>
+            <FavoriteTabs favoritesKey="gm-token-selector" />
+          </ButtonRowScrollFadeContainer>
         </div>
       </SelectorBaseMobileHeaderContent>
       <div
@@ -284,7 +291,7 @@ function MarketTokenSelectorInternal(props: Props) {
                   isFavorite={favoriteTokens.includes(option.market.address)}
                   onFavorite={toggleFavoriteToken}
                   handleSelectToken={handleSelectToken}
-                  isSmallMobile={isSmallMobile}
+                  isMobile={isMobile}
                   rowVerticalPadding={rowVerticalPadding}
                 />
               ))}
@@ -352,13 +359,24 @@ function useFilterSortTokensInfo({
         )
       : sortedMarketsByIndexToken;
 
-    const tabMatched = textMatched.filter((item) => {
-      if (tab === "favorites") {
-        return favoriteTokens?.includes(item.address);
-      }
+    let tabMatched = textMatched;
 
-      return true;
-    });
+    if (tab === "all") {
+      tabMatched = textMatched;
+    } else if (tab === "favorites") {
+      tabMatched = tabMatched.filter((item) => favoriteTokens?.includes(item.address));
+    } else {
+      const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
+      tabMatched = tabMatched.filter((item) => {
+        const marketInfo = getByKey(marketsInfoData, item?.address)!;
+
+        if (isGlvInfo(marketInfo)) {
+          return false;
+        }
+
+        return categoryTokenAddresses.includes(marketInfo.indexTokenAddress);
+      });
+    }
 
     return tabMatched.map((market) => {
       const marketInfo = getByKey(marketsInfoData, market?.address)!;
@@ -395,53 +413,29 @@ function useFilterSortTokensInfo({
     sortedMarketsByIndexToken,
     searchKeyword,
     tab,
-    favoriteTokens,
     marketsInfoData,
+    favoriteTokens,
+    chainId,
     marketTokensData,
     glvTokensApyData,
     marketsTokensAPRData,
-    marketsTokensIncentiveAprData,
     glvTokensIncentiveAprData,
+    marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
   ]);
 
   const sortedTokensInfo = useMemo(() => {
-    if (orderBy === "unspecified" || direction === "unspecified") {
-      return filteredTokensInfo;
-    }
+    const [favorites, nonFavorites] = partition(filteredTokensInfo, (token) =>
+      favoriteTokens.includes(token.market.address)
+    );
 
-    const directionMultiplier = direction === "asc" ? 1 : -1;
+    const comparator = marketSortingComparatorBuilder({ chainId, orderBy, direction });
 
-    return filteredTokensInfo.slice().sort((a, b) => {
-      if (orderBy === "buyable") {
-        const mintableA = a.mintableInfo?.mintableUsd ?? 0n;
-        const mintableB = b.mintableInfo?.mintableUsd ?? 0n;
-        return mintableA > mintableB ? directionMultiplier : -directionMultiplier;
-      }
+    const sortedFavorites = favorites.sort(comparator);
+    const sortedNonFavorites = nonFavorites.sort(comparator);
 
-      if (orderBy === "sellable") {
-        const sellableA = a.sellableInfo?.totalAmount ?? 0n;
-        const sellableB = b.sellableInfo?.totalAmount ?? 0n;
-        return sellableA > sellableB ? directionMultiplier : -directionMultiplier;
-      }
-
-      if (orderBy === "apy") {
-        let aprA = a.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(a.marketInfo)))) {
-          aprA += a.apr ?? 0n;
-        }
-
-        let aprB = b.incentiveApr ?? 0n;
-        if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(b.marketInfo)))) {
-          aprB += b.apr ?? 0n;
-        }
-
-        return aprA > aprB ? directionMultiplier : -directionMultiplier;
-      }
-
-      return 0;
-    });
-  }, [orderBy, direction, filteredTokensInfo, chainId]);
+    return [...sortedFavorites, ...sortedNonFavorites];
+  }, [orderBy, direction, filteredTokensInfo, chainId, favoriteTokens]);
 
   return sortedTokensInfo;
 }
@@ -452,7 +446,7 @@ function MarketTokenListItem({
   isFavorite,
   onFavorite,
   handleSelectToken,
-  isSmallMobile,
+  isMobile,
   mintableInfo,
   sellableInfo,
   rowVerticalPadding,
@@ -468,7 +462,7 @@ function MarketTokenListItem({
   isFavorite: boolean;
   onFavorite: (address: string) => void;
   handleSelectToken: (address: string) => void;
-  isSmallMobile: boolean;
+  isMobile: boolean;
   mintableInfo: ReturnType<typeof getMintableMarketTokens | typeof getMintableInfoGlv>;
   sellableInfo: ReturnType<typeof getSellableMarketToken | typeof getTotalSellableInfoGlv>;
   rowVerticalPadding: string;
@@ -488,14 +482,14 @@ function MarketTokenListItem({
 
   const handleSelect = useCallback(() => handleSelectToken(market.address), [handleSelectToken, market.address]);
 
-  const formattedMintableUsd = isSmallMobile
+  const formattedMintableUsd = isMobile
     ? formatAmountHuman(mintableInfo?.mintableUsd, USD_DECIMALS, true)
     : formatUsd(mintableInfo?.mintableUsd, {
         displayDecimals: 0,
         fallbackToZero: true,
       });
 
-  const formattedSellableAmount = isSmallMobile
+  const formattedSellableAmount = isMobile
     ? formatAmountHuman(sellableInfo?.totalAmount, market?.decimals, true)
     : formatTokenAmount(sellableInfo?.totalAmount, market?.decimals, market?.symbol, {
         displayDecimals: 0,
@@ -504,27 +498,17 @@ function MarketTokenListItem({
 
   return (
     <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
-      <td
-        className={cx("rounded-4 pl-16 pr-4 hover:bg-cold-blue-700", rowVerticalPadding)}
-        onClick={handleFavoriteClick}
-      >
+      <td className={cx("pr-4", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")} onClick={handleFavoriteClick}>
         <FavoriteStar isFavorite={isFavorite} />
       </td>
-      <td className={cx("rounded-4 pl-6", rowVerticalPadding, isSmallMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>
-        {marketInfo && !isSmallMobile && (
+      <td className={cx("pl-6", rowVerticalPadding, isMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>
+        {marketInfo && (
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
-            <div className="inline-flex flex-wrap items-center whitespace-nowrap">
-              <span className="text-body-medium text-slate-100">{indexName && indexName}</span>
-              <span className="text-body-medium ml-3 leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
+            <div className="inline-flex flex-wrap items-center gap-x-3 whitespace-nowrap">
+              <span className="text-body-medium text-white">{indexName && indexName}</span>
+              <span className="text-body-small leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
             </div>
-          </div>
-        )}
-        {marketInfo && isSmallMobile && (
-          <div className="inline-flex flex-col items-start whitespace-nowrap">
-            <TokenIcon symbol={iconName} displaySize={16} importSize={40} />
-            <span className="text-body-medium">{indexName && indexName}</span>
-            <span className="text-body-medium leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
           </div>
         )}
       </td>
@@ -545,4 +529,65 @@ function MarketTokenListItem({
       </td>
     </tr>
   );
+}
+
+function marketSortingComparatorBuilder({
+  chainId,
+  orderBy,
+  direction,
+}: {
+  chainId: number;
+  orderBy: SortField;
+  direction: SortDirection;
+}) {
+  const directionMultiplier = direction === "asc" ? 1 : -1;
+
+  return (
+    a: {
+      mintableInfo: { mintableUsd: bigint };
+      sellableInfo: { totalAmount: bigint };
+      incentiveApr: bigint | undefined;
+      apr: bigint | undefined;
+      marketInfo: GlvOrMarketInfo;
+    },
+    b: {
+      mintableInfo: { mintableUsd: bigint };
+      sellableInfo: { totalAmount: bigint };
+      incentiveApr: bigint | undefined;
+      apr: bigint | undefined;
+      marketInfo: GlvOrMarketInfo;
+    }
+  ) => {
+    if (orderBy === "unspecified" || direction === "unspecified") {
+      return 0;
+    }
+
+    if (orderBy === "buyable") {
+      const mintableA = a.mintableInfo?.mintableUsd ?? 0n;
+      const mintableB = b.mintableInfo?.mintableUsd ?? 0n;
+      return mintableA > mintableB ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "sellable") {
+      const sellableA = a.sellableInfo?.totalAmount ?? 0n;
+      const sellableB = b.sellableInfo?.totalAmount ?? 0n;
+      return sellableA > sellableB ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "apy") {
+      let aprA = a.incentiveApr ?? 0n;
+      if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(a.marketInfo)))) {
+        aprA += a.apr ?? 0n;
+      }
+
+      let aprB = b.incentiveApr ?? 0n;
+      if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(b.marketInfo)))) {
+        aprB += b.apr ?? 0n;
+      }
+
+      return aprA > aprB ? directionMultiplier : -directionMultiplier;
+    }
+
+    return 0;
+  };
 }

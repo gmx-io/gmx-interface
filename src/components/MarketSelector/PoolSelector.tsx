@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
@@ -20,6 +20,7 @@ import { searchBy } from "lib/searchBy";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Modal from "../Modal/Modal";
 import { PoolListItem } from "./PoolListItem";
@@ -29,6 +30,7 @@ import { CommonPoolSelectorProps, MarketOption } from "./types";
 import "./MarketSelector.scss";
 
 export function PoolSelector({
+  chainId,
   selectedMarketAddress,
   className,
   selectedIndexName,
@@ -41,11 +43,14 @@ export function PoolSelector({
   getMarketState,
   showAllPools = false,
   showIndexIcon = false,
+  withFilters = true,
   favoriteKey,
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites(favoriteKey);
+  const { tab: filterTab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites(favoriteKey);
+
+  const tab = withFilters ? filterTab : "all";
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
@@ -110,16 +115,21 @@ export function PoolSelector({
         )
       : marketsOptions;
 
-    const tabMatched = textMatched?.filter((item) => {
-      if (tab === "favorites") {
-        return favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo));
-      }
+    if (tab === "all") {
+      return textMatched;
+    } else if (tab === "favorites") {
+      return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo)));
+    } else {
+      const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
+      return textMatched?.filter((item) => {
+        if (isGlvInfo(item.marketInfo)) {
+          return false;
+        }
 
-      return true;
-    });
-
-    return tabMatched;
-  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
+        return categoryTokenAddresses.includes(item.marketInfo.indexTokenAddress);
+      });
+    }
+  }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);
@@ -165,15 +175,19 @@ export function PoolSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <div className="mt-16 flex items-center gap-16">
+          <div className="mt-16">
             <SearchInput
               value={searchKeyword}
-              className="*:!text-body-medium"
+              className={cx("*:!text-body-medium", { "mb-8": withFilters })}
               setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={_handleKeyDown}
             />
-            <FavoriteTabs favoritesKey="gm-token-receive-pay-selector" />
+            {withFilters && (
+              <ButtonRowScrollFadeContainer>
+                <FavoriteTabs favoritesKey={favoriteKey} />
+              </ButtonRowScrollFadeContainer>
+            )}
           </div>
         }
       >

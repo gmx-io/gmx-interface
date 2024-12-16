@@ -12,6 +12,7 @@ export type LandingPageLaunchAppEvent = {
   data: {
     action: "LaunchApp";
     buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains";
+    shouldSeeConfirmationDialog: boolean;
   };
 };
 
@@ -55,26 +56,12 @@ export type ConnectWalletClickEvent = {
   };
 };
 
-export type WalletProviderSelectedEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "WalletProviderSelected";
-    provider: string; // ProviderName
-  };
-};
-
-export type ConnectWalletDialogCloseEvent = {
-  event: "ConnectWalletAction";
-  data: {
-    action: "DialogClose";
-  };
-};
-
 export type ConnectWalletResultEvent = {
   event: "ConnectWalletAction";
   data: {
     action: "ConnectedSuccessfully" | "ConnectionFail";
     provider: string; // ProviderName
+    ordersCount: number | undefined;
   };
 };
 
@@ -93,7 +80,7 @@ export type TradeBoxInteractionStartedEvent = {
     sizeDeltaUsd?: number;
     amountUsd?: number;
     priceImpactDeltaUsd: number;
-    priceImpactBps: number;
+    priceImpactPercentage: number;
     netRate1h: number;
     openInterestPercent: number;
     tradeType: TradeType;
@@ -129,6 +116,7 @@ export type TradeBoxConfirmClickEvent = {
     leverage: string;
     isLeverageEnabled?: boolean;
     is1CT: boolean;
+    isTPSLCreated?: boolean;
     chain: string;
     isFirstOrder: boolean;
   };
@@ -153,6 +141,7 @@ export type TradeBoxResultEvent = {
     amountUsd?: number;
     leverage: string;
     is1CT: boolean;
+    isTPSLCreated?: boolean;
     chain: string;
     isFirstOrder: boolean;
     isLeverageEnabled?: boolean;

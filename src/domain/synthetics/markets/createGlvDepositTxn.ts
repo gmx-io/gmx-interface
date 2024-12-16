@@ -7,7 +7,7 @@ import { callContract } from "lib/contracts";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 
-import GlvRouter from "abis/GlvRouter.json";
+import GlvRouter from "sdk/abis/GlvRouter.json";
 import { CreateDepositParams } from "./createDepositTxn";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 
@@ -99,10 +99,11 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
         errorTitle: t`Deposit error.`,
         value: wntAmount,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -118,8 +119,8 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit,
-    gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({

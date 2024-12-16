@@ -3,7 +3,11 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectBlockTimestampData,
+  selectGasPriceData,
+  selectIsFirstOrder,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -64,6 +68,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
+  const gasPriceData = useSelector(selectGasPriceData);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
@@ -150,6 +156,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         setPendingOrder,
         metricId: metricData.metricId,
         skipSimulation: shouldDisableValidationForTesting,
+        blockTimestampData,
+        gasPriceData,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -165,6 +173,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       allowedSlippage,
       subaccount,
       isFirstOrder,
+      initialCollateralAllowance,
       account,
       tokensData,
       signer,
@@ -172,7 +181,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingTxns,
       setPendingOrder,
       shouldDisableValidationForTesting,
-      initialCollateralAllowance,
+      blockTimestampData,
+      gasPriceData,
     ]
   );
 
@@ -196,6 +206,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isFirstOrder,
         isLeverageEnabled,
         initialCollateralAllowance,
+        isTPSLCreated: createSltpEntries.length > 0,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -234,6 +245,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         signer,
         subaccount,
         metricId: metricData.metricId,
+        blockTimestampData,
+        gasPriceData,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -318,11 +331,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isLong,
       isFirstOrder,
       isLeverageEnabled,
+      initialCollateralAllowance,
       tokensData,
       account,
       collateralToken,
       signer,
       chainId,
+      blockTimestampData,
+      gasPriceData,
       shouldDisableValidationForTesting,
       setPendingTxns,
       setPendingOrder,
@@ -332,7 +348,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
-      initialCollateralAllowance,
     ]
   );
 
@@ -410,6 +425,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingOrder,
           setPendingPosition,
         },
+        blockTimestampData,
+        gasPriceData,
         metricData.metricId
       )
         .then(makeTxnSentMetricsHandler(metricData.metricId))
@@ -417,24 +434,26 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
-      account,
-      allowedSlippage,
-      chainId,
       collateralToken,
       decreaseAmounts,
-      executionFee,
-      isLong,
-      marketInfo,
-      referralCodeForTxn,
       selectedPosition,
+      executionFee,
+      referralCodeForTxn,
+      subaccount,
+      triggerPrice,
+      marketInfo,
+      allowedSlippage,
+      isLong,
+      account,
+      tokensData,
+      signer,
+      chainId,
+      autoCancelOrdersLimit,
+      setPendingTxns,
       setPendingOrder,
       setPendingPosition,
-      setPendingTxns,
-      signer,
-      subaccount,
-      tokensData,
-      triggerPrice,
-      autoCancelOrdersLimit,
+      blockTimestampData,
+      gasPriceData,
     ]
   );
 

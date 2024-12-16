@@ -43,9 +43,9 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
-import PositionRouter from "abis/PositionRouter.json";
-import VaultV2 from "abis/VaultV2.json";
-import VaultV2b from "abis/VaultV2b.json";
+import PositionRouter from "sdk/abis/PositionRouter.json";
+import VaultV2 from "sdk/abis/VaultV2.json";
+import VaultV2b from "sdk/abis/VaultV2b.json";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;

@@ -1,7 +1,9 @@
+import { Abi, encodeFunctionData } from "viem";
+
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "configs/contracts";
+
 import type { GmxSdk } from "../../../index";
-import { Abi, encodeFunctionData } from "viem";
 
 export type CancelOrderParams = {
   orderKeys: string[];

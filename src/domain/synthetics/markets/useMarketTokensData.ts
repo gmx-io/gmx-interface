@@ -14,8 +14,8 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import TokenAbi from "abis/Token.json";
+import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
+import TokenAbi from "sdk/abis/Token.json";
 import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   useTokensBalancesUpdates,

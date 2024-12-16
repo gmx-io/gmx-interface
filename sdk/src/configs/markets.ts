@@ -430,6 +430,13 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       shortTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
     },
+    // FIL/USD [WBTC/USDC]
+    "0x262B5203f0fe00D9fe86ffecE01D0f54fC116180": {
+      marketTokenAddress: "0x262B5203f0fe00D9fe86ffecE01D0f54fC116180",
+      indexTokenAddress: "0x3AeBb98f57081DcBEb0B8EA823Cf84900A31e5D8",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

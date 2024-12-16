@@ -48,9 +48,9 @@ import ConfirmationBox from "./ConfirmationBox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import OrdersToa from "./OrdersToa";
 
-import PositionRouter from "abis/PositionRouter.json";
-import Router from "abis/Router.json";
-import WETH from "abis/WETH.json";
+import PositionRouter from "sdk/abis/PositionRouter.json";
+import Router from "sdk/abis/Router.json";
+import WETH from "sdk/abis/WETH.json";
 
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";

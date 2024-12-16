@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
 
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -11,6 +11,7 @@ import { searchBy } from "lib/searchBy";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import {
@@ -21,6 +22,7 @@ import {
   getMarketPoolName,
   isMarketInfo,
 } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { stripBlacklistedWords } from "domain/tokens/utils";
@@ -39,6 +41,7 @@ type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
 };
 
 export function GmPoolsSelectorForGlvMarket({
+  chainId,
   className,
   isDeposit,
   label,
@@ -126,16 +129,21 @@ export function GmPoolsSelectorForGlvMarket({
         )
       : marketsOptions;
 
-    const tabMatched = textMatched?.filter((item) => {
-      if (tab === "favorites") {
-        return favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo));
-      }
+    if (tab === "all") {
+      return textMatched;
+    } else if (tab === "favorites") {
+      return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.marketInfo)));
+    } else {
+      const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
+      return textMatched?.filter((item) => {
+        if (isGlvInfo(item.marketInfo)) {
+          return false;
+        }
 
-      return true;
-    });
-
-    return tabMatched;
-  }, [favoriteTokens, marketsOptions, searchKeyword, tab]);
+        return categoryTokenAddresses.includes(item.marketInfo.indexTokenAddress);
+      });
+    }
+  }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
 
   const onSelectGmPool = useCallback(
     function onSelectOption(option: MarketOption) {
@@ -183,15 +191,17 @@ export function GmPoolsSelectorForGlvMarket({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <div className="mt-16 flex items-center gap-16">
+          <div className="mt-16">
             <SearchInput
-              className="*:!text-body-medium"
+              className="mb-8 *:!text-body-medium"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={handleKeyDown}
             />
-            <FavoriteTabs favoritesKey="gm-pool-selector" />
+            <ButtonRowScrollFadeContainer>
+              <FavoriteTabs favoritesKey={favoriteKey} />
+            </ButtonRowScrollFadeContainer>
           </div>
         }
       >

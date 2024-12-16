@@ -200,7 +200,7 @@ export type MarketEdge = {
 };
 
 export type SwapRoute = {
-  edged: MarketEdge[];
+  edges: MarketEdge[];
   path: string[];
   liquidity: bigint;
 };

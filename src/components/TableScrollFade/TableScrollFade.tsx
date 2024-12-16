@@ -142,6 +142,16 @@ function useDefaultScrollFade() {
   return useScrollFade(getSnapChildren);
 }
 
+function useButtonRowScrollFade() {
+  const getSnapChildren = useCallback((scrollable: HTMLElement) => {
+    const buttons = scrollable.querySelectorAll("button");
+
+    return Array.from(buttons);
+  }, []);
+
+  return useScrollFade(getSnapChildren);
+}
+
 function ScrollFadeControls({
   scrollLeft,
   scrollRight,
@@ -237,6 +247,19 @@ export function BodyScrollFadeContainer({ children, className }: PropsWithChildr
     <div className="relative">
       <ScrollFadeControls {...scrollFade} gradientColor="slate-900" />
       <div className={cx("overflow-x-auto scrollbar-hide", className)} ref={scrollFade.scrollableRef}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export function ButtonRowScrollFadeContainer({ children }: PropsWithChildren<{}>) {
+  const scrollFade = useButtonRowScrollFade();
+
+  return (
+    <div className="relative">
+      <ScrollFadeControls {...scrollFade} />
+      <div className="overflow-x-auto scrollbar-hide" ref={scrollFade.scrollableRef}>
         {children}
       </div>
     </div>
