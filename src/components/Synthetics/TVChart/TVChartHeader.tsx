@@ -17,6 +17,7 @@ import { BiChevronDown, BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
+import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 
 const MIN_FADE_AREA = 24; //px
@@ -113,10 +114,16 @@ function TVChartHeaderInfoMobile() {
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
-          <div className="flex flex-row items-center gap-8">
+          <TooltipWithPortal
+            disableHandleStyle
+            as="div"
+            className="flex flex-row items-center gap-8"
+            position="bottom-end"
+            content={<NetRate1hTooltip />}
+          >
             <div>{netRateLong}</div>
             <div>{netRateShort}</div>
-          </div>
+          </TooltipWithPortal>
         </div>
 
         <div>
@@ -331,10 +338,16 @@ function TVChartHeaderInfoDesktop() {
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
+          <TooltipWithPortal
+            disableHandleStyle
+            as="div"
+            className="Chart-header-value flex flex-row items-center gap-8"
+            position="bottom-end"
+            content={<NetRate1hTooltip />}
+          >
             <div>{netRateLong}</div>
             <div>{netRateShort}</div>
-          </div>
+          </TooltipWithPortal>
         </div>
       </>
     );

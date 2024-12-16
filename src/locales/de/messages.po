@@ -661,10 +661,6 @@ msgstr ""
 msgid "Max pool amount reached"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Bid Price (Exit)"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "Markt-Orders"
@@ -754,10 +750,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Open Interest Balance"
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -1418,10 +1410,6 @@ msgstr ""
 msgid "V2 Avalanche"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Short Open Interest"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Marktverringerung fehlgeschlagen"
@@ -1528,10 +1516,6 @@ msgstr ""
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
-msgstr "Wenn du eine bestehende Position hast, wird die Position zu einem Referenzpreis von {0} geschlossen, ohne Berücksichtigung des Preisnachlasses.<0/><1/>Dieser Ausstiegspreis wird sich mit dem Preis des Vermögenswerts ändern.<2/><3/><4>Mehr lesen</4>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
@@ -1778,10 +1762,6 @@ msgstr ""
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Long Open Interest"
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol risk explorer and stats"
 msgstr ""
@@ -1973,10 +1953,6 @@ msgstr "<0>Mehr lesen</0> über Gebühren."
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "Du wirst mind. {0} {1} erhalten, wenn dieser Auftrag ausgeführt wird. Der Ausführungspreis kann je nach den Swap-Gebühren zum Zeitpunkt der Auftragsausführung variieren."
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
-msgstr "Die Position wird zu einem Referenzpreis von {0} eröffnet, ohne den Preisimpact zu berücksichtigen, mit einer maximalen Slippage von -{1}%.<0/><1/>Der Slippage-Betrag kann unter Einstellungen konfiguriert werden, die du findest, indem du auf deine Adresse oben rechts auf der Seite klickst, nachdem du deine Wallet verbunden hast.<2/><3/><4>Mehr lesen</4>."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -2895,7 +2871,6 @@ msgstr ""
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3018,11 +2993,6 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "Liquidiert"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The ask price is used for opening longs and closing shorts."
-msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3257,7 +3227,6 @@ msgstr ""
 msgid "Community-led Telegram groups."
 msgstr "Von der Gemeinschaft geführte Telegram-Gruppen."
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr ""
@@ -3754,7 +3723,6 @@ msgstr "Trigger-Preis für den Auftrag."
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4457,7 +4425,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/Synthetics/TVChart/TVChartHeader.tsx
@@ -4487,7 +4454,6 @@ msgstr "Kosten sparen"
 msgid "Buy order cancelled"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr ""
@@ -5117,10 +5083,6 @@ msgstr "Governance"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Abbruch"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Bid Price (Entry)"
-msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Redemption time not yet reached"
@@ -6626,7 +6588,6 @@ msgstr ""
 msgid "Swap {0} submitted!"
 msgstr "Swap{0} übermittelt!"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr ""
@@ -6734,7 +6695,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -6857,7 +6817,6 @@ msgstr ""
 msgid "Voting Power"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
 msgstr ""
@@ -7419,7 +7378,6 @@ msgstr "Einzahlen..."
 msgid "Expected Available Actions"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -7441,10 +7399,6 @@ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Ask Price (Exit)"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -7616,10 +7570,6 @@ msgstr ""
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
 msgstr "Derzeit keine offenen Positionen bei GMX"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Ask Price (Entry)"
-msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
@@ -7920,11 +7870,6 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The bid price is used for opening shorts and closing longs."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.jsx
