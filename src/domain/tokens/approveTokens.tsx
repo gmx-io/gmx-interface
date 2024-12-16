@@ -10,7 +10,7 @@ import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-import Token from "abis/Token.json";
+import Token from "sdk/abis/Token.json";
 
 type Params = {
   setIsApproving: (val: boolean) => void;

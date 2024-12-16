@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import GlvRouter from "abis/GlvRouter.json";
+import GlvRouter from "sdk/abis/GlvRouter.json";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Signer, ethers } from "ethers";
@@ -68,10 +68,11 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -87,8 +88,8 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit,
-    gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingWithdrawal({

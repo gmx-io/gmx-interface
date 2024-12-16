@@ -21,7 +21,7 @@ import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
-import Reader from "abis/Reader.json";
+import Reader from "sdk/abis/Reader.json";
 
 import "./ActionsV1.css";
 

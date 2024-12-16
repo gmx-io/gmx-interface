@@ -48,6 +48,8 @@ export class Metrics {
   wallets?: WalletNames;
   eventIndex = 0;
   isProcessing = false;
+  isGlobalPropsFilled = false;
+  initGlobalPropsRetries = 3;
   performanceObserver?: PerformanceObserver;
 
   static _instance: Metrics;
@@ -114,6 +116,7 @@ export class Metrics {
       version: getAppVersion(),
       isError: Boolean(isError),
       time,
+      isMissedGlobalMetricData: !this.getIsGlobalPropsInited(),
       customFields: {
         ...(data ? this.serializeCustomFields(data) : {}),
         ...this.globalMetricData,
@@ -210,6 +213,15 @@ export class Metrics {
       return sleep(BATCH_INTERVAL_MS).then(this._processQueue);
     }
 
+    if (!this.getIsGlobalPropsInited() && this.initGlobalPropsRetries > 0) {
+      if (this.debug) {
+        // eslint-disable-next-line no-console
+        console.log("Metrics: global properties are not inited");
+      }
+      this.initGlobalPropsRetries--;
+      return sleep(BATCH_INTERVAL_MS).then(this._processQueue);
+    }
+
     // Avoid infinite queue growth
     if (this.queue.length > MAX_QUEUE_LENGTH) {
       this.queue = this.queue.slice(-MAX_QUEUE_LENGTH);
@@ -219,7 +231,13 @@ export class Metrics {
       }
     }
 
-    const items = this.queue.slice(0, MAX_BATCH_LENGTH);
+    let items = this.queue.slice(0, MAX_BATCH_LENGTH);
+
+    if (!this.isGlobalPropsFilled && this.globalMetricData.isInited && this.wallets) {
+      items = items.map(this.fillMissedGlobalProps);
+      this.isGlobalPropsFilled = true;
+    }
+
     this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
 
     if (this.debug) {
@@ -352,6 +370,24 @@ export class Metrics {
     return cached;
   };
 
+  fillMissedGlobalProps = (item: BatchReportItem) => {
+    if (item.type === "event" && item.payload.isMissedGlobalMetricData) {
+      return {
+        ...item,
+        payload: {
+          ...item.payload,
+          customFields: {
+            ...item.payload.customFields,
+            ...this.globalMetricData,
+            wallets: this.wallets,
+          },
+        },
+      };
+    }
+
+    return item;
+  };
+
   // Require Generic type to be specified
   getCachedMetricData = <TData extends { metricId: string } = never>(
     metricId: TData["metricId"],
@@ -372,6 +408,10 @@ export class Metrics {
     }
 
     return event as CachedMetricData & TData;
+  };
+
+  getIsGlobalPropsInited = () => {
+    return this.globalMetricData.isInited && this.wallets;
   };
 
   startTimer = (label: string, fromLocalStorage = false) => {

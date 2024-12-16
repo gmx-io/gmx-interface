@@ -1,4 +1,4 @@
-import DataStore from "abis/DataStore.json";
+import DataStore from "sdk/abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { SUBACCOUNT_ORDER_ACTION, subaccountActionCountKey } from "config/dataStore";
 import { executeMulticall } from "lib/multicall";

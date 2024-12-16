@@ -1,9 +1,10 @@
 import { t } from "@lingui/macro";
-import { useEffect, useMemo, useState } from "react";
-import { useMedia, usePrevious } from "react-use";
+import { useEffect, useMemo } from "react";
+import { useMedia } from "react-use";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
-import { convertTokenAddress, getPriceDecimals } from "config/tokens";
+import { USD_DECIMALS } from "config/factors";
+import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import {
   useOrdersInfoData,
@@ -11,20 +12,13 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import {
-  selectSelectedMarketPriceDecimals,
-  selectSelectedMarketVisualMultiplier,
-} from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { selectTradeboxSetToTokenAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { isIncreaseOrderType, isSwapOrderType, PositionOrderInfo } from "domain/synthetics/orders";
+import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
-import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
-import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
-import { Token } from "domain/tokens";
 
-import { USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -32,27 +26,19 @@ import { formatAmount } from "lib/numbers";
 
 import { TVChartHeader } from "./TVChartHeader";
 
-import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import useTVDatafeed from "domain/tradingview/useTVDatafeed";
-import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
-import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import "./TVChart.scss";
 
 const DEFAULT_PERIOD = "5m";
-let metricsRequestId: string | undefined = undefined;
-let metricsIsFirstLoadTime = true;
 
 export function TVChart() {
-  const { chartToken, symbol } = useSelector(selectChartToken);
+  const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
+  const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
 
   const { chainId } = useChainId();
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
-  const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
-  const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
   const chartTokenAddress = chartToken?.address;
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
@@ -60,12 +46,6 @@ export function TVChart() {
   if (!period || !(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }
-
-  const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
-
-  const setToTokenAddress = useSelector(selectTradeboxSetToTokenAddress);
-
-  const { datafeed } = useTVDatafeed({ dataProvider });
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -93,11 +73,23 @@ export function TVChart() {
 
         const longOrShortText = order.isLong ? t`Long` : t`Short`;
         const orderTypeText = isIncreaseOrderType(order.orderType) ? t`Inc.` : t`Dec.`;
-        const tokenSymbol = getTokenData(tokensData, positionOrder.marketInfo.indexTokenAddress, "native")?.symbol;
+        const token = getTokenData(tokensData, positionOrder.marketInfo.indexTokenAddress, "native");
+        const tokenSymbol = token?.symbol;
+        const prefix = token ? getTokenVisualMultiplier(token) : "";
+        const tokenVisualMultiplier = token?.visualMultiplier;
 
         return {
-          title: `${longOrShortText} ${orderTypeText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, priceDecimal)),
+          title: `${longOrShortText} ${orderTypeText} ${prefix}${tokenSymbol}`,
+          price: parseFloat(
+            formatAmount(
+              positionOrder.triggerPrice,
+              USD_DECIMALS,
+              priceDecimal,
+              undefined,
+              undefined,
+              tokenVisualMultiplier
+            )
+          ),
         };
       });
 
@@ -109,16 +101,29 @@ export function TVChart() {
           convertTokenAddress(chainId, chartTokenAddress, "wrapped")
       ) {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
-        const tokenSymbol = getTokenData(tokensData, position.marketInfo?.indexTokenAddress, "native")?.symbol;
-        const liquidationPrice = formatAmount(position?.liquidationPrice, USD_DECIMALS, priceDecimal);
+        const token = getTokenData(tokensData, position.marketInfo?.indexTokenAddress, "native");
+        const tokenSymbol = token?.symbol;
+        const prefix = token ? getTokenVisualMultiplier(token) : "";
+        const tokenVisualMultiplier = token?.visualMultiplier;
+
+        const liquidationPrice = formatAmount(
+          position?.liquidationPrice,
+          USD_DECIMALS,
+          priceDecimal,
+          undefined,
+          undefined,
+          tokenVisualMultiplier
+        );
 
         acc.push({
-          title: t`Open ${longOrShortText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal)),
+          title: t`Open ${longOrShortText} ${prefix}${tokenSymbol}`,
+          price: parseFloat(
+            formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
+          ),
         });
         if (liquidationPrice && liquidationPrice !== "NA") {
           acc.push({
-            title: t`Liq. ${longOrShortText} ${tokenSymbol}`,
+            title: t`Liq. ${longOrShortText} ${prefix}${tokenSymbol}`,
             price: parseFloat(liquidationPrice),
           });
         }
@@ -129,95 +134,6 @@ export function TVChart() {
 
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
-
-  function onSelectChartToken(token: Token) {
-    setToTokenAddress(token.address);
-  }
-
-  const previousChainId = usePrevious(chainId);
-
-  useEffect(() => {
-    if (chainId !== previousChainId) {
-      dataProvider?.finalize();
-    }
-  }, [chainId, previousChainId, dataProvider]);
-
-  useEffect(() => {
-    if (!chainId) {
-      return;
-    }
-
-    const dataProvider = new SyntheticsTVDataProvider({
-      resolutions: SUPPORTED_RESOLUTIONS_V2,
-      oracleFetcher: oracleKeeperFetcher,
-      chainId,
-    });
-
-    // Start timer for dataProvider initialization
-    metrics.startTimer("candlesLoad");
-    metrics.startTimer("candlesDisplay");
-
-    dataProvider.setOnBarsLoadStarted(() => {
-      metricsIsFirstLoadTime = !metricsRequestId;
-      metricsRequestId = getRequestId();
-
-      metrics.pushEvent<LoadingStartEvent>({
-        event: "candlesLoad.started",
-        isError: false,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-        },
-      });
-
-      metrics.startTimer("candlesLoad");
-    });
-
-    dataProvider.setOnBarsLoaded(() => {
-      metrics.pushEvent<LoadingSuccessEvent>({
-        event: "candlesLoad.success",
-        isError: false,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-        },
-      });
-
-      setIsCandlesLoaded(true);
-    });
-
-    dataProvider.setOnBarsLoadFailed((error) => {
-      const metricData = prepareErrorMetricData(error);
-
-      metrics.pushEvent<LoadingFailedEvent>({
-        event: "candlesLoad.failed",
-        isError: true,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: metricsIsFirstLoadTime,
-          ...metricData,
-        },
-      });
-
-      metrics.pushEvent<LoadingFailedEvent>({
-        event: "candlesDisplay.failed",
-        isError: true,
-        time: metrics.getTime("candlesDisplay", true),
-        data: {
-          requestId: metricsRequestId!,
-        },
-      });
-    });
-
-    setDataProvider(dataProvider);
-
-    return () => {
-      dataProvider.finalize();
-    };
-  }, [oracleKeeperFetcher, chainId, setIsCandlesLoaded]);
 
   useEffect(
     function updatePeriod() {
@@ -236,11 +152,11 @@ export function TVChart() {
             ...chartToken.prices,
           }
         : {
-            symbol: "",
+            symbol: chartTokenSymbol || "",
             minPrice: 0n,
             maxPrice: 0n,
           },
-    [chartToken]
+    [chartToken, chartTokenSymbol]
   );
 
   const isMobile = useMedia("(max-width: 700px)");
@@ -248,21 +164,17 @@ export function TVChart() {
   return (
     <div className="ExchangeChart tv">
       <TVChartHeader isMobile={isMobile} />
-      <div className="ExchangeChart-bottom App-box App-box-border">
-        {symbol && (
+      <div className="ExchangeChart-bottom App-box App-box-border overflow-hidden">
+        {chartToken && (
           <TVChartContainer
             chartLines={chartLines}
-            symbol={symbol}
+            chartToken={chartTokenProp}
             chainId={chainId}
-            onSelectToken={onSelectChartToken}
-            dataProvider={dataProvider}
-            datafeed={datafeed}
             period={period}
             setPeriod={setPeriod}
-            chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
-            oraclePriceDecimals={oraclePriceDecimals}
             visualMultiplier={visualMultiplier}
+            setIsCandlesLoaded={setIsCandlesLoaded}
           />
         )}
       </div>
