@@ -88,7 +88,11 @@
 
     &-disabled {
       cursor: not-allowed;
-      opacity: 0.5;
+      color: var(--color-slate-500);
+
+      .Token-icon {
+        opacity: 0.5;
+      }
     }
   }
 }

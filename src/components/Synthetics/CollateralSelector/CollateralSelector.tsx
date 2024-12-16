@@ -108,7 +108,7 @@ function CollateralListItemDesktop({
         disabled
         disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
       >
-        <TableTd padding="compact" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
+        <TableTd padding="compact-one-column" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
           {tokenData.symbol}
         </TableTd>
       </SelectorBaseDesktopRow>
@@ -147,7 +147,7 @@ function CollateralSelectorMobile(props: Props) {
               }}
               tokenData={option}
             />
-            <p className="mb-8 opacity-50 last:mb-0">{description}</p>
+            <p className="text-body-small text-gray-500 last:mb-0">{description}</p>
           </>
         );
       })}
