@@ -1358,8 +1358,9 @@ export default function PositionSeller(props) {
               {isSwapAllowed && receiveToken && (
                 <div className="align-right">
                   <TokenSelector
-                    className={cx("PositionSeller-token-selector", {
-                      warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
+                    className={cx({
+                      "*:!text-yellow-500 hover:!text-yellow-500":
+                        isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
                     label={t`Receive`}
                     showBalances={false}
