@@ -4,12 +4,8 @@
   font-size: var(--font-size-body-medium);
   border-radius: 3px;
   overflow: hidden;
-  color: var(--color-gray-300);
-  background: linear-gradient(
-    90deg,
-    var(--color-cold-blue-900) 0%,
-    color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%
-  );
+  color: var(--color-slate-100);
+  background: var(--color-cold-blue-900);
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -33,7 +29,7 @@
 .Tab.Tab__block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: var(--primary-btn-bg);
+  background: var(--color-cold-blue-500);
   color: var(--color-white);
 }
 

@@ -14,7 +14,7 @@
 
 .text-input {
   color: var(--color-slate-100);
-  border: 1px solid var(--color-stroke-primary);
+  border: 1px solid var(--color-gray-700);
   font-size: var(--font-size-body-medium);
   width: 100%;
   box-sizing: border-box;

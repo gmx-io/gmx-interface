@@ -15,7 +15,7 @@ const colors = {
   },
   "cold-blue": {
     500: "#3a3f79",
-    700: "#3a3f798f",
+    700: "#282b54",
     900: "#1e203e",
   },
   "pale-blue": {
@@ -49,11 +49,12 @@ const colors = {
     500: "#f3b50c",
   },
   red: {
-    400: "#FE6C81",
-    500: "#FB3C58",
+    400: "#ff637a",
+    500: "#FF506A",
   },
   green: {
-    300: "#8CF3CB",
+    300: "#56dba8",
+    400: "#8CF3CB",
     500: "#0FDE8D",
   },
   white: "#ffffff",

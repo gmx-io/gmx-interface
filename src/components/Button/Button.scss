@@ -79,11 +79,11 @@
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: #50577e;
+      background-color: var(--color-cold-blue-700);
     }
 
     &:not([disabled], .disabled):active {
-      background: #737998;
+      background: var(--color-cold-blue-500);
     }
   }
 
@@ -140,6 +140,16 @@
     box-shadow: none;
     cursor: not-allowed;
     background-color: var(--color-button-disabled);
+
+    &.primary-action,
+    &.primary {
+      background-color: #1d235f;
+    }
+
+    &.secondary {
+      background-color: #1b1e32;
+      color: var(--color-slate-500);
+    }
   }
 
   &.slim {

@@ -731,17 +731,17 @@ table.Position-list .Exchange-list-item-active {
   z-index: 1;
   cursor: pointer;
   font-size: var(--font-size-body-medium);
-  background: var(--primary-btn-bg);
+  background: var(--color-cold-blue-500);
   border: none;
 }
 
 .Exchange-swap-max:hover {
   color: var(--color-white);
-  background: var(--primary-btn-hover);
+  background: #484e92;
 }
 
 .Exchange-swap-max:active {
-  background: var(--primary-btn-active);
+  background: #505699;
 }
 
 .Exchange-swap-section-bottom .TokenSelector-box {
@@ -783,7 +783,6 @@ input.Exchange-swap-input.small {
   display: block;
   transform: rotate(90deg);
   font-size: 2rem;
-  opacity: 0.8;
 }
 
 .Exchange-swap-ball {
@@ -796,7 +795,7 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: var(--primary-btn-bg);
+  background: var(--color-cold-blue-500);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -805,19 +804,14 @@ input.Exchange-swap-input.small {
 }
 
 .Exchange-swap-ball:hover {
-  background: var(--primary-btn-hover);
+  background: #484e92;
 }
 
 .Exchange-swap-ball:active {
-  background: var(--primary-btn-active);
-}
-
-.Exchange-swap-ball:hover .Exchange-swap-ball-icon {
-  opacity: 1;
+  background: #505699;
 }
 
 .Exchange-swap-ball[disabled] {
-  background: var(--primary-btn-bg);
   opacity: 0.8;
   cursor: not-allowed;
 }
