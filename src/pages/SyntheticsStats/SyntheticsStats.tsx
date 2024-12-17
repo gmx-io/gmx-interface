@@ -32,6 +32,7 @@ import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { bigMath } from "lib/bigmath";
 import { formatAmountHuman } from "lib/numbers";
+import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 
 function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation
@@ -421,13 +422,17 @@ export function SyntheticsStats() {
                             {marketKinkModelBorrowingData ? (
                               <>
                                 <StatsTooltipRow
+                                  label="Pending borrowing fee"
+                                  value={formatAmountHuman(market.totalBorrowingFees, 30)}
+                                />
+                                <StatsTooltipRow
                                   label="Optimal Usage Factor Long"
-                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorLong)}%`}
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorLong * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
                                   showDollar={false}
                                 />
                                 <StatsTooltipRow
                                   label="Optimal Usage Factor Short"
-                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorShort)}%`}
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorShort * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
                                   showDollar={false}
                                 />
                                 <StatsTooltipRow
