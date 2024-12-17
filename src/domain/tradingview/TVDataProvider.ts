@@ -1,20 +1,18 @@
-import { LAST_BAR_FETCH_INTERVAL, LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
+import { LAST_BAR_FETCH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
-import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
-import { formatAmount } from "lib/numbers";
+import { CHART_PERIODS } from "lib/legacy";
 import { Bar, FromOldToNewArray, TvParamsCache } from "./types";
 import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
-import { fillBarGaps, getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
-import { BigNumberish } from "ethers";
+import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { PeriodParams } from "charting_library";
 import { getTokenBySymbol } from "config/tokens";
 import { getTvParamsCacheKey } from "config/localStorage";
 
-const initialHistoryBarsInfo = {
-  period: "",
-  data: [],
-  ticker: "",
-};
+// const initialHistoryBarsInfo = {
+//   period: "",
+//   data: [],
+//   ticker: "",
+// };
 
 const initialState = {
   chainId: null,
