@@ -139,15 +139,14 @@
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    background-color: var(--color-button-disabled);
 
     &.primary-action,
     &.primary {
-      background-color: #1d235f;
+      background-color: var(--color-primary-button-disabled);
     }
 
     &.secondary {
-      background-color: #1b1e32;
+      background-color: var(--color-secondary-button-disabled);
       color: var(--color-slate-500);
     }
   }

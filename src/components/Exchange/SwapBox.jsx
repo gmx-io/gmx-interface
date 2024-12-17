@@ -22,6 +22,7 @@ import {
   STOP,
   SWAP,
   SWAP_OPTIONS,
+  SWAP_OPTIONS_CLASSNAMES,
   SWAP_ORDER_OPTIONS,
   USDG_ADDRESS,
   USDG_DECIMALS,
@@ -2009,6 +2010,7 @@ export default function SwapBox(props) {
               icons={SWAP_ICONS}
               options={SWAP_OPTIONS}
               optionLabels={localizedSwapLabels}
+              optionClassnames={SWAP_OPTIONS_CLASSNAMES}
               option={swapOption}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"

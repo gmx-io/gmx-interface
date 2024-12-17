@@ -812,12 +812,8 @@ input.Exchange-swap-input.small {
 }
 
 .Exchange-swap-ball[disabled] {
-  opacity: 0.8;
+  background-color: var(--color-slate-700);
   cursor: not-allowed;
-}
-
-.Exchange-swap-ball[disabled] .Exchange-swap-ball-icon {
-  opacity: 1;
 }
 
 table.Exchange-list-small {

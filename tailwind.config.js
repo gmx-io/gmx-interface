@@ -93,8 +93,8 @@ function injectSemanticColorsPlugin({ addBase, addComponents }) {
   addBase({
     ":root": {
       "--color-stroke-primary": '#252A47',
-      "--color-button-secondary": '#23263E',
-      "--color-button-disabled": '#1B1D34',
+      "--color-primary-button-disabled": "#1d235f",
+      "--color-secondary-button-disabled": "#1b1e32",
     },
   });
 

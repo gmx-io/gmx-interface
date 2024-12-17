@@ -52,6 +52,7 @@
   display: inline-block;
   margin-right: 1.5rem;
   font-size: var(--font-size-body-medium);
+  color: var(--color-slate-100);
 }
 
 .Tab.Tab__inline .Tab-option:not(.disabled):not(.active):hover {

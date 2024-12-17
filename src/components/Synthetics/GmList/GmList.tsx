@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import values from "lodash/values";
 import React, { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -431,9 +430,7 @@ function GmListItem({
   const shiftButton = useMemo(() => {
     const btn = (
       <Button
-        className={cx("w-full", {
-          "!opacity-30": !isShiftAvailable,
-        })}
+        className="w-full"
         variant="secondary"
         disabled={!isShiftAvailable}
         to={`/pools/?market=${marketOrGlvTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
