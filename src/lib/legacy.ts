@@ -44,6 +44,8 @@ export const PRECISION = expandDecimals(1, 30);
 export const GLP_DECIMALS = 18;
 export const GMX_DECIMALS = 18;
 export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
+export const BASIS_POINTS_DIVISOR_BIGINT = BigInt(10000);
+
 
 export const TAX_BASIS_POINTS = 10;
 export const STABLE_TAX_BASIS_POINTS = 5;

@@ -5,11 +5,12 @@ import { ethers } from "ethers";
 
 import { USD_DECIMALS, CHART_PERIODS } from "lib/legacy";
 //import { GMX_STATS_API_URL } from "config/backend";
-import { TF_TV_DATAFEED_API } from "config/backend";
+import { GMX_STATS_API_URL, TF_TV_DATAFEED_API } from "config/backend";
 import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
+import { Bar, FromOldToNewArray } from "./tradingview/types";
 
 const BigNumber = ethers.BigNumber;
 
@@ -28,6 +29,8 @@ const FEED_ID_MAP = {
 };
 export const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
+
+
 // function formatBarInfo(bar) {
 //   const { t, o: open, c: close, h: high, l: low } = bar;
 //   return {
@@ -38,6 +41,14 @@ export const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 //     low,
 //   };
 // }
+
+type CompactBar = {
+  t: number;
+  o: number;
+  c: number;
+  h: number;
+  l: number;
+};
 
 export function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
@@ -69,33 +80,96 @@ export function fillGaps(prices, periodSeconds) {
   return newPrices;
 }
 
-export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
-  // @todo chart data
+export async function getLimitChartPricesFromStats(
+  chainId: number,
+  symbol: string,
+  period: string,
+  limit = 1
+): Promise<FromOldToNewArray<Bar>> {
   symbol = getNormalizedTokenSymbol(symbol);
 
   if (!isChartAvailabeForToken(chainId, symbol)) {
     symbol = getNativeToken(chainId).symbol;
   }
 
-  // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
-  const url = `${TF_TV_DATAFEED_API}/charthistory?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&limit=${limit}`;
-
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const alpacaUrl = "https://data.alpaca.markets/v1beta3/crypto/us/latest/bars";
+  const params = new URLSearchParams({
+    symbols : `${symbol}/USD`
+  }).toString();
+  try{
+    const alpacaResponse = await fetch(`${alpacaUrl}?${params}`);
+    if (!alpacaResponse.ok) {
+      throw new Error(`HTTP error! status: ${alpacaResponse.status}`);
     }
-    // const prices = await response.json().then(({ prices }) => prices);
-    // return prices.map(formatBarInfo);
-    const data = await response.json();
-    const lastData = data.map(formatAlpacaBarData);
-    lastData.shift();
-    return lastData;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(`Error fetching data: ${error}`);
+    
+      //const data = await alpacaResponse.json();
+      const prices = await alpacaResponse.json();
+
+      const bardata =  [prices.bars[`${symbol}/USD`]].map(formatAlpacaBarData);
+     // console.log('last bar', bardata[0]);
+      return bardata;
+      //console.log("prices",prices.bars[`${symbol}/USD`]);
+   
   }
+  catch(err){
+    console.log("err", err);
+    return [];
+  }
+
+  // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=42161&period=${period}&limit=${limit}`;
+
+  // try {
+  //   const response = await fetch(url);
+  //   if (!response.ok) {
+  //     throw new Error(`HTTP error! status: ${response.status}`);
+  //   }
+  //   const prices = await response.json().then(({ prices }) => prices);
+  //   return prices.map(formatBarInfo);
+  // } catch (error) {
+  //   // eslint-disable-next-line no-console
+  //   console.error(`Error fetching data: ${error}`);
+  //   return [];
+  // }
 }
+
+function formatBarInfo(compactBar: CompactBar): Bar {
+  const { t, o: open, c: close, h: high, l: low } = compactBar;
+  return {
+    time: t + timezoneOffset,
+    open,
+    close,
+    high,
+    low,
+  };
+}
+
+// export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
+//   // @todo chart data
+//   symbol = getNormalizedTokenSymbol(symbol);
+
+//   if (!isChartAvailabeForToken(chainId, symbol)) {
+//     symbol = getNativeToken(chainId).symbol;
+//   }
+
+//   // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
+//   const url = `${TF_TV_DATAFEED_API}/charthistory?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&limit=${limit}`;
+
+//   try {
+//     const response = await fetch(url);
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//     // const prices = await response.json().then(({ prices }) => prices);
+//     // return prices.map(formatBarInfo);
+//     const data = await response.json();
+//     const lastData = data.map(formatAlpacaBarData);
+//     lastData.shift();
+//     return lastData;
+//   } catch (error) {
+//     // eslint-disable-next-line no-console
+//     console.log(`Error fetching data: ${error}`);
+//   }
+// }
 
 function formatAlpacaBarData(bar) {
   const t = new Date(bar.t).getTime() / 1000;
@@ -123,16 +197,74 @@ function formatAlpacaBarData(bar) {
 //   };
 // }
 
-export async function getChartPricesFromStats(chainId, symbol, period) {
+// export async function getChartPricesFromStats(chainId, symbol, period) {
+//   symbol = getNormalizedTokenSymbol(symbol);
+
+//   const timeDiff = CHART_PERIODS[period] * 3000;
+//   const from = Math.floor(Date.now() / 1000 - timeDiff);
+
+//   const url = `${TF_TV_DATAFEED_API}/charthistory?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&from=${from}`;
+
+//   const TIMEOUT = 60000;
+//   const res: Response = await new Promise(async (resolve, reject) => {
+//     let done = false;
+//     setTimeout(() => {
+//       done = true;
+//       reject(new Error(`request timeout ${url}`));
+//     }, TIMEOUT);
+
+//     let lastEx;
+//     for (let i = 0; i < 3; i++) {
+//       if (done) return;
+//       try {
+//         const res = await fetch(url);
+//         resolve(res);
+//         return;
+//       } catch (ex) {
+//         await sleep(300);
+//         lastEx = ex;
+//       }
+//     }
+//     reject(lastEx);
+//   });
+//   if (!res.ok) {
+//     throw new Error(`request failed ${res.status} ${res.statusText}`);
+//   }
+//   const json = await res.json();
+//   // let prices = json?.prices;
+//   // if (!prices || prices.length < 1) {
+//   //   throw new Error(`not enough prices data: ${prices?.length}`);
+//   // }
+
+//   // const OBSOLETE_THRESHOLD = Date.now() / 1000 - 60 * 30; // 30 min ago
+//   // const updatedAt = json?.updatedAt || 0;
+//   // if (updatedAt < OBSOLETE_THRESHOLD) {
+//   //   throw new Error(
+//   //     "chart data is obsolete, last price record at " +
+//   //       new Date(updatedAt * 1000).toISOString() +
+//   //       " now: " +
+//   //       new Date().toISOString()
+//   //   );
+//   // }
+
+//   // prices = prices.map(formatBarInfo);
+//   // return prices;
+//   const bardata = json.map(formatAlpacaBarData);
+//   return bardata;
+// }
+
+export async function getChartPricesFromStats(
+  chainId: number,
+  symbol: string,
+  period: string
+): Promise<FromOldToNewArray<Bar>> {
   symbol = getNormalizedTokenSymbol(symbol);
 
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
-  // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=42161&period=${period}&from=${from}&preferableSource=fast`;
 
-  const url = `${TF_TV_DATAFEED_API}/charthistory?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&from=${from}`;
-
-  const TIMEOUT = 60000;
+  const TIMEOUT = 5000;
   const res: Response = await new Promise(async (resolve, reject) => {
     let done = false;
     setTimeout(() => {
@@ -157,27 +289,26 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
   if (!res.ok) {
     throw new Error(`request failed ${res.status} ${res.statusText}`);
   }
-  const json = await res.json();
-  // let prices = json?.prices;
-  // if (!prices || prices.length < 1) {
-  //   throw new Error(`not enough prices data: ${prices?.length}`);
-  // }
+  const json: { prices: CompactBar[]; updatedAt: number; period: string } = await res.json();
+  let compactPrices = json?.prices;
+  if (!compactPrices || compactPrices.length < 1) {
+    throw new Error(`not enough prices data: ${compactPrices?.length}`);
+  }
 
-  // const OBSOLETE_THRESHOLD = Date.now() / 1000 - 60 * 30; // 30 min ago
-  // const updatedAt = json?.updatedAt || 0;
-  // if (updatedAt < OBSOLETE_THRESHOLD) {
-  //   throw new Error(
-  //     "chart data is obsolete, last price record at " +
-  //       new Date(updatedAt * 1000).toISOString() +
-  //       " now: " +
-  //       new Date().toISOString()
-  //   );
-  // }
+  const OBSOLETE_THRESHOLD = Date.now() / 1000 - 60 * 30; // 30 min ago
+  const updatedAt = json?.updatedAt || 0;
+  if (updatedAt < OBSOLETE_THRESHOLD) {
+    throw new Error(
+      "chart data is obsolete, last price record at " +
+        new Date(updatedAt * 1000).toISOString() +
+        " now: " +
+        new Date().toISOString()
+    );
+  }
 
-  // prices = prices.map(formatBarInfo);
-  // return prices;
-  const bardata = json.map(formatAlpacaBarData);
-  return bardata;
+  const prices = compactPrices.map(formatBarInfo);
+
+  return prices;
 }
 
 function getCandlesFromPrices(prices, period) {
@@ -219,7 +350,7 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
-export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
+export function getChainlinkChartPricesFromGraph(tokenSymbol: string, period: string): Promise<FromOldToNewArray<Bar>> {
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
   const marketName = tokenSymbol + "_USD";
   const feedId = FEED_ID_MAP[marketName];
@@ -268,6 +399,7 @@ export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
     .catch((err) => {
       // eslint-disable-next-line no-console
       console.error(err);
+      return [];
     });
 }
 

@@ -33,7 +33,7 @@ export const updateUserEmail = async (walletAddress: string, email: string) => {
     .eq("wallet_address", walletAddress)
     .single();
 
-  console.log("user data", users);
+  
   if (fetchError) {
     console.error("Error fetching user data:", fetchError);
     return false;

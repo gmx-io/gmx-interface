@@ -18,3 +18,28 @@ export function getCurrentCandleTime(period: string) {
   const periodSeconds = CHART_PERIODS[period];
   return Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset;
 }
+
+
+export function getMax(...values: (number | undefined)[]): number {
+  return Math.max(...(values.filter((value) => Boolean(value) && typeof value === "number") as number[]));
+}
+
+export function getMin(...values: (number | undefined)[]): number {
+  return Math.min(...(values.filter((value) => Boolean(value) && typeof value === "number") as number[]));
+}
+
+export function getSymbolName(symbolName: string, visualMultiplier = 1): string {
+  return visualMultiplier ? `${visualMultiplier}@${symbolName}` : symbolName;
+}
+
+export function multiplyBarValues(bar: Bar, visualMultiplier: number | undefined): Bar {
+  if (!visualMultiplier) return bar;
+
+  return {
+    ...bar,
+    open: bar.open * visualMultiplier,
+    close: bar.close * visualMultiplier,
+    high: bar.high * visualMultiplier,
+    low: bar.low * visualMultiplier,
+  };
+}

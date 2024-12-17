@@ -10,7 +10,7 @@ import {
   SEPOLIA_TESTNET,
 } from "./chains";
 
-export const GMX_STATS_API_URL = process.env.REACT_APP_STATS_API_URL || "https://t3.finance/#/dashboard"; // TODO - launch stats api
+export const GMX_STATS_API_URL = process.env.REACT_APP_STATS_API_URL || "https://stats.gmx.io/api"; // TODO - launch stats api
 export const TF_TV_DATAFEED_API = process.env.REACT_APP_TV_DATAFEED_API || "https://t3-tv-datafeed.fly.dev";
 
 const BACKEND_URLS = {

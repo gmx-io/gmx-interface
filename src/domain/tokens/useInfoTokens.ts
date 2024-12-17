@@ -4,6 +4,7 @@ import { dynamicContractFetcher } from "lib/contracts";
 import VaultReader from "abis/VaultReader.json";
 import {
   BASIS_POINTS_DIVISOR,
+  BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_MAX_USDG_AMOUNT,
   MAX_PRICE_DEVIATION_BASIS_POINTS,
   USD_DECIMALS,
@@ -16,6 +17,7 @@ import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
 
 import { getSpread } from "./utils";
+import { bigMath } from "lib/bitMath";
 
 export function useInfoTokens(
   library: undefined | any,
