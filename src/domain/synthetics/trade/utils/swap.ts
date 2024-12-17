@@ -1,5 +1,5 @@
 import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountByRatio } from "domain/synthetics/tokens";
-import { FindSwapPath, SwapAmounts } from "../types";
+import { FindSwapPath, SwapAmounts, SwapRoute } from "../types";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";
@@ -240,5 +240,25 @@ export function getSwapAmountsByToValue(p: {
     priceIn,
     priceOut,
     swapPathStats,
+  };
+}
+
+export function getSwapPathComparator(order: Parameters<FindSwapPath>[1]["order"]) {
+  return function (a: SwapRoute, b: SwapRoute) {
+    for (const field of order || []) {
+      const isLiquidity = field === "liquidity";
+      const aVal = isLiquidity ? a.liquidity : a.path.length;
+      const bVal = isLiquidity ? b.liquidity : b.path.length;
+
+      if (aVal !== bVal) {
+        if (isLiquidity) {
+          return aVal < bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? -1 : 1;
+        }
+      }
+    }
+
+    return 0;
   };
 }

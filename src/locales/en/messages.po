@@ -539,8 +539,8 @@ msgstr "Incentives are airdropped weekly."
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#~ msgid "Acceptable Price Impact"
-#~ msgstr "Acceptable Price Impact"
+msgid "Acceptable Price Impact"
+msgstr "Acceptable Price Impact"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
@@ -7519,8 +7519,8 @@ msgstr "Sell order cancelled"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "Acceptable price impact"
-msgstr "Acceptable price impact"
+#~ msgid "Acceptable price impact"
+#~ msgstr "Acceptable price impact"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 30 days"

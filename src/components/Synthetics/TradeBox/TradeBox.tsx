@@ -929,6 +929,7 @@ export function TradeBox(p: Props) {
     if (swapPathStats) {
       // eslint-disable-next-line no-console
       console.log("Swap Path", {
+        steps: swapPathStats.swapSteps,
         path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
         priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),
         usdOut: swapPathStats.swapSteps.map((step) => formatUsd(step.usdOut)).join(" -> "),

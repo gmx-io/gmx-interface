@@ -15,6 +15,7 @@ import {
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
+  getSwapPathComparator,
   getSwapPathStats,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
@@ -139,20 +140,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
         }
 
         let swapPath: string[] | undefined = undefined;
-        const sortedPaths = opts.order
-          ? [...allPaths].sort((a, b) => {
-              for (const field of opts.order ?? []) {
-                const aVal = field === "liquidity" ? a.liquidity : a.path.length;
-                const bVal = field === "liquidity" ? b.liquidity : b.path.length;
-
-                if (aVal !== bVal) {
-                  return aVal < bVal ? -1 : 1;
-                }
-              }
-
-              return 0;
-            })
-          : allPaths;
+        const sortedPaths = opts.order ? [...allPaths].sort(getSwapPathComparator(opts.order ?? [])) : allPaths;
 
         if (opts.order) {
           swapPath = sortedPaths[0].path;
