@@ -214,22 +214,23 @@ export function PositionSeller(p: Props) {
   );
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionCollateralPriceImpact,
+    collateralImpact: fees?.positionCollateralPriceImpact,
+    positionImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
+    swapProfitFee: fees?.swapProfitFee,
+    executionFeeUsd: executionFee?.feeUsd,
     place: "positionSeller",
     tradeFlags,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
-  const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
-  const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+  const setIsAcceptedLatestRef = useLatest(priceImpactWarningState.setIsAccepted);
 
   useEffect(() => {
     if (isVisible) {
-      setIsHighPositionImpactAcceptedLatestRef.current(false);
-      setIsHighSwapImpactAcceptedLatestRef.current(false);
+      setIsAcceptedLatestRef.current(false);
     }
-  }, [setIsHighPositionImpactAcceptedLatestRef, setIsHighSwapImpactAcceptedLatestRef, isVisible, orderOption]);
+  }, [setIsAcceptedLatestRef, isVisible, orderOption]);
 
   const error = useMemo(() => {
     if (!position) {
@@ -653,8 +654,6 @@ export function PositionSeller(p: Props) {
                     {priceImpactWarningState.shouldShowWarning && (
                       <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
                     )}
-
-                    {highExecutionFeeAcknowledgement}
                   </div>
                 </ExchangeInfo.Group>
               )}

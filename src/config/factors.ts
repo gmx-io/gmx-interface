@@ -21,7 +21,9 @@ export const EXCESSIVE_SLIPPAGE_AMOUNT = 2 * 100; // 2%
 
 // V2
 export const HIGH_PRICE_IMPACT_BPS = 80; // 0.8%
-export const HIGH_POSITION_IMPACT_BPS = 50; // 0.5%
+export const HIGH_ACCEPTABLE_POSITION_IMPACT_BPS = 50; // 0.5%
+export const HIGH_POSITION_IMPACT_BPS = 200; // 2%
 export const HIGH_COLLATERAL_IMPACT_BPS = 500; // 5%
-export const HIGH_SWAP_IMPACT_BPS = 50; // 0.5%
+export const HIGH_SWAP_IMPACT_BPS = 100; // 1%
+export const HIGH_SWAP_PROFIT_FEE_BPS = 100; // 1%
 export const DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER = 30; // 0.3%

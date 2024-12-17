@@ -273,34 +273,34 @@ export function TradeBox(p: Props) {
   const maxAllowedLeverage = maxLeverage / 2;
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionCollateralPriceImpact,
+    collateralImpact: fees?.positionCollateralPriceImpact,
+    positionImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
+    swapProfitFee: fees?.swapProfitFee,
+    executionFeeUsd: executionFee?.feeUsd,
     place: "tradeBox",
     tradeFlags,
   });
 
-  const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
-  const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+  const setIsAcceptedRef = useLatest(priceImpactWarningState.setIsAccepted);
 
   const setFromTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setFromTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsHighPositionImpactAcceptedRef.current(false);
-        setIsHighSwapImpactAcceptedRef.current(false);
+        setIsAcceptedRef.current(false);
       }
     },
-    [setFromTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [setFromTokenInputValueRaw, setIsAcceptedRef]
   );
   const setToTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setToTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsHighPositionImpactAcceptedRef.current(false);
-        setIsHighSwapImpactAcceptedRef.current(false);
+        setIsAcceptedRef.current(false);
       }
     },
-    [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [setToTokenInputValueRaw, setIsAcceptedRef]
   );
 
   const userReferralInfo = useUserReferralInfo();

@@ -267,6 +267,13 @@ msgstr "Buyable"
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Warnings not yet acknowledged"
+msgstr "Warnings not yet acknowledged"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
@@ -718,6 +725,10 @@ msgstr "Activating Subaccount"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "Invalid slippage value"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "price impact"
+msgstr "price impact"
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -1920,11 +1931,6 @@ msgstr "No esGMX to claim"
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 msgstr "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
-msgid "Acknowledge high Price Impact"
-msgstr "Acknowledge high Price Impact"
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
@@ -2004,6 +2010,10 @@ msgstr "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Long {0}"
 msgstr "Long {0}"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "impact on collateral"
+msgstr "impact on collateral"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2267,6 +2277,10 @@ msgstr "Launch App"
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "network fees"
+msgstr "network fees"
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
 msgstr "Receiver has staked GMX/GLP before"
@@ -2382,6 +2396,10 @@ msgstr "Price above Liq. Price"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge high {0} and {1}"
+msgstr "Acknowledge high {0} and {1}"
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "{0} pool exceeded, try different token"
@@ -3660,10 +3678,6 @@ msgstr "Net Rate / 1h"
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "High price impact. Review execution price"
-msgstr "High price impact. Review execution price"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr "Trading incentives program is live on {avalancheLink}."
@@ -3923,7 +3937,6 @@ msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 msgid "High Network Fee not yet acknowledged"
 msgstr "High Network Fee not yet acknowledged"
 
@@ -4394,6 +4407,10 @@ msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to 
 msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge high {0}"
+msgstr "Acknowledge high {0}"
+
 #: src/domain/synthetics/tokens/useTokensFavorites.tsx
 msgid "Favorites"
 msgstr "Favorites"
@@ -4535,6 +4552,10 @@ msgstr "Order updated!"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "swap profit fee"
+msgstr "swap profit fee"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "The previously authorized maximum number of actions has been reached for One-Click Trading."
@@ -4894,10 +4915,6 @@ msgstr "Order size is 0"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "Acknowledge high Swap Price Impact"
-msgstr "Acknowledge high Swap Price Impact"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close {longOrShortText} {0}"
@@ -5845,10 +5862,6 @@ msgstr "GMX staking rewards updates and insights"
 msgid "Active Orders"
 msgstr "Active Orders"
 
-#: src/domain/synthetics/trade/useHighExecutionFeeConsent.tsx
-msgid "Acknowledge very high network Fees"
-msgstr "Acknowledge very high network Fees"
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Switch to {0} collateral."
 msgstr "Switch to {0} collateral."
@@ -6324,10 +6337,6 @@ msgstr "Claims"
 msgid "Date"
 msgstr "Date"
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price Impact not yet acknowledged"
@@ -6975,6 +6984,11 @@ msgstr "Buy"
 msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 msgstr "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
+msgid "Acknowledge high price impact"
+msgstr "Acknowledge high price impact"
+
 #: src/pages/Stake/StakeV2.tsx
 msgid "Total Rewards"
 msgstr "Total Rewards"
@@ -7423,6 +7437,10 @@ msgstr "You will be long {indexSymbol} from your long position, as well as from 
 msgid "GMX explorer for stats and traders"
 msgstr "GMX explorer for stats and traders"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "swap price impact"
+msgstr "swap price impact"
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr "Sell order cancelled"
@@ -7543,6 +7561,10 @@ msgstr "Share Position"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
+
+#: src/domain/synthetics/trade/useHighExecutionFeeConsent.tsx
+msgid "Acknowledge high network fees"
+msgstr "Acknowledge high network fees"
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Deposit Fee"

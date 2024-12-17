@@ -139,7 +139,7 @@ export function getSwapError(p: {
   }
 
   if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
+    return [t`Warnings not yet acknowledged`];
   }
 
   return [undefined];
@@ -297,7 +297,7 @@ export function getIncreaseError(p: {
   }
 
   if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
+    return [t`Warnings not yet acknowledged`];
   }
 
   if (nextLeverageWithoutPnl !== undefined) {
@@ -444,7 +444,7 @@ export function getDecreaseError(p: {
   }
 
   if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
+    return [t`Warnings not yet acknowledged`];
   }
 
   return [undefined];

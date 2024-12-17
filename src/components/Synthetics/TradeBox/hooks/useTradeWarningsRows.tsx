@@ -4,7 +4,6 @@ import { HighPriceImpactWarning } from "components/Synthetics/HighPriceImpactWar
 import { getContract } from "config/contracts";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxExecutionFee,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -13,7 +12,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -28,7 +26,6 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
-  const executionFee = useSelector(selectTradeboxExecutionFee);
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
@@ -51,20 +48,9 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     payAmount !== undefined &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
-  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
-    executionFee?.feeUsd
-  );
-
   const consentError: string | undefined = useMemo(() => {
-    if (highExecutionFeeAcknowledgement && isHighFeeConsentError) {
-      return t`High Network Fee not yet acknowledged`;
-    }
-
-    if (
-      (priceImpactWarningState.shouldShowWarningForPosition && !priceImpactWarningState.isHighPositionImpactAccepted) ||
-      (priceImpactWarningState.shouldShowWarningForSwap && !priceImpactWarningState.isHighSwapImpactAccepted)
-    ) {
-      return t`Price Impact not yet acknowledged`;
+    if (priceImpactWarningState.validationError) {
+      return t`Warnings not yet acknowledged`;
     }
 
     if (needPayTokenApproval && fromToken) {
@@ -72,18 +58,11 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     }
 
     return undefined;
-  }, [
-    fromToken,
-    needPayTokenApproval,
-    priceImpactWarningState,
-    highExecutionFeeAcknowledgement,
-    isHighFeeConsentError,
-  ]);
+  }, [fromToken, needPayTokenApproval, priceImpactWarningState]);
 
   const element = (
     <>
       <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
-      {highExecutionFeeAcknowledgement}
       {needPayTokenApproval && fromToken && (
         <ApproveTokenButton
           tokenAddress={fromToken.address}
