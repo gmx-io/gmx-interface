@@ -4,6 +4,7 @@ import Modal from "components/Modal/Modal";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
 import Footer from "components/Footer/Footer";
+import { NavLink } from "react-router-dom";
 
 import Vault from "abis/Vault.json";
 import ReaderV2 from "abis/ReaderV2.json";
@@ -1465,7 +1466,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <Trans>Earn</Trans>
           </div>
           <div className="Page-description">
-            <Trans>Stake TMX and TLP to earn rewards.</Trans>
+            <Trans>Stake TMX and TLP to earn rewards.</Trans>{" "}
+            <Trans>
+              See our <NavLink to="/rewards">Rewards Program</NavLink> for more details.
+            </Trans>
           </div>
           {earnMsg && <div className="Page-description">{earnMsg}</div>}
         </div>

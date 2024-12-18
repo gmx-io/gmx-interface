@@ -629,7 +629,7 @@ function FullApp() {
       <div id={themeContext.theme}>
         <div className="App">
           <div className="App-content">
-            <NavLink to="/buy_tlp">
+            <NavLink to="/rewards">
               <Banner id="morph-launch" className="morph-launch-banner" dismissable={false}>
                 <div
                   style={{
@@ -640,8 +640,7 @@ function FullApp() {
                   }}
                 >
                   <span>
-                    t3 is now live on Morph! 🎉 <span style={{ fontWeight: "bold" }}>Buy TLP</span> today to contribute
-                    to the network and earn fees and rewards.
+                    t3 is now live on Morph! 🎉 <span style={{ fontWeight: "bold" }}>See our Rewards Program</span>.
                   </span>
                 </div>
               </Banner>
