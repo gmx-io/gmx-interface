@@ -11,68 +11,58 @@ export default function RewardsProgram() {
   return (
     <div className="protocol-tokens-container">
       <h1 className="page-title">
-        <Trans>Rewards and Leaderboards</Trans>
+        <Trans>Liquidity Incentives</Trans>
       </h1>
 
+      <Banner id="rewards-draft-notice" className="rewards-draft-banner" dismissable={false}>
+        <Trans>This is a proposal and is subject to change.</Trans>
+      </Banner>
+
       <div className="reward-programs-section">
-        <h2 className="section-title">
-          <Trans>TLP Reward Programs</Trans>
-        </h2>
-
-        <Banner id="rewards-draft-notice" className="rewards-draft-banner" dismissable={false}>
-          <Trans>
-            These reward programs are in draft form and subject to change. Final terms will be announced at program
-            launch.
-          </Trans>
-        </Banner>
-
         <div className="reward-overview">
           <div className="overview-card">
             <h3>Program Highlights</h3>
             <ul>
-              <li>90% of t3 fees distributed to LPs for first 6 months</li>
-              <li>First LPs receive outsized bonuses</li>
-              <li>Larger LP positions earn bigger rewards</li>
-              <li>LP referrals grant bonus rewards</li>
-              <li>Participating LPs qualify for TMX token discounts</li>
+              <li>90% of fees distributed to LPs from all whitelisted pools</li>
+              <li>No minimum deposit requirement for fee rewards</li>
+              <li>First-mover bonus pool of 50,000 TMX tokens</li>
+              <li>Linear bonus scale of 0.1 TMX per $1.00 supplied</li>
+              <li>10-month lock-up period for TMX bonus rewards</li>
             </ul>
           </div>
           <div className="overview-card">
-            <h3>Rules</h3>
+            <h3>Key Benefits</h3>
             <ul>
-              <li>Reward structure guaranteed for 6 months</li>
-              <li>Minimum $1,000 TLP purchase required</li>
-              <li>Fee accrual begins immediately</li>
-              <li>TLP bonuses are distributed 12 months after TLP purchase</li>
-              <li>Separate purchases receive separate reward levels</li>
+              <li>Inclusive rewards for all liquidity providers</li>
+              <li>Attractive incentives through esTMX staking</li>
+              <li>Flexible reward strategies</li>
+              <li>Transparent on-chain distribution</li>
+              <li>Regular biweekly fee distributions</li>
             </ul>
           </div>
         </div>
 
         <h2 className="section-title">
-          <Trans>Leaderboards</Trans>
+          <Trans>Reward Programs</Trans>
         </h2>
-
-        <div>Rewards bonuses paid in pre-launch TMX tokens.</div>
-        <br />
 
         <div className="reward-programs-grid">
           <RewardProgram
             title="First-Mover Bonus"
-            description="Early liquidity providers receive higher reward bonuses based on the total TLP value provided."
+            description="50,000 TMX tokens distributed across 5 tiers for early liquidity providers. Minimum $5,000 USD deposit required."
             type="first-mover"
           />
 
           <RewardProgram
-            title="LP Size Bonus"
-            description="Top TLP stakers receive additional rewards based on their position on the leaderboard."
+            title="LP Size Linear Bonus"
+            description="0.1 TMX granted per $1.00 supplied. Minimum $50,000 USD deposit required. 100,000 TMX total allocation."
             type="size-bonus"
           />
 
           <RewardProgram
-            title="Referral Bonus"
-            description="LPs receive extra bonuses for referring other liquidity providers."
-            type="referral"
+            title="esTMX Staking Boost"
+            description="Stake esTMX tokens to enhance fee rewards through the esTMX Distribution Contract."
+            type="estmx-boost"
           />
         </div>
       </div>
@@ -83,8 +73,8 @@ export default function RewardsProgram() {
         <TokenCard
           icon={tmxImg}
           title="TMX"
-          description="TMX is the utility and governance token. Accrues 30% of all platform fees and provides governance rights."
-          stats={[<Trans>Coming Q2 2024</Trans>]}
+          description="TMX is the utility and governance token with a max circulating supply of 10 million tokens."
+          stats={[<Trans>Max Supply: 10M TMX</Trans>, <Trans>10-month lock-up for bonus rewards</Trans>]}
           buttons={[
             { label: "Buy TMX", disabled: true },
             {
@@ -98,8 +88,8 @@ export default function RewardsProgram() {
         <TokenCard
           icon={tlpImg}
           title="TLP"
-          description="TLP is the liquidity provider token for T3 markets. Accrues 70% of all platform fees (90% for first 6 months)."
-          stats={[<Trans>APR: Uncapped</Trans>, <Trans>90% of fees distributed to LPs for first 6 months</Trans>]}
+          description="TLP is the liquidity provider token. Earn 90% of all platform fees from whitelisted pools, distributed biweekly."
+          stats={[<Trans>90% fee distribution</Trans>, <Trans>No minimum deposit for fee rewards</Trans>]}
           buttons={[
             {
               label: "Buy TLP",

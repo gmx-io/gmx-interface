@@ -272,7 +272,7 @@
 
 .reward-table-header {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr 1fr;
   padding: 1rem;
   background: rgba(49, 54, 85, 0.5);
   color: #fff;
@@ -281,7 +281,7 @@
 
 .reward-table-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr 1fr;
   padding: 0.75rem 1rem;
   color: rgba(255, 255, 255, 0.7);
   border-top: 1px solid rgba(49, 54, 85, 0.5);
@@ -291,11 +291,16 @@
   background: rgba(49, 54, 85, 0.4);
 }
 
+.reward-table-row.three-col {
+  grid-template-columns: 1fr 2fr 1fr;
+}
+
 .reward-info {
   padding: 1.5rem;
   color: rgba(255, 255, 255, 0.7);
   text-align: center;
   font-size: 1.1rem;
+  line-height: 1.6;
 }
 
 @media (max-width: 1200px) {
@@ -333,10 +338,11 @@
   border: 1px solid rgba(255, 112, 40, 0.3) !important;
   margin-bottom: 2rem !important;
   border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
 }
 
 .rewards-draft-banner .custom-banner-content {
   color: rgba(255, 255, 255, 0.9);
-  font-style: italic;
   font-size: 1.2rem;
+  text-align: center;
 }
