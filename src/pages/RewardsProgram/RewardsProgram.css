@@ -296,17 +296,18 @@
   border-top: 1px solid rgba(49, 54, 85, 0.5);
 }
 
-.reward-table-row:hover {
+.reward-table-row:nth-child(2) {
+  background: rgba(255, 112, 40, 0.15);
+  color: #fff;
+  font-weight: 500;
+}
+
+.reward-table-row:not(:first-of-type):hover {
   background: rgba(49, 54, 85, 0.4);
 }
 
 .reward-table-row.three-col {
   grid-template-columns: 1fr 2fr 1fr;
-  background: rgba(49, 54, 85, 0.4);
-}
-
-.reward-table-row.three-col:not(:first-child) {
-  background: transparent;
 }
 
 .reward-info {
@@ -511,7 +512,6 @@
   border-radius: 0.75rem;
   padding: 2rem;
   color: #fff;
-  border: 1px solid rgba(255, 112, 40, 0.3);
 }
 
 .incentive-card h3 {

@@ -33,7 +33,7 @@ export const RewardProgram = ({ title, description, data, type }) => {
           </div>
           <div className="reward-program-actions">
             <button className="reward-action-button" onClick={handleBuyTLP}>
-              Get More Rewards by Moving First
+              Move First to Earn More
             </button>
           </div>
         </>
