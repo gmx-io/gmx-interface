@@ -15,7 +15,7 @@ import YieldFarm from "sdk/abis/YieldFarm.json";
 import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";
 
-import "./Stake.scss";
+import "./EarnV1.scss";
 import { t, Trans } from "@lingui/macro";
 import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { contractFetcher } from "lib/contracts";
