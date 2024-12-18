@@ -6,7 +6,7 @@ import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getByKey } from "sdk/utils/objects";
 
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { getSubsquidGraphClient } from "lib/subgraph/clients";
 

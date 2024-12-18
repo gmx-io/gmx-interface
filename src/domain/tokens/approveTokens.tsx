@@ -3,7 +3,7 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
-import { getNativeToken } from "config/tokens";
+import { getNativeToken } from "sdk/configs/tokens";
 import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 

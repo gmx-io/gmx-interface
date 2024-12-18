@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { erc20Abi } from "viem";
 
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";

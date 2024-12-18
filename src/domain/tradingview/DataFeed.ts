@@ -12,7 +12,12 @@ import {
 import range from "lodash/range";
 
 import { getTvParamsCacheKey } from "config/localStorage";
-import { getNativeToken, getTokenBySymbol, getTokenVisualMultiplier, isChartAvailableForToken } from "config/tokens";
+import {
+  getNativeToken,
+  getTokenBySymbol,
+  getTokenVisualMultiplier,
+  isChartAvailableForToken,
+} from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph, getLimitChartPricesFromStats } from "domain/prices";
 import { Bar, FromOldToNewArray, TvParamsCache } from "domain/tradingview/types";
