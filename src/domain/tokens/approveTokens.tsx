@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { getNativeToken } from "sdk/configs/tokens";
 import { helperToast } from "lib/helperToast";
-import { InfoTokens, TokenInfo } from "./types";
+import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";

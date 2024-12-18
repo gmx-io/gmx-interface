@@ -13,7 +13,7 @@ import {
 } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals, PRECISION } from "lib/numbers";
-import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
+import { InfoTokens, Token, TokenInfo, TokenPrices } from "sdk/types/tokens";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 
 const { ZeroAddress } = ethers;

@@ -12,7 +12,7 @@ import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 import { PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { InfoTokens, Token, TokenInfo } from "./types";
+import { InfoTokens, Token, TokenInfo } from "sdk/types/tokens";
 import { getSpread } from "./utils";
 
 import VaultReader from "sdk/abis/VaultReader.json";
