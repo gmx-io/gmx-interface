@@ -177,13 +177,13 @@ export function GmPoolsSelectorForGlvMarket({
 
     return (
       <div
-        className={cx("TokenSelector-box", {
+        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
           "pointer-events-none": disablePoolSelector,
         })}
         onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}
       >
         {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-        {!disablePoolSelector && <BiChevronDown className="TokenSelector-caret" />}
+        {!disablePoolSelector && <BiChevronDown className="text-body-large" />}
       </div>
     );
   }

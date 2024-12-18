@@ -22,11 +22,6 @@
   color: #f89191;
 }
 
-.GlpSwap-from-token .Modal {
-  align-items: flex-start;
-  justify-content: flex-end;
-}
-
 .GlpSwap-content .GlpSwap-stats-card,
 .GlpSwap-content .GlpSwap-box {
   width: 100%;
@@ -268,11 +263,6 @@
 }
 
 @media (max-width: 1100px) {
-  .GlpSwap-from-token .Modal {
-    align-items: center;
-    justify-content: center;
-  }
-
   .GlpSwap-token-list {
     border: none;
     background-color: transparent;
