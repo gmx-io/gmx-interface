@@ -24,7 +24,6 @@ export function usePriceImpactWarningState({
   swapPriceImpact,
   swapProfitFee,
   executionFeeUsd,
-  place,
   tradeFlags,
 }: {
   collateralImpact?: FeeItem;
@@ -32,7 +31,6 @@ export function usePriceImpactWarningState({
   swapPriceImpact?: FeeItem;
   swapProfitFee?: FeeItem;
   executionFeeUsd?: bigint;
-  place: "tradeBox" | "positionSeller";
   tradeFlags: TradeFlags;
 }) {
   const { chainId } = useChainId();
@@ -136,17 +134,6 @@ export function usePriceImpactWarningState({
     shouldShowWarningForExecutionFee;
 
   validationError = !isAccepted && shouldShowWarning;
-
-  if (place === "tradeBox" && tradeFlags.isSwap) {
-    // pass
-  } else {
-    // Price impact warning takes precedence over collateral impact warning
-    if (isHighPositionImpact) {
-      validationError = validationError || (isHighPositionImpact && !isAccepted);
-    } else if (isHighCollateralImpact) {
-      validationError = validationError || (isHighCollateralImpact && !isAccepted);
-    }
-  }
 
   return {
     shouldShowWarningForPosition,
