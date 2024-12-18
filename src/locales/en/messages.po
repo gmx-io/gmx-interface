@@ -117,6 +117,7 @@ msgid "Yield Optimizer on Avalanche"
 msgstr "Yield Optimizer on Avalanche"
 
 #: src/components/Exchange/PositionsList.jsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
@@ -403,9 +404,7 @@ msgstr "No pools matched."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
 msgstr "Orders"
@@ -6607,10 +6606,6 @@ msgstr "Current Weight"
 msgid "Partnerships and Integrations"
 msgstr "Partnerships and Integrations"
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Orders <0>({0})</0>"
-msgstr "Orders <0>({0})</0>"
-
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leftover Collateral not enough to cover fees"
 msgstr "Leftover Collateral not enough to cover fees"
@@ -7453,6 +7448,8 @@ msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\
 msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders ({ordersCount})"
 msgstr "Orders ({ordersCount})"
 

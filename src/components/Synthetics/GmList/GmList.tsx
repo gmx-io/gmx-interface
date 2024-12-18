@@ -369,6 +369,10 @@ function useFilterSortPools({
           return false;
         }
 
+        if (market.isSpotOnly) {
+          return false;
+        }
+
         return categoryTokenAddresses.includes(market.indexTokenAddress);
       }
     });
