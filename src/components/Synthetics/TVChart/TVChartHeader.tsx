@@ -117,7 +117,7 @@ function TVChartHeaderInfoMobile() {
           <TooltipWithPortal
             disableHandleStyle
             as="div"
-            className="flex flex-row items-center gap-8"
+            className="inline-flex flex-row items-center gap-8"
             position="bottom-end"
             content={<NetRate1hTooltip />}
           >
