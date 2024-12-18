@@ -531,7 +531,7 @@ function UnstakeModal(props) {
   );
 }
 
-export default function StakeV1() {
+export default function EarnV1() {
   const { chainId } = useChainId();
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
