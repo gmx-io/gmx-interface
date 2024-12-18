@@ -300,7 +300,6 @@ export function TradeBox(p: Props) {
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
-    place: "tradeBox",
     tradeFlags,
   });
 

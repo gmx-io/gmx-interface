@@ -219,7 +219,6 @@ export function PositionSeller(p: Props) {
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
-    place: "positionSeller",
     tradeFlags,
   });
 
