@@ -39,11 +39,13 @@ jobs:
 
       - name: Import GPG Key
         run: |
-          echo "${{ secrets.GPG_KEY }}" | gpg --batch --yes --import
+          echo "${{ secrets.GPG_KEY }}" | gpg --batch --import
+          git config --global user.email "dev-bot@gmx.io"
+          git config --global user.name "GMX Release Bot"
+          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep '^pub' | tail -1 | awk '{print $2}' | cut -d'/' -f2)
+          git config --global user.signingkey $GPG_KEY_ID
           git config --global gpg.program gpg
           git config --global commit.gpgsign true
-          git config user.name "GMX Release Bot"
-          git config user.email "dev-bot@gmx.io"
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
 
