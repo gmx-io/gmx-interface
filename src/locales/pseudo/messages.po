@@ -117,6 +117,7 @@ msgid "Yield Optimizer on Avalanche"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders ({0})"
 msgstr ""
@@ -403,9 +404,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
 msgstr ""
@@ -6606,10 +6605,6 @@ msgstr ""
 msgid "Partnerships and Integrations"
 msgstr ""
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Orders <0>({0})</0>"
-msgstr ""
-
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leftover Collateral not enough to cover fees"
 msgstr ""
@@ -7456,6 +7451,8 @@ msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\
 msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders ({ordersCount})"
 msgstr ""
 

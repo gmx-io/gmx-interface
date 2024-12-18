@@ -126,6 +126,10 @@ export function PoolSelector({
           return false;
         }
 
+        if (item.marketInfo.isSpotOnly) {
+          return false;
+        }
+
         return categoryTokenAddresses.includes(item.marketInfo.indexTokenAddress);
       });
     }

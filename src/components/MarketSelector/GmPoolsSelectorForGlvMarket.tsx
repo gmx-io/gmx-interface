@@ -140,6 +140,10 @@ export function GmPoolsSelectorForGlvMarket({
           return false;
         }
 
+        if (item.marketInfo.isSpotOnly) {
+          return false;
+        }
+
         return categoryTokenAddresses.includes(item.marketInfo.indexTokenAddress);
       });
     }
