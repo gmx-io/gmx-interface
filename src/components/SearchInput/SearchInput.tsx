@@ -84,7 +84,7 @@ export default function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx("block w-full rounded-4 border border-gray-700  placeholder-slate-500", {
+        className={cx("block w-full rounded-4 border border-gray-800  placeholder-slate-500", {
           "border-gray-400": isFocused,
           "hover:border-gray-600": !isFocused,
           "py-10 pl-40 pr-34 text-16": size === "m",

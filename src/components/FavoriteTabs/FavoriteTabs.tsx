@@ -21,8 +21,10 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
         <Button
           key={option}
           type="button"
-          variant={tab === option ? "secondary" : "ghost"}
-          className={cx("!text-body-medium !py-7", {})}
+          variant={"ghost"}
+          className={cx("!text-body-medium !py-7", {
+            "!bg-cold-blue-500": tab === option,
+          })}
           onClick={() => setTab(option)}
         >
           {localizedTabOptionLabels[option]}
