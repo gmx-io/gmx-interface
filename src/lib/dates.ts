@@ -1,4 +1,4 @@
-import { addMinutes, format as formatDateFn, set as setTime } from "date-fns";
+import { format as formatDateFn, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
 
 export function formatDateTime(time: number) {
@@ -10,12 +10,11 @@ export function formatDate(time: number) {
 }
 
 export function formatTVDate(date: Date) {
-  // https://github.com/date-fns/date-fns/issues/1401#issuecomment-578580199
-  return formatDateFn(addMinutes(date, date.getTimezoneOffset()), "dd MMM yyyy");
+  return formatDateFn(date, "dd MMM yyyy");
 }
 
 export function formatTVTime(date: Date) {
-  return formatDateFn(addMinutes(date, date.getTimezoneOffset()), "h:mm a");
+  return formatDateFn(date, "HH:mm");
 }
 
 export function getTimeRemaining(time: number) {

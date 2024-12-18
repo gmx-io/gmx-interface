@@ -5,9 +5,9 @@ import { getWhitelistedV1Tokens } from "config/tokens";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 
-import GlpManager from "abis/GlpManager.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import VaultV2 from "abis/VaultV2.json";
+import GlpManager from "sdk/abis/GlpManager.json";
+import ReaderV2 from "sdk/abis/ReaderV2.json";
+import VaultV2 from "sdk/abis/VaultV2.json";
 
 function buildDashboardRequest(chainId: number) {
   const gmxAddress = getContract(chainId, "GMX");

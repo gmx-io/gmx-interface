@@ -17,6 +17,7 @@ import "./SelectorBase.scss";
 type Props = PropsWithChildren<{
   handleClassName?: string;
   chevronClassName?: string;
+  desktopPanelClassName?: string;
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
@@ -169,7 +170,6 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
 
   const suppressPointerDown = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
   }, []);
 
   if (props.disabled) {
@@ -200,7 +200,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             <FloatingPortal>
               <Popover.Panel
                 static
-                className="SelectorBase-panel"
+                className={cx("SelectorBase-panel", props.desktopPanelClassName)}
                 ref={refs.setFloating}
                 style={floatingStyles}
                 onPointerDown={suppressPointerDown}
@@ -244,7 +244,9 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && <BiChevronDown className="-my-5 -mr-4 inline-block align-middle text-24" />}
+        {!props.disabled && (
+          <BiChevronDown className={cx("-my-5 -mr-4 inline-block align-middle text-24", props.chevronClassName)} />
+        )}
       </div>
       <Modal
         setIsVisible={setIsVisible}

@@ -148,7 +148,7 @@ import SwapIcon from "img/swap.svg?react";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
-import { MissedCoinsHint } from "../MissedCoinsHint/MissedCoinsHint";
+
 import "./TradeBox.scss";
 
 export type Props = {
@@ -764,20 +764,20 @@ export function TradeBox(p: Props) {
         let sizeDeltaUsd: bigint | undefined = undefined;
         let amountUsd: bigint | undefined = undefined;
         let priceImpactDeltaUsd = 0n;
-        let priceImpactBps = 0n;
+        let priceImpactPercentage = 0n;
 
         if (isIncrease && increaseAmounts) {
           sizeDeltaUsd = increaseAmounts.sizeDeltaUsd;
           priceImpactDeltaUsd = increaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
+          priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         } else if (isSwap && swapAmounts) {
           amountUsd = swapAmounts.usdOut;
           priceImpactDeltaUsd = swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
-          priceImpactBps = fees?.swapPriceImpact?.bps ?? 0n;
+          priceImpactPercentage = fees?.swapPriceImpact?.precisePercentage ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
           sizeDeltaUsd = decreaseAmounts.sizeDeltaUsd;
           priceImpactDeltaUsd = decreaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactBps = fees?.positionPriceImpact?.bps ?? 0n;
+          priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         }
 
         const openInterestPercent = isLong
@@ -785,11 +785,15 @@ export function TradeBox(p: Props) {
           : chartHeaderInfo?.shortOpenInterestPercentage;
         const fundingRate1h = isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort;
 
+        if (!pair) {
+          return;
+        }
+
         sendTradeBoxInteractionStartedEvent({
           pair,
           sizeDeltaUsd,
           priceImpactDeltaUsd,
-          priceImpactBps,
+          priceImpactPercentage,
           fundingRate1h,
           openInterestPercent,
           tradeType,
@@ -800,13 +804,9 @@ export function TradeBox(p: Props) {
     },
     [
       chainId,
-      chartHeaderInfo?.fundingRateLong,
-      chartHeaderInfo?.fundingRateShort,
-      chartHeaderInfo?.longOpenInterestPercentage,
-      chartHeaderInfo?.shortOpenInterestPercentage,
+      chartHeaderInfo,
       decreaseAmounts,
-      fees?.positionPriceImpact?.bps,
-      fees?.swapPriceImpact?.bps,
+      fees,
       fromToken?.symbol,
       fromTokenInputValue,
       increaseAmounts,
@@ -1085,7 +1085,6 @@ export function TradeBox(p: Props) {
               missedCoinsPlace={MissedCoinsPlace.payToken}
               extendedSortSequence={sortedLongAndShortTokens}
               qa="collateral-selector"
-              footerContent={<MissedCoinsHint place={MissedCoinsPlace.payToken} className="!my-12 mx-15" withIcon />}
             />
           )}
         </BuyInputSection>
@@ -1152,6 +1151,7 @@ export function TradeBox(p: Props) {
           >
             {toTokenAddress && (
               <MarketSelector
+                chainId={chainId}
                 label={localizedTradeTypeLabels[tradeType!]}
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
@@ -1171,9 +1171,6 @@ export function TradeBox(p: Props) {
                 isSideMenu
                 missedCoinsPlace={MissedCoinsPlace.marketDropdown}
                 onSelectMarket={(_indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
-                footerContent={
-                  <MissedCoinsHint place={MissedCoinsPlace.marketDropdown} className="!my-12 mx-15" withIcon />
-                }
               />
             )}
           </BuyInputSection>
@@ -1286,6 +1283,7 @@ export function TradeBox(p: Props) {
             label={t`Market`}
             value={
               <MarketSelector
+                chainId={chainId}
                 label={t`Market`}
                 className="-mr-4"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}

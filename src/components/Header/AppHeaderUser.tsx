@@ -12,11 +12,12 @@ import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 
 import { useChainId } from "lib/chains";
-import { getAccountUrl, isHomeSite } from "lib/legacy";
+import { getAccountUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
@@ -71,6 +72,7 @@ export function AppHeaderUser({
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
   const [tradePageVersion] = useTradePageVersion();
+  const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
   const shouldHideTradeButton = useRouteMatch("/trade");
@@ -84,11 +86,12 @@ export function AppHeaderUser({
         data: {
           action: "LaunchApp",
           buttonPosition: "StickyHeader",
+          shouldSeeConfirmationDialog: shouldShowRedirectModal(redirectPopupTimestamp),
         },
       },
       { instantSend: true }
     );
-  }, []);
+  }, [redirectPopupTimestamp]);
 
   if (!active || !account) {
     return (
@@ -101,7 +104,7 @@ export function AppHeaderUser({
             <HeaderLink
               className="default-btn"
               onClick={trackLaunchApp}
-              to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParam() : ""}`}
+              to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
               showRedirectModal={showRedirectModal}
             >
               {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
@@ -140,18 +143,19 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      {shouldHideTradeButton ? null : (
-        <div data-qa="trade" className="App-header-trade-link text-body-medium">
+      <div data-qa="trade" className="App-header-trade-link text-body-medium">
+        {shouldHideTradeButton ? null : (
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
-            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParam() : ""}`}
+            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
             showRedirectModal={showRedirectModal}
           >
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
-        </div>
-      )}
+        )}
+      </div>
+
       {showConnectionOptions ? (
         <>
           <div data-qa="user-address" className="App-header-user-address">

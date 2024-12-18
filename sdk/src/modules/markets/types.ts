@@ -189,3 +189,20 @@ export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
     >;
   };
 }>;
+
+export type KinkModelMarketRateMulticallRequestConfig = MulticallRequestConfig<{
+  [key: `${string}-dataStore`]: {
+    calls: Record<
+      | "optimalUsageFactorLong"
+      | "optimalUsageFactorShort"
+      | "baseBorrowingFactorLong"
+      | "baseBorrowingFactorShort"
+      | "aboveOptimalUsageBorrowingFactorLong"
+      | "aboveOptimalUsageBorrowingFactorShort",
+      {
+        methodName: string;
+        params: any[];
+      }
+    >;
+  };
+}>;

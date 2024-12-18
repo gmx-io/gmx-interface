@@ -16,7 +16,7 @@ import maxBy from "lodash/maxBy";
 import { differenceInMilliseconds } from "date-fns";
 import { getMulticallContract, getDataStoreContract } from "config/contracts";
 import { getContract } from "config/contracts";
-import { HASHED_MARKET_CONFIG_KEYS } from "prebuilt";
+import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 import { sleep } from "lib/sleep";
 import { useEffect, useState } from "react";
 

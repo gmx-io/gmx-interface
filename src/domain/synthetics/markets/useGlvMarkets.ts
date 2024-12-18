@@ -1,6 +1,6 @@
-import DataStore from "abis/DataStore.json";
-import GlvReader from "abis/GlvReader.json";
-import TokenAbi from "abis/Token.json";
+import DataStore from "sdk/abis/DataStore.json";
+import GlvReader from "sdk/abis/GlvReader.json";
+import TokenAbi from "sdk/abis/Token.json";
 
 import { getContract } from "config/contracts";
 import {
