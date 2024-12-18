@@ -4,11 +4,12 @@ import React, { useCallback } from "react";
 import { useMedia } from "react-use";
 
 import { numberToState } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
+import { USD_DECIMALS } from "config/factors";
 import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
-import { formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
+import { formatAmountHuman, formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
 
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -53,14 +54,14 @@ function PoolSelector2Desktop(props: Props) {
     <table className="PoolSelector2-table">
       <thead>
         <TableTheadTr bordered>
-          <TableTh>
+          <TableTh padding="compact">
             <Trans>Pool</Trans>
           </TableTh>
-          <TableTh>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</TableTh>
-          <TableTh>
+          <TableTh padding="compact">{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</TableTh>
+          <TableTh padding="compact">
             <Trans>Net Rate</Trans>
           </TableTh>
-          <TableTh>
+          <TableTh padding="compact">
             <Trans>Open Cost</Trans>
           </TableTh>
         </TableTheadTr>
@@ -99,10 +100,8 @@ function PoolListItemDesktop({
   onSelect: () => void;
 } & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
-  const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
-  const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
   const poolName = getMarketPoolName(marketStat.marketInfo);
-  const formattedLiquidity = formatUsd(liquidity);
+  const formattedLiquidity = formatAmountHuman(liquidity, USD_DECIMALS);
 
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
   const netRateState = numberToState(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
@@ -119,28 +118,11 @@ function PoolListItemDesktop({
 
   return (
     <SelectorBaseDesktopRow onClick={handleClick}>
-      <TableTd className="PoolSelector2-column-pool" data-qa={`pool-selector-row-${poolName}`}>
-        <div className="PoolSelector2-collateral-logos">
-          <>
-            <TokenIcon
-              symbol={longTokenSymbol}
-              displaySize={24}
-              importSize={24}
-              className="PoolSelector2-collateral-logo-first"
-            />
-            {shortTokenSymbol && (
-              <TokenIcon
-                symbol={shortTokenSymbol}
-                displaySize={24}
-                importSize={24}
-                className="PoolSelector2-collateral-logo-second"
-              />
-            )}
-          </>
-        </div>
-        <div>{poolName}</div>
+      <TableTd padding="compact" data-qa={`pool-selector-row-${poolName}`}>
+        {poolName}
       </TableTd>
       <TableTd
+        padding="compact"
         className={cx({
           "text-red-500": !isEnoughLiquidity,
         })}
@@ -148,6 +130,7 @@ function PoolListItemDesktop({
         {formattedLiquidity}
       </TableTd>
       <TableTd
+        padding="compact"
         className={cx({
           "text-red-500": netRateState === "error",
           "text-green-500": netRateState === "success",
@@ -156,6 +139,7 @@ function PoolListItemDesktop({
         <Trans>{formattedNetRate} / 1h</Trans>
       </TableTd>
       <TableTd
+        padding="compact"
         className={cx("PoolSelector2-column-open-fees", {
           "text-red-500": openFeesState === "error",
           "text-green-500": openFeesState === "success",
@@ -215,26 +199,24 @@ function PoolListItemMobile({
 
   return (
     <SelectorBaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
-      <div className="PoolSelector2-column-pool" data-qa={`pool-selector-row-${poolName}`}>
-        <div className="PoolSelector2-collateral-logos">
-          <>
+      <div className="PoolSelector2-mobile-column-pool" data-qa={`pool-selector-row-${poolName}`}>
+        <div className="PoolSelector2-mobile-collateral-logos">
+          <TokenIcon
+            symbol={longTokenSymbol}
+            displaySize={18}
+            importSize={24}
+            className="PoolSelector2-mobile-collateral-logo-first"
+          />
+          {shortTokenSymbol && (
             <TokenIcon
-              symbol={longTokenSymbol}
-              displaySize={30}
+              symbol={shortTokenSymbol}
+              displaySize={18}
               importSize={24}
-              className="PoolSelector2-collateral-logo-first"
+              className="PoolSelector2-mobile-collateral-logo-second"
             />
-            {shortTokenSymbol && (
-              <TokenIcon
-                symbol={shortTokenSymbol}
-                displaySize={30}
-                importSize={24}
-                className="PoolSelector2-mobile-collateral-logo-second"
-              />
-            )}
-          </>
+          )}
         </div>
-        <div>{poolName}</div>
+        <div className="PoolSelector2-mobile-pool-name">{poolName}</div>
       </div>
       <dl className="PoolSelector2-mobile-info">
         <dt>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</dt>
