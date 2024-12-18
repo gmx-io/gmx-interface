@@ -20,7 +20,6 @@ export default function RewardsProgram() {
     <div className="protocol-tokens-container">
       <h1 className="page-title flex items-center">
         <Trans>Liquidity Incentives</Trans>
-        {/* <img src={tmxImg} alt="TMX" className="title-icon" width="32" height="32" /> */}
       </h1>
 
       <Banner id="rewards-draft-notice" className="rewards-draft-banner" dismissable={false}>
@@ -30,30 +29,24 @@ export default function RewardsProgram() {
       <div className="reward-programs-section">
         <div className="reward-overview">
           <div className="overview-card">
-            <h3>Program Highlights</h3>
+            <h3>Program Structure</h3>
             <ul>
               <li>90% of fees distributed to LPs from all whitelisted pools</li>
               <li>No minimum deposit requirement for fee rewards</li>
-              <li>First-mover bonus pool of 50,000 TMX tokens</li>
-              <li>Linear bonus scale of 0.1 TMX per $1.00 supplied</li>
+              <li>Direct TMX bonus rewards with no vesting period</li>
               <li>10-month lock-up period for TMX bonus rewards</li>
+              <li>Enhanced rewards through esTMX staking</li>
             </ul>
-            {/* <button className="overview-cta-button" onClick={handleBuyTLP}>
-              Become a Liquidity Provider
-            </button> */}
           </div>
           <div className="overview-card">
             <h3>Key Benefits</h3>
             <ul>
               <li>Inclusive rewards for all liquidity providers</li>
-              <li>Attractive incentives through esTMX staking</li>
-              <li>Flexible reward strategies</li>
+              <li>Mix of proportional fees and bonus rewards</li>
+              <li>Sustainable growth through controlled distribution</li>
               <li>Transparent on-chain distribution</li>
               <li>Regular biweekly fee distributions</li>
             </ul>
-            {/* <button className="overview-cta-button secondary" onClick={handleEarnTMX}>
-              Start Earning Now
-            </button> */}
           </div>
         </div>
 
@@ -68,7 +61,7 @@ export default function RewardsProgram() {
         </div>
 
         <h2 className="section-title">
-          <Trans>Reward Programs</Trans>
+          <Trans>TMX Reward Programs</Trans>
         </h2>
 
         <div className="reward-programs-grid">
@@ -83,12 +76,36 @@ export default function RewardsProgram() {
             description="0.1 TMX granted per $1.00 supplied. Minimum $50,000 USD deposit required. 100,000 TMX total allocation."
             type="size-bonus"
           />
+        </div>
 
-          <RewardProgram
-            title="esTMX Staking Boost"
-            description="Stake esTMX tokens to enhance fee rewards through the esTMX Distribution Contract."
-            type="estmx-boost"
-          />
+        <h2 className="section-title">
+          <Trans>Additional Incentives</Trans>
+        </h2>
+
+        <div className="incentives-grid">
+          <div className="incentive-card">
+            <h3>esTMX Staking Boost</h3>
+            <p>Enhance your fee rewards by staking esTMX tokens through the Distribution Contract.</p>
+            <div className="incentive-details">
+              <ul>
+                <li>Boost your base fee rewards</li>
+                <li>Controlled distribution rate for stability</li>
+                <li>Long-term engagement incentives</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="incentive-card">
+            <h3>Direct TMX Bonus Structure</h3>
+            <p>Immediate rewards with a simple lock-up mechanism.</p>
+            <div className="incentive-details">
+              <ul>
+                <li>No vesting period required</li>
+                <li>10-month lock-up period</li>
+                <li>Unlock and use freely after lock-up</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -247,8 +247,9 @@
 
 .reward-programs-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .reward-program {
@@ -301,6 +302,11 @@
 
 .reward-table-row.three-col {
   grid-template-columns: 1fr 2fr 1fr;
+  background: rgba(49, 54, 85, 0.4);
+}
+
+.reward-table-row.three-col:not(:first-child) {
+  background: transparent;
 }
 
 .reward-info {
@@ -490,5 +496,76 @@
   .main-cta-button {
     width: 100%;
     padding: 1rem;
+  }
+}
+
+.incentives-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.incentive-card {
+  background: rgba(49, 54, 85, 0.3);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  color: #fff;
+  border: 1px solid rgba(255, 112, 40, 0.3);
+}
+
+.incentive-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.incentive-card p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.incentive-details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.incentive-details li {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+  font-size: 1.1rem;
+}
+
+.incentive-details li:before {
+  content: "•";
+  color: #ff7028;
+  position: absolute;
+  left: 0;
+}
+
+@media (max-width: 768px) {
+  .incentives-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .incentive-card {
+    padding: 1.5rem;
+  }
+
+  .incentive-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .incentive-card p {
+    font-size: 1rem;
+  }
+
+  .incentive-details li {
+    font-size: 1rem;
   }
 }
