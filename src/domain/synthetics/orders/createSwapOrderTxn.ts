@@ -6,7 +6,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract, GasPriceData } from "lib/contracts";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
@@ -15,6 +15,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "./prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 const { ZeroAddress } = ethers;
 
@@ -30,10 +31,12 @@ export type SwapOrderParams = {
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
   allowedSlippage: number;
-  setPendingTxns: (txns: any) => void;
-  setPendingOrder: SetPendingOrder;
   skipSimulation: boolean;
   metricId: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
+  gasPriceData: GasPriceData | undefined;
+  setPendingTxns: (txns: any) => void;
+  setPendingOrder: SetPendingOrder;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -82,10 +85,11 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
           metricId: p.metricId,
+          blockTimestampData: p.blockTimestampData,
         })
       : undefined;
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -101,13 +105,13 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
-    bestNonce,
+    customSignersGasLimits: txnParams.customSignersGasLimits,
+    customSignersGasPrices: txnParams.customSignersGasPrices,
+    bestNonce: subaccount?.bestNonce,
     setPendingTxns: p.setPendingTxns,
     metricId: p.metricId,
-    gasLimit,
-    gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
   });
 
   if (!subaccount) {

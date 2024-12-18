@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -7,9 +6,11 @@ import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { GasPriceData, callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 import concat from "lodash/concat";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToPrice } from "../trade";
@@ -89,6 +90,8 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams,
   cancelOrderParams,
   updateOrderParams,
+  blockTimestampData,
+  gasPriceData,
 }: {
   chainId: number;
   signer: Signer;
@@ -98,6 +101,8 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
   updateOrderParams?: SecondaryUpdateOrderParams[];
+  blockTimestampData: BlockTimestampData | undefined;
+  gasPriceData: GasPriceData | undefined;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
@@ -226,10 +231,11 @@ export async function createIncreaseOrderTxn({
         value: totalWntAmount,
         errorTitle: t`Order error.`,
         metricId,
+        blockTimestampData,
       })
     : undefined;
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -247,12 +253,12 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
     metricId,
-    gasLimit,
-    gasPriceData,
-    bestNonce,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: gasPriceData ?? txnParams.gasPriceData,
+    bestNonce: subaccount?.bestNonce,
+    customSignersGasLimits: txnParams.customSignersGasLimits,
+    customSignersGasPrices: txnParams.customSignersGasPrices,
     setPendingTxns: p.setPendingTxns,
   });
 
