@@ -113,11 +113,11 @@
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: #50577e99;
+      background-color: var(--color-cold-blue-700);
     }
 
     &:not([disabled], .disabled):active {
-      background: #50577eb3;
+      background: var(--color-cold-blue-500);
     }
   }
 

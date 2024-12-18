@@ -5,6 +5,7 @@ import { useMedia } from "react-use";
 
 import CrossIconComponent from "img/cross.svg?react";
 import SearchIconComponent from "img/search.svg?react";
+import { useOutsideClick } from "lib/useOutsideClick";
 
 type Props = {
   value: string;
@@ -32,6 +33,7 @@ export default function SearchInput({
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   const [isFocused, setIsFocused] = useState(false);
 
@@ -42,6 +44,8 @@ export default function SearchInput({
   const handleBlur = useCallback(() => {
     setIsFocused(false);
   }, [setIsFocused]);
+
+  useOutsideClick(containerRef, handleBlur);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,11 +60,14 @@ export default function SearchInput({
   }, [setValue]);
 
   return (
-    <div className={cx("relative flex cursor-pointer items-center p-0 ", className)}>
+    <div className={cx("relative flex cursor-pointer items-center p-0 ", className)} ref={containerRef}>
       <div className="absolute top-0 flex h-full items-center px-12">
         <SearchIconComponent
           height={16}
           width={16}
+          onClick={() => {
+            inputRef.current?.focus();
+          }}
           className={cx("relative -top-1 ", {
             "text-slate-100": !isFocused,
             "text-white": isFocused,
@@ -76,15 +83,13 @@ export default function SearchInput({
         onChange={handleChange}
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
-        onBlur={handleBlur}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx(
-          "block w-full rounded-4 border border-gray-700 bg-scroll bg-[12px_center] bg-no-repeat placeholder-slate-500 hover:border-gray-600 focus:border-gray-400",
-          {
-            "py-10 pl-40 pr-34 text-16": size === "m",
-            "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
-          }
-        )}
+        className={cx("block w-full rounded-4 border border-gray-700  placeholder-slate-500", {
+          "border-gray-400": isFocused,
+          "hover:border-gray-600": !isFocused,
+          "py-10 pl-40 pr-34 text-16": size === "m",
+          "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
+        })}
       />
       {
         <button
@@ -102,7 +107,7 @@ export default function SearchInput({
             )}
           >
             <CrossIconComponent
-              className={cx("w-16", {
+              className={cx("active:!bg-red w-16", {
                 "text-slate-100": !isFocused,
                 "text-white": isFocused,
               })}

@@ -1,3 +1,5 @@
+import cx from "classnames";
+
 import {
   TokenFavoriteKey,
   tokensFavoritesTabOptionLabels,
@@ -20,7 +22,7 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
           key={option}
           type="button"
           variant={tab === option ? "secondary" : "ghost"}
-          className="!text-body-medium !py-7"
+          className={cx("!text-body-medium !py-7", {})}
           onClick={() => setTab(option)}
         >
           {localizedTabOptionLabels[option]}
