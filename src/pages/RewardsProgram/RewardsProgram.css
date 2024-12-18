@@ -1,3 +1,11 @@
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
 .protocol-tokens-container {
   max-width: 1200px;
   min-height: calc(100vh - 120px);
@@ -345,4 +353,142 @@
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.2rem;
   text-align: center;
+}
+
+.overview-cta-button {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #ff7028;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.overview-cta-button:hover {
+  background: #ff8442;
+  transform: translateY(-1px);
+}
+
+.overview-cta-button.secondary {
+  background: rgba(49, 54, 85, 0.5);
+}
+
+.overview-cta-button.secondary:hover {
+  background: rgba(49, 54, 85, 0.7);
+}
+
+.main-cta-banner {
+  background: linear-gradient(45deg, rgba(255, 112, 40, 0.15), rgba(255, 112, 40, 0.05));
+  border: 1px solid rgba(255, 112, 40, 0.3);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.main-cta-content h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.main-cta-content p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+.main-cta-button {
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  background: #ff7028;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.main-cta-button:hover {
+  background: #ff8442;
+  transform: translateY(-1px);
+}
+
+.reward-program-actions {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.reward-action-button {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: rgba(255, 112, 40, 0.15);
+  color: #ff7028;
+  border: 1px solid #ff7028;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reward-action-button:hover {
+  background: rgba(255, 112, 40, 0.25);
+  transform: translateY(-1px);
+}
+
+.floating-cta {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+}
+
+.floating-cta-button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  background: #ff7028;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.floating-cta-button:hover {
+  background: #ff8442;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .floating-cta {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
+
+  .floating-cta-button {
+    width: 100%;
+  }
+
+  .main-cta-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .main-cta-content p {
+    font-size: 1rem;
+  }
+
+  .main-cta-button {
+    width: 100%;
+    padding: 1rem;
+  }
 }

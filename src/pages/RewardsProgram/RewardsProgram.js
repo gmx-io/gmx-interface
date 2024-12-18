@@ -8,14 +8,23 @@ import { RewardProgram } from "./RewardProgram";
 import Banner from "components/Banner/Banner";
 
 export default function RewardsProgram() {
+  const handleBuyTLP = () => {
+    window.location.hash = "/buy_tlp";
+  };
+
+  const handleEarnTMX = () => {
+    window.location.hash = "/earn";
+  };
+
   return (
     <div className="protocol-tokens-container">
-      <h1 className="page-title">
+      <h1 className="page-title flex items-center">
         <Trans>Liquidity Incentives</Trans>
+        {/* <img src={tmxImg} alt="TMX" className="title-icon" width="32" height="32" /> */}
       </h1>
 
       <Banner id="rewards-draft-notice" className="rewards-draft-banner" dismissable={false}>
-        <Trans>This is a proposal and is subject to change.</Trans>
+        <Trans>This proposal draft is subject to change.</Trans>
       </Banner>
 
       <div className="reward-programs-section">
@@ -29,6 +38,9 @@ export default function RewardsProgram() {
               <li>Linear bonus scale of 0.1 TMX per $1.00 supplied</li>
               <li>10-month lock-up period for TMX bonus rewards</li>
             </ul>
+            {/* <button className="overview-cta-button" onClick={handleBuyTLP}>
+              Become a Liquidity Provider
+            </button> */}
           </div>
           <div className="overview-card">
             <h3>Key Benefits</h3>
@@ -39,6 +51,19 @@ export default function RewardsProgram() {
               <li>Transparent on-chain distribution</li>
               <li>Regular biweekly fee distributions</li>
             </ul>
+            {/* <button className="overview-cta-button secondary" onClick={handleEarnTMX}>
+              Start Earning Now
+            </button> */}
+          </div>
+        </div>
+
+        <div className="main-cta-banner">
+          <div className="main-cta-content">
+            <h2>Ready to Start Earning TMX Rewards?</h2>
+            <p>Join our liquidity providers and earn rewards from day one</p>
+            <button className="main-cta-button" onClick={handleBuyTLP}>
+              Buy TLP Now
+            </button>
           </div>
         </div>
 
@@ -93,13 +118,17 @@ export default function RewardsProgram() {
           buttons={[
             {
               label: "Buy TLP",
-              onClick: () => {
-                window.location.hash = "/buy_tlp";
-              },
+              onClick: handleBuyTLP,
             },
             { label: "Read more", onClick: () => window.open("https://docs.t3.money/dex/liquidity", "_blank") },
           ]}
         />
+      </div>
+
+      <div className="floating-cta">
+        <button className="floating-cta-button" onClick={handleBuyTLP}>
+          Buy TLP
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,8 @@
 export const RewardProgram = ({ title, description, data, type }) => {
+  const handleBuyTLP = () => {
+    window.location.hash = "/buy_tlp";
+  };
+
   const renderTable = () => {
     if (type === "first-mover") {
       return (
@@ -27,6 +31,11 @@ export const RewardProgram = ({ title, description, data, type }) => {
           <div className="reward-table">
             <div className="reward-info">50,000 TMX tokens total allocation. $5,000 USD minimum deposit required.</div>
           </div>
+          <div className="reward-program-actions">
+            <button className="reward-action-button" onClick={handleBuyTLP}>
+              Get More Rewards by Moving First
+            </button>
+          </div>
         </>
       );
     }
@@ -43,6 +52,11 @@ export const RewardProgram = ({ title, description, data, type }) => {
           <br />
           <div className="reward-table">
             <div className="reward-info">100,000 TMX total allocation. $50,000 USD minimum deposit required.</div>
+          </div>
+          <div className="reward-program-actions">
+            <button className="reward-action-button" onClick={handleBuyTLP}>
+              Become a Liquidity Provider
+            </button>
           </div>
         </>
       );
