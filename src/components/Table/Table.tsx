@@ -16,7 +16,7 @@ export function TableTh(props: TableTdThProps) {
   return (
     <th
       {...rest}
-      className={cx("text-left font-normal uppercase text-gray-300 last-of-type:text-right", props.className, {
+      className={cx("text-left font-normal uppercase text-slate-100 last-of-type:text-right", props.className, {
         "px-4 py-12 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
         "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
         "px-8 py-8": padding === "compact-one-column",

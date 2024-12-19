@@ -21,7 +21,7 @@ export function BridgingInfo(props: Props) {
   return bridgingOptions.map((option, i) => {
     if (option.render) {
       return (
-        <p key={i} className={textOpaque ? undefined : "text-gray-300"}>
+        <p key={i} className={textOpaque ? undefined : "text-slate-100"}>
           {option.render()}
         </p>
       );
@@ -33,7 +33,7 @@ export function BridgingInfo(props: Props) {
 
     const bridgeLink = option.generateLink(chainId);
     return (
-      <p key={i} className={textOpaque ? undefined : "text-gray-300"}>
+      <p key={i} className={textOpaque ? undefined : "text-slate-100"}>
         <Trans>
           Bridge {tokenSymbol} to {chainName} with
         </Trans>{" "}

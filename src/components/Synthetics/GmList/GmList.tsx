@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import values from "lodash/values";
 import React, { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -226,7 +225,7 @@ export function GmList({
             {!currentData.length && !isLoading && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
                 <TableTd colSpan={7} className="align-top">
-                  <div className="text-body-medium text-gray-400">
+                  <div className="text-body-medium text-slate-100">
                     <Trans>No pools matched.</Trans>
                   </div>
                 </TableTd>
@@ -435,9 +434,7 @@ function GmListItem({
   const shiftButton = useMemo(() => {
     const btn = (
       <Button
-        className={cx("w-full", {
-          "!opacity-30": !isShiftAvailable,
-        })}
+        className="w-full"
         variant="secondary"
         disabled={!isShiftAvailable}
         to={`/pools/?market=${marketOrGlvTokenAddress}&operation=shift&scroll=${shouldScrollToTop ? "1" : "0"}`}
@@ -530,7 +527,7 @@ function GmListItem({
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
               </div>
             </div>
-            <div className="text-12 tracking-normal text-gray-400">
+            <div className="text-12 tracking-normal text-slate-100">
               [{getMarketPoolName({ longToken, shortToken })}]
             </div>
           </div>

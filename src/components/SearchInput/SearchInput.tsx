@@ -1,10 +1,11 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useMedia } from "react-use";
 
 import CrossIconComponent from "img/cross.svg?react";
-import searchIcon from "img/search.svg";
+import SearchIconComponent from "img/search.svg?react";
+import { useOutsideClick } from "lib/useOutsideClick";
 
 type Props = {
   value: string;
@@ -20,10 +21,6 @@ type Props = {
   qa?: string;
 };
 
-const STYLE = {
-  backgroundImage: `url(${searchIcon})`,
-};
-
 export default function SearchInput({
   value,
   setValue,
@@ -36,6 +33,19 @@ export default function SearchInput({
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+  }, [setIsFocused]);
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+  }, [setIsFocused]);
+
+  useOutsideClick(containerRef, handleBlur);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,8 +59,23 @@ export default function SearchInput({
     inputRef.current?.focus();
   }, [setValue]);
 
+  const handleClick = useCallback(() => {
+    inputRef.current?.focus();
+  }, [inputRef]);
+
   return (
-    <div className={cx("relative cursor-pointer rounded-4 border border-gray-800 p-0", className)}>
+    <div className={cx("relative flex cursor-pointer items-center p-0 ", className)} ref={containerRef}>
+      <div className="absolute top-0 flex h-full items-center px-12">
+        <SearchIconComponent
+          height={16}
+          width={16}
+          onClick={handleClick}
+          className={cx("relative -top-1 ", {
+            "text-slate-100": !isFocused,
+            "text-white": isFocused,
+          })}
+        />
+      </div>
       <input
         ref={inputRef}
         data-qa={qa}
@@ -59,30 +84,39 @@ export default function SearchInput({
         value={value}
         onChange={handleChange}
         onKeyDown={onKeyDown}
+        onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx("block w-full bg-scroll bg-[12px_center] bg-no-repeat placeholder-slate-100", {
-          "bg-[length:20px_20px] py-10 pl-40 pr-34 text-16": size === "m",
-          "bg-[length:15px] py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
+        className={cx("block w-full rounded-4 border  placeholder-slate-500", {
+          "border-gray-400": isFocused,
+          "border-gray-800 hover:border-gray-600": !isFocused,
+          "py-10 pl-40 pr-34 text-16": size === "m",
+          "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
         })}
-        style={STYLE}
       />
-      <button
-        className={cx("group absolute bottom-0 right-0 top-0 flex items-center", {
-          "pr-8": size === "m",
-          "pr-4": size === "s",
-        })}
-        onClick={handleClear}
-      >
-        <div
-          className={cx(
-            "rounded-4 p-4 text-gray-500",
-            "group-hover:bg-[#50577e99] group-hover:text-slate-100 group-focus:bg-[#50577e99] group-focus:text-slate-100",
-            "group-active:bg-[#50577eb3] group-active:text-gray-300"
-          )}
+      {
+        <button
+          className={cx("group absolute bottom-0 right-0 top-0 flex items-center", {
+            "pr-8": size === "m",
+            "pr-4": size === "s",
+          })}
+          onClick={handleClear}
         >
-          <CrossIconComponent className="w-16" />
-        </div>
-      </button>
+          <div
+            className={cx(
+              "rounded-4 p-4 text-slate-100",
+              "group-hover:bg-[#50577e99] group-hover:text-slate-100 ",
+              "group-active:bg-[#50577eb3] group-active:text-slate-100"
+            )}
+          >
+            <CrossIconComponent
+              className={cx("w-16", {
+                "text-slate-100": !isFocused,
+                "text-white": isFocused,
+              })}
+            />
+          </div>
+        </button>
+      }
     </div>
   );
 }
