@@ -28,7 +28,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
 
   return (
     <>
-      <div className={cx("Footer-wrapper", { home: isHome, "mobile-trade-page": isMobileTradePage })}>
+      <div className={cx("Footer-wrapper", { home: isHome, "pb-52": isMobileTradePage })}>
         <div className="Footer-logo">
           <img src={logoImg} alt="MetaMask" />
         </div>

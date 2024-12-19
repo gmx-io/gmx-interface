@@ -10,10 +10,6 @@
   border-top: 1px solid var(--color-slate-700);
 }
 
-.Footer-wrapper.mobile-trade-page {
-  padding-bottom: 52px;
-}
-
 .Footer-logo {
   margin-bottom: 2.4rem;
   display: flex;
