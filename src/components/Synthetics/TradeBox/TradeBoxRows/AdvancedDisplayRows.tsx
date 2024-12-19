@@ -7,6 +7,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxDecreasePositionAmounts,
+  selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
@@ -14,13 +15,17 @@ import {
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
   selectTradeboxNextPositionValues,
+  selectTradeboxSelectedAllowedSwapSlippageBps,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetAdvancedOptions,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
+  selectTradeboxSetSelectedAllowedSwapSlippageBps,
+  selectTradeboxTotalSwapImpactBps,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
+  selectTradeboxTriggerRatioInputValue,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
@@ -35,27 +40,46 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
+import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
+import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 
 export function AdvancedDisplayRows() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
+  const triggerRatioInputValue = useSelector(selectTradeboxTriggerRatioInputValue);
+  const totalSwapImpactBps = useSelector(selectTradeboxTotalSwapImpactBps);
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
+
+  const defaultAllowedSwapSlippageBps = useSelector(selectTradeboxDefaultAllowedSwapSlippageBps);
+  const selectedAllowedSwapSlippageBps = useSelector(selectTradeboxSelectedAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectTradeboxSetSelectedAllowedSwapSlippageBps);
+
+  useTradeboxAllowedSwapSlippageValues();
+
   const fees = useSelector(selectTradeboxFees);
 
   const { isMarket, isLimit, isTrigger, isSwap } = tradeFlags;
 
-  const isInputDisabled = useMemo(() => {
+  const isPriceImpactInputDisabled = useMemo(() => {
     if (isLimit && increaseAmounts) {
       return limitPrice === undefined || limitPrice === 0n;
     }
 
     return decreaseAmounts && decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease;
   }, [decreaseAmounts, increaseAmounts, isLimit, limitPrice]);
+
+  const isSwapImpactInputDisabled = useMemo(() => {
+    if (isLimit && isSwap) {
+      return !triggerRatioInputValue;
+    }
+
+    return true;
+  }, [isLimit, isSwap, triggerRatioInputValue]);
 
   return (
     <>
@@ -67,7 +91,7 @@ export function AdvancedDisplayRows() {
         <AcceptablePriceImpactInputRow
           className="!mb-0 mt-8"
           notAvailable={
-            isInputDisabled ||
+            isPriceImpactInputDisabled ||
             defaultTriggerAcceptablePriceImpactBps === undefined ||
             selectedTriggerAcceptablePriceImpactBps === undefined
           }
@@ -75,6 +99,20 @@ export function AdvancedDisplayRows() {
           recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
           priceImpactFeeBps={fees?.positionPriceImpact?.bps}
           setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+        />
+      )}
+      {isLimit && isSwap && (
+        <AllowedSwapSlippageInputRow
+          className="!mb-0 mt-8"
+          notAvailable={
+            isSwapImpactInputDisabled ||
+            defaultAllowedSwapSlippageBps === undefined ||
+            selectedAllowedSwapSlippageBps === undefined
+          }
+          totalSwapImpactBps={totalSwapImpactBps}
+          allowedSwapSlippageBps={selectedAllowedSwapSlippageBps}
+          recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
+          setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
         />
       )}
     </>
