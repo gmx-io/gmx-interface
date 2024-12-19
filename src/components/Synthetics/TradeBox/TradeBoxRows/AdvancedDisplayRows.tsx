@@ -135,7 +135,7 @@ function LeverageInfoRows() {
             setIsChecked={setKeepLeverage}
             disabled={decreaseAmounts?.isFullClose}
           >
-            <span className="text-14 text-gray-300">
+            <span className="text-14 text-slate-100">
               <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
             </span>
           </ToggleSwitch>

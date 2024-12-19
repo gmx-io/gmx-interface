@@ -258,7 +258,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         </TableTd>
         <TableTd className="TradeHistoryRow-pnl-fees">
           {!msg.pnl ? (
-            <span className="text-gray-300">-</span>
+            <span className="text-slate-100">-</span>
           ) : (
             <span
               className={cx({
