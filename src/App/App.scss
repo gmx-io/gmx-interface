@@ -706,12 +706,6 @@ button.App-cta {
   color: var(--color-white);
   text-decoration: none;
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
-  &:hover:enabled {
-    background: var(--primary-btn-hover);
-  }
-  &:active:enabled {
-    background: var(--primary-btn-active);
-  }
 }
 
 .App-cta.small {
