@@ -126,6 +126,10 @@ export function PoolSelector({
           return false;
         }
 
+        if (item.marketInfo.isSpotOnly) {
+          return false;
+        }
+
         return categoryTokenAddresses.includes(item.marketInfo.indexTokenAddress);
       });
     }
@@ -158,9 +162,12 @@ export function PoolSelector({
 
     if (marketsOptions?.length > 1) {
       return (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div
+          className="text-h2 -mr-5 flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+          onClick={() => setIsModalVisible(true)}
+        >
           {name ? name : "..."}
-          <BiChevronDown className="TokenSelector-caret" />
+          <BiChevronDown className="text-body-large" />
         </div>
       );
     }

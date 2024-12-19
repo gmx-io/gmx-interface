@@ -5,12 +5,13 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract, GasPriceData } from "lib/contracts";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 export type CreateDepositParams = {
   account: string;
@@ -26,6 +27,8 @@ export type CreateDepositParams = {
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
+  blockTimestampData: BlockTimestampData | undefined;
+  gasPriceData: GasPriceData | undefined;
   metricId?: OrderMetricId;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
@@ -107,10 +110,11 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
         errorTitle: t`Deposit error.`,
         value: wntAmount,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -126,8 +130,8 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit,
-    gasPriceData,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingDeposit({
