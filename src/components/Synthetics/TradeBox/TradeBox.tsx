@@ -43,6 +43,8 @@ import {
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
+  selectTradeboxSetDefaultAllowedSwapSlippageBps,
+  selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAmount,
@@ -113,7 +115,7 @@ import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
-import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
+import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
@@ -178,6 +180,9 @@ export function TradeBox(p: Props) {
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
   const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const setDefaultAllowedSwapSlippageBps = useSelector(selectTradeboxSetDefaultAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectTradeboxSetSelectedAllowedSwapSlippageBps);
+
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
@@ -305,24 +310,44 @@ export function TradeBox(p: Props) {
   const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
 
   const setFromTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, resetPriceImpactAndSwapSlippage?: boolean) => {
       setFromTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+
+      if (resetPriceImpactAndSwapSlippage) {
         setIsHighPositionImpactAcceptedRef.current(false);
         setIsHighSwapImpactAcceptedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setFromTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [
+      setFromTokenInputValueRaw,
+      setIsHighPositionImpactAcceptedRef,
+      setIsHighSwapImpactAcceptedRef,
+      setDefaultAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
+    ]
   );
   const setToTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, shouldPriceImpactAndSwapSlippage: boolean) => {
       setToTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+
+      if (shouldPriceImpactAndSwapSlippage) {
         setIsHighPositionImpactAcceptedRef.current(false);
         setIsHighSwapImpactAcceptedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [
+      setToTokenInputValueRaw,
+      setIsHighPositionImpactAcceptedRef,
+      setIsHighSwapImpactAcceptedRef,
+      setDefaultAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
+    ]
   );
 
   const userReferralInfo = useUserReferralInfo();
@@ -668,7 +693,7 @@ export function TradeBox(p: Props) {
   const { requiredActions } = useRequiredActions();
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
 
-  useTradeboxAvailablePriceImpactValues();
+  useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(setTriggerConsent);
 
   const prevIsISwap = usePrevious(isSwap);
@@ -904,6 +929,7 @@ export function TradeBox(p: Props) {
     if (swapPathStats) {
       // eslint-disable-next-line no-console
       console.log("Swap Path", {
+        steps: swapPathStats.swapSteps,
         path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
         priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),
         usdOut: swapPathStats.swapSteps.map((step) => formatUsd(step.usdOut)).join(" -> "),
