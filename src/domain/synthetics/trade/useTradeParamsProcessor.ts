@@ -1,4 +1,4 @@
-import { getTokenBySymbolSafe, isTokenInList } from "config/tokens";
+import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxSetTradeConfig,

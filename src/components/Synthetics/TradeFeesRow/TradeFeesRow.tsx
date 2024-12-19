@@ -4,7 +4,7 @@ import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
-import { getToken } from "config/tokens";
+import { getToken } from "sdk/configs/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";

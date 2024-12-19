@@ -12,7 +12,7 @@ import {
 } from "config/dataStore";
 import { USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import {
   updateTokenBalance,
   useTokensBalancesUpdates,

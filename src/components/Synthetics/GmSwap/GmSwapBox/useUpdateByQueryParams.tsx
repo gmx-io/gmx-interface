@@ -4,7 +4,7 @@ import values from "lodash/values";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
+import { convertTokenAddress, getTokenBySymbolSafe } from "sdk/configs/tokens";
 
 import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";

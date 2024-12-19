@@ -13,7 +13,7 @@ import {
   ONE_CLICK_TRADING_OFFER_HIDDEN,
   ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
 } from "config/localStorage";
-import { getNativeToken, getWrappedToken } from "config/tokens";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import {
   useIsSubaccountActive,
   useSubaccountActionCounts,

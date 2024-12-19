@@ -1,4 +1,4 @@
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { OrderType } from "domain/synthetics/orders";
 import {
   FindSwapPath,

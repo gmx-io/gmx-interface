@@ -1,5 +1,5 @@
 import { getContract } from "config/contracts";
-import { getWhitelistedV1Tokens } from "config/tokens";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
