@@ -59,15 +59,17 @@ export default function SearchInput({
     inputRef.current?.focus();
   }, [setValue]);
 
+  const handleClick = useCallback(() => {
+    inputRef.current?.focus();
+  }, [inputRef]);
+
   return (
     <div className={cx("relative flex cursor-pointer items-center p-0 ", className)} ref={containerRef}>
       <div className="absolute top-0 flex h-full items-center px-12">
         <SearchIconComponent
           height={16}
           width={16}
-          onClick={() => {
-            inputRef.current?.focus();
-          }}
+          onClick={handleClick}
           className={cx("relative -top-1 ", {
             "text-slate-100": !isFocused,
             "text-white": isFocused,
@@ -102,12 +104,12 @@ export default function SearchInput({
           <div
             className={cx(
               "rounded-4 p-4 text-slate-100",
-              "group-hover:bg-[#50577e99] group-hover:text-slate-100 group-focus:bg-[#50577e99] group-focus:text-slate-100",
+              "group-hover:bg-[#50577e99] group-hover:text-slate-100 ",
               "group-active:bg-[#50577eb3] group-active:text-slate-100"
             )}
           >
             <CrossIconComponent
-              className={cx("active:!bg-red w-16", {
+              className={cx("w-16", {
                 "text-slate-100": !isFocused,
                 "text-white": isFocused,
               })}

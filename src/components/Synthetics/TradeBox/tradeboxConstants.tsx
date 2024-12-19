@@ -6,12 +6,6 @@ import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 import SwapIcon from "img/swap.svg?react";
 
-import "./TradeBox.scss";
-
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
-
 export const tradeTypeIcons = {
   [TradeType.Long]: <LongIcon />,
   [TradeType.Short]: <ShortIcon />,
