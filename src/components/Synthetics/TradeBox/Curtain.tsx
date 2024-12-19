@@ -33,11 +33,11 @@ export function Curtain({
 
   const headerClick = useCallback(() => {
     setIsOpen(true);
-  }, []);
+  }, [setIsOpen]);
 
   const handleClick = useCallback(() => {
     setIsOpen((prev) => !prev);
-  }, []);
+  }, [setIsOpen]);
 
   return (
     <>
