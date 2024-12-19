@@ -660,10 +660,6 @@ msgstr "Claimable Rebates"
 msgid "Max pool amount reached"
 msgstr "Max pool amount reached"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Bid Price (Exit)"
-#~ msgstr "Bid Price (Exit)"
-
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "Market Orders"
@@ -754,10 +750,6 @@ msgstr "Slippage should be less than -5%"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
 msgstr "Unrealized PnL"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Open Interest Balance"
-#~ msgstr "Open Interest Balance"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "This value may be higher on other websites due to the collateral of positions being included in the calculation."
@@ -1417,10 +1409,6 @@ msgstr "Failed to update order(s)"
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short Open Interest"
-#~ msgstr "Short Open Interest"
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Failed Market Decrease"
@@ -1527,10 +1515,6 @@ msgstr "{longOrShort} positions do not pay a funding fee or a borrow fee."
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr "Fees for the past"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
-#~ msgstr "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
@@ -1777,10 +1761,6 @@ msgstr "Vault Capacity for your Account:"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long Open Interest"
-#~ msgstr "Long Open Interest"
-
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol risk explorer and stats"
 msgstr "Protocol risk explorer and stats"
@@ -1972,10 +1952,6 @@ msgstr "<0>Read more</0> about fees."
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
-#~ msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -3017,11 +2993,6 @@ msgstr "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgid "Liquidated"
 msgstr "Liquidated"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The ask price is used for opening longs and closing shorts."
-#~ msgstr "The ask price is used for opening longs and closing shorts."
-
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -3587,7 +3558,6 @@ msgstr "Earn"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "Collateral In"
@@ -5114,10 +5084,6 @@ msgstr "Governance"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Cancel"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Bid Price (Entry)"
-#~ msgstr "Bid Price (Entry)"
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Redemption time not yet reached"
@@ -7435,10 +7401,6 @@ msgstr "Top-Up"
 msgid "LAST PRICE"
 msgstr "LAST PRICE"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Ask Price (Exit)"
-#~ msgstr "Ask Price (Exit)"
-
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
 msgstr "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
@@ -7610,10 +7572,6 @@ msgstr "Unknown order"
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
 msgstr "No open positions at GMX currently"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Ask Price (Entry)"
-#~ msgstr "Ask Price (Entry)"
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
@@ -7915,11 +7873,6 @@ msgstr "You will receive at least {toAmountText} if this order is executed. This
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The bid price is used for opening shorts and closing longs."
-#~ msgstr "The bid price is used for opening shorts and closing longs."
 
 #: src/components/Exchange/OrdersToa.jsx
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"

@@ -1,6 +1,8 @@
 import cx from "classnames";
 import { PropsWithChildren, forwardRef } from "react";
 
+type Padding = "all" | "compact" | "compact-one-column";
+
 interface TableTdThProps extends PropsWithChildren, React.HTMLProps<HTMLTableCellElement> {
   padding?: Padding;
 }
@@ -16,9 +18,8 @@ export function TableTh(props: TableTdThProps) {
       {...rest}
       className={cx("text-left font-normal uppercase text-slate-100 last-of-type:text-right", props.className, {
         "px-4 py-12 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
-        "px-4 first-of-type:pl-16 last-of-type:pr-16": padding === "horizontal",
-        "py-12": padding === "vertical",
-        "p-0": padding === "none",
+        "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
+        "px-8 py-8": padding === "compact-one-column",
       })}
     />
   );
@@ -55,8 +56,6 @@ export const TableTr = forwardRef<
   );
 });
 
-type Padding = "all" | "horizontal" | "vertical" | "none";
-
 export function TableTd(props: TableTdThProps) {
   const { padding = "all", ...rest } = props;
   return (
@@ -64,9 +63,8 @@ export function TableTd(props: TableTdThProps) {
       {...rest}
       className={cx("last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
         "px-4 py-12 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
-        "px-4 first-of-type:pl-16 last-of-type:pr-16": padding === "horizontal",
-        "py-12": padding === "vertical",
-        "p-0": padding === "none",
+        "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
+        "px-8 py-8": padding === "compact-one-column",
       })}
     />
   );

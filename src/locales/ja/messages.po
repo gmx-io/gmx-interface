@@ -660,10 +660,6 @@ msgstr ""
 msgid "Max pool amount reached"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Bid Price (Exit)"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "市場注文"
@@ -754,10 +750,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Open Interest Balance"
-#~ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "This value may be higher on other websites due to the collateral of positions being included in the calculation."
@@ -1417,10 +1409,6 @@ msgstr ""
 msgid "V2 Avalanche"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short Open Interest"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "マーケット減額失敗"
@@ -1527,10 +1515,6 @@ msgstr ""
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
-#~ msgstr "既存のポジションがある場合、ポジションは{0}の参照価格で手仕舞いされます。価格の影響を考慮していません。<0/><1/>この手仕舞い価格はアセットの価格とともに変動します。<2/><3/><4>詳細</4>"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
@@ -1777,10 +1761,6 @@ msgstr ""
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long Open Interest"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Protocol risk explorer and stats"
 msgstr ""
@@ -1972,10 +1952,6 @@ msgstr "手数料について<0>詳しく読む</0>"
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "この注文が執行された場合、少なくとも{0} {1}を受け取ることになります。正確な執行価格は注文執行時のスワップ手数料によって異なります。"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
-#~ msgstr "ポジションは参照価格{0}でオープンされ、価格インパクトを考慮していません。最大スリッページは-{1}%です。<0/><1/>スリッページの設定は、ウォレットを接続した後、ページ右上のアドレスをクリックして表示される設定で行うことができます。<2/><3/><4>詳細を読む</4>"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Limit order creation failed."
@@ -3017,11 +2993,6 @@ msgstr ""
 msgid "Liquidated"
 msgstr "清算済"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The ask price is used for opening longs and closing shorts."
-#~ msgstr ""
-
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -3587,7 +3558,6 @@ msgstr "報酬獲得"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/CollateralSelector/CollateralSelector.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "Collateral In"
@@ -5111,10 +5081,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "キャンセル"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Bid Price (Entry)"
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Redemption time not yet reached"
@@ -7429,10 +7395,6 @@ msgstr ""
 msgid "LAST PRICE"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Ask Price (Exit)"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
 msgstr ""
@@ -7604,10 +7566,6 @@ msgstr ""
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
 msgstr "現在GMXにオープンのポジションはありません"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Ask Price (Entry)"
-#~ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
@@ -7909,11 +7867,6 @@ msgstr ""
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The bid price is used for opening shorts and closing longs."
-#~ msgstr ""
 
 #: src/components/Exchange/OrdersToa.jsx
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"

@@ -14,25 +14,6 @@
     flex-direction: column;
     justify-content: space-between;
 
-    .TokenSelector-box {
-      display: flex;
-      align-items: center;
-      border-radius: 0.4rem;
-      color: var(--color-white);
-      min-width: 4.65rem;
-      font-size: var(--font-size-h2);
-      line-height: var(--line-height-h2);
-      justify-content: flex-end;
-
-      &:hover {
-        color: var(--color-blue-300);
-      }
-
-      &-symbol {
-        margin-left: 0.8rem;
-      }
-    }
-
     .Exchange-swap-input-container {
       display: flex;
       align-items: center;
@@ -44,11 +25,6 @@
       color: var(--color-white);
       font-size: var(--font-size-body-medium);
       line-height: var(--line-height-body-medium);
-    }
-
-    .TokenSelector-caret {
-      margin: 0;
-      margin-right: -0.5rem;
     }
 
     .PositionEditor-token-symbol {

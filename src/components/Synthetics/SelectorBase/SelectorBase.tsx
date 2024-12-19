@@ -111,7 +111,7 @@ export function SelectorBaseDesktopRow(
       <TooltipWithPortal
         as={TableTr}
         className={cx(
-          "SelectorBaseUtils-row underline decoration-dashed decoration-1 underline-offset-2",
+          "SelectorBaseUtils-row underline decoration-gray-400 decoration-dashed decoration-1 underline-offset-4",
           props.className
         )}
         content={props.message}
@@ -158,7 +158,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [
       offset({
-        mainAxis: props.popoverYOffset ?? 0,
+        mainAxis: props.popoverYOffset ?? 4,
         crossAxis: props.popoverXOffset ?? 0,
       }),
       flip(),
