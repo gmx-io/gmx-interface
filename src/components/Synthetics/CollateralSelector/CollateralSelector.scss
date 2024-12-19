@@ -1,19 +1,11 @@
 .CollateralSelector {
-  &-collateral-logos {
-    display: flex;
-  }
-
-  &-collateral-logo-first {
-    position: relative;
-  }
-
-  &-column-pool {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
   &-mobile {
+    &-column-pool {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
     &-info {
       margin: unset;
       margin-top: 1rem;

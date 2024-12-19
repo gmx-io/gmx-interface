@@ -746,17 +746,15 @@ function PositionItemOrdersLarge({
       <Tooltip
         className="Position-list-active-orders"
         handle={
-          <Trans>
-            Orders{" "}
-            <span
-              className={cx({
-                "text-red-500": ordersErrorList.length > 0,
-                "text-yellow-500": !ordersErrorList.length && ordersWarningsList.length > 0,
+          <>
+            <Trans>Orders ({ordersWithErrors.length})</Trans>
+            <div
+              className={cx("relative top-3 size-6 rounded-full", {
+                "bg-yellow-500": ordersWarningsList.length > 0 && !ordersErrorList.length,
+                "bg-red-500": ordersErrorList.length > 0,
               })}
-            >
-              ({ordersWithErrors.length})
-            </span>
-          </Trans>
+            />
+          </>
         }
         position="bottom-start"
         handleClassName={cx([

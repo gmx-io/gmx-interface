@@ -189,13 +189,14 @@ export function SyntheticsPage(p: Props) {
     }
 
     return (
-      <div>
-        <Trans>Orders</Trans>{" "}
-        <span
-          className={cx({ negative: ordersErrorsCount > 0, warning: !ordersErrorsCount && ordersWarningsCount > 0 })}
-        >
-          ({ordersCount})
-        </span>
+      <div className="flex">
+        <Trans>Orders ({ordersCount})</Trans>
+        <div
+          className={cx("relative top-3 size-6 rounded-full", {
+            "bg-yellow-500": ordersWarningsCount > 0 && !ordersErrorsCount,
+            "bg-red-500": ordersErrorsCount > 0,
+          })}
+        />
       </div>
     );
   }, [ordersCount, ordersErrorsCount, ordersWarningsCount]);

@@ -15,7 +15,7 @@ import type { TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
 import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
 
-import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
+import { TableTd } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
@@ -55,13 +55,6 @@ function CollateralSelectorDesktop(props: Props & { tradeType: TradeType; market
 
   return (
     <table className="CollateralSelector-table" data-qa="collateral-in-selector-table">
-      <thead>
-        <TableTheadTr bordered>
-          <TableTh>
-            <Trans>Collateral In</Trans>
-          </TableTh>
-        </TableTheadTr>
-      </thead>
       <tbody>
         {props.options?.map((option) => (
           <CollateralListItemDesktop
@@ -115,14 +108,8 @@ function CollateralListItemDesktop({
         disabled
         disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
       >
-        <TableTd className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-          <TokenIcon
-            symbol={tokenData.symbol}
-            displaySize={24}
-            importSize={24}
-            className="CollateralSelector-collateral-logo-first"
-          />
-          <div>{tokenData.symbol}</div>
+        <TableTd padding="compact-one-column" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
+          {tokenData.symbol}
         </TableTd>
       </SelectorBaseDesktopRow>
     );
@@ -133,14 +120,8 @@ function CollateralListItemDesktop({
       message={marketInfo && tradeType ? getCollateralInHintText(tradeType, tokenData, marketInfo) : undefined}
       onClick={handleClick}
     >
-      <TableTd className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-        <TokenIcon
-          symbol={tokenData.symbol}
-          displaySize={24}
-          importSize={24}
-          className="CollateralSelector-collateral-logo-first"
-        />
-        <div>{tokenData.symbol}</div>
+      <TableTd padding="compact-one-column" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
+        {tokenData.symbol}
       </TableTd>
     </SelectorBaseDesktopRow>
   );
@@ -166,7 +147,7 @@ function CollateralSelectorMobile(props: Props) {
               }}
               tokenData={option}
             />
-            <p className="mb-8 opacity-50 last:mb-0">{description}</p>
+            <p className="text-body-small text-gray-500 last:mb-0">{description}</p>
           </>
         );
       })}
@@ -206,13 +187,8 @@ function CollateralListItemMobile({
 
   return (
     <SelectorBaseMobileButton onSelect={handleSelect} disabled={disabled}>
-      <div className="CollateralSelector-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-        <TokenIcon
-          symbol={tokenData.symbol}
-          displaySize={30}
-          importSize={24}
-          className="CollateralSelector-collateral-logo-first"
-        />
+      <div className="CollateralSelector-mobile-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
+        <TokenIcon symbol={tokenData.symbol} displaySize={28} importSize={24} />
         <div>{tokenData.symbol}</div>
       </div>
     </SelectorBaseMobileButton>

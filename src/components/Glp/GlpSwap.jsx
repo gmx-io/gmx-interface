@@ -1077,7 +1077,7 @@ export default function GlpSwap(props) {
                   onSelectToken={onSelectSwapToken}
                   tokens={whitelistedTokens}
                   infoTokens={infoTokens}
-                  className="GlpSwap-from-token"
+                  size="l"
                   showSymbolImage={true}
                   showTokenImgInDropdown={true}
                 />
@@ -1152,7 +1152,7 @@ export default function GlpSwap(props) {
                   onSelectToken={onSelectSwapToken}
                   tokens={whitelistedTokens}
                   infoTokens={infoTokens}
-                  className="GlpSwap-from-token"
+                  size="l"
                   showSymbolImage={true}
                   showTokenImgInDropdown={true}
                 />

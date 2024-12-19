@@ -29,8 +29,10 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { bigMath } from "lib/bigmath";
 import { formatAmountHuman } from "lib/numbers";
+import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 
 function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation
@@ -70,6 +72,7 @@ export function SyntheticsStats() {
   const { chainId } = useChainId();
 
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
   const {
     positionsConstants: { minCollateralUsd, minPositionSizeUsd },
   } = usePositionsConstantsRequest(chainId);
@@ -215,6 +218,8 @@ export function SyntheticsStats() {
 
               const fundingAprLong = getFundingFactorPerPeriod(market, true, CHART_PERIODS["1h"]) * 100n;
               const fundingAprShort = getFundingFactorPerPeriod(market, false, CHART_PERIODS["1h"]) * 100n;
+
+              const marketKinkModelBorrowingData = kinkMarketsBorrowingRatesData[market.marketTokenAddress];
 
               function renderMarketCell() {
                 return (
@@ -414,44 +419,95 @@ export function SyntheticsStats() {
                         }
                         renderContent={() => (
                           <>
-                            <StatsTooltipRow
-                              label="Pending borrowing fee"
-                              value={formatAmountHuman(market.totalBorrowingFees, 30)}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Factor Long"
-                              value={formatFactor(market.borrowingFactorLong)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Factor Short"
-                              value={formatFactor(market.borrowingFactorShort)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Exponent Long"
-                              value={formatFactor(market.borrowingExponentFactorLong)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Exponent Short"
-                              value={formatFactor(market.borrowingExponentFactorShort)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Max Rate Long"
-                              value={
-                                maxBorrowingRateLong ? `-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h` : "N/A"
-                              }
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Max Rate Short"
-                              value={
-                                maxBorrowingRateShort ? `-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h` : "N/A"
-                              }
-                              showDollar={false}
-                            />
+                            {marketKinkModelBorrowingData ? (
+                              <>
+                                <StatsTooltipRow
+                                  label="Pending borrowing fee"
+                                  value={formatAmountHuman(market.totalBorrowingFees, 30)}
+                                />
+                                <StatsTooltipRow
+                                  label="Optimal Usage Factor Long"
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorLong * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Optimal Usage Factor Short"
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorShort * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Base Borrowing Factor Long"
+                                  value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorLong, 30, 11)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Base Borrowing Factor Short"
+                                  value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorShort, 30, 11)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Long"
+                                  value={
+                                    marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong
+                                      ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong * 3600n * 100n, 30, 5)}% / 1h`
+                                      : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Short"
+                                  value={
+                                    marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort
+                                      ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort * 3600n * 100n, 30, 5)}% / 1h`
+                                      : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <StatsTooltipRow
+                                  label="Pending borrowing fee"
+                                  value={formatAmountHuman(market.totalBorrowingFees, 30)}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Factor Long"
+                                  value={formatFactor(market.borrowingFactorLong)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Factor Short"
+                                  value={formatFactor(market.borrowingFactorShort)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Exponent Long"
+                                  value={formatFactor(market.borrowingExponentFactorLong)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Exponent Short"
+                                  value={formatFactor(market.borrowingExponentFactorShort)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Long"
+                                  value={
+                                    maxBorrowingRateLong ? `-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h` : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Short"
+                                  value={
+                                    maxBorrowingRateShort
+                                      ? `-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h`
+                                      : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                              </>
+                            )}
                           </>
                         )}
                       />

@@ -822,7 +822,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                 onSelectToken={firstTokenSelectToken}
                 tokens={tokenOptions}
                 infoTokens={infoTokens}
-                className="GlpSwap-from-token"
+                size="l"
                 showSymbolImage={true}
                 showTokenImgInDropdown={true}
                 marketsInfoData={marketsInfoData}

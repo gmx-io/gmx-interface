@@ -374,6 +374,10 @@ function useFilterSortTokensInfo({
           return false;
         }
 
+        if (marketInfo.isSpotOnly) {
+          return false;
+        }
+
         return categoryTokenAddresses.includes(marketInfo.indexTokenAddress);
       });
     }

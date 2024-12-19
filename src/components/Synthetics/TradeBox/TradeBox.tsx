@@ -1079,7 +1079,7 @@ export function TradeBox(p: Props) {
               onSelectToken={handleSelectFromTokenAddress}
               tokens={swapTokens}
               infoTokens={infoTokens}
-              className="GlpSwap-from-token"
+              size="l"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
               missedCoinsPlace={MissedCoinsPlace.payToken}
@@ -1123,7 +1123,6 @@ export function TradeBox(p: Props) {
                 onSelectToken={handleSelectToTokenAddress}
                 tokens={swapTokens}
                 infoTokens={infoTokens}
-                className="GlpSwap-from-token"
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
@@ -1159,7 +1158,7 @@ export function TradeBox(p: Props) {
                     <>
                       <span className="inline-flex items-center">
                         <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
-                        <span className="Token-symbol-text">
+                        <span>
                           {getTokenVisualMultiplier(toToken)}
                           {toToken.symbol}
                         </span>

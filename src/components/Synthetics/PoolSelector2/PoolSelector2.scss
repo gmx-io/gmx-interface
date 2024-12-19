@@ -1,29 +1,10 @@
 .PoolSelector2 {
-  &-collateral-logos {
-    display: flex;
-  }
-
-  &-collateral-logo-first {
-    position: relative;
-  }
-
-  &-collateral-logo-second {
-    margin-left: calc(-24px / 2);
-  }
-
-  &-column-pool {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
   &-column-open-fees {
     text-align: right;
   }
 
   &-mobile {
     &-info {
-      font-size: var(--font-size-body-small);
       margin: unset;
       margin-top: 1rem;
       display: grid;
@@ -41,8 +22,30 @@
       }
     }
 
+    &-column-pool {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    &-collateral-logos {
+      display: flex;
+    }
+
+    &-collateral-logo-first {
+      position: relative;
+      border: 1px solid var(--color-slate-700);
+      border-radius: 50%;
+    }
+
     &-collateral-logo-second {
-      margin-left: calc(-30px / 2);
+      margin-left: calc(-16px / 2);
+      border: 1px solid var(--color-slate-700);
+      border-radius: 50%;
+    }
+
+    &-pool-name {
+      font-size: var(--font-size-body-large);
     }
   }
 }

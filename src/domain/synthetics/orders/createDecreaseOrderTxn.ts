@@ -5,7 +5,7 @@ import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } f
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
+import { callContract, GasPriceData } from "lib/contracts";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
@@ -17,6 +17,7 @@ import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { OrderMetricId } from "lib/metrics";
 import { prepareOrderTxn } from "./prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 const { ZeroAddress } = ethers;
 
@@ -57,6 +58,8 @@ export async function createDecreaseOrderTxn(
   subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
+  blockTimestampData: BlockTimestampData | undefined,
+  gasPriceData: GasPriceData | undefined,
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
@@ -105,12 +108,13 @@ export async function createDecreaseOrderTxn(
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
           metricId,
+          blockTimestampData,
         });
       }
     })
   );
 
-  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
+  const txnParams = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -130,12 +134,12 @@ export async function createDecreaseOrderTxn(
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
-    gasLimit,
-    gasPriceData,
+    customSignersGasLimits: txnParams.customSignersGasLimits,
+    customSignersGasPrices: txnParams.customSignersGasPrices,
+    gasLimit: txnParams.gasLimit,
+    gasPriceData: gasPriceData ?? txnParams.gasPriceData,
     metricId,
-    bestNonce,
+    bestNonce: subaccount?.bestNonce,
     setPendingTxns: callbacks.setPendingTxns,
   });
 

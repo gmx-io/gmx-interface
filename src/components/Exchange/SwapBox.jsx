@@ -2039,12 +2039,12 @@ export default function SwapBox(props) {
               >
                 <TokenSelector
                   label={t`Pay`}
+                  size="l"
                   chainId={chainId}
                   tokenAddress={fromTokenAddress}
                   onSelectToken={onSelectFromToken}
                   tokens={fromTokens}
                   infoTokens={infoTokens}
-                  showMintingCap={false}
                   showTokenImgInDropdown={true}
                   showSymbolImage
                 />
@@ -2070,6 +2070,7 @@ export default function SwapBox(props) {
               >
                 <TokenSelector
                   label={getTokenLabel()}
+                  size="l"
                   chainId={chainId}
                   tokenAddress={toTokenAddress}
                   onSelectToken={onSelectToToken}

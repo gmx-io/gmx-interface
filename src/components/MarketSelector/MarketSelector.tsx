@@ -201,17 +201,14 @@ export function MarketSelector({
           </div>
         )}
       </Modal>
-      {selectedMarketLabel ? (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
-          {selectedMarketLabel}
-          <BiChevronDown className="TokenSelector-caret" />
-        </div>
-      ) : (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
-          {marketInfo ? getMarketIndexName(marketInfo) : "..."}
-          <BiChevronDown className="TokenSelector-caret" />
-        </div>
-      )}
+      <div
+        className="text-h2 -mr-5 flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        onClick={() => setIsModalVisible(true)}
+        data-qa="market-selector"
+      >
+        {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
+        <BiChevronDown className="text-body-large" />
+      </div>
     </div>
   );
 }
