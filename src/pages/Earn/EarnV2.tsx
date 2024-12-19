@@ -38,16 +38,19 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 
+import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
 import { GlpCard } from "./GlpCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
-import { TotalRewardsCard } from "./TotalRewardsCard";
-
 import { StakeModal } from "./StakeModal";
+import { TotalRewardsCard } from "./TotalRewardsCard";
 import { UnstakeModal } from "./UnstakeModal";
 import { Vesting } from "./Vesting";
+
+import sparkleIcon from "img/sparkle.svg";
 
 import "./EarnV2.css";
 
@@ -420,13 +423,47 @@ export default function EarnV2() {
       </div>
 
       {getIsSyntheticsSupported(chainId) && (
-        <div className="StakeV2-section">
-          <GmList
+        <div className="mt-15">
+          <PageTitle
+            title={
+              <TooltipWithPortal
+                disableHandleStyle
+                content={
+                  <Trans>
+                    <p className="mb-6">Zero Cost Mint</p>
+                    <p>Get a rebate for all transaction costs incurred when minting GLV</p>
+                  </Trans>
+                }
+              >
+                <Trans>Select a GLV Vault</Trans>
+                <img src={sparkleIcon} alt="sparkle" className="relative -left-4 -top-8 inline h-24 align-top" />
+              </TooltipWithPortal>
+            }
+            showNetworkIcon={false}
+            subtitle={<Trans>Yield-optimized vaults supporting trading across multiple GMX markets</Trans>}
+          />
+          <GlvList
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
             glvTokensApyData={glvApyInfoData}
+            shouldScrollToTop
+            isDeposit={false}
+          />
+          <PageTitle
+            title={t`Select a GM Pool`}
+            showNetworkIcon={false}
+            subtitle={
+              <Trans>Pools allowing provision of liquidity including single and native asset opportunities</Trans>
+            }
+          />
+          <GmList
+            marketsTokensApyData={marketsTokensApyData}
+            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            glvTokensIncentiveAprData={undefined}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
+            glvTokensApyData={undefined}
             isDeposit={false}
             shouldScrollToTop
           />
