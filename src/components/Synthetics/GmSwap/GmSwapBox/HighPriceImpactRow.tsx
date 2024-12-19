@@ -24,7 +24,7 @@ export function HighPriceImpactRow({
         {isSingle ? (
           <Tooltip
             className="warning-tooltip"
-            handle={<Trans>Acknowledge high Price Impact</Trans>}
+            handle={<Trans>Acknowledge high price impact</Trans>}
             position="top-start"
             renderContent={() => (
               <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
@@ -32,7 +32,7 @@ export function HighPriceImpactRow({
           />
         ) : (
           <span className="muted text-14 text-yellow-500">
-            <Trans>Acknowledge high Price Impact</Trans>
+            <Trans>Acknowledge high price impact</Trans>
           </span>
         )}
       </Checkbox>
