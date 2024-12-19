@@ -1,32 +1,40 @@
 export const RewardProgram = ({ title, description, data, type }) => {
+  const handleBuyTLP = () => {
+    window.location.hash = "/buy_tlp";
+  };
+
   const renderTable = () => {
     if (type === "first-mover") {
       return (
         <>
           <div className="reward-table">
             <div className="reward-table-header">
-              <div>TLP Value in USD</div>
-              <div>Bonus</div>
+              <div>Tier</div>
+              <div>Liquidity Range</div>
+              <div>Share</div>
             </div>
             {[
-              ["First 100k", "30%"],
-              ["100k-300k", "25%"],
-              ["300k-600k", "20%"],
-              ["600k-1M", "15%"],
-              ["1M-2M", "10%"],
-              ["4M-8M", "5%"],
-              ["8M-16M", "3%"],
-              ["16M-32M", "1%"],
-            ].map(([range, bonus], i) => (
-              <div key={i} className="reward-table-row">
+              ["Tier 1", "First $250,000", "20%"],
+              ["Tier 2", "Next $2,500,000", "20%"],
+              ["Tier 3", "Next $8,500,000", "20%"],
+              ["Tier 4", "Next $17,500,000", "20%"],
+              ["Tier 5", "Up to $40M", "20%"],
+            ].map(([tier, range, share], i) => (
+              <div key={i} className="reward-table-row three-col">
+                <div>{tier}</div>
                 <div>{range}</div>
-                <div>{bonus}</div>
+                <div>{share}</div>
               </div>
             ))}
           </div>
           <br />
           <div className="reward-table">
-            <div className="reward-info">Leaders will be listed here.</div>
+            <div className="reward-info">50,000 TMX tokens total allocation. $5,000 USD minimum deposit required.</div>
+          </div>
+          <div className="reward-program-actions">
+            <button className="reward-action-button" onClick={handleBuyTLP}>
+              Move First to Earn More
+            </button>
           </div>
         </>
       );
@@ -35,35 +43,33 @@ export const RewardProgram = ({ title, description, data, type }) => {
       return (
         <>
           <div className="reward-table">
-            <div className="reward-table-header">
-              <div>Position</div>
-              <div>Bonus</div>
-            </div>
-            {Array.from({ length: 20 }, (_, i) => (
-              <div key={i} className="reward-table-row">
-                <div>#{i + 1} Staker</div>
-                <div>{20 - i}%</div>
-              </div>
-            ))}
+            <div className="reward-info">Linear scale: 0.1 TMX per $1.00 supplied</div>
           </div>
           <br />
           <div className="reward-table">
-            <div className="reward-info">Leaders will be listed here.</div>
+            <div className="reward-info">Example: $100,000 invested = 10,000 TMX tokens earned</div>
+          </div>
+          <br />
+          <div className="reward-table">
+            <div className="reward-info">100,000 TMX total allocation. $50,000 USD minimum deposit required.</div>
+          </div>
+          <div className="reward-program-actions">
+            <button className="reward-action-button" onClick={handleBuyTLP}>
+              Become a Liquidity Provider
+            </button>
           </div>
         </>
       );
     }
-    if (type === "referral") {
+    if (type === "estmx-boost") {
       return (
         <>
           <div className="reward-table">
-            <div className="reward-info">
-              20% of fees split proportionally among referrers based on referred TLP amount
-            </div>
+            <div className="reward-info">Stake esTMX tokens to boost your fee rewards</div>
           </div>
           <br />
           <div className="reward-table">
-            <div className="reward-info">Leaders will be listed here.</div>
+            <div className="reward-info">Controlled distribution rate for long-term stability</div>
           </div>
         </>
       );

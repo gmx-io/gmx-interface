@@ -92,6 +92,23 @@ export function AppHeaderLinks({
           <Trans>Earn</Trans>
         </HeaderLink>
       </motion.div>
+      <motion.div
+        className="App-header-link-container"
+        style={{ display: "flex", alignItems: "center" }}
+        variants={linkVariants}
+        initial="initial"
+        whileHover="hover"
+        whileTap="tap"
+      >
+        <HeaderLink
+          to="/rewards"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+          style={{ width: "100%" }}
+        >
+          <Trans>Rewards</Trans>
+        </HeaderLink>
+      </motion.div>
       {/* <motion.div
         className="App-header-link-container"
         data-tour="step-2"
