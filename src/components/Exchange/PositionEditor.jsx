@@ -32,7 +32,7 @@ import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
-import { getPriceDecimals } from "config/tokens";
+import { getPriceDecimals } from "sdk/configs/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";

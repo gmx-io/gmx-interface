@@ -13,7 +13,7 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { USD_DECIMALS } from "config/factors";
-import { convertTokenAddress, getTokenVisualMultiplier } from "config/tokens";
+import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {

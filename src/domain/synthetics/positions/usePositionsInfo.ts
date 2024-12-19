@@ -22,7 +22,7 @@ import {
   getPositionNetValue,
   getPositionPendingFeesUsd,
 } from "./utils";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;

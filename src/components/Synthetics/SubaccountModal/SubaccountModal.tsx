@@ -9,7 +9,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 import { getContract } from "config/contracts";
-import { getNativeToken, getWrappedToken } from "config/tokens";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import {
   useIsSubaccountActive,
   useSubaccount,

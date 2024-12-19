@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { getChainName, getExcessiveExecutionFee, getHighExecutionFee } from "config/chains";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { USD_DECIMALS } from "config/factors";

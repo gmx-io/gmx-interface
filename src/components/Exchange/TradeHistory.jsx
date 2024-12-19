@@ -14,7 +14,7 @@ import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getPriceDecimals } from "config/tokens";
+import { getPriceDecimals } from "sdk/configs/tokens";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";

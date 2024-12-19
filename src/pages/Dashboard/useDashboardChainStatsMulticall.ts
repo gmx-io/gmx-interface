@@ -1,7 +1,7 @@
 import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
-import { getWhitelistedV1Tokens } from "config/tokens";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 

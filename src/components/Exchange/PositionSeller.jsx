@@ -24,7 +24,7 @@ import {
   MAX_LEVERAGE,
 } from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";

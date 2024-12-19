@@ -7,7 +7,7 @@ import type {
 } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
-import { getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { CacheKey, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
 import type { MarketsInfoData } from "../markets/types";

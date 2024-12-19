@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
-import { TOKEN_COLOR_MAP } from "config/tokens";
+import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import {
   getMarketIndexName,
   getMarketPoolName,

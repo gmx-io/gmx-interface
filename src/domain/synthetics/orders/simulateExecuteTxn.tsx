@@ -8,7 +8,7 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BaseContract, ethers } from "ethers";

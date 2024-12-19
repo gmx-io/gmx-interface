@@ -1,3 +1,5 @@
+export type TokenCategory = "meme" | "layer1" | "layer2" | "defi";
+
 export type Token = {
   name: string;
   symbol: string;
@@ -16,6 +18,7 @@ export type Token = {
   explorerUrl?: string;
   reservesUrl?: string;
   imageUrl?: string;
+  categories?: TokenCategory[];
 
   isUsdg?: boolean;
   isNative?: boolean;

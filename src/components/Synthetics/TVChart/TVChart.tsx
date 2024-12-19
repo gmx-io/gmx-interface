@@ -4,7 +4,7 @@ import { useMedia } from "react-use";
 
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { USD_DECIMALS } from "config/factors";
-import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "config/tokens";
+import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import {
   useOrdersInfoData,
