@@ -3,7 +3,13 @@ import { useMemo } from "react";
 
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
-import { getGlvOrMarketAddress, type GlvAndGmMarketsInfoData, type GlvOrMarketInfo } from "../markets";
+import {
+  GlvInfoData,
+  MarketsInfoData,
+  getGlvOrMarketAddress,
+  type GlvAndGmMarketsInfoData,
+  type GlvOrMarketInfo,
+} from "../markets";
 import { isGlvInfo } from "../markets/glv";
 
 import { convertToUsd, type TokenData, type TokensData } from "../tokens";
@@ -13,10 +19,13 @@ const DEFAULT_VALUE = {
   marketsInfo: EMPTY_ARRAY,
 };
 
-export function sortMarketsWithIndexToken(
-  marketsInfoData: GlvAndGmMarketsInfoData | undefined,
+export function sortMarketsWithIndexToken<T extends GlvAndGmMarketsInfoData | MarketsInfoData | GlvInfoData>(
+  marketsInfoData: T | undefined,
   marketTokensData: TokensData | undefined
-) {
+): {
+  markets: TokenData[];
+  marketsInfo: T[keyof T][];
+} {
   if (!marketsInfoData || !marketTokensData) {
     return DEFAULT_VALUE;
   }
@@ -81,7 +90,7 @@ export function sortMarketsWithIndexToken(
   const flattenedMarkets = sortedMarkets.flat(Infinity).filter(Boolean) as TokenData[];
   return {
     markets: flattenedMarkets,
-    marketsInfo: flattenedMarkets.map((market) => getByKey(marketsInfoData, market.address)!),
+    marketsInfo: flattenedMarkets.map((market) => getByKey(marketsInfoData, market.address)! as T[keyof T]),
   };
 }
 
