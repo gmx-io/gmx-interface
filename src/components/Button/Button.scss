@@ -142,11 +142,11 @@
 
     &.primary-action,
     &.primary {
-      background-color: var(--color-primary-button-disabled);
+      background-color: #1d235f;
     }
 
     &.secondary {
-      background-color: var(--color-secondary-button-disabled);
+      background-color: #1b1e32;
       color: var(--color-slate-500);
     }
   }

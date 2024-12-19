@@ -5,6 +5,9 @@ const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
 const defaultConfig = require("tailwindcss/defaultConfig");
 
+/**
+ * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
+ */
 const colors = {
   blue: {
     300: "#7885ff",
@@ -59,6 +62,9 @@ const colors = {
   },
   white: "#ffffff",
   black: "#000000",
+  stroke: {
+    primary: "#252A47",
+  },
 };
 
 /**
@@ -82,26 +88,6 @@ function injectColorsPlugin({ addBase, theme }) {
 
   addBase({
     ":root": extractColorVars(theme("colors")),
-  });
-}
-
-/**
- * @type {import('tailwindcss/types/config').PluginCreator}
- * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
- */
-function injectSemanticColorsPlugin({ addBase, addComponents }) {
-  addBase({
-    ":root": {
-      "--color-stroke-primary": '#252A47',
-      "--color-primary-button-disabled": "#1d235f",
-      "--color-secondary-button-disabled": "#1b1e32",
-    },
-  });
-
-  addComponents({
-    ".stroke-primary": {
-      border: "1px solid var(--color-stroke-primary)",
-    },
   });
 }
 
@@ -210,5 +196,5 @@ module.exports = {
       ),
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectSemanticColorsPlugin],
+  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
 };

@@ -106,7 +106,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="stroke-primary z-30 rounded-4 border bg-slate-800 outline-none"
+          className="border-1 z-30 rounded-4 border border-stroke-primary bg-slate-800 outline-none"
         >
           {market && (
             <Menu.Item as="div">

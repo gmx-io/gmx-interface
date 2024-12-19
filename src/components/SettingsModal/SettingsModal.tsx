@@ -328,7 +328,7 @@ function TenderlyInput({
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className="stroke-primary w-[280px] border px-5 py-4 text-12"
+        className="border-1 w-[280px] border border-stroke-primary px-5 py-4 text-12"
       />
     </p>
   );
