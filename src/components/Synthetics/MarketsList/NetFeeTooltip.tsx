@@ -21,7 +21,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-300">
+                <span className="text-slate-100">
                   <Trans>Longs Net Rate / 1h</Trans>
                 </span>
                 <span
@@ -34,7 +34,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-300">
+                <span className="text-slate-100">
                   <Trans>Shorts Net Rate / 1h</Trans>
                 </span>
                 <span
@@ -57,13 +57,13 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
     <table className="w-full">
       <thead>
         <tr>
-          <th className="pb-10 font-normal uppercase text-gray-300">
+          <th className="pb-10 font-normal uppercase text-slate-100">
             <Trans>Pool</Trans>
           </th>
-          <th className="pb-10 pr-10 text-right font-normal uppercase text-gray-300">
+          <th className="pb-10 pr-10 text-right font-normal uppercase text-slate-100">
             <Trans>Longs Net Rate / 1h</Trans>
           </th>
-          <th className="pb-10  text-right font-normal uppercase text-gray-300">
+          <th className="pb-10  text-right font-normal uppercase text-slate-100">
             <Trans>Shorts Net Rate / 1h</Trans>
           </th>
         </tr>
