@@ -1170,6 +1170,7 @@ export function TradeBox(p: Props) {
                 isSideMenu
                 missedCoinsPlace={MissedCoinsPlace.marketDropdown}
                 onSelectMarket={(_indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+                size="l"
               />
             )}
           </BuyInputSection>
@@ -1289,6 +1290,7 @@ export function TradeBox(p: Props) {
                 markets={sortedAllMarkets ?? EMPTY_ARRAY}
                 isSideMenu
                 onSelectMarket={handleSelectMarket}
+                size="m"
               />
             }
           />
