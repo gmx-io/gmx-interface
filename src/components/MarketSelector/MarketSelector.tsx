@@ -39,6 +39,7 @@ type Props = {
   footerContent?: ReactNode;
   getMarketState?: (market: MarketInfo) => MarketState | undefined;
   onSelectMarket: (indexName: string, market: MarketInfo) => void;
+  size?: "l" | "m";
 };
 
 type MarketState = {
@@ -66,6 +67,7 @@ export function MarketSelector({
   showBalances,
   footerContent,
   missedCoinsPlace,
+  size = "m",
   onSelectMarket,
   getMarketState,
 }: Props) {
@@ -202,12 +204,14 @@ export function MarketSelector({
         )}
       </Modal>
       <div
-        className="text-h2 -mr-5 flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+          "text-h2 -mr-5": size === "l",
+        })}
         onClick={() => setIsModalVisible(true)}
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <BiChevronDown className="text-body-large" />
+        <BiChevronDown className={cx({ "text-body-large": size === "l", "-my-5 text-24": size === "m" })} />
       </div>
     </div>
   );
