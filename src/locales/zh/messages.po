@@ -49,6 +49,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -542,10 +543,6 @@ msgstr "添加到Metamask"
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
-msgstr ""
-
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Select a Pool"
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
@@ -2762,6 +2759,11 @@ msgstr ""
 msgid "Order creation failed."
 msgstr ""
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
+msgstr ""
+
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
 msgstr ""
@@ -3362,6 +3364,11 @@ msgstr "在杠杆显示中包括PnL"
 msgid "No claims yet"
 msgstr ""
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Select a GLV Vault"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -3422,7 +3429,7 @@ msgstr ""
 msgid "Unsupported network"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Shift"
 msgstr ""
 
@@ -3480,6 +3487,7 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUYABLE"
@@ -4112,6 +4120,7 @@ msgid "Stake failed"
 msgstr "质押失败"
 
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "钱包"
@@ -4139,6 +4148,7 @@ msgstr ""
 msgid "Reserved"
 msgstr "储备"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
@@ -4249,6 +4259,7 @@ msgstr "网络"
 msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -4365,6 +4376,11 @@ msgstr "GMX的产量模拟器"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
+msgstr ""
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Select a GM Pool"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -5136,6 +5152,11 @@ msgstr "当前网络费用非常高，这可能是由于{0}网络上的交易暂
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
 msgstr "目前 {0} 多"
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "<0>Zero Cost Mint</0><1>Get a rebate for all transaction costs incurred when minting GLV</1>"
+msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5994,6 +6015,7 @@ msgstr "归属的GMX未被撤回"
 msgid "FEES"
 msgstr "费用"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
 msgstr ""
@@ -6539,6 +6561,11 @@ msgstr "若流动率不足以交换GLP {0} 成 {swapTokenSymbol}, 您可使用�
 msgid "Claim completed!"
 msgstr "领取完成"
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Pools allowing provision of liquidity including single and native asset opportunities"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr ""
@@ -6963,7 +6990,7 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "订单规模大于头寸，只有在头寸增加的情况下才会执行"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Buy"
 msgstr "购买"
 
@@ -7022,7 +7049,7 @@ msgstr ""
 msgid "No markets matched."
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 msgstr ""
 
@@ -7063,6 +7090,7 @@ msgstr ""
 msgid "Referral code submitted!"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
@@ -7393,7 +7421,7 @@ msgstr ""
 msgid "LAST PRICE"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
 msgstr ""
 
@@ -7732,7 +7760,7 @@ msgstr ""
 msgid "Edit {longOrShortText} {0}"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Sell"
 msgstr ""
 

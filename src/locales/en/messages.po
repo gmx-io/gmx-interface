@@ -49,6 +49,7 @@ msgstr "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonu
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -543,10 +544,6 @@ msgstr "Add to Metamask"
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "Insufficient staked tokens"
-
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Select a Pool"
-msgstr "Select a Pool"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
@@ -2762,6 +2759,11 @@ msgstr "Staked on Arbitrum"
 msgid "Order creation failed."
 msgstr "Order creation failed."
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
+msgstr "Yield-optimized vaults supporting trading across multiple GMX markets"
+
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
 msgstr "Can’t find the coin you need? Let us know"
@@ -3362,6 +3364,11 @@ msgstr "Include PnL in leverage display"
 msgid "No claims yet"
 msgstr "No claims yet"
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Select a GLV Vault"
+msgstr "Select a GLV Vault"
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -3422,7 +3429,7 @@ msgstr "You can transfer AVAX from other networks to Avalanche using any of the 
 msgid "Unsupported network"
 msgstr "Unsupported network"
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Shift"
 msgstr "Shift"
 
@@ -3480,6 +3487,7 @@ msgstr "The position would be immediately liquidated upon order execution. Try r
 msgid "Enable"
 msgstr "Enable"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUYABLE"
@@ -4115,6 +4123,7 @@ msgid "Stake failed"
 msgstr "Stake failed"
 
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "WALLET"
@@ -4142,6 +4151,7 @@ msgstr "Total value of tokens in GM Pools."
 msgid "Reserved"
 msgstr "Reserved"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr "Available amount to deposit into the specific GM pool."
@@ -4252,6 +4262,7 @@ msgstr "Networks"
 msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr "{0}: {1}, Price: {priceDisplay}"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -4369,6 +4380,11 @@ msgstr "Yield simulator for GMX"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
 msgstr "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Select a GM Pool"
+msgstr "Select a GM Pool"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5139,6 +5155,11 @@ msgstr "The network Fees are very high currently, which may be due to a temporar
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
 msgstr "Current {0} long"
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "<0>Zero Cost Mint</0><1>Get a rebate for all transaction costs incurred when minting GLV</1>"
+msgstr "<0>Zero Cost Mint</0><1>Get a rebate for all transaction costs incurred when minting GLV</1>"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -6000,6 +6021,7 @@ msgstr "Vested GMX not withdrawn"
 msgid "FEES"
 msgstr "FEES"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
 msgstr "TOTAL SUPPLY"
@@ -6545,6 +6567,11 @@ msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}
 msgid "Claim completed!"
 msgstr "Claim completed!"
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Pools allowing provision of liquidity including single and native asset opportunities"
+msgstr "Pools allowing provision of liquidity including single and native asset opportunities"
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
@@ -6969,7 +6996,7 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "Order size is bigger than position, will only be executable if position increases"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Buy"
 msgstr "Buy"
 
@@ -7028,7 +7055,7 @@ msgstr "Enter unique coins"
 msgid "No markets matched."
 msgstr "No markets matched."
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 msgstr "Shifting from GLV to another pool is not possible, as GLV can only be sold into the backing tokens. However, you can buy GLV tokens without incurring buying fees by using eligible GM pool tokens."
 
@@ -7069,6 +7096,7 @@ msgstr "Fulfilling shift request"
 msgid "Referral code submitted!"
 msgstr "Referral code submitted!"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
@@ -7399,7 +7427,7 @@ msgstr "Top-Up"
 msgid "LAST PRICE"
 msgstr "LAST PRICE"
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
 msgstr "Shift is only applicable to GM pools when there are other pools with the same backing tokens, allowing liquidity to be moved without incurring buy or sell fees."
 
@@ -7738,7 +7766,7 @@ msgstr "Daily and Cumulative PnL"
 msgid "Edit {longOrShortText} {0}"
 msgstr "Edit {longOrShortText} {0}"
 
-#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Sell"
 msgstr "Sell"
 

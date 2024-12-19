@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
 
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
@@ -24,8 +24,13 @@ import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapB
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 
 import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
-import "./MarketPoolsPage.scss";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import { GlvList } from "components/Synthetics/GmList/GlvList";
+
+import sparkleIcon from "img/sparkle.svg";
+
+import "./MarketPoolsPage.scss";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
@@ -95,7 +100,7 @@ export function MarketPoolsPage() {
           qa="pools-page"
         />
 
-        <div className="MarketPoolsPage-content gap-12">
+        <div className="MarketPoolsPage-content mb-15 gap-12">
           <MarketStatsWithComposition
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
@@ -122,18 +127,47 @@ export function MarketPoolsPage() {
           </div>
         </div>
 
-        <div className="Tab-title-section">
-          <div className="Page-title">
-            <Trans>Select a Pool</Trans>
-          </div>
-        </div>
+        <PageTitle
+          title={
+            <TooltipWithPortal
+              disableHandleStyle
+              content={
+                <Trans>
+                  <p className="mb-6">Zero Cost Mint</p>
+                  <p>Get a rebate for all transaction costs incurred when minting GLV</p>
+                </Trans>
+              }
+            >
+              <Trans>Select a GLV Vault</Trans>
+              <img src={sparkleIcon} alt="sparkle" className="relative -left-4 -top-8 inline h-24 align-top" />
+            </TooltipWithPortal>
+          }
+          showNetworkIcon={false}
+          subtitle={<Trans>Yield-optimized vaults supporting trading across multiple GMX markets</Trans>}
+        />
+        <GlvList
+          marketsTokensApyData={marketsTokensApyData}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
+          glvTokensApyData={glvApyInfoData}
+          shouldScrollToTop
+          isDeposit
+        />
+        <PageTitle
+          title={t`Select a GM Pool`}
+          showNetworkIcon={false}
+          subtitle={
+            <Trans>Pools allowing provision of liquidity including single and native asset opportunities</Trans>
+          }
+        />
         <GmList
           glvTokensApyData={glvApyInfoData}
           glvTokensIncentiveAprData={glvTokensIncentiveAprData}
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}
-          shouldScrollToTop={true}
+          shouldScrollToTop
           isDeposit
         />
       </div>

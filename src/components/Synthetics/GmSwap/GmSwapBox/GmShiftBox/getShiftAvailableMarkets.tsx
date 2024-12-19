@@ -1,13 +1,13 @@
-import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import { EMPTY_ARRAY } from "lib/objects";
 
-export function getShiftAvailableMarkets({ markets }: { markets: GlvOrMarketInfo[] }): GlvOrMarketInfo[] {
+export function getShiftAvailableMarkets({ markets }: { markets: MarketInfo[] }): MarketInfo[] {
   if (markets.length === 0) {
     return EMPTY_ARRAY;
   }
 
-  const shiftGroups: { [longShortKey: string]: GlvOrMarketInfo[] } = {};
+  const shiftGroups: { [longShortKey: string]: MarketInfo[] } = {};
 
   for (const marketInfo of markets) {
     const longShortKey = getMarketPoolName(marketInfo);
@@ -19,7 +19,7 @@ export function getShiftAvailableMarkets({ markets }: { markets: GlvOrMarketInfo
     shiftGroups[longShortKey].push(marketInfo);
   }
 
-  const availableMarkets: GlvOrMarketInfo[] = [];
+  const availableMarkets: MarketInfo[] = [];
 
   for (const marketInfo of markets) {
     const longShortKey = getMarketPoolName(marketInfo);
