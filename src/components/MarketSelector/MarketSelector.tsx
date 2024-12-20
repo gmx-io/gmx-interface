@@ -198,7 +198,7 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-16 text-gray-400">
+          <div className="text-16 text-slate-100">
             <Trans>No markets matched.</Trans>
           </div>
         )}

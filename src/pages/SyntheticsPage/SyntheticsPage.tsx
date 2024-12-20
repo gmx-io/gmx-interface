@@ -2,14 +2,13 @@ import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
-import Helmet from "react-helmet";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useClosingPositionKeyState } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -17,7 +16,9 @@ import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/
 import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
+  selectTradeboxMaxLiquidityPath,
   selectTradeboxSetActivePosition,
+  selectTradeboxState,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -47,7 +48,6 @@ import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEdi
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { TVChart } from "components/Synthetics/TVChart/TVChart";
-import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
@@ -55,6 +55,8 @@ import { useMedia } from "react-use";
 import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { getTokenVisualMultiplier } from "config/tokens";
+import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
+import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 
 export type Props = {
   openSettings: () => void;
@@ -115,6 +117,12 @@ export function SyntheticsPage(p: Props) {
     orderTypesFilter,
     setOrderTypesFilter,
   } = useOrdersControl();
+
+  const { maxLiquidity: swapOutLiquidity } = useSelector(selectTradeboxMaxLiquidityPath);
+  const tokensData = useTokensData();
+  const { fromTokenAddress, toTokenAddress } = useSelector(selectTradeboxState);
+  const fromToken = getByKey(tokensData, fromTokenAddress);
+  const toToken = getByKey(tokensData, toTokenAddress);
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
 
@@ -239,17 +247,12 @@ export function SyntheticsPage(p: Props) {
   useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
 
   return (
-    <div className="Exchange page-layout">
-      <Helmet>
-        <style type="text/css">
-          {`
-            :root {
-              --main-bg-color: #08091b;
-             {
-         `}
-        </style>
-      </Helmet>
-      <div className="Exchange-content">
+    <div
+      className={cx("Exchange page-layout", {
+        "!pb-[333px]": isMobile,
+      })}
+    >
+      <div className="-mt-15 grid grid-cols-[1fr_auto] gap-15 px-10 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
         <div className="Exchange-left">
           <TVChart />
           {!isMobile && (
@@ -316,10 +319,17 @@ export function SyntheticsPage(p: Props) {
           )}
         </div>
 
-        <div className="Exchange-right">
-          <div className="Exchange-swap-box">
-            <TradeBox setPendingTxns={setPendingTxns} />
-          </div>
+        <div
+          className={cx("min-[1101px]:max-[1500px]:w-[38.75rem] min-[1501px]:w-[41.85rem]", {
+            absolute: isMobile && !isSwap,
+          })}
+        >
+          <TradeBoxResponsiveContainer />
+          {isSwap && (
+            <div className="w-full min-[1101px]:mt-10">
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+            </div>
+          )}
         </div>
 
         {isMobile && (
@@ -362,14 +372,11 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
       </div>
-
       <PositionSeller setPendingTxns={setPendingTxns} />
-
       <PositionEditor allowedSlippage={savedAllowedSlippage} setPendingTxns={setPendingTxns} />
-
       <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
-      <Footer />
+      <Footer isMobileTradePage={isMobile} />
     </div>
   );
 }
