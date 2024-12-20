@@ -23,7 +23,7 @@ export default function RewardsProgram() {
       </h1>
 
       <Banner id="rewards-draft-notice" className="rewards-draft-banner" dismissable={false}>
-        <Trans>This proposal draft is subject to change.</Trans>
+        <Trans>This draft is subject to change.</Trans>
       </Banner>
 
       <div className="reward-programs-section">
