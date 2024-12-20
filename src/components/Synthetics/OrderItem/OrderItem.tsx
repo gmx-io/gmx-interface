@@ -490,12 +490,12 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
-            <button className="cursor-pointer p-6 text-gray-300 hover:text-white" onClick={setEditingOrderKey}>
+            <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
               <AiOutlineEdit title={t`Edit order`} fontSize={16} />
             </button>
             {onCancelOrder && (
               <button
-                className="cursor-pointer p-6 text-gray-300 hover:text-white disabled:cursor-wait"
+                className="cursor-pointer p-6 text-slate-100 hover:text-white disabled:cursor-wait"
                 disabled={isCanceling}
                 onClick={onCancelOrder}
               >

@@ -525,8 +525,8 @@ export function PositionSeller(p: Props) {
         receiveToken && (
           <TokenSelector
             label={t`Receive`}
-            className={cx("PositionSeller-token-selector", {
-              warning: isNotEnoughReceiveTokenLiquidity,
+            className={cx({
+              "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
             })}
             chainId={chainId}
             showBalances={false}

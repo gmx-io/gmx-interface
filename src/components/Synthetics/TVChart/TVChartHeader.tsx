@@ -17,6 +17,7 @@ import { BiChevronDown, BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
+import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 
 const MIN_FADE_AREA = 24; //px
@@ -113,22 +114,28 @@ function TVChartHeaderInfoMobile() {
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
-          <div className="flex flex-row items-center gap-8">
+          <TooltipWithPortal
+            disableHandleStyle
+            as="div"
+            className="inline-flex flex-row items-center gap-8"
+            position="bottom-end"
+            content={<NetRate1hTooltip />}
+          >
             <div>{netRateLong}</div>
             <div>{netRateShort}</div>
-          </div>
+          </TooltipWithPortal>
         </div>
 
         <div>
           <div className="mb-4 whitespace-nowrap">
-            <span className="opacity-70">
+            <span className="text-slate-100">
               <Trans>Open Interest</Trans>
             </span>
-            <span className="opacity-70">{" ("}</span>
+            <span className="text-slate-100">{" ("}</span>
             <span className="positive">{longOIPercentage}</span>
-            <span className="opacity-70">/</span>
+            <span className="text-slate-100">/</span>
             <span className="negative">{shortOIPercentage}</span>
-            <span className="opacity-70">{")"}</span>
+            <span className="text-slate-100">{")"}</span>
           </div>
           <div className="flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-8">{longOIValue}</div>
@@ -301,15 +308,11 @@ function TVChartHeaderInfoDesktop() {
           <div className="Chart-header-value">{dailyVolume}</div>
         </div>
         <div>
-          <div className="mb-4 whitespace-nowrap text-[1.25rem]">
-            <span className="opacity-70">
-              <Trans>Open Interest</Trans>
-            </span>
-            <span className="opacity-70">{" ("}</span>
-            <span className="positive">{longOIPercentage}</span>
-            <span className="opacity-70">/</span>
-            <span className="negative">{shortOIPercentage}</span>
-            <span className="opacity-70">{")"}</span>
+          <div className="ExchangeChart-info-label mb-4 whitespace-nowrap text-[1.25rem]">
+            <Trans>Open Interest</Trans>
+            {" ("}
+            <span className="positive">{longOIPercentage}</span>/<span className="negative">{shortOIPercentage}</span>
+            {")"}
           </div>
           <div className="Chart-header-value flex flex-row items-center gap-8">
             <div className="flex flex-row items-center gap-4">{longOIValue}</div>
@@ -331,10 +334,16 @@ function TVChartHeaderInfoDesktop() {
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
+          <TooltipWithPortal
+            disableHandleStyle
+            as="div"
+            className="Chart-header-value flex flex-row items-center gap-8"
+            position="bottom-end"
+            content={<NetRate1hTooltip />}
+          >
             <div>{netRateLong}</div>
             <div>{netRateShort}</div>
-          </div>
+          </TooltipWithPortal>
         </div>
       </>
     );
@@ -424,7 +433,7 @@ function TVChartHeaderInfoDesktop() {
             style={leftStyles}
             onClick={scrollToLeft}
           >
-            {scrollLeft > 0 && <BiChevronLeft className="opacity-70" size={24} />}
+            {scrollLeft > 0 && <BiChevronLeft className="text-slate-100" size={24} />}
           </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
@@ -435,7 +444,7 @@ function TVChartHeaderInfoDesktop() {
             style={rightStyles}
             onClick={scrollToRight}
           >
-            {scrollRight > 0 && <BiChevronRight className="opacity-70" size={24} />}
+            {scrollRight > 0 && <BiChevronRight className="text-slate-100" size={24} />}
           </div>
         </div>
         <div className="Chart-top-scrollable" ref={scrollableRef}>

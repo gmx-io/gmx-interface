@@ -29,7 +29,7 @@ $app-card-padding: 1.5rem;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-gray-950);
+  border-bottom: 1px solid var(--color-slate-700);
   z-index: 1;
 }
 
@@ -213,7 +213,7 @@ $app-card-padding: 1.5rem;
   background: var(--dark-blue);
   height: 5.1rem;
   width: 26.35rem;
-  border: 1px solid var(--dark-blue-border);
+  border: 1px solid var(--color-stroke-primary);
   border-radius: 0.3rem;
   position: relative;
   color: var(--color-white);
@@ -278,7 +278,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-gray-800);
+  border: 1px solid var(--color-stroke-primary);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
@@ -401,7 +401,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description {
-  color: var(--color-gray-300);
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
 }
@@ -699,12 +699,6 @@ button.App-cta {
   color: var(--color-white);
   text-decoration: none;
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
-  &:hover:enabled {
-    background: var(--primary-btn-hover);
-  }
-  &:active:enabled {
-    background: var(--primary-btn-active);
-  }
 }
 
 .App-cta.small {
@@ -1019,7 +1013,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: var(--color-white);
+  color: var(--color-slate-100);
   opacity: 0.5;
 }
 
@@ -1035,11 +1029,13 @@ button.App-button {
 .rc-slider-tooltip-inner {
   box-shadow: none;
   padding: 0.465rem 0.8rem;
-  background: var(--color-slate-600);
+
+  background: rgb(49, 54, 85) !important;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25) !important;
 }
 
 .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-  border-top-color: var(--color-slate-600);
+  border-top-color: rgb(49, 54, 85) !important;
 }
 
 .header-connect-btn {
@@ -1165,7 +1161,7 @@ button.App-button {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-gray-950);
+    border-bottom: 1px solid var(--color-slate-700);
   }
 
   .App-header.small::after {
