@@ -30,8 +30,8 @@ const FADE_VARIANTS = {
 };
 
 const SLIDE_VARIANTS = {
-  hidden: { right: "-100%" },
-  visible: { right: "0" },
+  hidden: { x: "100%" },
+  visible: { x: "0" },
 };
 
 const TRANSITION = { duration: 0.2 };

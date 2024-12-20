@@ -93,26 +93,6 @@ function injectColorsPlugin({ addBase, theme }) {
 
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
- * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
- */
-function injectSemanticColorsPlugin({ addBase, addComponents }) {
-  addBase({
-    ":root": {
-      "--color-stroke-primary": '#252A47',
-      "--color-button-secondary": '#23263E',
-      "--color-button-disabled": '#1B1D34',
-    },
-  });
-
-  addComponents({
-    ".stroke-primary": {
-      border: "1px solid var(--color-stroke-primary)",
-    },
-  });
-}
-
-/**
- * @type {import('tailwindcss/types/config').PluginCreator}
  */
 function customUtilsPlugin({ addUtilities, theme }) {
   addUtilities({
@@ -216,5 +196,5 @@ module.exports = {
       ),
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectSemanticColorsPlugin],
+  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
 };
