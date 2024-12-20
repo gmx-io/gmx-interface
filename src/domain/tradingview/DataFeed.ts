@@ -11,16 +11,9 @@ import {
 } from "charting_library";
 import range from "lodash/range";
 
-import { getTvParamsCacheKey } from "config/localStorage";
-import {
-  getNativeToken,
-  getTokenBySymbol,
-  getTokenVisualMultiplier,
-  isChartAvailableForToken,
-} from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph, getLimitChartPricesFromStats } from "domain/prices";
-import { Bar, FromOldToNewArray, TvParamsCache } from "domain/tradingview/types";
+import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
   formatTimeInBarToMs,
   getCurrentCandleTime,
@@ -32,6 +25,12 @@ import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestI
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
+import {
+  getNativeToken,
+  getTokenBySymbol,
+  getTokenVisualMultiplier,
+  isChartAvailableForToken,
+} from "sdk/configs/tokens";
 
 const RESOLUTION_TO_SECONDS = {
   1: 60,
@@ -49,6 +48,8 @@ let metricsIsFirstLoadTime = true;
 
 const V1_UPDATE_INTERVAL = 1000;
 const V2_UPDATE_INTERVAL = 1000;
+
+const PREFETCH_CANDLES_COUNT = 300;
 
 export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
@@ -240,10 +241,6 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         isFirstTimeLoad: isFirst,
       },
     });
-
-    if (periodParams.firstDataRequest) {
-      this.saveTVParamsCache(this.chainId, { resolution, countBack: periodParams.countBack });
-    }
   }
 
   subscribeBars(
@@ -349,55 +346,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }, 0);
   }
 
-  prefetchBars(symbol: string): void {
-    if (symbol in this.prefetchedBarsPromises) {
+  prefetchBars(symbol: string, resolution: ResolutionString): void {
+    const prefetchKey = `${symbol}-${resolution}`;
+    if (prefetchKey in this.prefetchedBarsPromises) {
       return;
     }
 
-    const tvParams = this.getInitialTVParamsFromCache(this.chainId);
-
-    if (!tvParams) {
-      return;
-    }
-
-    this.prefetchedBarsPromises[symbol] = this.fetchCandles(symbol, tvParams.resolution, tvParams.countBack, true);
-  }
-
-  private getInitialTVParamsFromCache(chainId: number) {
-    const tvCache = localStorage.getItem(getTvParamsCacheKey(chainId, this.tradePageVersion === 1));
-
-    if (!tvCache) {
-      return undefined;
-    }
-
-    let resolution: ResolutionString;
-    let countBack: number;
-
-    try {
-      const cache: TvParamsCache = JSON.parse(tvCache);
-      resolution = cache.resolution;
-      countBack = cache.countBack;
-    } catch (e) {
-      return undefined;
-    }
-
-    const period = SUPPORTED_RESOLUTIONS_V2[resolution];
-
-    if (!period) {
-      return undefined;
-    }
-
-    return {
-      countBack,
-      resolution,
-    };
-  }
-
-  private saveTVParamsCache(chainId: number, { resolution, countBack }: TvParamsCache) {
-    localStorage.setItem(
-      getTvParamsCacheKey(chainId, this.tradePageVersion === 1),
-      JSON.stringify({ resolution, countBack })
-    );
+    this.prefetchedBarsPromises[prefetchKey] = this.fetchCandles(symbol, resolution, PREFETCH_CANDLES_COUNT, true);
   }
 
   private pauseAll() {
@@ -415,9 +370,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     isPrefetch = false,
     isFirstFetch = false
   ): Promise<FromOldToNewArray<Bar>> {
-    if (symbol in this.prefetchedBarsPromises && !isPrefetch && isFirstFetch) {
-      const promise = this.prefetchedBarsPromises[symbol];
-      delete this.prefetchedBarsPromises[symbol];
+    const prefetchKey = `${symbol}-${resolution}`;
+    if (prefetchKey in this.prefetchedBarsPromises && !isPrefetch && isFirstFetch) {
+      const promise = this.prefetchedBarsPromises[prefetchKey];
+      delete this.prefetchedBarsPromises[prefetchKey];
       return await promise;
     }
 

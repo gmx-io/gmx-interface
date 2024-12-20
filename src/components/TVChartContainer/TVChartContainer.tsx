@@ -7,10 +7,9 @@ import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeper
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
-import { sleep } from "lib/sleep";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useLocalStorage, useMedia } from "react-use";
+import { useLatest, useLocalStorage, useMedia } from "react-use";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
@@ -131,25 +130,25 @@ export default function TVChartContainer({
         tvWidgetRef.current.activeChart().resolution(),
         async () => {
           const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
-          if (!priceScale) {
-            return;
+          if (priceScale) {
+            priceScale.setAutoScale(true);
           }
-
-          // Force Price Scale width to recalculate
-          const initialAutoScale = priceScale.isAutoScale();
-          priceScale.setAutoScale(!initialAutoScale);
-          await sleep(0);
-          priceScale.setAutoScale(initialAutoScale);
         }
       );
     }
   }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
 
+  const lastPeriod = useLatest(period);
+  const lastSupportedResolutions = useLatest(supportedResolutions);
+
   useLayoutEffect(() => {
     if (symbolRef.current) {
-      datafeed?.prefetchBars(symbolRef.current);
+      datafeed?.prefetchBars(
+        symbolRef.current,
+        getObjectKeyFromValue(lastPeriod.current, lastSupportedResolutions.current) as ResolutionString
+      );
     }
-  }, [datafeed]);
+  }, [datafeed, lastPeriod, lastSupportedResolutions]);
 
   useEffect(() => {
     if (!datafeed) return;
@@ -184,11 +183,14 @@ export default function TVChartContainer({
 
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
-      tvWidgetRef.current!.applyOverrides({
-        "paneProperties.background": "#16182e",
-        "paneProperties.backgroundType": "solid",
-        "mainSeriesProperties.statusViewStyle.showExchange": false,
-      });
+
+      const savedPeriod = tvWidgetRef.current?.activeChart().resolution();
+      const preferredPeriod = getObjectKeyFromValue(period, supportedResolutions) as ResolutionString;
+
+      if (savedPeriod && savedPeriod !== preferredPeriod) {
+        tvWidgetRef.current?.activeChart().setResolution(preferredPeriod);
+      }
+
       tvWidgetRef.current
         ?.activeChart()
         .onIntervalChanged()
@@ -196,6 +198,14 @@ export default function TVChartContainer({
           if (supportedResolutions[interval]) {
             const period = supportedResolutions[interval];
             setPeriod(period);
+            tvWidgetRef.current?.saveChartToServer(undefined, undefined, {
+              chartName: `gmx-chart-v${tradePageVersion}`,
+            });
+
+            const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
+            if (priceScale) {
+              priceScale.setAutoScale(true);
+            }
           }
         });
 
