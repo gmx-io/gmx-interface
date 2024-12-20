@@ -88,9 +88,9 @@ export async function getLimitChartPricesFromStats(
 ): Promise<FromOldToNewArray<Bar>> {
   symbol = getNormalizedTokenSymbol(symbol);
 
-  if (!isChartAvailabeForToken(chainId, symbol)) {
-    symbol = getNativeToken(chainId).symbol;
-  }
+  // if (!isChartAvailabeForToken(chainId, symbol)) {
+  //   symbol = getNativeToken(chainId).symbol;
+  // }
 
   const alpacaUrl = "https://data.alpaca.markets/v1beta3/crypto/us/latest/bars";
   const params = new URLSearchParams({

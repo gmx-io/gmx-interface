@@ -107,6 +107,11 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           setTimeout(() => callback(configurationData));
         },
         resolveSymbol(symbolName, onSymbolResolvedCallback) {
+           console.log("resolve symbol", symbolName);
+          if(symbolName === '1@WBTC')
+            symbolName = 'WBTC'
+          else if(symbolName === '1@ETH')
+            symbolName = "ETH";
           if (!isChartAvailabeForToken(chainId, symbolName)) {
             symbolName = getNativeToken(chainId).symbol;
           }
