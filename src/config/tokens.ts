@@ -762,15 +762,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     //   imageUrl: "https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734",
     // },
 
-    // {
-    //   name: "Wrapped Bitcoin",
-    //   symbol: "WBTC",
-    //   address: "0x803DcE4D3f4Ae2e17AF6C51343040dEe320C149D",
-    //   decimals: 8,
-    //   isStable: false,
-    //   isShortable: true,
-    //   imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
-    // },
+    {
+      name: "Wrapped Bitcoin",
+      symbol: "WBTC",
+      address: "0x803DcE4D3f4Ae2e17AF6C51343040dEe320C149D",
+      decimals: 8,
+      isStable: false,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
+    },
     // {
     //   name: "TMX",
     //   symbol: "TMX",
@@ -1565,7 +1565,7 @@ export function getVisibleTokens(chainId: number) {
 }
 
 export function getNormalizedTokenSymbol(tokenSymbol) {
-  if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
+  if (["WBTC","WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
   } else if (tokenSymbol === "BTC.b") {
     return "BTC";
@@ -1579,10 +1579,12 @@ const AVAILABLE_CHART_TOKENS = {
   [SEPOLIA_TESTNET]: ["ETH", "BTC", "LINK"],
   [OPTIMISM_GOERLI_TESTNET]: ["ETH", "LINK"],
   [OPTIMISM_MAINNET]: ["ETH", "BTC", "LINK"],
+  [MORPH_MAINNET] : ["ETH", "BTC"],
 };
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
   const token = getTokenBySymbol(chainId, tokenSymbol);
+  console.log("is chart available", token);
   if (!token) return false;
   return (token.isStable || AVAILABLE_CHART_TOKENS[chainId]?.includes(getNormalizedTokenSymbol(tokenSymbol))) ?? false;
 }

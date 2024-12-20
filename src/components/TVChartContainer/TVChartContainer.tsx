@@ -53,9 +53,6 @@ export default function TVChartContainer({
   period,
   setPeriod,
   chartToken,
-  supportedResolutions,
-  oraclePriceDecimals,
-  visualMultiplier,
 }: Props) {
   //let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
 
@@ -69,23 +66,21 @@ export default function TVChartContainer({
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
   const isMobile = useMedia("(max-width: 550px)");
-  const symbolRef = useRef(symbol);
+  const symbolRef = useRef(symbol); 
+  //const {  resetCache } = useTVDatafeed({ dataProvider  });
 
   useEffect(() => {
    
     if (chartToken && "maxPrice" in chartToken && chartToken.minPrice !== undefined) {
-   
       const averagePrice = getMidPrice(chartToken);
-   
       const formattedPrice = bigintToNumber(averagePrice, USD_DECIMALS);
-   
       dataProvider?.setCurrentChartToken({
         price: formattedPrice,
         ticker: chartToken.symbol,
         isChartReady: chartReady,
       });
     }
-  }, [chartToken, chartReady, dataProvider, chainId, oraclePriceDecimals]);
+  }, [chartToken, chartReady, dataProvider, chainId]);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
@@ -154,13 +149,13 @@ export default function TVChartContainer({
     if (chartReady && tvWidgetRef.current && symbol && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
         tvWidgetRef.current.setSymbol(
-          getSymbolName(symbol, visualMultiplier),
+          getSymbolName(symbol),
           tvWidgetRef.current.activeChart().resolution(),
           () => null
         );
       }
     }
-  }, [symbol, chartReady, period, chainId, datafeed, visualMultiplier]);
+  }, [symbol, chartReady, period, chainId, datafeed]);
 
   // useEffect(() => {
   //   if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
@@ -173,6 +168,10 @@ export default function TVChartContainer({
   const themeContext = useContext(ThemeContext);
 
   useEffect(() => {
+    dataProvider?.resetCache();
+    if (symbolRef.current) {
+      dataProvider?.initializeBarsRequest(chainId, symbolRef.current);
+    }
     const widgetOptions = {
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
@@ -232,7 +231,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, dataProvider]);
 
   return (
     <div className="ExchangeChart-error">
