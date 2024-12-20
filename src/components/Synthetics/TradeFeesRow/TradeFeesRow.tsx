@@ -110,31 +110,32 @@ export function TradeFeesRow(p: Props) {
         className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
       })) || [];
 
-    const swapProfitFeeRow = (p.swapProfitFee?.deltaUsd === undefined ? undefined : p.swapProfitFee?.deltaUsd !== 0n)
-      ? {
-          id: "swapProfitFee",
-          label: (
-            <>
-              <div className="text-white">{t`Swap Profit Fee`}:</div>
-              <div>
-                (
-                {formatPercentage(
-                  p.swapProfitFee?.precisePercentage === undefined
-                    ? undefined
-                    : bigMath.abs(p.swapProfitFee.precisePercentage),
-                  {
-                    displayDecimals: 3,
-                    bps: false,
-                  }
-                )}{" "}
-                of collateral)
-              </div>
-            </>
-          ),
-          value: formatDeltaUsd(p.swapProfitFee?.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-500"),
-        }
-      : undefined;
+    const swapProfitFeeRow =
+      p.swapProfitFee?.deltaUsd !== undefined && p.swapProfitFee?.deltaUsd !== 0n
+        ? {
+            id: "swapProfitFee",
+            label: (
+              <>
+                <div className="text-white">{t`Swap Profit Fee`}:</div>
+                <div>
+                  (
+                  {formatPercentage(
+                    p.swapProfitFee?.precisePercentage === undefined
+                      ? undefined
+                      : bigMath.abs(p.swapProfitFee.precisePercentage),
+                    {
+                      displayDecimals: 3,
+                      bps: false,
+                    }
+                  )}{" "}
+                  of swap amount)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.swapProfitFee?.deltaUsd),
+            className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-500"),
+          }
+        : undefined;
 
     const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
     const positionFeeRow = (p.positionFee?.deltaUsd === undefined ? undefined : p.positionFee?.deltaUsd !== 0n)

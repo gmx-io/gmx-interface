@@ -17,7 +17,7 @@ export function RatingToast({ onRatingClick }: Props) {
           <RatingItem onClick={() => onRatingClick(rating)} rating={rating} key={rating} />
         ))}
       </div>
-      <div className="mb-6 flex w-full flex-row justify-between text-gray-300">
+      <div className="mb-6 flex w-full flex-row justify-between text-slate-100">
         <div>
           <Trans>Not likely</Trans>
         </div>

@@ -7,7 +7,7 @@
   transform: translateX(-50%);
   left: 50%;
   bottom: 0;
-  border-top: 1px solid var(--color-gray-950);
+  border-top: 1px solid var(--color-slate-700);
 }
 
 .Footer-logo {
