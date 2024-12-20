@@ -66,8 +66,11 @@ export default function TVChartContainer({
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);
     if (setIsCandlesLoaded) {
-      newDatafeed.addEventListener("candlesLoad.success", () => {
-        setIsCandlesLoaded(true);
+      newDatafeed.addEventListener("candlesDisplay.success", (event: Event) => {
+        const isFirstDraw = (event as CustomEvent).detail.isFirstTimeLoad;
+        if (isFirstDraw) {
+          setIsCandlesLoaded(true);
+        }
       });
     }
     setDatafeed((prev) => {
