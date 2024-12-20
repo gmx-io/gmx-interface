@@ -45,7 +45,7 @@ export default function RewardsProgram() {
               <li>Mix of proportional fees and bonus rewards</li>
               <li>Sustainable growth through controlled distribution</li>
               <li>Transparent on-chain distribution</li>
-              <li>Regular biweekly fee distributions</li>
+              <li>Regular monthly fee distributions</li>
             </ul>
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function RewardsProgram() {
         <TokenCard
           icon={tlpImg}
           title="TLP"
-          description="TLP is the liquidity provider token. Earn 90% of all platform fees from whitelisted pools, distributed biweekly."
+          description="TLP is the liquidity provider token. Earn 90% of all platform fees from whitelisted pools, distributed monthly."
           stats={[<Trans>90% fee distribution</Trans>, <Trans>No minimum deposit for fee rewards</Trans>]}
           buttons={[
             {
@@ -140,12 +140,6 @@ export default function RewardsProgram() {
             { label: "Read more", onClick: () => window.open("https://docs.t3.money/dex/liquidity", "_blank") },
           ]}
         />
-      </div>
-
-      <div className="floating-cta">
-        <button className="floating-cta-button" onClick={handleBuyTLP}>
-          Buy TLP
-        </button>
       </div>
     </div>
   );
