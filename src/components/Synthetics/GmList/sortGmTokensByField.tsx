@@ -1,6 +1,6 @@
 import values from "lodash/values";
 
-import type { SortDirection } from "components/Sorter/Sorter";
+import type { SortDirection } from "components/Sorter/types";
 import { getMarketListingDate } from "config/markets";
 
 import { MarketTokensAPRData, GlvAndGmMarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
