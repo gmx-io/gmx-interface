@@ -11,6 +11,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { KEEPER_MAX_PRIORITY_FEE_PER_GAS_MAP } from "config/chains";
 import { useRawGasPrice } from "domain/synthetics/fees/useRawGasPrice";
 import { useChainId } from "lib/chains";
 import "./NetworkFeeRow.scss";
@@ -59,7 +60,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
     if (rawGasPrice === undefined || !executionFee) {
       estimatedRefundTokenAmount = undefined;
     } else {
-      const keeperExecutionFeeAmount = BigInt(rawGasPrice) * BigInt(executionFee.gasLimit);
+      const maxPriorityFeePerGas = KEEPER_MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n;
+      const keeperExecutionFeeAmount = (rawGasPrice + maxPriorityFeePerGas) * executionFee.gasLimit;
       estimatedRefundTokenAmount = executionFee.feeTokenAmount - keeperExecutionFeeAmount;
     }
 
@@ -86,7 +88,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
     );
 
     return estimatedRefundText;
-  }, [displayDecimals, executionFee, rawGasPrice, tokenData]);
+  }, [chainId, displayDecimals, executionFee, rawGasPrice, tokenData]);
 
   const value: ReactNode = useMemo(() => {
     if (executionFee?.feeUsd === undefined) {

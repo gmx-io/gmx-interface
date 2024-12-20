@@ -40,7 +40,7 @@ export const CHAIN_NAMES_MAP = {
 // is also applied to the execution fee calculation
 export const GAS_PRICE_PREMIUM_MAP = {
   [ARBITRUM]: 0n,
-  [AVALANCHE]: 0n, // 1 gwei
+  [AVALANCHE]: 0n,
 };
 
 // added to gasPrice
@@ -71,6 +71,12 @@ export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = 
   [ARBITRUM]: 1500000000n,
   [AVALANCHE]: 1500000000n,
   [AVALANCHE_FUJI]: 1500000000n,
+};
+
+export const KEEPER_MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = {
+  [ARBITRUM]: 300000000n,
+  [AVALANCHE]: 300000000n,
+  [AVALANCHE_FUJI]: 300000000n,
 };
 
 // added to maxPriorityFeePerGas
@@ -208,8 +214,8 @@ export const RPC_PROVIDERS = {
   ],
   [AVALANCHE]: [
     "https://api.avax.network/ext/bc/C/rpc",
-    // "https://avalanche-c-chain-rpc.publicnode.com",
-    // "https://1rpc.io/avax/c",
+    "https://avalanche-c-chain-rpc.publicnode.com",
+    "https://1rpc.io/avax/c",
   ],
   [AVALANCHE_FUJI]: [
     "https://avalanche-fuji-c-chain.publicnode.com",
