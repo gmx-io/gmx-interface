@@ -59,7 +59,7 @@ export function Curtain({
             <div className="grow" onClick={headerClick}>
               {header}
             </div>
-            <Button variant="secondary" className="size-34 !px-0 !py-0" onClick={handleClick}>
+            <Button variant="secondary" className="size-35 !px-0 !py-0" onClick={handleClick}>
               <LeftArrowIcon
                 className={cx(
                   "transition-transform delay-150 duration-500 ease-out",
