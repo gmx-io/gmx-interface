@@ -59,7 +59,6 @@ export type OrderErrorContext =
   | "gasPrice"
   | "bestNonce"
   | "sending"
-  | "sendingFallback"
   | "pending"
   | "minting"
   | "execution";
@@ -289,6 +288,8 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   initialCollateralAllowance: string | undefined;
   initialCollateralBalance: string | undefined;
   isTPSLCreated: boolean | undefined;
+  slCount: number | undefined;
+  tpCount: number | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {

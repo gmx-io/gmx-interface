@@ -11,8 +11,6 @@ type AbStorage = {
 
 const abFlagsConfig = {
   // testExampleAb: 0.5,
-  testRemoveGasRequests: 0.5,
-  testBlockTimestampHook: 0.5,
   testRemoveConfirmationModal: 0.25,
 };
 

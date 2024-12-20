@@ -68,11 +68,10 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,
         metricId: p.metricId,
-        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 
-  const txnParams = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -88,8 +87,8 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit: txnParams.gasLimit,
-    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
     p.setPendingWithdrawal({
