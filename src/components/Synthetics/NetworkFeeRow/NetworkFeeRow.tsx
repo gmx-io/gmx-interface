@@ -1,9 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { ExecutionFee } from "domain/synthetics/fees/types";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
@@ -13,22 +11,18 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { useRawGasPrice } from "domain/synthetics/fees/useRawGasPrice";
+import { useChainId } from "lib/chains";
 import "./NetworkFeeRow.scss";
-import { bigMath } from "lib/bigmath";
 
 type Props = {
   executionFee?: ExecutionFee;
   isAdditionOrdersMsg?: boolean;
 };
 
-/**
- * This is not an accurate refund ration, just an estimation based on the recent data.
- * 10%
- */
-const ESTIMATED_REFUND_BPS = 10 * 100;
-
 export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
-  const executionFeeBufferBps = useExecutionFeeBufferBps();
+  const { chainId } = useChainId();
+  const rawGasPrice = useRawGasPrice(chainId);
   const tokenData = useTokensData();
 
   let displayDecimals = executionFee?.feeToken.priceDecimals;
@@ -62,23 +56,16 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
 
   const estimatedRefundText = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
-    if (!executionFee || executionFeeBufferBps === undefined) {
+    if (rawGasPrice === undefined || !executionFee) {
       estimatedRefundTokenAmount = undefined;
     } else {
-      const fee = executionFee.feeTokenAmount;
-      const feeBeforeBuffer = bigMath.mulDiv(
-        fee,
-        BASIS_POINTS_DIVISOR_BIGINT,
-        BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
-      );
-      estimatedRefundTokenAmount =
-        bigMath.mulDiv(feeBeforeBuffer, BigInt(ESTIMATED_REFUND_BPS), BASIS_POINTS_DIVISOR_BIGINT) +
-        (fee - feeBeforeBuffer);
+      const keeperExecutionFeeAmount = BigInt(rawGasPrice) * BigInt(executionFee.gasLimit);
+      estimatedRefundTokenAmount = executionFee.feeTokenAmount - keeperExecutionFeeAmount;
     }
 
     let estimatedRefundUsd: bigint | undefined;
 
-    if (executionFeeBufferBps === undefined || !executionFee || !tokenData) {
+    if (!executionFee || !tokenData) {
       estimatedRefundUsd = undefined;
     } else {
       estimatedRefundUsd = convertToUsd(
@@ -99,7 +86,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
     );
 
     return estimatedRefundText;
-  }, [displayDecimals, executionFee, executionFeeBufferBps, tokenData]);
+  }, [displayDecimals, executionFee, rawGasPrice, tokenData]);
 
   const value: ReactNode = useMemo(() => {
     if (executionFee?.feeUsd === undefined) {

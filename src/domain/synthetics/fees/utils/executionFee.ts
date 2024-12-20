@@ -44,6 +44,7 @@ export function getExecutionFee(
     feeTokenAmount,
     feeToken: nativeToken,
     warning,
+    gasLimit,
   };
 }
 
