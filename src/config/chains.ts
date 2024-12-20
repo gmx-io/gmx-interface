@@ -209,7 +209,7 @@ export const RPC_PROVIDERS = {
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
     "https://arbitrum-one.public.blastapi.io",
-    "https://arbitrum.drpc.org",
+    // "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
   [AVALANCHE]: [
