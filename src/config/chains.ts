@@ -74,7 +74,7 @@ export const MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = 
 };
 
 export const KEEPER_MAX_PRIORITY_FEE_PER_GAS_MAP: Record<number, bigint | undefined> = {
-  [ARBITRUM]: 300000000n,
+  [ARBITRUM]: 0n,
   [AVALANCHE]: 300000000n,
   [AVALANCHE_FUJI]: 300000000n,
 };
