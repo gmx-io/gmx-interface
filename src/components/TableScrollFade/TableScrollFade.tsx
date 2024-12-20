@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { PropsWithChildren, useCallback, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useEffectOnce, useMeasure, useWindowSize } from "react-use";
 
@@ -149,7 +149,28 @@ function useButtonRowScrollFade() {
     return Array.from(buttons);
   }, []);
 
-  return useScrollFade(getSnapChildren);
+  const controls = useScrollFade(getSnapChildren);
+
+  useEffect(() => {
+    const container = controls.scrollableRef.current;
+    if (!container) {
+      return;
+    }
+
+    const snapChildren = getSnapChildren(container);
+
+    const selectedButton = snapChildren.find((child) => child.dataset.selected === "true");
+    if (selectedButton) {
+      // scroll that selected button is in the center of the container
+      const containerRect = container.getBoundingClientRect();
+      const selectedButtonRect = selectedButton.getBoundingClientRect();
+      const scrollAmount =
+        selectedButtonRect.left + selectedButtonRect.width / 2 - containerRect.left - containerRect.width / 2;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  }, [controls.scrollableRef, getSnapChildren]);
+
+  return controls;
 }
 
 function ScrollFadeControls({
