@@ -1,4 +1,3 @@
-import { msg } from "@lingui/macro";
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -9,23 +8,7 @@ import { useLocalizedMap } from "lib/i18n";
 
 import Tab from "components/Tab/Tab";
 
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
-import SwapIcon from "img/swap.svg?react";
-
-import "./TradeBox.scss";
-
-const tradeTypeIcons = {
-  [TradeType.Long]: <LongIcon />,
-  [TradeType.Short]: <ShortIcon />,
-  [TradeType.Swap]: <SwapIcon />,
-};
-
-const tradeTypeLabels = {
-  [TradeType.Long]: msg`Long`,
-  [TradeType.Short]: msg`Short`,
-  [TradeType.Swap]: msg`Swap`,
-};
+import { tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
 
 export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
@@ -49,7 +32,8 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
       optionLabels={localizedTradeTypeLabels}
       option={tradeType}
       onChange={onTradeTypeChange}
-      className={!isInCurtain ? "*:!p-[10.5px]" : ""}
+      size={isInCurtain ? "m" : "l"}
+      optionClassnames={tradeTypeClassNames}
       qa="trade-direction"
     />
   );

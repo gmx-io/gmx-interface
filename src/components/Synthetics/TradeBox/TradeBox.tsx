@@ -61,7 +61,6 @@ import {
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
-  TradeType,
   applySlippageToPrice,
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
@@ -142,7 +141,7 @@ import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
-import { tradeModeLabels, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
+import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
 import "./TradeBox.scss";
 
