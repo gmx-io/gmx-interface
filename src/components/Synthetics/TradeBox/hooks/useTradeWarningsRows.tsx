@@ -50,7 +50,7 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
 
   const consentError: string | undefined = useMemo(() => {
     if (priceImpactWarningState.validationError) {
-      return t`Acknowledgment required`;
+      return t`Acknowledgment Required`;
     }
 
     if (needPayTokenApproval && fromToken) {

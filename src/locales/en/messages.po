@@ -719,6 +719,7 @@ msgstr "Activating Subaccount"
 msgid "Invalid slippage value"
 msgstr "Invalid slippage value"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "price impact"
 msgstr "price impact"
@@ -2270,6 +2271,7 @@ msgstr "Launch App"
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "network fees"
 msgstr "network fees"
@@ -2390,6 +2392,7 @@ msgstr "Price above Liq. Price"
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high {0} and {1}"
 msgstr "Acknowledge high {0} and {1}"
@@ -3926,13 +3929,6 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "High Network Fee not yet acknowledged"
-msgstr "High Network Fee not yet acknowledged"
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below lowest Limit Price."
 msgstr "Price below lowest Limit Price."
@@ -4400,6 +4396,7 @@ msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to 
 msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high {0}"
 msgstr "Acknowledge high {0}"
@@ -4848,13 +4845,6 @@ msgstr "When closing the position, you can select which token you would like to 
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Acknowledgment required"
-msgstr "Acknowledgment required"
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr "Top PnL (%)"
@@ -5038,6 +5028,19 @@ msgstr "Useful Links"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
 msgstr "Trade Confirmations"
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Acknowledgment Required"
+msgstr "Acknowledgment Required"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
@@ -6337,11 +6340,6 @@ msgstr "Claims"
 msgid "Date"
 msgstr "Date"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Price Impact not yet acknowledged"
-msgstr "Price Impact not yet acknowledged"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
@@ -6984,11 +6982,6 @@ msgstr "Buy"
 msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 msgstr "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
-msgid "Acknowledge high price impact"
-msgstr "Acknowledge high price impact"
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Total Rewards"
 msgstr "Total Rewards"
@@ -7562,10 +7555,6 @@ msgstr "Share Position"
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
 
-#: src/domain/synthetics/trade/useHighExecutionFeeConsent.tsx
-msgid "Acknowledge high network fees"
-msgstr "Acknowledge high network fees"
-
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Deposit Fee"
 msgstr "Deposit Fee"
@@ -7863,7 +7852,7 @@ msgstr "Ecosystem Projects"
 msgid "Price Impact Rebate Claimed"
 msgstr "Price Impact Rebate Claimed"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 
