@@ -135,7 +135,19 @@ export function usePriceImpactWarningState({
 
   validationError = !isAccepted && shouldShowWarning;
 
-  return {
+  const stableWarningState = useMemo(() => {
+    return {
+      shouldShowWarningForPosition,
+      shouldShowWarningForCollateral,
+      shouldShowWarningForSwap,
+      shouldShowWarningForSwapProfitFee,
+      shouldShowWarningForExecutionFee,
+      validationError,
+      isAccepted,
+      setIsAccepted,
+      shouldShowWarning,
+    };
+  }, [
     shouldShowWarningForPosition,
     shouldShowWarningForCollateral,
     shouldShowWarningForSwap,
@@ -145,5 +157,7 @@ export function usePriceImpactWarningState({
     isAccepted,
     setIsAccepted,
     shouldShowWarning,
-  };
+  ]);
+
+  return stableWarningState;
 }
