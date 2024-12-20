@@ -50,7 +50,9 @@ export function GmList({
   const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId)!;
   const userEarnings = useUserEarnings(chainId);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>({
+    persistenceKey: "gm-list",
+  });
   const [searchText, setSearchText] = useState("");
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableMarketAddressSet = useMemo(

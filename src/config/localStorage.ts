@@ -48,24 +48,8 @@ export const ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN = "one-click-trading-w
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
-/**
- * @deprecated
- */
-export const CHART_TOKEN_SELECTOR_FILTER_TAB_KEY = "chart-token-selector-filter-tab";
-/**
- * @deprecated
- */
-export const CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY = "chart-token-selector-favorite-tokens";
-export const TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY = "token-favorite-preference";
 
-/**
- * @deprecated
- */
-export const GM_TOKEN_SELECTOR_FILTER_TAB_KEY = "gm-token-selector-filter-tab";
-/**
- * @deprecated
- */
-export const GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY = "gm-token-selector-favorite-tokens";
+export const TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY = "token-favorite-preference";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";

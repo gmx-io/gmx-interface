@@ -42,7 +42,9 @@ export function MarketsList() {
 function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; indexTokensStats: IndexTokenStat[] }) {
   const { orderBy, direction, getSorterProps } = useSorterHandlers<
     "price" | "tvl" | "liquidity" | "utilization" | "unspecified"
-  >();
+  >({
+    persistenceKey: "dashboard-markets-list",
+  });
   const [searchText, setSearchText] = useState("");
 
   const filteredMarkets = useFilterSortMarkets({ searchText, indexTokensStats, orderBy, direction });

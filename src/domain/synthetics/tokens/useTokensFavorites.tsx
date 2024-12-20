@@ -3,13 +3,7 @@ import { msg } from "@lingui/macro";
 import noop from "lodash/noop";
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo } from "react";
 
-import {
-  CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY,
-  CHART_TOKEN_SELECTOR_FILTER_TAB_KEY,
-  GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY,
-  GM_TOKEN_SELECTOR_FILTER_TAB_KEY,
-  TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY,
-} from "config/localStorage";
+import { TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY } from "config/localStorage";
 
 import type { TokenCategory } from "sdk/types/tokens";
 import { useChainId } from "lib/chains";
@@ -74,11 +68,6 @@ const context = createContext<TokensFavoritesContextType>({
 });
 
 const Provider = context.Provider;
-
-localStorage.removeItem(CHART_TOKEN_SELECTOR_FILTER_TAB_KEY);
-localStorage.removeItem(CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY);
-localStorage.removeItem(GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY);
-localStorage.removeItem(GM_TOKEN_SELECTOR_FILTER_TAB_KEY);
 
 export function TokensFavoritesContextProvider({ children }: PropsWithChildren) {
   // TODO: migrate to useSelector(selectChainId) when SyntheticsStateContext is refactored
