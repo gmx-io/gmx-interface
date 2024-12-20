@@ -25,7 +25,8 @@ import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
-import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import type { SortDirection } from "components/Sorter/types";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -48,7 +49,10 @@ const PER_PAGE = 20;
 export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>("qualifyingPnl", "desc");
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>({
+    initialOrderBy: "qualifyingPnl",
+    initialDirection: "desc",
+  });
   const [search, setSearch] = useState("");
   const handleKeyDown = useCallback(() => null, []);
   const term = useDebounce(search, 300);
