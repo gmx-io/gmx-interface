@@ -26,6 +26,7 @@ export function FavoriteTabs({ favoritesKey }: { favoritesKey: TokenFavoriteKey 
             "!bg-cold-blue-500": tab === option,
           })}
           onClick={() => setTab(option)}
+          data-selected={tab === option}
         >
           {localizedTabOptionLabels[option]}
         </Button>
