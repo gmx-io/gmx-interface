@@ -45,11 +45,7 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     }
   }, [increaseAmounts?.initialCollateralAmount, isIncrease, isSwap, isWrapOrUnwrap, swapAmounts?.amountIn]);
 
-  const needPayTokenApproval =
-    tokensAllowanceData &&
-    fromToken &&
-    payAmount !== undefined &&
-    getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
+  const needPayTokenApproval = getNeedTokenApprove(tokensAllowanceData, fromToken?.address, payAmount);
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
@@ -67,7 +63,7 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
       return t`Price Impact not yet acknowledged`;
     }
 
-    if (needPayTokenApproval && fromToken) {
+    if (needPayTokenApproval) {
       return t`Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`;
     }
 
