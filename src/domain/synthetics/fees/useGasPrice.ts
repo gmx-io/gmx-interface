@@ -1,4 +1,4 @@
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, MAX_PRIORITY_FEE_PER_GAS_MAP } from "config/chains";
+import { EXECUTION_FEE_CONFIG_V2, MAX_PRIORITY_FEE_PER_GAS_MAP } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { bigMath } from "lib/bigmath";
@@ -44,9 +44,7 @@ export function useGasPrice(chainId: number) {
               gasPrice = gasPrice + buffer;
             }
 
-            const premium = GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
-
-            resolve(gasPrice + premium);
+            resolve(gasPrice);
           } catch (e) {
             // eslint-disable-next-line no-console
             console.error(e);

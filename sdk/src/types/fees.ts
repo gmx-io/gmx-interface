@@ -7,6 +7,7 @@ export type ExecutionFee = {
   warning?: string;
   isFeeHigh: boolean;
   isFeeVeryHigh: boolean;
+  gasLimit: bigint;
 };
 
 export type FeeItem = {
