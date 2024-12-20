@@ -34,7 +34,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
             <img src={logoImg} alt="GMX Logo" />
           </Link>
           <div
-            className="App-header-menu-icon-block mobile-cross-menu"
+            className="App-header-menu-icon-block mobile-cross-menu mr-8"
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
             <FiX className="App-header-menu-icon" />
