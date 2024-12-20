@@ -36,6 +36,7 @@ const chartOverrides: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "#3a3e5e",
   "scalesProperties.textColor": "#fff",
   "scalesProperties.lineColor": "#16182e",
+  "mainSeriesProperties.statusViewStyle.showExchange": false,
   ...chartStyleOverrides,
 };
 
