@@ -10,7 +10,7 @@ import { SOCIAL_LINKS, getFooterLinks } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
-import logoImg from "img/ic_gmx_footer.svg";
+import logoImg from "img/logo_GMX.svg";
 
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import { userAnalytics } from "lib/userAnalytics";
@@ -26,15 +26,14 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
   const isVerySmall = useMedia("(max-width: 580px)");
 
   const linkClassName = cx("cursor-pointer !text-slate-100 !no-underline hover:!text-white ", {
-    "text-body-medium": isMobile && !isVerySmall,
+    "text-body-medium": !isVerySmall,
     "text-body-small": isVerySmall,
-    "text-body-large": !isMobile,
   });
 
   return (
     <>
       <div
-        className={cx("absolute bottom-0 left-0 w-full border-t border-t-stroke-primary px-32 py-40", {
+        className={cx("border-t-stroke-primary absolute bottom-0 left-0 w-full border-t px-32 py-40", {
           "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
           "flex flex-col gap-20": isMobile,
         })}
@@ -45,7 +44,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
             "justify-start": !isMobile,
           })}
         >
-          <img src={logoImg} alt="GMX Logo" width="70" height="16" />
+          <img src={logoImg} alt="GMX Logo" />
         </div>
         <div
           className={cx("flex flex-row items-center justify-center", {

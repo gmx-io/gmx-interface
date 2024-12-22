@@ -75,7 +75,9 @@ export function AppHeaderUser({
   const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
-  const shouldHideTradeButton = useRouteMatch("/trade");
+  const isOnTradePageV1 = useRouteMatch("/v1");
+  const isOnTradePageV2 = useRouteMatch("/trade");
+  const shouldHideTradeButton = isOnTradePageV1 || isOnTradePageV2;
 
   const selectorLabel = getChainName(chainId);
 
