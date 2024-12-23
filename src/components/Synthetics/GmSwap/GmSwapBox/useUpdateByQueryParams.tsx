@@ -132,7 +132,7 @@ export function useUpdateByQueryParams({
                 <div className="inline-flex">
                   {titlePrefix}
                   {indexName ? <span>&nbsp;{indexName}</span> : null}
-                  <span className="ml-2 text-12 font-normal text-gray-300">[{poolName}]</span>
+                  <span className="ml-2 text-12 font-normal text-white">[{poolName}]</span>
                 </div>{" "}
                 <span>selected in order form</span>
               </Trans>

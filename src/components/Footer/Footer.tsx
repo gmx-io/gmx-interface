@@ -1,3 +1,4 @@
+import { useMedia } from "react-use";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
@@ -9,12 +10,11 @@ import { SOCIAL_LINKS, getFooterLinks } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
-import logoImg from "img/ic_gmx_footer.svg";
+import logoImg from "img/logo_GMX.svg";
 
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
-import "./Footer.css";
 
 type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: number };
 
@@ -22,13 +22,83 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
   const isHome = isHomeSite();
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
+  const isMobile = useMedia("(max-width: 1024px)");
+  const isVerySmall = useMedia("(max-width: 580px)");
+
+  const linkClassName = cx("cursor-pointer !text-slate-100 !no-underline hover:!text-white ", {
+    "text-body-medium": !isVerySmall,
+    "text-body-small": isVerySmall,
+  });
+
   return (
     <>
-      <div className={cx("Footer-wrapper", { home: isHome })}>
-        <div className="Footer-logo">
-          <img src={logoImg} alt="MetaMask" />
+      <div
+        className={cx("border-t-stroke-primary absolute bottom-0 left-0 w-full border-t px-32 py-40", {
+          "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
+          "flex flex-col gap-20": isMobile,
+        })}
+      >
+        <div
+          className={cx("flex items-center", {
+            "justify-center": isMobile,
+            "justify-start": !isMobile,
+          })}
+        >
+          <img src={logoImg} alt="GMX Logo" />
         </div>
-        <div className="Footer-social-link-block">
+        <div
+          className={cx("flex flex-row items-center justify-center", {
+            "gap-32": !isMobile,
+            "gap-24": isMobile && !isVerySmall,
+            "gap-16": isVerySmall,
+          })}
+        >
+          {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
+            if (external) {
+              return (
+                <ExternalLink key={label} href={link} className={linkClassName}>
+                  {label}
+                </ExternalLink>
+              );
+            }
+            if (isAppLink) {
+              if (shouldShowRedirectModal(redirectPopupTimestamp)) {
+                return (
+                  <div
+                    key={label}
+                    className={linkClassName}
+                    onClick={() => showRedirectModal && showRedirectModal(link)}
+                  >
+                    {label}
+                  </div>
+                );
+              } else {
+                const baseUrl = getAppBaseUrl();
+                return (
+                  <a key={label} href={baseUrl + link} className={linkClassName}>
+                    {label}
+                  </a>
+                );
+              }
+            }
+            return (
+              <NavLink key={link} to={link} className={linkClassName} activeClassName="active">
+                {label}
+              </NavLink>
+            );
+          })}
+          {!isHome && (
+            <div className={linkClassName} onClick={() => setIsUserFeedbackModalVisible(true)}>
+              <Trans>Leave feedback</Trans>
+            </div>
+          )}
+        </div>
+        <div
+          className={cx("flex gap-24", {
+            "justify-center": isMobile,
+            "justify-end": !isMobile,
+          })}
+        >
           {SOCIAL_LINKS.map((platform) => {
             return (
               <TrackingLink
@@ -46,53 +116,12 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
                   );
                 }}
               >
-                <ExternalLink className="App-social-link" href={platform.link}>
-                  <img src={platform.icon} alt={platform.name} />
+                <ExternalLink href={platform.link} className="h-24 w-24">
+                  <img src={platform.icon} alt={platform.name} width="100%" />
                 </ExternalLink>
               </TrackingLink>
             );
           })}
-        </div>
-        <div className="Footer-links">
-          {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
-            if (external) {
-              return (
-                <ExternalLink key={label} href={link} className="Footer-link">
-                  {label}
-                </ExternalLink>
-              );
-            }
-            if (isAppLink) {
-              if (shouldShowRedirectModal(redirectPopupTimestamp)) {
-                return (
-                  <div
-                    key={label}
-                    className="Footer-link a"
-                    onClick={() => showRedirectModal && showRedirectModal(link)}
-                  >
-                    {label}
-                  </div>
-                );
-              } else {
-                const baseUrl = getAppBaseUrl();
-                return (
-                  <a key={label} href={baseUrl + link} className="Footer-link">
-                    {label}
-                  </a>
-                );
-              }
-            }
-            return (
-              <NavLink key={link} to={link} className="Footer-link" activeClassName="active">
-                {label}
-              </NavLink>
-            );
-          })}
-          {!isHome && (
-            <div className="Footer-link" onClick={() => setIsUserFeedbackModalVisible(true)}>
-              <Trans>Leave feedback</Trans>
-            </div>
-          )}
         </div>
       </div>
       {!isHome && (

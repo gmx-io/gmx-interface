@@ -73,7 +73,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-24 px-16 pt-16 text-gray-300">
+      <div className="flex flex-wrap gap-24 px-16 pt-16 text-slate-100">
         <div>
           <div className="inline-block size-10 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
         </div>
@@ -139,7 +139,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
           </div>
         )}
         {!loading && !error && clusteredPnlData.length === 0 && (
-          <div className="absolute grid size-full place-items-center text-gray-400">
+          <div className="absolute grid size-full place-items-center text-slate-100">
             <Trans>No data available</Trans>
           </div>
         )}
