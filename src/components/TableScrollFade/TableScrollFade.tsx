@@ -86,24 +86,30 @@ function useScrollFade(getSnapChildren: (scrollable: HTMLDivElement) => HTMLElem
         return;
       }
 
-      let proposedScrollLeft = dir * nextNonVisibleElement.getBoundingClientRect().width;
-      const nextLeftScroll = scrollableRef.current.scrollLeft + proposedScrollLeft;
+      const scrollableRect = scrollableRef.current.getBoundingClientRect();
+      const nextNonVisibleRect = nextNonVisibleElement.getBoundingClientRect();
+      let scrollAmount =
+        nextNonVisibleRect.left + nextNonVisibleRect.width / 2 - scrollableRect.left - scrollableRect.width / 2;
+      let nextScrollLeft = scrollableRef.current.scrollLeft + scrollAmount;
+
+      nextScrollLeft = Math.max(nextScrollLeft, 0);
+      nextScrollLeft = Math.min(nextScrollLeft, scrollableRef.current.scrollWidth - scrollableRef.current.clientWidth);
 
       /**
        * This part is to prevent scrolling to visible area of element but leaving a small margin to the end (MAX_SCROLL_LEFT_TO_END_AREA),
        * it's better to scroll to the end in such cases
        */
-      if (
-        (dir === 1 && containerWidth - nextLeftScroll < MAX_SCROLL_LEFT_TO_END_AREA) ||
-        (dir === -1 && nextLeftScroll < MAX_SCROLL_LEFT_TO_END_AREA)
+      if (dir === -1 && nextScrollLeft < MAX_SCROLL_LEFT_TO_END_AREA) {
+        nextScrollLeft = 0;
+      } else if (
+        dir === 1 &&
+        scrollableRef.current.scrollWidth - scrollableRef.current.clientWidth - nextScrollLeft <
+          MAX_SCROLL_LEFT_TO_END_AREA
       ) {
-        proposedScrollLeft = dir * containerWidth;
+        nextScrollLeft = scrollableRef.current.scrollWidth - scrollableRef.current.clientWidth;
       }
 
-      scrollableRef.current.scrollBy({
-        left: proposedScrollLeft,
-        behavior: "smooth",
-      });
+      scrollableRef.current.scrollTo({ left: nextScrollLeft, behavior: "smooth" });
       setScrolls();
     },
     [getSnapChildren, setScrolls]
