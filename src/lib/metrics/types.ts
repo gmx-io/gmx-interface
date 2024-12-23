@@ -59,7 +59,6 @@ export type OrderErrorContext =
   | "gasPrice"
   | "bestNonce"
   | "sending"
-  | "sendingFallback"
   | "pending"
   | "minting"
   | "execution";

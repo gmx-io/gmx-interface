@@ -5,7 +5,7 @@ import {
   MAX_PRIORITY_FEE_PER_GAS_MAP,
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { BaseContract, Contract, JsonRpcSigner, Provider, Wallet } from "ethers";
+import { BaseContract, Contract, Provider, Wallet } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { GetFeeDataBlockError } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
@@ -99,7 +99,7 @@ export async function getGasLimit(
   return (gasLimit * 11n) / 10n; // add a 10% buffer
 }
 
-export function getBestNonce(providers: (Wallet | JsonRpcSigner)[]): Promise<number> {
+export function getBestNonce(providers: Wallet[]): Promise<number> {
   const MAX_NONCE_NEEDED = 3;
   const MAX_WAIT = 5000;
   const ONE_MORE_WAIT = 1000;
