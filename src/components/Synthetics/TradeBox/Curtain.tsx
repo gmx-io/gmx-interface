@@ -39,6 +39,10 @@ export function Curtain({
     setIsOpen((prev) => !prev);
   }, [setIsOpen]);
 
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
   return (
     <>
       <div
@@ -46,6 +50,7 @@ export function Curtain({
           "fixed inset-0 z-[999] bg-black/70 transition-opacity duration-300",
           isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
+        onClick={handleClose}
       />
       <RemoveScroll enabled={isOpen}>
         <div
@@ -59,7 +64,7 @@ export function Curtain({
             <div className="grow" onClick={headerClick}>
               {header}
             </div>
-            <Button variant="secondary" className="size-35 !px-0 !py-0" onClick={handleClick}>
+            <Button variant="secondary" className="size-35 !bg-cold-blue-900 !px-0 !py-0" onClick={handleClick}>
               <LeftArrowIcon
                 className={cx(
                   "transition-transform delay-150 duration-500 ease-out",
