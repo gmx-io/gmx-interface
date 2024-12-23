@@ -873,8 +873,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           >
             <PoolSelector
               chainId={chainId}
+              size="l"
               label={t`Pool`}
-              className="-mr-4"
               selectedIndexName={indexName}
               selectedMarketAddress={marketAddress}
               markets={sortedMarketsInfoByIndexToken}
