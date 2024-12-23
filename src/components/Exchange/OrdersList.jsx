@@ -565,7 +565,7 @@ export default function OrdersList(props) {
         </tbody>
       </table>
       {(!orders || orders.length === 0) && (
-        <div className="Exchange-empty-positions-list-note small App-card">
+        <div className="Exchange-empty-positions-list-note small App-card text-slate-100">
           <Trans>No open orders</Trans>
         </div>
       )}
