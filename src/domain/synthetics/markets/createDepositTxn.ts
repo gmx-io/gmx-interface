@@ -11,6 +11,7 @@ import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 export type CreateDepositParams = {
   account: string;
@@ -27,6 +28,7 @@ export type CreateDepositParams = {
   tokensData: TokensData;
   skipSimulation?: boolean;
   metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
 };
@@ -107,6 +109,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
         errorTitle: t`Deposit error.`,
         value: wntAmount,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 

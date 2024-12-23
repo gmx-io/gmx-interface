@@ -17,6 +17,7 @@ import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { OrderMetricId } from "lib/metrics";
 import { prepareOrderTxn } from "./prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestamp";
 
 const { ZeroAddress } = ethers;
 
@@ -57,6 +58,7 @@ export async function createDecreaseOrderTxn(
   subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
+  blockTimestampData: BlockTimestampData | undefined,
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
@@ -105,6 +107,7 @@ export async function createDecreaseOrderTxn(
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
           metricId,
+          blockTimestampData,
         });
       }
     })
