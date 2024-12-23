@@ -16,7 +16,7 @@ import { GlvOrMarketInfo, getMarketIndexName, getGlvOrMarketAddress, isMarketInf
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { bigMath } from "lib/bigmath";
-import { formatAmountFree, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { Mode, Operation } from "../types";
 
@@ -269,9 +269,11 @@ export function GmShiftBox({
           topLeftLabel={t`Pay`}
           topLeftValue={selectedTokenDollarAmount}
           topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(selectedToken?.balance, selectedToken?.decimals, "", {
-            useCommas: true,
-          })}
+          topRightValue={
+            selectedToken && selectedToken.balance !== undefined
+              ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
+              : undefined
+          }
           onClickTopRightLabel={handleSelectedTokenClickMax}
           showMaxButton={selectedTokenShowMaxButton}
           onClickMax={handleSelectedTokenClickMax}
@@ -298,9 +300,11 @@ export function GmShiftBox({
           topLeftLabel={t`Receive`}
           topLeftValue={toTokenShowDollarAmount}
           topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals, "", {
-            useCommas: true,
-          })}
+          topRightValue={
+            toToken && toToken.balance !== undefined
+              ? formatBalanceAmount(toToken.balance, toToken.decimals)
+              : undefined
+          }
           inputValue={toMarketText}
           onInputValueChange={handleToTokenInputValueChange}
           onFocus={handleToTokenFocus}

@@ -34,7 +34,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
-import { formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 
@@ -443,9 +443,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const receiveTokenFormatted = useMemo(() => {
     const usedMarketToken = glvInfo ? glvToken : marketToken;
 
-    return formatTokenAmount(usedMarketToken?.balance, usedMarketToken?.decimals, "", {
-      useCommas: true,
-    });
+    return usedMarketToken && usedMarketToken.balance !== undefined
+      ? formatBalanceAmount(usedMarketToken.balance, usedMarketToken.decimals)
+      : undefined;
   }, [marketToken, glvInfo, glvToken]);
 
   const { viewTokenInfo, showTokenName } = useMemo(() => {
@@ -802,9 +802,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
             topLeftValue={formatUsd(firstTokenUsd)}
             topRightLabel={t`Balance`}
-            topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals, "", {
-              useCommas: true,
-            })}
+            topRightValue={
+              firstToken && firstToken.balance !== undefined
+                ? formatBalanceAmount(firstToken.balance, firstToken.decimals)
+                : undefined
+            }
             preventFocusOnLabelClick="right"
             onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
             showMaxButton={firstTokenShowMaxButton}
@@ -837,9 +839,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
               topLeftValue={formatUsd(secondTokenUsd)}
               topRightLabel={t`Balance`}
-              topRightValue={formatTokenAmount(secondToken?.balance, secondToken?.decimals, "", {
-                useCommas: true,
-              })}
+              topRightValue={
+                secondToken && secondToken.balance !== undefined
+                  ? formatBalanceAmount(secondToken.balance, secondToken.decimals)
+                  : undefined
+              }
               preventFocusOnLabelClick="right"
               inputValue={secondTokenInputValue}
               showMaxButton={secondTokenShowMaxButton}

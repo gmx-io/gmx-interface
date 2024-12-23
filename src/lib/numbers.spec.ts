@@ -1,5 +1,12 @@
 import { USD_DECIMALS } from "config/factors";
-import { bigintToNumber, numberToBigint, formatUsdPrice, PRECISION, formatAmountHuman } from "./numbers";
+import {
+  bigintToNumber,
+  numberToBigint,
+  formatUsdPrice,
+  PRECISION,
+  formatAmountHuman,
+  formatBalanceAmount,
+} from "./numbers";
 import { describe, expect, it } from "vitest";
 
 describe("numbers.ts", () => {
@@ -84,5 +91,23 @@ describe("formatAmountHuman", () => {
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 2)).toBe("1.50M");
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1K");
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2M");
+  });
+
+  it("should display balance amount", () =>
+    // prettier-ignore
+    {
+    expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe(         "1,000.0000");
+    expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe(                          "0.0000");
+    expect(formatBalanceAmount(ONE_USD * 1n, USD_DECIMALS)).toBe(                "1.0000");
+    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS)).toBe(               "0.10000");
+    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS)).toBe(              "0.010000");
+    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS)).toBe(            "0.0010000");
+    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS)).toBe(           "0.00010000");
+    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS)).toBe(          "0.00001000");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS)).toBe(        "0.00000100");
+    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS)).toBe(       "0.00000010");
+    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe(      "0.00000001");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS)).toBe(    "1.00e-9");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000_000_000n, USD_DECIMALS)).toBe("1.00e-12");
   });
 });
