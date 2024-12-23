@@ -76,6 +76,21 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
+export const SWAP_OPTIONS_CLASSNAMES = {
+  [LONG]: {
+    active: "!bg-[#1E3445] border-b border-b-green-500",
+    regular: "border-b border-b-[transparent]",
+  },
+  [SHORT]: {
+    active: "!bg-[#392A46] border-b border-b-red-500",
+    regular: "border-b border-b-[transparent]",
+  },
+  [SWAP]: {
+    active: "!bg-[#252B57] border-b border-b-blue-300",
+    regular: "border-b border-b-[transparent]",
+  },
+};
+
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
