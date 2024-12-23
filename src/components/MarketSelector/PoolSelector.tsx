@@ -45,6 +45,7 @@ export function PoolSelector({
   showIndexIcon = false,
   withFilters = true,
   favoriteKey,
+  size = "m",
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -150,7 +151,7 @@ export function PoolSelector({
     }
   };
 
-  function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined) {
+  function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined, size: "l" | "m") {
     if (!marketInfo) return "...";
     let name;
 
@@ -164,6 +165,9 @@ export function PoolSelector({
       return (
         <div
           className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+          // className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+          //   "text-h2 -mr-5": size === "l",
+          // })}
           onClick={() => setIsModalVisible(true)}
         >
           {name ? name : "..."}
@@ -239,7 +243,7 @@ export function PoolSelector({
               displaySize={20}
             />
           )}
-          {displayPoolLabel(marketInfo)}
+          {displayPoolLabel(marketInfo, size)}
         </div>
       )}
     </div>
