@@ -12,6 +12,7 @@ type AbStorage = {
 const abFlagsConfig = {
   // testExampleAb: 0.5,
   testRemoveConfirmationModal: 0.25,
+  testBlockTimestampHook: 0.25,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;

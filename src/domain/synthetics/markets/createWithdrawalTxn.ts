@@ -13,6 +13,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateWithdrawalParams = {
   account: string;
@@ -29,6 +30,7 @@ export type CreateWithdrawalParams = {
   skipSimulation?: boolean;
   tokensData: TokensData;
   metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
@@ -88,6 +90,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 
