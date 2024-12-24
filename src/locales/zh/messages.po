@@ -2745,11 +2745,6 @@ msgstr ""
 msgid "Order creation failed."
 msgstr ""
 
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
-msgstr ""
-
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
 msgstr ""
@@ -2989,6 +2984,11 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "清偿完毕"
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets"
+msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4220,6 +4220,11 @@ msgstr ""
 msgid "Edit Referral Code"
 msgstr "编辑推荐代码"
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
 msgstr ""
@@ -5136,11 +5141,6 @@ msgstr "当前网络费用非常高，这可能是由于{0}网络上的交易暂
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
 msgstr "目前 {0} 多"
-
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "<0>Zero Cost Mint</0><1>Get a rebate for all transaction costs incurred when minting GLV</1>"
-msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -6557,11 +6557,6 @@ msgstr "若流动率不足以交换GLP {0} 成 {swapTokenSymbol}, 您可使用�
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim completed!"
 msgstr "领取完成"
-
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Pools allowing provision of liquidity including single and native asset opportunities"
-msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
