@@ -60,7 +60,8 @@ export function use24hVolumes() {
             return acc;
           }
 
-          acc[indexTokenAddress] = (acc[indexTokenAddress] || 0n) + BigInt(cur.volume);
+          acc[indexTokenAddress] =
+            (acc[indexTokenAddress] === undefined ? 0n : acc[indexTokenAddress]) + BigInt(cur.volume);
           if (indexTokenAddress === convertTokenAddress(chainId, NATIVE_TOKEN_ADDRESS, "wrapped")) {
             acc[NATIVE_TOKEN_ADDRESS] = acc[indexTokenAddress];
           }
