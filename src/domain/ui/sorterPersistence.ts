@@ -1,5 +1,9 @@
+import { SORTER_CONFIG_KEY } from "config/localStorage";
+import isEqual from "lodash/isEqual";
 import { Dispatch, SetStateAction, useCallback, useState, useSyncExternalStore } from "react";
-import type { SortDirection, SorterPersistedKey } from "./types";
+
+export type SortDirection = "asc" | "desc" | "unspecified";
+export type SorterPersistedKey = "chart-token-selector" | "gm-list" | "dashboard-markets-list" | "gm-token-selector";
 
 type SorterPersistedConfig<SortField extends string | "unspecified" = "unspecified"> = {
   orderBy: SortField;
@@ -15,30 +19,53 @@ const sorterConfigKeys: SorterPersistedKey[] = Object.keys({
   "gm-token-selector": 1,
 } satisfies Record<SorterPersistedKey, 1>) as SorterPersistedKey[];
 
-const createLocalStorageStore = (
-  key: SorterPersistedKey,
-  defaultValue: SorterPersistedConfig = DEFAULT_SORTER_CONFIG
-) => {
-  const suffixedKey = `${key}-sorter-config`;
+function tryParse<T>(value: string | null, defaultValue: T): T {
+  if (!value) return defaultValue;
 
+  try {
+    return JSON.parse(value) as T;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("Error parsing", e);
+    return defaultValue;
+  }
+}
+
+type LocalStorageStore<U> = {
+  getSnapshot: () => U;
+  setSnapshot: (value: U) => void;
+  subscribe: (listener: () => void) => () => void;
+};
+
+const createLocalStorageStore = <T extends string, U>(
+  configKey: string,
+  valueKey: T,
+  defaultValue: U
+): LocalStorageStore<U> => {
   let listeners = new Set<() => void>();
 
-  let lastReturnedString = "";
-  let lastReturnedConfig: SorterPersistedConfig | undefined;
+  let lastReturnedValue: U | undefined;
 
-  const getSnapshot = (): SorterPersistedConfig => {
-    const storedValue = localStorage.getItem(suffixedKey) ?? "";
+  const getSnapshot = (): U => {
+    const storedConfig = localStorage.getItem(configKey) ?? "";
 
-    if (storedValue !== lastReturnedString) {
-      lastReturnedConfig = storedValue ? JSON.parse(storedValue) : defaultValue;
-      lastReturnedString = storedValue;
+    let storedValue: U = tryParse<Record<T, U>>(storedConfig, {} as Record<T, U>)[valueKey] ?? defaultValue;
+
+    if (!lastReturnedValue || !isEqual(lastReturnedValue, storedValue)) {
+      lastReturnedValue = storedValue;
     }
 
-    return lastReturnedConfig ?? defaultValue;
+    return lastReturnedValue;
   };
 
-  const setSnapshot = (value: SorterPersistedConfig) => {
-    localStorage.setItem(suffixedKey, JSON.stringify(value));
+  const setSnapshot = (value: U) => {
+    localStorage.setItem(
+      configKey,
+      JSON.stringify({
+        ...tryParse<Record<T, U>>(localStorage.getItem(configKey), {} as Record<T, U>),
+        [valueKey]: value,
+      })
+    );
     listeners.forEach((listener) => listener());
   };
 
@@ -56,9 +83,9 @@ const createLocalStorageStore = (
 
 const sorterConfigStores = Object.fromEntries(
   sorterConfigKeys.map((key) => {
-    return [key, createLocalStorageStore(key)];
+    return [key, createLocalStorageStore(SORTER_CONFIG_KEY, key, DEFAULT_SORTER_CONFIG)];
   })
-) as Record<SorterPersistedKey, ReturnType<typeof createLocalStorageStore>>;
+) as Record<SorterPersistedKey, LocalStorageStore<SorterPersistedConfig>>;
 
 /* eslint-disable react-hooks/rules-of-hooks */
 export const useSorterConfig = <SortField extends string | "unspecified">(
