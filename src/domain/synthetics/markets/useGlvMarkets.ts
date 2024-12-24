@@ -157,7 +157,7 @@ export function useGlvMarketsInfo(
               },
               glvValueMin: {
                 methodName: "getGlvValue",
-                params: [...glvPricesQuery, true],
+                params: [...glvPricesQuery, false],
               },
             },
           };
