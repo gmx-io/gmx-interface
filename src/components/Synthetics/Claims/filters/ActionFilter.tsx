@@ -4,12 +4,14 @@ import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
 import { ClaimType } from "domain/synthetics/claimHistory/types";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 
 type Item = {
   data: string;
   text: MessageDescriptor;
+  debug?: boolean;
 };
 
 type Group = {
@@ -38,6 +40,7 @@ const GROUPS: Groups = [
       {
         data: ClaimType.SettleFundingFeeCreated,
         text: msg`Request Settlement of Funding Fees`,
+        debug: true,
       },
     ],
   },
@@ -60,19 +63,23 @@ type Props = {
 
 export function ActionFilter({ value, onChange }: Props) {
   const { i18n } = useLingui();
+  const { showDebugValues } = useSettings();
+
   const localizedGroups = useMemo(() => {
     return GROUPS.map((group) => {
       return {
         groupName: i18n._(group.groupName),
-        items: group.items.map((item) => {
-          return {
-            data: item.data,
-            text: i18n._(item.text),
-          };
-        }),
+        items: group.items
+          .filter((item) => !item.debug || showDebugValues)
+          .map((item) => {
+            return {
+              data: item.data,
+              text: i18n._(item.text),
+            };
+          }),
       };
     });
-  }, [i18n]);
+  }, [i18n, showDebugValues]);
 
   return (
     <TableOptionsFilter<string>
