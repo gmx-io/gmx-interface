@@ -156,14 +156,6 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                           })}{" "}
                           of position size)
                         </div>
-                        <div>
-                          (
-                          {formatPercentage(bigMath.abs(fullCollateralPriceImpactPercentage), {
-                            bps: false,
-                            displayDecimals: 3,
-                          })}{" "}
-                          of collateral)
-                        </div>
                       </>
                     }
                     value={formatDeltaUsd(positionPriceImpactDeltaUsd)}
