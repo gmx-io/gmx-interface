@@ -2759,11 +2759,6 @@ msgstr ""
 msgid "Order creation failed."
 msgstr ""
 
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Yield-optimized vaults supporting trading across multiple GMX markets"
-msgstr ""
-
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
 msgstr ""
@@ -3002,6 +2997,11 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
+msgstr ""
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets"
 msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
@@ -4222,6 +4222,11 @@ msgstr ""
 msgid "Edit Referral Code"
 msgstr ""
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
 msgstr ""
@@ -5151,11 +5156,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Current {0} long"
-msgstr ""
-
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "<0>Zero Cost Mint</0><1>Get a rebate for all transaction costs incurred when minting GLV</1>"
 msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
@@ -6559,11 +6559,6 @@ msgstr ""
 #: src/pages/Earn/AffiliateClaimModal.tsx
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim completed!"
-msgstr ""
-
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Pools allowing provision of liquidity including single and native asset opportunities"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx

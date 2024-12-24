@@ -41,7 +41,6 @@ import PageTitle from "components/PageTitle/PageTitle";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
 import { GlpCard } from "./GlpCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
@@ -49,8 +48,6 @@ import { StakeModal } from "./StakeModal";
 import { TotalRewardsCard } from "./TotalRewardsCard";
 import { UnstakeModal } from "./UnstakeModal";
 import { Vesting } from "./Vesting";
-
-import sparkleIcon from "img/sparkle.svg";
 
 import "./EarnV2.css";
 
@@ -425,22 +422,13 @@ export default function EarnV2() {
       {getIsSyntheticsSupported(chainId) && (
         <div className="mt-15">
           <PageTitle
-            title={
-              <TooltipWithPortal
-                disableHandleStyle
-                content={
-                  <Trans>
-                    <p className="mb-6">Zero Cost Mint</p>
-                    <p>Get a rebate for all transaction costs incurred when minting GLV</p>
-                  </Trans>
-                }
-              >
-                <Trans>Select a GLV Vault</Trans>
-                <img src={sparkleIcon} alt="sparkle" className="relative -left-4 -top-8 inline h-24 align-top" />
-              </TooltipWithPortal>
-            }
+            title={<Trans>Select a GLV Vault</Trans>}
             showNetworkIcon={false}
-            subtitle={<Trans>Yield-optimized vaults supporting trading across multiple GMX markets</Trans>}
+            subtitle={
+              <Trans>
+                Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets
+              </Trans>
+            }
           />
           <GlvList
             marketsTokensApyData={marketsTokensApyData}
@@ -455,7 +443,7 @@ export default function EarnV2() {
             title={t`Select a GM Pool`}
             showNetworkIcon={false}
             subtitle={
-              <Trans>Pools allowing provision of liquidity including single and native asset opportunities</Trans>
+              <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets</Trans>
             }
           />
           <GmList

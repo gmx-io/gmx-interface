@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/types";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import {
-  selectGlvAndMarketsInfoData,
   selectDepositMarketTokensData,
+  selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets";
@@ -23,14 +23,11 @@ import PageTitle from "components/PageTitle/PageTitle";
 import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 
-import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
-import { GmList } from "components/Synthetics/GmList/GmList";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
-
-import sparkleIcon from "img/sparkle.svg";
+import { GmList } from "components/Synthetics/GmList/GmList";
+import { MarketStatsWithComposition } from "components/Synthetics/MarketStats/MarketStatsWithComposition";
 
 import "./MarketPoolsPage.scss";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function MarketPoolsPage() {
   const { chainId } = useChainId();
@@ -128,22 +125,13 @@ export function MarketPoolsPage() {
         </div>
 
         <PageTitle
-          title={
-            <TooltipWithPortal
-              disableHandleStyle
-              content={
-                <Trans>
-                  <p className="mb-6">Zero Cost Mint</p>
-                  <p>Get a rebate for all transaction costs incurred when minting GLV</p>
-                </Trans>
-              }
-            >
-              <Trans>Select a GLV Vault</Trans>
-              <img src={sparkleIcon} alt="sparkle" className="relative -left-4 -top-8 inline h-24 align-top" />
-            </TooltipWithPortal>
-          }
+          title={<Trans>Select a GLV Vault</Trans>}
           showNetworkIcon={false}
-          subtitle={<Trans>Yield-optimized vaults supporting trading across multiple GMX markets</Trans>}
+          subtitle={
+            <Trans>
+              Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets
+            </Trans>
+          }
         />
         <GlvList
           marketsTokensApyData={marketsTokensApyData}
@@ -158,7 +146,7 @@ export function MarketPoolsPage() {
           title={t`Select a GM Pool`}
           showNetworkIcon={false}
           subtitle={
-            <Trans>Pools allowing provision of liquidity including single and native asset opportunities</Trans>
+            <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets</Trans>
           }
         />
         <GmList

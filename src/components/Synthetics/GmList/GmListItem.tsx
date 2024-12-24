@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import React, { useMemo } from "react";
 
 import { getNormalizedTokenSymbol } from "config/tokens";
