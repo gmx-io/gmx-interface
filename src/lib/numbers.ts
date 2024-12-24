@@ -582,7 +582,7 @@ export function formatAmountHuman(
 }
 
 export function formatBalanceAmount(amount: bigint, tokenDecimals: number) {
-  if (amount === undefined || amount === 0n) return "0.0000";
+  if (amount === undefined || amount === 0n) return "-";
 
   const absAmount = bigMath.abs(amount);
   const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);

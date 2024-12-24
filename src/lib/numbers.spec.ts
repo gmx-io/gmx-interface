@@ -97,7 +97,7 @@ describe("formatAmountHuman", () => {
     // prettier-ignore
     {
     expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe(         "1,000.0000");
-    expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe(                          "0.0000");
+    expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe(                          "-");
     expect(formatBalanceAmount(ONE_USD * 1n, USD_DECIMALS)).toBe(                "1.0000");
     expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS)).toBe(               "0.10000");
     expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS)).toBe(              "0.010000");
