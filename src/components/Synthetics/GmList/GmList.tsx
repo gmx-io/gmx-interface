@@ -33,6 +33,7 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { stripBlacklistedWords } from "domain/tokens/utils";
+import type { SortDirection } from "domain/ui/sorterPersistence";
 import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -46,7 +47,7 @@ import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
-import { Sorter, useSorterHandlers, type SortDirection } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -89,7 +90,9 @@ export function GmList({
   const { isConnected: active } = useAccount();
   const currentIcons = getIcons(chainId)!;
   const userEarnings = useUserEarnings(chainId);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>({
+    persistenceKey: "gm-list",
+  });
   const [searchText, setSearchText] = useState("");
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableMarketAddressSet = useMemo(

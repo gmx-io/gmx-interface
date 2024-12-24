@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
+import type { SortDirection } from "domain/ui/sorterPersistence";
 import { bigMath } from "lib/bigmath";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
@@ -20,7 +21,7 @@ import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
-import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -55,10 +56,10 @@ export function LeaderboardAccountsTable({
   const currentAccount = useLeaderboardCurrentAccount();
   const { isLoading, data } = accounts;
   const [page, setPage] = useState(1);
-  const { orderBy, direction, getSorterProps, setDirection, setOrderBy } = useSorterHandlers<LeaderboardAccountField>(
-    "totalQualifyingPnl",
-    "desc"
-  );
+  const { orderBy, direction, getSorterProps, setDirection, setOrderBy } = useSorterHandlers<LeaderboardAccountField>({
+    initialOrderBy: "totalQualifyingPnl",
+    initialDirection: "desc",
+  });
 
   const isCompetitions = Boolean(activeCompetition);
 

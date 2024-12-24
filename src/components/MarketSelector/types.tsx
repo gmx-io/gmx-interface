@@ -21,6 +21,7 @@ export type CommonPoolSelectorProps = {
    */
   withFilters?: boolean;
   favoriteKey: TokenFavoriteKey;
+  size?: "l" | "m";
 };
 
 export type MarketState = {
