@@ -245,8 +245,8 @@ export function useGlvMarketsInfo(
           const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMin.returnValues;
           const [valueMax] = data[glv.glvToken + "-glvValue"].glvValueMax.returnValues;
           const [valueMin] = data[glv.glvToken + "-glvValue"].glvValueMin.returnValues;
-          const [priceMin, , totalSupply] = pricesMax;
-          const [priceMax] = pricesMin;
+          const [priceMin, , totalSupply] = pricesMin;
+          const [priceMax] = pricesMax;
 
           const glvName = getGlvMarketName(chainId, glv.glvToken);
 
