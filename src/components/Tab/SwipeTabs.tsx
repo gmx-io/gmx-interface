@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { DraggableProps, MotionStyle, motion, useDragControls, useMotionValue } from "framer-motion";
+import { MotionStyle, PanInfo, motion, useSpring } from "framer-motion";
 import { ReactNode, useCallback, useMemo, useRef, useState } from "react";
 
 type Props = {
@@ -17,16 +17,30 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
   const optionsRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const bgRef = useRef<HTMLDivElement>(null);
   const [visuallyActiveOption, setVisuallyActiveOption] = useState(option);
-  const x = useMotionValue(0);
+  const offsetRef = useRef(0);
+  const x = useSpring(0, { stiffness: 1000, damping: 60, bounce: 0 });
+  const isDragging = useRef(false);
 
   const onClick = useCallback(
     (opt: string | number) => {
       onChange?.(opt);
-    },
-    [onChange]
-  );
 
-  const dragControls = useDragControls();
+      const optElem = optionsRefs.current[options.indexOf(opt)];
+      if (!optElem) return;
+
+      const optRect = optElem.getBoundingClientRect();
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      if (!containerRect) return;
+
+      x.set(optRect.x - containerRect.x);
+
+      if (bgRef.current) {
+        bgRef.current.style.width = `${optRect.width}px`;
+      }
+      setVisuallyActiveOption(opt);
+    },
+    [onChange, options, x]
+  );
 
   const getNearestOption = useCallback(
     (
@@ -62,72 +76,59 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
     [options]
   );
 
-  const detectNearestOptionOnDrag = useCallback(() => {
-    const bgRect = bgRef.current?.getBoundingClientRect();
+  const handlePanStart = useCallback(() => {
+    isDragging.current = true;
+    offsetRef.current = x.get();
+  }, [x]);
 
-    if (!bgRect) return;
+  const handlePan = useCallback(
+    (event: PointerEvent, info: PanInfo) => {
+      if (!isDragging.current) return;
 
-    const { option: nearestOption, width } = getNearestOption(bgRect.x, { withHalfWidth: true, isAbsolute: true });
-
-    if (!nearestOption) return;
-
-    setVisuallyActiveOption(nearestOption);
-
-    if (bgRef.current) {
-      bgRef.current.style.width = `${width}px`;
-    }
-  }, [getNearestOption]);
-
-  const startDrag = useCallback(
-    (event: React.PointerEvent) => {
-      dragControls.start(event, { snapToCursor: false });
-
-      const containerRect = containerRef.current?.getBoundingClientRect();
-
-      if (!containerRect) return;
+      let newX = offsetRef.current - info.delta.x * 2;
+      offsetRef.current = newX;
 
       const {
         option: nearestOption,
         width,
         offset,
-      } = getNearestOption(event.clientX, {
-        withHalfWidth: false,
-        isAbsolute: true,
+      } = getNearestOption(newX, {
+        withHalfWidth: true,
+        isAbsolute: false,
       });
 
-      if (offset !== undefined) {
-        x.set(offset);
-      }
+      x.set((offset ?? 0) * 0.8 + newX * 0.2);
+      if (nearestOption) {
+        setVisuallyActiveOption(nearestOption);
 
-      setVisuallyActiveOption(nearestOption);
-
-      if (bgRef.current) {
-        bgRef.current.style.width = `${width}px`;
+        bgRef.current!.style.width = `${width}px`;
       }
     },
-    [dragControls, getNearestOption, x]
+    [getNearestOption, x]
   );
 
-  const dragTransition = useMemo((): DraggableProps["dragTransition"] => {
-    return {
-      timeConstant: 100,
-      modifyTarget: (target: number) => {
-        const { option: nearestOption, offset } = getNearestOption(target, {
-          withHalfWidth: true,
-          isAbsolute: false,
-        });
+  const handlePanEnd = useCallback(() => {
+    const { offset: targetOffset } = getNearestOption(offsetRef.current, {
+      withHalfWidth: true,
+      isAbsolute: false,
+    });
 
-        if (!nearestOption) return target;
+    if (targetOffset !== undefined) {
+      isDragging.current = false;
 
-        if (nearestOption !== option) {
-          setVisuallyActiveOption(nearestOption);
-          onChange?.(nearestOption);
-        }
+      x.set(targetOffset);
 
-        return offset;
-      },
-    };
-  }, [getNearestOption, onChange, option]);
+      const { option: nearestOption } = getNearestOption(targetOffset, {
+        withHalfWidth: true,
+        isAbsolute: false,
+      });
+
+      if (nearestOption !== option) {
+        setVisuallyActiveOption(nearestOption);
+        onChange?.(nearestOption);
+      }
+    }
+  }, [getNearestOption, onChange, option, x]);
 
   const bgStyle = useMemo(
     (): MotionStyle => ({
@@ -141,7 +142,9 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
       ref={containerRef}
       data-qa={qa}
       className="text-body-medium relative flex touch-none select-none overflow-hidden rounded-3 bg-cold-blue-900 text-slate-100 shadow-[inset_0px_0px_30px_5px_rgba(255,255,255,0.01)]"
-      onPointerDown={startDrag}
+      onPanStart={handlePanStart}
+      onPan={handlePan}
+      onPanEnd={handlePanEnd}
     >
       <motion.div
         ref={bgRef}
@@ -149,11 +152,6 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
           "absolute left-0 top-0 h-full w-[100px] bg-cold-blue-500",
           visuallyActiveOption && optionClassnames?.[visuallyActiveOption]
         )}
-        drag="x"
-        dragConstraints={containerRef}
-        dragControls={dragControls}
-        onDrag={detectNearestOptionOnDrag}
-        dragTransition={dragTransition}
         style={bgStyle}
       />
 
