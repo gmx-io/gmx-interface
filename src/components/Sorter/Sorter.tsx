@@ -1,8 +1,7 @@
 import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useRef } from "react";
 
-import { useSorterConfig } from "./sorterPersistence";
-import type { SortDirection, SorterPersistedKey } from "./types";
+import { SortDirection, SorterPersistedKey, useSorterConfig } from "domain/ui/sorterPersistence";
 
 import IcSortable from "img/ic_sortable.svg?react";
 import IcSortedAsc from "img/ic_sorted_asc.svg?react";

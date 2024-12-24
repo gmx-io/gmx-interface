@@ -61,6 +61,8 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 export const RPC_PROVIDER_KEY = "rpc-provider";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
 
+export const SORTER_CONFIG_KEY = "sorter-config";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {

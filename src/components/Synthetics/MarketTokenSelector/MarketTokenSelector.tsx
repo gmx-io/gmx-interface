@@ -25,6 +25,7 @@ import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseA
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
+import type { SortDirection } from "domain/ui/sorterPersistence";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -34,7 +35,6 @@ import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import type { SortDirection } from "components/Sorter/types";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
