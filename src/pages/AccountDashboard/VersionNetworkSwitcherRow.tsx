@@ -35,7 +35,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
           key={supportedChainId}
           className={cx("flex items-center gap-4", {
             "text-white": supportedChainId === chainId && version === 2,
-            "text-gray-300": supportedChainId !== chainId || version !== 2,
+            "text-slate-100": supportedChainId !== chainId || version !== 2,
           })}
         >
           V2
@@ -52,7 +52,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
           key={supportedChainId}
           className={cx("flex items-center gap-4", {
             "text-white": supportedChainId === chainId && version === 1,
-            "text-gray-300": supportedChainId !== chainId || version !== 1,
+            "text-slate-100": supportedChainId !== chainId || version !== 1,
           })}
         >
           V1

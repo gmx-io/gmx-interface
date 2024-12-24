@@ -1,10 +1,6 @@
 .VersionSwitch {
   display: inline-flex;
-  background: linear-gradient(
-    90deg,
-    var(--color-cold-blue-900) 0%,
-    color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%
-  );
+  background: var(--color-cold-blue-900);
   border-radius: 3px;
 }
 
@@ -14,7 +10,7 @@
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   cursor: pointer;
-  color: var(--color-gray-300);
+  color: var(--color-slate-100);
   line-height: 1;
 
   &.v1 {
@@ -28,17 +24,11 @@
   }
 
   &:hover {
-    color: var(--color-white);
     background: var(--color-cold-blue-700);
   }
 
-  &.v1.active {
-    background: var(--color-yellow-500);
-    color: var(--color-black);
-  }
-
-  &.v2.active {
-    background: var(--primary-btn-bg);
+  &.active {
+    background: var(--color-cold-blue-500);
     color: var(--color-white);
   }
 }

@@ -1,16 +1,19 @@
-import React, { useCallback } from "react";
-import { FiX } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
+import { useCallback } from "react";
+import { FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-import { useNotifyModalState } from "lib/useNotifyModalState";
-import { HeaderLink } from "./HeaderLink";
-import "./Header.scss";
-import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import logoImg from "img/logo_GMX.svg";
+
+import { isHomeSite } from "lib/legacy";
+import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralTopMenuClickEvent } from "lib/userAnalytics/types";
+
+import logoImg from "img/logo_GMX.svg";
+import { HeaderLink } from "./HeaderLink";
+
+import "./Header.scss";
 
 type Props = {
   small?: boolean;
@@ -34,7 +37,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
             <img src={logoImg} alt="GMX Logo" />
           </Link>
           <div
-            className="App-header-menu-icon-block mobile-cross-menu"
+            className="App-header-menu-icon-block max-w-[450px]:mr-12 mr-8 !border-0"
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
             <FiX className="App-header-menu-icon" />

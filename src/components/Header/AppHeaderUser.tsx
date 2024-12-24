@@ -1,32 +1,39 @@
-import connectWalletImg from "img/ic_wallet_24.svg";
-import AddressDropdown from "../AddressDropdown/AddressDropdown";
-import ConnectWalletButton from "../Common/ConnectWalletButton";
-
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
+
+import { useCallback } from "react";
+import { useRouteMatch } from "react-router-dom";
+
+import connectWalletImg from "img/ic_wallet_24.svg";
+
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
+
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+
+import AddressDropdown from "../AddressDropdown/AddressDropdown";
+import ConnectWalletButton from "../Common/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import { NotifyButton } from "../NotifyButton/NotifyButton";
-import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
-import { useCallback } from "react";
-import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+
+import "./Header.scss";
 
 type Props = {
   openSettings: () => void;
   small?: boolean;
   disconnectAccountAndCloseSettings: () => void;
   showRedirectModal: (to: string) => void;
+  menuToggle?: React.ReactNode;
 };
 
 const NETWORK_OPTIONS = [
@@ -53,7 +60,13 @@ if (isDevelopment()) {
   });
 }
 
-export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSettings, showRedirectModal }: Props) {
+export function AppHeaderUser({
+  small,
+  menuToggle,
+  openSettings,
+  disconnectAccountAndCloseSettings,
+  showRedirectModal,
+}: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -62,6 +75,9 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
+  const isOnTradePageV1 = useRouteMatch("/v1");
+  const isOnTradePageV2 = useRouteMatch("/trade");
+  const shouldHideTradeButton = isOnTradePageV1 || isOnTradePageV2;
 
   const selectorLabel = getChainName(chainId);
 
@@ -82,19 +98,21 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        <div
-          data-qa="trade"
-          className={cx("App-header-trade-link text-body-medium", { "homepage-header": isHomeSite() })}
-        >
-          <HeaderLink
-            className="default-btn"
-            onClick={trackLaunchApp}
-            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
-            showRedirectModal={showRedirectModal}
+        {shouldHideTradeButton ? null : (
+          <div
+            data-qa="trade"
+            className={cx("App-header-trade-link text-body-medium", { "homepage-header": isHomeSite() })}
           >
-            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
-          </HeaderLink>
-        </div>
+            <HeaderLink
+              className="default-btn"
+              onClick={trackLaunchApp}
+              to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+              showRedirectModal={showRedirectModal}
+            >
+              {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+            </HeaderLink>
+          </div>
+        )}
 
         {showConnectionOptions && openConnectModal ? (
           <>
@@ -118,6 +136,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
         ) : (
           <LanguagePopupHome />
         )}
+        {menuToggle}
       </div>
     );
   }
@@ -127,14 +146,16 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   return (
     <div className="App-header-user">
       <div data-qa="trade" className="App-header-trade-link text-body-medium">
-        <HeaderLink
-          className="default-btn"
-          onClick={trackLaunchApp}
-          to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
-          showRedirectModal={showRedirectModal}
-        >
-          {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
-        </HeaderLink>
+        {shouldHideTradeButton ? null : (
+          <HeaderLink
+            className="default-btn"
+            onClick={trackLaunchApp}
+            to={`${tradeLink}?${isHomeSite() ? userAnalytics.getSessionIdUrlParams() : ""}`}
+            showRedirectModal={showRedirectModal}
+          >
+            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+          </HeaderLink>
+        )}
       </div>
 
       {showConnectionOptions ? (
@@ -157,6 +178,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
       ) : (
         <LanguagePopupHome />
       )}
+      {menuToggle}
     </div>
   );
 }
