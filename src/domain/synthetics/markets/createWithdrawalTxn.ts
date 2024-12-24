@@ -13,7 +13,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateWithdrawalParams = {
   account: string;

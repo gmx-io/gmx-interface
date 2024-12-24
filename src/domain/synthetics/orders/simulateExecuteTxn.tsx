@@ -21,8 +21,8 @@ import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 import { withRetry } from "viem";
 import { isGlvEnabled } from "../markets/glv";
-import { adjustBlockTimestamp } from "lib/useBlockTimestamp";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;

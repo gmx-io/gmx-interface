@@ -20,7 +20,7 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
 

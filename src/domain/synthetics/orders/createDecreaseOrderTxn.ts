@@ -17,7 +17,7 @@ import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { OrderMetricId } from "lib/metrics";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
 

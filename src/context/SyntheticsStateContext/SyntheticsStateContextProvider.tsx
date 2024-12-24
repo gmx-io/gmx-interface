@@ -46,7 +46,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { BlockTimestampData, useBlockTimestamp } from "lib/useBlockTimestamp";
+import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -238,7 +238,7 @@ export function SyntheticsStateContextProvider({
     enabled: pageType === "trade",
   });
 
-  const { blockTimestampData } = useBlockTimestamp(chainId, { skip: !["trade", "pools"].includes(pageType) });
+  const { blockTimestampData } = useBlockTimestampRequest(chainId, { skip: !["trade", "pools"].includes(pageType) });
 
   // TODO move closingPositionKey to positionSellerState
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);

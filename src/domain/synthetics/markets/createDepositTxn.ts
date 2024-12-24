@@ -11,7 +11,7 @@ import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateDepositParams = {
   account: string;

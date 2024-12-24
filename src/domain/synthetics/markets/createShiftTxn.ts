@@ -13,7 +13,7 @@ import { applySlippageToMinOut } from "../trade";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 type Params = {
   account: string;
