@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
-import React, { useState } from "react";
-import Vester from "sdk/abis/Vester.json";
+import { useCallback, useMemo, useState } from "react";
+
 import { getIcons } from "config/icons";
 import { SetPendingTransactions } from "domain/legacy";
 import { bigMath } from "lib/bigmath";
@@ -9,12 +9,15 @@ import { callContract } from "lib/contracts";
 import { getPageTitle } from "lib/legacy";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+
 import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
 import Modal from "components/Modal/Modal";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import Vester from "sdk/abis/Vester.json";
 
 export function VesterDepositModal(props: {
   isVisible: boolean;
@@ -57,31 +60,35 @@ export function VesterDepositModal(props: {
   const [isDepositing, setIsDepositing] = useState(false);
   const icons = getIcons(chainId);
 
-  let amount = parseValue(value, 18);
+  const amount = useMemo(() => parseValue(value, 18), [value]);
 
-  let nextReserveAmount: bigint | undefined = reserveAmount;
+  const { nextReserveAmount, nextDepositAmount, additionalReserveAmount } = useMemo(() => {
+    let nextReserveAmount = reserveAmount;
+    let nextDepositAmount = vestedAmount;
+    let additionalReserveAmount = 0n;
 
-  let nextDepositAmount = vestedAmount;
-  if (amount !== undefined && vestedAmount !== undefined) {
-    nextDepositAmount = vestedAmount + amount;
-  }
-
-  let additionalReserveAmount = 0n;
-  if (
-    amount !== undefined &&
-    nextDepositAmount !== undefined &&
-    averageStakedAmount !== undefined &&
-    maxVestableAmount !== undefined &&
-    maxVestableAmount > 0 &&
-    nextReserveAmount !== undefined
-  ) {
-    nextReserveAmount = bigMath.mulDiv(nextDepositAmount, averageStakedAmount, maxVestableAmount);
-    if (reserveAmount !== undefined && nextReserveAmount > reserveAmount) {
-      additionalReserveAmount = nextReserveAmount - reserveAmount;
+    if (amount !== undefined && vestedAmount !== undefined) {
+      nextDepositAmount = vestedAmount + amount;
     }
-  }
 
-  const getError = () => {
+    if (
+      amount !== undefined &&
+      nextDepositAmount !== undefined &&
+      averageStakedAmount !== undefined &&
+      maxVestableAmount !== undefined &&
+      maxVestableAmount > 0 &&
+      nextReserveAmount !== undefined
+    ) {
+      nextReserveAmount = bigMath.mulDiv(nextDepositAmount, averageStakedAmount, maxVestableAmount);
+      if (reserveAmount !== undefined && nextReserveAmount > reserveAmount) {
+        additionalReserveAmount = nextReserveAmount - reserveAmount;
+      }
+    }
+
+    return { nextReserveAmount, nextDepositAmount, additionalReserveAmount };
+  }, [amount, vestedAmount, averageStakedAmount, maxVestableAmount, reserveAmount]);
+
+  const error = useMemo(() => {
     if (amount === undefined) {
       return t`Enter an amount`;
     }
@@ -91,9 +98,22 @@ export function VesterDepositModal(props: {
     if (maxReserveAmount !== undefined && nextReserveAmount !== undefined && nextReserveAmount > maxReserveAmount) {
       return t`Insufficient staked tokens`;
     }
-  };
+    return undefined;
+  }, [amount, maxAmount, maxReserveAmount, nextReserveAmount]);
 
-  const onClickPrimary = () => {
+  const isPrimaryEnabled = !error && !isDepositing;
+
+  const primaryText = useMemo(() => {
+    if (error) {
+      return error;
+    }
+    if (isDepositing) {
+      return t`Depositing...`;
+    }
+    return t`Deposit`;
+  }, [error, isDepositing]);
+
+  const onClickPrimary = useCallback(() => {
     setIsDepositing(true);
     const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
 
@@ -109,29 +129,12 @@ export function VesterDepositModal(props: {
       .finally(() => {
         setIsDepositing(false);
       });
-  };
+  }, [chainId, vesterAddress, amount, setPendingTxns, setIsVisible, signer]);
 
-  const isPrimaryEnabled = () => {
-    const error = getError();
-    if (error) {
-      return false;
-    }
-    if (isDepositing) {
-      return false;
-    }
-    return true;
-  };
-
-  const getPrimaryText = () => {
-    const error = getError();
-    if (error) {
-      return error;
-    }
-    if (isDepositing) {
-      return t`Depositing...`;
-    }
-    return t`Deposit`;
-  };
+  const onClickMaxButton = useCallback(() => {
+    if (maxAmount === undefined) return;
+    setValue(formatAmountFree(maxAmount, 18, 18));
+  }, [maxAmount, setValue]);
 
   return (
     <SEO title={getPageTitle(t`Earn`)}>
@@ -141,7 +144,7 @@ export function VesterDepositModal(props: {
             topLeftLabel={t`Deposit`}
             topRightLabel={t`Max`}
             topRightValue={formatAmount(maxAmount, 18, 4, true)}
-            onClickTopRightLabel={() => maxAmount !== undefined && setValue(formatAmountFree(maxAmount, 18, 18))}
+            onClickTopRightLabel={onClickMaxButton}
             inputValue={value}
             onInputValueChange={(e) => setValue(e.target.value)}
             showMaxButton={false}
@@ -243,8 +246,8 @@ export function VesterDepositModal(props: {
             )}
           </div>
           <div className="Exchange-swap-button-container">
-            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-              {getPrimaryText()}
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+              {primaryText}
             </Button>
           </div>
         </Modal>

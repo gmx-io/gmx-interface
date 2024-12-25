@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getIcons } from "config/icons";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -14,18 +15,15 @@ import { ProcessedData, useENS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatKeyAmount } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Tooltip from "components/Tooltip/Tooltip";
+import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-
-import { getIcons } from "config/icons";
-import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
+import Tooltip from "components/Tooltip/Tooltip";
 
 export function GmxAndVotingPowerCard({
   processedData,
@@ -69,12 +67,12 @@ export function GmxAndVotingPowerCard({
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
   let stakedGmxSupplyUsd;
-  if (totalGmxStaked !== 0n && gmxPrice) {
+  if (totalGmxStaked !== 0n && gmxPrice !== undefined) {
     stakedGmxSupplyUsd = bigMath.mulDiv(totalGmxStaked, gmxPrice, expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
-  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice) {
+  if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice !== undefined) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
@@ -123,8 +121,9 @@ export function GmxAndVotingPowerCard({
             <Trans>Price</Trans>
           </div>
           <div>
-            {!gmxPrice && "..."}
-            {gmxPrice && (
+            {gmxPrice === undefined ? (
+              "..."
+            ) : (
               <Tooltip
                 position="bottom-end"
                 className="whitespace-nowrap"
@@ -312,14 +311,14 @@ export function GmxAndVotingPowerCard({
           <div className="label">
             <Trans>Total Supply</Trans>
           </div>
-          {totalGmxSupply === undefined && "..."}
-          {(totalGmxSupply !== undefined && (
+          {totalGmxSupply === undefined ? (
+            "..."
+          ) : (
             <div>
               {formatAmount(totalGmxSupply, 18, 0, true)} GMX ($
               {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
             </div>
-          )) ||
-            null}
+          )}
         </div>
         <div className="App-card-divider" />
         <div className="App-card-buttons m-0">
@@ -327,12 +326,12 @@ export function GmxAndVotingPowerCard({
             <Trans>Buy GMX</Trans>
           </Button>
           {active && (
-            <Button variant="secondary" onClick={() => showStakeGmxModal()}>
+            <Button variant="secondary" onClick={showStakeGmxModal}>
               <Trans>Stake</Trans>
             </Button>
           )}
           {active && (
-            <Button variant="secondary" onClick={() => showUnstakeGmxModal()}>
+            <Button variant="secondary" onClick={showUnstakeGmxModal}>
               <Trans>Unstake</Trans>
             </Button>
           )}

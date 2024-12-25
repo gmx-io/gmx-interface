@@ -1,14 +1,17 @@
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
-import React, { useState } from "react";
-import Vester from "sdk/abis/Vester.json";
+import { useCallback, useMemo, useState } from "react";
+
 import { getContract } from "config/contracts";
 import { SetPendingTransactions } from "domain/legacy";
 import { callContract } from "lib/contracts";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+
+import Vester from "sdk/abis/Vester.json";
 
 export function AffiliateClaimModal(props: {
   isVisible: boolean;
@@ -20,24 +23,16 @@ export function AffiliateClaimModal(props: {
 }) {
   const { isVisible, setIsVisible, signer, chainId, setPendingTxns, totalVesterRewards } = props;
   const [isClaiming, setIsClaiming] = useState(false);
+
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
-  const isPrimaryEnabled = () => {
-    if (totalVesterRewards == undefined || totalVesterRewards == 0n) {
-      return false;
-    }
+  const isPrimaryEnabled = totalVesterRewards != undefined && totalVesterRewards !== 0n && !isClaiming;
 
-    return !isClaiming;
-  };
+  const primaryText = useMemo(() => (isClaiming ? t`Claiming...` : t`Claim`), [isClaiming]);
 
-  const getPrimaryText = () => {
-    if (isClaiming) {
-      return t`Claiming...`;
-    }
-    return t`Claim`;
-  };
+  const formattedRewards = useMemo(() => formatAmount(totalVesterRewards, 18, 4, true), [totalVesterRewards]);
 
-  const onClickPrimary = () => {
+  const onClickPrimary = useCallback(() => {
     setIsClaiming(true);
 
     const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
@@ -54,14 +49,14 @@ export function AffiliateClaimModal(props: {
       .finally(() => {
         setIsClaiming(false);
       });
-  };
+  }, [chainId, affiliateVesterAddress, signer, setPendingTxns, setIsVisible]);
 
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Affiliate Vault Rewards`}>
         <Trans>
           <div>
-            This will claim {formatAmount(totalVesterRewards, 18, 4, true)} GMX.
+            This will claim {formattedRewards} GMX.
             <br />
             <br />
             After claiming, you can stake these GMX tokens by using the "Stake" button in the GMX section of this Earn
@@ -71,8 +66,8 @@ export function AffiliateClaimModal(props: {
           </div>
         </Trans>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+            {primaryText}
           </Button>
         </div>
       </Modal>

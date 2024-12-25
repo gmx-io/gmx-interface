@@ -3,29 +3,28 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import useSWR from "swr";
 
-import Token from "sdk/abis/Token.json";
-
 import { getContract } from "config/contracts";
 import { getIcons } from "config/icons";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatKeyAmount } from "lib/numbers";
+import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
-import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-
-import { helperToast } from "lib/helperToast";
+import Tooltip from "components/Tooltip/Tooltip";
+import { AffiliateClaimModal } from "./AffiliateClaimModal";
 import { AffiliateVesterWithdrawModal } from "./AffiliateVesterWithdrawModal";
-import { usePendingTxns } from "lib/usePendingTxns";
 import { VesterDepositModal } from "./VesterDepositModal";
 import { VesterWithdrawModal } from "./VesterWithdrawModal";
-import { AffiliateClaimModal } from "./AffiliateClaimModal";
+
+import Token from "sdk/abis/Token.json";
 
 export function Vesting({ processedData }: { processedData: ProcessedData | undefined }) {
   const { active, signer, account } = useWallet();

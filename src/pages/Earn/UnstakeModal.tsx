@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
-import React, { useState } from "react";
-import RewardRouter from "sdk/abis/RewardRouter.json";
+import { useCallback, useMemo, useState } from "react";
+
 import { ARBITRUM } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
@@ -11,10 +11,13 @@ import { callContract } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import Button from "components/Button/Button";
-import Modal from "components/Modal/Modal";
+
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Modal from "components/Modal/Modal";
+
+import RewardRouter from "sdk/abis/RewardRouter.json";
 
 export function UnstakeModal(props: {
   isVisible: boolean;
@@ -48,37 +51,53 @@ export function UnstakeModal(props: {
     setPendingTxns,
     processedData,
   } = props;
+
   const [isUnstaking, setIsUnstaking] = useState(false);
   const icons = getIcons(chainId);
 
-  let amount = parseValue(value, 18);
+  const amount = useMemo(() => parseValue(value, 18), [value]);
 
-  let unstakeBonusLostPercentage: undefined | bigint = undefined;
-  if (
-    processedData &&
-    amount !== undefined &&
-    amount > 0 &&
-    processedData.esGmxInStakedGmx !== undefined &&
-    processedData.gmxInStakedGmx !== undefined
-  ) {
-    const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
-    if (divisor !== 0n) {
-      unstakeBonusLostPercentage = bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+  const unstakeBonusLostPercentage = useMemo(() => {
+    if (
+      processedData &&
+      amount !== undefined &&
+      amount > 0 &&
+      processedData.esGmxInStakedGmx !== undefined &&
+      processedData.gmxInStakedGmx !== undefined
+    ) {
+      const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+      if (divisor !== 0n) {
+        return bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+      }
     }
-  }
+    return undefined;
+  }, [amount, processedData]);
 
   const votingPowerBurnAmount = amount;
 
-  const getError = () => {
+  const error = useMemo(() => {
     if (amount === undefined || amount === 0n) {
       return t`Enter an amount`;
     }
     if (maxAmount !== undefined && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
-  };
+    return undefined;
+  }, [amount, maxAmount]);
 
-  const onClickPrimary = () => {
+  const isPrimaryEnabled = !error && !isUnstaking;
+
+  const primaryText = useMemo(() => {
+    if (error) {
+      return error;
+    }
+    if (isUnstaking) {
+      return t`Unstaking...`;
+    }
+    return t`Unstake`;
+  }, [error, isUnstaking]);
+
+  const onClickPrimary = useCallback(() => {
     setIsUnstaking(true);
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(chainId, contract, unstakeMethodName, [amount], {
@@ -93,29 +112,12 @@ export function UnstakeModal(props: {
       .finally(() => {
         setIsUnstaking(false);
       });
-  };
+  }, [chainId, rewardRouterAddress, unstakeMethodName, amount, setPendingTxns, setIsVisible, signer]);
 
-  const isPrimaryEnabled = () => {
-    const error = getError();
-    if (error) {
-      return false;
-    }
-    if (isUnstaking) {
-      return false;
-    }
-    return true;
-  };
-
-  const getPrimaryText = () => {
-    const error = getError();
-    if (error) {
-      return error;
-    }
-    if (isUnstaking) {
-      return t`Unstaking...`;
-    }
-    return t`Unstake`;
-  };
+  const onClickMaxButton = useCallback(() => {
+    if (maxAmount === undefined) return;
+    setValue(formatAmountFree(maxAmount, 18, 18));
+  }, [maxAmount, setValue]);
 
   return (
     <div className="StakeModal">
@@ -124,7 +126,7 @@ export function UnstakeModal(props: {
           topLeftLabel={t`Unstake`}
           topRightLabel={t`Max`}
           topRightValue={formatAmount(maxAmount, 18, 4, true)}
-          onClickTopRightLabel={() => maxAmount !== undefined && setValue(formatAmountFree(maxAmount, 18, 18))}
+          onClickTopRightLabel={onClickMaxButton}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
@@ -163,8 +165,8 @@ export function UnstakeModal(props: {
             </AlertInfo>
           )}
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+            {primaryText}
           </Button>
         </div>
       </Modal>

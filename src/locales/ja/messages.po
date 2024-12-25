@@ -434,6 +434,10 @@ msgstr ""
 msgid "Confirm Limit Order"
 msgstr ""
 
+#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+msgid "Confirm Withdraw"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5194,6 +5198,10 @@ msgstr ""
 msgid "Wins and losses for fully closed positions."
 msgstr ""
 
+#: src/pages/Earn/AffiliateClaimModal.tsx
+msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr ""
@@ -5529,10 +5537,6 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
-msgstr ""
-
-#: src/pages/Earn/AffiliateClaimModal.tsx
-msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
@@ -6871,6 +6875,10 @@ msgstr ""
 
 #: src/pages/Earn/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
+msgstr ""
+
+#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+msgid "Confirming..."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx

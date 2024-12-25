@@ -1,11 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
-import React, { useState } from "react";
-import Vester from "sdk/abis/Vester.json";
+import { useCallback, useMemo, useState } from "react";
+
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
+
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+
+import Vester from "sdk/abis/Vester.json";
 
 export function AffiliateVesterWithdrawModal(props) {
   const { isVisible, setIsVisible, chainId, signer, setPendingTxns } = props;
@@ -13,7 +16,9 @@ export function AffiliateVesterWithdrawModal(props) {
 
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
-  const onClickPrimary = () => {
+  const primaryText = useMemo(() => (isWithdrawing ? t`Confirming...` : t`Confirm Withdraw`), [isWithdrawing]);
+
+  const onClickPrimary = useCallback(() => {
     setIsWithdrawing(true);
     const contract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
 
@@ -29,7 +34,7 @@ export function AffiliateVesterWithdrawModal(props) {
       .finally(() => {
         setIsWithdrawing(false);
       });
-  };
+  }, [chainId, affiliateVesterAddress, signer, setPendingTxns, setIsVisible]);
 
   return (
     <div className="StakeModal">
@@ -49,8 +54,7 @@ export function AffiliateVesterWithdrawModal(props) {
         </Trans>
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={isWithdrawing}>
-            {!isWithdrawing && "Confirm Withdraw"}
-            {isWithdrawing && "Confirming..."}
+            {primaryText}
           </Button>
         </div>
       </Modal>

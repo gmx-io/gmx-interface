@@ -434,6 +434,10 @@ msgstr "Insufficient liquidity in the {0} market pool. Select a different pool f
 msgid "Confirm Limit Order"
 msgstr "Confirm Limit Order"
 
+#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+msgid "Confirm Withdraw"
+msgstr "Confirm Withdraw"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5197,6 +5201,10 @@ msgstr "Stop-Loss PnL"
 msgid "Wins and losses for fully closed positions."
 msgstr "Wins and losses for fully closed positions."
 
+#: src/pages/Earn/AffiliateClaimModal.tsx
+msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+msgstr "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "Cancel Stop-Loss"
@@ -5533,10 +5541,6 @@ msgstr "Win / Loss"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
-
-#: src/pages/Earn/AffiliateClaimModal.tsx
-msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
-msgstr "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "No delegate found"
@@ -6878,6 +6882,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/pages/Earn/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>You will earn {1}% less rewards with this action.</0>"
+
+#: src/pages/Earn/AffiliateVesterWithdrawModal.tsx
+msgid "Confirming..."
+msgstr "Confirming..."
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx

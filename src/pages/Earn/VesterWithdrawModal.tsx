@@ -1,12 +1,15 @@
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
-import React, { useState } from "react";
-import Vester from "sdk/abis/Vester.json";
+import { useState } from "react";
+
 import { SetPendingTransactions } from "domain/legacy";
 import { callContract } from "lib/contracts";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+
+import Vester from "sdk/abis/Vester.json";
 
 export function VesterWithdrawModal(props: {
   isVisible: boolean;
@@ -56,8 +59,7 @@ export function VesterWithdrawModal(props: {
         </Trans>
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={isWithdrawing}>
-            {!isWithdrawing && "Confirm Withdraw"}
-            {isWithdrawing && "Confirming..."}
+            {isWithdrawing ? "Confirming..." : "Confirm Withdraw"}
           </Button>
         </div>
       </Modal>

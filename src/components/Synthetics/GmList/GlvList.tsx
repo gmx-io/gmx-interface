@@ -35,7 +35,7 @@ export function GlvList({
   const glvsLoading = useSelector(selectGlvInfoLoading);
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit, withGlv: true });
-  const { isConnected: active } = useAccount();
+  const { isConnected } = useAccount();
 
   const userEarnings = useUserEarnings(chainId);
 
@@ -50,9 +50,9 @@ export function GlvList({
   }, [marketsInfo, marketTokensData]);
 
   const userTotalGmInfo = useMemo(() => {
-    if (!active) return;
+    if (!isConnected) return;
     return getTotalGmInfo(marketTokensData);
-  }, [marketTokensData, active]);
+  }, [marketTokensData, isConnected]);
 
   return (
     <div className="overflow-hidden rounded-4 bg-slate-800">
@@ -74,11 +74,11 @@ export function GlvList({
                   handle={<Trans>BUYABLE</Trans>}
                   className="normal-case"
                   position="bottom-end"
-                  renderContent={() => (
+                  content={
                     <p className="text-white">
                       <Trans>Available amount to deposit into the specific GM pool.</Trans>
                     </p>
-                  )}
+                  }
                 />
               </TableTh>
               <TableTh>
@@ -94,7 +94,7 @@ export function GlvList({
                   handle={t`APY`}
                   className="normal-case"
                   position="bottom-end"
-                  renderContent={ApyTooltipContent}
+                  content={<ApyTooltipContent />}
                 />
               </TableTh>
 

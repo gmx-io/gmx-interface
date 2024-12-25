@@ -1,11 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Modal from "components/Modal/Modal";
+import { ZeroAddress, ethers } from "ethers";
+import { useCallback, useMemo, useState } from "react";
+
 import { ARBITRUM } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
@@ -16,16 +13,22 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
-import { ZeroAddress, ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { callContract } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { useState } from "react";
-import RewardRouter from "sdk/abis/RewardRouter.json";
 import { GMX_DAO_LINKS } from "./constants";
+
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Modal from "components/Modal/Modal";
+
+import RewardRouter from "sdk/abis/RewardRouter.json";
 
 export function StakeModal(props: {
   isVisible: boolean;
@@ -64,47 +67,73 @@ export function StakeModal(props: {
 
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
-  const isUndelegatedGovToken =
-    chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0;
+  const isUndelegatedGovToken = useMemo(
+    () =>
+      chainId === ARBITRUM && govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount && govTokenAmount > 0,
+    [chainId, govTokenDelegatesAddress, govTokenAmount]
+  );
 
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
   const [isApproving, setIsApproving] = useState(false);
   const icons = getIcons(chainId);
+
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: farmAddress,
     tokenAddresses: [stakingTokenAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
 
-  let amount = parseValue(value, 18);
+  const amount = useMemo(() => parseValue(value, 18), [value]);
+
   const needApproval =
     farmAddress !== ZeroAddress && tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
 
-  let stakeBonusPercentage: undefined | bigint = undefined;
-  if (
-    processedData &&
-    amount !== undefined &&
-    amount > 0 &&
-    processedData.esGmxInStakedGmx !== undefined &&
-    processedData.gmxInStakedGmx !== undefined
-  ) {
-    const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
-    if (divisor !== 0n) {
-      stakeBonusPercentage = bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+  const stakeBonusPercentage = useMemo(() => {
+    if (
+      processedData &&
+      amount !== undefined &&
+      amount > 0 &&
+      processedData.esGmxInStakedGmx !== undefined &&
+      processedData.gmxInStakedGmx !== undefined
+    ) {
+      const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+      if (divisor !== 0n) {
+        return bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+      }
     }
-  }
+    return undefined;
+  }, [amount, processedData]);
 
-  const getError = () => {
+  const error = useMemo(() => {
     if (amount === undefined || amount === 0n) {
       return t`Enter an amount`;
     }
     if (maxAmount !== undefined && amount > maxAmount) {
       return t`Max amount exceeded`;
     }
-  };
+    return undefined;
+  }, [amount, maxAmount]);
 
-  const onClickPrimary = () => {
+  const isPrimaryEnabled = useMemo(
+    () => !error && !isApproving && !needApproval && !isStaking && !isUndelegatedGovToken,
+    [error, isApproving, needApproval, isStaking, isUndelegatedGovToken]
+  );
+
+  const primaryText = useMemo(() => {
+    if (error) {
+      return error;
+    }
+    if (isApproving || needApproval) {
+      return t`Pending ${stakingTokenSymbol} approval`;
+    }
+    if (isStaking) {
+      return t`Staking...`;
+    }
+    return t`Stake`;
+  }, [error, isApproving, needApproval, isStaking, stakingTokenSymbol]);
+
+  const onClickPrimary = useCallback(() => {
     if (needApproval) {
       approveTokens({
         setIsApproving,
@@ -130,38 +159,27 @@ export function StakeModal(props: {
       .finally(() => {
         setIsStaking(false);
       });
-  };
+  }, [
+    needApproval,
+    signer,
+    stakingTokenAddress,
+    farmAddress,
+    chainId,
+    rewardRouterAddress,
+    stakeMethodName,
+    amount,
+    setPendingTxns,
+    setIsVisible,
+  ]);
 
-  const isPrimaryEnabled = () => {
-    const error = getError();
-    if (error) {
-      return false;
-    }
-    if (isApproving || needApproval) {
-      return false;
-    }
-    if (isStaking) {
-      return false;
-    }
-    if (isUndelegatedGovToken) {
-      return false;
-    }
-    return true;
-  };
-
-  const getPrimaryText = () => {
-    const error = getError();
-    if (error) {
-      return error;
-    }
-    if (isApproving || needApproval) {
-      return t`Pending ${stakingTokenSymbol} approval`;
-    }
-    if (isStaking) {
-      return t`Staking...`;
-    }
-    return t`Stake`;
-  };
+  const onClickMaxButton = useCallback(() => {
+    if (maxAmount === undefined) return;
+    const formattedMaxAmount = formatAmountFree(maxAmount, 18, 18);
+    const finalMaxAmount = isMetamaskMobile
+      ? limitDecimals(formattedMaxAmount, MAX_METAMASK_MOBILE_DECIMALS)
+      : formattedMaxAmount;
+    setValue(finalMaxAmount);
+  }, [maxAmount, isMetamaskMobile, setValue]);
 
   return (
     <div className="StakeModal">
@@ -170,14 +188,7 @@ export function StakeModal(props: {
           topLeftLabel={t`Stake`}
           topRightLabel={t`Max`}
           topRightValue={formatAmount(maxAmount, 18, 4, true)}
-          onClickTopRightLabel={() => {
-            if (maxAmount === undefined) return;
-            const formattedMaxAmount = formatAmountFree(maxAmount, 18, 18);
-            const finalMaxAmount = isMetamaskMobile
-              ? limitDecimals(formattedMaxAmount, MAX_METAMASK_MOBILE_DECIMALS)
-              : formattedMaxAmount;
-            setValue(finalMaxAmount);
-          }}
+          onClickTopRightLabel={onClickMaxButton}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
@@ -226,8 +237,8 @@ export function StakeModal(props: {
         ) : null}
 
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+            {primaryText}
           </Button>
         </div>
       </Modal>

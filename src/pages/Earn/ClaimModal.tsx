@@ -1,11 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { ethers } from "ethers";
+import React, { useCallback, useMemo, useState } from "react";
+
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
@@ -14,14 +11,20 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
-import { ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import React, { useState } from "react";
-import RewardRouter from "sdk/abis/RewardRouter.json";
 import { GMX_DAO_LINKS } from "./constants";
+
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
+
+import RewardRouter from "sdk/abis/RewardRouter.json";
 
 export function ClaimModal(props: {
   isVisible: boolean;
@@ -100,22 +103,19 @@ export function ClaimModal(props: {
     ((gmxTokenAllowance !== undefined && totalGmxRewards > gmxTokenAllowance) ||
       (totalGmxRewards > 0n && gmxTokenAllowance === undefined));
 
-  const isPrimaryEnabled = () => {
-    return !isClaiming && !isApproving && !needApproval && !isUndelegatedGovToken;
-  };
+  const isPrimaryEnabled = !isClaiming && !isApproving && !needApproval && !isUndelegatedGovToken;
 
-  const getPrimaryText = () => {
+  const primaryText = useMemo(() => {
     if (needApproval || isApproving) {
       return t`Pending GMX approval`;
     }
-
     if (isClaiming) {
       return t`Claiming...`;
     }
     return t`Claim`;
-  };
+  }, [needApproval, isApproving, isClaiming]);
 
-  const onClickPrimary = () => {
+  const onClickPrimary = useCallback(() => {
     if (needApproval) {
       approveTokens({
         setIsApproving,
@@ -158,28 +158,55 @@ export function ClaimModal(props: {
       .finally(() => {
         setIsClaiming(false);
       });
-  };
+  }, [
+    needApproval,
+    signer,
+    gmxAddress,
+    stakedGmxTrackerAddress,
+    chainId,
+    rewardRouterAddress,
+    shouldClaimGmx,
+    shouldStakeGmx,
+    shouldClaimEsGmx,
+    shouldStakeEsGmx,
+    isNativeTokenToClaim,
+    shouldClaimWeth,
+    shouldConvertWeth,
+    gmxUsageOptionsMsg,
+    setPendingTxns,
+    setIsVisible,
+    onClaimSuccess,
+  ]);
 
-  const toggleShouldStakeGmx = (value) => {
-    if (value) {
-      setShouldClaimGmx(true);
-    }
-    setShouldStakeGmx(value);
-  };
+  const toggleShouldStakeGmx = useCallback(
+    (value: boolean) => {
+      if (value) {
+        setShouldClaimGmx(true);
+      }
+      setShouldStakeGmx(value);
+    },
+    [setShouldClaimGmx, setShouldStakeGmx]
+  );
 
-  const toggleShouldStakeEsGmx = (value) => {
-    if (value) {
-      setShouldClaimEsGmx(true);
-    }
-    setShouldStakeEsGmx(value);
-  };
+  const toggleShouldStakeEsGmx = useCallback(
+    (value: boolean) => {
+      if (value) {
+        setShouldClaimEsGmx(true);
+      }
+      setShouldStakeEsGmx(value);
+    },
+    [setShouldClaimEsGmx, setShouldStakeEsGmx]
+  );
 
-  const toggleConvertWeth = (value) => {
-    if (value) {
-      setShouldClaimWeth(true);
-    }
-    setShouldConvertWeth(value);
-  };
+  const toggleConvertWeth = useCallback(
+    (value: boolean) => {
+      if (value) {
+        setShouldClaimWeth(true);
+      }
+      setShouldConvertWeth(value);
+    },
+    [setShouldClaimWeth, setShouldConvertWeth]
+  );
 
   return (
     <ModalWithPortal className="StakeModal" isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
@@ -242,8 +269,8 @@ export function ClaimModal(props: {
         </AlertInfo>
       ) : null}
       <div className="Exchange-swap-button-container">
-        <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-          {getPrimaryText()}
+        <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+          {primaryText}
         </Button>
       </div>
     </ModalWithPortal>

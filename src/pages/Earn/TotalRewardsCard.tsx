@@ -1,30 +1,28 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import useSWR from "swr";
 
 import { ARBITRUM, getConstant } from "config/chains";
+import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
+import { MARKETS } from "config/markets";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
-
-import { ClaimModal } from "./ClaimModal";
-
+import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatKeyAmount } from "lib/numbers";
+import { usePendingTxns } from "lib/usePendingTxns";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { usePendingTxns } from "lib/usePendingTxns";
-import { useCallback, useMemo, useState } from "react";
-import { toast } from "react-toastify";
-import useSWR from "swr";
+import { ClaimModal } from "./ClaimModal";
 
 import ReaderV2 from "sdk/abis/ReaderV2.json";
-import { contractFetcher } from "lib/contracts/contractFetcher";
-import { getContract } from "config/contracts";
-import { MARKETS } from "config/markets";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 
 export function TotalRewardsCard({
   processedData,

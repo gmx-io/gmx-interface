@@ -1,35 +1,32 @@
-import React, { useEffect, useState } from "react";
+import { t, Trans } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { ethers } from "ethers";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import { ethers } from "ethers";
 
-import { USD_DECIMALS } from "config/factors";
-import { PRECISION } from "lib/numbers";
-
+import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { getTokenBySymbol } from "config/tokens";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { approveTokens } from "domain/tokens";
+import { bigMath } from "lib/bigmath";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue, PRECISION } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
 
 import Reader from "sdk/abis/Reader.json";
-import YieldToken from "sdk/abis/YieldToken.json";
 import YieldFarm from "sdk/abis/YieldFarm.json";
-
-import Modal from "components/Modal/Modal";
-import Footer from "components/Footer/Footer";
+import YieldToken from "sdk/abis/YieldToken.json";
 
 import "./EarnV1.scss";
-import { t, Trans } from "@lingui/macro";
-import { CHAIN_ID, getExplorerUrl } from "config/chains";
-import { contractFetcher } from "lib/contracts";
-import { approveTokens } from "domain/tokens";
-import { helperToast } from "lib/helperToast";
-import { expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
-import { getTokenBySymbol } from "sdk/configs/tokens";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { bigMath } from "lib/bigmath";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 
 const BASIS_POINTS_DIVISOR = 10000n;
 const HOURS_PER_YEAR = 8760n;

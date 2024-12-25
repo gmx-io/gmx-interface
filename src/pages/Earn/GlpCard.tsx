@@ -5,14 +5,13 @@ import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { GLP_PRICE_DECIMALS } from "config/ui";
 import { useChainId } from "lib/chains";
-import { GLP_DECIMALS } from "lib/legacy";
+import { GLP_DECIMALS, ProcessedData } from "lib/legacy";
 import { formatKeyAmount } from "lib/numbers";
-import { ProcessedData } from "lib/legacy";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
 
 export function GlpCard({ processedData }: { processedData: ProcessedData | undefined }) {
   const { chainId } = useChainId();

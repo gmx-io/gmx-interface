@@ -3,33 +3,18 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import GlpManager from "sdk/abis/GlpManager.json";
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-import RewardReader from "sdk/abis/RewardReader.json";
-import Token from "sdk/abis/Token.json";
-import Vault from "sdk/abis/Vault.json";
-
-import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { AVALANCHE, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIncentivesV2Url } from "config/links";
-import { useGmxPrice } from "domain/legacy";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
-import useVestingData from "domain/vesting/useVestingData";
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import {
-  PLACEHOLDER_ACCOUNT,
-  getBalanceAndSupplyData,
-  getDepositBalanceData,
-  getProcessedData,
-  getStakingData,
-} from "lib/legacy";
+import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
@@ -37,7 +22,6 @@ import useWallet from "lib/wallets/useWallet";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
-
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
@@ -49,7 +33,9 @@ import { TotalRewardsCard } from "./TotalRewardsCard";
 import { UnstakeModal } from "./UnstakeModal";
 import { Vesting } from "./Vesting";
 
-import "./EarnV2.css";
+import { useProcessedData } from "./useProcessedData";
+
+import Token from "sdk/abis/Token.json";
 
 export default function EarnV2() {
   const { active, signer, account } = useWallet();
@@ -100,51 +86,12 @@ export default function EarnV2() {
   const [unstakeMethodName, setUnstakeMethodName] = useState("");
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
-  const rewardReaderAddress = getContract(chainId, "RewardReader");
-  const readerAddress = getContract(chainId, "Reader");
 
-  const vaultAddress = getContract(chainId, "Vault");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const gmxAddress = getContract(chainId, "GMX");
   const esGmxAddress = getContract(chainId, "ES_GMX");
-  const bnGmxAddress = getContract(chainId, "BN_GMX");
-  const glpAddress = getContract(chainId, "GLP");
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
-  const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
-
-  const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
-  const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
-  const extendedGmxTrackerAddress = getContract(chainId, "ExtendedGmxTracker");
-
-  const glpManagerAddress = getContract(chainId, "GlpManager");
-
-  const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress];
-  const depositTokens = [
-    gmxAddress,
-    esGmxAddress,
-    stakedGmxTrackerAddress,
-    extendedGmxTrackerAddress,
-    bnGmxAddress,
-    glpAddress,
-  ];
-  const rewardTrackersForDepositBalances = [
-    stakedGmxTrackerAddress,
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    feeGlpTrackerAddress,
-  ];
-  const rewardTrackersForStakingInfo = [
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    stakedGlpTrackerAddress,
-    feeGlpTrackerAddress,
-    extendedGmxTrackerAddress,
-  ];
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const {
@@ -154,58 +101,6 @@ export default function EarnV2() {
     marketsTokensLidoAprData,
     glvApyInfoData,
   } = useGmMarketsApy(chainId);
-  const vestingData = useVestingData(account);
-
-  const { data: walletBalances } = useSWR(
-    [
-      `StakeV2:walletBalances:${active}`,
-      chainId,
-      readerAddress,
-      "getTokenBalancesWithSupplies",
-      account || PLACEHOLDER_ACCOUNT,
-    ],
-    {
-      fetcher: contractFetcher(signer, ReaderV2, [walletTokens]),
-    }
-  );
-
-  const { data: depositBalances } = useSWR(
-    [
-      `StakeV2:depositBalances:${active}`,
-      chainId,
-      rewardReaderAddress,
-      "getDepositBalances",
-      account || PLACEHOLDER_ACCOUNT,
-    ],
-    {
-      fetcher: contractFetcher(signer, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
-    }
-  );
-
-  const { data: stakingInfo } = useSWR(
-    [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
-    {
-      fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
-    }
-  );
-
-  const { data: stakedGmxSupply } = useSWR(
-    [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
-
-  const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(signer, GlpManager),
-  });
-
-  const { data: nativeTokenPrice } = useSWR(
-    [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
-    {
-      fetcher: contractFetcher(signer, Vault),
-    }
-  );
 
   const { data: sbfGmxBalance } = useSWR(
     [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
@@ -214,39 +109,12 @@ export default function EarnV2() {
     }
   );
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-
-  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
-  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (args) => fetch(...args).then((res) => res.text()),
-  });
-
-  let aum;
-  if (aums && aums.length > 0) {
-    aum = (aums[0] + aums[1]) / 2n;
-  }
-
-  const { balanceData, supplyData } = useMemo(() => getBalanceAndSupplyData(walletBalances), [walletBalances]);
-  const depositBalanceData = useMemo(() => getDepositBalanceData(depositBalances), [depositBalances]);
-  const stakingData = useMemo(() => getStakingData(stakingInfo), [stakingInfo]);
-
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
     return getTotalGmInfo(marketTokensData);
   }, [marketTokensData, active]);
 
-  const processedData = getProcessedData(
-    balanceData,
-    supplyData,
-    depositBalanceData,
-    stakingData,
-    vestingData,
-    aum,
-    nativeTokenPrice,
-    stakedGmxSupply,
-    gmxPrice,
-    gmxSupply
-  );
+  const processedData = useProcessedData();
 
   const reservedAmount =
     (processedData?.gmxInStakedGmx !== undefined &&

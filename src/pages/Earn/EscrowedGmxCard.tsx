@@ -3,8 +3,6 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-
 import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
@@ -18,8 +16,10 @@ import { expandDecimals, formatAmount, formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import Tooltip from "components/Tooltip/Tooltip";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
+import Tooltip from "components/Tooltip/Tooltip";
+
+import ReaderV2 from "sdk/abis/ReaderV2.json";
 
 export function EscrowedGmxCard({
   processedData,
@@ -47,17 +47,17 @@ export function EscrowedGmxCard({
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
-  const { data: esGmxSupply } = useSWR(
+  const { data: esGmxSupply } = useSWR<bigint>(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
-      fetcher: contractFetcher(signer, ReaderV2, [excludedEsGmxAccounts]),
+      fetcher: contractFetcher<bigint>(signer, ReaderV2, [excludedEsGmxAccounts]),
     }
   );
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   let esGmxSupplyUsd;
-  if (esGmxSupply && gmxPrice) {
+  if (esGmxSupply !== undefined && gmxPrice !== undefined) {
     esGmxSupplyUsd = bigMath.mulDiv(esGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
 
