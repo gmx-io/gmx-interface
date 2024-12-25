@@ -90,6 +90,7 @@ import {
 } from "lib/metrics/utils";
 import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import "./PositionEditor.scss";
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type Props = {
   allowedSlippage: number;
@@ -122,6 +123,7 @@ export function PositionEditor(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -369,6 +371,7 @@ export function PositionEditor(p: Props) {
         signer,
         subaccount,
         metricId: metricData.metricId,
+        blockTimestampData,
         createIncreaseOrderParams: {
           account,
           marketAddress: position.marketAddress,
@@ -433,6 +436,7 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         },
+        blockTimestampData,
         metricData.metricId
       );
     }

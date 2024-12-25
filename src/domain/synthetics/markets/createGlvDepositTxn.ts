@@ -8,8 +8,8 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 
 import GlvRouter from "sdk/abis/GlvRouter.json";
-import { CreateDepositParams } from "./createDepositTxn";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { CreateDepositParams } from "./createDepositTxn";
 
 interface CreateGlvDepositParams extends CreateDepositParams {
   glvAddress: string;
@@ -99,6 +99,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
         errorTitle: t`Deposit error.`,
         value: wntAmount,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 
