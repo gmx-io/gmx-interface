@@ -12,6 +12,9 @@ type Props = {
   qa?: string;
 };
 
+const MAGNETIC_SNAP_WEIGHT = 0.8;
+const SWIPE_SENSITIVITY = 1.5;
+
 export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, optionClassnames }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const optionsRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -85,7 +88,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
     (event: PointerEvent, info: PanInfo) => {
       if (!isDragging.current) return;
 
-      let newX = offsetRef.current - info.delta.x * 2;
+      let newX = offsetRef.current - info.delta.x * SWIPE_SENSITIVITY;
       offsetRef.current = newX;
 
       const {
@@ -97,7 +100,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
         isAbsolute: false,
       });
 
-      x.set((offset ?? 0) * 0.8 + newX * 0.2);
+      x.set((offset ?? 0) * MAGNETIC_SNAP_WEIGHT + newX * (1 - MAGNETIC_SNAP_WEIGHT));
       if (nearestOption) {
         setVisuallyActiveOption(nearestOption);
 
@@ -149,7 +152,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
       <motion.div
         ref={bgRef}
         className={cx(
-          "absolute left-0 top-0 h-full w-[100px] bg-cold-blue-500",
+          "absolute left-0 top-0 z-0 h-full w-[100px] bg-cold-blue-500",
           visuallyActiveOption && optionClassnames?.[visuallyActiveOption]
         )}
         style={bgStyle}
@@ -162,7 +165,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
         return (
           <div
             className={cx(
-              "relative flex grow items-center justify-center gap-8 px-15 pb-9 pt-8 text-center transition-colors",
+              "relative z-10 flex grow items-center justify-center gap-8 px-15 pb-9 pt-8 text-center transition-colors",
               isActive ? "text-white" : ""
             )}
             onClick={() => onClick(opt)}
