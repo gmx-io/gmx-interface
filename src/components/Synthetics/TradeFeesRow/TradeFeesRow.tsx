@@ -326,10 +326,10 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "decrease") {
       return [
-        swapPriceImpactRow,
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
+        swapPriceImpactRow,
         rebateRow,
         feeDiscountRow,
         uiFeeRow,
