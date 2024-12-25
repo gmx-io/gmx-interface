@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { PropsWithChildren, useCallback, useMemo, useRef, useState } from "react";
+import { CSSProperties, PropsWithChildren, useCallback, useRef, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
 import Button from "components/Button/Button";
@@ -7,6 +7,12 @@ import Button from "components/Button/Button";
 import LeftArrowIcon from "img/ic_arrowleft16.svg?react";
 
 const HEADER_HEIGHT = 52;
+const DECELERATION = 0.01;
+
+const CURTAIN_STYLE: CSSProperties = {
+  top: `calc(100dvh - ${HEADER_HEIGHT}px)`,
+  maxHeight: `calc(100dvh - ${HEADER_HEIGHT}px)`,
+};
 
 export function Curtain({
   children,
@@ -17,31 +23,121 @@ export function Curtain({
   dataQa?: string;
 }>) {
   const curtainRef = useRef<HTMLDivElement>(null);
-  const innerContainerRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+  const isPointerDownRef = useRef(false);
+  const isDraggingRef = useRef(false);
+  const currentRelativeY = useRef(0);
+  const prevScreenY = useRef(0);
+  const prevScreenX = useRef(0);
+  const prevTime = useRef(0);
+  const currentVelocity = useRef(0);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const curtainStyle = useMemo(() => {
-    return {
-      top: `calc(100dvh - ${HEADER_HEIGHT}px)`,
-      maxHeight: `calc(100dvh - ${HEADER_HEIGHT}px)`,
-      transform: `translateY(${isOpen ? `calc(-100% + ${HEADER_HEIGHT}px)` : 0})`,
-      transition: "transform 150ms ease-out",
-    };
-  }, [isOpen]);
+  const handleAnimate = useCallback((newIsOpen: boolean) => {
+    if (!curtainRef.current) return;
+
+    const oldTransition = curtainRef.current.style.transition;
+    const animation = curtainRef.current.animate(
+      {
+        transform: `translateY(${newIsOpen ? `calc(-100% + ${HEADER_HEIGHT}px)` : 0})`,
+      },
+      {
+        duration: 150,
+        easing: "ease-out",
+        fill: "both",
+      }
+    );
+    animation.addEventListener("finish", () => {
+      animation.commitStyles();
+      animation.cancel();
+      if (curtainRef.current) {
+        curtainRef.current.style.transition = oldTransition;
+      }
+    });
+  }, []);
 
   const headerClick = useCallback(() => {
     setIsOpen(true);
-  }, [setIsOpen]);
+    handleAnimate(true);
+  }, [setIsOpen, handleAnimate]);
 
-  const handleClick = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, [setIsOpen]);
+  const handleToggle = useCallback(() => {
+    const newIsOpen = !isOpen;
+    setIsOpen(newIsOpen);
+    handleAnimate(newIsOpen);
+  }, [isOpen, handleAnimate]);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
-  }, [setIsOpen]);
+    handleAnimate(false);
+  }, [setIsOpen, handleAnimate]);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    if (!curtainRef.current) {
+      return;
+    }
+
+    isPointerDownRef.current = true;
+    const transformString = curtainRef.current.style.transform;
+    const transform = new DOMMatrix(transformString);
+
+    currentRelativeY.current = transform.f;
+    prevScreenY.current = e.screenY;
+    prevScreenX.current = e.screenX;
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const deltaY = e.screenY - prevScreenY.current;
+
+    if (isPointerDownRef.current && curtainRef.current) {
+      if (!isDraggingRef.current) {
+        isDraggingRef.current = true;
+      }
+
+      const time = e.timeStamp - prevTime.current;
+      const velocity = deltaY / time;
+
+      let newY = currentRelativeY.current + deltaY;
+
+      if (newY > 0) {
+        newY = 0;
+      } else if (newY < -curtainRef.current.clientHeight + HEADER_HEIGHT) {
+        newY = -curtainRef.current.clientHeight + HEADER_HEIGHT;
+      }
+
+      curtainRef.current.style.transform = `translateY(${newY}px)`;
+
+      currentRelativeY.current = newY;
+      prevTime.current = e.timeStamp;
+
+      currentVelocity.current = velocity;
+    }
+
+    prevScreenX.current = e.screenX;
+    prevScreenY.current = e.screenY;
+  }, []);
+
+  const handlePointerUp = useCallback(() => {
+    isPointerDownRef.current = false;
+
+    if (!isDraggingRef.current) {
+      return;
+    }
+
+    isDraggingRef.current = false;
+
+    const targetY =
+      currentRelativeY.current +
+      (Math.sign(currentVelocity.current) * currentVelocity.current ** 2) / (2 * DECELERATION);
+
+    if (curtainRef.current) {
+      const isOpen = curtainRef.current.clientHeight / 2 < -targetY;
+      setIsOpen(isOpen);
+      handleAnimate(isOpen);
+    }
+  }, [handleAnimate]);
 
   return (
     <>
@@ -57,14 +153,24 @@ export function Curtain({
           data-qa={dataQa}
           ref={curtainRef}
           className="text-body-medium fixed left-0 right-0 z-[1000] flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800
-      shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)] will-change-transform"
-          style={curtainStyle}
+                     shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)] will-change-transform"
+          style={CURTAIN_STYLE}
         >
-          <div className="flex items-stretch justify-between gap-4 px-15 pb-8 pt-8">
+          <div
+            className="flex touch-none select-none items-stretch justify-between gap-4 px-15 pb-8 pt-8"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+          >
             <div className="grow" onClick={headerClick}>
               {header}
             </div>
-            <Button variant="secondary" className="size-35 !bg-cold-blue-900 !px-0 !py-0" onClick={handleClick}>
+            <Button
+              variant="secondary"
+              type="button"
+              className="size-35 !bg-cold-blue-900 !px-0 !py-0"
+              onClick={handleToggle}
+            >
               <LeftArrowIcon
                 className={cx(
                   "transition-transform delay-150 duration-500 ease-out",
@@ -74,10 +180,8 @@ export function Curtain({
             </Button>
           </div>
 
-          <div ref={innerContainerRef} className="overflow-y-auto">
-            <div ref={innerRef} className="px-15 pb-10">
-              {children}
-            </div>
+          <div className="overflow-y-auto">
+            <div className="px-15 pb-10">{children}</div>
           </div>
         </div>
       </RemoveScroll>
