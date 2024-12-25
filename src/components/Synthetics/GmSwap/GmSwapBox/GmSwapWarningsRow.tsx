@@ -50,14 +50,12 @@ export function GmSwapWarningsRow({
   return (
     <ExchangeInfo.Group>
       <Checkbox className="GmSwapBox-warning" asRow isChecked={isAccepted} setIsChecked={setIsAccepted}>
-        {isSingle ? (
+        {isSingle && shouldShowWarningForPosition ? (
           <Tooltip
             className="warning-tooltip"
             handle={warningText}
             position="top-start"
-            renderContent={() => (
-              <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
-            )}
+            content={<Trans>Consider selecting and using the "Pair" option to reduce the Price Impact.</Trans>}
           />
         ) : (
           <span className="muted text-14 text-yellow-500">{warningText}</span>
