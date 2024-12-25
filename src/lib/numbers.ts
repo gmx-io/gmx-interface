@@ -580,3 +580,17 @@ export function formatAmountHuman(
 
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
 }
+
+export function formatBalanceAmount(amount: bigint, tokenDecimals: number) {
+  if (amount === undefined || amount === 0n) return "-";
+
+  const absAmount = bigMath.abs(amount);
+  const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);
+
+  if (absAmountFloat >= 1.0) return formatAmount(amount, tokenDecimals, 4, true);
+  else if (absAmountFloat >= 0.1) return formatAmount(amount, tokenDecimals, 5, true);
+  else if (absAmountFloat >= 0.01) return formatAmount(amount, tokenDecimals, 6, true);
+  else if (absAmountFloat >= 0.001) return formatAmount(amount, tokenDecimals, 7, true);
+  else if (absAmountFloat >= 0.00000001) return formatAmount(amount, tokenDecimals, 8, true);
+  else return bigintToNumber(amount, tokenDecimals).toExponential(2);
+}
