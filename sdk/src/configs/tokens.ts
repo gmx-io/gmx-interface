@@ -643,6 +643,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "Filecoin",
+      symbol: "FIL",
+      address: "0x3AeBb98f57081DcBEb0B8EA823Cf84900A31e5D8",
+      decimals: 18,
+      categories: ["layer1"],
+      priceDecimals: 4,
+      imageUrl: "https://assets.coingecko.com/coins/images/12817/standard/filecoin.png?1696512609",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/filecoin",
+      isSynthetic: true,
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
