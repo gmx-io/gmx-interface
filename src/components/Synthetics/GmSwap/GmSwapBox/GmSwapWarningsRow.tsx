@@ -34,12 +34,16 @@ export function GmSwapWarningsRow({
   }, [shouldShowWarningForPosition, shouldShowWarningForExecutionFee]);
 
   const warningText = useMemo(() => {
-    return warnings.length > 1 ? (
-      <Trans>
-        Acknowledge high {warnings.slice(0, -1).join(", ")} and {warnings.slice(-1)}
-      </Trans>
-    ) : (
-      <Trans>Acknowledge high {warnings[0]}</Trans>
+    return (
+      <span className="text-14 text-yellow-500">
+        {warnings.length > 1 ? (
+          <Trans>
+            Acknowledge high {warnings.slice(0, -1).join(", ")} and {warnings.slice(-1)}
+          </Trans>
+        ) : (
+          <Trans>Acknowledge high {warnings[0]}</Trans>
+        )}
+      </span>
     );
   }, [warnings]);
 
@@ -58,7 +62,7 @@ export function GmSwapWarningsRow({
             content={<Trans>Consider selecting and using the "Pair" option to reduce the Price Impact.</Trans>}
           />
         ) : (
-          <span className="muted text-14 text-yellow-500">{warningText}</span>
+          warningText
         )}
       </Checkbox>
     </ExchangeInfo.Group>
