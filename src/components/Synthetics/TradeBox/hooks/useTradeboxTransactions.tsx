@@ -200,6 +200,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isLeverageEnabled,
         initialCollateralAllowance,
         isTPSLCreated: createSltpEntries.length > 0,
+        slCount: createSltpEntries.filter(
+          (entry) => entry.decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease
+        ).length,
+        tpCount: createSltpEntries.filter((entry) => entry.decreaseAmounts.triggerOrderType === OrderType.LimitDecrease)
+          .length,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
