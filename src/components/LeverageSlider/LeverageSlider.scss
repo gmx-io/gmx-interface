@@ -8,11 +8,14 @@
   .rc-slider-tooltip-inner {
     box-shadow: none;
     padding: 0.465rem 0.8rem;
-    background: var(--color-slate-600);
   }
 
   .rc-slider-tooltip {
     z-index: 5;
+
+    background: rgb(49, 54, 85);
+    background: linear-gradient(270deg, rgba(49, 54, 85, 0.9) 0%, rgba(37, 40, 65, 0.9) 100%);
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
   }
 
   .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
@@ -48,8 +51,8 @@
   }
   .rc-slider-mark-text,
   .rc-slider-mark-text-active {
-    color: var(--color-white);
-    opacity: 0.5;
+    color: var(--color-slate-100);
+    opacity: 0.7;
   }
 
   .rc-slider-mark-text:hover,

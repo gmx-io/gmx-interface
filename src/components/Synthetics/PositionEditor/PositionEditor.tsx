@@ -90,7 +90,6 @@ import {
 } from "lib/metrics/utils";
 import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import "./PositionEditor.scss";
-import { selectBlockTimestampData, selectGasPriceData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type Props = {
   allowedSlippage: number;
@@ -121,7 +120,6 @@ export function PositionEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
-  const blockTimestampData = useSelector(selectBlockTimestampData);
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
 
@@ -325,7 +323,6 @@ export function PositionEditor(p: Props) {
   }, [detectAndSetMaxSize, tooltipName]);
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
-  const gasPriceData = useSelector(selectGasPriceData);
 
   function onSubmit() {
     if (!account) {
@@ -372,8 +369,6 @@ export function PositionEditor(p: Props) {
         signer,
         subaccount,
         metricId: metricData.metricId,
-        blockTimestampData,
-        gasPriceData,
         createIncreaseOrderParams: {
           account,
           marketAddress: position.marketAddress,
@@ -438,8 +433,6 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         },
-        blockTimestampData,
-        gasPriceData,
         metricData.metricId
       );
     }

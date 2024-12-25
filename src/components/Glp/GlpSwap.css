@@ -22,11 +22,6 @@
   color: #f89191;
 }
 
-.GlpSwap-from-token .Modal {
-  align-items: flex-start;
-  justify-content: flex-end;
-}
-
 .GlpSwap-content .GlpSwap-stats-card,
 .GlpSwap-content .GlpSwap-box {
   width: 100%;
@@ -82,7 +77,7 @@
   font-size: 1.2rem;
   line-height: 1.5rem;
   letter-spacing: 0px;
-  color: var(--color-gray-400);
+  color: var(--color-slate-100);
 }
 
 .GlpSwap-token-list {
@@ -268,11 +263,6 @@
 }
 
 @media (max-width: 1100px) {
-  .GlpSwap-from-token .Modal {
-    align-items: center;
-    justify-content: center;
-  }
-
   .GlpSwap-token-list {
     border: none;
     background-color: transparent;

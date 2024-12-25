@@ -162,9 +162,12 @@ export function PoolSelector({
 
     if (marketsOptions?.length > 1) {
       return (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+        <div
+          className="text-h2 -mr-5 flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+          onClick={() => setIsModalVisible(true)}
+        >
           {name ? name : "..."}
-          <BiChevronDown className="TokenSelector-caret" />
+          <BiChevronDown className="text-body-large" />
         </div>
       );
     }
@@ -213,7 +216,7 @@ export function PoolSelector({
           })}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-gray-400">
+          <div className="text-body-medium text-slate-100">
             <Trans>No pools matched.</Trans>
           </div>
         )}

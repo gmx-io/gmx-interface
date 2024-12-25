@@ -25,7 +25,6 @@ import {
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
-import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import LongIcon from "img/long.svg?react";
@@ -189,22 +188,15 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <TooltipWithPortal
-        disableHandleStyle
-        handle={
-          <span
-            className={cx("flex flex-row items-center gap-4", {
-              positive: netRate >= 0n,
-              negative: netRate < 0n,
-            })}
-          >
-            <LongIcon width={12} className="relative top-1" />
-            {formatRatePercentage(netRate)}
-          </span>
-        }
-        position="bottom-end"
-        content={<NetRate1hTooltip isLong info={info} />}
-      />
+      <span
+        className={cx("flex flex-row items-center gap-4", {
+          positive: netRate >= 0n,
+          negative: netRate < 0n,
+        })}
+      >
+        <LongIcon width={12} className="relative top-1" />
+        {formatRatePercentage(netRate)}
+      </span>
     );
   }, [info]);
 
@@ -216,22 +208,15 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <TooltipWithPortal
-        disableHandleStyle
-        handle={
-          <span
-            className={cx("flex flex-row items-center gap-4", {
-              positive: netRate >= 0n,
-              negative: netRate < 0n,
-            })}
-          >
-            <ShortIcon width={12} />
-            {formatRatePercentage(netRate)}
-          </span>
-        }
-        position="bottom-end"
-        content={<NetRate1hTooltip isLong={false} info={info} />}
-      />
+      <span
+        className={cx("flex flex-row items-center gap-4", {
+          positive: netRate >= 0n,
+          negative: netRate < 0n,
+        })}
+      >
+        <ShortIcon width={12} />
+        {formatRatePercentage(netRate)}
+      </span>
     );
   }, [info]);
 

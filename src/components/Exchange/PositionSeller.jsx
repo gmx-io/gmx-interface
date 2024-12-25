@@ -1145,13 +1145,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="text-gray-300">Forfeit profit</span>
+                  <span className="text-slate-100">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="text-gray-300">
+                <span className="text-slate-100">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>
@@ -1358,8 +1358,9 @@ export default function PositionSeller(props) {
               {isSwapAllowed && receiveToken && (
                 <div className="align-right">
                   <TokenSelector
-                    className={cx("PositionSeller-token-selector", {
-                      warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
+                    className={cx({
+                      "*:!text-yellow-500 hover:!text-yellow-500":
+                        isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
                     label={t`Receive`}
                     showBalances={false}

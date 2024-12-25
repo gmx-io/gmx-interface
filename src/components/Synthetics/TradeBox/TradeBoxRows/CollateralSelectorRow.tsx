@@ -43,7 +43,7 @@ export function CollateralSelectorRow(p: Props) {
     <>
       <ExchangeInfoRow
         label={
-          <TooltipWithPortal position="top-start" renderContent={() => <div>{collateralInTooltipContent}</div>}>
+          <TooltipWithPortal position="top-start" content={collateralInTooltipContent}>
             <Trans>Collateral In</Trans>
           </TooltipWithPortal>
         }

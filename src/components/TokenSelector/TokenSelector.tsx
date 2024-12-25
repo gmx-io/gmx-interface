@@ -11,7 +11,6 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import dropDownIcon from "img/DROP_DOWN.svg";
 import { bigMath } from "lib/bigmath";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
@@ -34,19 +33,16 @@ type ExtendedToken = Token & { isMarketToken?: boolean };
 type Props = {
   chainId: number;
   label?: string;
+  size?: "m" | "l";
   className?: string;
   tokenAddress: string;
   tokens: ExtendedToken[];
   infoTokens?: InfoTokens;
   tokenInfo?: TokenInfo;
-  showMintingCap?: boolean;
-  mintingCap?: bigint;
-  disabled?: boolean;
   selectedTokenLabel?: ReactNode | string;
   showBalances?: boolean;
   showTokenImgInDropdown?: boolean;
   showSymbolImage?: boolean;
-  showNewCaret?: boolean;
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
@@ -72,15 +68,11 @@ export default function TokenSelector(props: Props) {
 
   const {
     tokens,
-    mintingCap,
     infoTokens,
-    showMintingCap,
-    disabled,
     selectedTokenLabel,
     showBalances = true,
     showTokenImgInDropdown = false,
     showSymbolImage = false,
-    showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
     extendedSortSequence,
     showTokenName,
@@ -88,6 +80,7 @@ export default function TokenSelector(props: Props) {
     missedCoinsPlace,
     marketsInfoData,
     chainId,
+    size = "m",
     qa,
   } = props;
 
@@ -201,13 +194,24 @@ export default function TokenSelector(props: Props) {
   }
 
   return (
-    <div className={cx("TokenSelector", { disabled }, props.className)} onClick={(event) => event.stopPropagation()}>
+    <div
+      className={cx(
+        "TokenSelector",
+        {
+          "-mr-2": size === "m",
+          "text-h2 -mr-5": size === "l",
+        },
+        props.className
+      )}
+      onClick={(event) => event.stopPropagation()}
+    >
       <Modal
         qa={qa + "-modal"}
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
         footerContent={footerContent}
+        className="text-white"
         headerContent={
           <SearchInput
             className="mt-15 *:!text-body-medium"
@@ -229,14 +233,8 @@ export default function TokenSelector(props: Props) {
           {sortedFilteredTokens.map((token, tokenIndex) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
-            let mintAmount;
             let balance = info.balance;
-            if (showMintingCap && mintingCap !== undefined && info.usdgAmount !== undefined) {
-              mintAmount = mintingCap - info.usdgAmount;
-            }
-            if (mintAmount && mintAmount < 0) {
-              mintAmount = 0n;
-            }
+
             let balanceUsd: bigint | undefined = undefined;
             if (balance !== undefined && info.maxPrice !== undefined) {
               balanceUsd = bigMath.mulDiv(balance, info.maxPrice, expandDecimals(1, token.decimals));
@@ -290,9 +288,7 @@ export default function TokenSelector(props: Props) {
                   )) ||
                     null}
                   <span className="text-accent">
-                    {mintAmount && <div>Mintable: {formatAmount(mintAmount, token.decimals, 2, true)} USDG</div>}
-                    {showMintingCap && !mintAmount && <div>-</div>}
-                    {!showMintingCap && showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                    {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
                     )}
                   </span>
@@ -302,28 +298,26 @@ export default function TokenSelector(props: Props) {
           })}
         </div>
         {sortedFilteredTokens.length === 0 && (
-          <div className="text-16 text-gray-400">
+          <div className="text-16 text-slate-100">
             <Trans>No tokens matched.</Trans>
           </div>
         )}
       </Modal>
-      {selectedTokenLabel ? (
-        <div data-qa={qa} className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          {selectedTokenLabel}
-          {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
-        </div>
-      ) : (
-        <div data-qa={qa} className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+      <div
+        data-qa={qa}
+        className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        onClick={() => setIsModalVisible(true)}
+      >
+        {selectedTokenLabel || (
           <span className="inline-flex items-center">
             {showSymbolImage && (
               <TokenIcon className="mr-5" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
             )}
-            <span className="Token-symbol-text">{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
+            <span>{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
           </span>
-          {showNewCaret && <img src={dropDownIcon} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
-          {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
-        </div>
-      )}
+        )}
+        <BiChevronDown className="text-body-large" />
+      </div>
     </div>
   );
 }

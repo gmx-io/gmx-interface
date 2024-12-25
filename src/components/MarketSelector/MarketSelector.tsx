@@ -39,6 +39,7 @@ type Props = {
   footerContent?: ReactNode;
   getMarketState?: (market: MarketInfo) => MarketState | undefined;
   onSelectMarket: (indexName: string, market: MarketInfo) => void;
+  size?: "l" | "m";
 };
 
 type MarketState = {
@@ -66,6 +67,7 @@ export function MarketSelector({
   showBalances,
   footerContent,
   missedCoinsPlace,
+  size = "m",
   onSelectMarket,
   getMarketState,
 }: Props) {
@@ -196,22 +198,21 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-16 text-gray-400">
+          <div className="text-16 text-slate-100">
             <Trans>No markets matched.</Trans>
           </div>
         )}
       </Modal>
-      {selectedMarketLabel ? (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
-          {selectedMarketLabel}
-          <BiChevronDown className="TokenSelector-caret" />
-        </div>
-      ) : (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)} data-qa="market-selector">
-          {marketInfo ? getMarketIndexName(marketInfo) : "..."}
-          <BiChevronDown className="TokenSelector-caret" />
-        </div>
-      )}
+      <div
+        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+          "text-h2 -mr-5": size === "l",
+        })}
+        onClick={() => setIsModalVisible(true)}
+        data-qa="market-selector"
+      >
+        {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
+        <BiChevronDown className={cx({ "text-body-large": size === "l", "-my-5 text-24": size === "m" })} />
+      </div>
     </div>
   );
 }
