@@ -694,9 +694,9 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
       }
       content={
         errors.length ? (
-          <>
+          <div className="flex flex-col gap-20">
             {errors.map((error) => (
-              <div className="mt-20" key={error.key}>
+              <div key={error.key}>
                 <span
                   className={cx({
                     "text-red-500": error!.level === "error",
@@ -707,7 +707,7 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
                 </span>
               </div>
             ))}
-          </>
+          </div>
         ) : null
       }
     />

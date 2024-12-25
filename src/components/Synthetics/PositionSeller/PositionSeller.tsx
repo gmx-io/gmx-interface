@@ -86,6 +86,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 import "./PositionSeller.scss";
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -118,6 +119,7 @@ export function PositionSeller(p: Props) {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const isVisible = Boolean(position);
 
@@ -372,6 +374,7 @@ export function PositionSeller(p: Props) {
         setPendingTxns,
         setPendingPosition,
       },
+      blockTimestampData,
       metricData.metricId
     )
       .then(makeTxnSentMetricsHandler(metricData.metricId))

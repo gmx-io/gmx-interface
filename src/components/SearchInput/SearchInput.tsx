@@ -86,14 +86,14 @@ export default function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx("block w-full rounded-4 border  placeholder-slate-500", {
-          "border-gray-400": isFocused,
-          "border-gray-800 hover:border-gray-600": !isFocused,
+        className={cx("block w-full rounded-4 border  placeholder-slate-100", {
+          "border-cold-blue-500": isFocused,
+          "border-gray-800": !isFocused,
           "py-10 pl-40 pr-34 text-16": size === "m",
           "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
         })}
       />
-      {
+      {value && (
         <button
           className={cx("group absolute bottom-0 right-0 top-0 flex items-center", {
             "pr-8": size === "m",
@@ -116,7 +116,7 @@ export default function SearchInput({
             />
           </div>
         </button>
-      }
+      )}
     </div>
   );
 }

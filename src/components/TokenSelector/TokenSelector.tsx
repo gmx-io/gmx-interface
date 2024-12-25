@@ -12,7 +12,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { bigMath } from "lib/bigmath";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatBalanceAmount } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 
 import SearchInput from "components/SearchInput/SearchInput";
@@ -282,7 +282,7 @@ export default function TokenSelector(props: Props) {
                 <div className="Token-balance">
                   {(showBalances && balance !== undefined && (
                     <div className="Token-text">
-                      {balance > 0 && formatAmount(balance, token.decimals, 4, true)}
+                      {balance > 0 && formatBalanceAmount(balance, token.decimals)}
                       {balance == 0n && "-"}
                     </div>
                   )) ||

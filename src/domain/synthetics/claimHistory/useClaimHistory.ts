@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
 
 import { getToken } from "sdk/configs/tokens";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -50,6 +51,7 @@ export function useClaimCollateralHistory(
   const { pageSize, fromTxTimestamp, toTxTimestamp, eventName, marketAddresses } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
+  const { showDebugValues } = useSettings();
 
   const account = useSelector(selectAccount);
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
@@ -101,6 +103,13 @@ export function useClaimCollateralHistory(
               marketAddresses_contains: [tokenAddress.toLowerCase()],
             })),
           },
+          ...(showDebugValues
+            ? []
+            : [
+                {
+                  or: [{ eventName_not: ClaimType.SettleFundingFeeCreated }],
+                },
+              ]),
         ],
       });
 

@@ -85,8 +85,8 @@ import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
+  formatBalanceAmount,
   formatDeltaUsd,
-  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -1039,9 +1039,11 @@ export function TradeBox(p: Props) {
               : ""
           }
           topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals, "", {
-            useCommas: true,
-          })}
+          topRightValue={
+            fromToken && fromToken.balance !== undefined
+              ? formatBalanceAmount(fromToken.balance, fromToken.decimals)
+              : undefined
+          }
           onClickTopRightLabel={onMaxClick}
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
@@ -1084,9 +1086,11 @@ export function TradeBox(p: Props) {
             topLeftLabel={t`Receive`}
             topLeftValue={swapAmounts?.usdOut && swapAmounts.usdOut > 0 ? formatUsd(swapAmounts?.usdOut) : ""}
             topRightLabel={t`Balance`}
-            topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals, "", {
-              useCommas: true,
-            })}
+            topRightValue={
+              toToken && toToken.balance !== undefined
+                ? formatBalanceAmount(toToken.balance, toToken.decimals)
+                : undefined
+            }
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
             showMaxButton={false}

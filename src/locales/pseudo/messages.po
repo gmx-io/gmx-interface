@@ -4848,10 +4848,6 @@ msgstr ""
 msgid "WARNING: High Fees"
 msgstr ""
 
-#: src/components/AprInfo/AprInfo.tsx
-msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the<0>Ethena dashboard</0>."
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr ""
