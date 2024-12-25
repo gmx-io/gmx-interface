@@ -3,6 +3,10 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
 import { getNativeToken } from "config/tokens";
+import { Provider } from "ethers";
+import { ErrorEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { parseError } from "lib/parseError";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
 
@@ -211,4 +215,68 @@ export function extractDataFromError(errorMessage: unknown) {
     return match[1];
   }
   return null;
+}
+
+export async function getOnchainError(
+  provider: Provider,
+  txnData?: {
+    data: string;
+    to: string | null;
+    from: string;
+    gasLimit?: bigint;
+    gasPrice?: bigint;
+    maxFeePerGas: bigint | null;
+    maxPriorityFeePerGas: bigint | null;
+    nonce: number | null;
+    value: bigint;
+  },
+  txnHash?: string
+) {
+  if (txnHash) {
+    try {
+      txnData = (await provider.getTransaction(txnHash)) || undefined;
+    } catch (e) {
+      const errorData = parseError(e);
+
+      emitMetricEvent<ErrorEvent>({
+        event: "error",
+        isError: true,
+        data: {
+          errorSource: "getOnchainError",
+          ...errorData,
+        },
+      });
+      return undefined;
+    }
+  }
+
+  if (!txnData) {
+    emitMetricEvent<ErrorEvent>({
+      event: "error",
+      isError: true,
+      data: {
+        errorSource: "getOnchainError",
+        errorMessage: "missed transaction data",
+      },
+    });
+
+    return undefined;
+  }
+
+  try {
+    await provider.call(txnData);
+  } catch (e) {
+    const errorData = parseError(e);
+
+    emitMetricEvent<ErrorEvent>({
+      event: "error",
+      isError: true,
+      data: {
+        errorSource: "getOnchainError",
+        ...errorData,
+      },
+    });
+
+    return errorData;
+  }
 }

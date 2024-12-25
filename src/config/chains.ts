@@ -40,7 +40,8 @@ export const CHAIN_NAMES_MAP = {
 // is also applied to the execution fee calculation
 export const GAS_PRICE_PREMIUM_MAP = {
   [ARBITRUM]: 0n,
-  [AVALANCHE]: 3000000000n, // 3 gwei
+  // [AVALANCHE]: 3000000000n, // 3 gwei
+  [AVALANCHE]: 0n, // 3 gwei
 };
 
 // added to gasPrice

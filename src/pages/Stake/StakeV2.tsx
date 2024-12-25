@@ -17,21 +17,20 @@ import Vester from "sdk/abis/Vester.json";
 
 import cx from "classnames";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { SetPendingTransactions, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { MARKETS } from "config/static/markets";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
+  ProcessedData,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getPageTitle,
   getProcessedData,
   getStakingData,
-  ProcessedData,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
-import { MARKETS } from "config/static/markets";
 import { Link } from "react-router-dom";
 
 import useSWR from "swr";
@@ -49,6 +48,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { GmList } from "components/Synthetics/GmList/GmList";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getServerUrl } from "config/backend";
@@ -57,6 +57,7 @@ import { getIcons } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { SetPendingTransactions, usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
@@ -82,13 +83,11 @@ import {
   parseValue,
 } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import { usePendingTxns } from "lib/usePendingTxns";
 import { shortenAddressOrEns } from "lib/wallets";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import "./StakeV2.css";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
-import { GmList } from "components/Synthetics/GmList/GmList";
 
 const { ZeroAddress } = ethers;
 
@@ -1134,7 +1133,7 @@ export default function StakeV2() {
 
   const incentivesToken = useAnyAirdroppedTokenTitle();
 
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const icons = getIcons(chainId);
   const hasInsurance = true;

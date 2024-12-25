@@ -1,16 +1,33 @@
-import CustomErrors from "sdk/abis/CustomErrors.json";
 import cryptoJs from "crypto-js";
-import { extractDataFromError } from "lib/contracts/transactionErrors";
 import { ethers } from "ethers";
-import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "../contracts/transactionErrors";
-import { ErrorMetricData } from "./types";
+import { extractDataFromError } from "lib/contracts/transactionErrors";
+import CustomErrors from "sdk/abis/CustomErrors.json";
+import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "./contracts/transactionErrors";
+import { OrderErrorContext } from "./metrics/types";
+
+export type ErrorData = {
+  errorContext?: OrderErrorContext;
+  errorMessage?: string;
+  errorGroup?: string;
+  errorStack?: string;
+  errorStackHash?: string;
+  errorName?: string;
+  contractError?: string;
+  contractErrorArgs?: any;
+  isUserError?: boolean;
+  isUserRejectedError?: boolean;
+  reason?: string;
+  txErrorType?: TxErrorType;
+  txErrorData?: unknown;
+  errorSource?: string;
+};
 
 const URL_REGEXP =
   /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
 
-export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefined {
+export function parseError(error: unknown): ErrorData | undefined {
   // all human readable details are in info field
   const errorInfo = (error as any)?.info?.error;
 
@@ -19,6 +36,7 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
   let errorStackHash: string | undefined = undefined;
   let errorName: string | undefined = undefined;
   let contractError: string | undefined = undefined;
+  let contractErrorArgs: any = undefined;
   let txErrorType: TxErrorType | undefined = undefined;
   let errorGroup: string | undefined = "Unknown group";
   let txErrorData: any = undefined;
@@ -60,6 +78,7 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
 
         if (parsedError) {
           contractError = parsedError.name;
+          contractErrorArgs = parsedError.args;
         }
       }
     }
@@ -89,6 +108,7 @@ export function prepareErrorMetricData(error: unknown): ErrorMetricData | undefi
     errorStackHash,
     errorName,
     contractError,
+    contractErrorArgs,
     isUserError,
     isUserRejectedError,
     txErrorType,

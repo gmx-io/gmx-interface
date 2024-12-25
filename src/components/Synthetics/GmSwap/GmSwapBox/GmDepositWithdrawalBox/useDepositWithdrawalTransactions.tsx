@@ -9,7 +9,7 @@ import { createDepositTxn, createWithdrawalTxn, GlvInfo, MarketInfo } from "doma
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 
 import { t } from "@lingui/macro";
@@ -77,7 +77,7 @@ export const useDepositWithdrawalTransactions = ({
   const chainId = useSelector(selectChainId);
   const { signer, account } = useWallet();
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const onCreateDeposit = useCallback(
     function onCreateDeposit() {

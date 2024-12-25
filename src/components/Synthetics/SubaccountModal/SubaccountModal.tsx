@@ -53,7 +53,7 @@ import { SubaccountNotification } from "../StatusNotification/SubaccountNotifica
 import "./SubaccountModal.scss";
 import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export type FormState = "empty" | "inactive" | "activated";
 
@@ -89,7 +89,7 @@ const MainView = memo(() => {
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const subaccountExplorerUrl = useMemo(() => getAccountUrl(chainId, subaccountAddress), [chainId, subaccountAddress]);
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const maxAllowedActionsInputRef = useRef<HTMLInputElement>(null);
   const topUpInputRef = useRef<HTMLInputElement>(null);

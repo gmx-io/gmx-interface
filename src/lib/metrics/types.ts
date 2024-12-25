@@ -1,6 +1,6 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { TxErrorType } from "lib/contracts/transactionErrors";
+import { ErrorData } from "lib/parseError";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -152,7 +152,7 @@ export type LoadingFailedEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
-  } & ErrorMetricData;
+  } & ErrorData;
 };
 
 // Transactions tracking
@@ -165,7 +165,7 @@ export type SubmittedOrderEvent = {
 export type ValidationErrorEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
-  data: OrderMetricData & ErrorMetricData;
+  data: OrderMetricData & ErrorData;
 };
 
 export type OrderSentEvent = {
@@ -199,14 +199,14 @@ export type OrderCreatedEvent = {
 export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
-  data: OrderMetricData & ErrorMetricData;
+  data: OrderMetricData & ErrorData;
 };
 
 export type PendingTxnErrorEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
   time: number | undefined;
-  data: OrderMetricData & ErrorMetricData;
+  data: OrderMetricData & ErrorData;
 };
 
 export type OrderExecutedEvent = {
@@ -220,7 +220,7 @@ export type OrderCancelledEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed}`;
   isError: true;
   time: number | undefined;
-  data: OrderMetricData & ErrorMetricData;
+  data: OrderMetricData & ErrorData;
 };
 
 // Multicall tracking
@@ -253,7 +253,7 @@ export type MulticallErrorEvent = {
 export type ErrorEvent = {
   event: "error";
   isError: true;
-  data: ErrorMetricData;
+  data: ErrorData;
 };
 
 // Entities metric data
@@ -379,22 +379,6 @@ export type SwapGLVMetricData = {
   glvTokenAmount: number | undefined;
   glvTokenUsd: number | undefined;
   isFirstBuy: boolean | undefined;
-};
-
-export type ErrorMetricData = {
-  errorContext?: OrderErrorContext;
-  errorMessage?: string;
-  errorGroup?: string;
-  errorStack?: string;
-  errorStackHash?: string;
-  errorName?: string;
-  contractError?: string;
-  isUserError?: boolean;
-  isUserRejectedError?: boolean;
-  reason?: string;
-  txErrorType?: TxErrorType;
-  txErrorData?: unknown;
-  errorSource?: string;
 };
 
 // Missed coins

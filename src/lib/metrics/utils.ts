@@ -10,7 +10,7 @@ import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "d
 import { TxError } from "lib/contracts/transactionErrors";
 import { bigintToNumber, formatPercentage, roundToOrder } from "lib/numbers";
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
-import { prepareErrorMetricData } from "./errorReporting";
+import { parseError } from "../parseError";
 import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
@@ -599,7 +599,7 @@ export function sendTxnErrorMetric(metricId: OrderMetricId, error: Error | TxErr
     return;
   }
 
-  const errorData = prepareErrorMetricData(error);
+  const errorData = parseError(error);
 
   metrics.pushEvent<OrderTxnFailedEvent>({
     event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,

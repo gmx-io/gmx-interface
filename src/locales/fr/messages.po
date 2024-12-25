@@ -5507,6 +5507,10 @@ msgstr ""
 msgid "No delegate found"
 msgstr ""
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+msgstr ""
+
 #: src/pages/Stake/StakeV1.jsx
 msgid "Wallet not yet connected"
 msgstr "Le portefeuille n'est pas encore connecté"
@@ -5945,8 +5949,8 @@ msgstr ""
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr ""
 
-#: src/App/App.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -5954,7 +5958,7 @@ msgstr ""
 msgid "View"
 msgstr "Voir"
 
-#: src/App/App.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Txn failed. <0>View</0>"
 msgstr "Txn échouée. <0> Voir</0>"
 

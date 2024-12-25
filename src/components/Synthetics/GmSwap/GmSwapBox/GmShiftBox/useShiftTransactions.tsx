@@ -4,7 +4,7 @@ import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -43,7 +43,7 @@ export function useShiftTransactions({
   const chainId = useSelector(selectChainId);
   const { signer, account } = useWallet();
   const { setPendingShift } = useSyntheticsEvents();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const onCreateShift = useCallback(
     function onCreateShift() {

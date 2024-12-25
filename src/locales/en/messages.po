@@ -5510,6 +5510,10 @@ msgstr "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these G
 msgid "No delegate found"
 msgstr "No delegate found"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+msgstr "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+
 #: src/pages/Stake/StakeV1.jsx
 msgid "Wallet not yet connected"
 msgstr "Wallet not yet connected"
@@ -5951,8 +5955,8 @@ msgstr "{0} and {1} can be used to buy GM for this market up to the specified bu
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 
-#: src/App/App.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -5960,7 +5964,7 @@ msgstr "One-Click Trading is not available using network's native token {0}. Con
 msgid "View"
 msgstr "View"
 
-#: src/App/App.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Txn failed. <0>View</0>"
 msgstr "Txn failed. <0>View</0>"
 

@@ -3,7 +3,7 @@ import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
-import { prepareErrorMetricData } from "lib/metrics/errorReporting";
+import { parseError } from "lib/parseError";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
@@ -184,7 +184,7 @@ export function sendUserAnalyticsOrderResultEvent(
     return;
   }
 
-  const isUserError = Boolean(prepareErrorMetricData(error)?.isUserError);
+  const isUserError = Boolean(parseError(error)?.isUserError);
 
   switch (metricData.metricType) {
     case "increasePosition":
