@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { getExplorerUrl } from "config/chains";
+import { GAS_PRICE_PREMIUM_MAP, getExplorerUrl } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useChainId } from "lib/chains";
@@ -62,13 +62,18 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
 
             if (errorData?.contractError === "InsufficientExecutionFee") {
               const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
-              const delta = minExecutionFee - executionFee;
-              const deltaPercentage = (delta * BASIS_POINTS_DIVISOR_BIGINT) / executionFee;
+              const premium = GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
+
+              const minExecutionFeeBeforePremium = minExecutionFee - premium;
+              const executionFeeBeforePremium = executionFee - premium;
+
+              const delta = minExecutionFeeBeforePremium - executionFeeBeforePremium;
+              const deltaPercentage = (delta * BASIS_POINTS_DIVISOR_BIGINT) / executionFeeBeforePremium;
 
               let bufferIncreaseBps =
                 BigInt(executionFeeBufferBps || 0) +
                 deltaPercentage +
-                // add extra 10%
+                // add extra 5%
                 BASIS_POINTS_DIVISOR_BIGINT / 10n;
 
               toastMsg = (

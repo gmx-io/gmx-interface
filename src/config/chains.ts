@@ -41,7 +41,7 @@ export const CHAIN_NAMES_MAP = {
 export const GAS_PRICE_PREMIUM_MAP = {
   [ARBITRUM]: 0n,
   // [AVALANCHE]: 3000000000n, // 3 gwei
-  [AVALANCHE]: 0n, // 3 gwei
+  [AVALANCHE]: 3000000000n / 30n, // 3 gwei
 };
 
 // added to gasPrice
