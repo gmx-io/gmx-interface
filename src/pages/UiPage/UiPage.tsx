@@ -4,8 +4,8 @@ import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
-import { getCategoryTokenAddresses, getToken } from "config/tokens";
-import type { TokenCategory } from "domain/tokens/types";
+import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
+import { TokenCategory } from "sdk/types/tokens";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
