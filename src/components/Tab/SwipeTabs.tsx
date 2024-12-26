@@ -1,6 +1,6 @@
 import cx from "classnames";
-import { MotionStyle, PanInfo, motion, useSpring } from "framer-motion";
-import { ReactNode, useCallback, useMemo, useRef, useState } from "react";
+import { MotionProps, MotionStyle, PanInfo, motion, useSpring } from "framer-motion";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Props = {
   options: (string | number)[];
@@ -14,6 +14,14 @@ type Props = {
 
 const MAGNETIC_SNAP_WEIGHT = 0.8;
 const SWIPE_SENSITIVITY = 1.5;
+const DIRECTION_THRESHOLD = 2;
+const MOVEMENT_THRESHOLD = 10;
+
+function getTransformTemplate({ x }: Parameters<Exclude<MotionProps["transformTemplate"], undefined>>[0]) {
+  // Make a custom string to avoid translateZ passed by Framer Motion default
+  // It causes stacking context issues in iOS
+  return `translateX(${x})`;
+}
 
 export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, optionClassnames }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,6 +31,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
   const offsetRef = useRef(0);
   const x = useSpring(0, { stiffness: 1000, damping: 60, bounce: 0 });
   const isDragging = useRef(false);
+  const isDirectionLocked = useRef(false);
 
   const onClick = useCallback(
     (opt: string | number) => {
@@ -80,12 +89,22 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
   );
 
   const handlePanStart = useCallback(() => {
-    isDragging.current = true;
+    isDragging.current = false;
+    isDirectionLocked.current = false;
     offsetRef.current = x.get();
   }, [x]);
 
   const handlePan = useCallback(
     (event: PointerEvent, info: PanInfo) => {
+      if (!isDirectionLocked.current) {
+        const isHorizontal = Math.abs(info.offset.x) > Math.abs(info.offset.y) * DIRECTION_THRESHOLD;
+        if (Math.abs(info.offset.x) > MOVEMENT_THRESHOLD || Math.abs(info.offset.y) > MOVEMENT_THRESHOLD) {
+          isDirectionLocked.current = true;
+          isDragging.current = isHorizontal;
+          if (!isHorizontal) return;
+        }
+      }
+
       if (!isDragging.current) return;
 
       let newX = offsetRef.current - info.delta.x * SWIPE_SENSITIVITY;
@@ -111,7 +130,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
   );
 
   const handlePanEnd = useCallback(() => {
-    const { offset: targetOffset } = getNearestOption(offsetRef.current, {
+    const { offset: targetOffset, option: nearestOption } = getNearestOption(offsetRef.current, {
       withHalfWidth: true,
       isAbsolute: false,
     });
@@ -121,17 +140,30 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
 
       x.set(targetOffset);
 
-      const { option: nearestOption } = getNearestOption(targetOffset, {
-        withHalfWidth: true,
-        isAbsolute: false,
-      });
-
       if (nearestOption !== option) {
         setVisuallyActiveOption(nearestOption);
         onChange?.(nearestOption);
       }
     }
   }, [getNearestOption, onChange, option, x]);
+
+  useEffect(() => {
+    if (!option) return;
+
+    const optElem = optionsRefs.current[options.indexOf(option)];
+    if (!optElem) return;
+
+    const optRect = optElem.getBoundingClientRect();
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    if (!containerRect) return;
+
+    x.set(optRect.x - containerRect.x);
+
+    if (bgRef.current) {
+      bgRef.current.style.width = `${optRect.width}px`;
+    }
+    setVisuallyActiveOption(option);
+  }, [option, options, x]);
 
   const bgStyle = useMemo(
     (): MotionStyle => ({
@@ -156,6 +188,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
           visuallyActiveOption && optionClassnames?.[visuallyActiveOption]
         )}
         style={bgStyle}
+        transformTemplate={getTransformTemplate}
       />
 
       {options.map((opt, index) => {
