@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
@@ -15,6 +14,7 @@ import { ProcessedData, useENS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatKeyAmount } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";

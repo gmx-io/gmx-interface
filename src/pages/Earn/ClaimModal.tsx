@@ -5,7 +5,6 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { SetPendingTransactions } from "domain/legacy";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
@@ -15,6 +14,7 @@ import { callContract } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { GMX_DAO_LINKS } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";

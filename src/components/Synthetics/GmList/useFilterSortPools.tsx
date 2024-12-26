@@ -2,7 +2,6 @@ import values from "lodash/values";
 import { useMemo } from "react";
 
 import type { SortDirection } from "components/Sorter/Sorter";
-import { getCategoryTokenAddresses, getTokenVisualMultiplier } from "config/tokens";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketTokensAPRData, MarketsInfoData, getMarketPoolName } from "domain/synthetics/markets";
@@ -11,6 +10,7 @@ import type { TokenFavoritesTabOption } from "domain/synthetics/tokens/useTokens
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { getCategoryTokenAddresses, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import type { SortField } from "./GmList";
 import { sortGmTokensByField } from "./sortGmTokensByField";

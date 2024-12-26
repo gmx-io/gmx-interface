@@ -6,7 +6,6 @@ import { useCallback, useMemo, useState } from "react";
 import { ARBITRUM } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { SetPendingTransactions } from "domain/legacy";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -19,6 +18,7 @@ import { ProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { GMX_DAO_LINKS } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";

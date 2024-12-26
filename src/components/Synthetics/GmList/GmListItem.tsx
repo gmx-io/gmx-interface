@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import React, { useMemo } from "react";
 
-import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -21,6 +20,7 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
