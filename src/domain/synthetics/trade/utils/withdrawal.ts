@@ -3,7 +3,7 @@ import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
 
-import { WithdrawalAmounts } from "../types";
+import { WithdrawalAmounts } from "sdk/types/trade";
 
 export function getWithdrawalAmounts(p: {
   marketInfo: MarketInfo;

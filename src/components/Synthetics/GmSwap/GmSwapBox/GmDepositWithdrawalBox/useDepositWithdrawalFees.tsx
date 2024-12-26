@@ -7,7 +7,6 @@ import {
   estimateExecuteWithdrawalGasLimit,
   FeeItem,
   GasLimitsConfig,
-  getExecutionFee,
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
@@ -22,6 +21,7 @@ import { GmSwapFees } from "domain/synthetics/trade";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { GlvInfo } from "domain/synthetics/markets";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export const useDepositWithdrawalFees = ({
   amounts,

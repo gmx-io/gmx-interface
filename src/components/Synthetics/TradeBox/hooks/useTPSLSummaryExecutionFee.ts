@@ -3,7 +3,7 @@ import { selectTradeboxExecutionFee } from "context/SyntheticsStateContext/selec
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
-  getExecutionFee,
+  getExecutionFeeWarning,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -15,6 +15,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useCallback, useMemo } from "react";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export const useTPSLSummaryExecutionFee = () => {
   const executionFee = useSelector(selectTradeboxExecutionFee);
@@ -61,7 +62,9 @@ export const useTPSLSummaryExecutionFee = () => {
   const summaryExecutionFee = useMemo(() => {
     if (!executionFee) return undefined;
 
-    const { feeUsd, feeTokenAmount, feeToken, warning } = executionFee;
+    const { feeUsd, feeTokenAmount, feeToken } = executionFee;
+
+    const warning = getExecutionFeeWarning(chainId, executionFee);
 
     const feeTokenData = getByKey(tokensData, feeToken?.address);
 
@@ -82,7 +85,7 @@ export const useTPSLSummaryExecutionFee = () => {
       feeToken,
       warning,
     };
-  }, [executionFee, sidecarEntries, getExecutionFeeAmountForEntry, tokensData]);
+  }, [chainId, executionFee, sidecarEntries, getExecutionFeeAmountForEntry, tokensData]);
 
   return {
     summaryExecutionFee,

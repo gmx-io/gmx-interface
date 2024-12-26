@@ -1,51 +1,45 @@
-import { t } from "@lingui/macro";
-import { getChainName, getExcessiveExecutionFee, getHighExecutionFee } from "config/chains";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
-import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { USD_DECIMALS } from "config/factors";
-import { applyFactor, expandDecimals } from "lib/numbers";
-import { ExecutionFee, GasLimitsConfig } from "../types";
+import { GasLimitsConfig } from "sdk/types/fees";
 
-export function getExecutionFee(
-  chainId: number,
-  gasLimits: GasLimitsConfig,
-  tokensData: TokensData,
-  estimatedGasLimit: bigint,
-  gasPrice: bigint,
-  oraclePriceCount: bigint
-): ExecutionFee | undefined {
-  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
+// export function getExecutionFee(
+//   chainId: number,
+//   gasLimits: GasLimitsConfig,
+//   tokensData: TokensData,
+//   estimatedGasLimit: bigint,
+//   gasPrice: bigint,
+//   oraclePriceCount: bigint
+// ): ExecutionFee | undefined {
+//   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
-  if (!nativeToken) return undefined;
+//   if (!nativeToken) return undefined;
 
-  // #region adjustGasLimitForEstimate. Copy from contract.
-  let baseGasLimit = gasLimits.estimatedGasFeeBaseAmount;
-  baseGasLimit += gasLimits.estimatedGasFeePerOraclePrice * oraclePriceCount;
-  const multiplierFactor = gasLimits.estimatedFeeMultiplierFactor;
-  const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
-  // #endregion
+//   // #region adjustGasLimitForEstimate. Copy from contract.
+//   let baseGasLimit = gasLimits.estimatedGasFeeBaseAmount;
+//   baseGasLimit += gasLimits.estimatedGasFeePerOraclePrice * oraclePriceCount;
+//   const multiplierFactor = gasLimits.estimatedFeeMultiplierFactor;
+//   const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
+//   // #endregion
 
-  const feeTokenAmount = gasLimit * gasPrice;
+//   const feeTokenAmount = gasLimit * gasPrice;
 
-  const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
+//   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 
-  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
-  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
+//   const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
+//   const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
 
-  const chainName = getChainName(chainId);
-  const highWarning = t`The network fees are high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
-  const veryHighWarning = t`The network fees are very high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
+//   const chainName = getChainName(chainId);
+//   const highWarning = t`The network fees are high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
+//   const veryHighWarning = t`The network fees are very high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
 
-  const warning = isFeeVeryHigh ? veryHighWarning : isFeeHigh ? highWarning : undefined;
+//   const warning = isFeeVeryHigh ? veryHighWarning : isFeeHigh ? highWarning : undefined;
 
-  return {
-    feeUsd,
-    feeTokenAmount,
-    feeToken: nativeToken,
-    warning,
-  };
-}
+//   return {
+//     feeUsd,
+//     feeTokenAmount,
+//     feeToken: nativeToken,
+//     warning,
+//   };
+// }
 
 /**
  * Only GM deposits. Do not confuse with increase with zero delta size.

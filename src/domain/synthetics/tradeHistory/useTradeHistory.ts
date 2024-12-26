@@ -24,7 +24,13 @@ import { definedOrThrow } from "lib/guards";
 import { bigNumberify } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { GraphQlFilters, buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
-import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "./types";
+import {
+  PositionTradeAction,
+  RawTradeAction,
+  SwapTradeAction,
+  TradeAction,
+  TradeActionType,
+} from "sdk/types/tradeHistory";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];

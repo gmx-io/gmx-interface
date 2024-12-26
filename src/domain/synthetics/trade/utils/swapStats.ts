@@ -11,7 +11,7 @@ import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { getByKey } from "lib/objects";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
-import { SwapPathStats, SwapStats } from "../types";
+import { SwapPathStats, SwapStats } from "sdk/types/trade";
 
 export function getSwapPathOutputAddresses(p: {
   marketsInfoData: MarketsInfoData;

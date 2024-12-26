@@ -1,6 +1,6 @@
 import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor, getBasisPoints, PRECISION } from "lib/numbers";
-import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
+import { SwapStats, TradeFees, TradeMode, TradeType } from "sdk/types/trade";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { bigMath } from "lib/bigmath";
 

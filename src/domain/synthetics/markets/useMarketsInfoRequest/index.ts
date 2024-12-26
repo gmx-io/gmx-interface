@@ -2,18 +2,19 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
 import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
 
 import { TokensData, useTokensDataRequest } from "../../tokens";
-import type { MarketInfo, MarketsData, MarketsInfoData } from "../types";
+import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
 import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { getMarketDivisor } from "../utils";
+import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -22,179 +23,6 @@ export type MarketsInfoResult = {
   isBalancesLoaded?: boolean;
   error?: Error;
 };
-
-/**
- * Updates frequently
- */
-type MarketValues = Pick<
-  MarketInfo,
-  | "longInterestUsd"
-  | "shortInterestUsd"
-  | "longInterestInTokens"
-  | "shortInterestInTokens"
-  | "longPoolAmount"
-  | "shortPoolAmount"
-  | "poolValueMin"
-  | "poolValueMax"
-  | "totalBorrowingFees"
-  | "positionImpactPoolAmount"
-  | "swapImpactPoolAmountLong"
-  | "swapImpactPoolAmountShort"
-  | "borrowingFactorPerSecondForLongs"
-  | "borrowingFactorPerSecondForShorts"
-  | "fundingFactorPerSecond"
-  | "longsPayShorts"
-  | "virtualPoolAmountForLongToken"
-  | "virtualPoolAmountForShortToken"
-  | "virtualInventoryForPositions"
->;
-
-/**
- * Updates seldom
- */
-export type MarketConfig = Pick<
-  MarketInfo,
-  | "isDisabled"
-  | "maxLongPoolUsdForDeposit"
-  | "maxShortPoolUsdForDeposit"
-  | "maxLongPoolAmount"
-  | "maxShortPoolAmount"
-  | "longPoolAmountAdjustment"
-  | "shortPoolAmountAdjustment"
-  | "reserveFactorLong"
-  | "reserveFactorShort"
-  | "openInterestReserveFactorLong"
-  | "openInterestReserveFactorShort"
-  | "maxOpenInterestLong"
-  | "maxOpenInterestShort"
-  | "minPositionImpactPoolAmount"
-  | "positionImpactPoolDistributionRate"
-  | "borrowingFactorLong"
-  | "borrowingFactorShort"
-  | "borrowingExponentFactorLong"
-  | "borrowingExponentFactorShort"
-  | "fundingFactor"
-  | "fundingExponentFactor"
-  | "fundingIncreaseFactorPerSecond"
-  | "fundingDecreaseFactorPerSecond"
-  | "thresholdForDecreaseFunding"
-  | "thresholdForStableFunding"
-  | "minFundingFactorPerSecond"
-  | "maxFundingFactorPerSecond"
-  | "maxPnlFactorForTradersLong"
-  | "maxPnlFactorForTradersShort"
-  | "minCollateralFactor"
-  | "minCollateralFactorForOpenInterestLong"
-  | "minCollateralFactorForOpenInterestShort"
-  | "positionFeeFactorForPositiveImpact"
-  | "positionFeeFactorForNegativeImpact"
-  | "positionImpactFactorPositive"
-  | "positionImpactFactorNegative"
-  | "maxPositionImpactFactorPositive"
-  | "maxPositionImpactFactorNegative"
-  | "maxPositionImpactFactorForLiquidations"
-  | "positionImpactExponentFactor"
-  | "swapFeeFactorForPositiveImpact"
-  | "swapFeeFactorForNegativeImpact"
-  | "swapImpactFactorPositive"
-  | "swapImpactFactorNegative"
-  | "swapImpactExponentFactor"
-  | "virtualMarketId"
-  | "virtualLongTokenId"
-  | "virtualShortTokenId"
->;
-
-export type MarketValuesMulticallRequestConfig = MulticallRequestConfig<{
-  [key: `${string}-reader`]: {
-    calls: Record<
-      "marketInfo" | "marketTokenPriceMax" | "marketTokenPriceMin",
-      {
-        methodName: string;
-        params: any[];
-      }
-    >;
-  };
-  [key: `${string}-dataStore`]: {
-    calls: Record<
-      | "longPoolAmount"
-      | "shortPoolAmount"
-      | "positionImpactPoolAmount"
-      | "swapImpactPoolAmountLong"
-      | "swapImpactPoolAmountShort"
-      | "longInterestUsingLongToken"
-      | "longInterestUsingShortToken"
-      | "shortInterestUsingLongToken"
-      | "shortInterestUsingShortToken"
-      | "longInterestInTokensUsingLongToken"
-      | "longInterestInTokensUsingShortToken"
-      | "shortInterestInTokensUsingLongToken"
-      | "shortInterestInTokensUsingShortToken",
-      {
-        methodName: string;
-        params: any[];
-      }
-    >;
-  };
-}>;
-
-export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
-  [key: `${string}-dataStore`]: {
-    calls: Record<
-      | "isDisabled"
-      | "maxLongPoolAmount"
-      | "maxShortPoolAmount"
-      | "maxLongPoolUsdForDeposit"
-      | "maxShortPoolUsdForDeposit"
-      | "longPoolAmountAdjustment"
-      | "shortPoolAmountAdjustment"
-      | "reserveFactorLong"
-      | "reserveFactorShort"
-      | "openInterestReserveFactorLong"
-      | "openInterestReserveFactorShort"
-      | "maxOpenInterestLong"
-      | "maxOpenInterestShort"
-      | "minPositionImpactPoolAmount"
-      | "positionImpactPoolDistributionRate"
-      | "borrowingFactorLong"
-      | "borrowingFactorShort"
-      | "borrowingExponentFactorLong"
-      | "borrowingExponentFactorShort"
-      | "fundingFactor"
-      | "fundingExponentFactor"
-      | "fundingIncreaseFactorPerSecond"
-      | "fundingDecreaseFactorPerSecond"
-      | "thresholdForStableFunding"
-      | "thresholdForDecreaseFunding"
-      | "minFundingFactorPerSecond"
-      | "maxFundingFactorPerSecond"
-      | "maxPnlFactorForTradersLong"
-      | "maxPnlFactorForTradersShort"
-      | "positionFeeFactorForPositiveImpact"
-      | "positionFeeFactorForNegativeImpact"
-      | "positionImpactFactorPositive"
-      | "positionImpactFactorNegative"
-      | "maxPositionImpactFactorPositive"
-      | "maxPositionImpactFactorNegative"
-      | "maxPositionImpactFactorForLiquidations"
-      | "minCollateralFactor"
-      | "minCollateralFactorForOpenInterestLong"
-      | "minCollateralFactorForOpenInterestShort"
-      | "positionImpactExponentFactor"
-      | "swapFeeFactorForPositiveImpact"
-      | "swapFeeFactorForNegativeImpact"
-      | "swapImpactFactorPositive"
-      | "swapImpactFactorNegative"
-      | "swapImpactExponentFactor"
-      | "virtualMarketId"
-      | "virtualLongTokenId"
-      | "virtualShortTokenId",
-      {
-        methodName: string;
-        params: any[];
-      }
-    >;
-  };
-}>;
 
 export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);

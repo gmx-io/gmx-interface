@@ -12,7 +12,7 @@ import {
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
+import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,

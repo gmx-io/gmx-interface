@@ -1,5 +1,5 @@
 import { getAvailableUsdLiquidityForCollateral, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
+import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "sdk/types/trade";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
 import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "config/markets";
 

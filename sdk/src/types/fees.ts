@@ -4,7 +4,6 @@ export type ExecutionFee = {
   feeUsd: bigint;
   feeTokenAmount: bigint;
   feeToken: Token;
-  warning?: string;
   isFeeHigh: boolean;
   isFeeVeryHigh: boolean;
 };
@@ -12,6 +11,7 @@ export type ExecutionFee = {
 export type FeeItem = {
   deltaUsd: bigint;
   bps: bigint;
+  precisePercentage: bigint;
 };
 
 export type SwapFeeItem = FeeItem & {

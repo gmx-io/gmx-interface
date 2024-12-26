@@ -17,7 +17,7 @@ import { ethers } from "ethers";
 import { bigMath } from "lib/bigmath";
 import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
-import { DecreasePositionAmounts, NextPositionValues } from "../types";
+import { DecreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,

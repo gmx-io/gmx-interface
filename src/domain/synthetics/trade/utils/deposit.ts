@@ -3,7 +3,7 @@ import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } f
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";
 import { applyFactor } from "lib/numbers";
-import { DepositAmounts } from "../types";
+import { DepositAmounts } from "sdk/types/trade";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;

@@ -37,7 +37,7 @@ export const getOrderExecutionFee = (
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-  return getExecutionFee(sdk, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+  return getExecutionFee(sdk.chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 };
 
 export const getExecutionFeeAmountForEntry = (

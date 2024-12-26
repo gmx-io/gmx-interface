@@ -7,12 +7,7 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  getExecutionFee,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
+import { estimateExecuteDecreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { useChainId } from "lib/chains";
@@ -30,6 +25,7 @@ import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/esti
 import "./SettleAccruedFundingFeeModal.scss";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 type Props = {
   allowedSlippage: number;

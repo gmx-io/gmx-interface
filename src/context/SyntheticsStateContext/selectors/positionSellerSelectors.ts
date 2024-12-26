@@ -1,4 +1,4 @@
-import { TradeMode, TradeType } from "domain/synthetics/trade/types";
+import { TradeMode, TradeType } from "sdk/types/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { USD_DECIMALS } from "config/factors";
 import { parseValue } from "lib/numbers";
@@ -37,10 +37,11 @@ import { mustNeverExist } from "lib/types";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
-import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "domain/synthetics/fees";
+import { estimateExecuteDecreaseOrderGasLimit } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;

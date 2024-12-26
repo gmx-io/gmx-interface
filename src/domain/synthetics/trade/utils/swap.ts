@@ -1,5 +1,5 @@
 import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountByRatio } from "domain/synthetics/tokens";
-import { FindSwapPath, SwapAmounts } from "../types";
+import { FindSwapPath, SwapAmounts } from "sdk/types/trade";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";

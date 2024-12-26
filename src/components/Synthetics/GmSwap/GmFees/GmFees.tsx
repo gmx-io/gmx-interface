@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
-import { FeeItem } from "domain/synthetics/fees";
+import { FeeItem } from "sdk/types/fees";
 import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 

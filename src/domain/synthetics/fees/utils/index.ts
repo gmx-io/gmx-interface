@@ -1,12 +1,23 @@
+import { t } from "@lingui/macro";
+
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
 import { applyFactor, getBasisPoints, PRECISION } from "lib/numbers";
-import { FeeItem } from "../types";
+import { ExecutionFee, FeeItem } from "sdk/types/fees";
 import { SwapStats } from "domain/synthetics/trade";
 import { bigMath } from "lib/bigmath";
+import { getChainName } from "config/chains";
 
 export * from "./executionFee";
 export * from "./priceImpact";
+
+export function getExecutionFeeWarning(chainId: number, fees: ExecutionFee) {
+  const chainName = getChainName(chainId);
+  const highWarning = t`The network fees are high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
+  const veryHighWarning = t`The network fees are very high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
+
+  return fees.isFeeVeryHigh ? veryHighWarning : fees.isFeeHigh ? highWarning : undefined;
+}
 
 export function getSwapFee(marketInfo: MarketInfo, swapAmount: bigint, forPositiveImpact: boolean) {
   const factor = forPositiveImpact
