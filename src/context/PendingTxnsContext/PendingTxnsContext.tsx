@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { GAS_PRICE_PREMIUM_MAP, getExplorerUrl } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees";
 import { useChainId } from "lib/chains";
 import { getOnchainError } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
@@ -56,25 +56,22 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            const errorData = await getOnchainError(signer.provider, undefined, pendingTxn.hash);
+            const { errorData, txnData } = await getOnchainError(signer.provider, undefined, pendingTxn.hash);
 
             let toastMsg: ReactNode;
 
-            if (errorData?.contractError === "InsufficientExecutionFee") {
+            if (errorData?.contractError === "InsufficientExecutionFee" && txnData) {
               const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
-              const premium = GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
 
-              const minExecutionFeeBeforePremium = minExecutionFee - premium;
-              const executionFeeBeforePremium = executionFee - premium;
-
-              const delta = minExecutionFeeBeforePremium - executionFeeBeforePremium;
-              const deltaPercentage = (delta * BASIS_POINTS_DIVISOR_BIGINT) / executionFeeBeforePremium;
-
-              let bufferIncreaseBps =
-                BigInt(executionFeeBufferBps || 0) +
-                deltaPercentage +
-                // add extra 5%
-                BASIS_POINTS_DIVISOR_BIGINT / 10n;
+              const requiredBufferBps = getMinimumExecutionFeeBufferBps({
+                minExecutionFee: minExecutionFee,
+                estimatedExecutionFee: executionFee,
+                currentBufferBps: BigInt(
+                  executionFeeBufferBps || EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps || 0
+                ),
+                premium: GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n,
+                gasLimit: txnData.gasLimit ?? 1n,
+              });
 
               toastMsg = (
                 <div>
@@ -83,7 +80,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                     <br />
                     <br />
                     Please try increasing execution fee buffer to{" "}
-                    {formatPercentage(bufferIncreaseBps, { displayDecimals: 0 })} in{" "}
+                    {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
                     <div
                       className=" muted inline-block cursor-pointer underline"
                       onClick={() => setIsSettingsVisible(true)}

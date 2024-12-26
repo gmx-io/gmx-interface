@@ -6,7 +6,7 @@ import { getNativeToken } from "config/tokens";
 import { Provider } from "ethers";
 import { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { parseError } from "lib/parseError";
+import { ErrorData, parseError } from "lib/parseError";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
 
@@ -217,21 +217,23 @@ export function extractDataFromError(errorMessage: unknown) {
   return null;
 }
 
+export type TxnData = {
+  data: string;
+  to: string | null;
+  from: string;
+  gasLimit?: bigint;
+  gasPrice?: bigint;
+  maxFeePerGas: bigint | null;
+  maxPriorityFeePerGas: bigint | null;
+  nonce: number | null;
+  value: bigint;
+};
+
 export async function getOnchainError(
   provider: Provider,
-  txnData?: {
-    data: string;
-    to: string | null;
-    from: string;
-    gasLimit?: bigint;
-    gasPrice?: bigint;
-    maxFeePerGas: bigint | null;
-    maxPriorityFeePerGas: bigint | null;
-    nonce: number | null;
-    value: bigint;
-  },
+  txnData?: TxnData,
   txnHash?: string
-) {
+): Promise<{ errorData?: ErrorData; txnData?: TxnData }> {
   if (txnHash) {
     try {
       txnData = (await provider.getTransaction(txnHash)) || undefined;
@@ -246,7 +248,7 @@ export async function getOnchainError(
           ...errorData,
         },
       });
-      return undefined;
+      return { txnData };
     }
   }
 
@@ -260,7 +262,7 @@ export async function getOnchainError(
       },
     });
 
-    return undefined;
+    return {};
   }
 
   try {
@@ -277,6 +279,8 @@ export async function getOnchainError(
       },
     });
 
-    return errorData;
+    return { errorData, txnData };
   }
+
+  return {};
 }

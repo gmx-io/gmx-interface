@@ -1,11 +1,57 @@
 import { t } from "@lingui/macro";
 import { getChainName, getExcessiveExecutionFee, getHighExecutionFee } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
-import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { USD_DECIMALS } from "config/factors";
+import { convertToUsd, getTokenData, TokensData } from "domain/synthetics/tokens";
 import { applyFactor, expandDecimals } from "lib/numbers";
 import { ExecutionFee, GasLimitsConfig } from "../types";
+import { bigMath } from "lib/bigmath";
+
+export function estimateExecutionGasPrice(p: {
+  rawGasPrice: bigint | undefined;
+  maxPriorityFeePerGas: bigint | undefined;
+  bufferBps: bigint | number | undefined;
+  premium: bigint | undefined;
+}) {
+  let { rawGasPrice = 0n, maxPriorityFeePerGas = 0n, bufferBps = 0n, premium = 0n } = p;
+
+  let gasPrice = rawGasPrice + maxPriorityFeePerGas;
+
+  const buffer = bigMath.mulDiv(gasPrice, BigInt(bufferBps ?? 0), BASIS_POINTS_DIVISOR_BIGINT);
+
+  gasPrice = gasPrice + buffer;
+  gasPrice = gasPrice + premium;
+
+  return gasPrice + premium;
+}
+
+export function getMinimumExecutionFeeBufferBps(p: {
+  minExecutionFee: bigint;
+  estimatedExecutionFee: bigint;
+  currentBufferBps: bigint;
+  premium: bigint;
+  gasLimit: bigint;
+}) {
+  const { minExecutionFee: minExecutionFee, estimatedExecutionFee, currentBufferBps, premium, gasLimit } = p;
+
+  const estimatedGasPrice = estimatedExecutionFee / gasLimit;
+  const minGasPrice = minExecutionFee / gasLimit;
+
+  const estimatedBeforePremium = estimatedGasPrice - premium;
+  const estimatedBeforeBuffer =
+    (estimatedBeforePremium * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT + currentBufferBps);
+
+  const minBeforePremium = minGasPrice - premium;
+  const bufferDelta = minBeforePremium - estimatedBeforeBuffer;
+
+  const minimumBufferBps = (bufferDelta * BASIS_POINTS_DIVISOR_BIGINT) / estimatedBeforeBuffer;
+
+  // add extra 1% to round up
+  const requiredBufferBps = minimumBufferBps + BASIS_POINTS_DIVISOR_BIGINT / 100n;
+
+  return requiredBufferBps;
+}
 
 export function getExecutionFee(
   chainId: number,
