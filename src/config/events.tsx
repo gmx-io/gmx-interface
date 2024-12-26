@@ -33,6 +33,21 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "dydx-inj-listing",
+    title: "DYDX and INJ markets added on Arbitrum",
+    isActive: true,
+    startDate: "26 Dec 2024, 15:00",
+    endDate: "01 Jan 2025, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="DYDX" />
+        /USD and <TokenSymbolWithIcon symbol="INJ" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC].
+      </>
+    ),
+  },
+  {
     id: "fil-listing",
     title: "Filecoin (FIL) market added on Arbitrum",
     isActive: true,
