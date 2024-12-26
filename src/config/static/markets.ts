@@ -326,6 +326,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("12 Dec 2024"),
     },
+    // DYDX/USD [WBTC-USDC]
+    "0x467C4A46287F6C4918dDF780D4fd7b46419c2291": {
+      enabled: true,
+      listingDate: p("26 Dec 2024"),
+    },
+    // INJ/USD [WBTC-USDC]
+    "0x16466a03449CB9218EB6A980Aa4a44aaCEd27C25": {
+      enabled: true,
+      listingDate: p("26 Dec 2024"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
