@@ -13,11 +13,17 @@ import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 
+export type PendingTransactionData = {
+  estimatedExecutionFee: bigint;
+  estimatedExecutionGasLimit: bigint;
+};
+
 export type PendingTransaction = {
   hash: string;
   message: string;
   messageDetails?: string;
   metricId?: OrderMetricId;
+  data?: PendingTransactionData;
 };
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
@@ -70,7 +76,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                   executionFeeBufferBps || EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps || 0
                 ),
                 premium: GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n,
-                gasLimit: txnData.gasLimit ?? 1n,
+                gasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
               });
 
               toastMsg = (

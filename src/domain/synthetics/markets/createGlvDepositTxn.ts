@@ -121,6 +121,10 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingDeposit({
       account: p.account,

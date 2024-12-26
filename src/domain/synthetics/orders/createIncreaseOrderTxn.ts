@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -10,6 +9,7 @@ import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
 import concat from "lodash/concat";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToPrice } from "../trade";
@@ -38,6 +38,7 @@ type IncreaseOrderParams = {
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode: string | undefined;
@@ -254,6 +255,10 @@ export async function createIncreaseOrderTxn({
     gasPriceData,
     bestNonce,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   });
 
   if (!subaccount) {

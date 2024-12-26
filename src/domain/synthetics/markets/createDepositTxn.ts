@@ -23,6 +23,7 @@ export type CreateDepositParams = {
   shortTokenAmount: bigint;
   minMarketTokens: bigint;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
@@ -129,6 +130,10 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingDeposit({
       account: p.account,

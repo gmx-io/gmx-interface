@@ -76,6 +76,7 @@ export function useShiftTransactions({
         toMarketTokenAddress: marketToken.address,
         minToMarketTokenAmount: marketTokenAmount,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
         tokensData,

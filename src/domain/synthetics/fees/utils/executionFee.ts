@@ -33,22 +33,19 @@ export function getMinimumExecutionFeeBufferBps(p: {
   premium: bigint;
   gasLimit: bigint;
 }) {
-  const { minExecutionFee: minExecutionFee, estimatedExecutionFee, currentBufferBps, premium, gasLimit } = p;
+  const { minExecutionFee, estimatedExecutionFee, currentBufferBps, premium, gasLimit } = p;
 
-  const estimatedGasPrice = estimatedExecutionFee / gasLimit;
-  const minGasPrice = minExecutionFee / gasLimit;
+  const estimatedGasPriceWithBuffer = estimatedExecutionFee / gasLimit - premium;
 
-  const estimatedBeforePremium = estimatedGasPrice - premium;
-  const estimatedBeforeBuffer =
-    (estimatedBeforePremium * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT + currentBufferBps);
+  const baseGasPrice =
+    (estimatedGasPriceWithBuffer * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT + currentBufferBps);
 
-  const minBeforePremium = minGasPrice - premium;
-  const bufferDelta = minBeforePremium - estimatedBeforeBuffer;
+  // Calculate target gas price (without premium)
+  const targetGasPrice = minExecutionFee / gasLimit - premium;
+  const bufferBps = (targetGasPrice * BASIS_POINTS_DIVISOR_BIGINT) / baseGasPrice - BASIS_POINTS_DIVISOR_BIGINT;
 
-  const minimumBufferBps = (bufferDelta * BASIS_POINTS_DIVISOR_BIGINT) / estimatedBeforeBuffer;
-
-  // add extra 1% to round up
-  const requiredBufferBps = minimumBufferBps + BASIS_POINTS_DIVISOR_BIGINT / 100n;
+  // Add extra 5% for safety
+  const requiredBufferBps = bufferBps + (BASIS_POINTS_DIVISOR_BIGINT / 100n) * 5n;
 
   return requiredBufferBps;
 }
@@ -90,6 +87,7 @@ export function getExecutionFee(
     feeTokenAmount,
     feeToken: nativeToken,
     warning,
+    gasLimit,
   };
 }
 

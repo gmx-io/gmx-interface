@@ -46,7 +46,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
 
-  const { executionFee, feeUsd } = useMemo(() => {
+  const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
       decreaseSwapType: DecreasePositionSwapType.NoSwap,
@@ -55,6 +55,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     const oraclePriceCount = estimateOrderOraclePriceCount(0);
     const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
     return {
+      gasLimit: fees?.gasLimit,
       executionFee: fees?.feeTokenAmount,
       feeUsd: fees?.feeUsd,
     };
@@ -138,6 +139,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           isLong: position.isLong,
           minOutputUsd: 0n,
           executionFee,
+          executionGasLimit: gasLimit,
           allowedSlippage,
           referralCode: userReferralInfo?.referralCodeForTxn,
           indexToken: position.indexToken,
@@ -160,6 +162,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     allowedSlippage,
     chainId,
     executionFee,
+    gasLimit,
     handleOnClose,
     selectedPositions,
     setPendingFundingFeeSettlement,
