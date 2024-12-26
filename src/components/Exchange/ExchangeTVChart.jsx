@@ -9,7 +9,7 @@ import { t } from "@lingui/macro";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getPriceDecimals, getToken, getV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getV1Tokens } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";

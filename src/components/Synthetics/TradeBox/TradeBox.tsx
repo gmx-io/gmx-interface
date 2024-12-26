@@ -9,7 +9,7 @@ import { useKey, useLatest, usePrevious } from "react-use";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";

@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcons } from "config/icons";
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol, getTokenVisualMultiplier } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {

@@ -6,7 +6,7 @@ import Footer from "components/Footer/Footer";
 import "./BuyGlp.css";
 
 import { Trans, t } from "@lingui/macro";
-import { getNativeToken } from "config/tokens";
+import { getNativeToken } from "sdk/configs/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";

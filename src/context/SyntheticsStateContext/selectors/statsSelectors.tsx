@@ -1,4 +1,4 @@
-import { getTokenBySymbolSafe } from "config/tokens";
+import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import {
   selectChainId,
   selectMarketsInfoData,

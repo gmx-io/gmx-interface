@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 type Props = {
   onButtonClick?: () => void;
