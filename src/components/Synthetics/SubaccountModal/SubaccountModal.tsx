@@ -454,18 +454,15 @@ const MainView = memo(() => {
     setActiveTx,
   ]);
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: [wrappedToken.address],
     skip: !isVisible,
   });
 
   const needPayTokenApproval = useMemo(
-    () =>
-      tokensAllowanceData && baseFeePerAction !== undefined
-        ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction)
-        : false,
-    [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
+    () => getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction),
+    [wrappedToken.address, baseFeePerAction, tokensAllowanceData]
   );
 
   const { text: buttonText, disabled } = useMemo(
@@ -480,7 +477,7 @@ const MainView = memo(() => {
         withdrawalLoading,
         formState,
         notificationState,
-
+        isAllowanceLoading,
         needPayTokenApproval,
         isTxPending,
 
@@ -496,10 +493,11 @@ const MainView = memo(() => {
       topUp,
       maxAutoTopUpAmount,
       wntForAutoTopUps,
-      formState,
       maxAllowedActions,
       withdrawalLoading,
+      formState,
       notificationState,
+      isAllowanceLoading,
       needPayTokenApproval,
       isTxPending,
       isSubaccountActive,

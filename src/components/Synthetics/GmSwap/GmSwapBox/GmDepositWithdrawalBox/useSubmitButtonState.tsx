@@ -162,7 +162,7 @@ export const useSubmitButtonState = ({
 
   const error = commonError || swapError;
 
-  const { tokensToApprove, payTokenAddresses, isAllowanceLoaded } = useTokensToApprove({
+  const { tokensToApprove, isAllowanceLoading } = useTokensToApprove({
     routerAddress,
     glvInfo,
     operation,
@@ -186,7 +186,7 @@ export const useSubmitButtonState = ({
       };
     }
 
-    if (payTokenAddresses.length > 0 && !isAllowanceLoaded) {
+    if (isAllowanceLoading) {
       return {
         text: t`Loading...`,
         disabled: true,
@@ -245,21 +245,20 @@ export const useSubmitButtonState = ({
     };
   }, [
     account,
+    isAllowanceLoading,
     error,
-    isAllowanceLoaded,
-    isDeposit,
-    marketToken,
-    operation,
+    glvInfo,
     isSubmitting,
+    isHighFeeConsentError,
     tokensToApprove,
+    marketToken,
+    isDeposit,
+    onSubmit,
     onConnectAccount,
     shouldDisableValidation,
-    onSubmit,
+    swapErrorDescription,
+    operation,
     tokensData,
     marketTokensData,
-    payTokenAddresses.length,
-    isHighFeeConsentError,
-    swapErrorDescription,
-    glvInfo,
   ]);
 };

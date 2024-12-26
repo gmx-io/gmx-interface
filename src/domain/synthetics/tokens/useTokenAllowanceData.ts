@@ -9,7 +9,7 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 import type { TokensAllowanceData } from "./types";
 
-type TokenAllowanceResult = { tokensAllowanceData: TokensAllowanceData };
+type TokenAllowanceResult = { tokensAllowanceData: TokensAllowanceData; isLoading: boolean };
 
 export function useTokensAllowanceData(
   chainId: number,
@@ -89,5 +89,6 @@ export function useTokensAllowanceData(
 
   return {
     tokensAllowanceData: mergedData,
+    isLoading: !skip && p.tokenAddresses.some((address) => mergedData?.[address] === undefined),
   };
 }

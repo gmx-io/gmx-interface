@@ -68,7 +68,7 @@ export function useShiftSubmitState({
     marketTokenUsd,
   });
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
   });
@@ -77,12 +77,7 @@ export function useShiftSubmitState({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      if (
-        amounts?.fromTokenAmount !== undefined &&
-        amounts?.fromTokenAmount > 0 &&
-        selectedToken &&
-        getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)
-      ) {
+      if (selectedToken && getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)) {
         addresses.push(selectedToken.address);
       }
 
@@ -91,10 +86,21 @@ export function useShiftSubmitState({
     [selectedToken, amounts?.fromTokenAmount, tokensAllowanceData]
   );
 
+  const isBalancesLoading =
+    account && payTokenAddresses.some((address) => tokensData?.[address]?.balance === undefined);
+
   return useMemo(() => {
     if (isSubmitting) {
       return {
         text: t`Submitting...`,
+        disabled: true,
+        tokensToApprove,
+      };
+    }
+
+    if (isAllowanceLoading || isBalancesLoading) {
+      return {
+        text: t`Loading...`,
         disabled: true,
         tokensToApprove,
       };
@@ -177,6 +183,8 @@ export function useShiftSubmitState({
     account,
     chainId,
     hasOutdatedUi,
+    isAllowanceLoading,
+    isBalancesLoading,
     selectedMarketInfo,
     selectedToken,
     amounts?.fromTokenAmount,
