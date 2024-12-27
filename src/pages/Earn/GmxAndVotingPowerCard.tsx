@@ -11,7 +11,7 @@ import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDe
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { ProcessedData, useENS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatKeyAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -241,34 +241,45 @@ export function GmxAndVotingPowerCard({
                   <>
                     <StatsTooltipRow
                       label={t`GMX`}
-                      value={`${formatKeyAmount(
-                        processedData,
-                        "extendedGmxTrackerRewards",
-                        18,
-                        4
-                      )} ($${formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                      value={
+                        processedData?.extendedGmxTrackerRewards === undefined ||
+                        processedData?.extendedGmxTrackerRewardsUsd === undefined
+                          ? "..."
+                          : formatBalanceAmountWithUsd(
+                              processedData.extendedGmxTrackerRewards,
+                              processedData.extendedGmxTrackerRewardsUsd,
+                              18
+                            )
+                      }
                       showDollar={false}
                     />
                     <StatsTooltipRow
                       label="Escrowed GMX"
-                      value={`${formatKeyAmount(processedData, "stakedGmxTrackerRewards", 18, 4)} ($${formatKeyAmount(
-                        processedData,
-                        "stakedGmxTrackerRewardsUsd",
-                        USD_DECIMALS,
-                        2,
-                        true
-                      )})`}
+                      value={
+                        processedData?.stakedGmxTrackerRewards === undefined ||
+                        processedData?.stakedGmxTrackerRewardsUsd === undefined
+                          ? "..."
+                          : formatBalanceAmountWithUsd(
+                              processedData.stakedGmxTrackerRewards,
+                              processedData.stakedGmxTrackerRewardsUsd,
+                              18
+                            )
+                      }
                       showDollar={false}
                     />
                     {isAnyFeeGmxTrackerRewards && (
                       <StatsTooltipRow
                         label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                        value={`${formatKeyAmount(
-                          processedData,
-                          "feeGmxTrackerRewards",
-                          18,
-                          4
-                        )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                        value={
+                          processedData?.feeGmxTrackerRewards === undefined ||
+                          processedData?.feeGmxTrackerRewardsUsd === undefined
+                            ? "..."
+                            : formatBalanceAmountWithUsd(
+                                processedData.feeGmxTrackerRewards,
+                                processedData.feeGmxTrackerRewardsUsd,
+                                18
+                              )
+                        }
                         showDollar={false}
                       />
                     )}

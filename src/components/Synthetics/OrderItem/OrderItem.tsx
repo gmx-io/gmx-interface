@@ -27,7 +27,7 @@ import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { calculateDisplayDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";
@@ -138,22 +138,21 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
       positionOrder.initialCollateralDeltaAmount,
       positionOrder.initialCollateralToken.decimals,
       positionOrder.initialCollateralToken.prices.minPrice
-    );
+    )!;
 
     const targetCollateralAmount = convertToTokenAmount(
       collateralUsd,
       positionOrder.targetCollateralToken.decimals,
       positionOrder.targetCollateralToken.prices.minPrice
-    );
+    )!;
 
     const decreaseMultiplier = isDecreaseOrderType(positionOrder.orderType) ? -1n : 1n;
 
-    const signedTargetCollateralAmount =
-      targetCollateralAmount !== undefined ? targetCollateralAmount * decreaseMultiplier : undefined;
+    const signedTargetCollateralAmount = targetCollateralAmount * decreaseMultiplier;
 
-    const tokenAmountText = formatTokenAmount(
+    const tokenAmountText = formatBalanceAmount(
       signedTargetCollateralAmount,
-      positionOrder.targetCollateralToken?.decimals,
+      positionOrder.targetCollateralToken.decimals,
       positionOrder.targetCollateralToken.isNative ? wrappedToken.symbol : positionOrder.targetCollateralToken.symbol
     );
 
@@ -172,7 +171,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
           {isCollateralSwap && (
             <div className="OrderItem-tooltip-row">
               <Trans>
-                {formatTokenAmount(
+                {formatBalanceAmount(
                   positionOrder.initialCollateralDeltaAmount,
                   positionOrder.initialCollateralToken.decimals,
                   positionOrder.initialCollateralToken[positionOrder.shouldUnwrapNativeToken ? "baseSymbol" : "symbol"]

@@ -6,7 +6,7 @@ import { getIcons } from "config/icons";
 import { GLP_PRICE_DECIMALS } from "config/ui";
 import { useChainId } from "lib/chains";
 import { GLP_DECIMALS, ProcessedData } from "lib/legacy";
-import { formatKeyAmount } from "lib/numbers";
+import { formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -110,24 +110,30 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
                     <>
                       <StatsTooltipRow
                         label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                        value={`${formatKeyAmount(processedData, "feeGlpTrackerRewards", 18, 4)} ($${formatKeyAmount(
-                          processedData,
-                          "feeGlpTrackerRewardsUsd",
-                          USD_DECIMALS,
-                          2,
-                          true
-                        )})`}
+                        value={
+                          processedData?.feeGlpTrackerRewards === undefined ||
+                          processedData?.feeGlpTrackerRewardsUsd === undefined
+                            ? "..."
+                            : formatBalanceAmountWithUsd(
+                                processedData.feeGlpTrackerRewards,
+                                processedData.feeGlpTrackerRewardsUsd,
+                                18
+                              )
+                        }
                         showDollar={false}
                       />
                       <StatsTooltipRow
                         label="Escrowed GMX"
-                        value={`${formatKeyAmount(processedData, "stakedGlpTrackerRewards", 18, 4)} ($${formatKeyAmount(
-                          processedData,
-                          "stakedGlpTrackerRewardsUsd",
-                          USD_DECIMALS,
-                          2,
-                          true
-                        )})`}
+                        value={
+                          processedData?.stakedGlpTrackerRewards === undefined ||
+                          processedData?.stakedGlpTrackerRewardsUsd === undefined
+                            ? "..."
+                            : formatBalanceAmountWithUsd(
+                                processedData.stakedGlpTrackerRewards,
+                                processedData.stakedGlpTrackerRewardsUsd,
+                                18
+                              )
+                        }
                         showDollar={false}
                       />
                     </>
