@@ -162,7 +162,7 @@ export const useSubmitButtonState = ({
 
   const error = commonError || swapError;
 
-  const { tokensToApprove, isAllowanceLoading } = useTokensToApprove({
+  const { tokensToApprove, isAllowanceLoading, isAllowanceLoaded } = useTokensToApprove({
     routerAddress,
     glvInfo,
     operation,
@@ -183,6 +183,8 @@ export const useSubmitButtonState = ({
         text: t`Connect Wallet`,
         onSubmit: onConnectAccount,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -191,6 +193,8 @@ export const useSubmitButtonState = ({
         text: t`Loading...`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -200,6 +204,8 @@ export const useSubmitButtonState = ({
         disabled: !shouldDisableValidation,
         onClick: onSubmit,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
         errorDescription: swapErrorDescription,
       };
     }
@@ -210,6 +216,8 @@ export const useSubmitButtonState = ({
       return {
         text: processingTextMap[operation](operationTokenSymbol),
         disabled: true,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -217,10 +225,12 @@ export const useSubmitButtonState = ({
       return {
         text: t`High Network Fee not yet acknowledged`,
         disabled: true,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (tokensToApprove.length > 0 && marketToken) {
+    if (isAllowanceLoaded && tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address) || getTokenData(marketTokensData, address);
         return token?.symbol;
@@ -235,6 +245,8 @@ export const useSubmitButtonState = ({
         }),
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -242,10 +254,13 @@ export const useSubmitButtonState = ({
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
       tokensToApprove,
+      isAllowanceLoading,
+      isAllowanceLoaded,
     };
   }, [
     account,
     isAllowanceLoading,
+    isAllowanceLoaded,
     error,
     glvInfo,
     isSubmitting,

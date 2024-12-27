@@ -454,7 +454,11 @@ const MainView = memo(() => {
     setActiveTx,
   ]);
 
-  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: [wrappedToken.address],
     skip: !isVisible,
@@ -566,7 +570,7 @@ const MainView = memo(() => {
 
   let tokenApproval: ReactNode = null;
 
-  if (needPayTokenApproval && account) {
+  if (isAllowanceLoaded && needPayTokenApproval && account) {
     tokenApproval = (
       <div className="SubaccountModal-approve-token-btn">
         <ApproveTokenButton

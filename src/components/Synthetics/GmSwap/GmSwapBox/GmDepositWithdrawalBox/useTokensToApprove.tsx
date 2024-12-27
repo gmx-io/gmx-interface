@@ -14,7 +14,7 @@ interface Props {
   glvInfo: GlvInfo | undefined;
   operation: Operation;
 
-  marketToken: TokenData;
+  marketToken: TokenData | undefined;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
   glvToken: TokenData | undefined;
@@ -82,7 +82,11 @@ export const useTokensToApprove = ({
     ]
   );
 
-  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
   });
@@ -91,7 +95,11 @@ export const useTokensToApprove = ({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      const shouldApproveMarketToken = getNeedTokenApprove(tokensAllowanceData, marketToken.address, marketTokenAmount);
+      const shouldApproveMarketToken = getNeedTokenApprove(
+        tokensAllowanceData,
+        marketToken?.address,
+        marketTokenAmount
+      );
 
       const shouldApproveGlvToken = getNeedTokenApprove(tokensAllowanceData, glvToken?.address, glvTokenAmount);
 
@@ -108,7 +116,7 @@ export const useTokensToApprove = ({
           addresses.push(shortToken.address);
         }
 
-        if (glvInfo && isMarketTokenDeposit && shouldApproveMarketToken) {
+        if (glvInfo && isMarketTokenDeposit && shouldApproveMarketToken && marketToken) {
           addresses.push(marketToken.address);
         }
       } else if (operation === Operation.Withdrawal) {
@@ -141,5 +149,6 @@ export const useTokensToApprove = ({
     tokensToApprove,
     payTokenAddresses,
     isAllowanceLoading,
+    isAllowanceLoaded,
   };
 };

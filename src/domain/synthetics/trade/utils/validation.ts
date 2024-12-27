@@ -662,7 +662,11 @@ export function getGmSwapError(p: {
     return [t`Amount should be greater than zero`];
   }
 
-  if (marketTokenAmount === undefined || marketTokenAmount < 0) {
+  if (
+    marketTokenAmount === undefined ||
+    marketTokenAmount < 0 ||
+    (marketTokenAmount === 0n && longTokenAmount === 0n && shortTokenAmount === 0n)
+  ) {
     return [t`Enter an amount`];
   }
 

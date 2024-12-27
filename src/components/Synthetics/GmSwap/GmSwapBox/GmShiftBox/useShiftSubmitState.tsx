@@ -68,7 +68,11 @@ export function useShiftSubmitState({
     marketTokenUsd,
   });
 
-  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
   });
@@ -86,23 +90,24 @@ export function useShiftSubmitState({
     [selectedToken, amounts?.fromTokenAmount, tokensAllowanceData]
   );
 
-  const isBalancesLoading =
-    account && payTokenAddresses.some((address) => tokensData?.[address]?.balance === undefined);
-
   return useMemo(() => {
     if (isSubmitting) {
       return {
         text: t`Submitting...`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (isAllowanceLoading || isBalancesLoading) {
+    if (isAllowanceLoading) {
       return {
         text: t`Loading...`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -111,6 +116,8 @@ export function useShiftSubmitState({
         text: t`Connect Wallet`,
         onSubmit: () => openConnectModal?.(),
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -119,10 +126,12 @@ export function useShiftSubmitState({
         text: t`High Network Fee not yet acknowledged`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (tokensToApprove.length > 0 && selectedToken) {
+    if (isAllowanceLoaded && tokensToApprove.length > 0 && selectedToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address);
         return token?.symbol;
@@ -137,6 +146,8 @@ export function useShiftSubmitState({
         }),
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -170,6 +181,8 @@ export function useShiftSubmitState({
         error,
         disabled: !shouldDisableValidationForTesting,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
         onSubmit,
       };
     }
@@ -180,13 +193,16 @@ export function useShiftSubmitState({
       tokensToApprove,
     };
   }, [
+    isSubmitting,
+    isAllowanceLoading,
     account,
+    isHighFeeConsentError,
+    isAllowanceLoaded,
+    tokensToApprove,
+    selectedToken,
     chainId,
     hasOutdatedUi,
-    isAllowanceLoading,
-    isBalancesLoading,
     selectedMarketInfo,
-    selectedToken,
     amounts?.fromTokenAmount,
     amounts?.fromTokenUsd,
     amounts?.fromLongTokenAmount,
@@ -198,12 +214,9 @@ export function useShiftSubmitState({
     fees,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
-    openConnectModal,
-    shouldDisableValidationForTesting,
     onSubmit,
-    isSubmitting,
-    tokensToApprove,
+    openConnectModal,
     tokensData,
-    isHighFeeConsentError,
+    shouldDisableValidationForTesting,
   ]);
 }

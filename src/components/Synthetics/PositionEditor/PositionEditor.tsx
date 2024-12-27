@@ -138,7 +138,11 @@ export function PositionEditor(p: Props) {
     return adaptToV1InfoTokens(tokensData);
   }, [tokensData]);
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: position ? [position.collateralTokenAddress] : [],
   });
@@ -155,6 +159,7 @@ export function PositionEditor(p: Props) {
   );
 
   const collateralToken = getByKey(tokensData, selectedCollateralAddress);
+  const isBalancesLoading = collateralToken?.balance === undefined;
 
   const availableSwapTokens = useMemo(() => {
     return position?.collateralToken.isWrapped
@@ -260,6 +265,10 @@ export function PositionEditor(p: Props) {
       return [t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`];
     }
 
+    if (isAllowanceLoading || isBalancesLoading) {
+      return [t`Loading...`];
+    }
+
     if (isHighFeeConsentError) {
       return [t`High Network Fee not yet acknowledged`];
     }
@@ -282,6 +291,8 @@ export function PositionEditor(p: Props) {
     collateralToken,
     minCollateralFactor,
     needCollateralApproval,
+    isAllowanceLoading,
+    isBalancesLoading,
     isHighFeeConsentError,
     isSubmitting,
   ]);
@@ -675,7 +686,7 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                {needCollateralApproval && collateralToken && (
+                {isAllowanceLoaded && needCollateralApproval && collateralToken && (
                   <ApproveTokenButton
                     tokenAddress={collateralToken.address}
                     tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}

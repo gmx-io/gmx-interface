@@ -31,7 +31,11 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const executionFee = useSelector(selectTradeboxExecutionFee);
-  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
   });
@@ -94,7 +98,7 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     <>
       <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
       {highExecutionFeeAcknowledgement}
-      {!isAllowanceLoading && needPayTokenApproval && fromToken && (
+      {isAllowanceLoaded && needPayTokenApproval && fromToken && (
         <ApproveTokenButton
           tokenAddress={fromToken.address}
           tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
