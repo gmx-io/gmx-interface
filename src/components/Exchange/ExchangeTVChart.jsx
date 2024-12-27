@@ -159,9 +159,9 @@ export default function ExchangeTVChart(props) {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
         const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
         const liquidationPrice = getLiquidationPrice({
-          size: position.size,
-          collateral: position.collateral,
-          averagePrice: position.averagePrice,
+          size: position.size.toBigInt(),
+          collateral: position.collateral.toBigInt(),
+          averagePrice: position.averagePrice.toBigInt(),
           isLong: position.isLong,
           fundingFee: position.fundingFee,
         });
@@ -254,9 +254,9 @@ export default function ExchangeTVChart(props) {
           );
 
           const liquidationPrice = getLiquidationPrice({
-            size: position.size,
-            collateral: position.collateral,
-            averagePrice: position.averagePrice,
+            size: position.size.toBigInt(),
+            collateral: position.collateral.toBigInt(),
+            averagePrice: position.averagePrice.toBigInt(),
             isLong: position.isLong,
             fundingFee: position.fundingFee,
           });
