@@ -40,7 +40,7 @@ import {
   convertToUsd,
   useTokensAllowanceData,
 } from "domain/synthetics/tokens";
-import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
+import { getMarkPrice, getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
 import { ethers } from "ethers";
@@ -228,16 +228,7 @@ export function PositionEditor(p: Props) {
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
-    tradeFlags: {
-      isMarket: true,
-      isIncrease: isDeposit,
-      isLimit: false,
-      isLong: Boolean(position?.isLong),
-      isShort: !position?.isLong,
-      isSwap: false,
-      isPosition: true,
-      isTrigger: false,
-    },
+    tradeFlags: getTradeFlagsForCollateralEdit(position?.isLong, isDeposit),
   });
 
   const { nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = usePositionEditorData({
