@@ -107,7 +107,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
 
       if (!isDragging.current) return;
 
-      let newX = offsetRef.current - info.delta.x * SWIPE_SENSITIVITY;
+      let newX = offsetRef.current + info.delta.x * SWIPE_SENSITIVITY;
       offsetRef.current = newX;
 
       const {
