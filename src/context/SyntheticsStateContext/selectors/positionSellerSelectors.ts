@@ -35,7 +35,7 @@ import {
 } from "domain/synthetics/trade";
 import { mustNeverExist } from "lib/types";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { getIsEquivalentTokens } from "domain/tokens";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
 import { estimateExecuteDecreaseOrderGasLimit } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";

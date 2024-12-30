@@ -12,7 +12,7 @@ import {
   getPositionPnlUsd,
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "domain/tokens";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "sdk/utils/bigmath";
 import { DUST_USD } from "lib/legacy";

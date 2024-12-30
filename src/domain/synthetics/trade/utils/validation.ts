@@ -14,7 +14,7 @@ import {
 } from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "domain/tokens";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { ethers } from "ethers";
 import { bigMath } from "sdk/utils/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
