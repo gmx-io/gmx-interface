@@ -1,5 +1,5 @@
 import { BASIS_POINTS_DIVISOR } from "configs/factors";
-import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 
 import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
 import { Token, TokenPrices, TokensData } from "types/tokens";
@@ -23,7 +23,9 @@ export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token
     return `SWAP-ONLY`;
   }
 
-  return `${firstToken.baseSymbol || firstToken.symbol}/USD`;
+  const prefix = getTokenVisualMultiplier(firstToken);
+
+  return `${prefix}${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
@@ -52,6 +54,9 @@ export function getContractMarketPrices(tokensData: TokensData, market: Market):
   };
 }
 
+/**
+ * Apart from usual cases, returns `long` for single token backed markets.
+ */
 export function getTokenPoolType(
   marketInfo: {
     longToken: Token;
