@@ -1,6 +1,6 @@
 import { AbiCoder, ethers } from "ethers";
 
-import { LRUCache } from "lib/LruCache";
+import { LRUCache } from "sdk/utils/LruCache";
 
 const dataCache = new LRUCache<string>(10_000);
 

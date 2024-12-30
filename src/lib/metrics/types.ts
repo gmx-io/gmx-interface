@@ -1,6 +1,6 @@
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { TxErrorType } from "lib/contracts/transactionErrors";
+import { TxErrorType } from "sdk/utils/contracts";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;

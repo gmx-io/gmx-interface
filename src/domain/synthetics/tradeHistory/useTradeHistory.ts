@@ -23,7 +23,8 @@ import { Token } from "domain/tokens";
 import { definedOrThrow } from "lib/guards";
 import { bigNumberify } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { GraphQlFilters, buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
+import { getSyntheticsGraphClient } from "lib/subgraph";
+import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
 import {
   PositionTradeAction,
   RawTradeAction,

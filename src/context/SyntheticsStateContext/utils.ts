@@ -3,7 +3,7 @@ import { Selector, createSelector as createSelectorCommon } from "reselect";
 
 import { TradeMode, TradeType } from "sdk/types/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { LRUCache } from "lib/LruCache";
+import { LRUCache } from "sdk/utils/LruCache";
 
 import { SyntheticsState } from "./SyntheticsStateContextProvider";
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";

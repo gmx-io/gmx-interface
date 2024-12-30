@@ -2,8 +2,9 @@ import CustomErrors from "sdk/abis/CustomErrors.json";
 import cryptoJs from "crypto-js";
 import { extractDataFromError } from "lib/contracts/transactionErrors";
 import { ethers } from "ethers";
-import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "../contracts/transactionErrors";
+import { getIsUserError, getIsUserRejectedError } from "../contracts/transactionErrors";
 import { ErrorMetricData } from "./types";
+import { extractError, TxErrorType } from "sdk/utils/contracts";
 
 const URL_REGEXP =
   /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
