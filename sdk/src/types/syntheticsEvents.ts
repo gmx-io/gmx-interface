@@ -62,7 +62,7 @@ export type PendingPositionUpdate = {
   sizeDeltaInTokens: bigint;
   collateralDeltaAmount: bigint;
   updatedAt: number;
-  updatedAtTime: bigint;
+  updatedAtBlock: bigint;
 };
 
 export type PendingPositionsUpdates = {
