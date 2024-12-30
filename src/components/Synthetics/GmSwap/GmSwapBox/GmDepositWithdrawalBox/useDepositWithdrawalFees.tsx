@@ -5,17 +5,16 @@ import {
   estimateExecuteGlvDepositGasLimit,
   estimateExecuteGlvWithdrawalGasLimit,
   estimateExecuteWithdrawalGasLimit,
-  FeeItem,
-  GasLimitsConfig,
-  getFeeItem,
-  getTotalFeeItem,
-} from "domain/synthetics/fees";
-import {
   estimateDepositOraclePriceCount,
   estimateGlvDepositOraclePriceCount,
   estimateGlvWithdrawalOraclePriceCount,
   estimateWithdrawalOraclePriceCount,
-} from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+  getFeeItem,
+  getTotalFeeItem,
+  type FeeItem,
+  type GasLimitsConfig,
+} from "domain/synthetics/fees";
+
 import { TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 

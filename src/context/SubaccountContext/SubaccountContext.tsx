@@ -27,7 +27,7 @@ import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 

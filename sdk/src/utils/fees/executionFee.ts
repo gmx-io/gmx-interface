@@ -72,6 +72,8 @@ export function estimateExecuteGlvDepositGasLimit(
   }: {
     isMarketTokenDeposit;
     marketsCount: bigint;
+    initialLongTokenAmount: bigint;
+    initialShortTokenAmount: bigint;
   }
 ) {
   const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;

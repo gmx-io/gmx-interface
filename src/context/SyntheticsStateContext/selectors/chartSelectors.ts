@@ -1,6 +1,5 @@
 import { getToken } from "sdk/configs/tokens";
-import { getBorrowingFactorPerPeriod } from "domain/synthetics/fees";
-import { getFundingFactorPerPeriod } from "domain/synthetics/fees/utils/index";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
 import { bigMath } from "lib/bigmath";

@@ -6,6 +6,8 @@ import { bigMath } from "utils/bigmath";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
 
 export * from "./priceImpact";
+export * from "./estimateOraclePriceCount";
+export * from "./executionFee";
 
 export function getSwapFee(marketInfo: MarketInfo, swapAmount: bigint, forPositiveImpact: boolean) {
   const factor = forPositiveImpact
@@ -127,6 +129,7 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   (feeItems.filter(Boolean) as FeeItem[]).forEach((feeItem) => {
     totalFeeItem.deltaUsd = totalFeeItem.deltaUsd + feeItem.deltaUsd;
     totalFeeItem.bps = totalFeeItem.bps + feeItem.bps;
+    totalFeeItem.precisePercentage = totalFeeItem.precisePercentage + feeItem.precisePercentage;
   });
 
   return totalFeeItem;

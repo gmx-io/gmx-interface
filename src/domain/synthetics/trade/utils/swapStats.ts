@@ -10,7 +10,7 @@ import {
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { getByKey } from "lib/objects";
-import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
+import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees";
 import { SwapPathStats, SwapStats } from "sdk/types/trade";
 
 export function getSwapPathOutputAddresses(p: {

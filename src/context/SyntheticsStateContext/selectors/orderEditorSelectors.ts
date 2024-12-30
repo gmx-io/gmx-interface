@@ -55,7 +55,7 @@ import {
   getFeeItem,
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 

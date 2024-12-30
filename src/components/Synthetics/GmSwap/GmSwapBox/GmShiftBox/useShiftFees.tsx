@@ -8,7 +8,7 @@ import {
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
-import { estimateShiftOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateShiftOraclePriceCount } from "domain/synthetics/fees";
 import type { TokensData } from "domain/synthetics/tokens/types";
 import type { GmSwapFees } from "sdk/types/trade";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";

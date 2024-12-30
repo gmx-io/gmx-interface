@@ -38,7 +38,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
 import { estimateExecuteDecreaseOrderGasLimit } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";

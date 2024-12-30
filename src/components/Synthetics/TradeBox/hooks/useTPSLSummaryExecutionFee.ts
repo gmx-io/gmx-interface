@@ -7,7 +7,7 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
