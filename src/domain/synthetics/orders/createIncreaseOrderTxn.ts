@@ -12,7 +12,7 @@ import { OrderMetricId } from "lib/metrics/types";
 import concat from "lodash/concat";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { applySlippageToPrice } from "../trade";
+import { applySlippageToPrice } from "sdk/utils/trade";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";

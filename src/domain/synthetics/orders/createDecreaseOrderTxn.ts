@@ -7,7 +7,7 @@ import { Token } from "domain/tokens";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getPositionKey } from "../positions";
-import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
+import { applySlippageToMinOut, applySlippageToPrice } from "sdk/utils/trade";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { getPendingOrderFromParams } from "./utils";
