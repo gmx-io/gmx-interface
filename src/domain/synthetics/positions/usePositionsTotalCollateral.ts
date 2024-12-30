@@ -20,7 +20,7 @@ export function usePositionsTotalCollateral(chainId: number) {
   const { tokensData } = useTokensDataRequest(chainId);
 
   const { data } = useSWR<bigint | undefined>(
-    [chainId, "positionsCollateral"],
+    [chainId, tokensData, "positionsCollateral"],
     async () => {
       const client = getSubsquidGraphClient(chainId);
 
