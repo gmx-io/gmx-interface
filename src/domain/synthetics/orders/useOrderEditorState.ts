@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { OrderInfo, OrderType, OrdersInfoData, PositionOrderInfo } from "./types";
-import { isIncreaseOrderType, isSwapOrderType } from "./utils";
+import { isIncreaseOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
 import { applySlippageToPrice } from "../trade";
 import { USD_DECIMALS } from "config/factors";

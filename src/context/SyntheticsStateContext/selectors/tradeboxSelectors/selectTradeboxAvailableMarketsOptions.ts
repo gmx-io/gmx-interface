@@ -38,8 +38,7 @@ import {
   getMostLiquidMarketForPosition,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPositionOrOrder } from "domain/synthetics/markets/chooseSuitableMarket";
-import { PositionOrderInfo } from "domain/synthetics/orders/types";
-import { isIncreaseOrderType } from "domain/synthetics/orders/utils";
+import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   IndexTokenStat,
   marketsInfoData2IndexTokenStatsMap,

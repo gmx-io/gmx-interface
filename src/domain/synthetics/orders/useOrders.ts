@@ -19,7 +19,7 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
   isVisibleOrder,
-} from "./utils";
+} from "sdk/utils/orders";
 
 import DataStore from "sdk/abis/DataStore.json";
 import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
