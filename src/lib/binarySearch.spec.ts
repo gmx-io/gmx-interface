@@ -1,4 +1,4 @@
-import { bigMath } from "./bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { numericBinarySearch, bigNumberBinarySearch } from "./binarySearch";
 import { expandDecimals } from "./numbers";
 import { describe, expect, it } from "vitest";

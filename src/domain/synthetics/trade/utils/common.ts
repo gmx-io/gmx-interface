@@ -2,7 +2,7 @@ import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapSta
 import { applyFactor, getBasisPoints, PRECISION } from "lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "sdk/types/trade";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
   const isLong = tradeType === TradeType.Long;

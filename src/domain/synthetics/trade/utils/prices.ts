@@ -9,7 +9,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { TokenPrices, convertToTokenAmount } from "domain/synthetics/tokens";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
 import { TriggerThresholdType } from "sdk/types/trade";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
   const { prices, isIncrease, isLong } = p;

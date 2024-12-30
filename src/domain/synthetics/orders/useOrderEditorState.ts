@@ -5,7 +5,7 @@ import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
 import { applySlippageToPrice } from "../trade";
 import { USD_DECIMALS } from "config/factors";
 import { getByKey } from "lib/objects";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
 

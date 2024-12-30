@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { sub } from "date-fns";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS, GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";

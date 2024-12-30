@@ -33,7 +33,7 @@ import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import useWallet from "lib/wallets/useWallet";
 import useSWRInfinite from "swr/infinite";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { OrderMetricId } from "lib/metrics";
 
 export * from "./prices";

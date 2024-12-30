@@ -4,7 +4,7 @@ import { USD_DECIMALS } from "config/factors";
 import { parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   selectClosingPositionKey,
   selectPositionsInfoData,

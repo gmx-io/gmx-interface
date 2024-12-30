@@ -68,7 +68,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";

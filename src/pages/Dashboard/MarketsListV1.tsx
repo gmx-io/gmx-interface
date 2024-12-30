@@ -4,7 +4,7 @@ import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { DEFAULT_MAX_USDG_AMOUNT } from "lib/legacy";
 import { formatAmount, formatKeyAmount, formatUsdPrice } from "lib/numbers";
 

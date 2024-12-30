@@ -32,7 +32,7 @@ import { Token, getMinResidualAmount } from "domain/tokens";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";

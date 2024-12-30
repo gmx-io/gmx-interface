@@ -2,7 +2,7 @@ import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
 import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { Token, TokenPrices } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { PRECISION, applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";

@@ -21,7 +21,7 @@ import {
 } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
 import { applyFactor } from "lib/numbers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;

@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM, getTwitterIntentURL, isAddressZero } from "lib/legacy";
 import { deserializeBigIntsInObject, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";

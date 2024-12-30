@@ -48,7 +48,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";

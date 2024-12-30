@@ -30,7 +30,7 @@ import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatAmountHuman } from "lib/numbers";
 import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 

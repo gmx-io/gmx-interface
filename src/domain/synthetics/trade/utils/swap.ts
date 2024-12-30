@@ -3,7 +3,7 @@ import { FindSwapPath, SwapAmounts } from "sdk/types/trade";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;

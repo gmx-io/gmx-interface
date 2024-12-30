@@ -1,7 +1,7 @@
 import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, MAX_PRIORITY_FEE_PER_GAS_MAP } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { getProvider } from "lib/rpc";
 import useSWR from "swr";
 

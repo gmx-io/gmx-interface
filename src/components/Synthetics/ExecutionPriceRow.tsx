@@ -7,7 +7,7 @@ import { HIGH_COLLATERAL_IMPACT_BPS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders/types";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { TradeFees, TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { memo, useMemo } from "react";
