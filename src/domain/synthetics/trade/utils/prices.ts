@@ -2,18 +2,12 @@ import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } fr
 import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
-import { TokenPrices, convertToTokenAmount } from "domain/synthetics/tokens";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
-import { TriggerThresholdType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+import { getShouldUseMaxPrice } from "sdk/utils/prices";
 
-export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
-  const { prices, isIncrease, isLong } = p;
-
-  const shouldUseMaxPrice = getShouldUseMaxPrice(isIncrease, isLong);
-
-  return shouldUseMaxPrice ? prices.maxPrice : prices.minPrice;
-}
+export * from "sdk/utils/prices";
 
 export function getDefaultAcceptablePriceImpactBps(p: {
   isIncrease: boolean;
@@ -171,29 +165,6 @@ export function getAcceptablePriceInfo(p: {
   values.acceptablePriceDeltaBps = acceptablePriceValues.acceptablePriceDeltaBps;
 
   return values;
-}
-
-export function getShouldUseMaxPrice(isIncrease: boolean, isLong: boolean) {
-  return isIncrease ? isLong : !isLong;
-}
-
-export function getTriggerThresholdType(orderType: OrderType, isLong: boolean) {
-  // limit order
-  if (orderType === OrderType.LimitIncrease) {
-    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
-  }
-
-  // take profit order
-  if (orderType === OrderType.LimitDecrease) {
-    return isLong ? TriggerThresholdType.Above : TriggerThresholdType.Below;
-  }
-
-  // stop loss order
-  if (orderType === OrderType.StopLossDecrease) {
-    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
-  }
-
-  throw new Error("Invalid trigger order type");
 }
 
 export function getTriggerDecreaseOrderType(p: {
