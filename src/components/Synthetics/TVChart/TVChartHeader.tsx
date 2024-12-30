@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce, useMedia } from "react-use";
 
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getToken } from "config/tokens";
+import { getToken } from "sdk/configs/tokens";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";

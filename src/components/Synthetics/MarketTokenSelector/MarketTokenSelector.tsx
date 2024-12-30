@@ -7,7 +7,7 @@ import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import {
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,

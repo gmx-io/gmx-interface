@@ -17,7 +17,7 @@ import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./type
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { getPoolUsdWithoutPnl, GlvInfoData, isMarketInfo } from "domain/synthetics/markets";
-import { getTokenBySymbolSafe } from "config/tokens";
+import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 
 import TokenAbi from "sdk/abis/Token.json";
 import { useSelector } from "context/SyntheticsStateContext/utils";

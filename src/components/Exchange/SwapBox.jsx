@@ -63,7 +63,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { get1InchSwapUrl } from "config/links";
-import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   approveTokens,

@@ -40,8 +40,8 @@ import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
 import { estimateExecuteDecreaseOrderGasLimit } from "domain/synthetics/fees";
 import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;

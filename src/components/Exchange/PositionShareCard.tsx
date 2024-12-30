@@ -8,7 +8,7 @@ import { calculateDisplayDecimals } from "lib/numbers";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 type Props = {
   entryPrice: bigint | undefined;

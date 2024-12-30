@@ -5,7 +5,7 @@ import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { getExplorerUrl } from "config/chains";
-import { getTokens } from "config/tokens";
+import { getTokens } from "sdk/configs/tokens";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";

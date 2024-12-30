@@ -11,7 +11,7 @@ import {
   getCategoryTokenAddresses,
   getTokenVisualMultiplier,
   isChartAvailableForToken,
-} from "config/tokens";
+} from "sdk/configs/tokens";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -153,7 +153,8 @@ function MarketsList() {
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("chart-token-selector");
 
   const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, availableChartTokenAddresses);
-  const dayVolumes = use24hVolumes();
+  const dayVolumesData = use24hVolumes();
+  const dayVolumes = dayVolumesData?.byIndexToken;
   const indexTokenStatsMap = useSelector(selectIndexTokenStatsMap).indexMap;
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);

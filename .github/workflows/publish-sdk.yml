@@ -37,6 +37,18 @@ jobs:
           scope: "@gmx-io"
           auth-token: ${{ secrets.NPM_TOKEN }}
 
+      - name: Import GPG Key
+        run: |
+          echo "${{ secrets.GPG_KEY }}" | gpg --batch --import
+          git config --global user.email "dev-bot@gmx.io"
+          git config --global user.name "GMX Release Bot"
+          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep '^sec' | tail -1 | awk '{print $2}' | cut -d'/' -f2)
+          git config --global user.signingkey $GPG_KEY_ID
+          git config --global gpg.program gpg
+          git config --global commit.gpgsign true
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+
       - name: Install dependencies
         working-directory: ./sdk
         run: yarn install --immutable
@@ -64,10 +76,8 @@ jobs:
       - name: Commit version bump
         working-directory: ./sdk
         run: |
-          git config user.name "GMX Release Bot"
-          git config user.email "release-bot@gmx.io"
           git add package.json
-          git commit -m "Bump SDK version to $(jq -r .version package.json)"
+          git commit -S -m "Bump SDK version to $(jq -r .version package.json)"
 
       - run: npm publish --access public
         working-directory: ./sdk
@@ -79,5 +89,4 @@ jobs:
           if [ "${{ github.event.inputs.version_type }}" == "custom" ]; then
             exit 0
           fi
-
           git push origin HEAD:${{ github.ref_name }}

@@ -1,6 +1,6 @@
 import Loader from "components/Common/Loader";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
-import { isChartAvailableForToken } from "config/tokens";
+import { isChartAvailableForToken } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";

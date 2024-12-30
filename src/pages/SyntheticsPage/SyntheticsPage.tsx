@@ -53,7 +53,7 @@ import { useInterviewNotification } from "domain/synthetics/userFeedback/useInte
 import { useMedia } from "react-use";
 import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 export type Props = {
   openSettings: () => void;
