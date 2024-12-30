@@ -34,5 +34,10 @@ describe("bigMath", () => {
       expect(bigMath.avg(10n, 20n, 30n)).toBe(20n);
       expect(bigMath.avg(10n, 20n, 30n, 40n, undefined)).toBe(25n);
     });
+
+    it("should return undefined if no values are provided", () => {
+      expect(bigMath.avg()).toBe(undefined);
+      expect(bigMath.avg(undefined, undefined)).toBe(undefined);
+    });
   });
 });

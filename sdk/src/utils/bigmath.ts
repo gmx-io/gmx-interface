@@ -21,6 +21,10 @@ export const bigMath = {
       }
     }
 
+    if (count === 0n) {
+      return undefined;
+    }
+
     return sum / count;
   },
 };
