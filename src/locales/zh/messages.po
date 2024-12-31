@@ -4986,7 +4986,7 @@ msgstr ""
 msgid "Select different tokens"
 msgstr "选择不同的币种"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "当前网络费用非常高，这可能是由于{chainName}网络上的交易暂时增加"
 
@@ -5767,7 +5767,7 @@ msgstr ""
 msgid "Starts in"
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "当前网络费用较高，这可能是由于{chainName}网络上的交易暂时增加"
 

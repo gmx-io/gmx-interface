@@ -4989,7 +4989,7 @@ msgstr "Claim Affiliate Vault Rewards"
 msgid "Select different tokens"
 msgstr "Select different tokens"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 
@@ -5770,7 +5770,7 @@ msgstr "1st Place"
 msgid "Starts in"
 msgstr "Starts in"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 

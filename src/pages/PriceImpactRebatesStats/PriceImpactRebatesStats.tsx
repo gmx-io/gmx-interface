@@ -6,7 +6,7 @@ import type { Address } from "viem";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { MarketInfo } from "domain/synthetics/markets";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { expandDecimals, formatAmount, formatTokenAmountWithUsd } from "lib/numbers";

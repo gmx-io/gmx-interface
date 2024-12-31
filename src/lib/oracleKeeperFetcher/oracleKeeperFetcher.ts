@@ -2,7 +2,7 @@ import { isLocal } from "config/env";
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
-import { buildUrl } from "lib/buildUrl";
+import { buildUrl } from "sdk/utils/buildUrl";
 import {
   BatchReportBody,
   DayPriceCandle,

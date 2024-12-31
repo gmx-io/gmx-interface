@@ -1,11 +1,12 @@
 import { t } from "@lingui/macro";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals";
-import { bigMath } from "lib/bigmath";
+import { encodeReferralCode } from "sdk/utils/referrals";
+import { bigMath } from "sdk/utils/bigmath";
 import { MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM, getTwitterIntentURL, isAddressZero } from "lib/legacy";
 import { deserializeBigIntsInObject, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
+import { getReferralCodeOwner } from "domain/referrals";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;

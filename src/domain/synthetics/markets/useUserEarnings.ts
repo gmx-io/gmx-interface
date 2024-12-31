@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getMarketListingDate } from "config/markets";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { GMX_DECIMALS } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";

@@ -11,8 +11,8 @@ import {
   getPositionPnlUsd,
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "domain/tokens";
-import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
+import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
@@ -21,7 +21,7 @@ import {
 } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
 import { applyFactor } from "lib/numbers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;

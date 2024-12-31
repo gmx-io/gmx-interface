@@ -84,7 +84,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";

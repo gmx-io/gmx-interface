@@ -26,7 +26,7 @@ import { usePositionSeller } from "context/SyntheticsStateContext/hooks/position
 import { useHasOutdatedUi } from "domain/legacy";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
-import { applySlippageToPrice } from "domain/synthetics/trade";
+import { applySlippageToPrice } from "sdk/utils/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -68,7 +68,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";

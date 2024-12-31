@@ -1,4 +1,4 @@
-import { TradeType } from "domain/synthetics/trade/types";
+import { TradeType } from "sdk/types/trade";
 import { chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
 import { describe, expect, it } from "vitest";
 

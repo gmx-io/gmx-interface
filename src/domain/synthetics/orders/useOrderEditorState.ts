@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { OrderInfo, OrderType, OrdersInfoData, PositionOrderInfo } from "./types";
-import { isIncreaseOrderType, isSwapOrderType } from "./utils";
+import { isIncreaseOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
-import { applySlippageToPrice } from "../trade";
+import { applySlippageToPrice } from "sdk/utils/trade";
 import { USD_DECIMALS } from "config/factors";
 import { getByKey } from "lib/objects";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
 

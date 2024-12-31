@@ -20,7 +20,7 @@ import {
 
 import DataStore from "abis/DataStore.json";
 
-import type { IncreasePositionAmounts } from "types/amounts";
+import type { IncreasePositionAmounts } from "types/trade";
 import type { GasLimitsConfig } from "types/fees";
 import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
 import { TokensData } from "types/tokens";
@@ -215,7 +215,7 @@ export class Utils extends Module {
 
     const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-    return getExecutionFee(this.sdk, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+    return getExecutionFee(this.chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
   }
 
   async getGasPrice() {

@@ -14,7 +14,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   formatAmountHuman,
   formatPercentageDisplay,

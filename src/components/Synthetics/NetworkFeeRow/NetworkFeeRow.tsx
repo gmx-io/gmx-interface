@@ -4,7 +4,10 @@ import { ReactNode, useMemo } from "react";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import type { ExecutionFee } from "domain/synthetics/fees/types";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+
+import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
@@ -13,8 +16,9 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { bigMath } from "sdk/utils/bigmath";
+
 import "./NetworkFeeRow.scss";
-import { bigMath } from "lib/bigmath";
 
 type Props = {
   executionFee?: ExecutionFee;
@@ -30,6 +34,7 @@ const ESTIMATED_REFUND_BPS = 10 * 100;
 export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
+  const chainId = useSelector(selectChainId);
 
   let displayDecimals = executionFee?.feeToken.priceDecimals;
   if (displayDecimals !== undefined) {
@@ -106,6 +111,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
       return "-";
     }
 
+    const warning = getExecutionFeeWarning(chainId, executionFee);
+
     return (
       <TooltipWithPortal
         tooltipClassName="NetworkFeeRow-tooltip"
@@ -131,7 +138,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
               value={estimatedRefundText}
               textClassName="text-green-500"
             />
-            {executionFee?.warning && <p className="text-yellow-500">{executionFee?.warning}</p>}
+            {warning && <p className="text-yellow-500">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
         )}
@@ -139,7 +146,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
         {formatUsd(executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined)}
       </TooltipWithPortal>
     );
-  }, [estimatedRefundText, executionFee?.feeUsd, executionFee?.warning, executionFeeText, additionalOrdersMsg]);
+  }, [chainId, estimatedRefundText, executionFee, executionFeeText, additionalOrdersMsg]);
 
   return (
     <ExchangeInfoRow

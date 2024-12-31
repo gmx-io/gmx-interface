@@ -1,6 +1,6 @@
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals } from "lib/numbers";
 
 export function calcTotalRebateUsd(

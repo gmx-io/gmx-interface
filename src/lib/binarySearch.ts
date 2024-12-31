@@ -1,4 +1,4 @@
-import { bigMath } from "./bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function numericBinarySearch<T>(
   from: number,

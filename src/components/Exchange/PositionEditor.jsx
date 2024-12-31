@@ -37,7 +37,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 

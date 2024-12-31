@@ -8,9 +8,10 @@ import {
   getOpenInterestUsd,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
-import { Token, getIsEquivalentTokens } from "domain/tokens";
+import { Token } from "domain/tokens";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { ethers } from "ethers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
 import {
   applyFactor,

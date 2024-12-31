@@ -158,12 +158,6 @@ export class Markets extends Module {
             positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
             swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
             swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
-            pnlLongMax: poolValueInfoMax.longPnl,
-            pnlLongMin: poolValueInfoMin.longPnl,
-            pnlShortMax: poolValueInfoMax.shortPnl,
-            pnlShortMin: poolValueInfoMin.shortPnl,
-            netPnlMax: poolValueInfoMax.netPnl,
-            netPnlMin: poolValueInfoMin.netPnl,
 
             borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
             borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,

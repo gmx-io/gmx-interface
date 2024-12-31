@@ -15,7 +15,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvOrMarketInfo, getMarketIndexName, getGlvOrMarketAddress, isMarketInfo } from "domain/synthetics/markets";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { Mode, Operation } from "../types";

@@ -66,7 +66,7 @@ import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { approveTokens } from "domain/tokens";
 import useVestingData from "domain/vesting/useVestingData";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";

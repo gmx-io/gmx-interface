@@ -10,7 +10,7 @@ import words from "lodash/words";
 import dateEn from "date-fns/locale/en-US";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
-import { TradeActionType } from "domain/synthetics/tradeHistory/types";
+import { TradeActionType } from "sdk/types/tradeHistory";
 
 import { CustomErrorName } from "./CustomErrorName";
 

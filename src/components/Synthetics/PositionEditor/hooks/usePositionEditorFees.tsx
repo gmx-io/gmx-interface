@@ -2,7 +2,6 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
-  getExecutionFee,
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
@@ -17,8 +16,9 @@ import { useMemo } from "react";
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { Operation } from "../types";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export type Options = {
   selectedCollateralAddress?: string;

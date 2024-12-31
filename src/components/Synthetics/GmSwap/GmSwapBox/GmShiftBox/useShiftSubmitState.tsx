@@ -8,7 +8,7 @@ import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domai
 import { useHasOutdatedUi } from "domain/legacy";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
-import type { GmSwapFees } from "domain/synthetics/trade/types";
+import type { GmSwapFees } from "sdk/types/trade";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
 

@@ -4,7 +4,7 @@ import { GlvInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
-import { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade/types";
+import { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
 
 import { TokenInputState } from "./types";
 

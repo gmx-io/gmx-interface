@@ -4986,7 +4986,7 @@ msgstr ""
 msgid "Select different tokens"
 msgstr "Sélectionner des tokens différents"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Les frais de réseau sont très élevés actuellement, ce qui peut être dû à une augmentation temporaire des transactions sur le réseau {chainName}."
 
@@ -5767,7 +5767,7 @@ msgstr ""
 msgid "Starts in"
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Les frais de réseau sont très élevés actuellement, ce qui peut être dû à une augmentation temporaire des transactions sur le réseau {chainName}."
 

@@ -3,6 +3,9 @@ import { arbitrum, avalanche, avalancheFuji, Chain } from "viem/chains";
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
+export const BSС_MAINNET = 56;
+export const BSС_TESTNET = 97;
+export const ETH_MAINNET = 1;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 

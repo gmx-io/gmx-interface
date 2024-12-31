@@ -1,6 +1,6 @@
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
-import { MarketConfigMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
+import { MarketConfigMulticallRequestConfig } from "sdk/modules/markets/types";
 
 import DataStore from "sdk/abis/DataStore.json";
 

@@ -140,14 +140,6 @@ export function getOrderInfo(p: {
       return undefined;
     }
 
-    // const title = getPositionOrderTitle({
-    //   orderType: order.orderType,
-    //   isLong: order.isLong,
-    //   indexToken,
-    //   sizeDeltaUsd: order.sizeDeltaUsd,
-    // });
-    const title = "TODO";
-
     const acceptablePrice = parseContractPrice(order.contractAcceptablePrice, indexToken.decimals);
     const triggerPrice = parseContractPrice(order.contractTriggerPrice, indexToken.decimals);
 
@@ -169,7 +161,6 @@ export function getOrderInfo(p: {
 
     const orderInfo: PositionOrderInfo = {
       ...order,
-      title,
       swapPathStats,
       marketInfo,
       indexToken,

@@ -79,6 +79,10 @@ export function getTokenData(tokensData?: TokensData, address?: string, convertT
   return token;
 }
 
+/**
+ * Even though its not a generic function, it return the same type as the input.
+ * If `TokenData` is passed, it returns `TokenData`, if `Token` is passed, it returns `Token`.
+ */
 export function getTokensRatioByAmounts(p: {
   fromToken: Token;
   toToken: Token;

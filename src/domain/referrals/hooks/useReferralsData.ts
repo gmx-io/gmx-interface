@@ -15,7 +15,7 @@ import {
   TotalReferralsStats,
   TraderReferralTotalStats,
 } from "../types";
-import { decodeReferralCode } from "../utils";
+import { decodeReferralCode } from "sdk/utils/referrals";
 import { getCodeOwnersData } from "./useUserCodesOnAllChain";
 
 const REFERRALS_GQL = gql`

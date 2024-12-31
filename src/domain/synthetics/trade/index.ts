@@ -1,3 +1,3 @@
 export * from "./utils";
 export * from "./useAvailableTokenOptions";
-export * from "./types";
+export * from "sdk/types/trade";

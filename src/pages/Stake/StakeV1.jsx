@@ -27,7 +27,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 

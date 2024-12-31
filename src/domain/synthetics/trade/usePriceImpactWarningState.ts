@@ -1,11 +1,11 @@
 import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import shallowEqual from "shallowequal";
 import { FeeItem } from "../fees";
-import { TradeFlags } from "./types";
+import { TradeFlags } from "sdk/types/trade";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 

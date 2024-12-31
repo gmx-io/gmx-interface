@@ -13,12 +13,7 @@ import { getSubaccountConfigKey } from "config/localStorage";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import cryptoJs from "crypto-js";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
-import {
-  estimateExecuteIncreaseOrderGasLimit,
-  getExecutionFee,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
+import { estimateExecuteIncreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { STRING_FOR_SIGNING } from "domain/synthetics/subaccount/constants";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensDataRequest } from "domain/synthetics/tokens";
@@ -32,8 +27,9 @@ import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 

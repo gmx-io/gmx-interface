@@ -13,12 +13,18 @@ export const bigMath = {
   },
   avg(...values: (bigint | undefined)[]) {
     let sum = 0n;
+    let count = 0n;
     for (const value of values) {
       if (value !== undefined) {
         sum += value;
+        count += 1n;
       }
     }
 
-    return sum / BigInt(values.length);
+    if (count === 0n) {
+      return undefined;
+    }
+
+    return sum / count;
   },
 };

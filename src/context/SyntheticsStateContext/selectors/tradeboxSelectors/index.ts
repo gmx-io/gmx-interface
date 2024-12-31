@@ -6,9 +6,8 @@ import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
 } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
@@ -27,7 +26,7 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { getPositionKey } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -53,6 +52,7 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";

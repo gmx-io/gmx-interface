@@ -6,7 +6,7 @@ import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { GMX_PRICE_DECIMALS } from "config/ui";
 import { useTotalGmxStaked } from "domain/legacy";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";

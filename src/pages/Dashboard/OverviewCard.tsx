@@ -8,7 +8,7 @@ import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
