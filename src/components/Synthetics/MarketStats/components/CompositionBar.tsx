@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { TOKEN_COLOR_MAP } from "config/tokens";
+import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import {
   getMarketIndexName,

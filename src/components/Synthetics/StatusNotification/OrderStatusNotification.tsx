@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-import { getTokenVisualMultiplier, getWrappedToken } from "config/tokens";
+import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {

@@ -1,4 +1,4 @@
-import { getTokenBySymbolSafe, getWhitelistedV1Tokens, isTokenInList } from "config/tokens";
+import { getTokenBySymbolSafe, getWhitelistedV1Tokens, isTokenInList } from "sdk/configs/tokens";
 import { TradeSearchParams } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { LEVERAGE_ORDER_OPTIONS, LONG, SHORT, SWAP, SWAP_OPTIONS, SWAP_ORDER_OPTIONS } from "lib/legacy";

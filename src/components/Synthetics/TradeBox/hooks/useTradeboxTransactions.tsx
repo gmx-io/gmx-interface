@@ -3,7 +3,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -64,6 +64,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
@@ -151,6 +152,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         setPendingOrder,
         metricId: metricData.metricId,
         skipSimulation: shouldDisableValidationForTesting,
+        blockTimestampData,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -166,6 +168,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       allowedSlippage,
       subaccount,
       isFirstOrder,
+      initialCollateralAllowance,
       account,
       tokensData,
       signer,
@@ -173,7 +176,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingTxns,
       setPendingOrder,
       shouldDisableValidationForTesting,
-      initialCollateralAllowance,
+      blockTimestampData,
     ]
   );
 
@@ -198,6 +201,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         isLeverageEnabled,
         initialCollateralAllowance,
         isTPSLCreated: createSltpEntries.length > 0,
+        slCount: createSltpEntries.filter(
+          (entry) => entry.decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease
+        ).length,
+        tpCount: createSltpEntries.filter((entry) => entry.decreaseAmounts.triggerOrderType === OrderType.LimitDecrease)
+          .length,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -236,6 +244,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         signer,
         subaccount,
         metricId: metricData.metricId,
+        blockTimestampData,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -322,21 +331,22 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isLong,
       isFirstOrder,
       isLeverageEnabled,
+      initialCollateralAllowance,
+      createSltpEntries,
       tokensData,
       account,
       collateralToken,
       signer,
       chainId,
+      blockTimestampData,
       shouldDisableValidationForTesting,
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
-      createSltpEntries,
       cancelSltpEntries,
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
-      initialCollateralAllowance,
     ]
   );
 
@@ -415,6 +425,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           setPendingOrder,
           setPendingPosition,
         },
+        blockTimestampData,
         metricData.metricId
       )
         .then(makeTxnSentMetricsHandler(metricData.metricId))
@@ -440,6 +451,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       tokensData,
       triggerPrice,
       autoCancelOrdersLimit,
+      blockTimestampData,
     ]
   );
 

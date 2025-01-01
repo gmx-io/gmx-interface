@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import {
   PendingDepositData,
   PendingShiftData,
@@ -421,5 +421,5 @@ export function GmStatusNotification({
 }
 
 function PoolName({ children }: { children: ReactNode }) {
-  return children ? <span className="ml-2 text-12 font-normal text-gray-300">[{children}]</span> : null;
+  return children ? <span className="ml-2 text-12 font-normal text-white">[{children}]</span> : null;
 }

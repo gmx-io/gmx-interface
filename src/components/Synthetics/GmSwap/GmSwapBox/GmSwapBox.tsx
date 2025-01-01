@@ -48,6 +48,21 @@ const MODE_LABELS = {
 
 const OPERATIONS = [Operation.Deposit, Operation.Withdrawal, Operation.Shift];
 
+const operationClassNames = {
+  [Operation.Deposit]: {
+    active: "!bg-[#1F3445] border-b border-b-green-500",
+    regular: "border-b border-b-[transparent]",
+  },
+  [Operation.Withdrawal]: {
+    active: "!bg-[#392A46] border-b border-b-red-500",
+    regular: "border-b border-b-[transparent]",
+  },
+  [Operation.Shift]: {
+    active: "!bg-[#252B57] border-b border-b-blue-300",
+    regular: "border-b border-b-[transparent]",
+  },
+};
+
 export function GmSwapBox(p: GmSwapBoxProps) {
   const {
     selectedMarketAddress,
@@ -99,6 +114,7 @@ export function GmSwapBox(p: GmSwapBoxProps) {
         options={availableOperations}
         optionLabels={localizedOperationLabels}
         option={operation}
+        optionClassnames={operationClassNames}
         onChange={onSetOperation}
         className="Exchange-swap-option-tabs"
       />

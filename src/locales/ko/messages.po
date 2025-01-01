@@ -719,6 +719,11 @@ msgstr ""
 msgid "Invalid slippage value"
 msgstr "유효하지 않은 슬리피지 값"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "price impact"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
 msgid "{0} price"
@@ -1920,11 +1925,6 @@ msgstr "수령할 수 있는 esGMX가 없습니다"
 msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
-msgid "Acknowledge high Price Impact"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "{tokenSymbol} {longOrShortText} {0} USD의 증가 요청됨."
@@ -2004,6 +2004,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Long {0}"
 msgstr "롱 {0}"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "impact on collateral"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2267,6 +2271,11 @@ msgstr "앱 실행하기"
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "{0} USD를 {tokenSymbol} {longOrShortText}으로 입금 완료"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "network fees"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP before"
 msgstr ""
@@ -2381,6 +2390,11 @@ msgstr "청산가 초과 가격"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge high {0} and {1}"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -2879,7 +2893,7 @@ msgstr ""
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Market"
@@ -3657,10 +3671,6 @@ msgstr "1시간 당 순 수수료율"
 msgid "Claim esGMX Rewards"
 msgstr ""
 
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "High price impact. Review execution price"
-msgstr ""
-
 #: src/pages/Stake/StakeV2.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr ""
@@ -3730,7 +3740,7 @@ msgstr "주문의 트리거 가격입니다."
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -3914,14 +3924,6 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
-msgid "High Network Fee not yet acknowledged"
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -4391,6 +4393,11 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge high {0}"
+msgstr ""
+
 #: src/domain/synthetics/tokens/useTokensFavorites.tsx
 msgid "Favorites"
 msgstr ""
@@ -4531,6 +4538,10 @@ msgstr "주문 업데이트됨!"
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+msgstr ""
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "swap profit fee"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
@@ -4848,10 +4859,6 @@ msgstr ""
 msgid "WARNING: High Fees"
 msgstr "경고: 높은 수수료"
 
-#: src/components/AprInfo/AprInfo.tsx
-msgid "You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the<0>Ethena dashboard</0>."
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr "주문을 채울만한 충분한 스왑 유동성이 없습니다. 조건이 충족되고 충분한 스왑 유동성이 있을 때 주문이 채워집니다."
@@ -4896,10 +4903,6 @@ msgstr "주문의 사이즈가 0입니다"
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr ""
 
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "Acknowledge high Swap Price Impact"
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close {longOrShortText} {0}"
 msgstr ""
@@ -4910,7 +4913,7 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr ""
 
@@ -5021,6 +5024,19 @@ msgstr "유용한 링크"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Acknowledgment Required"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -5850,10 +5866,6 @@ msgstr "GMX 스테이킹 보상 업데이트 및 인사이트"
 msgid "Active Orders"
 msgstr "활성화된 주문"
 
-#: src/domain/synthetics/trade/useHighExecutionFeeConsent.tsx
-msgid "Acknowledge very high network Fees"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Switch to {0} collateral."
 msgstr ""
@@ -6326,15 +6338,6 @@ msgstr ""
 msgid "Date"
 msgstr "날짜"
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Price Impact not yet acknowledged"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
 msgstr ""
@@ -6702,7 +6705,7 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -7425,6 +7428,10 @@ msgstr ""
 msgid "GMX explorer for stats and traders"
 msgstr "통계와 트레이드 정보를 위한 GMX 익스플로러"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "swap price impact"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr ""
@@ -7489,7 +7496,7 @@ msgstr ""
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Swap"
 msgstr "스왑"
@@ -7843,7 +7850,7 @@ msgstr ""
 msgid "Price Impact Rebate Claimed"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/HighPriceImpactRow.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 msgstr ""
 
@@ -7858,7 +7865,7 @@ msgstr ""
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Limit"

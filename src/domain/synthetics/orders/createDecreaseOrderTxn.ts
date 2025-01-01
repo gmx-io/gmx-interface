@@ -1,14 +1,15 @@
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
@@ -58,6 +59,7 @@ export async function createDecreaseOrderTxn(
   subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
+  blockTimestampData: BlockTimestampData | undefined,
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
@@ -106,6 +108,7 @@ export async function createDecreaseOrderTxn(
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
           metricId,
+          blockTimestampData,
         });
       }
     })

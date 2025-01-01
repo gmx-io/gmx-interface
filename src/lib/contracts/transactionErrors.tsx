@@ -2,13 +2,13 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
-import { getNativeToken } from "config/tokens";
 import { Provider } from "ethers";
 import { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { ErrorData, parseError } from "lib/parseError";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
+import { getNativeToken } from "sdk/configs/tokens";
 
 export enum TxErrorType {
   NotEnoughFunds = "NOT_ENOUGH_FUNDS",

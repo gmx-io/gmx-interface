@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 import { getTokenExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";

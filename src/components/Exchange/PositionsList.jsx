@@ -19,7 +19,7 @@ import { formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
-import { getPriceDecimals } from "config/tokens";
+import { getPriceDecimals } from "sdk/configs/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Button from "components/Button/Button";
 import { FaAngleRight } from "react-icons/fa";

@@ -17,7 +17,7 @@ import { getGlvOrMarketAddress, GlvInfo, GlvOrMarketInfo, MarketInfo } from "dom
 import { TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 
-import { HighPriceImpactRow } from "../HighPriceImpactRow";
+import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { showMarketToast } from "../showMarketToast";
 import { Operation } from "../types";
 
@@ -29,13 +29,16 @@ export function InfoRows({
   fees,
   executionFee,
   glvInfo,
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
-  setIsHighPriceImpactAccepted,
   isSingle,
-  onMarketChange,
   selectedMarketForGlv,
   disablePoolSelector,
+  onMarketChange,
+
+  shouldShowWarning,
+  shouldShowWarningForPosition,
+  shouldShowWarningForExecutionFee,
+  isAccepted,
+  setIsAccepted,
 }: {
   indexName: string | undefined;
   marketAddress: string | undefined;
@@ -44,13 +47,16 @@ export function InfoRows({
   fees: GmSwapFees | undefined;
   executionFee: ExecutionFee | undefined;
   glvInfo: GlvInfo | undefined;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
-  setIsHighPriceImpactAccepted: (val: boolean) => void;
   isSingle: boolean;
-  onMarketChange: (marketAddress: string) => void;
   selectedMarketForGlv?: string;
   disablePoolSelector?: boolean;
+  onMarketChange: (marketAddress: string) => void;
+
+  shouldShowWarning: boolean;
+  shouldShowWarningForPosition: boolean;
+  shouldShowWarningForExecutionFee: boolean;
+  isAccepted: boolean;
+  setIsAccepted: (val: boolean) => void;
 }) {
   const chainId = useSelector(selectChainId);
   const markets = values(useSelector(selectGlvAndMarketsInfoData));
@@ -128,13 +134,14 @@ export function InfoRows({
         </div>
       </ExchangeInfo.Group>
 
-      {isHighPriceImpact && (
-        <HighPriceImpactRow
-          isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-          setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
-          isSingle={isSingle}
-        />
-      )}
+      <GmSwapWarningsRow
+        isSingle={isSingle}
+        isAccepted={isAccepted}
+        shouldShowWarning={shouldShowWarning}
+        shouldShowWarningForPosition={shouldShowWarningForPosition}
+        shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+        setIsAccepted={setIsAccepted}
+      />
     </ExchangeInfo>
   );
 }

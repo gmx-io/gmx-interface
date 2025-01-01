@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { getChainName, getExcessiveExecutionFee, getHighExecutionFee } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { convertToUsd, getTokenData, TokensData } from "domain/synthetics/tokens";
 import { applyFactor, expandDecimals } from "lib/numbers";
