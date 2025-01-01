@@ -1,0 +1,26 @@
+name: Update Testing
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  merge-master-to-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Merge master into test
+        run: |
+          git config user.name "GMX Release Bot"
+          git config user.email "release-bot@gmx.io"
+          git checkout test
+          git merge master
+          git push origin test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
