@@ -18,7 +18,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { getLiquidationPrice } from "domain/synthetics/positions";
 import { bigMath } from "lib/bigmath";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 
 import AddressView from "components/AddressView/AddressView";
@@ -282,16 +282,20 @@ const TableRow = memo(
           <StatsTooltipRow
             label={t`Collateral`}
             showDollar={false}
-            value={formatTokenAmountWithUsd(
-              BigInt(position.collateralAmount),
-              BigInt(position.collateralUsd),
-              collateralToken?.symbol,
-              collateralToken?.decimals
-            )}
+            value={
+              collateralToken
+                ? formatBalanceAmountWithUsd(
+                    position.collateralAmount,
+                    position.collateralUsd,
+                    collateralToken.decimals,
+                    collateralToken.symbol
+                  )
+                : "..."
+            }
           />
         </>
       );
-    }, [collateralToken?.decimals, collateralToken?.symbol, position.collateralAmount, position.collateralUsd]);
+    }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
     const renderNaLiquidationTooltip = useCallback(
       () =>

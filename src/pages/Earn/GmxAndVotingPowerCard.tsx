@@ -248,7 +248,9 @@ export function GmxAndVotingPowerCard({
                           : formatBalanceAmountWithUsd(
                               processedData.extendedGmxTrackerRewards,
                               processedData.extendedGmxTrackerRewardsUsd,
-                              18
+                              18,
+                              undefined,
+                              true
                             )
                       }
                       showDollar={false}
@@ -262,7 +264,9 @@ export function GmxAndVotingPowerCard({
                           : formatBalanceAmountWithUsd(
                               processedData.stakedGmxTrackerRewards,
                               processedData.stakedGmxTrackerRewardsUsd,
-                              18
+                              18,
+                              undefined,
+                              true
                             )
                       }
                       showDollar={false}
@@ -277,7 +281,9 @@ export function GmxAndVotingPowerCard({
                             : formatBalanceAmountWithUsd(
                                 processedData.feeGmxTrackerRewards,
                                 processedData.feeGmxTrackerRewardsUsd,
-                                18
+                                18,
+                                undefined,
+                                true
                               )
                         }
                         showDollar={false}

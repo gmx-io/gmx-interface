@@ -187,7 +187,9 @@ export function TotalRewardsCard({
                         : formatBalanceAmountWithUsd(
                             processedData.extendedGmxTrackerRewards,
                             processedData.extendedGmxTrackerRewardsUsd,
-                            18
+                            18,
+                            undefined,
+                            true
                           )
                     }
                   />
@@ -206,7 +208,9 @@ export function TotalRewardsCard({
                         : formatBalanceAmountWithUsd(
                             processedData.totalVesterRewards,
                             processedData.totalVesterRewardsUsd,
-                            18
+                            18,
+                            undefined,
+                            true
                           )
                     }
                   />

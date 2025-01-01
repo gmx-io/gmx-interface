@@ -117,7 +117,9 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
                             : formatBalanceAmountWithUsd(
                                 processedData.feeGlpTrackerRewards,
                                 processedData.feeGlpTrackerRewardsUsd,
-                                18
+                                18,
+                                undefined,
+                                true
                               )
                         }
                         showDollar={false}
@@ -131,7 +133,9 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
                             : formatBalanceAmountWithUsd(
                                 processedData.stakedGlpTrackerRewards,
                                 processedData.stakedGlpTrackerRewardsUsd,
-                                18
+                                18,
+                                undefined,
+                                true
                               )
                         }
                         showDollar={false}
