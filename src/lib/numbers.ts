@@ -581,8 +581,18 @@ export function formatAmountHuman(
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
 }
 
-export function formatBalanceAmount(amount: bigint, tokenDecimals: number, tokenSymbol?: string): string {
-  if (amount === undefined || amount === 0n) return "-";
+export function formatBalanceAmount(
+  amount: bigint,
+  tokenDecimals: number,
+  tokenSymbol?: string,
+  showZero = false
+): string {
+  if (amount === undefined) return "-";
+
+  if (amount === 0n) {
+    if (showZero) return "0.0000";
+    return "-";
+  }
 
   const absAmount = bigMath.abs(amount);
   const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);
@@ -608,9 +618,10 @@ export function formatBalanceAmountWithUsd(
   amount: bigint,
   amountUsd: bigint,
   tokenDecimals: number,
-  tokenSymbol?: string
+  tokenSymbol?: string,
+  showZero = false
 ) {
-  const value = formatBalanceAmount(amount, tokenDecimals, tokenSymbol);
+  const value = formatBalanceAmount(amount, tokenDecimals, tokenSymbol, showZero);
   const usd = formatUsd(amountUsd);
   // Regular space
   return `${value} (${usd})`;

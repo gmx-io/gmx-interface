@@ -1935,7 +1935,9 @@ export default function StakeV2() {
                                 : formatBalanceAmountWithUsd(
                                     processedData.extendedGmxTrackerRewards,
                                     processedData.extendedGmxTrackerRewardsUsd,
-                                    18
+                                    18,
+                                    undefined,
+                                    true
                                   )
                             }
                             showDollar={false}
@@ -1949,7 +1951,9 @@ export default function StakeV2() {
                                 : formatBalanceAmountWithUsd(
                                     processedData.stakedGmxTrackerRewards,
                                     processedData.stakedGmxTrackerRewardsUsd,
-                                    18
+                                    18,
+                                    undefined,
+                                    true
                                   )
                             }
                             showDollar={false}
@@ -1964,7 +1968,9 @@ export default function StakeV2() {
                                   : formatBalanceAmountWithUsd(
                                       processedData.feeGmxTrackerRewards,
                                       processedData.feeGmxTrackerRewardsUsd,
-                                      18
+                                      18,
+                                      undefined,
+                                      true
                                     )
                               }
                               showDollar={false}
@@ -2079,7 +2085,9 @@ export default function StakeV2() {
                             : formatBalanceAmountWithUsd(
                                 processedData.extendedGmxTrackerRewards,
                                 processedData.extendedGmxTrackerRewardsUsd,
-                                18
+                                18,
+                                undefined,
+                                true
                               )
                         }
                       />
@@ -2098,7 +2106,9 @@ export default function StakeV2() {
                             : formatBalanceAmountWithUsd(
                                 processedData.totalVesterRewards,
                                 processedData.totalVesterRewardsUsd,
-                                18
+                                18,
+                                undefined,
+                                true
                               )
                         }
                       />
@@ -2247,7 +2257,9 @@ export default function StakeV2() {
                                   : formatBalanceAmountWithUsd(
                                       processedData.feeGlpTrackerRewards,
                                       processedData.feeGlpTrackerRewardsUsd,
-                                      18
+                                      18,
+                                      undefined,
+                                      true
                                     )
                               }
                               showDollar={false}
@@ -2261,7 +2273,9 @@ export default function StakeV2() {
                                   : formatBalanceAmountWithUsd(
                                       processedData.stakedGlpTrackerRewards,
                                       processedData.stakedGlpTrackerRewardsUsd,
-                                      18
+                                      18,
+                                      undefined,
+                                      true
                                     )
                               }
                               showDollar={false}
