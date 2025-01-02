@@ -37,6 +37,8 @@ import { useProcessedData } from "./useProcessedData";
 
 import Token from "sdk/abis/Token.json";
 
+import "./EarnV2.css";
+
 export default function EarnV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
