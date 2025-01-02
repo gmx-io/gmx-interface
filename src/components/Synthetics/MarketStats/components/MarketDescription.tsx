@@ -18,7 +18,7 @@ export function MarketDescription({ marketInfo }: Props) {
     text = (
       <Trans>
         This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
-        from the included markets.
+        from the included markets. Backed by {marketInfo.longToken.symbol} and {marketInfo.shortToken.symbol}.
       </Trans>
     );
   } else {

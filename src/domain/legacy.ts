@@ -512,7 +512,7 @@ export function useGmxPrice(chainId, libraries, active) {
   const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
 
-  const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
+  const gmxPrice: bigint | undefined = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
   const mutate = useCallback(() => {
     mutateFromAvalanche();
     mutateFromArbitrum();
@@ -640,7 +640,7 @@ function useGmxPriceFromAvalanche() {
   );
 
   const PRECISION = 10n ** 18n;
-  let gmxPrice;
+  let gmxPrice: bigint | undefined;
   if (avaxReserve && gmxReserve && avaxPrice) {
     gmxPrice = bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
   }

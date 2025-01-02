@@ -165,7 +165,7 @@ export function useMarketTokensDataRequest(
   });
 
   const gmAndGlvMarketTokensData = useMemo(() => {
-    if (!marketTokensData || !glvData || Object.values(glvData).length === 0) {
+    if (!marketTokensData || !glvData || Object.values(glvData).length === 0 || !withGlv) {
       return marketTokensData;
     }
 
@@ -175,7 +175,7 @@ export function useMarketTokensDataRequest(
     });
 
     return result;
-  }, [marketTokensData, glvData]);
+  }, [marketTokensData, glvData, withGlv]);
 
   const updatedGmAndGlvMarketTokensData = useUpdatedTokensBalances(gmAndGlvMarketTokensData);
 

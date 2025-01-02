@@ -1022,9 +1022,12 @@ export function getTotalVolumeSum(volumes) {
   return volume;
 }
 
-export function getBalanceAndSupplyData(balances) {
+export function getBalanceAndSupplyData(balances: bigint[] | undefined): {
+  balanceData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>>;
+  supplyData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>>;
+} {
   if (!balances || balances.length === 0) {
-    return {};
+    return { balanceData: {}, supplyData: {} };
   }
 
   const keys = ["gmx", "esGmx", "glp", "stakedGmxTracker"];
@@ -1041,7 +1044,19 @@ export function getBalanceAndSupplyData(balances) {
   return { balanceData, supplyData };
 }
 
-export function getDepositBalanceData(depositBalances) {
+export function getDepositBalanceData(
+  depositBalances: bigint[] | undefined
+):
+  | Record<
+      | "gmxInStakedGmx"
+      | "esGmxInStakedGmx"
+      | "stakedGmxInBonusGmx"
+      | "bonusGmxInFeeGmx"
+      | "bnGmxInFeeGmx"
+      | "glpInStakedGlp",
+      bigint
+    >
+  | undefined {
   if (!depositBalances || depositBalances.length === 0) {
     return;
   }
@@ -1061,7 +1076,7 @@ export function getDepositBalanceData(depositBalances) {
     data[key] = depositBalances[i];
   }
 
-  return data;
+  return data as any;
 }
 
 type RawVestingData = {
@@ -1148,7 +1163,23 @@ export function getVestingData(vestingInfo): RawVestingData | undefined {
   return data as RawVestingData;
 }
 
-export function getStakingData(stakingInfo) {
+export function getStakingData(stakingInfo: bigint[] | undefined):
+  | undefined
+  | Record<
+      | "stakedGmxTracker"
+      | "bonusGmxTracker"
+      | "feeGmxTracker"
+      | "stakedGlpTracker"
+      | "feeGlpTracker"
+      | "extendedGmxTracker",
+      {
+        claimable: bigint;
+        tokensPerInterval: bigint;
+        averageStakedAmounts: bigint;
+        cumulativeRewards: bigint;
+        totalSupply: bigint;
+      }
+    > {
   if (!stakingInfo || stakingInfo.length === 0) {
     return;
   }
@@ -1175,7 +1206,7 @@ export function getStakingData(stakingInfo) {
     };
   }
 
-  return data;
+  return data as any;
 }
 
 export type ProcessedData = Partial<{
@@ -1242,16 +1273,42 @@ export type ProcessedData = Partial<{
 };
 
 export function getProcessedData(
-  balanceData,
-  supplyData,
-  depositBalanceData,
-  stakingData,
-  vestingData,
-  aum,
-  nativeTokenPrice,
-  stakedGmxSupply,
-  gmxPrice,
-  gmxSupply
+  balanceData: Partial<Record<"glp" | "gmx" | "esGmx" | "stakedGmxTracker", bigint>> | undefined,
+  supplyData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>> | undefined,
+  depositBalanceData:
+    | Record<
+        | "gmxInStakedGmx"
+        | "esGmxInStakedGmx"
+        | "stakedGmxInBonusGmx"
+        | "bonusGmxInFeeGmx"
+        | "bnGmxInFeeGmx"
+        | "glpInStakedGlp",
+        bigint
+      >
+    | undefined,
+  stakingData:
+    | Record<
+        | "stakedGmxTracker"
+        | "bonusGmxTracker"
+        | "feeGmxTracker"
+        | "stakedGlpTracker"
+        | "feeGlpTracker"
+        | "extendedGmxTracker",
+        {
+          claimable: bigint;
+          tokensPerInterval: bigint;
+          averageStakedAmounts: bigint;
+          cumulativeRewards: bigint;
+          totalSupply: bigint;
+        }
+      >
+    | undefined,
+  vestingData: RawVestingData | undefined,
+  aum: bigint | undefined,
+  nativeTokenPrice: bigint | undefined,
+  stakedGmxSupply: bigint | undefined,
+  gmxPrice: bigint | undefined,
+  gmxSupply: string | undefined
 ): ProcessedData | undefined {
   if (
     !balanceData ||
@@ -1259,10 +1316,10 @@ export function getProcessedData(
     !depositBalanceData ||
     !stakingData ||
     !vestingData ||
-    !aum ||
-    !nativeTokenPrice ||
-    !stakedGmxSupply ||
-    !gmxPrice ||
+    aum === undefined ||
+    nativeTokenPrice === undefined ||
+    stakedGmxSupply === undefined ||
+    gmxPrice === undefined ||
     !gmxSupply
   ) {
     return undefined;
