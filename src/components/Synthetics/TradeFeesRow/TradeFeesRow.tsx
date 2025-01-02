@@ -305,12 +305,12 @@ export function TradeFeesRow(p: Props) {
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
-        swapPriceImpactRow,
         rebateRow,
         feeDiscountRow,
         uiFeeRow,
         uiSwapFeeRow,
         swapProfitFeeRow,
+        swapPriceImpactRow,
         ...swapFeeRows,
       ].filter(Boolean) as FeeRow[];
     }
