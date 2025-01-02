@@ -1,12 +1,12 @@
 import values from "lodash/values";
 
-import type { SortDirection } from "components/Sorter/Sorter";
 import { getMarketListingDate } from "config/markets";
 
-import { MarketTokensAPRData, GlvAndGmMarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
+import { GlvAndGmMarketsInfoData, MarketTokensAPRData, getMintableMarketTokens } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
+import type { SortDirection } from "domain/ui/sorterPersistence";
 
 import type { SortField } from "./GmList";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
