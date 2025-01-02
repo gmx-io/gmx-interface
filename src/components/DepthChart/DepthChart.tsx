@@ -29,7 +29,7 @@ import { getMidPrice } from "domain/tokens/utils";
 import { bigMath } from "lib/bigmath";
 import {
   bigintToNumber,
-  calculatePriceDecimals,
+  calculateDisplayDecimals,
   expandDecimals,
   formatAmount,
   numberToBigint,
@@ -498,7 +498,7 @@ function Tick(props: any) {
   const { x, y, height, textAnchor, payload, verticalAnchor, index, marketPriceIndex } = props;
 
   const value = numberToBigint(payload.value as number, USD_DECIMALS);
-  const visual = formatAmount(value, USD_DECIMALS, calculatePriceDecimals(value), false);
+  const visual = formatAmount(value, USD_DECIMALS, calculateDisplayDecimals(value), false);
 
   return (
     <Text

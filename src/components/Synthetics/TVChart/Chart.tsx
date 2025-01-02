@@ -6,7 +6,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { TVChartHeader } from "./TVChartHeader";
-
 import { DepthChart } from "components/DepthChart/DepthChart";
 import Tab from "components/Tab/Tab";
 import { TVChart } from "./TVChart";

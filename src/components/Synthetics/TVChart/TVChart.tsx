@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { useEffect, useMemo } from "react";
 
-import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { USD_DECIMALS } from "config/factors";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import {
@@ -14,14 +13,14 @@ import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selecto
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "sdk/configs/tokens";
-
 import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
-
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
+
+import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 
 import "./TVChart.scss";
 
