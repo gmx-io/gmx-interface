@@ -6,6 +6,7 @@ import {
   PRECISION,
   formatAmountHuman,
   formatBalanceAmount,
+  formatBalanceAmountWithUsd,
 } from "./numbers";
 import { describe, expect, it } from "vitest";
 
@@ -98,6 +99,7 @@ describe("formatAmountHuman", () => {
     {
     expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe(         "1,000.0000");
     expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe(                          "-");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, true)).toBe(         "0.0000");
     expect(formatBalanceAmount(ONE_USD * 1n, USD_DECIMALS)).toBe(                "1.0000");
     expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS)).toBe(               "0.10000");
     expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS)).toBe(              "0.010000");
@@ -109,5 +111,16 @@ describe("formatAmountHuman", () => {
     expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe(      "0.00000001");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS)).toBe(    "1.00e-9");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000_000n, USD_DECIMALS)).toBe("1.00e-12");
+    expect(formatBalanceAmount(ONE_USD * -1n, USD_DECIMALS)).toBe(              "-1.0000");
+
+  });
+
+  it("should display balance amount with symbol", () => {
+    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC");
+  });
+
+  it("should display balance amount with usd", () => {
+    expect(formatBalanceAmountWithUsd(ONE_USD, ONE_USD, USD_DECIMALS)).toBe("1.0000 ($1.00)");
+    expect(formatBalanceAmountWithUsd(ONE_USD, ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC ($1.00)");
   });
 });

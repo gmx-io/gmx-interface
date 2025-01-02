@@ -77,6 +77,7 @@ import {
   expandDecimals,
   formatAmount,
   formatAmountFree,
+  formatBalanceAmountWithUsd,
   formatKeyAmount,
   limitDecimals,
   parseValue,
@@ -1927,39 +1928,51 @@ export default function StakeV2() {
                         <>
                           <StatsTooltipRow
                             label={t`GMX`}
-                            value={`${formatKeyAmount(
-                              processedData,
-                              "extendedGmxTrackerRewards",
-                              18,
-                              4
-                            )} ($${formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                            value={
+                              processedData?.extendedGmxTrackerRewards === undefined ||
+                              processedData?.extendedGmxTrackerRewardsUsd === undefined
+                                ? "..."
+                                : formatBalanceAmountWithUsd(
+                                    processedData.extendedGmxTrackerRewards,
+                                    processedData.extendedGmxTrackerRewardsUsd,
+                                    18,
+                                    undefined,
+                                    true
+                                  )
+                            }
                             showDollar={false}
                           />
                           <StatsTooltipRow
                             label="Escrowed GMX"
-                            value={`${formatKeyAmount(
-                              processedData,
-                              "stakedGmxTrackerRewards",
-                              18,
-                              4
-                            )} ($${formatKeyAmount(
-                              processedData,
-                              "stakedGmxTrackerRewardsUsd",
-                              USD_DECIMALS,
-                              2,
-                              true
-                            )})`}
+                            value={
+                              processedData?.stakedGmxTrackerRewards === undefined ||
+                              processedData?.stakedGmxTrackerRewardsUsd === undefined
+                                ? "..."
+                                : formatBalanceAmountWithUsd(
+                                    processedData.stakedGmxTrackerRewards,
+                                    processedData.stakedGmxTrackerRewardsUsd,
+                                    18,
+                                    undefined,
+                                    true
+                                  )
+                            }
                             showDollar={false}
                           />
                           {isAnyFeeGmxTrackerRewards && (
                             <StatsTooltipRow
                               label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                              value={`${formatKeyAmount(
-                                processedData,
-                                "feeGmxTrackerRewards",
-                                18,
-                                4
-                              )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                              value={
+                                processedData?.feeGmxTrackerRewards === undefined ||
+                                processedData?.feeGmxTrackerRewardsUsd === undefined
+                                  ? "..."
+                                  : formatBalanceAmountWithUsd(
+                                      processedData.feeGmxTrackerRewards,
+                                      processedData.feeGmxTrackerRewardsUsd,
+                                      18,
+                                      undefined,
+                                      true
+                                    )
+                              }
                               showDollar={false}
                             />
                           )}
@@ -2066,10 +2079,16 @@ export default function StakeV2() {
                         }
                         showDollar={false}
                         value={
-                          <>
-                            {formatKeyAmount(processedData, "extendedGmxTrackerRewards", 18, 4, true)} ($
-                            {formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})
-                          </>
+                          processedData?.extendedGmxTrackerRewards === undefined ||
+                          processedData?.extendedGmxTrackerRewardsUsd === undefined
+                            ? "..."
+                            : formatBalanceAmountWithUsd(
+                                processedData.extendedGmxTrackerRewards,
+                                processedData.extendedGmxTrackerRewardsUsd,
+                                18,
+                                undefined,
+                                true
+                              )
                         }
                       />
                       <StatsTooltipRow
@@ -2081,10 +2100,16 @@ export default function StakeV2() {
                         }
                         showDollar={false}
                         value={
-                          <>
-                            {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} ($
-                            {formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)})
-                          </>
+                          processedData?.totalVesterRewards === undefined ||
+                          processedData?.totalVesterRewardsUsd === undefined
+                            ? "..."
+                            : formatBalanceAmountWithUsd(
+                                processedData.totalVesterRewards,
+                                processedData.totalVesterRewardsUsd,
+                                18,
+                                undefined,
+                                true
+                              )
                         }
                       />
                     </>
@@ -2225,34 +2250,34 @@ export default function StakeV2() {
                           <>
                             <StatsTooltipRow
                               label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                              value={`${formatKeyAmount(
-                                processedData,
-                                "feeGlpTrackerRewards",
-                                18,
-                                4
-                              )} ($${formatKeyAmount(
-                                processedData,
-                                "feeGlpTrackerRewardsUsd",
-                                USD_DECIMALS,
-                                2,
-                                true
-                              )})`}
+                              value={
+                                processedData?.feeGlpTrackerRewards === undefined ||
+                                processedData?.feeGlpTrackerRewardsUsd === undefined
+                                  ? "..."
+                                  : formatBalanceAmountWithUsd(
+                                      processedData.feeGlpTrackerRewards,
+                                      processedData.feeGlpTrackerRewardsUsd,
+                                      18,
+                                      undefined,
+                                      true
+                                    )
+                              }
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Escrowed GMX"
-                              value={`${formatKeyAmount(
-                                processedData,
-                                "stakedGlpTrackerRewards",
-                                18,
-                                4
-                              )} ($${formatKeyAmount(
-                                processedData,
-                                "stakedGlpTrackerRewardsUsd",
-                                USD_DECIMALS,
-                                2,
-                                true
-                              )})`}
+                              value={
+                                processedData?.stakedGlpTrackerRewards === undefined ||
+                                processedData?.stakedGlpTrackerRewardsUsd === undefined
+                                  ? "..."
+                                  : formatBalanceAmountWithUsd(
+                                      processedData.stakedGlpTrackerRewards,
+                                      processedData.stakedGlpTrackerRewardsUsd,
+                                      18,
+                                      undefined,
+                                      true
+                                    )
+                              }
                               showDollar={false}
                             />
                           </>
@@ -2489,18 +2514,15 @@ export default function StakeV2() {
                         true
                       )}`}
                       position="bottom-end"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            <Trans>
-                              {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
-                              vesting.
-                            </Trans>
-                          </div>
-                        );
-                      }}
+                      content={
+                        <div>
+                          <Trans>
+                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
+                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
+                            deposited for vesting.
+                          </Trans>
+                        </div>
+                      }
                     />
                   </div>
                 </div>
