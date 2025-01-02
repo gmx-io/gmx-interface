@@ -13,7 +13,7 @@ const MOVEMENT_THRESHOLD = 10;
 
 const CURTAIN_STYLE: CSSProperties = {
   top: `calc(100dvh - ${HEADER_HEIGHT}px)`,
-  maxHeight: `calc(100dvh - ${HEADER_HEIGHT}px)`,
+  height: `calc(100dvh - ${HEADER_HEIGHT}px)`,
 };
 
 export function Curtain({
@@ -201,8 +201,8 @@ export function Curtain({
             </Button>
           </div>
 
-          <div className="overflow-y-auto">
-            <div className="px-15 pb-10">{children}</div>
+          <div className="flex grow flex-col overflow-y-auto">
+            <div className="flex grow flex-col px-15 pb-10">{children}</div>
           </div>
         </div>
       </RemoveScroll>

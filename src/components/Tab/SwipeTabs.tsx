@@ -172,6 +172,36 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
     [x]
   );
 
+  useEffect(
+    function handleResize() {
+      if (!bgRef.current) return;
+
+      const handler = () => {
+        if (!option) return;
+
+        const optElem = optionsRefs.current[options.indexOf(option)];
+        if (!optElem) return;
+
+        const containerRect = containerRef.current?.getBoundingClientRect();
+        if (!containerRect) return;
+
+        const optRect = optElem.getBoundingClientRect();
+
+        x.set(optRect.x - containerRect.x);
+        if (bgRef.current) {
+          bgRef.current.style.width = `${optRect.width}px`;
+        }
+      };
+
+      window.addEventListener("resize", handler);
+
+      return () => {
+        window.removeEventListener("resize", handler);
+      };
+    },
+    [option, options, x]
+  );
+
   return (
     <motion.div
       ref={containerRef}
