@@ -495,7 +495,7 @@ export function useGmxPrice(chainId, libraries, active) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const testGmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
   // @todo hard-coded price value
-  const gmxPrice = ethers.BigNumber.from("32114770869495021858210000000000");
+  const gmxPrice = ethers.BigNumber.from("1000000000000000000000000000000");
   const mutate = useCallback(() => {
     mutateFromAvalanche();
     mutateFromArbitrum();
