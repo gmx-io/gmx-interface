@@ -1415,7 +1415,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         onChange={onSelectTradeMode}
         qa="trade-mode"
       />
-      <form onSubmit={handleFormSubmit} ref={formRef}>
+      <form onSubmit={handleFormSubmit} ref={formRef} className="flex grow flex-col">
         {(isSwap || isIncrease) && renderTokenInputs()}
         {isTrigger && renderDecreaseSizeInput()}
 
@@ -1481,6 +1481,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           {tradeboxWarningRows && <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>}
           {triggerConsentRows && <ExchangeInfo.Group>{triggerConsentRows}</ExchangeInfo.Group>}
         </ExchangeInfo>
+        <div className="grow" />
         <div className="Exchange-swap-button-container">{button}</div>
       </form>
     </>
