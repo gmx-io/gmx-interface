@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { getWhitelistedV1Tokens } from "config/tokens";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens } from "domain/tokens";
 import { bigMath } from "lib/bigmath";
 import { DEFAULT_MAX_USDG_AMOUNT } from "lib/legacy";

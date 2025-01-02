@@ -10,7 +10,7 @@ import {
   subaccountListKey,
 } from "config/dataStore";
 import { getSubaccountConfigKey } from "config/localStorage";
-import { getNativeToken, getWrappedToken } from "config/tokens";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import cryptoJs from "crypto-js";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
 import {

@@ -11,7 +11,7 @@ import {
   TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY,
 } from "config/localStorage";
 
-import type { TokenCategory } from "domain/tokens/types";
+import type { TokenCategory } from "sdk/types/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";

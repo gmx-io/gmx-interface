@@ -22,6 +22,7 @@ import {
   STOP,
   SWAP,
   SWAP_OPTIONS,
+  SWAP_OPTIONS_CLASSNAMES,
   SWAP_ORDER_OPTIONS,
   USDG_ADDRESS,
   USDG_DECIMALS,
@@ -62,7 +63,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { get1InchSwapUrl } from "config/links";
-import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   approveTokens,
@@ -2009,6 +2010,7 @@ export default function SwapBox(props) {
               icons={SWAP_ICONS}
               options={SWAP_OPTIONS}
               optionLabels={localizedSwapLabels}
+              optionClassnames={SWAP_OPTIONS_CLASSNAMES}
               option={swapOption}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
@@ -2173,7 +2175,7 @@ export default function SwapBox(props) {
                             onClick={() => {
                               setShortCollateralAddress(existingCurrentIndexCollateralToken?.address);
                             }}
-                            className="cursor-pointer text-gray-300 underline"
+                            className="cursor-pointer text-slate-100 underline"
                           >
                             <Trans>Switch to {existingCurrentIndexCollateralToken?.symbol} collateral.</Trans>
                           </div>

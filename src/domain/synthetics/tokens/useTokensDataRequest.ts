@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { getTokensMap, getV2Tokens } from "config/tokens";
+import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
 import { TokensData } from "./types";
 import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";

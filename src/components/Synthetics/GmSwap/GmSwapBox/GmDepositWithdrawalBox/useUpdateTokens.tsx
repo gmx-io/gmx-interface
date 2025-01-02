@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getTokenPoolType } from "domain/synthetics/markets/utils";
 import { Token } from "domain/tokens";

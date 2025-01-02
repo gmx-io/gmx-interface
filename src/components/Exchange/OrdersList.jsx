@@ -23,7 +23,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getPriceDecimals } from "config/tokens";
+import { getPriceDecimals } from "sdk/configs/tokens";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -131,7 +131,7 @@ export default function OrdersList(props) {
 
     return (
       <tr>
-        <td colSpan="5">
+        <td colSpan="5" className="text-slate-100">
           <Trans>No open orders</Trans>
         </td>
       </tr>
@@ -565,7 +565,7 @@ export default function OrdersList(props) {
         </tbody>
       </table>
       {(!orders || orders.length === 0) && (
-        <div className="Exchange-empty-positions-list-note small App-card">
+        <div className="Exchange-empty-positions-list-note small App-card text-slate-100">
           <Trans>No open orders</Trans>
         </div>
       )}

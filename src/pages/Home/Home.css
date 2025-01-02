@@ -1,6 +1,12 @@
 .Home {
   min-height: 100vh;
-  padding-bottom: calc(4.65rem + 20rem);
+  padding-bottom: 15rem;
+}
+
+@media (max-width: 1024px) {
+  .Home {
+    padding-bottom: 23rem;
+  }
 }
 
 .Home-top {

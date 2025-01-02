@@ -1,5 +1,5 @@
 import { USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -142,6 +142,8 @@ export function initIncreaseOrderMetricData({
   isFirstOrder,
   isLeverageEnabled,
   isTPSLCreated,
+  slCount,
+  tpCount,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -159,6 +161,8 @@ export function initIncreaseOrderMetricData({
   isFirstOrder: boolean | undefined;
   isLeverageEnabled: boolean | undefined;
   isTPSLCreated: boolean | undefined;
+  slCount: number | undefined;
+  tpCount: number | undefined;
 }) {
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
@@ -173,6 +177,8 @@ export function initIncreaseOrderMetricData({
     requestId: getRequestId(),
     is1ct: Boolean(subaccount && fromToken?.address !== NATIVE_TOKEN_ADDRESS),
     isTPSLCreated,
+    slCount,
+    tpCount,
     metricType: orderType === OrderType.LimitIncrease ? "limitOrder" : "increasePosition",
     hasReferralCode,
     hasExistingPosition,

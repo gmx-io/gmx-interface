@@ -3,9 +3,9 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
-import { getNativeToken } from "config/tokens";
+import { getNativeToken } from "sdk/configs/tokens";
 import { helperToast } from "lib/helperToast";
-import { InfoTokens, TokenInfo } from "./types";
+import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
@@ -54,7 +54,10 @@ export function approveTokens({
       helperToast.success(
         <div>
           <Trans>
-            Approval submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+            Approval submitted!{" "}
+            <ExternalLink className="!text-white" href={txUrl}>
+              View status.
+            </ExternalLink>
           </Trans>
           <br />
         </div>

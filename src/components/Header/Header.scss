@@ -16,7 +16,7 @@
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-gray-950);
+  border-bottom: 1px solid var(--color-slate-700);
 }
 
 .App-header.large::after {
@@ -45,9 +45,9 @@
   backdrop-filter: blur(2.7rem);
   position: fixed;
   z-index: 801;
-  left: 0;
   right: 0;
   top: 0;
+  left: inherit;
   height: 100vh;
   width: 30.4rem;
   overflow-y: auto;
@@ -106,10 +106,11 @@
 }
 
 .App-header-menu-icon-block {
-  margin-right: 1.2rem;
-  margin-left: 0px;
   display: flex;
   align-items: center;
+  border: solid 1px var(--color-gray-800);
+  border-radius: 4px;
+  height: 3.6rem;
 }
 
 .App-header-menu-icon {
@@ -117,7 +118,7 @@
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
-  margin: 0.9rem 1rem;
+  margin: 0.7rem;
 }
 
 .App-header-menu-icon:hover {
@@ -193,30 +194,12 @@
   align-items: center;
 }
 
-.App-header-user-settings {
-  display: inline-flex;
-  cursor: pointer;
-  border: none;
-  border-radius: 1.5rem;
-  font-size: var(--font-size-body-medium);
-  background: none;
-  color: var(--color-white);
-  padding: 0;
-  width: 2.4rem;
-  height: 2.4rem;
-  align-items: center;
-  border-radius: 0.4rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .App-header-user-link {
   margin-right: 2.4rem;
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-gray-800);
+  border: 1px solid var(--color-stroke-primary);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
@@ -268,7 +251,7 @@
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-gray-950);
+    border-bottom: 1px solid var(--color-slate-700);
   }
 
   .App-header.small::after {

@@ -32,7 +32,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -426,7 +426,7 @@ const TableCell = memo(({ children, className }: { children: ReactNode; classNam
 const EmptyRow = memo(() => {
   return (
     <TableTr hoverable={false} bordered={false} className="h-47">
-      <TableTd colSpan={7} className="align-top text-gray-400">
+      <TableTd colSpan={7} className="align-top text-slate-100">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>

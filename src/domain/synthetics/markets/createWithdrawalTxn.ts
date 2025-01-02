@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
@@ -13,6 +13,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateWithdrawalParams = {
   account: string;
@@ -29,6 +30,7 @@ export type CreateWithdrawalParams = {
   skipSimulation?: boolean;
   tokensData: TokensData;
   metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
@@ -88,6 +90,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 

@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -225,7 +225,7 @@ export function GmPoolsSelectorForGlvMarket({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-gray-400">
+          <div className="text-body-medium text-slate-100">
             <Trans>No pools matched.</Trans>
           </div>
         )}

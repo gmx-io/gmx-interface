@@ -1,4 +1,4 @@
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { getSwapFee } from "domain/synthetics/fees";
 import {
   MarketInfo,

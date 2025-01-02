@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { TOKEN_COLOR_MAP } from "config/tokens";
+import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getPoolUsdWithoutPnl, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets";
@@ -147,7 +147,7 @@ export function CompositionTableGm({ marketInfo }: CompositionTableGmProps) {
                 />
                 <TokenIcon symbol={token.symbol} displaySize={24} />
                 <span>
-                  <span className="opacity-70">{prefix}:</span> {token.symbol}
+                  <span className="text-slate-100">{prefix}:</span> {token.symbol}
                 </span>
               </span>
             </TableTd>

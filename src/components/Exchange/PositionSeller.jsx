@@ -24,7 +24,7 @@ import {
   MAX_LEVERAGE,
 } from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
@@ -1145,13 +1145,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="text-gray-300">Forfeit profit</span>
+                  <span className="text-slate-100">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="text-gray-300">
+                <span className="text-slate-100">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>

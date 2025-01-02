@@ -14,7 +14,7 @@ import {
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
-import { getToken, isSimilarToken } from "config/tokens";
+import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";

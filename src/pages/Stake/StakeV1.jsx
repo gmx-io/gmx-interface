@@ -22,7 +22,7 @@ import { contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import useWallet from "lib/wallets/useWallet";
@@ -698,7 +698,10 @@ export default function StakeV1() {
         helperToast.success(
           <div>
             <Trans>
-              Claim submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+              Claim submitted!{" "}
+              <ExternalLink className="!text-white" href={txUrl}>
+                View status.
+              </ExternalLink>
             </Trans>
             <br />
           </div>

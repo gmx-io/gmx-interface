@@ -50,7 +50,7 @@ import {
   getV1Tokens,
   getWhitelistedV1Tokens,
   getWrappedToken,
-} from "config/tokens";
+} from "sdk/configs/tokens";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";

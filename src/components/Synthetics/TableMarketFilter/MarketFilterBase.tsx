@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo } from "react";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";

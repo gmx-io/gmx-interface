@@ -41,16 +41,12 @@ export function CollateralSelector(props: Props & { marketInfo?: MarketInfo; tra
 
   return (
     <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`} qa="collateral-in-selector">
-      {isMobile ? (
-        <CollateralSelectorMobile {...props} />
-      ) : (
-        <CollateralSelectorDesktop {...props} tradeType={props.tradeType} marketInfo={props.marketInfo} />
-      )}
+      {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
     </SelectorBase>
   );
 }
 
-function CollateralSelectorDesktop(props: Props & { tradeType: TradeType; marketInfo?: MarketInfo }) {
+function CollateralSelectorDesktop(props: Props) {
   const close = useSelectorClose();
 
   return (
@@ -58,14 +54,12 @@ function CollateralSelectorDesktop(props: Props & { tradeType: TradeType; market
       <tbody>
         {props.options?.map((option) => (
           <CollateralListItemDesktop
-            tradeType={props.tradeType}
             key={option.address}
             onSelect={() => {
               props.onSelect(option.address);
               close();
             }}
             tokenData={option}
-            marketInfo={props.marketInfo}
           />
         ))}
 
@@ -81,14 +75,10 @@ function CollateralListItemDesktop({
   tokenData,
   onSelect,
   disabled,
-  tradeType,
-  marketInfo,
 }: {
   tokenData: TokenData;
   onSelect: () => void;
   disabled?: boolean;
-  tradeType?: TradeType;
-  marketInfo?: MarketInfo;
 }) {
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
@@ -116,10 +106,7 @@ function CollateralListItemDesktop({
   }
 
   return (
-    <SelectorBaseDesktopRow
-      message={marketInfo && tradeType ? getCollateralInHintText(tradeType, tokenData, marketInfo) : undefined}
-      onClick={handleClick}
-    >
+    <SelectorBaseDesktopRow onClick={handleClick}>
       <TableTd padding="compact-one-column" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
         {tokenData.symbol}
       </TableTd>

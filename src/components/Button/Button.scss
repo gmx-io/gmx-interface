@@ -54,7 +54,7 @@
   }
 
   &.secondary {
-    background-color: color-mix(in srgb, var(--color-slate-600) 47%, transparent);
+    background-color: var(--color-slate-700);
     border-radius: var(--border-radius-sm);
     color: var(--color-white);
     padding: 1.1rem 1.25rem;
@@ -79,11 +79,11 @@
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: #50577e99;
+      background-color: var(--color-cold-blue-700);
     }
 
     &:not([disabled], .disabled):active {
-      background: #50577eb3;
+      background: var(--color-cold-blue-500);
     }
   }
 
@@ -113,16 +113,16 @@
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: #50577e99;
+      background-color: var(--color-cold-blue-700);
     }
 
     &:not([disabled], .disabled):active {
-      background: #50577eb3;
+      background: var(--color-cold-blue-500);
     }
   }
 
   &.link {
-    color: var(--color-gray-300);
+    color: var(--color-slate-100);
     text-decoration: underline;
     padding: 0;
 
@@ -139,7 +139,16 @@
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    opacity: 0.8;
+
+    &.primary-action,
+    &.primary {
+      background-color: #1d235f;
+    }
+
+    &.secondary {
+      background-color: #1b1e32;
+      color: var(--color-slate-500);
+    }
   }
 
   &.slim {

@@ -52,5 +52,5 @@ export function MarketDescription({ marketInfo }: Props) {
     }
   }
 
-  return <div className="mb-16 leading-[2.2rem] opacity-70">{text}</div>;
+  return <div className="mb-16 leading-[2.2rem] text-slate-100">{text}</div>;
 }

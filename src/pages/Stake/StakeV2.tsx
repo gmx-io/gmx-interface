@@ -55,7 +55,7 @@ import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";

@@ -14,9 +14,9 @@ interface Props {
   noMargin?: boolean;
   onClick?: () => void;
   /**
-   * @default "text-gray-300"
+   * @default "text-slate-100"
    */
-  textColor?: "text-gray-300" | "text-yellow-500";
+  textColor?: "text-slate-100" | "text-yellow-500";
 }
 
 export function AlertInfo({
@@ -24,7 +24,7 @@ export function AlertInfo({
   noMargin = false,
   children,
   type,
-  textColor = "text-gray-300",
+  textColor = "text-slate-100",
   className,
   onClick,
 }: Props) {

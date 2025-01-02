@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
@@ -15,6 +15,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "./prepareOrderTxn";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
 
@@ -34,6 +35,7 @@ export type SwapOrderParams = {
   setPendingOrder: SetPendingOrder;
   skipSimulation: boolean;
   metricId: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -82,6 +84,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
           metricId: p.metricId,
+          blockTimestampData: p.blockTimestampData,
         })
       : undefined;
 

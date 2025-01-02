@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { addDays, formatDistanceToNowStrict } from "date-fns";
 import { useCallback, useMemo } from "react";
 
-import { ETHENA_DASHBOARD_URL, isEthenaSatsIncentivizedMarket } from "config/ethena";
 import { getIncentivesV2Url } from "config/links";
 import { ENOUGH_DAYS_SINCE_LISTING_FOR_APY, getMarketListingDate } from "config/markets";
 import { TBTC_INFORMATION_URL, isTbtcIncentivizedMarket } from "config/tbtc";
@@ -54,7 +53,6 @@ export function AprInfo({
   const incentivesData = useLiquidityProvidersIncentives(chainId);
   const isIncentiveActive = !!incentivesData && incentivesData?.rewardsPerMarket[marketAddress] !== undefined;
   const isLidoApr = lidoApr !== undefined && lidoApr > 0n;
-  const isEthenaSatsIncentive = isEthenaSatsIncentivizedMarket(marketAddress);
   const isTbtcIncentive = isTbtcIncentivizedMarket(marketAddress);
 
   const airdropTokenTitle = useLpAirdroppedTokenTitle();
@@ -99,14 +97,6 @@ export function AprInfo({
             </Trans>
           </div>
         )}
-        {isEthenaSatsIncentive && (
-          <div>
-            <Trans>
-              You will earn a 20x Ethena sats multiplier per dollar of GM value. Check your earned sats on the
-              <ExternalLink href={ETHENA_DASHBOARD_URL}>Ethena dashboard</ExternalLink>.
-            </Trans>
-          </div>
-        )}
       </div>
     );
   }, [
@@ -119,7 +109,6 @@ export function AprInfo({
     isIncentiveActive,
     lidoApr,
     isLidoApr,
-    isEthenaSatsIncentive,
     isTbtcIncentive,
   ]);
 
@@ -144,7 +133,7 @@ export function AprInfo({
     }
   }, [apy, incentiveApr, totalApr, isBaseAprReadyToBeShown]);
 
-  return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown || isLidoApr || isEthenaSatsIncentive) ? (
+  return showTooltip && (isIncentiveActive || !isBaseAprReadyToBeShown || isLidoApr) ? (
     <TooltipWithPortal
       maxAllowedWidth={280}
       handle={aprNode}

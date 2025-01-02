@@ -7,7 +7,7 @@ import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import { useMedia } from "react-use";
 
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -257,7 +257,7 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <AiOutlineEdit fontSize={16} />
+              <AiOutlineEdit className="text-slate-100" fontSize={16} />
             </span>
           )}
         </div>
@@ -761,7 +761,7 @@ function PositionItemOrdersLarge({
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-gray-300",
+          "text-slate-100",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"
