@@ -243,7 +243,7 @@ export default function TVChartContainer({
   return (
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
-      <div style={style} ref={chartContainerRef} className="TVChartContainer ExchangeChart-bottom-content" />
+      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
     </div>
   );
 }

@@ -1,10 +1,7 @@
 import { t } from "@lingui/macro";
 import { useEffect, useMemo } from "react";
-import { useMedia } from "react-use";
 
-import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { USD_DECIMALS } from "config/factors";
-import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import {
   useOrdersInfoData,
@@ -15,16 +12,15 @@ import { selectChartToken } from "context/SyntheticsStateContext/selectors/chart
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
+import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
-
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 
-import { TVChartHeader } from "./TVChartHeader";
+import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 
 import "./TVChart.scss";
 
@@ -34,6 +30,7 @@ export function TVChart() {
   const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
   const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
+
   const ordersInfo = useOrdersInfoData();
   const tokensData = useTokensData();
   const positionsInfo = usePositionsInfoData();
@@ -159,25 +156,22 @@ export function TVChart() {
     [chartToken, chartTokenSymbol]
   );
 
-  const isMobile = useMedia("(max-width: 700px)");
+  if (!chartTokenSymbol) {
+    return null;
+  }
 
   return (
-    <div className="ExchangeChart tv">
-      <TVChartHeader isMobile={isMobile} />
-      <div className="ExchangeChart-bottom App-box App-box-border overflow-hidden">
-        {chartToken && (
-          <TVChartContainer
-            chartLines={chartLines}
-            chartToken={chartTokenProp}
-            chainId={chainId}
-            period={period}
-            setPeriod={setPeriod}
-            supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
-            visualMultiplier={visualMultiplier}
-            setIsCandlesLoaded={setIsCandlesLoaded}
-          />
-        )}
-      </div>
+    <div className="relative grow">
+      <TVChartContainer
+        chartLines={chartLines}
+        chainId={chainId}
+        period={period}
+        setIsCandlesLoaded={setIsCandlesLoaded}
+        visualMultiplier={visualMultiplier}
+        setPeriod={setPeriod}
+        chartToken={chartTokenProp}
+        supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+      />
     </div>
   );
 }
