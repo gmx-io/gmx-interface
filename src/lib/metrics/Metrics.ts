@@ -16,7 +16,7 @@ import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
-import { prepareErrorMetricData } from "./errorReporting";
+import { parseError } from "../parseError";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 
@@ -171,7 +171,7 @@ export class Metrics {
   }
 
   pushError = (error: unknown, errorSource: string) => {
-    const errorData = prepareErrorMetricData(error);
+    const errorData = parseError(error);
 
     if (!errorData) {
       return;

@@ -40,7 +40,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -121,7 +121,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const eventLogHandlers = useRef({});
 
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const updateNativeTokenBalance = useCallback(() => {
     if (!currentAccount) {

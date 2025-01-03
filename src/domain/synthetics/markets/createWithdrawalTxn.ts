@@ -26,6 +26,7 @@ export type CreateWithdrawalParams = {
   shortTokenSwapPath: string[];
   minShortTokenAmount: bigint;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
@@ -113,6 +114,10 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingWithdrawal({
       account: p.account,

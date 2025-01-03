@@ -28,7 +28,7 @@ import { useLocalStorage } from "react-use";
 import "./Referrals.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { serializeBigIntsInObject } from "lib/numbers";
 import { useLocalizedMap } from "lib/i18n";
 
@@ -64,7 +64,7 @@ function Referrals() {
   const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(signer, chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
-  const [pendingTxns] = usePendingTxns();
+  const { pendingTxns } = usePendingTxns();
   const localizedTabOptionLabels = useLocalizedMap(TAB_OPTION_LABELS);
 
   function handleCreateReferralCode(referralCode) {

@@ -9,6 +9,7 @@ import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
+import { PendingTransactionData } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export async function callContract(
   chainId: number,
@@ -32,6 +33,7 @@ export async function callContract(
     customSignersGasPrices?: GasPriceData[];
     bestNonce?: number;
     setPendingTxns?: (txns: any) => void;
+    pendingTransactionData?: PendingTransactionData;
     metricId?: OrderMetricId;
   }
 ) {
@@ -151,6 +153,7 @@ export async function callContract(
         message,
         messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,
         metricId: opts.metricId,
+        data: opts.pendingTransactionData,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }

@@ -91,6 +91,10 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingWithdrawal({
       account: p.account,

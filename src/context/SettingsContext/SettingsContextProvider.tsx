@@ -1,5 +1,5 @@
 import noop from "lodash/noop";
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -53,6 +53,9 @@ export type SettingsContextType = {
   setTenderlyAccessKey: (val: string | undefined) => void;
   tenderlySimulationEnabled: boolean | undefined;
   setTenderlySimulationEnabled: (val: boolean | undefined) => void;
+
+  isSettingsVisible: boolean;
+  setIsSettingsVisible: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -63,6 +66,7 @@ export function useSettings() {
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
     getAllowedSlippageKey(chainId),
@@ -186,6 +190,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       tenderlyAccountSlug,
       tenderlyProjectSlug,
       tenderlySimulationEnabled,
+
+      isSettingsVisible,
+      setIsSettingsVisible,
     };
   }, [
     showDebugValues,
@@ -207,6 +214,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableValidationForTesting,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
+    savedIsAutoCancelTPSL,
+    setIsAutoCancelTPSL,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,
@@ -215,8 +224,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyAccountSlug,
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
-    savedIsAutoCancelTPSL,
-    setIsAutoCancelTPSL,
+    isSettingsVisible,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

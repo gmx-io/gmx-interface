@@ -9,7 +9,7 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { setAutoCancelOrdersTxn } from "./setAutoCancelOrdersTxn";
 import useWallet from "lib/wallets/useWallet";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { PositionOrderInfo } from "domain/synthetics/orders";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { SetAutoCloseOrdersAction } from "lib/metrics";
@@ -26,7 +26,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
   const searchParams = useSearchParams<SearchParams>();
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const chainId = useSelector(selectChainId);
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { signer } = useWallet();

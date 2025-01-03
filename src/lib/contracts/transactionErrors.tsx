@@ -2,9 +2,13 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
-import { getNativeToken } from "sdk/configs/tokens";
+import { Provider } from "ethers";
+import { ErrorEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { ErrorData, parseError } from "lib/parseError";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
+import { getNativeToken } from "sdk/configs/tokens";
 
 export enum TxErrorType {
   NotEnoughFunds = "NOT_ENOUGH_FUNDS",
@@ -211,4 +215,72 @@ export function extractDataFromError(errorMessage: unknown) {
     return match[1];
   }
   return null;
+}
+
+export type TxnData = {
+  data: string;
+  to: string | null;
+  from: string;
+  gasLimit?: bigint;
+  gasPrice?: bigint;
+  maxFeePerGas: bigint | null;
+  maxPriorityFeePerGas: bigint | null;
+  nonce: number | null;
+  value: bigint;
+};
+
+export async function getOnchainError(
+  provider: Provider,
+  txnData?: TxnData,
+  txnHash?: string
+): Promise<{ errorData?: ErrorData; txnData?: TxnData }> {
+  if (txnHash) {
+    try {
+      txnData = (await provider.getTransaction(txnHash)) || undefined;
+    } catch (e) {
+      const errorData = parseError(e);
+
+      emitMetricEvent<ErrorEvent>({
+        event: "error",
+        isError: true,
+        data: {
+          errorSource: "getOnchainError",
+          ...errorData,
+        },
+      });
+      return { txnData };
+    }
+  }
+
+  if (!txnData) {
+    emitMetricEvent<ErrorEvent>({
+      event: "error",
+      isError: true,
+      data: {
+        errorSource: "getOnchainError",
+        errorMessage: "missed transaction data",
+      },
+    });
+
+    return {};
+  }
+
+  try {
+    await provider.call(txnData);
+  } catch (e) {
+    const errorData = parseError(e);
+
+    emitMetricEvent<ErrorEvent>({
+      event: "error",
+      isError: true,
+      data: {
+        errorSource: "getOnchainError",
+        ...errorData,
+      },
+    });
+
+    return { errorData, txnData };
+  }
+
+  return {};
 }

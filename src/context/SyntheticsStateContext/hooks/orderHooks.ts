@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { selectChainId } from "../selectors/globalSelectors";
 import {
@@ -33,7 +33,7 @@ export function useCancelOrder(orderKey: string) {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
   const subaccount = useSubaccount(null, 1);
 
