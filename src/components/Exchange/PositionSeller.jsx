@@ -26,7 +26,7 @@ import {
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
+import { createDecreaseOrder } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
@@ -71,6 +71,7 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useKey } from "react-use";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

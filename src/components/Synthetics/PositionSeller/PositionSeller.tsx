@@ -23,7 +23,6 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { useHasOutdatedUi } from "domain/legacy";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { applySlippageToPrice } from "domain/synthetics/trade";
@@ -86,6 +85,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 import "./PositionSeller.scss";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;

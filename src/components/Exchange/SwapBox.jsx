@@ -100,6 +100,7 @@ import { useHistory } from "react-router-dom";
 import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 const SWAP_ICONS = {
   [LONG]: <LongIcon />,
@@ -318,7 +319,7 @@ export default function SwapBox(props) {
   });
   const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 
-  const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
+  const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);

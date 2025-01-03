@@ -86,6 +86,7 @@ export interface OracleFetcher {
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
   fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
+  fetchUiVersion(currentVersion: string, active: boolean): Promise<string>;
 }
 export type TickersResponse = {
   minPrice: string;

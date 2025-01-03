@@ -22,7 +22,7 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useHasOutdatedUi } from "domain/legacy";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import {
   DecreasePositionSwapType,
   OrderType,

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 
 import { ExecutionFee } from "domain/synthetics/fees";
 import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useHasOutdatedUi } from "domain/legacy";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { GmSwapFees } from "domain/synthetics/trade/types";
