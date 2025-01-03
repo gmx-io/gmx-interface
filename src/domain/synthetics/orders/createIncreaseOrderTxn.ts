@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
@@ -20,6 +20,7 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
 
@@ -85,6 +86,7 @@ export async function createIncreaseOrderTxn({
   signer,
   subaccount,
   metricId,
+  blockTimestampData,
   createIncreaseOrderParams: p,
   createDecreaseOrderParams,
   cancelOrderParams,
@@ -94,6 +96,7 @@ export async function createIncreaseOrderTxn({
   signer: Signer;
   subaccount: Subaccount;
   metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
   createIncreaseOrderParams: IncreaseOrderParams;
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
@@ -226,6 +229,7 @@ export async function createIncreaseOrderTxn({
         value: totalWntAmount,
         errorTitle: t`Order error.`,
         metricId,
+        blockTimestampData,
       })
     : undefined;
 

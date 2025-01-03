@@ -21,9 +21,7 @@ export function useShiftSubmitState({
   amounts,
   executionFee,
   fees,
-  isHighFeeConsentError,
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
+  consentError,
   marketTokenUsd,
   payTokenAddresses,
   routerAddress,
@@ -37,9 +35,7 @@ export function useShiftSubmitState({
   amounts: ShiftAmounts | undefined;
   executionFee: ExecutionFee | undefined;
   fees: GmSwapFees | undefined;
-  isHighFeeConsentError: boolean | undefined;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
+  consentError: boolean;
   marketTokenUsd: bigint | undefined;
   payTokenAddresses: string[];
   routerAddress: string;
@@ -121,9 +117,9 @@ export function useShiftSubmitState({
       };
     }
 
-    if (isHighFeeConsentError) {
+    if (consentError) {
       return {
-        text: t`High Network Fee not yet acknowledged`,
+        text: t`Acknowledgment Required`,
         disabled: true,
         tokensToApprove,
         isAllowanceLoaded,
@@ -168,8 +164,7 @@ export function useShiftSubmitState({
       toToken: toToken,
       toTokenAmount: amounts?.toTokenAmount,
       fees,
-      isHighPriceImpact: isHighPriceImpact,
-      isHighPriceImpactAccepted,
+      consentError,
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
     })[0];
 
@@ -196,24 +191,17 @@ export function useShiftSubmitState({
     isSubmitting,
     isAllowanceLoading,
     account,
-    isHighFeeConsentError,
     isAllowanceLoaded,
     tokensToApprove,
     selectedToken,
     chainId,
     hasOutdatedUi,
     selectedMarketInfo,
-    amounts?.fromTokenAmount,
-    amounts?.fromTokenUsd,
-    amounts?.fromLongTokenAmount,
-    amounts?.fromShortTokenAmount,
-    amounts?.toTokenAmount,
-    amounts?.swapPriceImpactDeltaUsd,
+    amounts,
     toMarketInfo,
     toToken,
     fees,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
+    consentError,
     onSubmit,
     openConnectModal,
     tokensData,

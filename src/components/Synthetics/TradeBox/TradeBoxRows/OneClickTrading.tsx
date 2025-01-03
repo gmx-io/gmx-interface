@@ -13,7 +13,7 @@ import {
   ONE_CLICK_TRADING_OFFER_HIDDEN,
   ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
 } from "config/localStorage";
-import { getNativeToken, getWrappedToken } from "config/tokens";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import {
   useIsSubaccountActive,
   useSubaccountActionCounts,
@@ -176,9 +176,9 @@ export function TradeBoxOneClickTrading() {
             {onCloseClick && (
               <button
                 className={cx(
-                  "-my-4 rounded-4 p-4 text-gray-500",
+                  "-my-4 rounded-4 p-4 text-slate-100",
                   "hover:bg-[#50577e99] hover:text-slate-100 focus:bg-[#50577e99] focus:text-slate-100",
-                  "active:bg-[#50577eb3] active:text-gray-300"
+                  "active:bg-[#50577eb3] active:text-slate-100"
                 )}
                 onClick={onCloseClick}
               >

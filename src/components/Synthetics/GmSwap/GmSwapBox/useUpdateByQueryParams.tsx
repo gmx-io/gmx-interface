@@ -4,7 +4,7 @@ import values from "lodash/values";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
+import { convertTokenAddress, getTokenBySymbolSafe } from "sdk/configs/tokens";
 
 import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
@@ -132,7 +132,7 @@ export function useUpdateByQueryParams({
                 <div className="inline-flex">
                   {titlePrefix}
                   {indexName ? <span>&nbsp;{indexName}</span> : null}
-                  <span className="ml-2 text-12 font-normal text-gray-300">[{poolName}]</span>
+                  <span className="ml-2 text-12 font-normal text-white">[{poolName}]</span>
                 </div>{" "}
                 <span>selected in order form</span>
               </Trans>

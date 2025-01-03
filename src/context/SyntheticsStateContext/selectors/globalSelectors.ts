@@ -16,6 +16,8 @@ export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 
+export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
+
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvData;
 export const selectGlvs = (s: SyntheticsState) => s.globals.glvInfo.glvs;
 export const selectGlvInfoLoading = (s: SyntheticsState) => s.globals.glvInfo.isLoading;

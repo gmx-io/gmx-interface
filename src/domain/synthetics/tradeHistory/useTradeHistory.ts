@@ -6,7 +6,8 @@ import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
 import {
@@ -59,6 +60,7 @@ export function useTradeHistory(
   } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
+  const { showDebugValues } = useSettings();
 
   const client = getSyntheticsGraphClient(chainId);
 
@@ -101,6 +103,7 @@ export function useTradeHistory(
         orderEventCombinations,
         marketsInfoData,
         tokensData,
+        showDebugValues,
       });
     },
   });
@@ -268,6 +271,7 @@ export async function fetchTradeActions({
   orderEventCombinations,
   marketsInfoData,
   tokensData,
+  showDebugValues,
 }: {
   chainId: number;
   pageIndex: number;
@@ -286,6 +290,7 @@ export async function fetchTradeActions({
     | undefined;
   marketsInfoData: MarketsInfoData | undefined;
   tokensData: TokensData | undefined;
+  showDebugValues?: boolean;
 }): Promise<TradeAction[] | undefined> {
   const client = getSyntheticsGraphClient(chainId);
   definedOrThrow(client);
@@ -412,6 +417,20 @@ export async function fetchTradeActions({
         // ... && not (liquidation && orderCreated) === ... && (not liquidation || not orderCreated)
         or: [{ orderType_not: OrderType.Liquidation }, { eventName_not: TradeActionType.OrderCreated }],
       },
+      // not request market increase, market decrease, market swap, (deposit, withdraw are included in increase, decrease)
+      ...(showDebugValues
+        ? []
+        : [
+            {
+              or: [{ orderType_not: OrderType.MarketIncrease }, { eventName_not: TradeActionType.OrderCreated }],
+            },
+            {
+              or: [{ orderType_not: OrderType.MarketDecrease }, { eventName_not: TradeActionType.OrderCreated }],
+            },
+            {
+              or: [{ orderType_not: OrderType.MarketSwap }, { eventName_not: TradeActionType.OrderCreated }],
+            },
+          ]),
     ],
   });
 

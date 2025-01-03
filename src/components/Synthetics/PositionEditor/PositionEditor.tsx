@@ -13,7 +13,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import { getSyntheticsCollateralEditAddressKey } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -41,8 +40,7 @@ import {
   convertToUsd,
   useTokensAllowanceData,
 } from "domain/synthetics/tokens";
-import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+import { getMarkPrice, getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
 import { ethers } from "ethers";
@@ -63,6 +61,7 @@ import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
@@ -79,16 +78,20 @@ import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
 import {
-  makeTxnErrorMetricsHandler,
   initEditCollateralMetricData,
+  makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
+import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+
 import "./PositionEditor.scss";
 
 export type Props = {
@@ -122,6 +125,7 @@ export function PositionEditor(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -223,9 +227,14 @@ export function PositionEditor(p: Props) {
     operation,
   });
 
-  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
-    executionFee?.feeUsd
-  );
+  const priceImpactWarningState = usePriceImpactWarningState({
+    collateralImpact: fees?.positionCollateralPriceImpact,
+    positionImpact: fees?.positionPriceImpact,
+    swapPriceImpact: fees?.swapPriceImpact,
+    swapProfitFee: fees?.swapProfitFee,
+    executionFeeUsd: executionFee?.feeUsd,
+    tradeFlags: getTradeFlagsForCollateralEdit(position?.isLong, isDeposit),
+  });
 
   const { nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = usePositionEditorData({
     selectedCollateralAddress,
@@ -269,8 +278,8 @@ export function PositionEditor(p: Props) {
       return [t`Loading...`];
     }
 
-    if (isHighFeeConsentError) {
-      return [t`High Network Fee not yet acknowledged`];
+    if (priceImpactWarningState.validationError) {
+      return [t`Acknowledgment Required`];
     }
 
     if (isSubmitting) {
@@ -293,7 +302,7 @@ export function PositionEditor(p: Props) {
     needCollateralApproval,
     isAllowanceLoading,
     isBalancesLoading,
-    isHighFeeConsentError,
+    priceImpactWarningState.validationError,
     isSubmitting,
   ]);
 
@@ -380,6 +389,7 @@ export function PositionEditor(p: Props) {
         signer,
         subaccount,
         metricId: metricData.metricId,
+        blockTimestampData,
         createIncreaseOrderParams: {
           account,
           marketAddress: position.marketAddress,
@@ -444,6 +454,7 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         },
+        blockTimestampData,
         metricData.metricId
       );
     }
@@ -686,6 +697,7 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
+                <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
                 {isAllowanceLoaded && needCollateralApproval && collateralToken && (
                   <ApproveTokenButton
                     tokenAddress={collateralToken.address}
@@ -693,7 +705,6 @@ export function PositionEditor(p: Props) {
                     spenderAddress={routerAddress}
                   />
                 )}
-                {highExecutionFeeAcknowledgement}
               </ExchangeInfo.Group>
             </ExchangeInfo>
 

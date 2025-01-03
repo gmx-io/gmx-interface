@@ -46,6 +46,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -92,6 +93,7 @@ export type SyntheticsState = {
     setIsCandlesLoaded: (isLoaded: boolean) => void;
     isLargeAccount?: boolean;
     isFirstOrder: boolean;
+    blockTimestampData: BlockTimestampData | undefined;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -236,6 +238,8 @@ export function SyntheticsStateContextProvider({
     enabled: pageType === "trade",
   });
 
+  const { blockTimestampData } = useBlockTimestampRequest(chainId, { skip: !["trade", "pools"].includes(pageType) });
+
   // TODO move closingPositionKey to positionSellerState
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
   const positionEditorState = usePositionEditorState(chainId);
@@ -292,6 +296,7 @@ export function SyntheticsStateContextProvider({
         setIsCandlesLoaded,
         isLargeAccount,
         isFirstOrder,
+        blockTimestampData,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -330,6 +335,7 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isLargeAccount,
     isFirstOrder,
+    blockTimestampData,
     accruedPositionPriceImpactFees,
     claimablePositionPriceImpactFees,
     leaderboard,

@@ -35,9 +35,7 @@ interface Props {
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
 
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
-  isHighFeeConsentError: boolean | undefined;
+  consentError: boolean;
 
   shouldDisableValidation?: boolean;
 
@@ -70,8 +68,7 @@ export const useSubmitButtonState = ({
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
 
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
+  consentError,
 
   shouldDisableValidation,
 
@@ -80,7 +77,6 @@ export const useSubmitButtonState = ({
   executionFee,
   selectedMarketForGlv,
   selectedMarketInfoForGlv,
-  isHighFeeConsentError,
   glvInfo,
   isMarketTokenDeposit,
 }: Props) => {
@@ -153,8 +149,7 @@ export const useSubmitButtonState = ({
     longTokenLiquidityUsd: longTokenLiquidityUsd,
     shortTokenLiquidityUsd: shortTokenLiquidityUsd,
     fees,
-    isHighPriceImpact: Boolean(isHighPriceImpact),
-    isHighPriceImpactAccepted,
+    consentError,
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     marketTokensData,
     isMarketTokenDeposit,
@@ -221,9 +216,9 @@ export const useSubmitButtonState = ({
       };
     }
 
-    if (isHighFeeConsentError) {
+    if (consentError) {
       return {
-        text: t`High Network Fee not yet acknowledged`,
+        text: t`Acknowledgment Required`,
         disabled: true,
         isAllowanceLoaded,
         isAllowanceLoading,
@@ -264,7 +259,7 @@ export const useSubmitButtonState = ({
     error,
     glvInfo,
     isSubmitting,
-    isHighFeeConsentError,
+    consentError,
     tokensToApprove,
     marketToken,
     isDeposit,

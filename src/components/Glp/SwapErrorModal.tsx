@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
 import { get1InchSwapUrl } from "config/links";
 import { getLowestFeeTokenForBuyGlp, InfoTokens, Token } from "domain/tokens";
-import { getNativeToken } from "config/tokens";
+import { getNativeToken } from "sdk/configs/tokens";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
