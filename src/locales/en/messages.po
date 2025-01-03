@@ -263,6 +263,10 @@ msgstr "View status."
 msgid "Buyable"
 msgstr "Buyable"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
@@ -3772,6 +3776,10 @@ msgstr "PnL ($)"
 msgid "GMX Market Tokens"
 msgstr "GMX Market Tokens"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Txn failed. <0>View</0>."
+msgstr "Txn failed. <0>View</0>."
+
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 msgid "Affiliate Vault"
@@ -5527,8 +5535,8 @@ msgid "No delegate found"
 msgstr "No delegate found"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
-msgstr "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgstr "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 
 #: src/pages/Stake/StakeV1.jsx
 msgid "Wallet not yet connected"
@@ -5977,8 +5985,8 @@ msgid "View"
 msgstr "View"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Txn failed. <0>View</0>"
-msgstr "Txn failed. <0>View</0>"
+#~ msgid "Txn failed. <0>View</0>"
+#~ msgstr "Txn failed. <0>View</0>"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
