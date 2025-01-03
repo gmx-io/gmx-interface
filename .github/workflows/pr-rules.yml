@@ -1,0 +1,40 @@
+name: PR Naming Conventions
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, edited, reopened]
+
+jobs:
+  check-naming:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check branch and PR title naming conventions
+        run: |
+          branch_name="${{ github.event.pull_request.head.ref }}"
+          pr_title="${{ github.event.pull_request.title }}"
+
+          echo "Checking branch name and PR title..."
+
+          # Check for Release branches
+          if [[ "$branch_name" =~ ^release- ]]; then
+            if [[ ! "$pr_title" =~ ^Release ]]; then
+              echo "Error: For 'release-*' branches, PR title must start with 'Release'."
+              exit 1
+            fi
+
+          # Check for Hotfix branches
+          elif [[ "$branch_name" =~ ^hotfix- ]]; then
+            if [[ ! "$pr_title" =~ ^Hotfix ]]; then
+              echo "Error: For 'hotfix-*' branches, PR title must start with 'Hotfix'."
+              exit 1
+            fi
+            
+          else
+            echo "PRs in the master are only allowed from release-* or hotfix-* branches with the corresponding PR titles starting with Release or Hotfix."
+            exit 1
+          fi
+
+          echo "Branch and PR title naming conventions are correct."
