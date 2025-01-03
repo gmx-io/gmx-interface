@@ -13,6 +13,7 @@ export function getButtonState({
   subaccountAddress,
 
   needPayTokenApproval,
+  isAllowanceLoading,
   isTxPending,
   notificationState,
   formState,
@@ -33,6 +34,7 @@ export function getButtonState({
 
   subaccountAddress: string | null;
 
+  isAllowanceLoading: boolean;
   needPayTokenApproval: boolean;
   isTxPending: boolean;
   notificationState: SubaccountNotificationState;
@@ -48,6 +50,13 @@ export function getButtonState({
   wrappedTokenSymbol: string;
 }): { text: string; disabled?: true } {
   const ethSpendAmount = (topUp ?? BN_ZERO) + (wntForAutoTopUps ?? BN_ZERO);
+
+  if (isAllowanceLoading) {
+    return {
+      text: t`Loading...`,
+      disabled: true,
+    };
+  }
 
   if (mainAccEthBalance === undefined) {
     return { disabled: true, text: t`${nativeTokenSymbol} is not available` };

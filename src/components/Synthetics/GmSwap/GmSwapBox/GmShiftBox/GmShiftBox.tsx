@@ -346,7 +346,7 @@ export function GmShiftBox({
           />
         </ExchangeInfo>
 
-        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
+        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
               const token = getTokenData(tokensData, address)!;

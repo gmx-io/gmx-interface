@@ -9,7 +9,7 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
 import type { TokensAllowanceData } from "./types";
 
-type TokenAllowanceResult = { tokensAllowanceData: TokensAllowanceData };
+type TokenAllowanceResult = { tokensAllowanceData?: TokensAllowanceData; isLoading: boolean; isLoaded: boolean };
 
 export function useTokensAllowanceData(
   chainId: number,
@@ -25,11 +25,11 @@ export function useTokensAllowanceData(
 
   const validAddresses = tokenAddresses.filter((address): address is string => address !== NATIVE_TOKEN_ADDRESS);
 
+  const key =
+    !skip && account && spenderAddress && validAddresses.length > 0 ? [account, spenderAddress, validAddresses] : null;
+
   const { data } = useMulticall(chainId, "useTokenAllowance", {
-    key:
-      !skip && account && spenderAddress && validAddresses.length > 0
-        ? [account, spenderAddress, validAddresses]
-        : null,
+    key,
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     request: () =>
       validAddresses.reduce((contracts, address) => {
@@ -87,7 +87,13 @@ export function useTokensAllowanceData(
     return newData;
   }, [spenderAddress, validAddresses, data, approvalStatuses]);
 
+  const isLoaded =
+    p.tokenAddresses.length > 0 && p.tokenAddresses.every((address) => mergedData?.[address] !== undefined);
+  const isLoading = Boolean(key) && !isLoaded;
+
   return {
-    tokensAllowanceData: mergedData,
+    tokensAllowanceData: isLoaded ? mergedData : undefined,
+    isLoaded,
+    isLoading,
   };
 }

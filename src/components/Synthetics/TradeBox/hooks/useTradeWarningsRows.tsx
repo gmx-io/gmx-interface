@@ -15,10 +15,12 @@ import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/t
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 
 export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<typeof usePriceImpactWarningState>) {
   const tokenData = useTokensData();
+  const { account } = useWallet();
   const { chainId } = useChainId();
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -26,7 +28,11 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
   });
@@ -42,28 +48,37 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     }
   }, [increaseAmounts?.initialCollateralAmount, isIncrease, isSwap, isWrapOrUnwrap, swapAmounts?.amountIn]);
 
-  const needPayTokenApproval =
-    tokensAllowanceData &&
-    fromToken &&
-    payAmount !== undefined &&
-    getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
+  const isBalanceLoading = account && fromToken?.address && fromToken.balance === undefined;
+
+  const needPayTokenApproval = getNeedTokenApprove(tokensAllowanceData, fromToken?.address, payAmount);
 
   const consentError: string | undefined = useMemo(() => {
     if (priceImpactWarningState.validationError) {
       return t`Acknowledgment Required`;
     }
 
-    if (needPayTokenApproval && fromToken) {
+    if (isAllowanceLoading || isBalanceLoading) {
+      return t`Loading...`;
+    }
+
+    if (needPayTokenApproval) {
       return t`Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`;
     }
 
     return undefined;
-  }, [fromToken, needPayTokenApproval, priceImpactWarningState]);
+  }, [
+    priceImpactWarningState,
+    isAllowanceLoading,
+    isBalanceLoading,
+    needPayTokenApproval,
+    fromToken?.assetSymbol,
+    fromToken?.symbol,
+  ]);
 
   const element = (
     <>
       <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
-      {needPayTokenApproval && fromToken && (
+      {isAllowanceLoaded && needPayTokenApproval && fromToken && (
         <ApproveTokenButton
           tokenAddress={fromToken.address}
           tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}

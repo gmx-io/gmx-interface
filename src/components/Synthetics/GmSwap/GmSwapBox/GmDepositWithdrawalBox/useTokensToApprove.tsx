@@ -14,7 +14,7 @@ interface Props {
   glvInfo: GlvInfo | undefined;
   operation: Operation;
 
-  marketToken: TokenData;
+  marketToken: TokenData | undefined;
   longToken: TokenData | undefined;
   shortToken: TokenData | undefined;
   glvToken: TokenData | undefined;
@@ -82,7 +82,11 @@ export const useTokensToApprove = ({
     ]
   );
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
   });
@@ -91,46 +95,34 @@ export const useTokensToApprove = ({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      const shouldApproveMarketToken =
-        marketTokenAmount !== undefined &&
-        marketTokenAmount > 0 &&
-        marketToken &&
-        getNeedTokenApprove(tokensAllowanceData, marketToken.address, marketTokenAmount);
+      const shouldApproveMarketToken = getNeedTokenApprove(
+        tokensAllowanceData,
+        marketToken?.address,
+        marketTokenAmount
+      );
 
-      const shouldApproveGlvToken =
-        glvTokenAmount !== undefined &&
-        glvTokenAmount > 0 &&
-        glvToken &&
-        getNeedTokenApprove(tokensAllowanceData, glvToken.address, glvTokenAmount);
+      const shouldApproveGlvToken = getNeedTokenApprove(tokensAllowanceData, glvToken?.address, glvTokenAmount);
 
-      const shouldApproveLongToken =
-        longTokenAmount !== undefined &&
-        longTokenAmount > 0 &&
-        longToken &&
-        getNeedTokenApprove(tokensAllowanceData, longToken.address, longTokenAmount);
+      const shouldApproveLongToken = getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount);
 
-      const shouldApproveShortToken =
-        shortTokenAmount !== undefined &&
-        shortTokenAmount > 0 &&
-        shortToken &&
-        getNeedTokenApprove(tokensAllowanceData, shortToken.address, shortTokenAmount);
+      const shouldApproveShortToken = getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount);
 
       if (operation === Operation.Deposit) {
-        if (shouldApproveLongToken) {
-          addresses.push(longToken.address);
+        if (shouldApproveLongToken && longToken?.address) {
+          addresses.push(longToken?.address);
         }
 
-        if (shouldApproveShortToken) {
+        if (shouldApproveShortToken && shortToken?.address) {
           addresses.push(shortToken.address);
         }
 
-        if (glvInfo && isMarketTokenDeposit && shouldApproveMarketToken) {
+        if (glvInfo && isMarketTokenDeposit && shouldApproveMarketToken && marketToken) {
           addresses.push(marketToken.address);
         }
       } else if (operation === Operation.Withdrawal) {
-        if (glvInfo && shouldApproveGlvToken) {
+        if (glvInfo && shouldApproveGlvToken && glvToken?.address) {
           addresses.push(glvToken.address);
-        } else if (!glvInfo && shouldApproveMarketToken) {
+        } else if (!glvInfo && shouldApproveMarketToken && marketToken?.address) {
           addresses.push(marketToken.address);
         }
       }
@@ -156,6 +148,7 @@ export const useTokensToApprove = ({
   return {
     tokensToApprove,
     payTokenAddresses,
-    isAllowanceLoaded: Boolean(tokensAllowanceData),
+    isAllowanceLoading,
+    isAllowanceLoaded,
   };
 };

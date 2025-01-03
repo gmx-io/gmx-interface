@@ -33,7 +33,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
   return (
     <>
       <div
-        className={cx("border-t-stroke-primary absolute bottom-0 left-0 w-full border-t px-32 py-40", {
+        className={cx("absolute bottom-0 left-0 w-full border-t border-t-stroke-primary px-32 py-40", {
           "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
           "flex flex-col gap-20": isMobile,
         })}

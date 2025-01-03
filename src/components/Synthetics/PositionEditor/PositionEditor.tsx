@@ -142,7 +142,11 @@ export function PositionEditor(p: Props) {
     return adaptToV1InfoTokens(tokensData);
   }, [tokensData]);
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: position ? [position.collateralTokenAddress] : [],
   });
@@ -159,6 +163,7 @@ export function PositionEditor(p: Props) {
   );
 
   const collateralToken = getByKey(tokensData, selectedCollateralAddress);
+  const isBalancesLoading = collateralToken?.balance === undefined;
 
   const availableSwapTokens = useMemo(() => {
     return position?.collateralToken.isWrapped
@@ -269,6 +274,10 @@ export function PositionEditor(p: Props) {
       return [t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`];
     }
 
+    if (isAllowanceLoading || isBalancesLoading) {
+      return [t`Loading...`];
+    }
+
     if (priceImpactWarningState.validationError) {
       return [t`Acknowledgment Required`];
     }
@@ -291,6 +300,8 @@ export function PositionEditor(p: Props) {
     collateralToken,
     minCollateralFactor,
     needCollateralApproval,
+    isAllowanceLoading,
+    isBalancesLoading,
     priceImpactWarningState.validationError,
     isSubmitting,
   ]);
@@ -687,7 +698,7 @@ export function PositionEditor(p: Props) {
 
               <ExchangeInfo.Group>
                 <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
-                {needCollateralApproval && collateralToken && (
+                {isAllowanceLoaded && needCollateralApproval && collateralToken && (
                   <ApproveTokenButton
                     tokenAddress={collateralToken.address}
                     tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
