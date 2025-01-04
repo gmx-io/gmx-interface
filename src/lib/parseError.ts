@@ -11,6 +11,7 @@ export type ErrorData = {
   errorGroup?: string;
   errorStack?: string;
   errorStackHash?: string;
+  errorStackGroup?: string;
   errorName?: string;
   contractError?: string;
   contractErrorArgs?: any;
@@ -39,6 +40,7 @@ export function parseError(error: unknown): ErrorData | undefined {
   let contractErrorArgs: any = undefined;
   let txErrorType: TxErrorType | undefined = undefined;
   let errorGroup: string | undefined = "Unknown group";
+  let errorStackGroup = "Unknown stack group";
   let txErrorData: any = undefined;
   let isUserError: boolean | undefined = undefined;
   let isUserRejectedError: boolean | undefined = undefined;
@@ -88,6 +90,9 @@ export function parseError(error: unknown): ErrorData | undefined {
 
   if (errorStack) {
     errorStackHash = cryptoJs.SHA256(errorStack).toString(cryptoJs.enc.Hex);
+    errorStackGroup = errorStack.slice(0, 450);
+    errorStackGroup = errorStackGroup.replace(URL_REGEXP, "$1");
+    errorStackGroup = errorStackGroup.replace(/\d+/g, "XXX");
   }
 
   if (txErrorType) {
@@ -104,6 +109,7 @@ export function parseError(error: unknown): ErrorData | undefined {
   return {
     errorMessage,
     errorGroup,
+    errorStackGroup,
     errorStack,
     errorStackHash,
     errorName,
