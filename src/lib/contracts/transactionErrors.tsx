@@ -31,6 +31,7 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "User rejected" },
     { msg: "user rejected action" },
     { msg: "ethers-user-denied" },
+    { msg: "User canceled" },
     { msg: "Signing aborted by user" },
   ],
   [TxErrorType.Slippage]: [
@@ -67,7 +68,6 @@ const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
   { msg: "cannot query unfinalized data" },
   { msg: "could not coalesce error" },
   { msg: "Internal JSON RPC error" },
-  // Testing
 ];
 
 export type TxError = {
@@ -229,7 +229,10 @@ export function getAdvancedErrorActions(error: Error) {
   const errorData = parseError(error);
 
   const shouldCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
-    const isMessageMatch = pattern.msg && errorData?.errorMessage && errorData.errorMessage.includes(pattern.msg);
+    const isMessageMatch =
+      pattern.msg &&
+      errorData?.errorMessage &&
+      errorData.errorMessage.toLowerCase().includes(pattern.msg.toLowerCase());
 
     return isMessageMatch;
   });
