@@ -10,6 +10,7 @@ import { applySlippageToMinOut } from "../trade";
 import GlvRouter from "sdk/abis/GlvRouter.json";
 import { CreateDepositParams } from "./createDepositTxn";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 interface CreateGlvDepositParams extends CreateDepositParams {
   glvAddress: string;
@@ -27,6 +28,8 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
   const isNativeShortDeposit = Boolean(
     p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
   );
+
+  await validateSignerAddress(signer, p.account);
 
   let wntDeposit = 0n;
 

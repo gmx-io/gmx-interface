@@ -11,6 +11,7 @@ import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 export type CreateDepositParams = {
   account: string;
@@ -34,6 +35,8 @@ export type CreateDepositParams = {
 export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
+
+  await validateSignerAddress(signer, p.account);
 
   const isNativeLongDeposit = Boolean(
     p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0

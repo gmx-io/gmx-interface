@@ -13,6 +13,7 @@ import { applySlippageToMinOut } from "../trade";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 type Params = {
   account: string;
@@ -34,6 +35,8 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
   const shiftVaultAddress = getContract(chainId, "ShiftVault");
 
   const minToMarketTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minToMarketTokenAmount);
+
+  await validateSignerAddress(signer, p.account);
 
   const multicall = [
     { method: "sendWnt", params: [shiftVaultAddress, p.executionFee] },

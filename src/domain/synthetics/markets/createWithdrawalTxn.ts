@@ -13,6 +13,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 export type CreateWithdrawalParams = {
   account: string;
@@ -38,6 +39,8 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
   const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
+
+  await validateSignerAddress(signer, p.account);
 
   const wntAmount = p.executionFee;
 
