@@ -1,6 +1,6 @@
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -18,6 +18,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { OrderMetricId } from "lib/metrics";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
 
@@ -58,6 +59,7 @@ export async function createDecreaseOrderTxn(
   subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
+  blockTimestampData: BlockTimestampData | undefined,
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
@@ -111,6 +113,7 @@ export async function createDecreaseOrderTxn(
           tokensData: p.tokensData,
           errorTitle: t`Order error.`,
           metricId,
+          blockTimestampData,
         });
       }
     })

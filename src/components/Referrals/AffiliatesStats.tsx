@@ -7,7 +7,7 @@ import { useCopyToClipboard } from "react-use";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
+import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";

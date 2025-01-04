@@ -5,7 +5,7 @@ import type { Address } from "viem";
 
 import { getChainName } from "config/chains";
 import { getContract } from "config/contracts";
-import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";

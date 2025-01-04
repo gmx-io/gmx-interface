@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
-import { getNativeToken } from "config/tokens";
+import { getNativeToken } from "sdk/configs/tokens";
 import { Signer } from "ethers";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";

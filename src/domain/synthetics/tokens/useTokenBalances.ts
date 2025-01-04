@@ -1,7 +1,7 @@
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
-import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";

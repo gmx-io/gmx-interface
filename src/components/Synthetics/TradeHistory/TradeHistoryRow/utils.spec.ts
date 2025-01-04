@@ -285,100 +285,100 @@ describe("TradeHistoryRow helpers", () => {
 `);
 
     expect(formatPositionMessage(liquidated, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "action": "Liquidated",
-  "executionPrice": "$6.1062",
-  "fullMarket": "LINK/USD [LINK-USDC]",
-  "indexName": "LINK/USD",
-  "indexTokenSymbol": "LINK",
-  "isActionError": true,
-  "isLong": false,
-  "market": "Short LINK/USD",
-  "marketPrice": "$6.0906",
-  "pnl": "-$126.31",
-  "pnlState": "error",
-  "poolName": "LINK-USDC",
-  "price": "$6.0906",
-  "priceComment": [
-    "Mark price for the liquidation.",
-    "",
-    "This position was liquidated as the max. leverage of 100.0x was exceeded when taking into account fees.",
-    "",
-    {
-      "key": "Order Execution Price",
-      "value": "$6.1062",
-    },
-    "",
-    "Order execution price takes into account price impact.",
-    "",
-    {
-      "key": "Initial Collateral",
-      "value": "214.779 USDC ($214.77)",
-    },
-    {
-      "key": "PnL",
-      "value": {
-        "state": "error",
-        "text": "-$126.31",
-      },
-    },
-    {
-      "key": "Borrow Fee",
-      "value": {
-        "state": "error",
-        "text": "$0.00",
-      },
-    },
-    {
-      "key": "Funding Fee",
-      "value": {
-        "state": "error",
-        "text": "$0.00",
-      },
-    },
-    {
-      "key": "Close Fee",
-      "value": {
-        "state": "error",
-        "text": "-$4.50",
-      },
-    },
-    "",
-    {
-      "key": "Collateral at Liquidation",
-      "value": "$83.95",
-    },
-    {
-      "key": "Min. Required Collateral",
-      "value": "$64.41",
-    },
-    "",
-    {
-      "key": "Price Impact",
-      "value": {
-        "state": "error",
-        "text": "-$16.82",
-      },
-    },
-    {
-      "key": "Liquidation Fee",
-      "value": {
-        "state": "error",
-        "text": "-$1.04",
-      },
-    },
-    "",
-    {
-      "key": "Returned Collateral",
-      "value": "$66.08",
-    },
-  ],
-  "priceImpact": "-$16.82",
-  "size": "-$6,441.90",
-  "timestamp": "04 Sep 2023, 06:38",
-  "timestampISO": "2023-09-04T06:38:49+04:00",
-}
-`);
+      {
+        "action": "Liquidated",
+        "executionPrice": "$6.1062",
+        "fullMarket": "LINK/USD [LINK-USDC]",
+        "indexName": "LINK/USD",
+        "indexTokenSymbol": "LINK",
+        "isActionError": true,
+        "isLong": false,
+        "market": "Short LINK/USD",
+        "marketPrice": "$6.0906",
+        "pnl": "-$126.31",
+        "pnlState": "error",
+        "poolName": "LINK-USDC",
+        "price": "$6.0906",
+        "priceComment": [
+          "Mark price for the liquidation.",
+          "",
+          "This position was liquidated as the max. leverage of 100.0x was exceeded when taking into account fees.",
+          "",
+          {
+            "key": "Order Execution Price",
+            "value": "$6.1062",
+          },
+          "",
+          "Order execution price takes into account price impact.",
+          "",
+          {
+            "key": "Initial Collateral",
+            "value": "214.779 USDC ($214.77)",
+          },
+          {
+            "key": "PnL",
+            "value": {
+              "state": "error",
+              "text": "-$126.31",
+            },
+          },
+          {
+            "key": "Borrow Fee",
+            "value": {
+              "state": "error",
+              "text": "$0.00",
+            },
+          },
+          {
+            "key": "Funding Fee",
+            "value": {
+              "state": "error",
+              "text": "$0.00",
+            },
+          },
+          {
+            "key": "Close Fee",
+            "value": {
+              "state": "error",
+              "text": "-$4.50",
+            },
+          },
+          "",
+          {
+            "key": "Min. Required Collateral",
+            "value": "$64.41",
+          },
+          {
+            "key": "Collateral at Liquidation",
+            "value": "$83.95",
+          },
+          "",
+          {
+            "key": "Price Impact",
+            "value": {
+              "state": "error",
+              "text": "-$16.82",
+            },
+          },
+          {
+            "key": "Liquidation Fee",
+            "value": {
+              "state": "error",
+              "text": "-$1.04",
+            },
+          },
+          "",
+          {
+            "key": "Returned Collateral",
+            "value": "$66.08",
+          },
+        ],
+        "priceImpact": "-$16.82",
+        "size": "-$6,441.90",
+        "timestamp": "04 Sep 2023, 06:38",
+        "timestampISO": "2023-09-04T06:38:49+04:00",
+      }
+    `);
 
     expect(formatPositionMessage(increaseLongETH, minCollateralUsd)).toMatchInlineSnapshot(`
 {

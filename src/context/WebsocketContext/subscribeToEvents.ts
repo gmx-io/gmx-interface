@@ -1,7 +1,7 @@
 import EventEmitter from "sdk/abis/EventEmitter.json";
 import Token from "sdk/abis/Token.json";
 import { getContract, tryGetContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, getTokens } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
 import { MutableRefObject } from "react";

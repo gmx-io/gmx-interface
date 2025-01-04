@@ -8,7 +8,7 @@ import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets
 import { PositionInfo, PositionsInfoData, getLeverage, parsePositionKey } from "../positions";
 import { DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { SecondaryUpdateOrderParams, SecondaryCancelOrderParams } from "./createIncreaseOrderTxn";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenVisualMultiplier } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import {
   FindSwapPath,

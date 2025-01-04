@@ -5,7 +5,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
 import { USD_DECIMALS } from "config/factors";
-import { getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -490,12 +490,12 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex items-center">
-            <button className="cursor-pointer p-6 text-gray-300 hover:text-white" onClick={setEditingOrderKey}>
+            <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
               <AiOutlineEdit title={t`Edit order`} fontSize={16} />
             </button>
             {onCancelOrder && (
               <button
-                className="cursor-pointer p-6 text-gray-300 hover:text-white disabled:cursor-wait"
+                className="cursor-pointer p-6 text-slate-100 hover:text-white disabled:cursor-wait"
                 disabled={isCanceling}
                 onClick={onCancelOrder}
               >
@@ -694,9 +694,9 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
       }
       content={
         errors.length ? (
-          <>
+          <div className="flex flex-col gap-20">
             {errors.map((error) => (
-              <div className="mt-20" key={error.key}>
+              <div key={error.key}>
                 <span
                   className={cx({
                     "text-red-500": error!.level === "error",
@@ -707,7 +707,7 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
                 </span>
               </div>
             ))}
-          </>
+          </div>
         ) : null
       }
     />
