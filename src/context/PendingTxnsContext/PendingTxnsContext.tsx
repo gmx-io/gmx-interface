@@ -5,7 +5,7 @@ import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, getExplorerUrl } from "
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees";
 import { useChainId } from "lib/chains";
-import { getOnchainError } from "lib/contracts/transactionErrors";
+import { getCallStaticError } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 import { formatPercentage } from "lib/numbers";
@@ -63,8 +63,12 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            const { error: onchainError, txnData } = await getOnchainError(signer.provider, undefined, pendingTxn.hash);
-            const errorData = parseError(onchainError);
+            const { error: onchainError, txnData } = await getCallStaticError(
+              signer.provider,
+              undefined,
+              pendingTxn.hash
+            );
+            const errorData = onchainError ? parseError(onchainError) : undefined;
 
             let toastMsg: ReactNode;
 

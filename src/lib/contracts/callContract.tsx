@@ -1,15 +1,15 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
+import { PendingTransactionData } from "context/PendingTxnsContext/PendingTxnsContext";
 import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
-import { getErrorMessage } from "./transactionErrors";
+import { getErrorMessage, makeTransactionErrorHandler } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
-import { PendingTransactionData } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export async function callContract(
   chainId: number,
@@ -125,7 +125,9 @@ export async function callContract(
         sendOrderTxnSubmittedMetric(opts.metricId);
       }
 
-      return cntrct[method](...params, txnInstance);
+      return cntrct[method](...params, txnInstance).catch(
+        makeTransactionErrorHandler(cntrct, method, params, txnInstance)
+      );
     });
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {

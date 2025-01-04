@@ -2,7 +2,9 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
-import { Provider } from "ethers";
+import { BaseContract, Overrides, Provider, TransactionRequest } from "ethers";
+import { ErrorLike, parseError } from "lib/parseError";
+import { mustNeverExist } from "lib/types";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
 import { getNativeToken } from "sdk/configs/tokens";
@@ -59,6 +61,14 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "couldn't connect to the network" },
   ],
 };
+
+const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
+  { msg: "header not found" },
+  { msg: "cannot query unfinalized data" },
+  { msg: "could not coalesce error" },
+  { msg: "Internal JSON RPC error" },
+  // Testing
+];
 
 export type TxError = {
   message?: string;
@@ -215,23 +225,45 @@ export function extractDataFromError(errorMessage: unknown) {
   return null;
 }
 
-export type TxnData = {
-  data: string;
-  to: string | null;
-  from: string;
-  gasLimit?: bigint;
-  gasPrice?: bigint;
-  maxFeePerGas: bigint | null;
-  maxPriorityFeePerGas: bigint | null;
-  nonce: number | null;
-  value: bigint;
-};
+export function getAdvancedErrorActions(error: Error) {
+  const errorData = parseError(error);
 
-export async function getOnchainError(
+  const shouldCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
+    const isMessageMatch = pattern.msg && errorData?.errorMessage && errorData.errorMessage.includes(pattern.msg);
+
+    return isMessageMatch;
+  });
+
+  if (shouldCallStatic) {
+    return "tryCallStatic";
+  }
+
+  const shouldEstimateGas = errorData?.errorStack && errorData.errorStack.includes("estimateGas");
+
+  if (shouldEstimateGas) {
+    return "tryEstimateGas";
+  }
+
+  return undefined;
+}
+
+export function getEstimateGasError(contract: BaseContract, method: string, params: any[], txnOpts: Overrides) {
+  return contract[method]
+    .estimateGas(...params, txnOpts)
+    .then(() => {
+      return undefined;
+    })
+    .catch((error) => {
+      (error as ErrorLike).errorSource = "getEstimateGasError";
+      return error;
+    });
+}
+
+export async function getCallStaticError(
   provider: Provider,
-  txnData?: TxnData,
+  txnData?: TransactionRequest,
   txnHash?: string
-): Promise<{ error?: Error; txnData?: TxnData }> {
+): Promise<{ error?: ErrorLike; txnData?: TransactionRequest }> {
   // if txnData is not provided, try to fetch it from blockchain by txnHash
   if (!txnData && txnHash) {
     try {
@@ -243,6 +275,7 @@ export async function getOnchainError(
 
   if (!txnData) {
     const error = new Error("missed transaction data");
+    (error as ErrorLike).errorSource = "getCallStaticError";
 
     return { error };
   }
@@ -250,8 +283,54 @@ export async function getOnchainError(
   try {
     await provider.call(txnData);
   } catch (error) {
+    (error as ErrorLike).errorSource = "getCallStaticError";
+
     return { error, txnData };
   }
 
   return { txnData };
+}
+
+export function makeTransactionErrorHandler(contract: BaseContract, method: string, params: any[], txnOpts: Overrides) {
+  return async (error) => {
+    const advancedErrorAction = getAdvancedErrorActions(error);
+
+    if (!advancedErrorAction) {
+      throw error;
+    }
+
+    switch (advancedErrorAction) {
+      case "tryCallStatic": {
+        const { error: callStaticError } = await getCallStaticError(contract.runner!.provider!, {
+          data: contract.interface.encodeFunctionData(method, params),
+          to: await contract.getAddress(),
+          from: await contract.getAddress(),
+          ...txnOpts,
+        });
+
+        if (callStaticError) {
+          (callStaticError as ErrorLike).parentError = error;
+          throw callStaticError;
+        }
+
+        break;
+      }
+
+      case "tryEstimateGas": {
+        const estimateGasError = await getEstimateGasError(contract, method, params, txnOpts);
+
+        if (estimateGasError) {
+          (estimateGasError as ErrorLike).parentError = error;
+          throw estimateGasError;
+        }
+
+        break;
+      }
+
+      default:
+        mustNeverExist(advancedErrorAction);
+    }
+
+    throw error;
+  };
 }

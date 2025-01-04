@@ -5,6 +5,20 @@ import CustomErrors from "sdk/abis/CustomErrors.json";
 import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "./contracts/transactionErrors";
 import { OrderErrorContext } from "./metrics/types";
 
+export type ErrorLike = {
+  message?: string;
+  stack?: string;
+  name?: string;
+  code?: number;
+  data?: any;
+  error?: any;
+  errorSource?: string;
+  parentError?: ErrorLike;
+  info?: {
+    error?: ErrorLike;
+  };
+};
+
 export type ErrorData = {
   errorContext?: OrderErrorContext;
   errorMessage?: string;
@@ -21,16 +35,24 @@ export type ErrorData = {
   txErrorType?: TxErrorType;
   txErrorData?: unknown;
   errorSource?: string;
+  parentError?: ErrorData;
+  errorDepth?: number;
 };
 
 const URL_REGEXP =
   /((?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\.[a-z]{2,6}\b(?::\d+)?)(?:[-a-zA-Z0-9@:%_\\+.~#?&\\/\\/=]*)/gi;
 
 const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+const MAX_ERRORS_DEPTH = 1;
 
-export function parseError(error: unknown): ErrorData | undefined {
+export function parseError(error: ErrorLike | string | undefined, errorDepth = 0): ErrorData | undefined {
+  if (errorDepth > MAX_ERRORS_DEPTH) {
+    return undefined;
+  }
+
   // all human readable details are in info field
-  const errorInfo = (error as any)?.info?.error;
+  const errorInfo = typeof error === "string" ? undefined : error?.info?.error;
+  const errorSource = typeof error === "string" ? undefined : error?.errorSource;
 
   let errorMessage = "Unknown error";
   let errorStack: string | undefined = undefined;
@@ -44,6 +66,7 @@ export function parseError(error: unknown): ErrorData | undefined {
   let txErrorData: any = undefined;
   let isUserError: boolean | undefined = undefined;
   let isUserRejectedError: boolean | undefined = undefined;
+  let parentError: ErrorData | undefined = undefined;
 
   try {
     errorMessage = hasMessage(errorInfo)
@@ -59,7 +82,13 @@ export function parseError(error: unknown): ErrorData | undefined {
     }
 
     try {
-      const txError = errorInfo ? extractError(errorInfo as any) : extractError(error as any);
+      let txError: ReturnType<typeof extractError> | undefined;
+
+      if (errorInfo) {
+        txError = extractError(errorInfo);
+      } else if (error && typeof error === "object") {
+        txError = extractError(error);
+      }
 
       if (txError && txError.length) {
         const [message, type, errorData] = txError;
@@ -84,13 +113,17 @@ export function parseError(error: unknown): ErrorData | undefined {
         }
       }
     }
+
+    if (typeof error !== "string" && error?.parentError) {
+      parentError = parseError(error.parentError, errorDepth + 1);
+    }
   } catch (e) {
     //
   }
 
   if (errorStack) {
     errorStackHash = cryptoJs.SHA256(errorStack).toString(cryptoJs.enc.Hex);
-    errorStackGroup = errorStack.slice(0, 450);
+    errorStackGroup = errorStack.slice(0, 300);
     errorStackGroup = errorStackGroup.replace(URL_REGEXP, "$1");
     errorStackGroup = errorStackGroup.replace(/\d+/g, "XXX");
   }
@@ -119,6 +152,9 @@ export function parseError(error: unknown): ErrorData | undefined {
     isUserRejectedError,
     txErrorType,
     txErrorData,
+    errorSource,
+    parentError,
+    errorDepth,
   };
 }
 
