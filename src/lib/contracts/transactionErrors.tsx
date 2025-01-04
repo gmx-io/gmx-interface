@@ -3,9 +3,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
 import { Provider } from "ethers";
-import { ErrorEvent } from "lib/metrics";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { ErrorData, parseError } from "lib/parseError";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
 import { getNativeToken } from "sdk/configs/tokens";
@@ -233,54 +230,27 @@ export async function getOnchainError(
   provider: Provider,
   txnData?: TxnData,
   txnHash?: string
-): Promise<{ errorData?: ErrorData; txnData?: TxnData }> {
-  if (txnHash) {
+): Promise<{ error?: Error; txnData?: TxnData }> {
+  // if txnData is not provided, try to fetch it from blockchain by txnHash
+  if (!txnData && txnHash) {
     try {
       txnData = (await provider.getTransaction(txnHash)) || undefined;
-    } catch (e) {
-      const errorData = parseError(e);
-
-      emitMetricEvent<ErrorEvent>({
-        event: "error",
-        isError: true,
-        data: {
-          errorSource: "getOnchainError",
-          ...errorData,
-        },
-      });
-      return { txnData };
+    } catch (error) {
+      return { error };
     }
   }
 
   if (!txnData) {
-    emitMetricEvent<ErrorEvent>({
-      event: "error",
-      isError: true,
-      data: {
-        errorSource: "getOnchainError",
-        errorMessage: "missed transaction data",
-      },
-    });
+    const error = new Error("missed transaction data");
 
-    return {};
+    return { error };
   }
 
   try {
     await provider.call(txnData);
-  } catch (e) {
-    const errorData = parseError(e);
-
-    emitMetricEvent<ErrorEvent>({
-      event: "error",
-      isError: true,
-      data: {
-        errorSource: "getOnchainError",
-        ...errorData,
-      },
-    });
-
-    return { errorData, txnData };
+  } catch (error) {
+    return { error, txnData };
   }
 
-  return {};
+  return { txnData };
 }

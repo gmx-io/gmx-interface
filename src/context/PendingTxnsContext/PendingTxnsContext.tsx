@@ -7,8 +7,9 @@ import { getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees";
 import { useChainId } from "lib/chains";
 import { getOnchainError } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
-import { OrderMetricId, sendPendingOrderTxnErrorMetric } from "lib/metrics";
+import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 import { formatPercentage } from "lib/numbers";
+import { parseError } from "lib/parseError";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
@@ -62,7 +63,8 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            const { errorData, txnData } = await getOnchainError(signer.provider, undefined, pendingTxn.hash);
+            const { error: onchainError, txnData } = await getOnchainError(signer.provider, undefined, pendingTxn.hash);
+            const errorData = parseError(onchainError);
 
             let toastMsg: ReactNode;
 
@@ -114,7 +116,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
             helperToast.error(toastMsg, { autoClose: false });
 
             if (pendingTxn.metricId) {
-              sendPendingOrderTxnErrorMetric(pendingTxn.metricId);
+              sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
               sendUserAnalyticsOrderResultEvent(chainId, pendingTxn.metricId, false);
             }
           }
