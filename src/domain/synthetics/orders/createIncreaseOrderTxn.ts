@@ -106,7 +106,7 @@ export async function createIncreaseOrderTxn({
   const walletExchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const exchangeRouter = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : walletExchangeRouter;
 
-  await validateSignerAddress(subaccount?.signer ?? signer, p.account);
+  await validateSignerAddress(signer, p.account);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;

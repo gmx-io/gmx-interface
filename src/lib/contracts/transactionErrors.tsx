@@ -205,7 +205,8 @@ export function getInvalidNetworkErrorMessage(chainId: number) {
 
 export async function validateSignerAddress(signer: Signer, receiverAddress: string) {
   const signerAddress = await signer.getAddress();
-  if (signerAddress === receiverAddress) {
+
+  if (signerAddress !== receiverAddress) {
     helperToast.error(
       <Trans>
         <div>Error submitting order.</div>

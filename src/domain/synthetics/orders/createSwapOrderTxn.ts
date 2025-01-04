@@ -44,7 +44,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
   subaccount = isNativePayment ? null : subaccount;
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
-  await validateSignerAddress(subaccount?.signer ?? signer, p.account);
+  await validateSignerAddress(signer, p.account);
 
   const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(router, signer, subaccount, chainId, p);
   const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(

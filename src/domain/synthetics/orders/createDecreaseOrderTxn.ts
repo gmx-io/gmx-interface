@@ -69,7 +69,7 @@ export async function createDecreaseOrderTxn(
   const account = ps[0].account;
 
   for (const p of ps) {
-    await validateSignerAddress(subaccount?.signer ?? signer, p.account);
+    await validateSignerAddress(signer, p.account);
   }
 
   const encodedPayload = createDecreaseEncodedPayload({
