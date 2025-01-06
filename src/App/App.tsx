@@ -66,7 +66,10 @@ function App() {
             helperToast.error(
               <div>
                 <Trans>
-                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
+                  Txn failed.{" "}
+                  <ExternalLink className="!text-white" href={txUrl}>
+                    View
+                  </ExternalLink>
                 </Trans>
                 <br />
               </div>
