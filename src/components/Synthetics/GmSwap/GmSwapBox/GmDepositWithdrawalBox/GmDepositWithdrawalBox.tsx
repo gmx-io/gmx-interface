@@ -909,7 +909,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
         {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && <div className="App-card-divider " />}
 
-        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
+        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
               const token = getTokenData(allTokensData, address)!;

@@ -4656,12 +4656,16 @@ msgstr "스왑 주문 제출 완료!"
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/SubaccountModal/utils.ts
+#: src/components/Synthetics/TradeBox/hooks/useTradeWarningsRows.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
