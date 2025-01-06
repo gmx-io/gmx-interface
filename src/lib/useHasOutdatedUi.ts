@@ -13,19 +13,19 @@ export function useHasOutdatedUi() {
   const { active } = useWallet();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
-  const { data, mutate } = useSWR([chainId, active], {
+  const { data: minVersion, mutate } = useSWR([chainId, active], {
     fetcher: () => oracleKeeperFetcher.fetchUiVersion(UI_VERSION, active),
   });
 
   let hasOutdatedUi = false;
 
-  if (data && parseFloat(data) > parseFloat(UI_VERSION)) {
+  if (typeof minVersion === "number" && minVersion > UI_VERSION) {
     hasOutdatedUi = true;
   }
 
   if (isDevelopment()) {
     const localStorageVersion = localStorage.getItem(REQUIRED_UI_VERSION_KEY);
-    hasOutdatedUi = Boolean(localStorageVersion && parseFloat(localStorageVersion) > parseFloat(UI_VERSION));
+    hasOutdatedUi = Boolean(localStorageVersion && parseFloat(localStorageVersion) > UI_VERSION);
   }
 
   return { data: hasOutdatedUi, mutate };
