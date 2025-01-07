@@ -28,7 +28,7 @@ export function getNeedTokenApprove(
   tokenAddress: string | undefined,
   amountToSpend: bigint | undefined
 ): boolean {
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined) {
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined || amountToSpend <= 0n) {
     return false;
   }
 
