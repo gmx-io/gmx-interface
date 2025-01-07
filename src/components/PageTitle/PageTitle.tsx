@@ -5,8 +5,8 @@ import { useChainId } from "lib/chains";
 import cx from "classnames";
 
 type Props = {
-  title: string;
-  subtitle?: string | ReactNode;
+  title: ReactNode;
+  subtitle?: ReactNode;
   className?: string;
   isTop?: boolean;
   showNetworkIcon?: boolean;

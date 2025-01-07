@@ -9,11 +9,15 @@ import { getIsEquivalentTokens, getTokenData } from "sdk/utils/tokens";
 export * from "sdk/utils/tokens";
 
 export function getNeedTokenApprove(
-  tokenAllowanceData: TokensAllowanceData,
-  tokenAddress: string,
-  amountToSpend: bigint
+  tokenAllowanceData: TokensAllowanceData | undefined,
+  tokenAddress: string | undefined,
+  amountToSpend: bigint | undefined
 ): boolean {
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS || tokenAllowanceData[tokenAddress] === undefined) {
+  if (!tokenAllowanceData || !tokenAddress || tokenAllowanceData?.[tokenAddress] === undefined) {
+    return true;
+  }
+
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined) {
     return false;
   }
 

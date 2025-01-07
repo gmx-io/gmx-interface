@@ -401,7 +401,8 @@ export default function GlpSwap(props) {
   let stakedGlpTrackerApr;
 
   if (
-    gmxPrice &&
+    gmxPrice !== undefined &&
+    gmxPrice > 0n &&
     stakingData &&
     stakingData.stakedGlpTracker !== undefined &&
     stakingData.stakedGlpTracker.tokensPerInterval !== undefined &&

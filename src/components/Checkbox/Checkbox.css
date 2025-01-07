@@ -1,8 +1,13 @@
 .Checkbox {
-  user-select: none;
   cursor: pointer;
   display: flex;
   align-items: center;
+}
+
+@media (pointer: coarse) {
+  .Checkbox {
+    user-select: none;
+  }
 }
 
 .Checkbox.disabled {

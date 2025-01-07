@@ -2,10 +2,9 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { getContract } from "config/contracts";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -18,21 +17,19 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
-  getMarketIndexName,
   getGlvOrMarketAddress,
+  getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token, getMinResidualAmount } from "domain/tokens";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
 
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -44,21 +41,23 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import type { GmSwapBoxProps } from "../GmSwapBox";
-import { showMarketToast } from "../showMarketToast";
-import { Mode, Operation } from "../types";
+import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
+import { useGmWarningState } from "../useGmWarningState";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
+import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
+import { useSubmitButtonState } from "./useSubmitButtonState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
+
+import type { GmSwapBoxProps } from "../GmSwapBox";
 import { Swap } from "../Swap";
+import { showMarketToast } from "../showMarketToast";
+import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
-import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
-import { useSubmitButtonState } from "./useSubmitButtonState";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
@@ -104,8 +103,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
     focusedInput,
     setFocusedInput,
-    isHighPriceImpactAccepted,
-    setIsHighPriceImpactAccepted,
     firstTokenAddress,
     setFirstTokenAddress,
     secondTokenAddress,
@@ -371,13 +368,17 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isMarketTokenDeposit,
   });
 
-  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
-    executionFee?.feeUsd
-  );
-
-  const isHighPriceImpact =
-    (fees?.swapPriceImpact?.deltaUsd ?? 0) < 0 &&
-    bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= HIGH_PRICE_IMPACT_BPS;
+  const {
+    isAccepted,
+    setIsAccepted,
+    consentError,
+    shouldShowWarning,
+    shouldShowWarningForExecutionFee,
+    shouldShowWarningForPosition,
+  } = useGmWarningState({
+    executionFee,
+    fees,
+  });
 
   const submitState = useSubmitButtonState({
     routerAddress,
@@ -385,8 +386,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     executionFee,
     fees,
     isDeposit,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
+    consentError,
     marketInfo,
     glvInfo,
     marketToken: marketToken!,
@@ -401,7 +401,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     marketTokensData,
     selectedMarketForGlv,
     selectedMarketInfoForGlv: getByKey(marketsInfoData, selectedMarketForGlv),
-    isHighFeeConsentError,
     isMarketTokenDeposit: isMarketTokenDeposit,
     marketsInfoData,
   });
@@ -897,19 +896,20 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           fees={fees}
           glvInfo={glvInfo}
           executionFee={executionFee}
-          isHighPriceImpact={isHighPriceImpact}
+          setIsAccepted={setIsAccepted}
+          shouldShowWarning={shouldShowWarning}
+          shouldShowWarningForPosition={shouldShowWarningForPosition}
+          shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+          isAccepted={isAccepted}
           disablePoolSelector={fromMarketTokenInputState !== undefined}
           selectedMarketForGlv={selectedMarketForGlv}
-          isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-          setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
           isSingle={isSingle}
           onMarketChange={glvInfo ? onMarketChange : onGlvOrMarketChange}
         />
 
-        {((submitState.tokensToApprove && submitState.tokensToApprove.length > 0) ||
-          highExecutionFeeAcknowledgement) && <div className="App-card-divider " />}
+        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && <div className="App-card-divider " />}
 
-        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
+        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
               const token = getTokenData(allTokensData, address)!;
@@ -934,10 +934,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             })}
           </div>
         )}
-
-        {highExecutionFeeAcknowledgement ? (
-          <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
-        ) : null}
 
         <div className="Exchange-swap-button-container">{submitButton}</div>
       </form>

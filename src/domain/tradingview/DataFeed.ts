@@ -11,16 +11,9 @@ import {
 } from "charting_library";
 import range from "lodash/range";
 
-import { getTvParamsCacheKey } from "config/localStorage";
-import {
-  getNativeToken,
-  getTokenBySymbol,
-  getTokenVisualMultiplier,
-  isChartAvailableForToken,
-} from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph, getLimitChartPricesFromStats } from "domain/prices";
-import { Bar, FromOldToNewArray, TvParamsCache } from "domain/tradingview/types";
+import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
   formatTimeInBarToMs,
   getCurrentCandleTime,
@@ -32,6 +25,12 @@ import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestI
 import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
+import {
+  getNativeToken,
+  getTokenBySymbol,
+  getTokenVisualMultiplier,
+  isChartAvailableForToken,
+} from "sdk/configs/tokens";
 
 const RESOLUTION_TO_SECONDS = {
   1: 60,
@@ -46,17 +45,20 @@ const RESOLUTION_TO_SECONDS = {
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
+let metricsIsFirstDrawTime = true;
 
 const V1_UPDATE_INTERVAL = 1000;
 const V2_UPDATE_INTERVAL = 1000;
+
+const PREFETCH_CANDLES_COUNT = 300;
 
 export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
   private visibilityHandler: () => void;
 
-  declare addEventListener: (event: "candlesLoad.success", callback: EventListenerOrEventListenerObject) => void;
-  declare removeEventListener: (event: "candlesLoad.success", callback: EventListenerOrEventListenerObject) => void;
+  declare addEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
+  declare removeEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
 
   constructor(
     private chainId: number,
@@ -128,24 +130,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     onResult: HistoryCallback,
     onError: DatafeedErrorCallback
   ): Promise<void> {
-    let isFirst = metricsIsFirstLoadTime;
-    metricsIsFirstLoadTime = false;
-
-    metricsRequestId = metricsRequestId ?? getRequestId();
-
-    metrics.pushEvent<LoadingStartEvent>({
-      event: "candlesLoad.started",
-      isError: false,
-      time: metrics.getTime("candlesLoad", true),
-      data: {
-        requestId: metricsRequestId,
-        isFirstTimeLoad: isFirst,
-      },
-    });
-
-    metrics.startTimer("candlesLoad");
-
     const to = periodParams.to;
+
+    const isFirstDraw = metricsIsFirstDrawTime;
+    metricsIsFirstDrawTime = false;
 
     const offset = Math.trunc(Math.max((Date.now() / 1000 - to) / RESOLUTION_TO_SECONDS[resolution], 0));
     // During a first data request we fetch regular amount of candles
@@ -160,13 +148,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     let bars: FromOldToNewArray<Bar> = [];
     try {
       if (!isStable) {
-        bars = await this.fetchCandles(
-          symbolInfo.name,
-          resolution,
-          countBack + offset,
-          false,
-          periodParams.firstDataRequest
-        );
+        bars = await this.fetchCandles(symbolInfo.name, resolution, countBack + offset);
       } else {
         const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
         bars = this.getStableCandles(currentCandleTime, resolution, countBack + offset);
@@ -174,25 +156,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     } catch (e) {
       onError(String(e));
 
-      const metricData = prepareErrorMetricData(e);
-
-      metrics.pushEvent<LoadingFailedEvent>({
-        event: "candlesLoad.failed",
-        isError: true,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: isFirst,
-          ...metricData,
-        },
-      });
-
       metrics.pushEvent<LoadingFailedEvent>({
         event: "candlesDisplay.failed",
         isError: true,
         time: metrics.getTime("candlesDisplay", true),
         data: {
           requestId: metricsRequestId!,
+          isFirstTimeLoad: isFirstDraw,
         },
       });
 
@@ -213,37 +183,23 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     onResult(barsToReturn, { noData: offset + countBack >= 10_000 });
 
     metrics.pushEvent<LoadingSuccessEvent>({
-      event: "candlesLoad.success",
-      isError: false,
-      time: metrics.getTime("candlesLoad", true),
-      data: {
-        requestId: metricsRequestId!,
-        isFirstTimeLoad: isFirst,
-      },
-    });
-
-    this.dispatchEvent(
-      new CustomEvent("candlesLoad.success", {
-        detail: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: isFirst,
-        },
-      })
-    );
-
-    metrics.pushEvent<LoadingSuccessEvent>({
       event: "candlesDisplay.success",
       isError: false,
       time: metrics.getTime("candlesDisplay", true),
       data: {
         requestId: metricsRequestId!,
-        isFirstTimeLoad: isFirst,
+        isFirstTimeLoad: isFirstDraw,
       },
     });
 
-    if (periodParams.firstDataRequest) {
-      this.saveTVParamsCache(this.chainId, { resolution, countBack: periodParams.countBack });
-    }
+    this.dispatchEvent(
+      new CustomEvent("candlesDisplay.success", {
+        detail: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: isFirstDraw,
+        },
+      })
+    );
   }
 
   subscribeBars(
@@ -349,55 +305,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }, 0);
   }
 
-  prefetchBars(symbol: string): void {
-    if (symbol in this.prefetchedBarsPromises) {
+  prefetchBars(symbol: string, resolution: ResolutionString): void {
+    const prefetchKey = `${symbol}-${resolution}`;
+    if (prefetchKey in this.prefetchedBarsPromises) {
       return;
     }
 
-    const tvParams = this.getInitialTVParamsFromCache(this.chainId);
-
-    if (!tvParams) {
-      return;
-    }
-
-    this.prefetchedBarsPromises[symbol] = this.fetchCandles(symbol, tvParams.resolution, tvParams.countBack, true);
-  }
-
-  private getInitialTVParamsFromCache(chainId: number) {
-    const tvCache = localStorage.getItem(getTvParamsCacheKey(chainId, this.tradePageVersion === 1));
-
-    if (!tvCache) {
-      return undefined;
-    }
-
-    let resolution: ResolutionString;
-    let countBack: number;
-
-    try {
-      const cache: TvParamsCache = JSON.parse(tvCache);
-      resolution = cache.resolution;
-      countBack = cache.countBack;
-    } catch (e) {
-      return undefined;
-    }
-
-    const period = SUPPORTED_RESOLUTIONS_V2[resolution];
-
-    if (!period) {
-      return undefined;
-    }
-
-    return {
-      countBack,
-      resolution,
-    };
-  }
-
-  private saveTVParamsCache(chainId: number, { resolution, countBack }: TvParamsCache) {
-    localStorage.setItem(
-      getTvParamsCacheKey(chainId, this.tradePageVersion === 1),
-      JSON.stringify({ resolution, countBack })
-    );
+    this.prefetchedBarsPromises[prefetchKey] = this.fetchCandles(symbol, resolution, PREFETCH_CANDLES_COUNT, true);
   }
 
   private pauseAll() {
@@ -412,19 +326,37 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     symbol: string,
     resolution: ResolutionString,
     count: number,
-    isPrefetch = false,
-    isFirstFetch = false
+    isPrefetch = false
   ): Promise<FromOldToNewArray<Bar>> {
-    if (symbol in this.prefetchedBarsPromises && !isPrefetch && isFirstFetch) {
-      const promise = this.prefetchedBarsPromises[symbol];
-      delete this.prefetchedBarsPromises[symbol];
+    const prefetchKey = `${symbol}-${resolution}`;
+    if (prefetchKey in this.prefetchedBarsPromises && !isPrefetch && metricsIsFirstLoadTime) {
+      metricsIsFirstLoadTime = false;
+      const promise = this.prefetchedBarsPromises[prefetchKey];
+      delete this.prefetchedBarsPromises[prefetchKey];
       return await promise;
     }
 
+    metricsRequestId = metricsRequestId ?? getRequestId();
+
+    metrics.pushEvent<LoadingStartEvent>({
+      event: "candlesLoad.started",
+      isError: false,
+      time: metrics.getTime("candlesLoad", true),
+      data: {
+        requestId: metricsRequestId,
+        isFirstTimeLoad: isPrefetch,
+      },
+    });
+
+    metrics.startTimer("candlesLoad");
+
     count = Math.min(count, 10000);
 
+    let success = true;
+    let result: FromOldToNewArray<Bar> = [];
+
     if (this.tradePageVersion === 1) {
-      return Promise.race([
+      result = await Promise.race([
         getLimitChartPricesFromStats(this.chainId, symbol, SUPPORTED_RESOLUTIONS_V1[resolution], count),
         sleep(5000).then(() => Promise.reject("Stats candles timeout")),
       ])
@@ -437,31 +369,49 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           ]);
         })
         .catch((ex) => {
+          success = false;
+          onCandlesLoadFailed(ex, isPrefetch);
+          // eslint-disable-next-line no-console
+          console.warn("Load history candles failed", ex);
+          return [];
+        });
+    } else {
+      result = await Promise.race([
+        this.oracleFetcher
+          .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
+          .then((bars) => bars.slice().reverse()),
+        sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
+      ])
+        .catch((ex) => {
+          // eslint-disable-next-line no-console
+          console.warn(ex, "Switching to graph chainlink data");
+          return Promise.race([
+            getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
+            sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
+          ]);
+        })
+        .catch((ex) => {
+          success = false;
+          onCandlesLoadFailed(ex, isPrefetch);
           // eslint-disable-next-line no-console
           console.warn("Load history candles failed", ex);
           return [];
         });
     }
 
-    return Promise.race([
-      this.oracleFetcher
-        .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
-        .then((bars) => bars.slice().reverse()),
-      sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
-    ])
-      .catch((ex) => {
-        // eslint-disable-next-line no-console
-        console.warn(ex, "Switching to graph chainlink data");
-        return Promise.race([
-          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
-          sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
-        ]);
-      })
-      .catch((ex) => {
-        // eslint-disable-next-line no-console
-        console.warn("Load history candles failed", ex);
-        return [];
+    if (success) {
+      metrics.pushEvent<LoadingSuccessEvent>({
+        event: "candlesLoad.success",
+        isError: false,
+        time: metrics.getTime("candlesLoad", true),
+        data: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: isPrefetch,
+        },
       });
+    }
+
+    return result;
   }
 
   private getStableCandles(to: number, resolution: ResolutionString, count: number) {
@@ -479,4 +429,19 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     Object.values(this.subscriptions).forEach((subscription) => subscription.destroy());
     document.removeEventListener("visibilitychange", this.visibilityHandler);
   }
+}
+
+function onCandlesLoadFailed(ex: any, isPrefetch: boolean) {
+  const metricData = prepareErrorMetricData(ex);
+
+  metrics.pushEvent<LoadingFailedEvent>({
+    event: "candlesLoad.failed",
+    isError: true,
+    time: metrics.getTime("candlesLoad", true),
+    data: {
+      requestId: metricsRequestId!,
+      isFirstTimeLoad: isPrefetch,
+      ...metricData,
+    },
+  });
 }

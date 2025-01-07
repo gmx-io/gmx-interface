@@ -13,7 +13,6 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { USD_DECIMALS } from "config/factors";
-import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
@@ -28,7 +27,7 @@ import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "dom
 import { formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { applySlippageToPrice } from "sdk/utils/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
@@ -43,10 +42,11 @@ import {
 } from "lib/numbers";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
+import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
@@ -78,15 +78,14 @@ import { helperToast } from "lib/helperToast";
 import {
   initDecreaseOrderMetricData,
   makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 import "./PositionSeller.scss";
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -209,27 +208,23 @@ export function PositionSeller(p: Props) {
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
   const executionPrice = useSelector(selectPositionSellerExecutionPrice);
 
-  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
-    executionFee?.feeUsd
-  );
-
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionCollateralPriceImpact,
+    collateralImpact: fees?.positionCollateralPriceImpact,
+    positionImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    place: "positionSeller",
+    swapProfitFee: fees?.swapProfitFee,
+    executionFeeUsd: executionFee?.feeUsd,
     tradeFlags,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
-  const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
-  const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+  const setIsAcceptedLatestRef = useLatest(priceImpactWarningState.setIsAccepted);
 
   useEffect(() => {
     if (isVisible) {
-      setIsHighPositionImpactAcceptedLatestRef.current(false);
-      setIsHighSwapImpactAcceptedLatestRef.current(false);
+      setIsAcceptedLatestRef.current(false);
     }
-  }, [setIsHighPositionImpactAcceptedLatestRef, setIsHighSwapImpactAcceptedLatestRef, isVisible, orderOption]);
+  }, [setIsAcceptedLatestRef, isVisible, orderOption]);
 
   const error = useMemo(() => {
     if (!position) {
@@ -264,8 +259,8 @@ export function PositionSeller(p: Props) {
       return commonError[0] || decreaseError[0];
     }
 
-    if (isHighFeeConsentError) {
-      return [t`High Network Fee not yet acknowledged`];
+    if (priceImpactWarningState.validationError) {
+      return [t`Acknowledgment Required`];
     }
 
     if (isSubmitting) {
@@ -277,7 +272,6 @@ export function PositionSeller(p: Props) {
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
     hasOutdatedUi,
-    isHighFeeConsentError,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
     isTrigger,
@@ -647,14 +641,10 @@ export function PositionSeller(p: Props) {
 
               <ExchangeInfo.Group>{receiveTokenRow}</ExchangeInfo.Group>
 
-              {(priceImpactWarningState.shouldShowWarning || highExecutionFeeAcknowledgement) && (
+              {priceImpactWarningState.shouldShowWarning && (
                 <ExchangeInfo.Group>
                   <div className="PositionSeller-price-impact-warning">
-                    {priceImpactWarningState.shouldShowWarning && (
-                      <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
-                    )}
-
-                    {highExecutionFeeAcknowledgement}
+                    <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
                   </div>
                 </ExchangeInfo.Group>
               )}
