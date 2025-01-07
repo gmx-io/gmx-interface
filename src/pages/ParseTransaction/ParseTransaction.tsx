@@ -53,7 +53,7 @@ const NETWORKS = {
   fuji: AVALANCHE_FUJI,
 };
 
-const NETWORKS_BY_CHAIN_IDS = {
+export const NETWORKS_BY_CHAIN_IDS = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
