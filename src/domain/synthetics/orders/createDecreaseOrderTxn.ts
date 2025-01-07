@@ -17,6 +17,7 @@ import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { OrderMetricId } from "lib/metrics";
 import { prepareOrderTxn } from "./prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
@@ -68,6 +69,11 @@ export async function createDecreaseOrderTxn(
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const totalWntAmount = ps.reduce((acc, p) => acc + p.executionFee, 0n);
   const account = ps[0].account;
+
+  for (const p of ps) {
+    await validateSignerAddress(signer, p.account);
+  }
+
   const encodedPayload = createDecreaseEncodedPayload({
     router,
     orderVaultAddress,
