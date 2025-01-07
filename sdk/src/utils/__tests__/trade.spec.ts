@@ -1,4 +1,4 @@
-import { applySlippageToMinOut, applySlippageToPrice } from "./trade";
+import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 
 describe("applySlippageToPrice", () => {
   it("applies positive slippage if getShouldUseMaxPrice is true", () => {

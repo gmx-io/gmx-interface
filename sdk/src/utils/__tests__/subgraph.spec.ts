@@ -1,4 +1,4 @@
-import { buildFiltersBody, GraphQlFilters } from "./subgraph";
+import { buildFiltersBody, GraphQlFilters } from "../subgraph";
 
 describe("buildFiltersBody", () => {
   it("should return empty object if no filters", () => {

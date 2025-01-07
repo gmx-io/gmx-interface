@@ -1,4 +1,4 @@
-import { decodeReferralCode, encodeReferralCode, MAX_REFERRAL_CODE_LENGTH } from "./referrals";
+import { decodeReferralCode, encodeReferralCode, MAX_REFERRAL_CODE_LENGTH } from "../referrals";
 import { zeroHash } from "viem";
 
 describe("utils/referrals", () => {

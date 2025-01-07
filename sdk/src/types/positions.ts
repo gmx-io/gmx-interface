@@ -1,5 +1,4 @@
 import { Market, MarketInfo } from "./markets";
-import { PendingPositionUpdate } from "./syntheticsEvents";
 import { TokenData } from "./tokens";
 
 export type Position = {
@@ -19,7 +18,6 @@ export type Position = {
   claimableLongTokenAmount: bigint;
   claimableShortTokenAmount: bigint;
   isOpening?: boolean;
-  pendingUpdate?: PendingPositionUpdate;
   pnl: bigint;
   positionFeeAmount: bigint;
   traderDiscountAmount: bigint;

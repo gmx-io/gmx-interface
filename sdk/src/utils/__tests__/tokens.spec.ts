@@ -8,8 +8,8 @@ import {
   getIsEquivalentTokens,
   getTokenData,
   getTokensRatioByAmounts,
-} from "./tokens";
-import { expandDecimals, PRECISION } from "./numbers";
+} from "../tokens";
+import { expandDecimals, PRECISION } from "../numbers";
 import { TOKENS } from "configs/tokens";
 import { ARBITRUM } from "configs/chains";
 import { Token, TokensData } from "types/tokens";

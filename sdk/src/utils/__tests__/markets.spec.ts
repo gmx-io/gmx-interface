@@ -16,12 +16,12 @@ import {
   getOpenInterestUsd,
   getOpenInterestInTokens,
   getPriceForPnl,
-} from "./markets";
-import { MarketInfo } from "../types/markets";
-import { Token, TokensData } from "../types/tokens";
+} from "../markets";
+import { MarketInfo } from "../../types/markets";
+import { Token, TokensData } from "../../types/tokens";
 import { TOKENS } from "configs/tokens";
 import { ARBITRUM } from "configs/chains";
-import { expandDecimals } from "./numbers";
+import { expandDecimals } from "../numbers";
 
 function getToken(symbol: string) {
   return TOKENS[ARBITRUM].find((token) => token.symbol === symbol) as Token;

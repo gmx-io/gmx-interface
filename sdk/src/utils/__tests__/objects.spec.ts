@@ -1,4 +1,4 @@
-import { setByKey, updateByKey, getByKey } from "./objects";
+import { setByKey, updateByKey, getByKey } from "../objects";
 describe("setByKey", () => {
   it("should set a key in an object", () => {
     const obj = { a: 1, b: 2 };

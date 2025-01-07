@@ -1,5 +1,5 @@
-import { hashData, hashString, hashDataMap } from "./hash";
-import { LRUCache } from "./LruCache";
+import { hashData, hashString, hashDataMap } from "../hash";
+import { LRUCache } from "../LruCache";
 
 describe("hashData", () => {
   it("returns a valid hash and caches it", () => {

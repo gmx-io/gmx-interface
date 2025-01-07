@@ -27,25 +27,7 @@ import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo, PositionInfoLoaded } from "./types";
 
-export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
-  return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
-}
-
-export function parsePositionKey(positionKey: string) {
-  const [account, marketAddress, collateralAddress, isLong] = positionKey.split(":");
-
-  return { account, marketAddress, collateralAddress, isLong: isLong === "true" };
-}
-
-export function getEntryPrice(p: { sizeInUsd: bigint; sizeInTokens: bigint; indexToken: Token }) {
-  const { sizeInUsd, sizeInTokens, indexToken } = p;
-
-  if (sizeInTokens <= 0) {
-    return undefined;
-  }
-
-  return bigMath.mulDiv(sizeInUsd, expandDecimals(1, indexToken.decimals), sizeInTokens);
-}
+export * from "sdk/utils/positions";
 
 export function getPositionValueUsd(p: { indexToken: Token; sizeInTokens: bigint; markPrice: bigint }) {
   const { indexToken, sizeInTokens, markPrice } = p;

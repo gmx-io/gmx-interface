@@ -1,8 +1,8 @@
 import { MarketInfo } from "types/markets";
 import { Token } from "types/tokens";
-import { bigMath } from "./bigmath";
-import { getPositionFee, getPriceImpactForPosition } from "./fees";
-import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "./markets";
+import { bigMath } from "../bigmath";
+import { getPositionFee, getPriceImpactForPosition } from "../fees";
+import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "../markets";
 import {
   getEntryPrice,
   getLeverage,
@@ -13,8 +13,8 @@ import {
   getPositionPnlUsd,
   getPositionValueUsd,
   parsePositionKey,
-} from "./positions";
-import { convertToUsd, getIsEquivalentTokens } from "./tokens";
+} from "../positions";
+import { convertToUsd, getIsEquivalentTokens } from "../tokens";
 
 jest.mock("./markets", () => ({
   ...jest.requireActual("./markets"),

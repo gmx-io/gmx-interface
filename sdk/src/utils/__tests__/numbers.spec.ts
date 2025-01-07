@@ -8,7 +8,7 @@ import {
   getBasisPoints,
   roundUpMagnitudeDivision,
   applyFactor,
-} from "./numbers";
+} from "../numbers";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 
 describe("numbers utils", () => {

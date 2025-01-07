@@ -1,4 +1,4 @@
-import { bigMath } from "./bigmath";
+import { bigMath } from "../bigmath";
 
 describe("bigMath", () => {
   describe("abs", () => {

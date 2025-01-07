@@ -1,4 +1,4 @@
-import { LRUCache } from "./LruCache";
+import { LRUCache } from "../LruCache";
 
 describe("LruCache", () => {
   it("should store and retrieve values", () => {

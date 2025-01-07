@@ -1,4 +1,4 @@
-import { getMarkPrice, getShouldUseMaxPrice, getTriggerThresholdType } from "./prices";
+import { getMarkPrice, getShouldUseMaxPrice, getTriggerThresholdType } from "../prices";
 import { OrderType } from "types/orders";
 import { TokenPrices } from "types/tokens";
 import { TriggerThresholdType } from "types/trade";
