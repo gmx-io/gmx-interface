@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { erc20Abi } from "viem";
 
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { TokensAllowanceData } from "./types";
 
 type TokenAllowanceResult = { tokensAllowanceData?: TokensAllowanceData; isLoading: boolean; isLoaded: boolean };
@@ -87,8 +87,7 @@ export function useTokensAllowanceData(
     return newData;
   }, [spenderAddress, validAddresses, data, approvalStatuses]);
 
-  const isLoaded =
-    p.tokenAddresses.length > 0 && p.tokenAddresses.every((address) => mergedData?.[address] !== undefined);
+  const isLoaded = validAddresses.length > 0 && validAddresses.every((address) => mergedData?.[address] !== undefined);
   const isLoading = Boolean(key) && !isLoaded;
 
   return {
