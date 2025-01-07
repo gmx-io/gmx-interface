@@ -23,7 +23,7 @@ export function TransactionStatus({ status, text, txnHash }: Props) {
     <div className="text-sm flex w-full items-center justify-between gap-8 py-2 text-14">
       <div
         className={cx({
-          muted: status === "muted",
+          "text-gray-200": status === "muted",
         })}
       >
         {text}
