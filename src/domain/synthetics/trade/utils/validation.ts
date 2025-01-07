@@ -829,7 +829,7 @@ export function getGmShiftError({
     return [t`Amount should be greater than zero`];
   }
 
-  if (fromTokenAmount === undefined || fromTokenAmount < 0 || toTokenAmount === undefined || toTokenAmount < 0) {
+  if (fromTokenAmount === undefined || fromTokenAmount <= 0n || toTokenAmount === undefined || toTokenAmount <= 0n) {
     return [t`Enter an amount`];
   }
 
