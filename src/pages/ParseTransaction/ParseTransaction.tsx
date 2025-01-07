@@ -1,55 +1,50 @@
-import * as ethers from "ethers";
-import { useParams } from "react-router-dom";
-import Errors from "sdk/abis/CustomErrors.json";
-import EventEmitter from "sdk/abis/EventEmitter.json";
+import cx from "classnames";
+import { Link, useParams } from "react-router-dom";
 import useSWR from "swr";
-import { Abi, Hash, isHash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
+import { Hash, isHash, PublicClient } from "viem";
 import { usePublicClient } from "wagmi";
 
 import Loader from "components/Common/Loader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Table, TableTd, TableTr } from "components/Table/Table";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import {
   getGlvDisplayName,
   getMarketFullName,
   useMarketsInfoRequest,
   useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
-import { expandDecimals, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
+import { useCallback, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { useCopyToClipboard } from "react-use";
 import { Fragment } from "react/jsx-runtime";
-import { LogEntry, LogEntryComponentProps } from "./types";
 import {
+  formatAmount30Decimals,
   formatAmountByCollateralToken,
+  formatAmountByCollateralToken15Shift,
   formatAmountByEvent,
   formatAmountByField,
+  formatAmountByIndexToken,
+  formatAmountByLongToken15Shift,
+  formatAmountByMarketToken,
+  formatAmountByMarketTokenInDeposit,
   formatAmountByNativeToken,
+  formatAmountByShortToken15Shift,
   formatByMarketLongOrShortToken,
   formatDateField,
+  formatPrice,
   formatPriceByCollateralToken,
   formatPriceByIndexToken,
   formatPriceByToken,
 } from "./formatting";
-
-const PANIC_SIGNATURE4 = ethers.id("Panic(uint256)").slice(0, 10);
-const PANIC_MAP = {
-  0x00: "generic compiler inserted panics",
-  0x01: "call assert with an argument that evaluates to false",
-  0x11: "arithmetic operation results in underflow or overflow outside of an unchecked { ... } block.",
-  0x12: "divide or modulo operation by zero (e.g. 5 / 0 or 23 % 0)",
-  0x21: "convert a value that is too big or negative into an enum type",
-  0x22: "access a storage byte array that is incorrectly encoded",
-  0x31: "call .pop() on an empty array.",
-  0x32: "access an array, bytesN or an array slice at an out-of-bounds or negative index",
-  0x41: "allocate too much memory or create an array that is too large",
-  0x51: "call a zero-initialized variable of internal function type.",
-};
+import { parseTxEvents } from "./parseTxEvents";
+import { LogEntryComponentProps } from "./types";
 
 const NETWORKS = {
   arbitrum: ARBITRUM,
@@ -63,117 +58,11 @@ const NETWORKS_BY_CHAIN_IDS = {
   [AVALANCHE_FUJI]: "fuji",
 };
 
-const EXPLORER_URLS = {
-  [ARBITRUM]: "https://arbiscan.io/tx/",
-  [AVALANCHE]: "https://snowtrace.io/tx/",
-  [AVALANCHE_FUJI]: "https://testnet.snowtrace.io/tx/",
+const EXPLORER_TX_URLS = {
+  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "/tx/",
+  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "/tx/",
+  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "/tx/",
 };
-
-const errorsInterface = new ethers.Interface(Errors.abi);
-const eventEmitterInterface = new ethers.Interface(EventEmitter.abi);
-const defaultAbiCoder = new ethers.AbiCoder();
-
-function getErrorString(error: { name: string; args: any[] }) {
-  return JSON.stringify({
-    name: error.name,
-    args: error.args.map((value) => value.toString()),
-  });
-}
-
-function parseError(reasonBytes, shouldThrow = true) {
-  if (reasonBytes.startsWith(PANIC_SIGNATURE4)) {
-    const [panicCode] = defaultAbiCoder.decode(["uint256"], "0x" + reasonBytes.slice(10));
-    return {
-      name: "Panic",
-      args: [panicCode.toString(), PANIC_MAP[panicCode.toString()]],
-    } as any;
-  }
-
-  try {
-    const reason = errorsInterface.parseError(reasonBytes);
-    return reason;
-  } catch (e) {
-    if (!shouldThrow) {
-      return;
-    }
-    throw new Error(`Could not parse errorBytes ${reasonBytes}`);
-  }
-}
-
-export function convertToContractPrice(price: bigint, tokenDecimals: number) {
-  return price / expandDecimals(1, tokenDecimals);
-}
-
-export function convertFromContractPrice(price: bigint, tokenDecimals: number) {
-  return price * expandDecimals(1, tokenDecimals);
-}
-
-function parseEvent(event: ParseEventLogsReturnType<Abi, undefined, true, undefined>[number]) {
-  const values: LogEntry[] = [];
-  const parsedLog = eventEmitterInterface.parseLog(event);
-
-  if (!parsedLog) {
-    return {
-      key: `${event.logIndex}${event.transactionHash}`,
-      topics: event.topics,
-      name: event.eventName,
-      values: [],
-    };
-  }
-
-  const eventName = parsedLog.args[1];
-  const eventData = parsedLog.args[parsedLog.args.length - 1];
-
-  for (const type of ["address", "uint", "int", "bool", "bytes32", "bytes", "string"]) {
-    const key = `${type}Items`;
-    for (const item of eventData[key].items) {
-      const value: LogEntry = {
-        item: item.key,
-        value: type === "bytes32" ? item.value.toString() : item.value,
-        type,
-      };
-
-      if (item.key === "reasonBytes") {
-        const error = parseError(item.value, false);
-        const parsedReason = error ? getErrorString(error) : undefined;
-        value.error = parsedReason;
-      }
-
-      values.push(value);
-    }
-
-    for (const item of eventData[key].arrayItems) {
-      for (const arrayItem of item.value) {
-        const value = {
-          item: arrayItem.key,
-          value: arrayItem.value,
-          type,
-        };
-
-        values.push(value);
-      }
-    }
-  }
-  return {
-    key: `${event.logIndex}${event.transactionHash}`,
-    log: event.eventName,
-    topics: event.topics,
-    name: eventName,
-    values,
-  };
-}
-
-async function parseTxEvents(client: PublicClient, txHash: Hash) {
-  const receipt = await client.getTransactionReceipt({ hash: txHash });
-  if (!receipt) throw new Error("Transaction not found");
-
-  const parsed = parseEventLogs({
-    abi: EventEmitter.abi as Abi,
-    logs: receipt.logs,
-  });
-
-  return parsed.map(parseEvent);
-}
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
@@ -242,79 +131,81 @@ export function ParseTransactionPage() {
   return (
     <div className="pt-24 xl:px-[10%]">
       <h1 className="text-body-large mb-24">
-        Transaction: <ExternalLink href={EXPLORER_URLS[chainId] + tx}>{tx}</ExternalLink>
+        Transaction: <ExternalLink href={EXPLORER_TX_URLS[chainId] + tx}>{tx}</ExternalLink>
       </h1>
       <Table className="mb-12">
         <tbody>
-          {data.map((event) => {
-            return (
-              <Fragment key={event.key}>
-                <TableTr>
-                  <TableTd className="w-[25rem] font-bold">Name</TableTd>
-                  <TableTd className="group !text-left" colSpan={2}>
-                    <div className="flex flex-row items-center gap-8">
-                      {event.log}: {event.name}
-                      <BiCopy
-                        size={16}
-                        className="hidden cursor-pointer text-slate-100 hover:text-white  group-hover:block"
-                        onClick={() => copyToClipboard(event.name)}
-                      />
-                    </div>
-                  </TableTd>
-                </TableTr>
-                <TableTr>
-                  <TableTd className="w-[25rem] font-bold">Topics</TableTd>
-                  <TableTd className="group !text-left" colSpan={3}>
-                    {event.topics.length > 0
-                      ? event.topics.map((t) => (
-                          <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
-                            {t}
-                            <BiCopy
-                              size={16}
-                              className="hidden cursor-pointer text-slate-100 hover:text-white  group-hover:block"
-                              onClick={() => copyToClipboard(t)}
-                            />
-                          </div>
-                        ))
-                      : "No topics"}
-                  </TableTd>
-                </TableTr>
-                <TableTr>
-                  <TableTd className="!text-center font-bold" colSpan={3}>
-                    Values
-                  </TableTd>
-                </TableTr>
-                {event.values.map((value) => (
-                  <LogEntryComponent
-                    name={event.name}
-                    key={value.item}
-                    {...value}
-                    network={network}
-                    chainId={chainId}
-                    entries={event.values}
-                    tokensData={tokensData}
-                    marketsInfoData={marketsInfoData}
-                    glvData={glvData}
-                    marketTokensData={marketTokensData}
-                    copyToClipboard={copyToClipboard}
-                  />
-                ))}
-                <TableTr>
-                  <TableTd padding="compact" className="bg-slate-950" colSpan={3}></TableTd>
-                </TableTr>
-              </Fragment>
-            );
-          })}
+          {data.length ? (
+            data.map((event) => {
+              return (
+                <Fragment key={event.key}>
+                  <TableTr>
+                    <TableTd className="w-[25rem] font-bold">Name</TableTd>
+                    <TableTd className="group !text-left" colSpan={2}>
+                      <div className="flex flex-row items-center gap-8">
+                        {event.log}: {event.name}
+                        <CopyButton value={event.name} />
+                      </div>
+                    </TableTd>
+                  </TableTr>
+                  <TableTr>
+                    <TableTd className="w-[25rem] font-bold">Topics</TableTd>
+                    <TableTd className="group !text-left" colSpan={3}>
+                      {event.topics.length > 0
+                        ? event.topics.map((t) => (
+                            <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
+                              {t}
+                              <CopyButton value={t} />
+                            </div>
+                          ))
+                        : "No topics"}
+                    </TableTd>
+                  </TableTr>
+                  <TableTr>
+                    <TableTd className="!text-center font-bold" colSpan={3}>
+                      Values
+                    </TableTd>
+                  </TableTr>
+                  {event.values.map((value) => (
+                    <LogEntryComponent
+                      name={event.name}
+                      key={value.item}
+                      {...value}
+                      network={network}
+                      chainId={chainId}
+                      entries={event.values}
+                      tokensData={tokensData}
+                      marketsInfoData={marketsInfoData}
+                      glvData={glvData}
+                      marketTokensData={marketTokensData}
+                      copyToClipboard={copyToClipboard}
+                      allEvents={data}
+                    />
+                  ))}
+                  <TableTr>
+                    <TableTd padding="compact" className="bg-slate-950" colSpan={3}></TableTd>
+                  </TableTr>
+                </Fragment>
+              );
+            })
+          ) : (
+            <TableTr>
+              <TableTd className="!text-center font-bold" colSpan={3}>
+                No events
+              </TableTd>
+            </TableTr>
+          )}
         </tbody>
       </Table>
     </div>
   );
 }
 
-const fieldRelations = {
+const fieldFormatters = {
   minPrice: formatPriceByToken,
   maxPrice: formatPriceByToken,
   tokenPrice: formatPriceByToken,
+
   "collateralTokenPrice.min": formatPriceByCollateralToken,
   "collateralTokenPrice.max": formatPriceByCollateralToken,
   "indexTokenPrice.max": formatPriceByIndexToken,
@@ -322,13 +213,27 @@ const fieldRelations = {
 
   collateralAmount: formatAmountByCollateralToken,
 
+  sizeInTokens: formatAmountByIndexToken,
+  sizeDeltaInTokens: formatAmountByIndexToken,
+  priceImpactAmount: formatAmountByIndexToken,
+  impactPoolAmount: formatAmountByIndexToken,
+
+  borrowingFactor: formatAmount30Decimals,
+  borrowingFeeReceiverFactor: formatAmount30Decimals,
+  positionFeeFactor: formatAmount30Decimals,
+  positionFeeReceiverFactor: formatAmount30Decimals,
+  uiFeeReceiverFactor: formatAmount30Decimals,
+  totalRebateFactor: formatAmount30Decimals,
+  traderDiscountFactor: formatAmount30Decimals,
+  borrowingFeePoolFactor: formatAmount30Decimals,
+
   timestamp: formatDateField,
   increasedAtTime: formatDateField,
   decreasedAtTime: formatDateField,
   updatedAtTime: formatDateField,
 
   collateralDeltaAmount: formatAmountByCollateralToken,
-  minGlvTokens: formatAmountByField("glv"),
+  minGlvTokens: formatAmountByMarketToken,
   initialShortTokenAmount: formatAmountByField("initialShortToken"),
   initialLongTokenAmount: formatAmountByField("initialLongToken"),
 
@@ -345,58 +250,82 @@ const fieldRelations = {
 
   nextValue: formatAmountByEvent({
     CollateralSumUpdated: "collateralToken",
+    CumulativeBorrowingFactorUpdated: formatAmount30Decimals,
+  }),
+
+  fundingFeeAmountPerSize: formatAmountByCollateralToken15Shift,
+  latestFundingFeeAmountPerSize: formatAmountByCollateralToken15Shift,
+
+  longTokenClaimableFundingAmountPerSize: formatAmountByLongToken15Shift,
+  shortTokenClaimableFundingAmountPerSize: formatAmountByShortToken15Shift,
+  latestLongTokenClaimableFundingAmountPerSize: formatAmountByLongToken15Shift,
+  latestShortTokenClaimableFundingAmountPerSize: formatAmountByShortToken15Shift,
+
+  delta: formatAmountByEvent({
+    CollateralSumUpdated: "collateralToken",
+    CumulativeBorrowingFactorUpdated: formatAmount30Decimals,
+    OpenInterestUpdated: formatPrice,
+    FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+    ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+  }),
+
+  value: formatAmountByEvent({
+    FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+    ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
   }),
 
   refundFeeAmount: formatAmountByNativeToken,
   executionFeeAmount: formatAmountByNativeToken,
+  executionFee: formatAmountByNativeToken,
+
+  minLongTokenAmount: formatByMarketLongOrShortToken(true),
+  minShortTokenAmount: formatByMarketLongOrShortToken(false),
+
+  minMarketTokens: formatAmountByMarketToken,
+  marketTokensSupply: formatAmountByMarketToken,
+  marketTokenAmount: formatAmountByMarketToken,
+
+  receivedMarketTokens: formatAmountByMarketTokenInDeposit,
 };
 
 function LogEntryComponent(props: LogEntryComponentProps) {
   let value;
 
   if (props.type === "address" && typeof props.value === "string") {
-    const token = props.tokensData[props.value];
-    const market = props.marketsInfoData[props.value];
-
-    if (token) {
-      value = (
-        <>
-          <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
-        </>
-      );
-    } else if (market) {
-      value = (
-        <>
-          {getMarketFullName(market)} ({props.value})
-        </>
-      );
-    } else {
+    if (props.item === "affiliate" || props.item === "callbackContract") {
       value = props.value;
+    } else {
+      const token = props.tokensData[props.value];
+      const marketOrGlv = props.marketsInfoData[props.value] || props.glvData[props.value];
+
+      if (token) {
+        value = (
+          <>
+            <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
+          </>
+        );
+      } else if (marketOrGlv) {
+        value = (
+          <>
+            {isGlvInfo(marketOrGlv) ? getGlvDisplayName(marketOrGlv) : getMarketFullName(marketOrGlv)} ({props.value})
+          </>
+        );
+      } else {
+        value = props.value;
+      }
     }
   }
 
   if (props.item === "trader" || props.item === "account" || props.item === "receiver") {
     const network = NETWORKS_BY_CHAIN_IDS[props.chainId];
     value = (
-      <ExternalLink href={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
+      <Link className="text-slate-100 underline" to={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
         {props.value.toString()}
-      </ExternalLink>
+      </Link>
     );
   }
 
-  if (props.item === "glv" && typeof props.value === "string") {
-    const glv = props.glvData[props.value];
-
-    if (glv) {
-      value = (
-        <>
-          {getGlvDisplayName(glv)} ({props.value})
-        </>
-      );
-    }
-  }
-
-  const field = fieldRelations[props.item];
+  const field = fieldFormatters[props.item];
 
   if (typeof props.value === "bigint") {
     if (field) {
@@ -415,16 +344,15 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (props.type === "bytes32") {
-    value = props.value;
+    value = props.value.toString();
   }
 
   if (props.error) {
     return (
       <TableTr>
         <TableTd className="font-bold">{props.item}</TableTd>
-        <TableTd className="!text-center text-red-400" colSpan={3}>
-          {props.error}
-        </TableTd>
+        <TableTd className="text-red-400">{props.error ?? props.value.toString()}</TableTd>
+        <TableTd>{props.type}</TableTd>
       </TableTr>
     );
   }
@@ -434,16 +362,33 @@ function LogEntryComponent(props: LogEntryComponentProps) {
       <TableTd className="font-bold">{props.item}</TableTd>
       <TableTd className="!text-left">
         <div className="flex flex-row items-center gap-8">
-          {value}
+          {value ?? props.value}
 
-          <BiCopy
-            size={16}
-            className="hidden cursor-pointer text-slate-100 hover:text-white  group-hover:block"
-            onClick={() => props.copyToClipboard(props.value.toString())}
-          />
+          <CopyButton value={props.value.toString()} />
         </div>
       </TableTd>
       <TableTd>{props.type}</TableTd>
     </TableTr>
+  );
+}
+
+function CopyButton({ value }: { value: string }) {
+  const [isCopied, setIsCopied] = useState(false);
+  const [, copyToClipboard] = useCopyToClipboard();
+
+  const onClick = useCallback(() => {
+    copyToClipboard(value);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 100);
+  }, [copyToClipboard, value]);
+
+  return (
+    <BiCopy
+      size={16}
+      className={cx("hidden cursor-pointer text-slate-100 transition-transform hover:text-white group-hover:block", {
+        "scale-110 text-white": isCopied,
+      })}
+      onClick={onClick}
+    />
   );
 }
