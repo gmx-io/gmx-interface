@@ -12,7 +12,7 @@ export function convertFromContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);
 }
 
-export const formatPrice = (t: bigint) => formatUsdPrice(t) ?? t.toString();
+export const formatPrice = (t: bigint) => (t < 0n ? `-${formatUsdPrice(t * -1n)}` : formatUsdPrice(t) ?? t.toString());
 
 export function formatPriceByField(tokenField: string | TokenGetter) {
   return (t: bigint, props: LogEntryComponentProps) => {
@@ -33,7 +33,7 @@ export function formatPriceByField(tokenField: string | TokenGetter) {
       }
     }
 
-    return t.toString();
+    throw new Error(`Field "${tokenField}" not found in event`);
   };
 }
 
@@ -67,7 +67,7 @@ export function formatAmountByField(
       }
     }
 
-    return t.toString();
+    throw new Error(`Field "${tokenField}" not found in event`);
   };
 }
 
@@ -91,9 +91,12 @@ export function formatByMarketLongOrShortToken(isLong: boolean) {
       }
     }
 
-    return t.toString();
+    throw new Error(`Field "market" not found in event`);
   };
 }
+
+export const formatByMarketLongToken = formatByMarketLongOrShortToken(true);
+export const formatByMarketShortToken = formatByMarketLongOrShortToken(false);
 
 export function formatAmountByEvent(cfg: { [eventName: string]: string | Formatter }) {
   return (t: bigint, props: LogEntryComponentProps) => {
@@ -143,7 +146,7 @@ function getMarketOrGlvToken({ entries, marketsInfoData, marketTokensData, glvDa
     }
   }
 
-  throw new Error("Market not found");
+  throw new Error(`Field "market" not found in event`);
 }
 
 function getIndexToken({ entries, marketsInfoData }: LogEntryComponentProps) {
@@ -157,7 +160,7 @@ function getIndexToken({ entries, marketsInfoData }: LogEntryComponentProps) {
     }
   }
 
-  throw new Error("Market not found");
+  throw new Error(`Field "market" not found in event`);
 }
 
 export const formatAmountByEventField = (eventName: string, field: string | TokenGetter) => {
@@ -176,7 +179,7 @@ export const formatAmountByEventField = (eventName: string, field: string | Toke
       }
     }
 
-    throw new Error("Field not found");
+    throw new Error(`Field "${field}" not found in event`);
   };
 };
 

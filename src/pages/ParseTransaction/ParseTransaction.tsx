@@ -36,7 +36,8 @@ import {
   formatAmountByMarketTokenInDeposit,
   formatAmountByNativeToken,
   formatAmountByShortToken15Shift,
-  formatByMarketLongOrShortToken,
+  formatByMarketLongToken,
+  formatByMarketShortToken,
   formatDateField,
   formatPrice,
   formatPriceByCollateralToken,
@@ -206,17 +207,28 @@ const fieldFormatters = {
   maxPrice: formatPriceByToken,
   tokenPrice: formatPriceByToken,
 
-  "collateralTokenPrice.min": formatPriceByCollateralToken,
-  "collateralTokenPrice.max": formatPriceByCollateralToken,
   "indexTokenPrice.max": formatPriceByIndexToken,
   "indexTokenPrice.min": formatPriceByIndexToken,
-
-  collateralAmount: formatAmountByCollateralToken,
-
   sizeInTokens: formatAmountByIndexToken,
   sizeDeltaInTokens: formatAmountByIndexToken,
   priceImpactAmount: formatAmountByIndexToken,
   impactPoolAmount: formatAmountByIndexToken,
+
+  "collateralTokenPrice.min": formatPriceByCollateralToken,
+  "collateralTokenPrice.max": formatPriceByCollateralToken,
+  collateralAmount: formatAmountByCollateralToken,
+  borrowingFeeAmount: formatAmountByCollateralToken,
+  borrowingFeeAmountForFeeReceiver: formatAmountByCollateralToken,
+  protocolFeeAmount: formatAmountByCollateralToken,
+  totalBorrowingFees: formatAmountByCollateralToken,
+  feeAmountForPool: formatAmountByCollateralToken,
+  positionFeeAmountForPool: formatAmountByCollateralToken,
+  positionFeeAmount: formatAmountByCollateralToken,
+  totalCostAmount: formatAmountByCollateralToken,
+  uiFeeAmount: formatAmountByCollateralToken,
+  collateralDeltaAmount: formatAmountByCollateralToken,
+  fundingFeeAmount: formatAmountByCollateralToken,
+  feeReceiverAmount: formatAmountByCollateralToken,
 
   borrowingFactor: formatAmount30Decimals,
   borrowingFeeReceiverFactor: formatAmount30Decimals,
@@ -232,26 +244,17 @@ const fieldFormatters = {
   decreasedAtTime: formatDateField,
   updatedAtTime: formatDateField,
 
-  collateralDeltaAmount: formatAmountByCollateralToken,
   minGlvTokens: formatAmountByMarketToken,
   initialShortTokenAmount: formatAmountByField("initialShortToken"),
   initialLongTokenAmount: formatAmountByField("initialLongToken"),
 
-  claimableLongTokenAmount: formatByMarketLongOrShortToken(true),
-  claimableShortTokenAmount: formatByMarketLongOrShortToken(false),
+  claimableLongTokenAmount: formatByMarketLongToken,
+  claimableShortTokenAmount: formatByMarketShortToken,
 
-  longTokenAmount: formatByMarketLongOrShortToken(true),
-  shortTokenAmount: formatByMarketLongOrShortToken(false),
-
-  fundingFeeAmount: formatAmountByCollateralToken,
-  feeReceiverAmount: formatAmountByCollateralToken,
+  longTokenAmount: formatByMarketLongToken,
+  shortTokenAmount: formatByMarketShortToken,
 
   orderType: (t: bigint) => getOrderTypeLabel(Number(t)),
-
-  nextValue: formatAmountByEvent({
-    CollateralSumUpdated: "collateralToken",
-    CumulativeBorrowingFactorUpdated: formatAmount30Decimals,
-  }),
 
   fundingFeeAmountPerSize: formatAmountByCollateralToken15Shift,
   latestFundingFeeAmountPerSize: formatAmountByCollateralToken15Shift,
@@ -261,35 +264,55 @@ const fieldFormatters = {
   latestLongTokenClaimableFundingAmountPerSize: formatAmountByLongToken15Shift,
   latestShortTokenClaimableFundingAmountPerSize: formatAmountByShortToken15Shift,
 
-  delta: formatAmountByEvent({
+  nextValue: formatAmountByEvent({
     CollateralSumUpdated: "collateralToken",
     CumulativeBorrowingFactorUpdated: formatAmount30Decimals,
     OpenInterestUpdated: formatPrice,
-    FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
-    ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+    PoolAmountUpdated: "token",
+    ClaimableFeeAmountUpdated: "token",
+    OpenInterestInTokensUpdated: formatPrice,
+    PositionImpactPoolAmountUpdated: formatAmountByIndexToken,
   }),
 
-  value: formatAmountByEvent({
-    FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
-    ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
-  }),
+  poolValue: formatPrice,
+  longPnl: formatPrice,
+  shortPnl: formatPrice,
+  netPnl: formatPrice,
 
   refundFeeAmount: formatAmountByNativeToken,
   executionFeeAmount: formatAmountByNativeToken,
   executionFee: formatAmountByNativeToken,
 
-  minLongTokenAmount: formatByMarketLongOrShortToken(true),
-  minShortTokenAmount: formatByMarketLongOrShortToken(false),
+  minLongTokenAmount: formatByMarketLongToken,
+  minShortTokenAmount: formatByMarketShortToken,
 
   minMarketTokens: formatAmountByMarketToken,
   marketTokensSupply: formatAmountByMarketToken,
   marketTokenAmount: formatAmountByMarketToken,
 
   receivedMarketTokens: formatAmountByMarketTokenInDeposit,
+
+  delta: formatAmountByEvent({
+    CollateralSumUpdated: "collateralToken",
+    CumulativeBorrowingFactorUpdated: formatAmount30Decimals,
+    OpenInterestUpdated: formatPrice,
+    PoolAmountUpdated: "token",
+    ClaimableFeeAmountUpdated: "token",
+    OpenInterestInTokensUpdated: formatPrice,
+    FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+    ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+    PositionImpactPoolAmountUpdated: formatAmountByIndexToken,
+  }),
+
+  value: formatAmountByEvent({
+    FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+    ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
+  }),
 };
 
 function LogEntryComponent(props: LogEntryComponentProps) {
   let value;
+  let withError = false;
 
   if (props.type === "address" && typeof props.value === "string") {
     if (props.item === "affiliate" || props.item === "callbackContract") {
@@ -329,7 +352,12 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
   if (typeof props.value === "bigint") {
     if (field) {
-      value = field(props.value, props);
+      try {
+        value = field(props.value, props);
+      } catch (e) {
+        value = e.message;
+        withError = true;
+      }
     } else {
       value = props.value.toString() + "n";
 
@@ -360,7 +388,11 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   return (
     <TableTr className="group">
       <TableTd className="font-bold">{props.item}</TableTd>
-      <TableTd className="!text-left">
+      <TableTd
+        className={cx("!text-left", {
+          "text-red-400": withError,
+        })}
+      >
         <div className="flex flex-row items-center gap-8">
           {value ?? props.value}
 
