@@ -110,9 +110,7 @@ export function ParseTransactionPage() {
   }
 
   if (!tx || !isHash(tx)) {
-    return (
-      <div className="text-body-large m-auto pt-24  text-center text-red-400 xl:px-[10%]">Invalid transaction</div>
-    );
+    return <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">Invalid transaction</div>;
   }
 
   if (error) {
@@ -130,11 +128,11 @@ export function ParseTransactionPage() {
   }
 
   return (
-    <div className="pt-24 xl:px-[10%]">
+    <div className="mx-auto max-w-[1280px] pt-24">
       <h1 className="text-body-large mb-24">
         Transaction: <ExternalLink href={EXPLORER_TX_URLS[chainId] + tx}>{tx}</ExternalLink>
       </h1>
-      <Table className="mb-12">
+      <Table className="mb-12 ">
         <tbody>
           {data.length ? (
             data.map((event) => {
