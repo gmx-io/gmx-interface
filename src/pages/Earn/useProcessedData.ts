@@ -86,7 +86,7 @@ export function useProcessedData() {
   );
 
   const { data: aum } = useSWR<bigint | undefined>(
-    [`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
+    [`processedData:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
     {
       fetcher: async (key: any[]) => {
         const aums = await contractFetcher<bigint[]>(signer, GlpManager)(key);
@@ -113,7 +113,7 @@ export function useProcessedData() {
 
   const balanceAndSupplyQuery = useSWR<ReturnType<typeof getBalanceAndSupplyData>>(
     [
-      `StakeV2:walletBalances:${active}`,
+      `processedData:walletBalances:${active}`,
       chainId,
       readerAddress,
       "getTokenBalancesWithSupplies",
@@ -126,11 +126,12 @@ export function useProcessedData() {
       },
     }
   );
+
   const { balanceData, supplyData } = balanceAndSupplyQuery.data ?? {};
 
   const { data: depositBalanceData } = useSWR<ReturnType<typeof getDepositBalanceData>>(
     [
-      `StakeV2:depositBalances:${active}`,
+      `processedData:depositBalances:${active}`,
       chainId,
       rewardReaderAddress,
       "getDepositBalances",
@@ -148,7 +149,13 @@ export function useProcessedData() {
   );
 
   const { data: stakingData } = useSWR<ReturnType<typeof getStakingData>>(
-    [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
+    [
+      `processedData:stakingInfo:${active}`,
+      chainId,
+      rewardReaderAddress,
+      "getStakingInfo",
+      account || PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: async (key: any[]) => {
         const stakingInfo = await contractFetcher<bigint[]>(signer, RewardReader, [rewardTrackersForStakingInfo])(key);
