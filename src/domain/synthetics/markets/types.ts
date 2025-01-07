@@ -1,7 +1,18 @@
 import { TokenData } from "domain/synthetics/tokens";
-import { MarketInfo } from "sdk/types/markets";
+import { Market, MarketInfo, MarketPoolTokens } from "sdk/types/markets";
 
 export * from "sdk/types/markets";
+
+export type FastMarketInfo = Omit<MarketInfo, keyof MarketPoolTokens | keyof Market> & {
+  marketTokenAddress: string;
+  longTokenAddress: string;
+  shortTokenAddress: string;
+  indexTokenAddress: string;
+};
+
+export type FastMarketInfoData = {
+  [address: string]: FastMarketInfo;
+};
 
 export type GlvAndGmMarketsInfoData = {
   [marketAddress: string]: MarketInfo | GlvInfo;

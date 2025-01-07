@@ -122,17 +122,6 @@ export type MarketInfo = Market &
     virtualShortTokenId: string;
   };
 
-export type FastMarketInfo = Omit<MarketInfo, keyof MarketPoolTokens | keyof Market> & {
-  marketTokenAddress: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-  indexTokenAddress: string;
-};
-
-export type FastMarketInfoData = {
-  [address: string]: FastMarketInfo;
-};
-
 export type MarketsData = {
   [marketTokenAddress: string]: Market;
 };
