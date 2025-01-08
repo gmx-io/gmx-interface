@@ -14,7 +14,7 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
@@ -158,18 +158,6 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
   );
 }
 
-const tabOptions = [t`Buy GLP`, t`Sell GLP`];
-const tabOptionClassNames = {
-  [tabOptions[0]]: {
-    active: "!bg-[#1F3445] border-b border-b-green-500",
-    regular: "border-b border-b-[transparent]",
-  },
-  [tabOptions[1]]: {
-    active: "!bg-[#392A46] border-b border-b-red-500",
-    regular: "border-b border-b-[transparent]",
-  },
-};
-
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
   const { savedAllowedSlippage, shouldDisableValidationForTesting } = useSettings();
@@ -179,6 +167,20 @@ export default function GlpSwap(props) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
+  const tabOptions = useMemo(() => [t`Buy GLP`, t`Sell GLP`], []);
+  const tabOptionClassNames = useMemo(
+    () => ({
+      [tabOptions[0]]: {
+        active: "!bg-[#1F3445] border-b border-b-green-500",
+        regular: "border-b border-b-[transparent]",
+      },
+      [tabOptions[1]]: {
+        active: "!bg-[#392A46] border-b border-b-red-500",
+        regular: "border-b border-b-[transparent]",
+      },
+    }),
+    [tabOptions]
+  );
 
   const { active, signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
