@@ -160,11 +160,6 @@ export function ParseTransactionPage() {
                         : "No topics"}
                     </TableTd>
                   </TableTr>
-                  <TableTr>
-                    <TableTd className="!text-center font-bold" colSpan={3}>
-                      Values
-                    </TableTd>
-                  </TableTr>
                   {event.values.map((value) => (
                     <LogEntryComponent
                       name={event.name}
