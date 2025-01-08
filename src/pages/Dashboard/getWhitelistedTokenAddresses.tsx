@@ -1,4 +1,4 @@
-import { getWhitelistedV1Tokens } from "config/tokens";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 
 export function getWhitelistedTokenAddresses(chainId) {
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);

@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { approveTokens } from "domain/tokens";
 import { isAddressZero } from "lib/legacy";
 import { useState } from "react";

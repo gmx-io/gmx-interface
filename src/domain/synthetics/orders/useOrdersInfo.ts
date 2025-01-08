@@ -1,4 +1,4 @@
-import { getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { MarketsInfoData } from "../markets";

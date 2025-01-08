@@ -5,8 +5,8 @@ import { useChainId } from "lib/chains";
 import cx from "classnames";
 
 type Props = {
-  title: string;
-  subtitle?: string | ReactNode;
+  title: ReactNode;
+  subtitle?: ReactNode;
   className?: string;
   isTop?: boolean;
   showNetworkIcon?: boolean;
@@ -35,7 +35,7 @@ export default function PageTitle({
         {showNetworkIcon && <img className="Page-title__icon" src={currentNetworkIcon} alt="Current Network Icon" />}
         {afterTitle}
       </div>
-      <div className="text-body-medium text-gray-300">{subtitle}</div>
+      <div className="text-body-medium text-slate-100">{subtitle}</div>
     </div>
   );
 }

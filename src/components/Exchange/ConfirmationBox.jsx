@@ -17,7 +17,7 @@ import {
   USD_DECIMALS,
 } from "config/factors";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getToken, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getToken, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import {
   DECREASE,

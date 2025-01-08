@@ -1,25 +1,28 @@
 import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
+import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectGlvAndMarketsInfoData,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvOrMarketInfo, getMarketIndexName, getGlvOrMarketAddress, isMarketInfo } from "domain/synthetics/markets";
+import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName, isMarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
+import { getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { bigMath } from "lib/bigmath";
-import { formatAmountFree, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { Mode, Operation } from "../types";
 
+import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
+import { useGmWarningState } from "../useGmWarningState";
 import { useUpdateByQueryParams } from "../useUpdateByQueryParams";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
@@ -29,21 +32,16 @@ import { useUpdateMarkets } from "./useUpdateMarkets";
 import { useUpdateTokens } from "./useUpdateTokens";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import { getContract } from "config/contracts";
-import { getTokenData } from "domain/synthetics/tokens";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
-import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-import { GmFees } from "../../GmFees/GmFees";
-import { HighPriceImpactRow } from "../HighPriceImpactRow";
-import { Swap } from "../Swap";
-import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
-
-import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { MarketState } from "components/MarketSelector/types";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+
+import { GmFees } from "../../GmFees/GmFees";
+import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
+import { Swap } from "../Swap";
 
 export function GmShiftBox({
   selectedMarketAddress,
@@ -62,7 +60,6 @@ export function GmShiftBox({
   const [selectedMarketText, setSelectedMarketText] = useState("");
   const [toMarketText, setToMarketText] = useState("");
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
   const chainId = useSelector(selectChainId);
   const uiFeeFactor = useUiFeeFactor();
@@ -119,9 +116,17 @@ export function GmShiftBox({
 
   const { fees, executionFee } = useShiftFees({ gasLimits, gasPrice, tokensData, amounts, chainId });
 
-  const isHighPriceImpact =
-    (fees?.swapPriceImpact?.deltaUsd ?? 0) < 0 &&
-    bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= HIGH_PRICE_IMPACT_BPS;
+  const {
+    isAccepted,
+    setIsAccepted,
+    consentError,
+    shouldShowWarning,
+    shouldShowWarningForExecutionFee,
+    shouldShowWarningForPosition,
+  } = useGmWarningState({
+    executionFee,
+    fees,
+  });
 
   const noAmountSet = amounts?.fromTokenAmount === undefined;
   const balanceNotEqualToAmount = selectedToken?.balance !== amounts?.fromTokenAmount;
@@ -134,9 +139,6 @@ export function GmShiftBox({
     amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? formatUsd(amounts.toTokenUsd) : "";
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
-    executionFee?.feeUsd
-  );
 
   const submitState = useShiftSubmitState({
     selectedMarketInfo,
@@ -145,15 +147,13 @@ export function GmShiftBox({
     toMarketInfo,
     toToken,
     fees,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
+    consentError,
     shouldDisableValidationForTesting,
     tokensData,
     marketTokenUsd: amounts?.fromTokenUsd,
     executionFee,
     routerAddress,
     payTokenAddresses: [selectedToken?.address ?? ""],
-    isHighFeeConsentError,
   });
 
   useUpdateMarkets({
@@ -269,9 +269,11 @@ export function GmShiftBox({
           topLeftLabel={t`Pay`}
           topLeftValue={selectedTokenDollarAmount}
           topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(selectedToken?.balance, selectedToken?.decimals, "", {
-            useCommas: true,
-          })}
+          topRightValue={
+            selectedToken && selectedToken.balance !== undefined
+              ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
+              : undefined
+          }
           onClickTopRightLabel={handleSelectedTokenClickMax}
           showMaxButton={selectedTokenShowMaxButton}
           onClickMax={handleSelectedTokenClickMax}
@@ -298,9 +300,11 @@ export function GmShiftBox({
           topLeftLabel={t`Receive`}
           topLeftValue={toTokenShowDollarAmount}
           topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals, "", {
-            useCommas: true,
-          })}
+          topRightValue={
+            toToken && toToken.balance !== undefined
+              ? formatBalanceAmount(toToken.balance, toToken.decimals)
+              : undefined
+          }
           inputValue={toMarketText}
           onInputValueChange={handleToTokenInputValueChange}
           onFocus={handleToTokenFocus}
@@ -320,7 +324,7 @@ export function GmShiftBox({
             favoriteKey="gm-token-selector"
           />
         </BuyInputSection>
-        <ExchangeInfo className={isHighPriceImpact ? undefined : "mb-10"} dividerClassName="App-card-divider">
+        <ExchangeInfo className={shouldShowWarning ? undefined : "mb-10"} dividerClassName="App-card-divider">
           <ExchangeInfo.Group>
             <GmFees
               operation={Operation.Shift}
@@ -331,16 +335,18 @@ export function GmShiftBox({
             />
             <NetworkFeeRow executionFee={executionFee} />
           </ExchangeInfo.Group>
-          {isHighPriceImpact && (
-            <HighPriceImpactRow
-              isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-              setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
-              isSingle={false}
-            />
-          )}
+
+          <GmSwapWarningsRow
+            isSingle={false}
+            isAccepted={isAccepted}
+            shouldShowWarning={shouldShowWarning}
+            shouldShowWarningForPosition={shouldShowWarningForPosition}
+            shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+            setIsAccepted={setIsAccepted}
+          />
         </ExchangeInfo>
 
-        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
+        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
               const token = getTokenData(tokensData, address)!;
@@ -359,10 +365,6 @@ export function GmShiftBox({
             })}
           </div>
         )}
-
-        {highExecutionFeeAcknowledgement ? (
-          <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
-        ) : null}
 
         <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
           {submitState.text}

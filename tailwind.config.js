@@ -5,6 +5,9 @@ const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
 const defaultConfig = require("tailwindcss/defaultConfig");
 
+/**
+ * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
+ */
 const colors = {
   blue: {
     300: "#7885ff",
@@ -15,7 +18,7 @@ const colors = {
   },
   "cold-blue": {
     500: "#3a3f79",
-    700: "#3a3f798f",
+    700: "#282b54",
     900: "#1e203e",
   },
   "pale-blue": {
@@ -27,19 +30,20 @@ const colors = {
     500: "#3e4361",
     600: "#373c58",
     700: "#23263b",
+    750: "#17182c",
     800: "#16182e",
     900: "#101124",
     950: "#08091b",
   },
   gray: {
     50: "rgba(255, 255, 255, 0.95)",
-    100: "rgba(255, 255, 255, 0.9)",
-    200: "rgba(255, 255, 255, 0.8)",
-    300: "rgba(255, 255, 255, 0.7)",
-    400: "rgba(255, 255, 255, 0.6)",
-    500: "rgba(255, 255, 255, 0.5)",
-    600: "rgba(255, 255, 255, 0.4)",
-    700: "rgba(255, 255, 255, 0.3)",
+    100: "#e7e7e9",
+    200: "#cfcfd3",
+    300: "#b7b8bd",
+    400: "#9fa0a7",
+    500: "#878891",
+    600: "#70707c",
+    700: "#585866",
     800: "rgba(255, 255, 255, 0.2)",
     900: "rgba(255, 255, 255, 0.1)",
     950: "rgba(255, 255, 255, 0.05)",
@@ -50,14 +54,18 @@ const colors = {
   },
   red: {
     400: "#ff637a",
-    500: "#ff506a",
+    500: "#FF506A",
   },
   green: {
     300: "#56dba8",
-    500: "#0ecc83",
+    400: "#8CF3CB",
+    500: "#0FDE8D",
   },
   white: "#ffffff",
   black: "#000000",
+  stroke: {
+    primary: "#252A47",
+  },
 };
 
 /**

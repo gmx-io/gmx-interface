@@ -5,7 +5,7 @@ import { IoWarningOutline } from "react-icons/io5";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getNativeToken, getToken } from "config/tokens";
+import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";

@@ -77,7 +77,7 @@
   font-size: 1.2rem;
   line-height: 1.5rem;
   letter-spacing: 0px;
-  color: var(--color-gray-400);
+  color: var(--color-slate-100);
 }
 
 .GlpSwap-token-list {
@@ -225,7 +225,7 @@
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: var(--primary-btn-bg);
+  background: var(--color-cold-blue-500);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -234,11 +234,11 @@
 }
 
 .AppOrder-ball:hover {
-  background: var(--primary-btn-hover);
+  background: #484e92;
 }
 
 .AppOrder-ball:active {
-  background: var(--primary-btn-active);
+  background: #505699;
 }
 
 .AppOrder-ball:hover .AppOrder-ball-icon {

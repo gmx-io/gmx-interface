@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-import { getTokenVisualMultiplier, getWrappedToken } from "config/tokens";
+import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -431,7 +431,11 @@ export function OrdersStatusNotificiation({
           </div>
           <div className="inline-flex items-center">
             {createdTxnHashList?.map((txnHash) => (
-              <ExternalLink key={txnHash} className="ml-10" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
+              <ExternalLink
+                key={txnHash}
+                className="ml-10 !text-white"
+                href={`${getExplorerUrl(chainId)}tx/${txnHash}`}
+              >
                 {t`View`}
               </ExternalLink>
             ))}

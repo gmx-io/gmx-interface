@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
@@ -11,6 +11,8 @@ import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateDepositParams = {
   account: string;
@@ -27,6 +29,7 @@ export type CreateDepositParams = {
   tokensData: TokensData;
   skipSimulation?: boolean;
   metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
 };
@@ -34,6 +37,8 @@ export type CreateDepositParams = {
 export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
+
+  await validateSignerAddress(signer, p.account);
 
   const isNativeLongDeposit = Boolean(
     p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
@@ -107,6 +112,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
         errorTitle: t`Deposit error.`,
         value: wntAmount,
         metricId: p.metricId,
+        blockTimestampData: p.blockTimestampData,
       })
     : undefined;
 

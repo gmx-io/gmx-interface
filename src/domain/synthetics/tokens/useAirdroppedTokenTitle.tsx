@@ -1,4 +1,4 @@
-import { getTokens } from "config/tokens";
+import { getTokens } from "sdk/configs/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import find from "lodash/find";
@@ -29,7 +29,7 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
     const title = (
       <span className="inline-flex items-center">
         <span>GM: {indexName}</span>
-        <span className="ml-2 text-12 leading-1 text-gray-300">[{poolName}]</span>
+        <span className="ml-2 text-12 leading-1 text-slate-100">[{poolName}]</span>
       </span>
     );
     return title;
@@ -70,7 +70,7 @@ export function useTradingAirdroppedTokenTitle(): string | JSX.Element {
     const title = (
       <span className="inline-flex items-center">
         <span>GM: {indexName}</span>
-        <span className="ml-2 text-12 leading-1 text-gray-300">[{poolName}]</span>
+        <span className="ml-2 text-12 leading-1 text-slate-100">[{poolName}]</span>
       </span>
     );
 

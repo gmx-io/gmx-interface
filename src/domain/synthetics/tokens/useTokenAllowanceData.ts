@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 import { erc20Abi } from "viem";
 
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { TokensAllowanceData } from "./types";
 
-type TokenAllowanceResult = { tokensAllowanceData: TokensAllowanceData };
+type TokenAllowanceResult = { tokensAllowanceData?: TokensAllowanceData; isLoading: boolean; isLoaded: boolean };
 
 export function useTokensAllowanceData(
   chainId: number,
@@ -25,11 +25,11 @@ export function useTokensAllowanceData(
 
   const validAddresses = tokenAddresses.filter((address): address is string => address !== NATIVE_TOKEN_ADDRESS);
 
+  const key =
+    !skip && account && spenderAddress && validAddresses.length > 0 ? [account, spenderAddress, validAddresses] : null;
+
   const { data } = useMulticall(chainId, "useTokenAllowance", {
-    key:
-      !skip && account && spenderAddress && validAddresses.length > 0
-        ? [account, spenderAddress, validAddresses]
-        : null,
+    key,
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     request: () =>
       validAddresses.reduce((contracts, address) => {
@@ -87,7 +87,12 @@ export function useTokensAllowanceData(
     return newData;
   }, [spenderAddress, validAddresses, data, approvalStatuses]);
 
+  const isLoaded = validAddresses.length > 0 && validAddresses.every((address) => mergedData?.[address] !== undefined);
+  const isLoading = Boolean(key) && !isLoaded;
+
   return {
-    tokensAllowanceData: mergedData,
+    tokensAllowanceData: isLoaded ? mergedData : undefined,
+    isLoaded,
+    isLoading,
   };
 }

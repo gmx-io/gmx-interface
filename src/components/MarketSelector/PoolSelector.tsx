@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
@@ -216,7 +216,7 @@ export function PoolSelector({
           })}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-gray-400">
+          <div className="text-body-medium text-slate-100">
             <Trans>No pools matched.</Trans>
           </div>
         )}
