@@ -2066,6 +2066,10 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 GLP 구매가 비활성화되었습니다"
 
 #: src/lib/contracts/transactionErrors.tsx
+msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
+msgstr ""
+
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 

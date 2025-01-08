@@ -15,6 +15,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "sdk/utils/orders";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "./prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
@@ -44,6 +45,9 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
+
+  await validateSignerAddress(signer, p.account);
+
   const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(router, signer, subaccount, chainId, p);
   const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(
     exchangeRouter,
