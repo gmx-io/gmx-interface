@@ -16,20 +16,20 @@ import {
 } from "../positions";
 import { convertToUsd, getIsEquivalentTokens } from "../tokens";
 
-jest.mock("./markets", () => ({
-  ...jest.requireActual("./markets"),
+jest.mock("../markets", () => ({
+  ...jest.requireActual("../markets"),
   getMarketPnl: jest.fn(),
   getPoolUsdWithoutPnl: jest.fn(),
   getCappedPoolPnl: jest.fn(),
 }));
 
-jest.mock("./tokens", () => ({
-  ...jest.requireActual("./tokens"),
+jest.mock("../tokens", () => ({
+  ...jest.requireActual("../tokens"),
   convertToUsd: jest.fn(),
   getIsEquivalentTokens: jest.fn(),
 }));
 
-jest.mock("./fees", () => ({
+jest.mock("../fees", () => ({
   getPositionFee: jest.fn(),
   getPriceImpactForPosition: jest.fn(),
 }));
