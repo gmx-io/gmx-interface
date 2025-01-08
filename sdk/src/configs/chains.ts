@@ -15,6 +15,9 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [AVALANCHE_FUJI]: 5, // 5 USD
 };
 
+// added to maxPriorityFeePerGas
+// applied to EIP-1559 transactions only
+// is not applied to execution fee calculation
 export const MAX_FEE_PER_GAS_MAP = {
   [AVALANCHE]: 200000000000n, // 200 gwei
 };
