@@ -44,6 +44,7 @@ export function usePositionsTotalCollateral(chainId: number) {
       }, 0n);
     },
     {
+      errorRetryCount: 2,
       refreshInterval: 60_000,
     }
   );

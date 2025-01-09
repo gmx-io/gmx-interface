@@ -64,7 +64,7 @@ export function OverviewCard({
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
 
   const arbitrumPositionsCollateralUsd = usePositionsTotalCollateral(ARBITRUM);
-  const avalanchePositionsCollateralUsd = usePositionsTotalCollateral(ARBITRUM);
+  const avalanchePositionsCollateralUsd = usePositionsTotalCollateral(AVALANCHE);
 
   // #region TVL and GLP Pool
   const glpTvlArbitrum = statsArbitrum?.glp.aum;

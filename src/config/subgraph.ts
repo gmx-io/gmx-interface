@@ -15,7 +15,7 @@ const SUBGRAPH_URLS = {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:live/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-huber-avalanche@v1/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {
