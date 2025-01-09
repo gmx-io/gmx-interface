@@ -296,7 +296,8 @@ export default function EarnV2() {
             showNetworkIcon={false}
             subtitle={
               <Trans>
-                Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets
+                Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in
+                brackets.
               </Trans>
             }
           />
@@ -313,7 +314,7 @@ export default function EarnV2() {
             title={t`Select a GM Pool`}
             showNetworkIcon={false}
             subtitle={
-              <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets</Trans>
+              <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets.</Trans>
             }
           />
           <GmList
