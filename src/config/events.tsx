@@ -33,6 +33,21 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "trading-fees-reduction",
+    title: "Trading fees reduced",
+    isActive: true,
+    startDate: "6 Jan 2025, 12:00",
+    endDate: "13 Jan 2025, 12:00",
+    bodyText: (
+      <>
+        Open and close fees have been lowered from 5/7 bps to 4/6 bps with the introduction of liquidation fees.
+        <br />
+        <br />
+        <ExternalLink href="https://t.me/GMX_Announcements/963">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: "dydx-inj-listing",
     title: "DYDX and INJ markets added on Arbitrum",
     isActive: true,

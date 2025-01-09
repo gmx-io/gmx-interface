@@ -2,7 +2,8 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
-import { Provider } from "ethers";
+import { Provider, Signer } from "ethers";
+import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
 import { getNativeToken } from "sdk/configs/tokens";
@@ -200,6 +201,23 @@ export function getInvalidNetworkErrorMessage(chainId: number) {
       </div>
     </Trans>
   );
+}
+
+export async function validateSignerAddress(signer: Signer, receiverAddress: string) {
+  const signerAddress = await signer.getAddress();
+
+  if (signerAddress !== receiverAddress) {
+    helperToast.error(
+      <Trans>
+        <div>Error submitting order.</div>
+        <br />
+        <div>Signer address does not match receiver address.</div>
+        <br />
+        <div>Please reload the page and try again.</div>
+      </Trans>
+    );
+    throw new Error("Signer address does not match account address");
+  }
 }
 
 export function extractDataFromError(errorMessage: unknown) {
