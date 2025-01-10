@@ -11,7 +11,13 @@ import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDe
 import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { ProcessedData, useENS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmount,
+  formatBalanceAmount,
+  formatBalanceAmountWithUsd,
+  formatKeyAmount,
+} from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -149,8 +155,9 @@ export function GmxAndVotingPowerCard({
             <Trans>Wallet</Trans>
           </div>
           <div>
-            {formatKeyAmount(processedData, "gmxBalance", 18, 2, true)} GMX ($
-            {formatKeyAmount(processedData, "gmxBalanceUsd", USD_DECIMALS, 2, true)})
+            {processedData?.gmxBalance === undefined || processedData?.gmxBalanceUsd === undefined
+              ? "..."
+              : formatBalanceAmountWithUsd(processedData.gmxBalance, processedData.gmxBalanceUsd, 18, "GMX", true)}
           </div>
         </div>
         <div className="App-card-row">
@@ -158,8 +165,15 @@ export function GmxAndVotingPowerCard({
             <Trans>Staked</Trans>
           </div>
           <div>
-            {formatKeyAmount(processedData, "gmxInStakedGmx", 18, 2, true)} GMX ($
-            {formatKeyAmount(processedData, "gmxInStakedGmxUsd", USD_DECIMALS, 2, true)})
+            {processedData?.gmxInStakedGmx === undefined || processedData?.gmxInStakedGmxUsd === undefined
+              ? "..."
+              : formatBalanceAmountWithUsd(
+                  processedData.gmxInStakedGmx,
+                  processedData.gmxInStakedGmxUsd,
+                  18,
+                  "GMX",
+                  true
+                )}
           </div>
         </div>
         {chainId === ARBITRUM && (
@@ -172,7 +186,7 @@ export function GmxAndVotingPowerCard({
                 <Tooltip
                   position="bottom-end"
                   className="nowrap"
-                  handle={`${formatAmount(govTokenAmount, 18, 2, true)} GMX DAO`}
+                  handle={formatBalanceAmount(govTokenAmount, 18, "GMX DAO", true)}
                   renderContent={() => (
                     <>
                       {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount > 0 ? (

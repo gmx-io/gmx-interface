@@ -164,10 +164,15 @@ export function TotalRewardsCard({
             <div className="label">GMX</div>
             <Tooltip
               handle={
-                <div>
-                  {formatKeyAmount(processedData, "totalGmxRewards", 18, 4, true)} ($
-                  {formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)})
-                </div>
+                processedData?.totalGmxRewards === undefined || processedData?.totalGmxRewardsUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(
+                      processedData.totalGmxRewards,
+                      processedData.totalGmxRewardsUsd,
+                      18,
+                      undefined,
+                      true
+                    )
               }
               position="bottom-end"
               content={
@@ -223,8 +228,15 @@ export function TotalRewardsCard({
               <Trans>Escrowed GMX</Trans>
             </div>
             <div>
-              {formatKeyAmount(processedData, "totalEsGmxRewards", 18, 4, true)} ($
-              {formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
+              {processedData?.totalEsGmxRewards === undefined || processedData?.totalEsGmxRewardsUsd === undefined
+                ? "..."
+                : formatBalanceAmountWithUsd(
+                    processedData.totalEsGmxRewards,
+                    processedData.totalEsGmxRewardsUsd,
+                    18,
+                    undefined,
+                    true
+                  )}
             </div>
           </div>
           {isAnyNativeTokenRewards ? (

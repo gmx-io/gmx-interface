@@ -93,7 +93,9 @@ describe("formatAmountHuman", () => {
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1K");
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2M");
   });
+});
 
+describe("formatBalanceAmount", () => {
   it("should display balance amount", () =>
     // prettier-ignore
     {
@@ -117,10 +119,14 @@ describe("formatAmountHuman", () => {
 
   it("should display balance amount with symbol", () => {
     expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, "USDC", true)).toBe("0.0000 USDC");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, "USDC", false)).toBe("-");
   });
 
   it("should display balance amount with usd", () => {
     expect(formatBalanceAmountWithUsd(ONE_USD, ONE_USD, USD_DECIMALS)).toBe("1.0000 ($1.00)");
     expect(formatBalanceAmountWithUsd(ONE_USD, ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC ($1.00)");
+    expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC")).toBe("-");
+    expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC", true)).toBe("0.0000 USDC ($0.00)");
   });
 });

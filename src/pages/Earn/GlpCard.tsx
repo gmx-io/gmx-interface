@@ -44,8 +44,15 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Trans>Wallet</Trans>
             </div>
             <div>
-              {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} GLP ($
-              {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
+              {processedData?.glpBalance === undefined || processedData?.glpBalanceUsd === undefined
+                ? "..."
+                : formatBalanceAmountWithUsd(
+                    processedData.glpBalance,
+                    processedData.glpBalanceUsd,
+                    GLP_DECIMALS,
+                    "GLP",
+                    true
+                  )}
             </div>
           </div>
           <div className="App-card-row">
@@ -53,8 +60,15 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Trans>Staked</Trans>
             </div>
             <div>
-              {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} GLP ($
-              {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
+              {processedData?.glpBalance === undefined || processedData?.glpBalanceUsd === undefined
+                ? "..."
+                : formatBalanceAmountWithUsd(
+                    processedData.glpBalance,
+                    processedData.glpBalanceUsd,
+                    GLP_DECIMALS,
+                    "GLP",
+                    true
+                  )}
             </div>
           </div>
           <div className="App-card-divider"></div>
@@ -66,34 +80,32 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Tooltip
                 handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
                 position="bottom-end"
-                renderContent={() => {
-                  return (
-                    <>
+                content={
+                  <>
+                    <StatsTooltipRow
+                      label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
+                      value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
+                      showDollar={false}
+                    />
+
+                    {processedData?.glpAprForEsGmx && processedData.glpAprForEsGmx > 0 && (
                       <StatsTooltipRow
-                        label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
-                        value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
+                        label="Escrowed GMX APR"
+                        value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
                         showDollar={false}
                       />
+                    )}
 
-                      {processedData?.glpAprForEsGmx && processedData.glpAprForEsGmx > 0 && (
-                        <StatsTooltipRow
-                          label="Escrowed GMX APR"
-                          value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
-                          showDollar={false}
-                        />
-                      )}
+                    <br />
 
+                    <Trans>
+                      APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <br />
                       <br />
-
-                      <Trans>
-                        APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <br />
-                        <br />
-                        Historical GLP APRs can be checked in this{" "}
-                        <ExternalLink href="https://dune.com/saulius/gmx-analytics">community dashboard</ExternalLink>.
-                      </Trans>
-                    </>
-                  );
-                }}
+                      Historical GLP APRs can be checked in this{" "}
+                      <ExternalLink href="https://dune.com/saulius/gmx-analytics">community dashboard</ExternalLink>.
+                    </Trans>
+                  </>
+                }
               />
             </div>
           </div>
@@ -105,44 +117,42 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Tooltip
                 handle={`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
                 position="bottom-end"
-                renderContent={() => {
-                  return (
-                    <>
-                      <StatsTooltipRow
-                        label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                        value={
-                          processedData?.feeGlpTrackerRewards === undefined ||
-                          processedData?.feeGlpTrackerRewardsUsd === undefined
-                            ? "..."
-                            : formatBalanceAmountWithUsd(
-                                processedData.feeGlpTrackerRewards,
-                                processedData.feeGlpTrackerRewardsUsd,
-                                18,
-                                undefined,
-                                true
-                              )
-                        }
-                        showDollar={false}
-                      />
-                      <StatsTooltipRow
-                        label="Escrowed GMX"
-                        value={
-                          processedData?.stakedGlpTrackerRewards === undefined ||
-                          processedData?.stakedGlpTrackerRewardsUsd === undefined
-                            ? "..."
-                            : formatBalanceAmountWithUsd(
-                                processedData.stakedGlpTrackerRewards,
-                                processedData.stakedGlpTrackerRewardsUsd,
-                                18,
-                                undefined,
-                                true
-                              )
-                        }
-                        showDollar={false}
-                      />
-                    </>
-                  );
-                }}
+                content={
+                  <>
+                    <StatsTooltipRow
+                      label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                      value={
+                        processedData?.feeGlpTrackerRewards === undefined ||
+                        processedData?.feeGlpTrackerRewardsUsd === undefined
+                          ? "..."
+                          : formatBalanceAmountWithUsd(
+                              processedData.feeGlpTrackerRewards,
+                              processedData.feeGlpTrackerRewardsUsd,
+                              18,
+                              undefined,
+                              true
+                            )
+                      }
+                      showDollar={false}
+                    />
+                    <StatsTooltipRow
+                      label="Escrowed GMX"
+                      value={
+                        processedData?.stakedGlpTrackerRewards === undefined ||
+                        processedData?.stakedGlpTrackerRewardsUsd === undefined
+                          ? "..."
+                          : formatBalanceAmountWithUsd(
+                              processedData.stakedGlpTrackerRewards,
+                              processedData.stakedGlpTrackerRewardsUsd,
+                              18,
+                              undefined,
+                              true
+                            )
+                      }
+                      showDollar={false}
+                    />
+                  </>
+                }
               />
             </div>
           </div>
