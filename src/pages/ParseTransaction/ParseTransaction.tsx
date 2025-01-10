@@ -24,10 +24,11 @@ import { useCallback, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { useCopyToClipboard } from "react-use";
 import { Fragment } from "react/jsx-runtime";
+import { formatFactor } from "../../lib/numbers";
 import {
-  formatAmount30Decimals,
   formatAmountByCollateralToken,
   formatAmountByCollateralToken15Shift,
+  formatAmountByCollateralTokenInFeesEvent,
   formatAmountByEvent,
   formatAmountByField,
   formatAmountByIndexToken,
@@ -222,15 +223,8 @@ const fieldFormatters = {
   collateralDeltaAmount: formatAmountByCollateralToken,
   fundingFeeAmount: formatAmountByCollateralToken,
   feeReceiverAmount: formatAmountByCollateralToken,
-
-  borrowingFactor: formatAmount30Decimals,
-  borrowingFeeReceiverFactor: formatAmount30Decimals,
-  positionFeeFactor: formatAmount30Decimals,
-  positionFeeReceiverFactor: formatAmount30Decimals,
-  uiFeeReceiverFactor: formatAmount30Decimals,
-  totalRebateFactor: formatAmount30Decimals,
-  traderDiscountFactor: formatAmount30Decimals,
-  borrowingFeePoolFactor: formatAmount30Decimals,
+  liquidationFeeAmount: formatAmountByCollateralToken,
+  liquidationFeeAmountForFeeReceiver: formatAmountByCollateralToken,
 
   timestamp: formatDateField,
   increasedAtTime: formatDateField,
@@ -257,16 +251,6 @@ const fieldFormatters = {
   latestLongTokenClaimableFundingAmountPerSize: formatAmountByLongToken15Shift,
   latestShortTokenClaimableFundingAmountPerSize: formatAmountByShortToken15Shift,
 
-  nextValue: formatAmountByEvent({
-    CollateralSumUpdated: "collateralToken",
-    CumulativeBorrowingFactorUpdated: formatAmount30Decimals,
-    OpenInterestUpdated: formatPrice,
-    PoolAmountUpdated: "token",
-    ClaimableFeeAmountUpdated: "token",
-    OpenInterestInTokensUpdated: formatPrice,
-    PositionImpactPoolAmountUpdated: formatAmountByIndexToken,
-  }),
-
   poolValue: formatPrice,
   longPnl: formatPrice,
   shortPnl: formatPrice,
@@ -282,14 +266,27 @@ const fieldFormatters = {
   minMarketTokens: formatAmountByMarketToken,
   marketTokensSupply: formatAmountByMarketToken,
   marketTokenAmount: formatAmountByMarketToken,
+  positionCollateralAmount: formatAmountByCollateralTokenInFeesEvent,
 
   receivedMarketTokens: formatAmountByMarketTokenInDeposit,
 
+  nextValue: formatAmountByEvent({
+    CollateralSumUpdated: "collateralToken",
+    CumulativeBorrowingFactorUpdated: formatFactor,
+    OpenInterestUpdated: formatPrice,
+    ClaimableFundingUpdated: "token",
+    PoolAmountUpdated: "token",
+    ClaimableFeeAmountUpdated: "token",
+    OpenInterestInTokensUpdated: formatPrice,
+    PositionImpactPoolAmountUpdated: formatAmountByIndexToken,
+  }),
+
   delta: formatAmountByEvent({
     CollateralSumUpdated: "collateralToken",
-    CumulativeBorrowingFactorUpdated: formatAmount30Decimals,
+    CumulativeBorrowingFactorUpdated: formatFactor,
     OpenInterestUpdated: formatPrice,
     PoolAmountUpdated: "token",
+    ClaimableFundingUpdated: "token",
     ClaimableFeeAmountUpdated: "token",
     OpenInterestInTokensUpdated: formatPrice,
     FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
@@ -356,6 +353,8 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
       if (props.item.endsWith("Usd")) {
         value = formatUsd(props.value);
+      } else if (props.item.endsWith("Factor")) {
+        value = formatFactor(props.value);
       }
     }
   }

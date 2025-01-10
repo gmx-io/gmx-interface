@@ -594,3 +594,21 @@ export function formatBalanceAmount(amount: bigint, tokenDecimals: number) {
   else if (absAmountFloat >= 0.00000001) return formatAmount(amount, tokenDecimals, 8, true);
   else return bigintToNumber(amount, tokenDecimals).toExponential(2);
 }
+
+export function formatFactor(factor: bigint) {
+  if (factor == 0n) {
+    return "0";
+  }
+
+  if (bigMath.abs(factor) > PRECISION * 1000n) {
+    return (factor / PRECISION).toString();
+  }
+
+  const trailingZeroes =
+    bigMath
+      .abs(factor)
+      .toString()
+      .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
+  const factorDecimals = 30 - trailingZeroes;
+  return formatAmount(factor, 30, factorDecimals);
+}

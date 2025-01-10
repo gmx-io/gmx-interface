@@ -6,6 +6,7 @@ import {
   PRECISION,
   formatAmountHuman,
   formatBalanceAmount,
+  formatFactor,
 } from "./numbers";
 import { describe, expect, it } from "vitest";
 
@@ -109,5 +110,22 @@ describe("formatAmountHuman", () => {
     expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe(      "0.00000001");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS)).toBe(    "1.00e-9");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000_000n, USD_DECIMALS)).toBe("1.00e-12");
+  });
+});
+
+describe("formatFactor", () => {
+  it("should format factor", () => {
+    expect(formatFactor(0n)).toBe("0");
+    expect(formatFactor(1n)).toBe("0.000000000000000000000000000001");
+    expect(formatFactor(1000n)).toBe("0.000000000000000000000000001");
+    expect(formatFactor(1000000n)).toBe("0.000000000000000000000001");
+    expect(formatFactor(1000000000n)).toBe("0.000000000000000000001");
+    expect(formatFactor(1000000000000n)).toBe("0.000000000000000001");
+    expect(formatFactor(1000000000000000n)).toBe("0.000000000000001");
+    expect(formatFactor(1000000000000000000n)).toBe("0.000000000001");
+    expect(formatFactor(1000000000000000000000n)).toBe("0.000000001");
+    expect(formatFactor(1000000000000000000000000n)).toBe("0.000001");
+    expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
+    expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
   });
 });

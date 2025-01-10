@@ -1,6 +1,6 @@
 import { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
-import { expandDecimals, formatAmount, formatBalanceAmount, formatTokenAmount, formatUsdPrice } from "lib/numbers";
+import { expandDecimals, formatTokenAmount, formatUsdPrice } from "lib/numbers";
 import { NATIVE_TOKENS_MAP } from "sdk/configs/tokens";
 import { LogEntryComponentProps } from "./types";
 import { isGlvInfo } from "../../domain/synthetics/markets/glv";
@@ -134,6 +134,16 @@ export const formatAmountByNativeToken = formatAmountByField(
   }
 );
 
+export function getCollateralToken({ entries, tokensData }: LogEntryComponentProps) {
+  const collateralToken = entries.find((entry) => entry.item === "collateralToken");
+
+  if (collateralToken) {
+    return tokensData[collateralToken.value as string];
+  }
+
+  throw new Error(`Field "collateralToken" not found in event`);
+}
+
 function getMarketOrGlvToken({ entries, marketsInfoData, marketTokensData, glvData }: LogEntryComponentProps) {
   const marketAddress = entries.find((entry) => entry.item === "market");
 
@@ -187,6 +197,10 @@ export const formatAmountByMarketTokenInDeposit = formatAmountByEventField(
   "MarketPoolValueUpdated",
   getMarketOrGlvToken
 );
+export const formatAmountByCollateralTokenInFeesEvent = formatAmountByEventField(
+  "PositionFeesInfo",
+  getCollateralToken
+);
 
 export const formatAmountByIndexToken = formatAmountByField(getIndexToken);
 export const formatAmountByMarketToken = formatAmountByField(getMarketOrGlvToken);
@@ -194,15 +208,6 @@ export const formatPriceByIndexToken = formatPriceByField(getIndexToken);
 
 export const formatPriceByToken = formatPriceByField("token");
 export const formatPriceByCollateralToken = formatPriceByField("collateralToken");
-
-interface FormatAmount30Decimals extends Formatter {
-  withDisplayDecimals: (d: number) => Formatter;
-}
-export const formatAmount30Decimals: FormatAmount30Decimals = (t: bigint) =>
-  t === 0n ? "0" : formatBalanceAmount(t, 30);
-
-formatAmount30Decimals.withDisplayDecimals = (displayDecimals: number) => (t: bigint) =>
-  formatAmount(t, 30, displayDecimals);
 
 export const formatAmountByFieldWithDecimalsShift = (tokenField: string | TokenGetter, shift: number) =>
   formatAmountByField(
