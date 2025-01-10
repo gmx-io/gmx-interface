@@ -193,10 +193,7 @@ export function Curtain({
               onClick={handleToggle}
             >
               <LeftArrowIcon
-                className={cx(
-                  "transition-transform delay-150 duration-500 ease-out",
-                  isOpen ? "-rotate-90" : "rotate-90"
-                )}
+                className={cx("transition-transform duration-500 ease-out", isOpen ? "rotate-[270deg]" : "rotate-90")}
               />
             </Button>
           </div>
