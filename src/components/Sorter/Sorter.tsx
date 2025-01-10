@@ -1,7 +1,8 @@
 import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useRef } from "react";
 
-import { SortDirection, SorterPersistedKey, useSorterConfig } from "domain/ui/sorterPersistence";
+import { useSorterConfig } from "./SorterProvider";
+import { SortDirection, SorterConfig, SorterKey } from "./sorterTypes";
 
 import IcSortable from "img/ic_sortable.svg?react";
 import IcSortedAsc from "img/ic_sorted_asc.svg?react";
@@ -38,19 +39,15 @@ export function Sorter(
   );
 }
 
-export function useSorterHandlers<SortField extends string | "unspecified">({
-  initialOrderBy,
-  initialDirection,
-  persistenceKey,
-}: { initialOrderBy?: SortField; initialDirection?: SortDirection; persistenceKey?: SorterPersistedKey } = {}) {
-  const [config, setConfig] = useSorterConfig(persistenceKey ?? "in-memory", {
-    orderBy: initialOrderBy ?? "unspecified",
-    direction: initialDirection ?? "unspecified",
-  });
-  const onChangeCache = useRef<Partial<Record<SortField, (direction: SortDirection) => void>>>({});
+export function useSorterHandlers<SortField extends string | "unspecified">(
+  key: SorterKey,
+  initialConfig?: SorterConfig<SortField>
+) {
+  const [config, setConfig] = useSorterConfig<SortField | "unspecified">(key, initialConfig);
+  const onChangeCache = useRef<Partial<Record<SortField | "unspecified", (direction: SortDirection) => void>>>({});
 
   const getSorterProps = useCallback(
-    (field: SortField) => {
+    (field: SortField | "unspecified") => {
       let cachedHandler = onChangeCache.current[field];
 
       if (!cachedHandler) {
@@ -72,7 +69,7 @@ export function useSorterHandlers<SortField extends string | "unspecified">({
   );
 
   const setOrderBy = useCallback(
-    (field: SortField) => {
+    (field: SortField | "unspecified") => {
       setConfig((prev) => ({
         ...prev,
         orderBy: field,

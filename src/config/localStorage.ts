@@ -49,6 +49,9 @@ export const ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN = "one-click-trading-w
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
 
+/**
+ * @deprecated
+ */
 export const TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY = "token-favorite-preference";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
@@ -61,6 +64,9 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 export const RPC_PROVIDER_KEY = "rpc-provider";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
 
+/**
+ * @deprecated
+ */
 export const SORTER_CONFIG_KEY = "sorter-config";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;

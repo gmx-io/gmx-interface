@@ -16,24 +16,24 @@ import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
-import type { SortDirection } from "domain/ui/sorterPersistence";
 import { bigMath } from "lib/bigmath";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import type { SortDirection } from "components/Sorter/sorterTypes";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -49,10 +49,13 @@ const PER_PAGE = 20;
 export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>({
-    initialOrderBy: "qualifyingPnl",
-    initialDirection: "desc",
-  });
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
+    "leaderboard-positions-table",
+    {
+      orderBy: "qualifyingPnl",
+      direction: "desc",
+    }
+  );
   const [search, setSearch] = useState("");
   const handleKeyDown = useCallback(() => null, []);
   const term = useDebounce(search, 300);

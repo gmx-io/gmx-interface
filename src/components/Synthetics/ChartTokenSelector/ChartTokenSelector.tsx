@@ -6,12 +6,6 @@ import { useMedia } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
-import {
-  convertTokenAddress,
-  getCategoryTokenAddresses,
-  getTokenVisualMultiplier,
-  isChartAvailableForToken,
-} from "sdk/configs/tokens";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -36,7 +30,12 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
-import type { SortDirection } from "domain/ui/sorterPersistence";
+import {
+  convertTokenAddress,
+  getCategoryTokenAddresses,
+  getTokenVisualMultiplier,
+  isChartAvailableForToken,
+} from "sdk/configs/tokens";
 
 import { helperToast } from "lib/helperToast";
 import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
@@ -47,6 +46,7 @@ import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import type { SortDirection } from "components/Sorter/sorterTypes";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -163,9 +163,7 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>({
-    persistenceKey: "chart-token-selector",
-  });
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("chart-token-selector");
   const [searchKeyword, setSearchKeyword] = useState("");
   const isSwap = tradeType === TradeType.Swap;
 

@@ -7,7 +7,6 @@ import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import {
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,
@@ -25,16 +24,17 @@ import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseA
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import type { SortDirection } from "domain/ui/sorterPersistence";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import type { SortDirection } from "components/Sorter/sorterTypes";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -158,9 +158,7 @@ function MarketTokenSelectorInternal(props: Props) {
     glvTokensApyData,
   } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>({
-    persistenceKey: "gm-token-selector",
-  });
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-token-selector");
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 

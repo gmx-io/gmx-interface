@@ -27,9 +27,10 @@ import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { SWRConfigProp } from "./swrConfig";
 
+import { SorterProvider } from "components/Sorter/SorterProvider";
+import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { AppRoutes } from "./AppRoutes";
-import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -46,6 +47,7 @@ function App() {
   }, []);
 
   let app = <AppRoutes />;
+  app = <SorterProvider>{app}</SorterProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;

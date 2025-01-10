@@ -5,8 +5,8 @@ import { getMarketListingDate } from "config/markets";
 import { MarketTokensAPRData, MarketsInfoData, getMintableMarketTokens } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
-import type { SortDirection } from "domain/ui/sorterPersistence";
 
+import type { SortDirection } from "components/Sorter/sorterTypes";
 import type { SortField } from "./GmList";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
 
