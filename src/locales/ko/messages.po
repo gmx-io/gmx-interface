@@ -3784,6 +3784,10 @@ msgstr ""
 msgid "GMX Market Tokens"
 msgstr ""
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Txn failed. <0>View</0>."
+msgstr ""
+
 #: src/pages/Earn/Vesting.tsx
 #: src/pages/Earn/Vesting.tsx
 msgid "Affiliate Vault"
