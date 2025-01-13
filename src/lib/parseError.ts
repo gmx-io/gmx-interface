@@ -14,6 +14,8 @@ export type ErrorLike = {
   error?: any;
   errorSource?: string;
   parentError?: ErrorLike;
+  isAdditinalValidationPassed?: boolean;
+  additionalValidationType?: string;
   info?: {
     error?: ErrorLike;
   };
@@ -35,6 +37,8 @@ export type ErrorData = {
   txErrorType?: TxErrorType;
   txErrorData?: unknown;
   errorSource?: string;
+  isAdditinalValidationPassed?: boolean;
+  additionalValidationType?: string;
   parentError?: ErrorData;
   errorDepth?: number;
 };
@@ -53,6 +57,8 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
   // all human readable details are in info field
   const errorInfo = typeof error === "string" ? undefined : error?.info?.error;
   const errorSource = typeof error === "string" ? undefined : error?.errorSource;
+  const isAdditinalValidationPassed = typeof error === "string" ? undefined : error?.isAdditinalValidationPassed;
+  const additionalValidationType = typeof error === "string" ? undefined : error?.additionalValidationType;
 
   let errorMessage = "Unknown error";
   let errorStack: string | undefined = undefined;
@@ -154,6 +160,8 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     txErrorData,
     errorSource,
     parentError,
+    isAdditinalValidationPassed,
+    additionalValidationType,
     errorDepth,
   };
 }

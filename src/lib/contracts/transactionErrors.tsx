@@ -4,6 +4,8 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
 import { BaseContract, Overrides, Provider, Signer, TransactionRequest } from "ethers";
 import { helperToast } from "lib/helperToast";
+import { ErrorEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { ErrorLike, parseError } from "lib/parseError";
 import { mustNeverExist } from "lib/types";
 import { switchNetwork } from "lib/wallets";
@@ -243,7 +245,7 @@ export function extractDataFromError(errorMessage: unknown) {
   return null;
 }
 
-export function getAdvancedErrorActions(error: Error) {
+export function getAdditionalValidationType(error: Error) {
   const errorData = parseError(error);
 
   const shouldCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
@@ -296,61 +298,86 @@ export async function getCallStaticError(
 
   if (!txnData) {
     const error = new Error("missed transaction data");
-    (error as ErrorLike).errorSource = "getCallStaticError";
+    (error as ErrorLike).errorSource = "getTransaction";
 
     return { error };
   }
 
   try {
     await provider.call(txnData);
+    return { txnData };
   } catch (error) {
     (error as ErrorLike).errorSource = "getCallStaticError";
 
     return { error, txnData };
   }
-
-  return { txnData };
 }
 
-export function makeTransactionErrorHandler(contract: BaseContract, method: string, params: any[], txnOpts: Overrides) {
+export function makeTransactionErrorHandler(
+  contract: BaseContract,
+  method: string,
+  params: any[],
+  txnOpts: Overrides,
+  from: string
+) {
   return async (error) => {
-    const advancedErrorAction = getAdvancedErrorActions(error);
+    async function additionalValidation() {
+      const additionalValidationType = getAdditionalValidationType(error);
 
-    if (!advancedErrorAction) {
-      throw error;
-    }
-
-    switch (advancedErrorAction) {
-      case "tryCallStatic": {
-        const { error: callStaticError } = await getCallStaticError(contract.runner!.provider!, {
-          data: contract.interface.encodeFunctionData(method, params),
-          to: await contract.getAddress(),
-          from: await contract.getAddress(),
-          ...txnOpts,
-        });
-
-        if (callStaticError) {
-          (callStaticError as ErrorLike).parentError = error;
-          throw callStaticError;
-        }
-
-        break;
+      if (!additionalValidationType) {
+        return;
       }
 
-      case "tryEstimateGas": {
-        const estimateGasError = await getEstimateGasError(contract, method, params, txnOpts);
+      let errorToLog: ErrorLike = error;
 
-        if (estimateGasError) {
-          (estimateGasError as ErrorLike).parentError = error;
-          throw estimateGasError;
+      switch (additionalValidationType) {
+        case "tryCallStatic": {
+          const { error: callStaticError } = await getCallStaticError(contract.runner!.provider!, {
+            data: contract.interface.encodeFunctionData(method, params),
+            to: await contract.getAddress(),
+            from,
+            ...txnOpts,
+          });
+
+          if (callStaticError) {
+            callStaticError.parentError = errorToLog;
+            errorToLog = callStaticError;
+          } else {
+            errorToLog.isAdditinalValidationPassed = true;
+          }
+
+          errorToLog.additionalValidationType = "tryCallStatic";
+
+          break;
         }
 
-        break;
+        case "tryEstimateGas": {
+          const { error: estimateGasError } = await getEstimateGasError(contract, method, params, txnOpts);
+
+          if (estimateGasError) {
+            estimateGasError.parentError = errorToLog;
+            errorToLog = estimateGasError;
+          } else {
+            errorToLog.isAdditinalValidationPassed = true;
+          }
+
+          errorToLog.additionalValidationType = "tryEstimateGas";
+
+          break;
+        }
+
+        default:
+          mustNeverExist(additionalValidationType);
       }
 
-      default:
-        mustNeverExist(advancedErrorAction);
+      emitMetricEvent<ErrorEvent>({
+        event: "error",
+        isError: true,
+        data: errorToLog,
+      });
     }
+
+    additionalValidation();
 
     throw error;
   };
