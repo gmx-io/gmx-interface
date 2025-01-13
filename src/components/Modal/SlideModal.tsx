@@ -224,6 +224,21 @@ function MobileSlideModal({
     e.stopPropagation();
   }, []);
 
+  useEffect(
+    function blurOutsideOnVisible() {
+      if (isOpen) {
+        const focusedElement = document.activeElement;
+        const isNotBody = !document.body.isSameNode(focusedElement);
+        const isOutside = !curtainRef.current?.contains(focusedElement);
+
+        if (focusedElement && isNotBody && isOutside) {
+          (focusedElement as HTMLElement).blur();
+        }
+      }
+    },
+    [isOpen]
+  );
+
   if (isHideTransitionFinished) return null;
 
   return (

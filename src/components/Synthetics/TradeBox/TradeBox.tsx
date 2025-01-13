@@ -8,8 +8,8 @@ import { useKey, useLatest, usePrevious } from "react-use";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
@@ -95,7 +95,6 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
 import { mustNeverExist } from "lib/types";
 import { useCursorInside } from "lib/useCursorInside";
-import { usePendingTxns } from "lib/usePendingTxns";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
@@ -138,6 +137,7 @@ import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
@@ -146,7 +146,7 @@ import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import "./TradeBox.scss";
 
 export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
