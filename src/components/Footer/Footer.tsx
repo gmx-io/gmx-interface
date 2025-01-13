@@ -39,7 +39,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
       <div
         className={cx(
           "absolute bottom-0 left-0 w-full border-t border-t-stroke-primary px-32 pt-40",
-          isMobileTradePage ? "pb-52" : "pb-40",
+          isMobileTradePage ? "pb-92" : "pb-40",
           {
             "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
             "flex flex-col gap-20": isMobile,
