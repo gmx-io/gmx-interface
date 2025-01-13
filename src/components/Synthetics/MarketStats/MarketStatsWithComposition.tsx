@@ -10,7 +10,7 @@ import {
   getMarketIndexName,
   getGlvOrMarketAddress,
   getMarketPoolName,
-  getMaxPoolUsd,
+  getStrictestMaxPoolUsdForDeposit,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -118,7 +118,7 @@ export function MarketStatsWithComposition(p: Props) {
               longToken?.decimals
             ),
             marketInfo
-              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, true))})`
+              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(marketInfo, true))})`
               : "",
           ],
     [
@@ -142,7 +142,7 @@ export function MarketStatsWithComposition(p: Props) {
               shortToken?.decimals
             ),
             marketInfo
-              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, false))})`
+              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(marketInfo, false))})`
               : "",
           ],
     [

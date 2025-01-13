@@ -405,13 +405,13 @@ export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
 
 function getDepositCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
-  const maxPoolAmount = getMaxPoolAmount(marketInfo, isLong);
+  const maxPoolAmount = getStrictestMaxPoolAmountForDeposit(marketInfo, isLong);
   const capacityAmount = maxPoolAmount - poolAmount;
 
   return bigMath.max(0n, capacityAmount);
 }
 
-export function getMaxPoolAmount(marketInfo: MarketInfo, isLong: boolean) {
+export function getStrictestMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const maxPoolUsdForDeposit = isLong ? marketInfo.maxLongPoolUsdForDeposit : marketInfo.maxShortPoolUsdForDeposit;
   const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
@@ -422,16 +422,28 @@ export function getMaxPoolAmount(marketInfo: MarketInfo, isLong: boolean) {
   return bigMath.min(maxPoolAmount, maxPoolAmountForDeposit);
 }
 
-export function getMaxPoolUsd(marketInfo: MarketInfo, isLong: boolean) {
+export function getStrictestMaxPoolUsdForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
-  const maxPoolAmount = getMaxPoolAmount(marketInfo, isLong);
+  const maxPoolAmount = getStrictestMaxPoolAmountForDeposit(marketInfo, isLong);
 
   return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
 }
 
+export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+  const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+
+  const capacityAmount = maxPoolAmount - poolAmount;
+  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
+
+  const capacityUsd = convertToUsd(capacityAmount, token.decimals, getMidPrice(token.prices))!;
+
+  return capacityUsd;
+}
+
 export function getDepositCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
-  const maxPoolUsd = getMaxPoolUsd(marketInfo, isLong);
+  const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(marketInfo, isLong);
 
   const capacityUsd = maxPoolUsd - poolUsd;
 
