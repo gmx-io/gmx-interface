@@ -68,13 +68,13 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
 
 const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
   { msg: "header not found" },
-  { msg: "cannot query unfinalized data" },
+  { msg: "unfinalized data" },
   { msg: "could not coalesce error" },
   { msg: "Internal JSON RPC error" },
   // ONLY FOR TESTING
   { msg: "ethers-user-denied" },
   { msg: "transfer amount exceeds" },
-  { msg: "insufficient funds for gas" },
+  { msg: "insufficient funds" },
 ];
 
 export type TxError = {
@@ -266,6 +266,8 @@ export function getAdditionalValidationType(error: Error) {
   }
 
   const shouldTryEstimateGas = errorData?.errorStack && errorData.errorStack.includes("estimateGas");
+
+  console.log("shouldTryEstimateGas", shouldTryEstimateGas, errorData?.errorStack);
 
   if (shouldTryEstimateGas) {
     return "tryEstimateGas";
