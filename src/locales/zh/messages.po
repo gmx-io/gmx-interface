@@ -259,6 +259,10 @@ msgstr "查看状况"
 msgid "Buyable"
 msgstr ""
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
@@ -3778,6 +3782,10 @@ msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "GMX Market Tokens"
+msgstr "<<<<<<< HEAD"
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Txn failed. <0>View</0>."
 msgstr ""
 
 #: src/pages/Earn/Vesting.tsx
@@ -5549,7 +5557,11 @@ msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "No delegate found"
-msgstr ""
+msgstr "<<<<<<< HEAD"
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgstr ""
 
 #: src/pages/Earn/EarnV1.jsx
 msgid "Wallet not yet connected"
@@ -5985,8 +5997,8 @@ msgstr ""
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr ""
 
-#: src/App/App.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -5994,9 +6006,9 @@ msgstr ""
 msgid "View"
 msgstr "浏览"
 
-#: src/App/App.tsx
-msgid "Txn failed. <0>View</0>"
-msgstr "转移失败 <0>查看</0>"
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Txn failed. <0>View</0>"
+#~ msgstr "转移失败 <0>查看</0>"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."

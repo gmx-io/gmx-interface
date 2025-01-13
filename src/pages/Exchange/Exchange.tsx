@@ -55,7 +55,7 @@ import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 import "./Exchange.css";
 const { ZeroAddress } = ethers;
@@ -410,7 +410,7 @@ export const Exchange = forwardRef(
 
     const [pendingPositions, setPendingPositions] = useState({});
     const [updatedPositions, setUpdatedPositions] = useState({});
-    const [pendingTxns, setPendingTxns] = usePendingTxns();
+    const { pendingTxns, setPendingTxns } = usePendingTxns();
 
     const hideBanner = () => {
       const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);

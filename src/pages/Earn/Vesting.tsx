@@ -11,7 +11,6 @@ import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatKeyAmount } from "lib/numbers";
-import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -25,6 +24,7 @@ import { VesterDepositModal } from "./VesterDepositModal";
 import { VesterWithdrawModal } from "./VesterWithdrawModal";
 
 import Token from "sdk/abis/Token.json";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export function Vesting({ processedData }: { processedData: ProcessedData | undefined }) {
   const { active, signer, account } = useWallet();
@@ -32,7 +32,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   const { openConnectModal } = useConnectModal();
   const [isAffiliateVesterWithdrawModalVisible, setIsAffiliateVesterWithdrawModalVisible] = useState(false);
   const vestingData = useVestingData(account);
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const [isVesterWithdrawModalVisible, setIsVesterWithdrawModalVisible] = useState(false);
   const [vesterWithdrawTitle, setVesterWithdrawTitle] = useState("");

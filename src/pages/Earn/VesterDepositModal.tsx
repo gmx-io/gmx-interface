@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 
 import { getIcons } from "config/icons";
-import { SetPendingTransactions } from "domain/legacy";
 import { bigMath } from "lib/bigmath";
 import { callContract } from "lib/contracts";
 import { getPageTitle } from "lib/legacy";
@@ -18,6 +17,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import Vester from "sdk/abis/Vester.json";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export function VesterDepositModal(props: {
   isVisible: boolean;

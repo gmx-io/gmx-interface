@@ -14,7 +14,6 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatKeyAmount } from "lib/numbers";
-import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -23,6 +22,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ClaimModal } from "./ClaimModal";
 
 import ReaderV2 from "sdk/abis/ReaderV2.json";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export function TotalRewardsCard({
   processedData,
@@ -34,7 +34,7 @@ export function TotalRewardsCard({
   const { active, account, signer } = useWallet();
   const { chainId } = useChainId();
   const { openConnectModal } = useConnectModal();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
 

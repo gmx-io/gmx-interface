@@ -5,7 +5,6 @@ import { useCallback, useMemo, useState } from "react";
 import { ARBITRUM } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
-import { SetPendingTransactions } from "domain/legacy";
 import { bigMath } from "lib/bigmath";
 import { callContract } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
@@ -18,6 +17,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 
 import RewardRouter from "sdk/abis/RewardRouter.json";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export function UnstakeModal(props: {
   isVisible: boolean;

@@ -32,7 +32,7 @@ import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
@@ -71,7 +71,7 @@ export function SyntheticsPage(p: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const calcSelector = useCalcSelector();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const isMobile = useMedia("(max-width: 1100px)");
 
@@ -168,7 +168,7 @@ export function SyntheticsPage(p: Props) {
           {position?.isLong ? "Long" : "Short"}{" "}
           <div className="inline-flex">
             <span>{indexName}</span>
-            <span className="subtext gm-toast">[{poolName}]</span>
+            <span className="subtext gm-toast !text-white">[{poolName}]</span>
           </div>{" "}
           <span>market selected</span>.
         </Trans>
@@ -368,7 +368,7 @@ function useOrdersControl() {
   const chainId = useSelector(selectChainId);
   const signer = useEthersSigner();
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrderKeys.length);
   const subaccount = useSubaccount(null, selectedOrderKeys.length);

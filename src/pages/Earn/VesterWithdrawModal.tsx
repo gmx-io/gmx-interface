@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useState } from "react";
 
-import { SetPendingTransactions } from "domain/legacy";
 import { callContract } from "lib/contracts";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
@@ -10,6 +9,7 @@ import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 
 import Vester from "sdk/abis/Vester.json";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export function VesterWithdrawModal(props: {
   isVisible: boolean;

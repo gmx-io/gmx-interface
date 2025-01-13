@@ -2,11 +2,11 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
-import { getNativeToken } from "sdk/configs/tokens";
-import { Signer } from "ethers";
+import { Provider, Signer } from "ethers";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
+import { getNativeToken } from "sdk/configs/tokens";
 
 export enum TxErrorType {
   NotEnoughFunds = "NOT_ENOUGH_FUNDS",
@@ -230,4 +230,45 @@ export function extractDataFromError(errorMessage: unknown) {
     return match[1];
   }
   return null;
+}
+
+export type TxnData = {
+  data: string;
+  to: string | null;
+  from: string;
+  gasLimit?: bigint;
+  gasPrice?: bigint;
+  maxFeePerGas: bigint | null;
+  maxPriorityFeePerGas: bigint | null;
+  nonce: number | null;
+  value: bigint;
+};
+
+export async function getOnchainError(
+  provider: Provider,
+  txnData?: TxnData,
+  txnHash?: string
+): Promise<{ error?: Error; txnData?: TxnData }> {
+  // if txnData is not provided, try to fetch it from blockchain by txnHash
+  if (!txnData && txnHash) {
+    try {
+      txnData = (await provider.getTransaction(txnHash)) || undefined;
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  if (!txnData) {
+    const error = new Error("missed transaction data");
+
+    return { error };
+  }
+
+  try {
+    await provider.call(txnData);
+  } catch (error) {
+    return { error, txnData };
+  }
+
+  return { txnData };
 }

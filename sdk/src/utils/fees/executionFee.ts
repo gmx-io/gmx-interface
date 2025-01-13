@@ -40,6 +40,7 @@ export function getExecutionFee(
     feeUsd,
     feeTokenAmount,
     feeToken: nativeToken,
+    gasLimit,
     isFeeHigh,
     isFeeVeryHigh,
   };
