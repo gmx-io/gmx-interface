@@ -1,5 +1,6 @@
 import cx from "classnames";
-import { CSSProperties, PropsWithChildren, useCallback, useRef, useState } from "react";
+import throttle from "lodash/throttle";
+import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
 import Button from "components/Button/Button";
@@ -177,6 +178,23 @@ export function Curtain({
     isPointerDownRef.current = false;
     isDraggingRef.current = false;
   }, []);
+
+  useEffect(() => {
+    const handler = throttle(
+      () => {
+        if (isOpen && !isDraggingRef.current) {
+          handleAnimate(true);
+        }
+      },
+      50,
+      { leading: false, trailing: true }
+    );
+
+    window.addEventListener("resize", handler);
+    return () => {
+      window.removeEventListener("resize", handler);
+    };
+  }, [handleAnimate, isOpen]);
 
   return (
     <>
