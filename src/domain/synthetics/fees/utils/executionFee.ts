@@ -1,5 +1,12 @@
 import { t } from "@lingui/macro";
-import { getChainName, getExcessiveExecutionFee, getHighExecutionFee } from "config/chains";
+import {
+  EXECUTION_FEE_CONFIG_V2,
+  GAS_PRICE_PREMIUM_MAP,
+  getChainName,
+  getExcessiveExecutionFee,
+  getHighExecutionFee,
+  MAX_PRIORITY_FEE_PER_GAS_MAP,
+} from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
@@ -24,6 +31,24 @@ export function estimateExecutionGasPrice(p: {
   gasPrice = gasPrice + premium;
 
   return gasPrice + premium;
+}
+
+export function getExecutionFeeBufferBps(chainId: number, settledBufferBps: number | undefined) {
+  return BigInt(settledBufferBps ?? EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps ?? 0);
+}
+
+export function getGasPremium(chainId: number) {
+  return GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
+}
+
+export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePerGas: bigint | undefined | null) {
+  const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
+
+  if (!executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
+    return undefined;
+  }
+
+  return bigMath.max(onChainMaxPriorityFeePerGas ?? 0n, MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n);
 }
 
 export function getMinimumExecutionFeeBufferBps(p: {

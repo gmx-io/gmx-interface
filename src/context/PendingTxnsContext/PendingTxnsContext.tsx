@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, getExplorerUrl } from "config/chains";
+import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees";
+import { getExecutionFeeBufferBps, getGasPremium, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees";
 import { useChainId } from "lib/chains";
 import { getOnchainError } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
@@ -74,10 +74,8 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               const requiredBufferBps = getMinimumExecutionFeeBufferBps({
                 minExecutionFee: minExecutionFee,
                 estimatedExecutionFee: executionFee,
-                currentBufferBps: BigInt(
-                  executionFeeBufferBps || EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps || 0
-                ),
-                premium: GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n,
+                currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
+                premium: getGasPremium(chainId),
                 gasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
               });
 
@@ -106,7 +104,11 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>.
+                    Txn failed.{" "}
+                    <ExternalLink className="!text-white" href={txUrl}>
+                      View
+                    </ExternalLink>
+                    .
                   </Trans>
                   <br />
                 </div>
