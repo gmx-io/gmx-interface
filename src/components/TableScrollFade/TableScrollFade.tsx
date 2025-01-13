@@ -31,15 +31,31 @@ function useScrollFade(getSnapChildren: (scrollable: HTMLDivElement) => HTMLElem
     }
   }, [scrollableRef]);
 
-  useEffectOnce(() => {
-    setScrolls();
+  const setScrollableRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      scrollableRef.current = node;
+      if (node) {
+        setScrolls();
+      }
+    },
+    [setScrolls]
+  );
 
+  useEffectOnce(() => {
+    if (!scrollableRef.current) {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(setScrolls);
+
+    resizeObserver.observe(scrollableRef.current);
     window.addEventListener("resize", setScrolls);
     scrollableRef.current?.addEventListener("scroll", setScrolls);
 
     return () => {
       window.removeEventListener("resize", setScrolls);
       scrollableRef.current?.removeEventListener("scroll", setScrolls);
+      resizeObserver.disconnect();
     };
   });
 
@@ -119,7 +135,7 @@ function useScrollFade(getSnapChildren: (scrollable: HTMLDivElement) => HTMLElem
   const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
 
   return {
-    scrollableRef,
+    scrollableRef: setScrollableRef,
     scrollLeft,
     scrollRight,
     leftStyles,
