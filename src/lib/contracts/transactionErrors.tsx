@@ -71,6 +71,10 @@ const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
   { msg: "cannot query unfinalized data" },
   { msg: "could not coalesce error" },
   { msg: "Internal JSON RPC error" },
+  // ONLY FOR TESTING
+  { msg: "ethers-user-denied" },
+  { msg: "transfer amount exceeds" },
+  { msg: "insufficient funds for gas" },
 ];
 
 export type TxError = {
@@ -248,7 +252,7 @@ export function extractDataFromError(errorMessage: unknown) {
 export function getAdditionalValidationType(error: Error) {
   const errorData = parseError(error);
 
-  const shouldCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
+  const shouldTryCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
     const isMessageMatch =
       pattern.msg &&
       errorData?.errorMessage &&
@@ -257,13 +261,13 @@ export function getAdditionalValidationType(error: Error) {
     return isMessageMatch;
   });
 
-  if (shouldCallStatic) {
+  if (shouldTryCallStatic) {
     return "tryCallStatic";
   }
 
-  const shouldEstimateGas = errorData?.errorStack && errorData.errorStack.includes("estimateGas");
+  const shouldTryEstimateGas = errorData?.errorStack && errorData.errorStack.includes("estimateGas");
 
-  if (shouldEstimateGas) {
+  if (shouldTryEstimateGas) {
     return "tryEstimateGas";
   }
 
@@ -370,10 +374,12 @@ export function makeTransactionErrorHandler(
           mustNeverExist(additionalValidationType);
       }
 
+      const errorData = parseError(errorToLog);
+
       emitMetricEvent<ErrorEvent>({
         event: "error",
         isError: true,
-        data: errorToLog,
+        data: errorData || {},
       });
     }
 
