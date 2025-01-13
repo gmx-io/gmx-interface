@@ -36,6 +36,8 @@ export function Curtain({
   const startX = useRef(0);
   const startY = useRef(0);
 
+  const scrollableContainerRef = useRef<HTMLDivElement>(null);
+
   const [isOpen, setIsOpen] = useState(false);
 
   const handleAnimate = useCallback((newIsOpen: boolean) => {
@@ -78,10 +80,15 @@ export function Curtain({
   }, [setIsOpen, handleAnimate]);
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-
     if (!curtainRef.current) {
       return;
+    }
+
+    if (e.currentTarget === scrollableContainerRef.current) {
+      const scrollTop = scrollableContainerRef.current?.scrollTop;
+      if (scrollTop !== 0) {
+        return;
+      }
     }
 
     isPointerDownRef.current = true;
@@ -90,9 +97,13 @@ export function Curtain({
     startX.current = e.screenX;
     startY.current = e.screenY;
 
-    const transformString = curtainRef.current.style.transform;
-    const transform = new DOMMatrix(transformString);
-    currentRelativeY.current = transform.f;
+    const curtainRect = curtainRef.current.getBoundingClientRect();
+    // h = 100dvh - 52px
+    // 100dvh = h + 52px
+    // offset from bottom = 100dvh - top
+    // offset from bottom = h + 52px - top
+    currentRelativeY.current = (curtainRect.height + HEADER_HEIGHT - curtainRect.top) * -1;
+
     prevScreenY.current = e.screenY;
     prevScreenX.current = e.screenX;
   }, []);
@@ -122,11 +133,12 @@ export function Curtain({
     const velocity = deltaY / time;
 
     let newY = currentRelativeY.current + deltaY;
+    const heightWithBorder = curtainRef.current.clientHeight + 1;
 
     if (newY > 0) {
       newY = 0;
-    } else if (newY < -curtainRef.current.clientHeight + HEADER_HEIGHT) {
-      newY = -curtainRef.current.clientHeight + HEADER_HEIGHT;
+    } else if (newY < -heightWithBorder + HEADER_HEIGHT) {
+      newY = -heightWithBorder + HEADER_HEIGHT;
     }
 
     curtainRef.current.style.transform = `translateY(${newY}px)`;
@@ -154,18 +166,24 @@ export function Curtain({
       (Math.sign(currentVelocity.current) * currentVelocity.current ** 2) / (2 * DECELERATION);
 
     if (curtainRef.current) {
-      const isOpen = curtainRef.current.clientHeight / 2 < -targetY;
+      const heightWithBorder = curtainRef.current.clientHeight + 1;
+      const isOpen = heightWithBorder / 2 < -targetY;
       setIsOpen(isOpen);
       handleAnimate(isOpen);
     }
   }, [handleAnimate]);
 
+  const handlePointerCancel = useCallback(() => {
+    isPointerDownRef.current = false;
+    isDraggingRef.current = false;
+  }, []);
+
   return (
     <>
       <div
         className={cx(
-          "fixed inset-0 z-[999] bg-black/70 transition-opacity duration-300",
-          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+          "fixed inset-0 bg-black/70 transition-opacity duration-300",
+          isOpen ? "pointer-events-auto z-[900] opacity-100" : "pointer-events-none z-[100] opacity-0"
         )}
         onClick={handleClose}
       />
@@ -173,8 +191,10 @@ export function Curtain({
         <div
           data-qa={dataQa}
           ref={curtainRef}
-          className="text-body-medium fixed left-0 right-0 z-[1000] flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800
-                     shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]"
+          className={cx(
+            "text-body-medium fixed left-0 right-0 flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
+            isOpen ? "z-[901]" : "z-[101]"
+          )}
           style={CURTAIN_STYLE}
         >
           <div
@@ -198,7 +218,14 @@ export function Curtain({
             </Button>
           </div>
 
-          <div className="flex grow flex-col overflow-y-auto">
+          <div
+            className="flex grow flex-col overflow-y-auto"
+            ref={scrollableContainerRef}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
+          >
             <div className="flex grow flex-col px-15 pb-10">{children}</div>
           </div>
         </div>

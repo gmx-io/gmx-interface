@@ -282,7 +282,7 @@ function MarketsList() {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col gap-8">
+        <div className="flex flex-col gap-8">
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -295,102 +295,103 @@ function MarketsList() {
           </ButtonRowScrollFadeContainer>
         </div>
       </SelectorBaseMobileHeaderContent>
-      <div className="Synths-ChartTokenSelector">
-        {!isMobile && (
-          <>
-            <div className="m-16 flex justify-between gap-16">
-              <SearchInput
-                className="w-full *:!text-body-medium"
-                value={searchKeyword}
-                setValue={setSearchKeyword}
-                onKeyDown={handleKeyDown}
-                placeholder={placeholder}
-              />
+
+      {!isMobile && (
+        <>
+          <div className="m-16 flex justify-between gap-16">
+            <SearchInput
+              className="w-full *:!text-body-medium"
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+            />
+            <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="chart-token-selector" />
-            </div>
-          </>
-        )}
+            </ButtonRowScrollFadeContainer>
+          </div>
+        </>
+      )}
 
-        <div
-          className={cx({
-            "max-h-[444px] overflow-x-auto": !isMobile,
-          })}
-        >
-          <table className="text-sm w-full border-separate border-spacing-0">
-            <thead className="bg-slate-800">
-              <tr>
-                <th className={thClassName} colSpan={2}>
-                  <Trans>Market</Trans>
-                </th>
-                {!isSwap && (
-                  <>
-                    <th className={thClassName}>
-                      <Sorter {...getSorterProps("lastPrice")}>
-                        {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
-                      </Sorter>
-                    </th>
-                    {!isMobile && (
-                      <>
-                        <th className={thClassName}>
-                          <Sorter {...getSorterProps("24hChange")}>
-                            <Trans>24H%</Trans>
-                          </Sorter>
-                        </th>
-                        <th className={thClassName}>
-                          <Sorter {...getSorterProps("24hVolume")}>
-                            <Trans>24H VOL.</Trans>
-                          </Sorter>
-                        </th>
-                        <th className={thClassName} colSpan={2}>
-                          <Sorter {...getSorterProps("combinedOpenInterest")}>
-                            <Trans>OPEN INTEREST</Trans>
-                          </Sorter>
-                        </th>
-                      </>
-                    )}
-                    <th className={thClassName} colSpan={2}>
-                      <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
-                        {isSmallMobile ? <Trans>AVAIL. LIQ.</Trans> : <Trans>AVAILABLE LIQ.</Trans>}
-                      </Sorter>
-                    </th>
-                  </>
-                )}
-              </tr>
-            </thead>
+      <div
+        className={cx({
+          "max-h-[444px] overflow-x-auto": !isMobile,
+        })}
+      >
+        <table className="text-sm w-full border-separate border-spacing-0">
+          <thead className="bg-slate-800">
+            <tr>
+              <th className={thClassName} colSpan={2}>
+                <Trans>Market</Trans>
+              </th>
+              {!isSwap && (
+                <>
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("lastPrice")}>
+                      {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
+                    </Sorter>
+                  </th>
+                  {!isMobile && (
+                    <>
+                      <th className={thClassName}>
+                        <Sorter {...getSorterProps("24hChange")}>
+                          <Trans>24H%</Trans>
+                        </Sorter>
+                      </th>
+                      <th className={thClassName}>
+                        <Sorter {...getSorterProps("24hVolume")}>
+                          <Trans>24H VOL.</Trans>
+                        </Sorter>
+                      </th>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedOpenInterest")}>
+                          <Trans>OPEN INTEREST</Trans>
+                        </Sorter>
+                      </th>
+                    </>
+                  )}
+                  <th className={thClassName} colSpan={2}>
+                    <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
+                      {isSmallMobile ? <Trans>AVAIL. LIQ.</Trans> : <Trans>AVAILABLE LIQ.</Trans>}
+                    </Sorter>
+                  </th>
+                </>
+              )}
+            </tr>
+          </thead>
 
-            <tbody>
-              {sortedDetails?.map(
-                ({ token, tokenData, dayPriceDelta, dayVolume, openInterestLong, openInterestShort, maxLeverage }) => (
-                  <MarketListItem
-                    key={token.address}
-                    token={token}
-                    tokenData={tokenData}
-                    dayPriceDelta={dayPriceDelta}
-                    dayVolume={dayVolume}
-                    openInterestLong={openInterestLong}
-                    openInterestShort={openInterestShort}
-                    maxLeverage={maxLeverage}
-                    isSwap={isSwap}
-                    isMobile={isMobile}
-                    isFavorite={favoriteTokens?.includes(token.address)}
-                    onFavorite={toggleFavoriteToken}
-                    rowVerticalPadding={rowVerticalPadding}
-                    rowHorizontalPadding={rowHorizontalPadding}
-                    tdClassName={tdClassName}
-                    onMarketSelect={handleMarketSelect}
-                  />
-                )
-              )}
-              {options && options.length > 0 && !sortedTokens?.length && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-slate-100">
-                    <Trans>No markets matched.</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
-            </tbody>
-          </table>
-        </div>
+          <tbody>
+            {sortedDetails?.map(
+              ({ token, tokenData, dayPriceDelta, dayVolume, openInterestLong, openInterestShort, maxLeverage }) => (
+                <MarketListItem
+                  key={token.address}
+                  token={token}
+                  tokenData={tokenData}
+                  dayPriceDelta={dayPriceDelta}
+                  dayVolume={dayVolume}
+                  openInterestLong={openInterestLong}
+                  openInterestShort={openInterestShort}
+                  maxLeverage={maxLeverage}
+                  isSwap={isSwap}
+                  isMobile={isMobile}
+                  isFavorite={favoriteTokens?.includes(token.address)}
+                  onFavorite={toggleFavoriteToken}
+                  rowVerticalPadding={rowVerticalPadding}
+                  rowHorizontalPadding={rowHorizontalPadding}
+                  tdClassName={tdClassName}
+                  onMarketSelect={handleMarketSelect}
+                />
+              )
+            )}
+            {options && options.length > 0 && !sortedTokens?.length && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-slate-100">
+                  <Trans>No markets matched.</Trans>
+                </TableTd>
+              </TableTr>
+            )}
+          </tbody>
+        </table>
       </div>
     </>
   );
