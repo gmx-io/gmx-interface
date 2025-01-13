@@ -381,7 +381,7 @@ export function SyntheticsStats() {
                   <TooltipWithPortal
                     handle={
                       <div className="cell">
-                        {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsdForSwap)}{" "}
+                        {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsd)}{" "}
                         <ShareBar share={poolUsd} total={maxPoolUsd} warningThreshold={90} />
                       </div>
                     }
