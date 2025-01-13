@@ -182,8 +182,8 @@ export function Curtain({
     <>
       <div
         className={cx(
-          "fixed inset-0 bg-black/70 transition-opacity duration-300",
-          isOpen ? "pointer-events-auto z-[900] opacity-100" : "pointer-events-none z-[100] opacity-0"
+          "fixed inset-0 z-[900] bg-black/70 transition-opacity duration-300",
+          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         )}
         onClick={handleClose}
       />
@@ -191,10 +191,8 @@ export function Curtain({
         <div
           data-qa={dataQa}
           ref={curtainRef}
-          className={cx(
-            "text-body-medium fixed left-0 right-0 flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
-            isOpen ? "z-[901]" : "z-[101]"
-          )}
+          className="text-body-medium fixed left-0 right-0 z-[901] flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800
+                     shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]"
           style={CURTAIN_STYLE}
         >
           <div

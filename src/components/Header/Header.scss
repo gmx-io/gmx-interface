@@ -1,7 +1,7 @@
 .App-header-backdrop {
   background-color: rgba(0, 0, 0, 0.9);
   position: fixed;
-  z-index: 799;
+  z-index: 1000;
   top: 0;
   bottom: 0;
   left: 0;
@@ -43,7 +43,7 @@
   background: var(--color-slate-750) 0% 0% no-repeat padding-box;
   opacity: 1;
   position: fixed;
-  z-index: 801;
+  z-index: 1001;
   right: 0;
   top: 0;
   left: inherit;
