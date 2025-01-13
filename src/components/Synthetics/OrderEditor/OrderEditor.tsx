@@ -26,8 +26,8 @@ import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
+  formatBalanceAmount,
   formatDeltaUsd,
-  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsdPrice,
 } from "lib/numbers";
@@ -676,7 +676,7 @@ export function OrderEditor(p: Props) {
               <>
                 <ExchangeInfoRow
                   label={t`Min. Receive`}
-                  value={formatTokenAmount(
+                  value={formatBalanceAmount(
                     minOutputAmount,
                     p.order.targetCollateralToken.decimals,
                     p.order.targetCollateralToken.symbol

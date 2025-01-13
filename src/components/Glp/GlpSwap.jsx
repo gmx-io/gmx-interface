@@ -14,6 +14,7 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
+import { formatBalanceAmount, formatBalanceAmountWithUsd } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
@@ -978,8 +979,9 @@ export default function GlpSwap(props) {
                 <Trans>Wallet</Trans>
               </div>
               <div className="value">
-                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
-                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+                {glpBalance === undefined || glpBalanceUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
               </div>
             </div>
             <div className="App-card-row">
@@ -987,8 +989,9 @@ export default function GlpSwap(props) {
                 <Trans>Staked</Trans>
               </div>
               <div className="value">
-                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
-                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+                {glpBalance === undefined || glpBalanceUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
               </div>
             </div>
           </div>
@@ -1073,7 +1076,7 @@ export default function GlpSwap(props) {
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Balance`}
-                topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                topRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals)}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
                 showMaxButton={
@@ -1102,7 +1105,7 @@ export default function GlpSwap(props) {
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Available`}
-                topRightValue={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
+                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(maxSellAmount, GLP_DECIMALS)}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
                 showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
@@ -1135,7 +1138,7 @@ export default function GlpSwap(props) {
                 topLeftLabel={receiveLabel}
                 topRightLabel={t`Balance`}
                 topLeftValue={receiveBalance}
-                topRightValue={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
+                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(glpBalance, GLP_DECIMALS)}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
                 defaultTokenName="GLP"
@@ -1464,8 +1467,9 @@ export default function GlpSwap(props) {
                     )}
                   </td>
                   <td>
-                    {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} ($
-                    {formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                    {tokenInfo.balance === undefined || balanceUsd === undefined
+                      ? "..."
+                      : formatBalanceAmountWithUsd(tokenInfo.balance, balanceUsd, tokenInfo.decimals, tokenInfo.symbol)}
                   </td>
                   <td>{renderFees()}</td>
                   <td>

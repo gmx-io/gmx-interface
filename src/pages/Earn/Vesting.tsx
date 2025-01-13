@@ -317,18 +317,15 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                         true
                       )}`}
                       position="bottom-end"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            <Trans>
-                              {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
-                              vesting.
-                            </Trans>
-                          </div>
-                        );
-                      }}
+                      content={
+                        <div>
+                          <Trans>
+                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
+                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
+                            deposited for vesting.
+                          </Trans>
+                        </div>
+                      }
                     />
                   </div>
                 </div>
