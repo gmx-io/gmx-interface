@@ -338,15 +338,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     metricsRequestId = metricsRequestId ?? getRequestId();
 
-    metrics.pushEvent<LoadingStartEvent>({
-      event: "candlesLoad.started",
-      isError: false,
-      time: metrics.getTime("candlesLoad", true),
-      data: {
-        requestId: metricsRequestId,
-        isFirstTimeLoad: isPrefetch,
-      },
-    });
+    if (isPrefetch) {
+      metrics.pushEvent<LoadingStartEvent>({
+        event: "candlesLoad.started",
+        isError: false,
+        time: metrics.getTime("candlesLoad", true),
+        data: {
+          requestId: metricsRequestId,
+          isFirstTimeLoad: isPrefetch,
+        },
+      });
+    }
 
     metrics.startTimer("candlesLoad");
 
@@ -400,15 +402,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     if (success) {
-      metrics.pushEvent<LoadingSuccessEvent>({
-        event: "candlesLoad.success",
-        isError: false,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: isPrefetch,
-        },
-      });
+      if (isPrefetch) {
+        metrics.pushEvent<LoadingSuccessEvent>({
+          event: "candlesLoad.success",
+          isError: false,
+          time: metrics.getTime("candlesLoad", true),
+          data: {
+            requestId: metricsRequestId!,
+            isFirstTimeLoad: isPrefetch,
+          },
+        });
+      }
     }
 
     return result;
