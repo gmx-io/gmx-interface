@@ -168,7 +168,7 @@ export function SyntheticsPage(p: Props) {
           {position?.isLong ? "Long" : "Short"}{" "}
           <div className="inline-flex">
             <span>{indexName}</span>
-            <span className="subtext gm-toast">[{poolName}]</span>
+            <span className="subtext gm-toast !text-white">[{poolName}]</span>
           </div>{" "}
           <span>market selected</span>.
         </Trans>

@@ -20,7 +20,7 @@ export function pushSuccessNotification(chainId: number, message: string, e: { t
   helperToast.success(
     <div>
       {message}{" "}
-      <ExternalLink href={txUrl}>
+      <ExternalLink href={txUrl} className="!text-white">
         <Trans>View</Trans>
       </ExternalLink>
     </div>
@@ -40,7 +40,7 @@ export function pushErrorNotification(chainId: number, message: string, e: { tra
   helperToast.error(
     <div>
       {message}{" "}
-      <ExternalLink href={txUrl}>
+      <ExternalLink href={txUrl} className="!text-white">
         <Trans>View</Trans>
       </ExternalLink>
     </div>

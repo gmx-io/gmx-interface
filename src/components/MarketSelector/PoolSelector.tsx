@@ -163,7 +163,7 @@ export function PoolSelector({
     if (marketsOptions?.length > 1) {
       return (
         <div
-          className="text-h2 -mr-5 flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+          className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
           onClick={() => setIsModalVisible(true)}
         >
           {name ? name : "..."}

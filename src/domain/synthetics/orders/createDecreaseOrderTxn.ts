@@ -2,15 +2,16 @@ import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
@@ -69,6 +70,11 @@ export async function createDecreaseOrderTxn(
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const totalWntAmount = ps.reduce((acc, p) => acc + p.executionFee, 0n);
   const account = ps[0].account;
+
+  for (const p of ps) {
+    await validateSignerAddress(signer, p.account);
+  }
+
   const encodedPayload = createDecreaseEncodedPayload({
     router,
     orderVaultAddress,
