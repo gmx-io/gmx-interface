@@ -5559,6 +5559,10 @@ msgstr ""
 msgid "No delegate found"
 msgstr ""
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgstr ""
+
 #: src/pages/Earn/EarnV1.jsx
 msgid "Wallet not yet connected"
 msgstr "지갑이 아직 연동되지 않았습니다"

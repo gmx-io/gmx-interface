@@ -5,13 +5,13 @@ import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 import { getIcons } from "config/icons";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatKeyAmount } from "lib/numbers";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";

@@ -9,12 +9,12 @@ import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
 import { MARKETS } from "config/markets";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatKeyAmount } from "lib/numbers";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
