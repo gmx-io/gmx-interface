@@ -19,7 +19,7 @@ import {
   getMarketPnl,
   getMarketPoolName,
   getMaxOpenInterestUsd,
-  getMaxPoolUseForSwap,
+  getMaxPoolUsdForSwap,
   getMaxReservedUsd,
   getPoolUsdWithoutPnl,
   getReservedUsd,
@@ -368,8 +368,12 @@ export function SyntheticsStats() {
 
               function renderPoolCapCell(isLong: boolean) {
                 const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
-                const maxPoolUsdForSwap = getMaxPoolUseForSwap(market, isLong);
-                const maxPoolUsdForDeposit = getStrictestMaxPoolUsdForDeposit(market, isLong);
+                const maxPoolUsdForSwap = getMaxPoolUsdForSwap(market, isLong);
+                const maxPoolUsdForDeposit = isLong
+                  ? market.maxLongPoolUsdForDeposit
+                  : market.maxShortPoolUsdForDeposit;
+                const maxPoolAmount = isLong ? market.maxLongPoolAmount : market.maxShortPoolAmount;
+                const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(market, isLong);
                 const token = isLong ? market.longToken : market.shortToken;
                 const poolUsd = convertToUsd(poolAmount, token.decimals, getMidPrice(token.prices));
 
@@ -378,20 +382,30 @@ export function SyntheticsStats() {
                     handle={
                       <div className="cell">
                         {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsdForSwap)}{" "}
-                        <ShareBar share={poolUsd} total={maxPoolUsdForSwap} warningThreshold={90} />
+                        <ShareBar share={poolUsd} total={maxPoolUsd} warningThreshold={90} />
                       </div>
                     }
                     renderContent={() => (
                       <>
                         <StatsTooltipRow
-                          label="Swap Capacity"
+                          label="Pool Amount Capacity"
+                          showDollar={false}
+                          value={`${formatAmountHuman(poolAmount, token.decimals)} ${token.symbol} / ${formatAmountHuman(maxPoolAmount, token.decimals)} ${token.symbol}`}
+                        />
+                        <StatsTooltipRow
+                          label="Pool USD Capacity (Swap)"
                           showDollar={false}
                           value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForSwap)}`}
                         />
                         <StatsTooltipRow
-                          label="Deposit Capacity"
+                          label="Deposit USD Capacity"
                           showDollar={false}
                           value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForDeposit)}`}
+                        />
+                        <StatsTooltipRow
+                          label="Strictest Deposit USD Capacity"
+                          showDollar={false}
+                          value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsd)}`}
                         />
                       </>
                     )}
