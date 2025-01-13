@@ -270,7 +270,7 @@ export function PositionItem(p: Props) {
         <div className="Exchange-list-info-label Position-collateral-amount muted">
           (
           {formatBalanceAmount(
-            p.position.collateralAmount,
+            p.position.remainingCollateralAmount,
             p.position.collateralToken.decimals,
             p.position.collateralToken.symbol
           )}
