@@ -461,6 +461,11 @@ msgstr ""
 msgid "Subaccount deactivated"
 msgstr ""
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr ""
@@ -3011,11 +3016,6 @@ msgstr ""
 msgid "Liquidated"
 msgstr ""
 
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets"
-msgstr ""
-
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -4236,11 +4236,6 @@ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
-msgstr ""
-
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
@@ -6344,6 +6339,11 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Insufficient {nativeTokenSymbol} balance"
+msgstr ""
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts

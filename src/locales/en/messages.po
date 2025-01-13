@@ -461,6 +461,11 @@ msgstr "You can transfer ETH from other networks to Arbitrum using any of the be
 msgid "Subaccount deactivated"
 msgstr "Subaccount deactivated"
 
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
+msgstr "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
@@ -3011,11 +3016,6 @@ msgstr "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgid "Liquidated"
 msgstr "Liquidated"
 
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets"
-msgstr "Pools that enable trading for a single market, backed by the tokens listed in brackets"
-
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -4240,11 +4240,6 @@ msgstr "No markets found."
 #: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
 msgstr "Edit Referral Code"
-
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets"
-msgstr "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
@@ -6351,6 +6346,11 @@ msgstr "Sell failed."
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Insufficient {nativeTokenSymbol} balance"
 msgstr "Insufficient {nativeTokenSymbol} balance"
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets."
+msgstr "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Liq. Price."
