@@ -368,7 +368,7 @@ export function SyntheticsStats() {
 
               function renderPoolCapCell(isLong: boolean) {
                 const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
-                const maxPoolUsdForSwap = getSwapCapacityUsd(market, isLong);
+                const maxPoolUsdForSwap = getMaxPoolUseForSwap(market, isLong);
                 const maxPoolUsdForDeposit = getStrictestMaxPoolUsdForDeposit(market, isLong);
                 const token = isLong ? market.longToken : market.shortToken;
                 const poolUsd = convertToUsd(poolAmount, token.decimals, getMidPrice(token.prices));

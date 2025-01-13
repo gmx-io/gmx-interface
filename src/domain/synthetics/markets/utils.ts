@@ -429,6 +429,13 @@ export function getStrictestMaxPoolUsdForDeposit(marketInfo: MarketInfo, isLong:
   return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
 }
 
+export function getMaxPoolUseForSwap(marketInfo: MarketInfo, isLong: boolean) {
+  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+
+  return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
+}
+
 export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
   const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
