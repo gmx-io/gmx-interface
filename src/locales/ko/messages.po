@@ -1683,7 +1683,7 @@ msgstr ""
 msgid "not staked"
 msgstr "스테이킹되지 않음"
 
-#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr ""
 
@@ -3125,7 +3125,7 @@ msgid "Claiming..."
 msgstr "수령중..."
 
 #. Filter option for tokens favorites
-#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
 msgstr ""
 
@@ -4425,7 +4425,7 @@ msgstr "추천인 코드 업데이트 완료!"
 msgid "Acknowledge high {0}"
 msgstr ""
 
-#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
 msgstr ""
 
@@ -5554,10 +5554,6 @@ msgstr ""
 msgid "No delegate found"
 msgstr ""
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
-#~ msgstr ""
-
 #: src/pages/Earn/EarnV1.jsx
 msgid "Wallet not yet connected"
 msgstr "지갑이 아직 연동되지 않았습니다"
@@ -6001,10 +5997,6 @@ msgstr ""
 msgid "View"
 msgstr "보기"
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Txn failed. <0>View</0>"
-#~ msgstr "트랜잭션 실패됨. <0>보기</0>"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "유효한 추천인 코드를 사용하여 이 계정으로 트레이드된 거래량"
@@ -6216,7 +6208,7 @@ msgstr ""
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
 msgstr ""
 
-#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Meme"
 msgstr ""
 
@@ -6467,7 +6459,7 @@ msgstr ""
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "감소 액티브: {0}, 실행 완료: {1} 취소 완료: {2}"
 
-#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 1"
 msgstr ""
 
@@ -6847,7 +6839,7 @@ msgstr ""
 msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
 msgstr ""
 
-#: src/domain/synthetics/tokens/useTokensFavorites.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "DeFi"
 msgstr ""
 
