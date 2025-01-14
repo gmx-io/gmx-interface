@@ -5,7 +5,7 @@ import {
   tokensFavoritesTabOptionLabels,
   tokensFavoritesTabOptions,
   useTokensFavorites,
-} from "domain/synthetics/tokens/useTokensFavorites";
+} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useLocalizedMap } from "lib/i18n";
 
 import Button from "components/Button/Button";

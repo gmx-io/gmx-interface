@@ -1,7 +1,9 @@
-import { SORTER_CONFIG_KEY } from "config/localStorage";
 import noop from "lodash/noop";
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
-import { SorterKey, SorterConfig } from "./sorterTypes";
+
+import { SORTER_CONFIG_KEY } from "config/localStorage";
+import { updateByKey } from "sdk/utils/objects";
+import { SorterConfig, SorterKey } from "./types";
 
 localStorage.removeItem(SORTER_CONFIG_KEY);
 
@@ -28,15 +30,14 @@ const context = createContext<SorterContextType>({
 
 const Provider = context.Provider;
 
-export function SorterProvider({ children }: PropsWithChildren) {
+export function SorterContextProvider({ children }: PropsWithChildren) {
   const [state, setState] = useState<SorterState>(DEFAULT_SORTER_STATE);
 
   const setConfig = useCallback(
     (key: SorterKey, config: React.SetStateAction<SorterConfig<any>>) => {
-      setState((prev) => ({
-        ...prev,
-        [key]: typeof config === "function" ? config(prev[key]) : config,
-      }));
+      setState(
+        (prev) => updateByKey(prev, key, typeof config === "function" ? config(prev[key]) : config) as SorterState
+      );
     },
     [setState]
   );

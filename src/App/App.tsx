@@ -17,20 +17,20 @@ import SEO from "components/Common/SEO";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
-import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
-import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
-import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import { TokensFavoritesContextProvider } from "domain/synthetics/tokens/useTokensFavorites";
 import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";
 
-import { SorterProvider } from "components/Sorter/SorterProvider";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
+import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
+import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { AppRoutes } from "./AppRoutes";
+import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -47,7 +47,7 @@ function App() {
   }, []);
 
   let app = <AppRoutes />;
-  app = <SorterProvider>{app}</SorterProvider>;
+  app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;

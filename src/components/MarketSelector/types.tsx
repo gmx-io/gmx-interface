@@ -1,6 +1,6 @@
+import type { TokenFavoriteKey } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import type { GlvOrMarketInfo } from "domain/synthetics/markets";
 import type { TokensData } from "domain/synthetics/tokens";
-import type { TokenFavoriteKey } from "domain/synthetics/tokens/useTokensFavorites";
 
 export type CommonPoolSelectorProps = {
   chainId: number;

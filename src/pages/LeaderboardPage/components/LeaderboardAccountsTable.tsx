@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import type { SortDirection } from "context/SorterContext/types";
 import {
   useLeaderboardAccountsRanks,
   useLeaderboardCurrentAccount,
@@ -21,7 +22,6 @@ import { BottomTablePagination } from "components/Pagination/BottomTablePaginati
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import type { SortDirection } from "components/Sorter/sorterTypes";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";

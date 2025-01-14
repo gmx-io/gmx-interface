@@ -7,9 +7,9 @@ import { getIcons } from "config/icons";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
