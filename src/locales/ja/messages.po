@@ -3782,7 +3782,7 @@ msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "GMX Market Tokens"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Txn failed. <0>View</0>."
@@ -5552,7 +5552,7 @@ msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "No delegate found"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #~ msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."

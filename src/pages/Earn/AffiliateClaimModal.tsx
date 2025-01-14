@@ -3,10 +3,10 @@ import { ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { callContract } from "lib/contracts";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";

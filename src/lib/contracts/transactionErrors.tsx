@@ -2,8 +2,12 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
-import { Provider, Signer } from "ethers";
+import { BaseContract, Overrides, Provider, Signer, TransactionRequest } from "ethers";
 import { helperToast } from "lib/helperToast";
+import { ErrorEvent } from "lib/metrics";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { ErrorLike, parseError } from "lib/parseError";
+import { mustNeverExist } from "lib/types";
 import { switchNetwork } from "lib/wallets";
 import { Link } from "react-router-dom";
 import { getNativeToken } from "sdk/configs/tokens";
@@ -29,6 +33,8 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "User denied transaction signature" },
     { msg: "User rejected" },
     { msg: "user rejected action" },
+    { msg: "ethers-user-denied" },
+    { msg: "User canceled" },
     { msg: "Signing aborted by user" },
   ],
   [TxErrorType.Slippage]: [
@@ -59,6 +65,13 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "couldn't connect to the network" },
   ],
 };
+
+const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
+  { msg: "header not found" },
+  { msg: "unfinalized data" },
+  { msg: "could not coalesce error" },
+  { msg: "Internal JSON RPC error" },
+];
 
 export type TxError = {
   message?: string;
@@ -232,23 +245,48 @@ export function extractDataFromError(errorMessage: unknown) {
   return null;
 }
 
-export type TxnData = {
-  data: string;
-  to: string | null;
-  from: string;
-  gasLimit?: bigint;
-  gasPrice?: bigint;
-  maxFeePerGas: bigint | null;
-  maxPriorityFeePerGas: bigint | null;
-  nonce: number | null;
-  value: bigint;
-};
+export function getAdditionalValidationType(error: Error) {
+  const errorData = parseError(error);
 
-export async function getOnchainError(
+  const shouldTryCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
+    const isMessageMatch =
+      pattern.msg &&
+      errorData?.errorMessage &&
+      errorData.errorMessage.toLowerCase().includes(pattern.msg.toLowerCase());
+
+    return isMessageMatch;
+  });
+
+  if (shouldTryCallStatic) {
+    return "tryCallStatic";
+  }
+
+  const shouldTryEstimateGas = errorData?.errorStack && errorData.errorStack.includes("estimateGas");
+
+  if (shouldTryEstimateGas) {
+    return "tryEstimateGas";
+  }
+
+  return undefined;
+}
+
+export function getEstimateGasError(contract: BaseContract, method: string, params: any[], txnOpts: Overrides) {
+  return contract[method]
+    .estimateGas(...params, txnOpts)
+    .then(() => {
+      return undefined;
+    })
+    .catch((error) => {
+      (error as ErrorLike).errorSource = "getEstimateGasError";
+      return error;
+    });
+}
+
+export async function getCallStaticError(
   provider: Provider,
-  txnData?: TxnData,
+  txnData?: TransactionRequest,
   txnHash?: string
-): Promise<{ error?: Error; txnData?: TxnData }> {
+): Promise<{ error?: ErrorLike; txnData?: TransactionRequest }> {
   // if txnData is not provided, try to fetch it from blockchain by txnHash
   if (!txnData && txnHash) {
     try {
@@ -260,15 +298,89 @@ export async function getOnchainError(
 
   if (!txnData) {
     const error = new Error("missed transaction data");
+    (error as ErrorLike).errorSource = "getTransaction";
 
     return { error };
   }
 
   try {
     await provider.call(txnData);
+    return { txnData };
   } catch (error) {
+    (error as ErrorLike).errorSource = "getCallStaticError";
+
     return { error, txnData };
   }
+}
 
-  return { txnData };
+export function makeTransactionErrorHandler(
+  contract: BaseContract,
+  method: string,
+  params: any[],
+  txnOpts: Overrides,
+  from: string
+) {
+  return async (error) => {
+    async function additionalValidation() {
+      const additionalValidationType = getAdditionalValidationType(error);
+
+      if (!additionalValidationType) {
+        return;
+      }
+
+      let errorToLog: ErrorLike = error;
+
+      switch (additionalValidationType) {
+        case "tryCallStatic": {
+          const { error: callStaticError } = await getCallStaticError(contract.runner!.provider!, {
+            data: contract.interface.encodeFunctionData(method, params),
+            to: await contract.getAddress(),
+            from,
+            ...txnOpts,
+          });
+
+          if (callStaticError) {
+            callStaticError.parentError = errorToLog;
+            errorToLog = callStaticError;
+          } else {
+            errorToLog.isAdditinalValidationPassed = true;
+          }
+
+          errorToLog.additionalValidationType = "tryCallStatic";
+
+          break;
+        }
+
+        case "tryEstimateGas": {
+          const { error: estimateGasError } = await getEstimateGasError(contract, method, params, txnOpts);
+
+          if (estimateGasError) {
+            estimateGasError.parentError = errorToLog;
+            errorToLog = estimateGasError;
+          } else {
+            errorToLog.isAdditinalValidationPassed = true;
+          }
+
+          errorToLog.additionalValidationType = "tryEstimateGas";
+
+          break;
+        }
+
+        default:
+          mustNeverExist(additionalValidationType);
+      }
+
+      const errorData = parseError(errorToLog);
+
+      emitMetricEvent<ErrorEvent>({
+        event: "error",
+        isError: true,
+        data: errorData || {},
+      });
+    }
+
+    additionalValidation();
+
+    throw error;
+  };
 }

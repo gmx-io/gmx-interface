@@ -7,6 +7,7 @@ import { ARBITRUM } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -28,7 +29,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 
 import RewardRouter from "sdk/abis/RewardRouter.json";
-import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export function StakeModal(props: {
   isVisible: boolean;
