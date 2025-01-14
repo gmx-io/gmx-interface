@@ -1,7 +1,16 @@
+$blue: var(--color-blue-300);
+$gray: var(--color-stroke-primary);
+
 .LeverageSlider {
   margin-top: 1.5rem;
   margin-bottom: 3.4rem;
-  padding: 0 0.8rem;
+
+  &.slim {
+    margin-top: 4px;
+    margin-bottom: 19px;
+  }
+
+  padding: 0 8px;
 
   user-select: none;
 
@@ -14,7 +23,7 @@
     z-index: 5;
 
     background: rgb(49, 54, 85);
-    background: linear-gradient(270deg, rgba(49, 54, 85, 0.9) 0%, rgba(37, 40, 65, 0.9) 100%);
+    // background: linear-gradient(270deg, rgba(49, 54, 85, 0.9) 0%, rgba(37, 40, 65, 0.9) 100%);
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
   }
 
@@ -23,32 +32,30 @@
   }
 
   .rc-slider-rail {
-    background: linear-gradient(90deg, rgb(30, 34, 61) 0%, rgb(40, 45, 74) 100%);
+    border-radius: 0;
+    background: $gray;
   }
 
   .rc-slider-track {
-    background: linear-gradient(90deg, var(--color-blue-700) 0%, var(--color-blue-600) 100%);
+    border-radius: 0;
+    background-color: $blue;
   }
+
   .rc-slider-dot {
     border: none;
     border-radius: 1px;
     width: 2px;
     margin-left: -1px;
-    background: rgba(40, 45, 74, 1);
+    background: $gray;
   }
   .rc-slider-dot-active {
-    background: var(--color-blue-500);
+    background-color: $blue;
   }
   .rc-slider-handle {
-    background: var(--color-slate-600);
-    border: solid 2px var(--color-blue-600);
+    background-color: $blue;
+    border: solid 2px #a1aaff;
   }
 
-  .rc-slider-handle:active {
-    // box-shadow: 0 0 0.4rem 0.6rem rgba(45, 66, 252, 0.2);
-    // var(--color-blue-600);
-    box-shadow: 0 0 0.4rem 0.6rem color-mix(in srgb, var(--color-blue-600), transparent 80%);
-  }
   .rc-slider-mark-text,
   .rc-slider-mark-text-active {
     color: var(--color-slate-100);

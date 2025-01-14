@@ -23,12 +23,12 @@
     }
   }
   .Suggestion-input {
-    border: 1px solid var(--color-slate-700);
+    border: 1px solid var(--color-stroke-primary);
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
     line-height: 1;
-    color: var(--color-slate-100);
-    background: var(--color-slate-700);
+    color: var(--color-gray-400);
+    background: var(--color-cold-blue-900);
 
     label {
       cursor: pointer;

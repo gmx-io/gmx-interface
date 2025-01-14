@@ -13,6 +13,7 @@ type Props = {
   inputClassName?: string;
   onBlur?: () => void;
   onKeyDown?: (e: KeyboardEvent) => void;
+  className?: string;
 };
 
 export default function SuggestionInput({
@@ -25,6 +26,7 @@ export default function SuggestionInput({
   inputClassName,
   onBlur,
   onKeyDown,
+  className,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -70,11 +72,14 @@ export default function SuggestionInput({
   );
 
   return (
-    <div className="Suggestion-input-wrapper">
-      <div className={cx("Suggestion-input", { "input-error": isError })} onClick={() => inputRef.current?.focus()}>
+    <div className={cx("Suggestion-input-wrapper", className)}>
+      <div
+        className={cx("Suggestion-input flex items-baseline", { "input-error": isError })}
+        onClick={() => inputRef.current?.focus()}
+      >
         <NumberInput
           inputRef={inputRef}
-          className={cx(inputClassName, "outline-none")}
+          className={cx(inputClassName, "min-w-0 outline-none")}
           onFocus={() => setIsPanelVisible(true)}
           onBlur={handleBlur}
           value={value ?? ""}

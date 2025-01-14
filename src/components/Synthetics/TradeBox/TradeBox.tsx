@@ -1206,42 +1206,29 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     );
   }
 
-  function renderPositionControls() {
+  function PositionControls() {
     return (
       <>
-        {isIncrease && (
-          <>
-            <ToggleSwitch
-              className="Exchange-leverage-slider-settings"
-              isChecked={isLeverageEnabled ?? false}
-              setIsChecked={setIsLeverageEnabled}
-              beforeSwitchContent={
-                <div className={cx({ invisible: !isLeverageEnabled })}>
-                  <SuggestionInput
-                    inputClassName="w-40 text-right"
-                    value={leverageInputValue}
-                    setValue={setLeverageInputValue}
-                    onBlur={handleLeverageInputBlur}
-                    onKeyDown={handleLeverageInputKeyDown}
-                    symbol="x"
-                  />
-                </div>
-              }
-            >
-              <span className="muted">
-                <Trans>Leverage slider</Trans>
-              </span>
-            </ToggleSwitch>
-
-            {isLeverageEnabled && (
-              <LeverageSlider
-                marks={leverageSliderMarks}
-                value={leverageOption}
-                onChange={setLeverageOption}
-                isPositive={isLong}
-              />
-            )}
-          </>
+        {isIncrease && isLeverageEnabled && (
+          <div className="flex items-start gap-6">
+            <LeverageSlider
+              className="grow"
+              marks={leverageSliderMarks}
+              value={leverageOption}
+              onChange={setLeverageOption}
+              isPositive={isLong}
+              isSlim
+            />
+            <SuggestionInput
+              className="w-48"
+              inputClassName="text-right"
+              value={leverageInputValue}
+              setValue={setLeverageInputValue}
+              onBlur={handleLeverageInputBlur}
+              onKeyDown={handleLeverageInputKeyDown}
+              symbol="x"
+            />
+          </div>
         )}
         {isTrigger && (
           <ExchangeInfoRow
@@ -1435,7 +1422,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
             )}
           </ExchangeInfo.Group>
 
-          <ExchangeInfo.Group>{isPosition && renderPositionControls()}</ExchangeInfo.Group>
+          <ExchangeInfo.Group>{isPosition && <PositionControls />}</ExchangeInfo.Group>
           <ExchangeInfo.Group>
             <TradeBoxOneClickTrading />
           </ExchangeInfo.Group>
