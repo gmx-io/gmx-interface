@@ -1422,7 +1422,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         {isSwap && isLimit && renderTriggerRatioInput()}
         {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
-        <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
+        <ExchangeInfo className="SwapBox-info-section" dividerClassName="h-1 bg-slate-700 my-10">
           <ExchangeInfo.Group>
             {maxAutoCancelOrdersWarning}
             {isSwap && isLimit && (
