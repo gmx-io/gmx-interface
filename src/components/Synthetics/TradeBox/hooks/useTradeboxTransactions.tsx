@@ -145,6 +145,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         minOutputAmount: swapAmounts.minOutputAmount,
         referralCode: referralCodeForTxn,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage,
         tokensData,
         setPendingTxns,
@@ -259,6 +260,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           isLong,
           orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           allowedSlippage,
           referralCode: referralCodeForTxn,
           indexToken: marketInfo.indexToken,
@@ -281,6 +283,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             orderType: entry.decreaseAmounts.triggerOrderType!,
             referralCode: referralCodeForTxn,
             executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
+            executionGasLimit: 0n, // Don't need for tp/sl entries
             tokensData,
             txnType: entry.txnType!,
             skipSimulation: isLimit || shouldDisableValidationForTesting,
@@ -407,6 +410,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
           orderType: decreaseAmounts?.triggerOrderType,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           allowedSlippage,
           referralCode: referralCodeForTxn,
           // Skip simulation to avoid EmptyPosition error

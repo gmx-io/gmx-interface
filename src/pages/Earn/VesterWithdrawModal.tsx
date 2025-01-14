@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useState } from "react";
 
-import { SetPendingTransactions } from "domain/legacy";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { callContract } from "lib/contracts";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 

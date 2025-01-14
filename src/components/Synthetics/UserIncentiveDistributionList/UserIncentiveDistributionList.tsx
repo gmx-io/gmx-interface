@@ -5,7 +5,6 @@ import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { getExplorerUrl } from "config/chains";
-import { getTokens } from "sdk/configs/tokens";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
@@ -17,9 +16,10 @@ import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { GM_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { getTokens } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import Card from "components/Common/Card";
@@ -174,9 +174,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         key={tokenInfo.id}
         showDollar={false}
         label={tokenInfo.symbol}
-        value={formatTokenAmount(tokenInfo.amount, tokenInfo.decimals, "", {
-          useCommas: true,
-        })}
+        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
       />
     ));
   }, [tokenIncentiveDetails]);

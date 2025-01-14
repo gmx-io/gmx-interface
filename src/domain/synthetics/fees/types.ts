@@ -5,6 +5,7 @@ export type ExecutionFee = {
   feeTokenAmount: bigint;
   feeToken: Token;
   warning?: string;
+  gasLimit: bigint;
 };
 
 export type FeeItem = {

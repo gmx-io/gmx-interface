@@ -259,6 +259,10 @@ msgstr "View status."
 msgid "Buyable"
 msgstr "Buyable"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
@@ -456,6 +460,11 @@ msgstr "You can transfer ETH from other networks to Arbitrum using any of the be
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount deactivated"
 msgstr "Subaccount deactivated"
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
+msgstr "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets."
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
@@ -3007,11 +3016,6 @@ msgstr "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgid "Liquidated"
 msgstr "Liquidated"
 
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets"
-msgstr "Pools that enable trading for a single market, backed by the tokens listed in brackets"
-
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -3783,6 +3787,10 @@ msgstr "PnL ($)"
 msgid "GMX Market Tokens"
 msgstr "GMX Market Tokens"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Txn failed. <0>View</0>."
+msgstr "Txn failed. <0>View</0>."
+
 #: src/pages/Earn/Vesting.tsx
 #: src/pages/Earn/Vesting.tsx
 msgid "Affiliate Vault"
@@ -4232,11 +4240,6 @@ msgstr "No markets found."
 #: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
 msgstr "Edit Referral Code"
-
-#: src/pages/Earn/EarnV2.tsx
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets"
-msgstr "Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
@@ -5554,6 +5557,10 @@ msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied a
 msgid "No delegate found"
 msgstr "No delegate found"
 
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+#~ msgstr "Transaction failed due to execution fee validation. <0>View</0><1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
+
 #: src/pages/Earn/EarnV1.jsx
 msgid "Wallet not yet connected"
 msgstr "Wallet not yet connected"
@@ -5991,8 +5998,8 @@ msgstr "{0} and {1} can be used to buy GM for this market up to the specified bu
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 
-#: src/App/App.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -6000,9 +6007,9 @@ msgstr "One-Click Trading is not available using network's native token {0}. Con
 msgid "View"
 msgstr "View"
 
-#: src/App/App.tsx
-msgid "Txn failed. <0>View</0>"
-msgstr "Txn failed. <0>View</0>"
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#~ msgid "Txn failed. <0>View</0>"
+#~ msgstr "Txn failed. <0>View</0>"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
@@ -6339,6 +6346,11 @@ msgstr "Sell failed."
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Insufficient {nativeTokenSymbol} balance"
 msgstr "Insufficient {nativeTokenSymbol} balance"
+
+#: src/pages/Earn/EarnV2.tsx
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets."
+msgstr "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price above Liq. Price."

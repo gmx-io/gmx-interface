@@ -27,8 +27,8 @@ import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import useWallet from "lib/wallets/useWallet";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { getExplorerUrl } from "config/chains";
-import { SetPendingTransactions } from "domain/legacy";
 import { mustNeverExist } from "lib/types";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 type Props = {
   toastTimestamp: number;
