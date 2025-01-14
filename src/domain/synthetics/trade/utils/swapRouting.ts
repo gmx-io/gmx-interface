@@ -1,7 +1,13 @@
-import { getAvailableUsdLiquidityForCollateral, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import {
+  getAvailableUsdLiquidityForCollateral,
+  getSwapCapacityUsd,
+  MarketInfo,
+  MarketsInfoData,
+} from "domain/synthetics/markets";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
 import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "config/markets";
+import { bigMath } from "lib/bigmath";
 
 // limit the number of markets to most N=SWAP_GRAPH_MAX_MARKETS_PER_TOKEN liquid markets for each collateral
 export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
@@ -30,8 +36,16 @@ export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
 
     const sortedMarkets = markets.sort((m1, m2) => {
       const liq1 = getAvailableUsdLiquidityForCollateral(m1, m1.longTokenAddress === tokenAddress);
+      const cap1 = getSwapCapacityUsd(m1, m1.longTokenAddress === tokenAddress);
+
+      const limit1 = bigMath.min(liq1, cap1);
+
       const liq2 = getAvailableUsdLiquidityForCollateral(m2, m2.longTokenAddress === tokenAddress);
-      return Number(liq2 - liq1);
+      const cap2 = getSwapCapacityUsd(m2, m2.longTokenAddress === tokenAddress);
+
+      const limit2 = bigMath.min(liq2, cap2);
+
+      return Number(limit2 - limit1);
     });
 
     let marketsPerTokenCount = 0;
@@ -102,9 +116,10 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
     });
 
     const isOutLiquidity = swapStats?.isOutLiquidity;
+    const isOutCapacity = swapStats?.isOutCapacity;
     const usdOut = swapStats?.usdOut;
 
-    if (usdOut === undefined || isOutLiquidity) {
+    if (usdOut === undefined || isOutLiquidity || isOutCapacity) {
       return {
         usdOut: 0n,
       };

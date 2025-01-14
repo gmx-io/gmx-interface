@@ -6,7 +6,7 @@ import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numb
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { getMaxPoolUsd, getPoolUsdWithoutPnl, GlvOrMarketInfo } from "domain/synthetics/markets";
+import { getPoolUsdWithoutPnl, getStrictestMaxPoolUsdForDeposit, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
 
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -49,7 +49,7 @@ export function MintableAmount({
                   longToken.decimals
                 )
               : "-",
-            `(${formatUsd(getPoolUsdWithoutPnl(market, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, true))})`,
+            `(${formatUsd(getPoolUsdWithoutPnl(market, true, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(market, true))})`,
           ],
     [isGlv, longToken, market, mintableInfo]
   );
@@ -66,7 +66,7 @@ export function MintableAmount({
                   shortToken.decimals
                 )
               : "-",
-            `(${formatUsd(getPoolUsdWithoutPnl(market, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(market, false))})`,
+            `(${formatUsd(getPoolUsdWithoutPnl(market, false, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(market, false))})`,
           ],
     [isGlv, market, mintableInfo, shortToken]
   );
