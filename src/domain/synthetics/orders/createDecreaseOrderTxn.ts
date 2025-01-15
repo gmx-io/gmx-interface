@@ -1,24 +1,24 @@
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { OrderMetricId } from "lib/metrics";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { getPositionKey } from "../positions";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType, getPendingOrderFromParams } from "./utils";
-import { t } from "@lingui/macro";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { OrderMetricId } from "lib/metrics";
-import { prepareOrderTxn } from "./prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
 
 const { ZeroAddress } = ethers;
 
@@ -38,6 +38,7 @@ export type DecreaseOrderParams = {
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
   executionFee: bigint;
+  executionGasLimit: bigint | undefined;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode?: string;
@@ -131,6 +132,13 @@ export async function createDecreaseOrderTxn(
   );
 
   const txnCreatedAt = Date.now();
+  const pendingTransactionData =
+    ps[0].executionFee !== undefined && ps[0].executionGasLimit !== undefined
+      ? {
+          estimatedExecutionFee: ps[0].executionFee,
+          estimatedExecutionGasLimit: ps[0].executionGasLimit,
+        }
+      : undefined;
 
   if (!signer.provider) throw new Error("No provider found");
 
@@ -145,6 +153,7 @@ export async function createDecreaseOrderTxn(
     gasPriceData,
     metricId,
     bestNonce,
+    pendingTransactionData,
     setPendingTxns: callbacks.setPendingTxns,
   });
 

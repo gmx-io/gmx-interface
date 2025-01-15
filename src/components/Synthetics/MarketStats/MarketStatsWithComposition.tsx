@@ -15,7 +15,7 @@ import {
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmountWithUsd, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -419,11 +419,12 @@ export function MarketStatsWithComposition(p: Props) {
             label={t`Wallet`}
             value={
               marketToken
-                ? formatTokenAmountWithUsd(
+                ? formatBalanceAmountWithUsd(
                     marketBalance ?? 0n,
                     marketBalanceUsd ?? 0n,
+                    marketToken?.decimals ?? 18,
                     isGlv ? "GLV" : "GM",
-                    marketToken?.decimals ?? 18
+                    true
                   )
                 : "..."
             }

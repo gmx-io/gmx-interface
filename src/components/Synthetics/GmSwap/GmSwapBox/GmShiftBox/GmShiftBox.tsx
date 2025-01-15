@@ -283,6 +283,7 @@ export function GmShiftBox({
         >
           <PoolSelector
             chainId={chainId}
+            size="l"
             selectedMarketAddress={selectedMarketAddress}
             markets={shiftAvailableMarkets}
             onSelectMarket={handleSelectedTokenSelectMarket}
@@ -311,6 +312,7 @@ export function GmShiftBox({
         >
           <PoolSelector
             chainId={chainId}
+            size="l"
             selectedMarketAddress={toMarketAddress}
             markets={shiftAvailableRelatedMarkets}
             onSelectMarket={handleToTokenSelectMarket}
