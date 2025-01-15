@@ -159,7 +159,6 @@ export function LimitAndTPSLGroup() {
 
   return (
     <ExpandableRow
-      className="-my-[1.05rem]"
       open={isTpSlVisible}
       title={<Trans>Limit / TP / SL</Trans>}
       hasError={hasError}
@@ -167,6 +166,7 @@ export function LimitAndTPSLGroup() {
       autoExpandOnError
       errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
       onToggle={toggleLimitOrTPSL}
+      occupyExpandableSpace
     >
       <LimitAndTPSLRows />
     </ExpandableRow>

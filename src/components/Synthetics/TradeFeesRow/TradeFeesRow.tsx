@@ -4,7 +4,6 @@ import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
-import { getToken } from "sdk/configs/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
@@ -13,14 +12,15 @@ import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { getToken } from "sdk/configs/tokens";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
 
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./TradeFeesRow.scss";
 
 type Props = {
@@ -37,7 +37,6 @@ type Props = {
   borrowFeeRateStr?: string;
   fundingFeeRateStr?: string;
   feeDiscountUsd?: bigint;
-  isTop?: boolean;
   feesType: TradeFeesType | null;
   uiFee?: FeeItem;
   uiSwapFee?: FeeItem;
@@ -410,5 +409,5 @@ export function TradeFeesRow(p: Props) {
     }
   }, [feeRows, incentivesBottomText, totalFeeUsd, swapRouteMsg]);
 
-  return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
+  return <SyntheticsInfoRow label={title} value={value} />;
 }

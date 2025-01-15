@@ -17,7 +17,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
 import { useCollateralInTooltipContent } from "../hooks/useCollateralInTooltipContent";
@@ -41,13 +41,12 @@ export function CollateralSelectorRow(p: Props) {
 
   return (
     <>
-      <ExchangeInfoRow
+      <SyntheticsInfoRow
         label={
           <TooltipWithPortal position="top-start" content={collateralInTooltipContent}>
             <Trans>Collateral In</Trans>
           </TooltipWithPortal>
         }
-        className="SwapBox-info-row"
         value={
           <CollateralSelector
             onSelect={onSelectCollateralAddress}

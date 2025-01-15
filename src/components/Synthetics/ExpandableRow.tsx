@@ -1,9 +1,9 @@
 import cx from "classnames";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { usePrevious } from "lib/usePrevious";
 import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
 interface Props {
   title: ReactNode;
@@ -28,6 +28,11 @@ interface Props {
    */
   errorMessage?: ReactNode;
   className?: string;
+  /**
+   * if true - occupies the space of the expandable content even when closed
+   */
+  occupyExpandableSpace?: boolean;
+  contentClassName?: string;
 }
 
 export function ExpandableRow({
@@ -41,6 +46,8 @@ export function ExpandableRow({
   hideExpand = false,
   errorMessage,
   className,
+  occupyExpandableSpace = false,
+  contentClassName,
 }: Props) {
   const previousHasError = usePrevious(hasError);
 
@@ -65,14 +72,10 @@ export function ExpandableRow({
   const disabled = disableCollapseOnError && hasError;
 
   return (
-    <div
-      className={cx("-mx-15 px-15 py-[1.05rem]", className, {
-        "bg-slate-900": open && !hideExpand,
-      })}
-    >
+    <div className={className}>
       {!hideExpand && (
-        <ExchangeInfo.Row
-          className={cx("group !items-center hover:text-blue-300", open ? "!mb-12" : "!mb-0", {
+        <SyntheticsInfoRow
+          className={cx("group !items-center hover:text-blue-300", {
             "cursor-not-allowed": disabled,
           })}
           onClick={disabled ? undefined : handleOnClick}
@@ -87,9 +90,16 @@ export function ExpandableRow({
         />
       )}
       <div
-        className={cx({
-          hidden: !open,
-        })}
+        className={cx(
+          contentClassName,
+          occupyExpandableSpace
+            ? {
+                invisible: !open,
+              }
+            : {
+                hidden: !open,
+              }
+        )}
       >
         {children}
       </div>

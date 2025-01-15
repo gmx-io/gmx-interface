@@ -8,10 +8,10 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketPoolName } from "domain/synthetics/markets";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { getByKey } from "lib/objects";
 
@@ -26,8 +26,8 @@ export function MarketPoolSelectorRow() {
 
   return (
     <>
-      <ExchangeInfoRow
-        className="SwapBox-info-row"
+      <SyntheticsInfoRow
+        // className="SwapBox-info-row"
         label={t`Pool`}
         value={
           <>

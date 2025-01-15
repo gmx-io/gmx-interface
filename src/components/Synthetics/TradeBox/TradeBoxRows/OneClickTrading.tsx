@@ -4,7 +4,6 @@ import { ReactNode, useCallback } from "react";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { IS_TOUCH } from "config/env";
@@ -13,7 +12,6 @@ import {
   ONE_CLICK_TRADING_OFFER_HIDDEN,
   ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
 } from "config/localStorage";
-import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import {
   useIsSubaccountActive,
   useSubaccountActionCounts,
@@ -32,8 +30,10 @@ import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { useRequiredActions } from "../hooks/useRequiredActions";
 
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import CrossIconComponent from "img/cross.svg?react";
 
 export function TradeBoxOneClickTrading() {
@@ -165,7 +165,7 @@ export function TradeBoxOneClickTrading() {
 
   if (buttonText) {
     return (
-      <ExchangeInfo.Row
+      <SyntheticsInfoRow
         label={content}
         className="!items-center"
         value={
@@ -191,7 +191,7 @@ export function TradeBoxOneClickTrading() {
     );
   }
 
-  return content ? <ExchangeInfo.Row className="!items-center" label={content} value={null} /> : null;
+  return content ? <SyntheticsInfoRow className="!items-center" label={content} /> : null;
 }
 
 function OneClickAlertInfo({ children }: { children: ReactNode }) {

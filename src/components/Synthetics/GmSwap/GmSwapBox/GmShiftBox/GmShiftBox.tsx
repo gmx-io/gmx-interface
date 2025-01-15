@@ -335,7 +335,7 @@ export function GmShiftBox({
               uiFee={fees?.uiFee}
               shiftFee={fees?.shiftFee}
             />
-            <NetworkFeeRow executionFee={executionFee} />
+            <NetworkFeeRow rowPadding executionFee={executionFee} />
           </ExchangeInfo.Group>
 
           <GmSwapWarningsRow

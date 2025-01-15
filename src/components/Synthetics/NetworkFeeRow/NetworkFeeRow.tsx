@@ -15,10 +15,12 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./NetworkFeeRow.scss";
 import { bigMath } from "lib/bigmath";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {
   executionFee?: ExecutionFee;
   isAdditionOrdersMsg?: boolean;
+  rowPadding?: boolean;
 };
 
 /**
@@ -27,7 +29,7 @@ type Props = {
  */
 const ESTIMATED_REFUND_BPS = 10 * 100;
 
-export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
+export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = false }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
 
@@ -141,8 +143,31 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
     );
   }, [estimatedRefundText, executionFee?.feeUsd, executionFee?.warning, executionFeeText, additionalOrdersMsg]);
 
+  if (rowPadding) {
+    return (
+      <ExchangeInfoRow
+        label={
+          <TooltipWithPortal
+            position="top-start"
+            renderContent={() => (
+              <div>
+                <Trans>
+                  Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
+                  does not impact your collateral.
+                </Trans>
+              </div>
+            )}
+          >
+            <Trans>Network Fee</Trans>
+          </TooltipWithPortal>
+        }
+        value={value}
+      />
+    );
+  }
+
   return (
-    <ExchangeInfoRow
+    <SyntheticsInfoRow
       label={
         <TooltipWithPortal
           position="top-start"

@@ -4,7 +4,7 @@ import { memo, useCallback, useMemo } from "react";
 import { HIGH_ACCEPTABLE_POSITION_IMPACT_BPS } from "config/factors";
 import { formatPercentage } from "lib/numbers";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
 import { bigMath } from "lib/bigmath";
@@ -63,9 +63,9 @@ function AcceptablePriceImpactInputRowImpl({
 
   if (notAvailable || recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
     return (
-      <ExchangeInfoRow label={t`Acceptable Price Impact`}>
-        <span className="AcceptablePriceImpactInputRow-na">{t`NA`}</span>
-      </ExchangeInfoRow>
+      <SyntheticsInfoRow label={t`Acceptable Price Impact`}>
+        <Trans>NA</Trans>
+      </SyntheticsInfoRow>
     );
   }
 
@@ -114,7 +114,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   return (
-    <ExchangeInfoRow className={className} label={t`Acceptable Price Impact`}>
+    <SyntheticsInfoRow className={className} label={t`Acceptable Price Impact`} valueClassName="-my-5">
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}
@@ -128,7 +128,7 @@ function AcceptablePriceImpactInputRowImpl({
         negativeSign
         tooltipPosition="bottom-end"
       />
-    </ExchangeInfoRow>
+    </SyntheticsInfoRow>
   );
 }
 
