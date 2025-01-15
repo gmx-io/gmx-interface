@@ -16,9 +16,9 @@ export function useHasOutdatedUi() {
     fetcher: async () => {
       const noCacheParam = Math.random().toString().substring(2, 8);
 
-      const prodUiConfig = await fetch(`${PRODUCTION_HOST}/config.json?no_cache=${noCacheParam}`).then((res) =>
-        res.json()
-      );
+      const prodUiConfig = await fetch(`${PRODUCTION_HOST}/config.json?no_cache=${noCacheParam}`, {
+        cache: "no-store",
+      }).then((res) => res.json());
 
       return prodUiConfig.uiVersion;
     },
