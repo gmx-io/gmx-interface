@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import { ARBITRUM } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
-import { SetPendingTransactions } from "domain/legacy";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { bigMath } from "lib/bigmath";
 import { callContract } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";

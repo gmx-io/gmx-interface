@@ -5,7 +5,6 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
-import { SetPendingTransactions } from "domain/legacy";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -25,6 +24,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import RewardRouter from "sdk/abis/RewardRouter.json";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export function ClaimModal(props: {
   isVisible: boolean;

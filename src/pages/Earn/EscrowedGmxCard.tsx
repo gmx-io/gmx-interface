@@ -12,7 +12,7 @@ import { bigMath } from "lib/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
-import { expandDecimals, formatAmount, formatKeyAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -88,8 +88,15 @@ export function EscrowedGmxCard({
             <Trans>Wallet</Trans>
           </div>
           <div>
-            {formatKeyAmount(processedData, "esGmxBalance", 18, 2, true)} esGMX ($
-            {formatKeyAmount(processedData, "esGmxBalanceUsd", USD_DECIMALS, 2, true)})
+            {processedData?.esGmxBalance === undefined || processedData?.esGmxBalanceUsd === undefined
+              ? "..."
+              : formatBalanceAmountWithUsd(
+                  processedData.esGmxBalance,
+                  processedData.esGmxBalanceUsd,
+                  18,
+                  "esGMX",
+                  true
+                )}
           </div>
         </div>
         <div className="App-card-row">
@@ -97,8 +104,15 @@ export function EscrowedGmxCard({
             <Trans>Staked</Trans>
           </div>
           <div>
-            {formatKeyAmount(processedData, "esGmxInStakedGmx", 18, 2, true)} esGMX ($
-            {formatKeyAmount(processedData, "esGmxInStakedGmxUsd", USD_DECIMALS, 2, true)})
+            {processedData?.esGmxInStakedGmx === undefined || processedData?.esGmxInStakedGmxUsd === undefined
+              ? "..."
+              : formatBalanceAmountWithUsd(
+                  processedData.esGmxInStakedGmx,
+                  processedData.esGmxInStakedGmxUsd,
+                  18,
+                  "esGMX",
+                  true
+                )}
           </div>
         </div>
         <div className="App-card-divider"></div>

@@ -22,7 +22,6 @@ import {
 } from "domain/tradingview/utils";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
-import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
 import {
@@ -31,6 +30,7 @@ import {
   getTokenVisualMultiplier,
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
+import { parseError } from "lib/parseError";
 
 const RESOLUTION_TO_SECONDS = {
   1: 60,
@@ -432,7 +432,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 }
 
 function onCandlesLoadFailed(ex: any, isPrefetch: boolean) {
-  const metricData = prepareErrorMetricData(ex);
+  const metricData = parseError(ex);
 
   metrics.pushEvent<LoadingFailedEvent>({
     event: "candlesLoad.failed",

@@ -1,13 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
+import { PendingTransactionData } from "context/PendingTxnsContext/PendingTxnsContext";
 import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import React, { ReactNode } from "react";
 import { helperToast } from "../helperToast";
-import { getErrorMessage } from "./transactionErrors";
+import { getErrorMessage, makeTransactionErrorHandler } from "./transactionErrors";
 import { GasPriceData, getBestNonce, getGasLimit, getGasPrice } from "./utils";
 
 export async function callContract(
@@ -32,6 +33,7 @@ export async function callContract(
     customSignersGasPrices?: GasPriceData[];
     bestNonce?: number;
     setPendingTxns?: (txns: any) => void;
+    pendingTransactionData?: PendingTransactionData;
     metricId?: OrderMetricId;
   }
 ) {
@@ -123,7 +125,9 @@ export async function callContract(
         sendOrderTxnSubmittedMetric(opts.metricId);
       }
 
-      return cntrct[method](...params, txnInstance);
+      return cntrct[method](...params, txnInstance).catch(
+        makeTransactionErrorHandler(cntrct, method, params, txnInstance, wallet.address)
+      );
     });
 
     const res = await Promise.any(txnCalls).catch(({ errors }) => {
@@ -151,6 +155,7 @@ export async function callContract(
         message,
         messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,
         metricId: opts.metricId,
+        data: opts.pendingTransactionData,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }

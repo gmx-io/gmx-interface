@@ -26,8 +26,8 @@ import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
+  formatBalanceAmount,
   formatDeltaUsd,
-  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsdPrice,
 } from "lib/numbers";
@@ -618,7 +618,6 @@ export function OrderEditor(p: Props) {
                 label={t`Acceptable Price`}
                 value={formatAcceptablePrice(acceptablePrice, {
                   visualMultiplier: indexToken?.visualMultiplier,
-                  displayDecimals: indexToken?.priceDecimals,
                 })}
               />
 
@@ -627,7 +626,6 @@ export function OrderEditor(p: Props) {
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
-                    displayDecimals: indexToken?.priceDecimals,
                   })}
                 />
               )}
@@ -676,7 +674,7 @@ export function OrderEditor(p: Props) {
               <>
                 <ExchangeInfoRow
                   label={t`Min. Receive`}
-                  value={formatTokenAmount(
+                  value={formatBalanceAmount(
                     minOutputAmount,
                     p.order.targetCollateralToken.decimals,
                     p.order.targetCollateralToken.symbol

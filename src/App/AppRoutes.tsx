@@ -31,6 +31,7 @@ import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigure
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -88,11 +89,11 @@ export function AppRoutes() {
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
 
   const [selectedToPage, setSelectedToPage] = useState("");
-  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 
   const openSettings = useCallback(() => {
     setIsSettingsVisible(true);
-  }, []);
+  }, [setIsSettingsVisible]);
 
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();

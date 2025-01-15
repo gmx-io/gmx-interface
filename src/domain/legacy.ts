@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import { ethers } from "ethers";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import OrderBook from "sdk/abis/OrderBook.json";
@@ -23,7 +23,6 @@ import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { bigMath } from "lib/bigmath";
 import { callContract, contractFetcher } from "lib/contracts";
-import { OrderMetricId } from "lib/metrics";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
@@ -34,15 +33,6 @@ import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 
 export * from "./prices";
-
-export type PendingTransaction = {
-  hash: string;
-  message: string;
-  messageDetails?: string;
-  metricId?: OrderMetricId;
-};
-
-export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
 const { ZeroAddress } = ethers;
 
