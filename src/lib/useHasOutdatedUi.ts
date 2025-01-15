@@ -3,18 +3,21 @@ import useSWR from "swr";
 import { UI_VERSION } from "config/env";
 
 import { isDevelopment } from "config/env";
+import { PRODUCTION_HOST } from "config/links";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { useOracleKeeperFetcher } from "./oracleKeeperFetcher";
 
 export function useHasOutdatedUi() {
   const { chainId } = useChainId();
   const { active } = useWallet();
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data: minVersion, mutate } = useSWR([chainId, active], {
-    fetcher: () => oracleKeeperFetcher.fetchUiVersion(UI_VERSION, active),
+    fetcher: async () => {
+      const prodUiConfig = await fetch(`${PRODUCTION_HOST}/config.json`).then((res) => res.json());
+
+      return prodUiConfig.uiVersion;
+    },
   });
 
   let hasOutdatedUi = false;
