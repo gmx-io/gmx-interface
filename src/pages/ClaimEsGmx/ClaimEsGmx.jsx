@@ -23,7 +23,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { bigMath } from "lib/bigmath";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
@@ -134,7 +134,7 @@ export default function ClaimEsGmx() {
   const [selectedOption, setSelectedOption] = useState("");
   const [isClaiming, setIsClaiming] = useState(false);
   const [value, setValue] = useState("");
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const isArbitrum = chainId === ARBITRUM;
 

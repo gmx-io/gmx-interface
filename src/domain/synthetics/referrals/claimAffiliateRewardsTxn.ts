@@ -3,6 +3,7 @@ import { getContract } from "config/contracts";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 type Params = {
   account: string;
@@ -13,8 +14,10 @@ type Params = {
   setPendingTxns: (txns: any) => void;
 };
 
-export function claimAffiliateRewardsTxn(chainId: number, signer: Signer, p: Params) {
+export async function claimAffiliateRewardsTxn(chainId: number, signer: Signer, p: Params) {
   const { setPendingTxns, rewardsParams, account } = p;
+
+  await validateSignerAddress(signer, account);
 
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 

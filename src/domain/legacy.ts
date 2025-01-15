@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import { ethers } from "ethers";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import OrderBook from "sdk/abis/OrderBook.json";
@@ -16,36 +16,26 @@ import Vault from "sdk/abis/Vault.json";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName, getConstant, getHighExecutionFee } from "config/chains";
 import { getContract } from "config/contracts";
-import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
+import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
 
 import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { UI_VERSION, isDevelopment } from "config/env";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
+import { bigMath } from "lib/bigmath";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import useWallet from "lib/wallets/useWallet";
 import groupBy from "lodash/groupBy";
+import useSWRInfinite from "swr/infinite";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
-import useWallet from "lib/wallets/useWallet";
-import useSWRInfinite from "swr/infinite";
-import { bigMath } from "lib/bigmath";
-import { OrderMetricId } from "lib/metrics";
 
 export * from "./prices";
-
-export type PendingTransaction = {
-  hash: string;
-  message: string;
-  messageDetails?: string;
-  metricId?: OrderMetricId;
-};
-
-export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
 const { ZeroAddress } = ethers;
 
@@ -512,7 +502,7 @@ export function useGmxPrice(chainId, libraries, active) {
   const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
 
-  const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
+  const gmxPrice: bigint | undefined = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
   const mutate = useCallback(() => {
     mutateFromAvalanche();
     mutateFromArbitrum();
@@ -640,7 +630,7 @@ function useGmxPriceFromAvalanche() {
   );
 
   const PRECISION = 10n ** 18n;
-  let gmxPrice;
+  let gmxPrice: bigint | undefined;
   if (avaxReserve && gmxReserve && avaxPrice) {
     gmxPrice = bigMath.mulDiv(bigMath.mulDiv(avaxReserve, PRECISION, gmxReserve), avaxPrice, PRECISION);
   }

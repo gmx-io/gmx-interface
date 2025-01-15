@@ -1,3 +1,7 @@
+import { getIsSyntheticsSupported } from "config/features";
+import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
+import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   Dispatch,
   PropsWithChildren,
@@ -10,20 +14,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { getIsSyntheticsSupported } from "config/features";
-import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
-import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { PendingTransaction, SetPendingTransactions } from "domain/legacy";
-import { useLocalStorage } from "react-use";
 import { matchPath, useHistory, useLocation } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 
 type GlobalContextType = null | {
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
-
-  pendingTxns: PendingTransaction[];
-  setPendingTxns: SetPendingTransactions;
 
   redirectPopupTimestamp: number | undefined;
   setRedirectPopupTimestamp: Dispatch<SetStateAction<number | undefined>>;
@@ -36,66 +32,53 @@ const context = createContext<GlobalContextType>(null);
 
 const { Provider } = context;
 
-export const GlobalStateProvider = memo(
-  ({
-    pendingTxns,
-    setPendingTxns,
-    children,
-  }: PropsWithChildren<{
-    pendingTxns: PendingTransaction[];
-    setPendingTxns: SetPendingTransactions;
-  }>) => {
-    const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
+export const GlobalStateProvider = memo(({ children }: PropsWithChildren<{}>) => {
+  const [tradePageVersion, setTradePageVersion] = useTradePageVersion();
 
-    const [notifyModalOpen, setNotifyModalOpen] = useState(false);
+  const [notifyModalOpen, setNotifyModalOpen] = useState(false);
 
-    const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
-      REDIRECT_POPUP_TIMESTAMP_KEY,
-      undefined,
-      {
-        raw: false,
-        deserializer: (val) => {
-          if (!val) {
-            return undefined;
-          }
-          const num = parseInt(val);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
+    REDIRECT_POPUP_TIMESTAMP_KEY,
+    undefined,
+    {
+      raw: false,
+      deserializer: (val) => {
+        if (!val) {
+          return undefined;
+        }
+        const num = parseInt(val);
 
-          if (Number.isNaN(num)) {
-            return undefined;
-          }
+        if (Number.isNaN(num)) {
+          return undefined;
+        }
 
-          return num;
-        },
-        serializer: (val) => (val ? val.toString() : ""),
-      }
-    );
+        return num;
+      },
+      serializer: (val) => (val ? val.toString() : ""),
+    }
+  );
 
-    const value = useMemo(
-      () => ({
-        tradePageVersion,
-        setTradePageVersion,
-        pendingTxns,
-        setPendingTxns,
-        redirectPopupTimestamp,
-        setRedirectPopupTimestamp,
-        notifyModalOpen,
-        setNotifyModalOpen,
-      }),
-      [
-        tradePageVersion,
-        setTradePageVersion,
-        pendingTxns,
-        setPendingTxns,
-        redirectPopupTimestamp,
-        setRedirectPopupTimestamp,
-        notifyModalOpen,
-        setNotifyModalOpen,
-      ]
-    );
+  const value = useMemo(
+    () => ({
+      tradePageVersion,
+      setTradePageVersion,
+      redirectPopupTimestamp,
+      setRedirectPopupTimestamp,
+      notifyModalOpen,
+      setNotifyModalOpen,
+    }),
+    [
+      tradePageVersion,
+      setTradePageVersion,
+      redirectPopupTimestamp,
+      setRedirectPopupTimestamp,
+      notifyModalOpen,
+      setNotifyModalOpen,
+    ]
+  );
 
-    return <Provider value={value}>{children}</Provider>;
-  }
-);
+  return <Provider value={value}>{children}</Provider>;
+});
 
 export const useGlobalContext = () => {
   const value = useContext(context);

@@ -123,7 +123,7 @@ export default function Tooltip<T extends ElementType>({
           }
         },
       }),
-      arrow({ element: arrowRef }),
+      arrow({ element: arrowRef, padding: 4 }),
       arrowColor(),
     ],
     placement: position,
@@ -215,7 +215,7 @@ export default function Tooltip<T extends ElementType>({
           },
         })}
       >
-        {children}
+        {handle ?? children}
         {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
         {visible && !withPortal && tooltipContent}
       </Container>

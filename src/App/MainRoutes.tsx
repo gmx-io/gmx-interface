@@ -37,7 +37,7 @@ import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Stake from "pages/Stake/Stake";
+import Earn from "pages/Earn/Earn";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
@@ -112,7 +112,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/earn">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
-          <Stake />
+          <Earn />
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/buy">

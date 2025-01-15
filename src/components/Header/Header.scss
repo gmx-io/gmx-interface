@@ -1,4 +1,5 @@
 .App-header-backdrop {
+  background-color: rgba(0, 0, 0, 0.9);
   position: fixed;
   z-index: 10;
   top: 0;
@@ -39,10 +40,8 @@
 }
 
 .App-header-drawer {
-  background: #17182c88 0% 0% no-repeat padding-box;
-  box-shadow: 0.8rem 0.3rem 0.6rem #00000029;
+  background: var(--color-slate-750) 0% 0% no-repeat padding-box;
   opacity: 1;
-  backdrop-filter: blur(2.7rem);
   position: fixed;
   z-index: 801;
   right: 0;

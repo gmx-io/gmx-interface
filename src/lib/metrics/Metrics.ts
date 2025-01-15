@@ -16,7 +16,7 @@ import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
-import { prepareErrorMetricData } from "./errorReporting";
+import { ErrorLike, parseError } from "../parseError";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 
@@ -170,8 +170,8 @@ export class Metrics {
     });
   }
 
-  pushError = (error: unknown, errorSource: string) => {
-    const errorData = prepareErrorMetricData(error);
+  pushError = (error: ErrorLike | string, errorSource: string) => {
+    const errorData = parseError(error);
 
     if (!errorData) {
       return;
@@ -291,7 +291,7 @@ export class Metrics {
 
   subscribeToLongTasks = () => {
     if (typeof PerformanceObserver === "undefined") {
-      this.pushError("PerformanceObserver is not supported, skip", "subscribeToLongTasks");
+      this.pushError(new Error("PerformanceObserver is not supported, skip"), "subscribeToLongTasks");
       return;
     }
 

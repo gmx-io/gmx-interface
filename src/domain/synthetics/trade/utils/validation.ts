@@ -139,7 +139,7 @@ export function getSwapError(p: {
   }
 
   if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
+    return [t`Acknowledgment Required`];
   }
 
   return [undefined];
@@ -297,7 +297,7 @@ export function getIncreaseError(p: {
   }
 
   if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
+    return [t`Acknowledgment Required`];
   }
 
   if (nextLeverageWithoutPnl !== undefined) {
@@ -444,7 +444,7 @@ export function getDecreaseError(p: {
   }
 
   if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
+    return [t`Acknowledgment Required`];
   }
 
   return [undefined];
@@ -550,8 +550,7 @@ export function getGmSwapError(p: {
   longTokenLiquidityUsd: bigint | undefined;
   shortTokenLiquidityUsd: bigint | undefined;
   fees: GmSwapFees | undefined;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
+  consentError: boolean;
   priceImpactUsd: bigint | undefined;
   glvInfo?: GlvInfo;
   marketTokensData?: TokensData;
@@ -574,8 +573,7 @@ export function getGmSwapError(p: {
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,
     fees,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
+    consentError,
     priceImpactUsd,
     glvInfo,
     marketTokensData,
@@ -586,8 +584,8 @@ export function getGmSwapError(p: {
     return [t`Loading...`];
   }
 
-  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-    return [t`Price Impact not yet acknowledged`];
+  if (consentError) {
+    return [t`Acknowledgment Required`];
   }
 
   const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
@@ -662,7 +660,11 @@ export function getGmSwapError(p: {
     return [t`Amount should be greater than zero`];
   }
 
-  if (marketTokenAmount === undefined || marketTokenAmount < 0) {
+  if (
+    marketTokenAmount === undefined ||
+    marketTokenAmount < 0 ||
+    (marketTokenAmount === 0n && longTokenAmount === 0n && shortTokenAmount === 0n)
+  ) {
     return [t`Enter an amount`];
   }
 
@@ -760,8 +762,7 @@ export function getGmShiftError({
   toToken,
   toTokenAmount,
   fees,
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
+  consentError,
   priceImpactUsd,
 }: {
   fromMarketInfo: MarketInfo | undefined;
@@ -774,8 +775,7 @@ export function getGmShiftError({
   toToken: TokenData | undefined;
   toTokenAmount: bigint | undefined;
   fees: GmSwapFees | undefined;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
+  consentError: boolean;
   priceImpactUsd: bigint | undefined;
 }) {
   const isGlv = isGlvInfo(toMarketInfo);
@@ -784,8 +784,8 @@ export function getGmShiftError({
     return [t`Loading...`];
   }
 
-  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-    return [t`Price Impact not yet acknowledged`];
+  if (consentError) {
+    return [t`Acknowledgment Required`];
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
@@ -829,7 +829,7 @@ export function getGmShiftError({
     return [t`Amount should be greater than zero`];
   }
 
-  if (fromTokenAmount === undefined || fromTokenAmount < 0 || toTokenAmount === undefined || toTokenAmount < 0) {
+  if (fromTokenAmount === undefined || fromTokenAmount <= 0n || toTokenAmount === undefined || toTokenAmount <= 0n) {
     return [t`Enter an amount`];
   }
 

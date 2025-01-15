@@ -8,7 +8,7 @@ import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/t
 import { SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory/types";
 import type { Token, TokenInfo } from "sdk/types/tokens";
 import { getExchangeRateDisplay } from "lib/legacy";
-import { formatTokenAmount } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 
 import { getActionTitle } from "../../keys";
 import {
@@ -44,16 +44,10 @@ export const formatSwapMessage = (
   const tokenOut = tradeAction.targetCollateralToken!;
   const amountIn = tradeAction.initialCollateralDeltaAmount!;
 
-  const fromText = formatTokenAmount(amountIn, tokenIn.decimals, tokenIn.symbol, {
-    useCommas: true,
-  });
-  const fromAmountText = formatTokenAmount(amountIn, tokenIn.decimals, undefined, {
-    useCommas: true,
-  });
+  const fromText = formatBalanceAmount(amountIn, tokenIn.decimals, tokenIn.symbol);
+  const fromAmountText = formatBalanceAmount(amountIn, tokenIn.decimals);
 
-  const toMinText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, tokenOut?.symbol, {
-    useCommas: true,
-  });
+  const toMinText = formatBalanceAmount(tradeAction.minOutputAmount, tokenOut?.decimals, tokenOut?.symbol);
 
   const tokensExecutionRatio =
     tradeAction.executionAmountOut !== undefined
@@ -118,9 +112,7 @@ export const formatSwapMessage = (
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCancelled)
   ) {
-    const toMinAmountText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, undefined, {
-      useCommas: true,
-    });
+    const toMinAmountText = formatBalanceAmount(tradeAction.minOutputAmount, tokenOut?.decimals);
     result = {
       price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(
@@ -132,12 +124,8 @@ export const formatSwapMessage = (
       swapToTokenAmount: toMinAmountText,
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderExecuted) {
-    const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
-      useCommas: true,
-    });
-    const toExecutionAmountText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, undefined, {
-      useCommas: true,
-    });
+    const toExecutionText = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals, tokenOut?.symbol);
+    const toExecutionAmountText = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals);
     result = {
       price: executionRate,
       priceComment: lines(
@@ -161,12 +149,8 @@ export const formatSwapMessage = (
           })
         : undefined;
     const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.largestToken));
-    const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
-      useCommas: true,
-    });
-    const toExecutionAmountText = formatTokenAmount(outputAmount, tokenOut?.decimals, undefined, {
-      useCommas: true,
-    });
+    const toExecutionText = formatBalanceAmount(outputAmount ?? 0n, tokenOut?.decimals, tokenOut?.symbol);
+    const toExecutionAmountText = formatBalanceAmount(outputAmount ?? 0n, tokenOut?.decimals);
 
     result = {
       actionComment:
@@ -189,9 +173,7 @@ export const formatSwapMessage = (
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCreated) ||
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderUpdated)
   ) {
-    const toMinAmountText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, undefined, {
-      useCommas: true,
-    });
+    const toMinAmountText = formatBalanceAmount(tradeAction.minOutputAmount, tokenOut?.decimals);
     result = {
       price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(t`Acceptable price for the order.`),
@@ -199,12 +181,8 @@ export const formatSwapMessage = (
       swapToTokenAmount: toMinAmountText,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderExecuted) {
-    const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
-      useCommas: true,
-    });
-    const toExecutionAmountText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, undefined, {
-      useCommas: true,
-    });
+    const toExecutionText = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals, tokenOut?.symbol);
+    const toExecutionAmountText = formatBalanceAmount(tradeAction.executionAmountOut!, tokenOut?.decimals);
 
     result = {
       price: executionRate,
@@ -229,12 +207,8 @@ export const formatSwapMessage = (
           })
         : undefined;
     const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.smallestToken));
-    const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
-      useCommas: true,
-    });
-    const toExecutionAmountText = formatTokenAmount(outputAmount, tokenOut?.decimals, undefined, {
-      useCommas: true,
-    });
+    const toExecutionText = formatBalanceAmount(outputAmount ?? 0n, tokenOut?.decimals, tokenOut?.symbol);
+    const toExecutionAmountText = formatBalanceAmount(outputAmount ?? 0n, tokenOut?.decimals);
 
     result = {
       actionComment:

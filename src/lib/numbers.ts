@@ -581,18 +581,61 @@ export function formatAmountHuman(
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
 }
 
-export function formatBalanceAmount(amount: bigint, tokenDecimals: number) {
-  if (amount === undefined || amount === 0n) return "-";
+export function formatBalanceAmount(
+  amount: bigint,
+  tokenDecimals: number,
+  tokenSymbol?: string,
+  showZero = false
+): string {
+  if (amount === undefined) return "-";
+
+  if (amount === 0n) {
+    if (showZero) {
+      if (tokenSymbol) {
+        return `0.0000 ${tokenSymbol}`;
+      }
+      return "0.0000";
+    }
+    return "-";
+  }
 
   const absAmount = bigMath.abs(amount);
   const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);
 
-  if (absAmountFloat >= 1.0) return formatAmount(amount, tokenDecimals, 4, true);
-  else if (absAmountFloat >= 0.1) return formatAmount(amount, tokenDecimals, 5, true);
-  else if (absAmountFloat >= 0.01) return formatAmount(amount, tokenDecimals, 6, true);
-  else if (absAmountFloat >= 0.001) return formatAmount(amount, tokenDecimals, 7, true);
-  else if (absAmountFloat >= 0.00000001) return formatAmount(amount, tokenDecimals, 8, true);
-  else return bigintToNumber(amount, tokenDecimals).toExponential(2);
+  let value = "";
+
+  if (absAmountFloat >= 1.0) value = formatAmount(amount, tokenDecimals, 4, true);
+  else if (absAmountFloat >= 0.1) value = formatAmount(amount, tokenDecimals, 5, true);
+  else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, 6, true);
+  else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, 7, true);
+  else if (absAmountFloat >= 0.00000001) value = formatAmount(amount, tokenDecimals, 8, true);
+  else value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+
+  if (tokenSymbol) {
+    // Non-breaking space
+    return `${value} ${tokenSymbol}`;
+  }
+
+  return value;
+}
+
+export function formatBalanceAmountWithUsd(
+  amount: bigint,
+  amountUsd: bigint,
+  tokenDecimals: number,
+  tokenSymbol?: string,
+  showZero = false
+) {
+  if (!showZero && amount === 0n) {
+    return "-";
+  }
+
+  const value = formatBalanceAmount(amount, tokenDecimals, tokenSymbol, showZero);
+
+  const usd = formatUsd(amountUsd);
+
+  // Regular space
+  return `${value} (${usd})`;
 }
 
 export function formatFactor(factor: bigint) {

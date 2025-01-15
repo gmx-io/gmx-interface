@@ -1,5 +1,4 @@
 import { USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -9,8 +8,9 @@ import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { TxError } from "lib/contracts/transactionErrors";
 import { bigintToNumber, formatPercentage, roundToOrder } from "lib/numbers";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
-import { prepareErrorMetricData } from "./errorReporting";
+import { parseError } from "../parseError";
 import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
@@ -26,7 +26,6 @@ import {
   OrderStage,
   OrderTxnFailedEvent,
   OrderTxnSubmittedEvent,
-  PendingTxnErrorEvent,
   ShiftGmMetricData,
   SwapGLVMetricData,
   SwapGmMetricData,
@@ -597,7 +596,11 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
   });
 }
 
-export function sendTxnErrorMetric(metricId: OrderMetricId, error: Error | TxError, errorContext: OrderErrorContext) {
+export function sendTxnErrorMetric(
+  metricId: OrderMetricId,
+  error: Error | TxError | undefined,
+  errorContext: OrderErrorContext
+) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
@@ -605,7 +608,7 @@ export function sendTxnErrorMetric(metricId: OrderMetricId, error: Error | TxErr
     return;
   }
 
-  const errorData = prepareErrorMetricData(error);
+  const errorData = parseError(error);
 
   metrics.pushEvent<OrderTxnFailedEvent>({
     event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
@@ -623,27 +626,6 @@ export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {
     sendTxnErrorMetric(metricId, error, "sending");
     throw error;
   };
-}
-
-export function sendPendingOrderTxnErrorMetric(metricId: OrderMetricId) {
-  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId, true);
-  const metricType = (metricData as OrderMetricData)?.metricType || "unknownOrder";
-
-  if (!metricData) {
-    metrics.pushError("Order metric data not found", "sendPendingOrderTxnErrorMetric");
-    return;
-  }
-
-  metrics.pushEvent<PendingTxnErrorEvent>({
-    event: `${metricType}.failed`,
-    isError: true,
-    time: metrics.getTime(metricId, true),
-    data: {
-      ...(metricData || {}),
-      errorContext: "minting",
-      errorMessage: "Pending txn error",
-    },
-  });
 }
 
 export function sendOrderCreatedMetric(metricId: OrderMetricId) {
