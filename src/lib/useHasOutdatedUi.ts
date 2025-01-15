@@ -30,10 +30,17 @@ export function useHasOutdatedUi() {
     hasOutdatedUi = true;
   }
 
+  console.log("minVersion", minVersion, UI_VERSION);
+
   if (isDevelopment()) {
     const localStorageVersion = localStorage.getItem(REQUIRED_UI_VERSION_KEY);
-    hasOutdatedUi = Boolean(localStorageVersion && parseFloat(localStorageVersion) > UI_VERSION);
+
+    if (localStorageVersion) {
+      hasOutdatedUi = Boolean(parseFloat(localStorageVersion) > UI_VERSION);
+    }
   }
+
+  console.log("hasOutdatedUi", hasOutdatedUi);
 
   return { data: hasOutdatedUi, mutate };
 }
