@@ -1,4 +1,4 @@
-import { Trans, msg, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
@@ -9,7 +9,7 @@ import { useKey, useLatest, usePrevious } from "react-use";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -61,7 +61,6 @@ import {
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
-  TradeMode,
   TradeType,
   applySlippageToPrice,
   getIncreasePositionAmounts,
@@ -85,8 +84,8 @@ import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
+  formatBalanceAmount,
   formatDeltaUsd,
-  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -140,37 +139,16 @@ import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
-import SwapIcon from "img/swap.svg?react";
-
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
+import { tradeModeLabels, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
 
 import "./TradeBox.scss";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
-};
-
-const tradeTypeIcons = {
-  [TradeType.Long]: <LongIcon />,
-  [TradeType.Short]: <ShortIcon />,
-  [TradeType.Swap]: <SwapIcon />,
-};
-
-const tradeModeLabels = {
-  [TradeMode.Market]: msg`Market`,
-  [TradeMode.Limit]: msg`Limit`,
-  [TradeMode.Trigger]: msg`TP/SL`,
-};
-
-const tradeTypeLabels = {
-  [TradeType.Long]: msg`Long`,
-  [TradeType.Short]: msg`Short`,
-  [TradeType.Swap]: msg`Swap`,
 };
 
 export function TradeBox(p: Props) {
@@ -295,34 +273,33 @@ export function TradeBox(p: Props) {
   const maxAllowedLeverage = maxLeverage / 2;
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionCollateralPriceImpact,
+    collateralImpact: fees?.positionCollateralPriceImpact,
+    positionImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    place: "tradeBox",
+    swapProfitFee: fees?.swapProfitFee,
+    executionFeeUsd: executionFee?.feeUsd,
     tradeFlags,
   });
 
-  const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
-  const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+  const setIsAcceptedRef = useLatest(priceImpactWarningState.setIsAccepted);
 
   const setFromTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setFromTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsHighPositionImpactAcceptedRef.current(false);
-        setIsHighSwapImpactAcceptedRef.current(false);
+        setIsAcceptedRef.current(false);
       }
     },
-    [setFromTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [setFromTokenInputValueRaw, setIsAcceptedRef]
   );
   const setToTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setToTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsHighPositionImpactAcceptedRef.current(false);
-        setIsHighSwapImpactAcceptedRef.current(false);
+        setIsAcceptedRef.current(false);
       }
     },
-    [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [setToTokenInputValueRaw, setIsAcceptedRef]
   );
 
   const userReferralInfo = useUserReferralInfo();
@@ -1061,9 +1038,11 @@ export function TradeBox(p: Props) {
               : ""
           }
           topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals, "", {
-            useCommas: true,
-          })}
+          topRightValue={
+            fromToken && fromToken.balance !== undefined
+              ? formatBalanceAmount(fromToken.balance, fromToken.decimals)
+              : undefined
+          }
           onClickTopRightLabel={onMaxClick}
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
@@ -1106,9 +1085,11 @@ export function TradeBox(p: Props) {
             topLeftLabel={t`Receive`}
             topLeftValue={swapAmounts?.usdOut && swapAmounts.usdOut > 0 ? formatUsd(swapAmounts?.usdOut) : ""}
             topRightLabel={t`Balance`}
-            topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals, "", {
-              useCommas: true,
-            })}
+            topRightValue={
+              toToken && toToken.balance !== undefined
+                ? formatBalanceAmount(toToken.balance, toToken.decimals)
+                : undefined
+            }
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
             showMaxButton={false}
@@ -1446,6 +1427,7 @@ export function TradeBox(p: Props) {
             icons={tradeTypeIcons}
             options={Object.values(TradeType)}
             optionLabels={localizedTradeTypeLabels}
+            optionClassnames={tradeTypeClassNames}
             option={tradeType}
             onChange={onTradeTypeChange}
             className="SwapBox-option-tabs"

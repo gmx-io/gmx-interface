@@ -2,7 +2,6 @@ import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
-import Helmet from "react-helmet";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getSyntheticsListSectionKey } from "config/localStorage";
@@ -54,7 +53,7 @@ import { useInterviewNotification } from "domain/synthetics/userFeedback/useInte
 import { useMedia } from "react-use";
 import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 export type Props = {
   openSettings: () => void;
@@ -169,7 +168,7 @@ export function SyntheticsPage(p: Props) {
           {position?.isLong ? "Long" : "Short"}{" "}
           <div className="inline-flex">
             <span>{indexName}</span>
-            <span className="subtext gm-toast">[{poolName}]</span>
+            <span className="subtext gm-toast !text-white">[{poolName}]</span>
           </div>{" "}
           <span>market selected</span>.
         </Trans>
@@ -240,15 +239,6 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <div className="Exchange page-layout">
-      <Helmet>
-        <style type="text/css">
-          {`
-            :root {
-              --main-bg-color: #08091b;
-             {
-         `}
-        </style>
-      </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart />

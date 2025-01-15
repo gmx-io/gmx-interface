@@ -21,9 +21,7 @@ export function useShiftSubmitState({
   amounts,
   executionFee,
   fees,
-  isHighFeeConsentError,
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
+  consentError,
   marketTokenUsd,
   payTokenAddresses,
   routerAddress,
@@ -37,9 +35,7 @@ export function useShiftSubmitState({
   amounts: ShiftAmounts | undefined;
   executionFee: ExecutionFee | undefined;
   fees: GmSwapFees | undefined;
-  isHighFeeConsentError: boolean | undefined;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
+  consentError: boolean;
   marketTokenUsd: bigint | undefined;
   payTokenAddresses: string[];
   routerAddress: string;
@@ -68,7 +64,11 @@ export function useShiftSubmitState({
     marketTokenUsd,
   });
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
   });
@@ -77,12 +77,7 @@ export function useShiftSubmitState({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      if (
-        amounts?.fromTokenAmount !== undefined &&
-        amounts?.fromTokenAmount > 0 &&
-        selectedToken &&
-        getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)
-      ) {
+      if (selectedToken && getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)) {
         addresses.push(selectedToken.address);
       }
 
@@ -97,6 +92,18 @@ export function useShiftSubmitState({
         text: t`Submitting...`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
+      };
+    }
+
+    if (isAllowanceLoading) {
+      return {
+        text: t`Loading...`,
+        disabled: true,
+        tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -105,18 +112,22 @@ export function useShiftSubmitState({
         text: t`Connect Wallet`,
         onSubmit: () => openConnectModal?.(),
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (isHighFeeConsentError) {
+    if (consentError) {
       return {
-        text: t`High Network Fee not yet acknowledged`,
+        text: t`Acknowledgment Required`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (tokensToApprove.length > 0 && selectedToken) {
+    if (isAllowanceLoaded && tokensToApprove.length > 0 && selectedToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address);
         return token?.symbol;
@@ -131,6 +142,8 @@ export function useShiftSubmitState({
         }),
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -151,8 +164,7 @@ export function useShiftSubmitState({
       toToken: toToken,
       toTokenAmount: amounts?.toTokenAmount,
       fees,
-      isHighPriceImpact: isHighPriceImpact,
-      isHighPriceImpactAccepted,
+      consentError,
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
     })[0];
 
@@ -164,6 +176,8 @@ export function useShiftSubmitState({
         error,
         disabled: !shouldDisableValidationForTesting,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
         onSubmit,
       };
     }
@@ -174,28 +188,23 @@ export function useShiftSubmitState({
       tokensToApprove,
     };
   }, [
+    isSubmitting,
+    isAllowanceLoading,
     account,
+    isAllowanceLoaded,
+    tokensToApprove,
+    selectedToken,
     chainId,
     hasOutdatedUi,
     selectedMarketInfo,
-    selectedToken,
-    amounts?.fromTokenAmount,
-    amounts?.fromTokenUsd,
-    amounts?.fromLongTokenAmount,
-    amounts?.fromShortTokenAmount,
-    amounts?.toTokenAmount,
-    amounts?.swapPriceImpactDeltaUsd,
+    amounts,
     toMarketInfo,
     toToken,
     fees,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
-    openConnectModal,
-    shouldDisableValidationForTesting,
+    consentError,
     onSubmit,
-    isSubmitting,
-    tokensToApprove,
+    openConnectModal,
     tokensData,
-    isHighFeeConsentError,
+    shouldDisableValidationForTesting,
   ]);
 }

@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { useCallback } from "react";
 
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";

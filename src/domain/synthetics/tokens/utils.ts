@@ -1,4 +1,4 @@
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo, getIsEquivalentTokens } from "domain/tokens";
 import { adjustForDecimals } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
@@ -24,12 +24,16 @@ export function getTokenData(tokensData?: TokensData, address?: string, convertT
 }
 
 export function getNeedTokenApprove(
-  tokenAllowanceData: TokensAllowanceData,
-  tokenAddress: string,
-  amountToSpend: bigint
+  tokenAllowanceData: TokensAllowanceData | undefined,
+  tokenAddress: string | undefined,
+  amountToSpend: bigint | undefined
 ): boolean {
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS || tokenAllowanceData[tokenAddress] === undefined) {
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined || amountToSpend <= 0n) {
     return false;
+  }
+
+  if (!tokenAllowanceData || !tokenAddress || tokenAllowanceData?.[tokenAddress] === undefined) {
+    return true;
   }
 
   return amountToSpend > tokenAllowanceData[tokenAddress];

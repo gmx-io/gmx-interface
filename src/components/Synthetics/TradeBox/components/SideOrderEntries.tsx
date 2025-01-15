@@ -3,7 +3,7 @@ import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
@@ -129,7 +129,7 @@ function SideOrderEntry({
             "hover:focus-within:border-cold-blue-500": !priceError,
           })}
         >
-          <span className="cursor-pointer opacity-70">$</span>
+          <span className="cursor-pointer text-slate-100">$</span>
 
           <NumberInput
             value={entry.price.input}
@@ -173,7 +173,7 @@ function SideOrderEntry({
             "hover:focus-within:border-cold-blue-500": !sizeError,
           })}
         >
-          <span className="cursor-pointer opacity-70">$</span>
+          <span className="cursor-pointer text-slate-100">$</span>
           <TooltipWithPortal
             disabled={!sizeTooltipMsg}
             content={sizeTooltipMsg}

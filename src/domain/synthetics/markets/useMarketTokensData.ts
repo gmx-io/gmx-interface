@@ -1,7 +1,7 @@
 import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 // Warning: do not import through reexport, it will break jest
 import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -165,7 +165,7 @@ export function useMarketTokensDataRequest(
   });
 
   const gmAndGlvMarketTokensData = useMemo(() => {
-    if (!marketTokensData || !glvData || Object.values(glvData).length === 0) {
+    if (!marketTokensData || !glvData || Object.values(glvData).length === 0 || !withGlv) {
       return marketTokensData;
     }
 
@@ -175,7 +175,7 @@ export function useMarketTokensDataRequest(
     });
 
     return result;
-  }, [marketTokensData, glvData]);
+  }, [marketTokensData, glvData, withGlv]);
 
   const updatedGmAndGlvMarketTokensData = useUpdatedTokensBalances(gmAndGlvMarketTokensData);
 

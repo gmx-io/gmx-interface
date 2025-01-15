@@ -1,38 +1,40 @@
+import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
-import { ethers } from "ethers";
 import { expandDecimals, formatAmount, formatUsd, PRECISION } from "lib/numbers";
 
 import cx from "classnames";
+import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
+import { format } from "date-fns";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
-  MarketInfo,
-  getUsedLiquidity,
   getAvailableUsdLiquidityForCollateral,
+  getCappedPoolPnl,
   getMarketIndexName,
-  getMarketPoolName,
-  getMaxOpenInterestUsd,
-  getMaxReservedUsd,
-  getReservedUsd,
-  useMarketsInfoRequest,
   getMarketNetPnl,
   getMarketPnl,
-  getCappedPoolPnl,
+  getMarketPoolName,
+  getMaxOpenInterestUsd,
+  getMaxPoolUsdForSwap,
+  getMaxReservedUsd,
   getPoolUsdWithoutPnl,
+  getReservedUsd,
+  getStrictestMaxPoolUsdForDeposit,
+  getUsedLiquidity,
+  MarketInfo,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
+import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import "./SyntheticsStats.scss";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
-import { format } from "date-fns";
-import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
-import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { bigMath } from "lib/bigmath";
 import { formatAmountHuman } from "lib/numbers";
-import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import "./SyntheticsStats.scss";
 
 function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation
@@ -366,17 +368,48 @@ export function SyntheticsStats() {
 
               function renderPoolCapCell(isLong: boolean) {
                 const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
+                const maxPoolUsdForSwap = getMaxPoolUsdForSwap(market, isLong);
                 const maxPoolUsdForDeposit = isLong
                   ? market.maxLongPoolUsdForDeposit
                   : market.maxShortPoolUsdForDeposit;
+                const maxPoolAmount = isLong ? market.maxLongPoolAmount : market.maxShortPoolAmount;
+                const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(market, isLong);
                 const token = isLong ? market.longToken : market.shortToken;
                 const poolUsd = convertToUsd(poolAmount, token.decimals, getMidPrice(token.prices));
 
                 return (
-                  <div className="cell">
-                    {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsdForDeposit)}{" "}
-                    <ShareBar share={poolUsd} total={maxPoolUsdForDeposit} warningThreshold={90} />
-                  </div>
+                  <TooltipWithPortal
+                    handle={
+                      <div className="cell">
+                        {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsd)}{" "}
+                        <ShareBar share={poolUsd} total={maxPoolUsd} warningThreshold={90} />
+                      </div>
+                    }
+                    renderContent={() => (
+                      <>
+                        <StatsTooltipRow
+                          label="Pool Amount Capacity"
+                          showDollar={false}
+                          value={`${formatAmountHuman(poolAmount, token.decimals)} ${token.symbol} / ${formatAmountHuman(maxPoolAmount, token.decimals)} ${token.symbol}`}
+                        />
+                        <StatsTooltipRow
+                          label="Pool USD Capacity (Swap)"
+                          showDollar={false}
+                          value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForSwap)}`}
+                        />
+                        <StatsTooltipRow
+                          label="Deposit USD Capacity"
+                          showDollar={false}
+                          value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForDeposit)}`}
+                        />
+                        <StatsTooltipRow
+                          label="Strictest Deposit USD Capacity"
+                          showDollar={false}
+                          value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsd)}`}
+                        />
+                      </>
+                    )}
+                  />
                 );
               }
 

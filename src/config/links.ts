@@ -1,5 +1,5 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { TOKENS_BY_SYMBOL_MAP } from "./tokens";
+import { TOKENS_BY_SYMBOL_MAP } from "sdk/configs/tokens";
 
 const oneInchTokensMap = {
   [ARBITRUM]: {

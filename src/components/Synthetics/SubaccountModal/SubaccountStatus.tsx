@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getNativeToken, getWrappedToken } from "config/tokens";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import {
   useIsSubaccountActive,
   useMainAccountInsufficientFunds,

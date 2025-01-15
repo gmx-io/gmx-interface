@@ -9,7 +9,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 import { getContract } from "config/contracts";
-import { getNativeToken, getWrappedToken } from "config/tokens";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import {
   useIsSubaccountActive,
   useSubaccount,
@@ -454,18 +454,19 @@ const MainView = memo(() => {
     setActiveTx,
   ]);
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: [wrappedToken.address],
     skip: !isVisible,
   });
 
   const needPayTokenApproval = useMemo(
-    () =>
-      tokensAllowanceData && baseFeePerAction !== undefined
-        ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction)
-        : false,
-    [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
+    () => getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction),
+    [wrappedToken.address, baseFeePerAction, tokensAllowanceData]
   );
 
   const { text: buttonText, disabled } = useMemo(
@@ -480,7 +481,7 @@ const MainView = memo(() => {
         withdrawalLoading,
         formState,
         notificationState,
-
+        isAllowanceLoading,
         needPayTokenApproval,
         isTxPending,
 
@@ -496,10 +497,11 @@ const MainView = memo(() => {
       topUp,
       maxAutoTopUpAmount,
       wntForAutoTopUps,
-      formState,
       maxAllowedActions,
       withdrawalLoading,
+      formState,
       notificationState,
+      isAllowanceLoading,
       needPayTokenApproval,
       isTxPending,
       isSubaccountActive,
@@ -568,7 +570,7 @@ const MainView = memo(() => {
 
   let tokenApproval: ReactNode = null;
 
-  if (needPayTokenApproval && account) {
+  if (isAllowanceLoaded && needPayTokenApproval && account) {
     tokenApproval = (
       <div className="SubaccountModal-approve-token-btn">
         <ApproveTokenButton
@@ -822,7 +824,7 @@ const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
 
     return (
       <div>
-        <div className="SubaccountModal-input-row flex text-gray-300">
+        <div className="SubaccountModal-input-row flex text-slate-100">
           <div className="SubaccountModal-input-row-label">
             <TooltipWithPortal position="top-start" handle={label} renderContent={renderTooltipContent} />
           </div>

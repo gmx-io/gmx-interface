@@ -1,15 +1,16 @@
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { getSwapFee } from "domain/synthetics/fees";
 import {
   MarketInfo,
   MarketsInfoData,
   getAvailableUsdLiquidityForCollateral,
   getOppositeCollateral,
+  getSwapCapacityUsd,
   getTokenPoolType,
 } from "domain/synthetics/markets";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { getByKey } from "lib/objects";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
 import { SwapPathStats, SwapStats } from "../types";
 
@@ -323,6 +324,10 @@ export function getSwapStats(p: {
 
   amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
+  const capacityUsd = getSwapCapacityUsd(marketInfo, getTokenPoolType(marketInfo, tokenInAddress) === "long");
+
+  const isOutCapacity = capacityUsd < usdInAfterFees;
+
   const liquidity = getAvailableUsdLiquidityForCollateral(
     marketInfo,
     getTokenPoolType(marketInfo, tokenOutAddress) === "long"
@@ -345,5 +350,6 @@ export function getSwapStats(p: {
     amountOut,
     usdOut,
     isOutLiquidity,
+    isOutCapacity,
   };
 }

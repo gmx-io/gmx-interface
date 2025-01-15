@@ -35,9 +35,7 @@ interface Props {
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
 
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
-  isHighFeeConsentError: boolean | undefined;
+  consentError: boolean;
 
   shouldDisableValidation?: boolean;
 
@@ -70,8 +68,7 @@ export const useSubmitButtonState = ({
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
 
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
+  consentError,
 
   shouldDisableValidation,
 
@@ -80,7 +77,6 @@ export const useSubmitButtonState = ({
   executionFee,
   selectedMarketForGlv,
   selectedMarketInfoForGlv,
-  isHighFeeConsentError,
   glvInfo,
   isMarketTokenDeposit,
 }: Props) => {
@@ -153,8 +149,7 @@ export const useSubmitButtonState = ({
     longTokenLiquidityUsd: longTokenLiquidityUsd,
     shortTokenLiquidityUsd: shortTokenLiquidityUsd,
     fees,
-    isHighPriceImpact: Boolean(isHighPriceImpact),
-    isHighPriceImpactAccepted,
+    consentError,
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     marketTokensData,
     isMarketTokenDeposit,
@@ -162,7 +157,7 @@ export const useSubmitButtonState = ({
 
   const error = commonError || swapError;
 
-  const { tokensToApprove, payTokenAddresses, isAllowanceLoaded } = useTokensToApprove({
+  const { tokensToApprove, isAllowanceLoading, isAllowanceLoaded } = useTokensToApprove({
     routerAddress,
     glvInfo,
     operation,
@@ -183,14 +178,18 @@ export const useSubmitButtonState = ({
         text: t`Connect Wallet`,
         onSubmit: onConnectAccount,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (payTokenAddresses.length > 0 && !isAllowanceLoaded) {
+    if (isAllowanceLoading) {
       return {
         text: t`Loading...`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -200,6 +199,8 @@ export const useSubmitButtonState = ({
         disabled: !shouldDisableValidation,
         onClick: onSubmit,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
         errorDescription: swapErrorDescription,
       };
     }
@@ -210,17 +211,21 @@ export const useSubmitButtonState = ({
       return {
         text: processingTextMap[operation](operationTokenSymbol),
         disabled: true,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (isHighFeeConsentError) {
+    if (consentError) {
       return {
-        text: t`High Network Fee not yet acknowledged`,
+        text: t`Acknowledgment Required`,
         disabled: true,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (tokensToApprove.length > 0 && marketToken) {
+    if (isAllowanceLoaded && tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address) || getTokenData(marketTokensData, address);
         return token?.symbol;
@@ -235,6 +240,8 @@ export const useSubmitButtonState = ({
         }),
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -242,24 +249,26 @@ export const useSubmitButtonState = ({
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
       tokensToApprove,
+      isAllowanceLoading,
+      isAllowanceLoaded,
     };
   }, [
     account,
-    error,
+    isAllowanceLoading,
     isAllowanceLoaded,
-    isDeposit,
-    marketToken,
-    operation,
+    error,
+    glvInfo,
     isSubmitting,
+    consentError,
     tokensToApprove,
+    marketToken,
+    isDeposit,
+    onSubmit,
     onConnectAccount,
     shouldDisableValidation,
-    onSubmit,
+    swapErrorDescription,
+    operation,
     tokensData,
     marketTokensData,
-    payTokenAddresses.length,
-    isHighFeeConsentError,
-    swapErrorDescription,
-    glvInfo,
   ]);
 };

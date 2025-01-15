@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses } from "config/tokens";
+import { getCategoryTokenAddresses } from "sdk/configs/tokens";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
@@ -198,7 +198,7 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-16 text-gray-400">
+          <div className="text-16 text-slate-100">
             <Trans>No markets matched.</Trans>
           </div>
         )}

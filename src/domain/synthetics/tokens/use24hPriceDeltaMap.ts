@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { Address } from "viem";
 
-import { getToken } from "config/tokens";
+import { getToken } from "sdk/configs/tokens";
 
 import { useOracleKeeperFetcher } from "../../../lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 
