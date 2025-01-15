@@ -1,7 +1,7 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { TOKENS_BY_SYMBOL_MAP } from "sdk/configs/tokens";
 
-export const PRODUCTION_HOST = "https://ui-version.gmx-interface.pages.dev";
+export const PRODUCTION_HOST = "https://ui-version-zxf8.gmx-interface.pages.dev";
 
 const oneInchTokensMap = {
   [ARBITRUM]: {

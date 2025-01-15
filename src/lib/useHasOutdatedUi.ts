@@ -14,7 +14,11 @@ export function useHasOutdatedUi() {
 
   const { data: minVersion, mutate } = useSWR([chainId, active], {
     fetcher: async () => {
-      const prodUiConfig = await fetch(`${PRODUCTION_HOST}/config.json`).then((res) => res.json());
+      const randomParam = Math.random().toString(36).substring(2, 8);
+
+      const prodUiConfig = await fetch(`${PRODUCTION_HOST}/config.json?no_cache=${randomParam}`).then((res) =>
+        res.json()
+      );
 
       return prodUiConfig.uiVersion;
     },
