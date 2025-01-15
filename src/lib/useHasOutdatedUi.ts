@@ -14,9 +14,9 @@ export function useHasOutdatedUi() {
 
   const { data: minVersion, mutate } = useSWR([chainId, active], {
     fetcher: async () => {
-      const randomParam = Math.random().toString(36).substring(2, 8);
+      const noCacheParam = Math.random().toString().substring(2, 8);
 
-      const prodUiConfig = await fetch(`${PRODUCTION_HOST}/config.json?no_cache=${randomParam}`).then((res) =>
+      const prodUiConfig = await fetch(`${PRODUCTION_HOST}/config.json?no_cache=${noCacheParam}`).then((res) =>
         res.json()
       );
 
@@ -30,8 +30,6 @@ export function useHasOutdatedUi() {
     hasOutdatedUi = true;
   }
 
-  console.log("minVersion", minVersion, UI_VERSION);
-
   if (isDevelopment()) {
     const localStorageVersion = localStorage.getItem(REQUIRED_UI_VERSION_KEY);
 
@@ -39,8 +37,6 @@ export function useHasOutdatedUi() {
       hasOutdatedUi = Boolean(parseFloat(localStorageVersion) > UI_VERSION);
     }
   }
-
-  console.log("hasOutdatedUi", hasOutdatedUi);
 
   return { data: hasOutdatedUi, mutate };
 }
