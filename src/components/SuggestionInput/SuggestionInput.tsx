@@ -79,7 +79,7 @@ export default function SuggestionInput({
       >
         <NumberInput
           inputRef={inputRef}
-          className={cx(inputClassName, "min-w-0 outline-none")}
+          className={cx(inputClassName, "min-w-0 text-right outline-none")}
           onFocus={() => setIsPanelVisible(true)}
           onBlur={handleBlur}
           value={value ?? ""}
@@ -87,7 +87,7 @@ export default function SuggestionInput({
           onValueChange={handleChange}
           onKeyDown={handleKeyDown}
         />
-        <label>
+        <label className="text-slate-100">
           <span>{symbol}</span>
         </label>
       </div>

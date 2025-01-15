@@ -1270,7 +1270,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     <Button
       qa="confirm-trade-button"
       variant="primary-action"
-      className="mt-4 w-full [text-decoration:inherit]"
+      className="w-full [text-decoration:inherit]"
       onClick={onSubmit}
       disabled={submitButtonState.disabled && !shouldDisableValidationForTesting}
     >
@@ -1331,7 +1331,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         onChange={onSelectTradeMode}
         qa="trade-mode"
       />
-      <form onSubmit={handleFormSubmit} ref={formRef} className="flex grow flex-col">
+      <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
         {(isSwap || isIncrease) && renderTokenInputs()}
         {isTrigger && renderDecreaseSizeInput()}
 
@@ -1363,7 +1363,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
                   />
                   <SuggestionInput
                     className="w-48"
-                    inputClassName="text-right"
                     value={leverageInputValue}
                     setValue={setLeverageInputValue}
                     onBlur={handleLeverageInputBlur}
