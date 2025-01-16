@@ -104,13 +104,12 @@ import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { useRequiredActions } from "./hooks/useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./hooks/useTPSLSummaryExecutionFee";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { useTradeboxWarningsRows } from "./hooks/useTradeWarningsRows";
 import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxTransactions } from "./hooks/useTradeboxTransactions";
 import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -125,6 +124,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
@@ -267,25 +267,25 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     tradeFlags,
   });
 
-  const setIsAcceptedRef = useLatest(priceImpactWarningState.setIsAccepted);
+  const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   const setFromTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setFromTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsAcceptedRef.current(false);
+        setIsDismissedRef.current(false);
       }
     },
-    [setFromTokenInputValueRaw, setIsAcceptedRef]
+    [setFromTokenInputValueRaw, setIsDismissedRef]
   );
   const setToTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setToTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsAcceptedRef.current(false);
+        setIsDismissedRef.current(false);
       }
     },
-    [setToTokenInputValueRaw, setIsAcceptedRef]
+    [setIsDismissedRef, setToTokenInputValueRaw]
   );
 
   const userReferralInfo = useUserReferralInfo();
@@ -412,7 +412,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         toUsd: swapAmounts?.usdOut,
         swapPathStats: swapAmounts?.swapPathStats,
         swapLiquidity: swapOutLiquidity,
-        priceImpactWarning: priceImpactWarningState,
         isLimit,
         isWrapOrUnwrap,
         triggerRatio,
@@ -439,7 +438,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         isLong,
         markPrice,
         triggerPrice,
-        priceImpactWarning: priceImpactWarningState,
         isLimit,
         nextPositionValues,
         nextLeverageWithoutPnl,
@@ -458,7 +456,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         isLong,
         isTrigger: true,
         minCollateralUsd,
-        priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
         triggerThresholdType: stage !== "trade" ? decreaseAmounts?.triggerThresholdType : undefined,
       });
@@ -545,7 +542,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     swapAmounts?.swapPathStats,
     toTokenAmount,
     swapOutLiquidity,
-    priceImpactWarningState,
     isLimit,
     isWrapOrUnwrap,
     triggerRatio,
@@ -574,7 +570,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     detectAndSetAvailableMaxLeverage,
   ]);
 
-  const [tradeboxWarningRows, consentError] = useTradeboxWarningsRows(priceImpactWarningState);
   const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
     positionKey: selectedPositionKey,
     isCreatingNewAutoCancel: isTrigger,
@@ -623,7 +618,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     stage,
     text: submitButtonText,
     isTriggerWarningAccepted: triggerConsent,
-    error: buttonErrorText || consentError,
+    error: buttonErrorText,
     account,
   });
 
@@ -1341,15 +1336,15 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
 
         {maxAutoCancelOrdersWarning}
         {isSwap && isLimit && (
-          <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact>
+          <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning" className="mb-8">
             <Trans>
               The execution price will constantly vary based on fees and price impact to guarantee that you receive the
               minimum receive amount.
             </Trans>
-          </AlertInfo>
+          </AlertInfoCard>
         )}
 
-        <div className="flex flex-col gap-14">
+        <div className="flex flex-col gap-14 pb-14">
           {isPosition && (
             <>
               {isIncrease && isLeverageEnabled && (
@@ -1415,6 +1410,14 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           )}
           {/* <TradeBoxOneClickTrading /> */}
           <LimitAndTPSLGroup />
+          <HighPriceImpactOrFeesWarningCard
+            priceImpactWarningState={priceImpactWarningState}
+            collateralImpact={fees?.positionCollateralPriceImpact}
+            positionImpact={fees?.positionPriceImpact}
+            swapPriceImpact={fees?.swapPriceImpact}
+            swapProfitFee={fees?.swapProfitFee}
+            executionFeeUsd={executionFee?.feeUsd}
+          />
         </div>
         <div className="grow" />
         <div className="flex flex-col gap-14">
@@ -1457,7 +1460,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
 
         {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
 
-        {tradeboxWarningRows && tradeboxWarningRows}
         {triggerConsentRows && triggerConsentRows}
       </form>
     </>

@@ -43,7 +43,7 @@ import {
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -645,7 +645,7 @@ export function PositionSeller(p: Props) {
               {priceImpactWarningState.shouldShowWarning && (
                 <ExchangeInfo.Group>
                   <div className="PositionSeller-price-impact-warning">
-                    <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
+                    <HighPriceImpactOrFeesWarningCard priceImpactWarningState={priceImpactWarningState} />
                   </div>
                 </ExchangeInfo.Group>
               )}

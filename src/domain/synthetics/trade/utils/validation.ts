@@ -21,7 +21,6 @@ import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
-import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
@@ -59,7 +58,6 @@ export function getSwapError(p: {
   markRatio: TokensRatio | undefined;
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
-  priceImpactWarning: PriceImpactWarningState;
   isWrapOrUnwrap: boolean;
   swapLiquidity: bigint | undefined;
 }): ValidationResult {
@@ -74,7 +72,6 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
-    priceImpactWarning,
     swapLiquidity,
     swapPathStats,
   } = p;
@@ -138,10 +135,6 @@ export function getSwapError(p: {
     }
   }
 
-  if (priceImpactWarning.validationError) {
-    return [t`Acknowledgment Required`];
-  }
-
   return [undefined];
 }
 
@@ -158,7 +151,6 @@ export function getIncreaseError(p: {
   existingPosition: PositionInfo | undefined;
   fees: TradeFees | undefined;
   markPrice: bigint | undefined;
-  priceImpactWarning: PriceImpactWarningState;
   triggerPrice: bigint | undefined;
   swapPathStats: SwapPathStats | undefined;
   collateralLiquidity: bigint | undefined;
@@ -176,7 +168,6 @@ export function getIncreaseError(p: {
     initialCollateralAmount,
     initialCollateralUsd,
     targetCollateralToken,
-    priceImpactWarning,
     collateralUsd,
     sizeDeltaUsd,
     existingPosition,
@@ -296,10 +287,6 @@ export function getIncreaseError(p: {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  if (priceImpactWarning.validationError) {
-    return [t`Acknowledgment Required`];
-  }
-
   if (nextLeverageWithoutPnl !== undefined) {
     const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
 
@@ -360,7 +347,6 @@ export function getDecreaseError(p: {
   isLong: boolean;
   isContractAccount: boolean;
   minCollateralUsd: bigint | undefined;
-  priceImpactWarning: PriceImpactWarningState;
   isNotEnoughReceiveTokenLiquidity: boolean;
   triggerThresholdType: TriggerThresholdType | undefined;
 }): ValidationResult {
@@ -378,7 +364,6 @@ export function getDecreaseError(p: {
     isLong,
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
-    priceImpactWarning,
     triggerThresholdType,
   } = p;
 
@@ -441,10 +426,6 @@ export function getDecreaseError(p: {
 
   if (isNotEnoughReceiveTokenLiquidity) {
     return [t`Insufficient receive token liquidity`];
-  }
-
-  if (priceImpactWarning.validationError) {
-    return [t`Acknowledgment Required`];
   }
 
   return [undefined];

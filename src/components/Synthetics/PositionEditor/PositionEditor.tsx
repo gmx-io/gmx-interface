@@ -90,7 +90,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 
 import "./PositionEditor.scss";
 
@@ -700,7 +700,7 @@ export function PositionEditor(p: Props) {
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
-                <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
+                <HighPriceImpactOrFeesWarningCard priceImpactWarningState={priceImpactWarningState} />
                 {isAllowanceLoaded && needCollateralApproval && collateralToken && (
                   <ApproveTokenButton
                     tokenAddress={collateralToken.address}

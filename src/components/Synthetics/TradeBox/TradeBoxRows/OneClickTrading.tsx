@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback } from "react";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -33,6 +32,7 @@ import { getByKey } from "lib/objects";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { useRequiredActions } from "../hooks/useRequiredActions";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import CrossIconComponent from "img/cross.svg?react";
 
@@ -195,9 +195,5 @@ export function TradeBoxOneClickTrading() {
 }
 
 function OneClickAlertInfo({ children }: { children: ReactNode }) {
-  return (
-    <AlertInfo type="info" className="text-body-medium !mb-0">
-      {children}
-    </AlertInfo>
-  );
+  return <AlertInfoCard className="!text-body-medium !mb-0">{children}</AlertInfoCard>;
 }
