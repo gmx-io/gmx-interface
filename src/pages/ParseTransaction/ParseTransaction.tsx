@@ -42,6 +42,7 @@ import {
   formatDateField,
   formatPrice,
   formatPriceByCollateralToken,
+  formatPriceByField,
   formatPriceByIndexToken,
   formatPriceByToken,
 } from "./formatting";
@@ -201,6 +202,25 @@ const fieldFormatters = {
   maxPrice: formatPriceByToken,
   tokenPrice: formatPriceByToken,
 
+  swapPath: (t: string, props: LogEntryComponentProps) => {
+    const swapPath = t.split(",");
+    const marketsInfo = props.marketsInfoData;
+    return (
+      <div className="flex flex-col gap-4">
+        {swapPath.map((marketAddress) => {
+          const market = marketsInfo[marketAddress];
+          return market ? (
+            <div key={marketAddress}>
+              {getMarketFullName(market)} ({marketAddress})
+            </div>
+          ) : (
+            <span key={marketAddress}>{marketAddress}</span>
+          );
+        })}
+      </div>
+    );
+  },
+
   "indexTokenPrice.max": formatPriceByIndexToken,
   "indexTokenPrice.min": formatPriceByIndexToken,
   sizeInTokens: formatAmountByIndexToken,
@@ -215,16 +235,30 @@ const fieldFormatters = {
   borrowingFeeAmountForFeeReceiver: formatAmountByCollateralToken,
   protocolFeeAmount: formatAmountByCollateralToken,
   totalBorrowingFees: formatAmountByCollateralToken,
-  feeAmountForPool: formatAmountByCollateralToken,
+  feeAmountForPool: formatAmountByEvent({
+    SwapFeesCollected: "token",
+    default: formatAmountByCollateralToken,
+  }),
   positionFeeAmountForPool: formatAmountByCollateralToken,
   positionFeeAmount: formatAmountByCollateralToken,
   totalCostAmount: formatAmountByCollateralToken,
-  uiFeeAmount: formatAmountByCollateralToken,
+  uiFeeAmount: formatAmountByEvent({
+    SwapFeesCollected: "token",
+    default: formatAmountByCollateralToken,
+  }),
   collateralDeltaAmount: formatAmountByCollateralToken,
   fundingFeeAmount: formatAmountByCollateralToken,
-  feeReceiverAmount: formatAmountByCollateralToken,
+  feeReceiverAmount: formatAmountByEvent({
+    SwapFeesCollected: "token",
+    default: formatAmountByCollateralToken,
+  }),
   liquidationFeeAmount: formatAmountByCollateralToken,
   liquidationFeeAmountForFeeReceiver: formatAmountByCollateralToken,
+
+  tokenInPrice: formatPriceByField("tokenIn"),
+  tokenOutPrice: formatPriceByField("tokenOut"),
+  amountInt: formatAmountByField("tokenIn"),
+  amountOut: formatAmountByField("tokenOut"),
 
   timestamp: formatDateField,
   increasedAtTime: formatDateField,
@@ -305,7 +339,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   let withError = false;
 
   if (props.type === "address" && typeof props.value === "string") {
-    if (props.item === "affiliate" || props.item === "callbackContract") {
+    if (props.item === "affiliate" || props.item === "callbackContract" || props.item === "uiFeeReceiver") {
       value = props.value;
     } else {
       const token = props.tokensData[props.value];
@@ -359,6 +393,15 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     }
   }
 
+  if (props.type === "address" && field) {
+    try {
+      value = field(props.value, props);
+    } catch (e) {
+      value = e.message;
+      withError = true;
+    }
+  }
+
   if (typeof props.value === "boolean") {
     value = props.value ? "true" : "false";
   }
@@ -386,9 +429,9 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         })}
       >
         <div className="flex flex-row items-center gap-8">
-          {value ?? props.value}
+          {value ?? props.value ?? "Unknown value"}
 
-          <CopyButton value={props.value.toString()} />
+          <CopyButton value={props.value?.toString()} />
         </div>
       </TableTd>
       <TableTd>{props.type}</TableTd>

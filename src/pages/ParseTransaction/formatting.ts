@@ -1,6 +1,6 @@
 import { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
-import { expandDecimals, formatTokenAmount, formatUsdPrice } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount, formatUsdPrice } from "lib/numbers";
 import { NATIVE_TOKENS_MAP } from "sdk/configs/tokens";
 import { LogEntryComponentProps } from "./types";
 import { isGlvInfo } from "../../domain/synthetics/markets/glv";
@@ -37,20 +37,13 @@ export function formatPriceByField(tokenField: string | TokenGetter) {
   };
 }
 
-export function formatAmountByField(
-  tokenField: string | TokenGetter,
-  { displayDecimals = 2 }: { displayDecimals?: number } = {}
-) {
+export function formatAmountByField(tokenField: string | TokenGetter) {
   return (t: bigint, props: LogEntryComponentProps) => {
     const { entries, tokensData } = props;
     if (typeof tokenField === "function") {
       const token = tokenField(props);
       if (token) {
-        return (
-          formatTokenAmount(t, token.decimals, token.symbol, {
-            displayDecimals,
-          }) ?? t.toString()
-        );
+        return formatBalanceAmount(t, token.decimals, token.symbol, true, false) ?? t.toString();
       }
     }
 
@@ -59,11 +52,7 @@ export function formatAmountByField(
     if (field) {
       const token = tokensData[field.value as string];
       if (token) {
-        return (
-          formatTokenAmount(t, token.decimals, token.symbol, {
-            displayDecimals,
-          }) ?? t.toString()
-        );
+        return formatBalanceAmount(t, token.decimals, token.symbol, true, false) ?? t.toString();
       }
     }
 
@@ -87,7 +76,7 @@ export function formatByMarketLongOrShortToken(isLong: boolean) {
     if (market) {
       let tokenData = tokensData[isLong ? market.longTokenAddress : market.shortTokenAddress];
       if (tokenData) {
-        return formatTokenAmount(t, tokenData.decimals) + ` ${tokenData.symbol}`;
+        return formatBalanceAmount(t, tokenData.decimals, tokenData.symbol, true, false);
       }
     }
 
@@ -101,7 +90,7 @@ export const formatByMarketShortToken = formatByMarketLongOrShortToken(false);
 export function formatAmountByEvent(cfg: { [eventName: string]: string | Formatter }) {
   return (t: bigint, props: LogEntryComponentProps) => {
     const { entries, tokensData, name } = props;
-    const tokenField = cfg[name];
+    const tokenField = cfg[name] ?? cfg.default;
 
     if (!tokenField) {
       return typeof t === "bigint" ? t.toString() + "n" : t;
@@ -116,7 +105,7 @@ export function formatAmountByEvent(cfg: { [eventName: string]: string | Formatt
     if (field) {
       const token = tokensData[field.value as string];
       if (token) {
-        return formatTokenAmount(t, token.decimals, token.symbol);
+        return formatBalanceAmount(t, token.decimals, token.symbol, true, false);
       }
     }
 
@@ -125,14 +114,9 @@ export function formatAmountByEvent(cfg: { [eventName: string]: string | Formatt
 }
 
 export const formatAmountByCollateralToken = formatAmountByField("collateralToken");
-export const formatAmountByNativeToken = formatAmountByField(
-  ({ chainId, tokensData }) => {
-    return tokensData[NATIVE_TOKENS_MAP[chainId].address];
-  },
-  {
-    displayDecimals: 8,
-  }
-);
+export const formatAmountByNativeToken = formatAmountByField(({ chainId, tokensData }) => {
+  return tokensData[NATIVE_TOKENS_MAP[chainId].address];
+});
 
 export function getCollateralToken({ entries, tokensData }: LogEntryComponentProps) {
   const collateralToken = entries.find((entry) => entry.item === "collateralToken");
@@ -185,7 +169,7 @@ export const formatAmountByEventField = (eventName: string, field: string | Toke
       const token = typeof field === "function" ? (entry as Token) : props.tokensData[entry as string];
 
       if (token) {
-        return formatTokenAmount(t, token.decimals, token.symbol);
+        return formatBalanceAmount(t, token.decimals, token.symbol, true, false);
       }
     }
 
@@ -210,33 +194,26 @@ export const formatPriceByToken = formatPriceByField("token");
 export const formatPriceByCollateralToken = formatPriceByField("collateralToken");
 
 export const formatAmountByFieldWithDecimalsShift = (tokenField: string | TokenGetter, shift: number) =>
-  formatAmountByField(
-    (props: LogEntryComponentProps) => {
-      const { entries, tokensData } = props;
-      const field =
-        typeof tokenField === "function"
-          ? tokenField(props)
-          : entries.find((entry) => entry.item === tokenField)?.value;
+  formatAmountByField((props: LogEntryComponentProps) => {
+    const { entries, tokensData } = props;
+    const field =
+      typeof tokenField === "function" ? tokenField(props) : entries.find((entry) => entry.item === tokenField)?.value;
 
-      if (!field) {
-        throw new Error("Field not found");
-      }
-
-      const token = typeof tokenField === "function" ? (field as Token) : tokensData[field as string];
-
-      if (token) {
-        return {
-          ...token,
-          decimals: token.decimals + shift,
-        };
-      }
-
-      throw new Error("Market not found");
-    },
-    {
-      displayDecimals: 8,
+    if (!field) {
+      throw new Error("Field not found");
     }
-  );
+
+    const token = typeof tokenField === "function" ? (field as Token) : tokensData[field as string];
+
+    if (token) {
+      return {
+        ...token,
+        decimals: token.decimals + shift,
+      };
+    }
+
+    throw new Error("Market not found");
+  });
 
 export function getMarketLongOrShortTokenByEventData(props: LogEntryComponentProps) {
   const { entries } = props;

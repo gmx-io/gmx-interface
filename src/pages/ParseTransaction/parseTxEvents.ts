@@ -96,18 +96,17 @@ function parseEvent(event: ParseEventLogsReturnType<Abi, undefined, true, undefi
       values.push(value);
     }
 
-    for (const item of eventData[key].arrayItems) {
-      for (const arrayItem of item.value) {
-        const value = {
-          item: arrayItem.key,
-          value: arrayItem.value,
-          type,
-        };
+    for (const [item, vals] of eventData[key].arrayItems) {
+      const value = {
+        item: item,
+        value: vals.join(", "),
+        type,
+      };
 
-        values.push(value);
-      }
+      values.push(value);
     }
   }
+
   return {
     key: `${event.logIndex}${event.transactionHash}`,
     log: event.eventName,
