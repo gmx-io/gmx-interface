@@ -129,6 +129,7 @@ import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
+import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -1450,7 +1451,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
               }
             />
           )}
-          <SyntheticsInfoRow label={t`Price Impact / Fees`} value={"0.03% / 0.04%"} />
+          <PriceImpactFeesRow />
           <TradeBoxAdvancedGroups />
         </div>
 
