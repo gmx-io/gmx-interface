@@ -1,6 +1,5 @@
 import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, MAX_PRIORITY_FEE_PER_GAS_MAP } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { GasLimitsConfig } from "sdk/types/fees";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function estimateExecutionGasPrice(p: {
@@ -61,90 +60,4 @@ export function getMinimumExecutionFeeBufferBps(p: {
   const requiredBufferBps = bufferBps + (BASIS_POINTS_DIVISOR_BIGINT / 100n) * 5n;
 
   return requiredBufferBps;
-}
-
-/**
- * Only GM deposits. Do not confuse with increase with zero delta size.
- *
- * Copy from contract: `estimateExecuteDepositGasLimit`
- */
-export function estimateExecuteDepositGasLimit(
-  gasLimits: GasLimitsConfig,
-  deposit: {
-    // We do not use this yet
-    longTokenSwapsCount?: number;
-    // We do not use this yet
-    shortTokenSwapsCount?: number;
-    callbackGasLimit?: bigint;
-  }
-) {
-  const gasPerSwap = gasLimits.singleSwap;
-  const swapsCount = BigInt((deposit.longTokenSwapsCount ?? 0) + (deposit.shortTokenSwapsCount ?? 0));
-  const gasForSwaps = swapsCount * gasPerSwap;
-
-  return gasLimits.depositToken + (deposit.callbackGasLimit ?? 0n) + gasForSwaps;
-}
-
-export function estimateExecuteGlvDepositGasLimit(
-  gasLimits: GasLimitsConfig,
-  {
-    marketsCount,
-    isMarketTokenDeposit,
-  }: {
-    isMarketTokenDeposit;
-    marketsCount: bigint;
-    initialLongTokenAmount: bigint;
-    initialShortTokenAmount: bigint;
-  }
-) {
-  const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
-  const gasForGlvMarkets = gasPerGlvPerMarket * marketsCount;
-  const glvDepositGasLimit = gasLimits.glvDepositGasLimit;
-  const gasLimit = glvDepositGasLimit + gasForGlvMarkets;
-
-  if (isMarketTokenDeposit) {
-    return gasLimit;
-  }
-
-  return gasLimit + gasLimits.depositToken;
-}
-
-export function estimateExecuteGlvWithdrawalGasLimit(
-  gasLimits: GasLimitsConfig,
-  {
-    marketsCount,
-  }: {
-    marketsCount: bigint;
-  }
-) {
-  const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
-  const gasForGlvMarkets = gasPerGlvPerMarket * marketsCount;
-  const glvWithdrawalGasLimit = gasLimits.glvWithdrawalGasLimit;
-  const gasLimit = glvWithdrawalGasLimit + gasForGlvMarkets;
-
-  return gasLimit + gasLimits.withdrawalMultiToken;
-}
-
-/**
- * Only GM withdrawals. Do not confuse with decrease with zero delta size.
- *
- * Copy from contract: `estimateExecuteWithdrawalGasLimit`
- */
-export function estimateExecuteWithdrawalGasLimit(
-  gasLimits: GasLimitsConfig,
-  withdrawal: { callbackGasLimit?: bigint }
-) {
-  // Swap is not used but supported in the contract.
-  // const gasPerSwap = gasLimits.singleSwap;
-  // const swapsCount = 0n;
-  // const gasForSwaps = swapsCount * gasPerSwap;
-
-  return gasLimits.withdrawalMultiToken + (withdrawal.callbackGasLimit ?? 0n);
-}
-
-/**
- * Copy from contract: `estimateExecuteShiftGasLimit`
- */
-export function estimateExecuteShiftGasLimit(gasLimits: GasLimitsConfig, shift: { callbackGasLimit?: bigint }) {
-  return gasLimits.shift + (shift.callbackGasLimit ?? 0n);
 }

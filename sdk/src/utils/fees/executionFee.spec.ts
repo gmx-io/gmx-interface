@@ -7,8 +7,6 @@ import { getExecutionFee } from "./executionFee";
 import { expandDecimals } from "utils/numbers";
 import { ARBITRUM } from "configs/chains";
 
-const serializeBigInt = (e: any) => JSON.stringify(e, (t, e) => (typeof e === "bigint" ? e.toString() : e), 2);
-
 describe("getExecutionFee", () => {
   const chainId = ARBITRUM;
   const gasLimits = {

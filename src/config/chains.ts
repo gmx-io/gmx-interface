@@ -4,8 +4,6 @@ import sample from "lodash/sample";
 import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 
-import { EXCESSIVE_EXECUTION_FEES_MAP, HIGH_EXECUTION_FEES_MAP } from "sdk/configs/chains";
-
 export * from "./static/chains";
 
 const { parseEther } = ethers;
@@ -272,16 +270,4 @@ export function getExplorerUrl(chainId) {
 
 export function getTokenExplorerUrl(chainId: number, tokenAddress: string) {
   return `${getExplorerUrl(chainId)}token/${tokenAddress}`;
-}
-
-export function getHighExecutionFee(chainId) {
-  return HIGH_EXECUTION_FEES_MAP[chainId] ?? 5;
-}
-
-export function getExcessiveExecutionFee(chainId) {
-  return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
-}
-
-export function isSupportedChain(chainId: number) {
-  return SUPPORTED_CHAIN_IDS.includes(chainId);
 }

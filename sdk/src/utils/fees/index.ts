@@ -5,9 +5,9 @@ import { SwapStats } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
 
-export * from "./priceImpact";
 export * from "./estimateOraclePriceCount";
 export * from "./executionFee";
+export * from "./priceImpact";
 
 export function getSwapFee(marketInfo: MarketInfo, swapAmount: bigint, forPositiveImpact: boolean) {
   const factor = forPositiveImpact
