@@ -342,7 +342,7 @@ function StakeModal(props) {
         helperToast.success(
           <div>
             <Trans>
-              Stake submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+              Stake submitted! <ExternalLink href={txUrl} className="!text-white">View status.</ExternalLink>
             </Trans>
             <br />
           </div>
@@ -452,7 +452,7 @@ function UnstakeModal(props) {
         helperToast.success(
           <div>
             <Trans>
-              Unstake submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+              Unstake submitted! <ExternalLink href={txUrl} className="!text-white">View status.</ExternalLink>
             </Trans>
             <br />
           </div>

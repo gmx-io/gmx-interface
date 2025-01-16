@@ -133,7 +133,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               <div>
                 <div className="px-10 py-8">
                   {pendingTxn.message}{" "}
-                  <ExternalLink href={txUrl}>
+                  <ExternalLink href={txUrl} className="!text-white">
                     <Trans>View</Trans>
                   </ExternalLink>
                 </div>
