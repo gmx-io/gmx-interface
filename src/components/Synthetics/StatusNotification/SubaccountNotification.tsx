@@ -52,7 +52,7 @@ const SubaccountNotificationImpl = ({
 
     const txUrl = getExplorerUrl(chainId) + "tx/" + tx;
     return (
-      <ExternalLink href={txUrl}>
+      <ExternalLink href={txUrl} className="!text-white">
         <Trans>View status</Trans>
       </ExternalLink>
     );
