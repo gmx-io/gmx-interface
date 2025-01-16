@@ -455,7 +455,7 @@ export class Markets extends Module {
         return data?.positionsVolume.length
           ? data?.positionsVolume.reduce((acc, { market, volume }) => {
               return { ...acc, [market]: BigInt(volume) };
-            })
+            }, {})
           : {};
       }
     );

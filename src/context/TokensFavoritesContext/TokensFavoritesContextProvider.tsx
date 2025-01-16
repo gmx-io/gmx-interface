@@ -1,20 +1,12 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import noop from "lodash/noop";
-import { PropsWithChildren, createContext, useCallback, useContext, useMemo } from "react";
+import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
 
-import {
-  CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY,
-  CHART_TOKEN_SELECTOR_FILTER_TAB_KEY,
-  GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY,
-  GM_TOKEN_SELECTOR_FILTER_TAB_KEY,
-  TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY,
-} from "config/localStorage";
+import { TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY } from "config/localStorage";
 
-import type { TokenCategory } from "sdk/types/tokens";
-import { useChainId } from "lib/chains";
-import { useLocalStorageByChainId } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import type { TokenCategory } from "sdk/types/tokens";
 
 export type TokenFavoritesTabOption = "all" | "favorites" | TokenCategory;
 export type TokenFavoritesType = "gm" | "index";
@@ -75,20 +67,10 @@ const context = createContext<TokensFavoritesContextType>({
 
 const Provider = context.Provider;
 
-localStorage.removeItem(CHART_TOKEN_SELECTOR_FILTER_TAB_KEY);
-localStorage.removeItem(CHART_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY);
-localStorage.removeItem(GM_TOKEN_SELECTOR_FAVORITE_TOKENS_KEY);
-localStorage.removeItem(GM_TOKEN_SELECTOR_FILTER_TAB_KEY);
+localStorage.removeItem(TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY);
 
 export function TokensFavoritesContextProvider({ children }: PropsWithChildren) {
-  // TODO: migrate to useSelector(selectChainId) when SyntheticsStateContext is refactored
-  const { chainId } = useChainId();
-
-  const [settings, setSettings] = useLocalStorageByChainId<TokensFavoritesStore>(
-    chainId,
-    TOKEN_FAVORITE_PREFERENCE_SETTINGS_KEY,
-    DEFAULT_TOKENS_FAVORITES_STORE
-  );
+  const [settings, setSettings] = useState<TokensFavoritesStore>(DEFAULT_TOKENS_FAVORITES_STORE);
 
   const setTab = useCallback(
     (key: TokenFavoriteKey, tab: TokenFavoritesTabOption) => {

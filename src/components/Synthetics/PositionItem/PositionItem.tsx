@@ -32,7 +32,13 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { calculateDisplayDecimals, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import {
+  calculateDisplayDecimals,
+  formatBalanceAmount,
+  formatBalanceAmountWithUsd,
+  formatDeltaUsd,
+  formatUsd,
+} from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
@@ -143,6 +149,30 @@ export function PositionItem(p: Props) {
     );
   }
 
+  const { fundingFeeRateUsd, borrowingFeeRateUsd } = useMemo(() => {
+    if (!p.position.marketInfo) {
+      return {
+        fundingFeeRateUsd: undefined,
+        borrowingFeeRateUsd: undefined,
+      };
+    }
+
+    return {
+      fundingFeeRateUsd: getFundingFeeRateUsd(
+        p.position.marketInfo,
+        p.position.isLong,
+        p.position.sizeInUsd,
+        CHART_PERIODS["1d"]
+      ),
+      borrowingFeeRateUsd: getBorrowingFeeRateUsd(
+        p.position.marketInfo,
+        p.position.isLong,
+        p.position.sizeInUsd,
+        CHART_PERIODS["1d"]
+      ),
+    };
+  }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);
+
   function renderCollateral() {
     return (
       <>
@@ -152,107 +182,82 @@ export function PositionItem(p: Props) {
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx({ negative: p.position.hasLowCollateral })}
-            renderContent={() => {
-              let fundingFeeRateUsd: bigint | undefined = undefined;
-              let borrowingFeeRateUsd: bigint | undefined = undefined;
-
-              if (p.position.marketInfo) {
-                fundingFeeRateUsd = getFundingFeeRateUsd(
-                  p.position.marketInfo,
-                  p.position.isLong,
-                  p.position.sizeInUsd,
-                  CHART_PERIODS["1d"]
-                );
-                borrowingFeeRateUsd = getBorrowingFeeRateUsd(
-                  p.position.marketInfo,
-                  p.position.isLong,
-                  p.position.sizeInUsd,
-                  CHART_PERIODS["1d"]
-                );
-              }
-
-              return (
-                <>
-                  {p.position.hasLowCollateral && (
-                    <div>
-                      <Trans>
-                        WARNING: This position has a low amount of collateral after deducting fees, deposit more
-                        collateral to reduce the position's liquidation risk.
-                      </Trans>
-                      <br />
-                      <br />
-                    </div>
-                  )}
-                  <StatsTooltipRow
-                    label={t`Initial Collateral`}
-                    value={
-                      <>
-                        <div>
-                          {formatTokenAmount(
-                            p.position.collateralAmount,
-                            p.position.collateralToken.decimals,
-                            p.position.collateralToken.symbol,
-                            {
-                              useCommas: true,
-                            }
-                          )}{" "}
-                          ({formatUsd(p.position.collateralUsd)})
-                        </div>
-                      </>
-                    }
-                    showDollar={false}
-                  />
-                  <br />
-                  <StatsTooltipRow
-                    label={t`Accrued Borrow Fee`}
-                    showDollar={false}
-                    value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
-                    textClassName={cx({
-                      "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
-                    })}
-                  />
-                  <StatsTooltipRow
-                    label={t`Accrued Negative Funding Fee`}
-                    showDollar={false}
-                    value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
-                    textClassName={cx({
-                      "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
-                    })}
-                  />
-                  <StatsTooltipRow
-                    label={t`Accrued Positive Funding Fee`}
-                    showDollar={false}
-                    value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    textClassName={cx({
-                      "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
-                    })}
-                  />
-                  <br />
-                  <StatsTooltipRow
-                    showDollar={false}
-                    label={t`Current Borrow Fee / Day`}
-                    value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
-                    textClassName={cx({
-                      "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
-                    })}
-                  />
-                  <StatsTooltipRow
-                    showDollar={false}
-                    label={t`Current Funding Fee / Day`}
-                    value={formatDeltaUsd(fundingFeeRateUsd)}
-                    textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
-                  />
-                  <br />
-                  <Trans>Use the edit collateral icon to deposit or withdraw collateral.</Trans>
-                  <br />
-                  <br />
-                  <Trans>
-                    Negative funding fees are automatically settled against the collateral and impact the liquidation
-                    price. Positive funding fees can be claimed under the claims tab.
-                  </Trans>
-                </>
-              );
-            }}
+            content={
+              <>
+                {p.position.hasLowCollateral && (
+                  <div>
+                    <Trans>
+                      WARNING: This position has a low amount of collateral after deducting fees, deposit more
+                      collateral to reduce the position's liquidation risk.
+                    </Trans>
+                    <br />
+                    <br />
+                  </div>
+                )}
+                <StatsTooltipRow
+                  label={t`Initial Collateral`}
+                  value={
+                    <>
+                      {formatBalanceAmountWithUsd(
+                        p.position.collateralAmount,
+                        p.position.collateralUsd,
+                        p.position.collateralToken.decimals,
+                        p.position.collateralToken.symbol
+                      )}
+                    </>
+                  }
+                  showDollar={false}
+                />
+                <br />
+                <StatsTooltipRow
+                  label={t`Accrued Borrow Fee`}
+                  showDollar={false}
+                  value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+                  textClassName={cx({
+                    "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
+                  })}
+                />
+                <StatsTooltipRow
+                  label={t`Accrued Negative Funding Fee`}
+                  showDollar={false}
+                  value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
+                  textClassName={cx({
+                    "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
+                  })}
+                />
+                <StatsTooltipRow
+                  label={t`Accrued Positive Funding Fee`}
+                  showDollar={false}
+                  value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
+                  textClassName={cx({
+                    "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
+                  })}
+                />
+                <br />
+                <StatsTooltipRow
+                  showDollar={false}
+                  label={t`Current Borrow Fee / Day`}
+                  value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
+                  textClassName={cx({
+                    "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
+                  })}
+                />
+                <StatsTooltipRow
+                  showDollar={false}
+                  label={t`Current Funding Fee / Day`}
+                  value={formatDeltaUsd(fundingFeeRateUsd)}
+                  textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
+                />
+                <br />
+                <Trans>Use the edit collateral icon to deposit or withdraw collateral.</Trans>
+                <br />
+                <br />
+                <Trans>
+                  Negative funding fees are automatically settled against the collateral and impact the liquidation
+                  price. Positive funding fees can be claimed under the claims tab.
+                </Trans>
+              </>
+            }
           />
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
@@ -263,14 +268,13 @@ export function PositionItem(p: Props) {
         </div>
 
         <div className="Exchange-list-info-label Position-collateral-amount muted">
-          {`(${formatTokenAmount(
+          (
+          {formatBalanceAmount(
             p.position.remainingCollateralAmount,
-            p.position.collateralToken?.decimals,
-            p.position.collateralToken?.symbol,
-            {
-              useCommas: true,
-            }
-          )})`}
+            p.position.collateralToken.decimals,
+            p.position.collateralToken.symbol
+          )}
+          )
         </div>
       </>
     );

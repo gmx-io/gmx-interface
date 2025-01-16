@@ -31,6 +31,7 @@ export type SwapOrderParams = {
   minOutputAmount: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
@@ -115,6 +116,10 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     metricId: p.metricId,
     gasLimit,
     gasPriceData,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   });
 
   if (!subaccount) {

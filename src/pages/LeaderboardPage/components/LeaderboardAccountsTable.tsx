@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import type { SortDirection } from "context/SorterContext/types";
 import {
   useLeaderboardAccountsRanks,
   useLeaderboardCurrentAccount,
@@ -20,7 +21,7 @@ import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
-import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -56,8 +57,11 @@ export function LeaderboardAccountsTable({
   const { isLoading, data } = accounts;
   const [page, setPage] = useState(1);
   const { orderBy, direction, getSorterProps, setDirection, setOrderBy } = useSorterHandlers<LeaderboardAccountField>(
-    "totalQualifyingPnl",
-    "desc"
+    "leaderboard-accounts-table",
+    {
+      orderBy: "totalQualifyingPnl",
+      direction: "desc",
+    }
   );
 
   const isCompetitions = Boolean(activeCompetition);

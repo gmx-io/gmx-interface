@@ -357,6 +357,7 @@ export function PositionSeller(p: Props) {
         orderType,
         referralCode: userReferralInfo?.referralCodeForTxn,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage,
         indexToken: position.indexToken,
         tokensData,

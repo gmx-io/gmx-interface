@@ -220,10 +220,7 @@ export function formatLiquidationPrice(
   });
 }
 
-export function formatAcceptablePrice(
-  acceptablePrice?: bigint,
-  opts: { displayDecimals?: number; visualMultiplier?: number } = {}
-) {
+export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { visualMultiplier?: number } = {}) {
   if (acceptablePrice !== undefined && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
     return "NA";
   }

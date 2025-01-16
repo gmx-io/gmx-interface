@@ -16,7 +16,6 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -38,6 +37,7 @@ import { useProcessedData } from "./useProcessedData";
 import Token from "sdk/abis/Token.json";
 
 import "./EarnV2.css";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export default function EarnV2() {
   const { active, signer, account } = useWallet();
@@ -73,7 +73,7 @@ export default function EarnV2() {
 
   const incentivesToken = useAnyAirdroppedTokenTitle();
 
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const [isStakeGmxModalVisible, setIsStakeGmxModalVisible] = useState(false);
   const [stakeGmxValue, setStakeGmxValue] = useState("");
@@ -296,7 +296,8 @@ export default function EarnV2() {
             showNetworkIcon={false}
             subtitle={
               <Trans>
-                Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets
+                Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in
+                brackets.
               </Trans>
             }
           />
@@ -313,7 +314,7 @@ export default function EarnV2() {
             title={t`Select a GM Pool`}
             showNetworkIcon={false}
             subtitle={
-              <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets</Trans>
+              <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets.</Trans>
             }
           />
           <GmList

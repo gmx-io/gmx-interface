@@ -4,6 +4,7 @@ export type ExecutionFee = {
   feeUsd: bigint;
   feeTokenAmount: bigint;
   feeToken: Token;
+  gasLimit: bigint;
   isFeeHigh: boolean;
   isFeeVeryHigh: boolean;
 };

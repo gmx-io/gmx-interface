@@ -41,6 +41,7 @@ type IncreaseOrderParams = {
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode: string | undefined;
@@ -263,6 +264,10 @@ export async function createIncreaseOrderTxn({
     gasPriceData,
     bestNonce,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   });
 
   if (!subaccount) {
