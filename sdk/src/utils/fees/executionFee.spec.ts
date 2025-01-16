@@ -7,6 +7,8 @@ import { getExecutionFee } from "./executionFee";
 import { expandDecimals } from "utils/numbers";
 import { ARBITRUM } from "configs/chains";
 
+const serializeBigInt = (e: any) => JSON.stringify(e, (t, e) => (typeof e === "bigint" ? e.toString() : e), 2);
+
 describe("getExecutionFee", () => {
   const chainId = ARBITRUM;
   const gasLimits = {
@@ -40,6 +42,7 @@ describe("getExecutionFee", () => {
     expect(result).toEqual({
       feeUsd: 36300000013200000n,
       feeTokenAmount: 18150000006600000n,
+      gasLimit: 6600000n,
       feeToken: tokensData[NATIVE_TOKEN_ADDRESS],
       isFeeHigh: false,
       isFeeVeryHigh: false,
@@ -50,6 +53,7 @@ describe("getExecutionFee", () => {
     const result = getExecutionFee(chainId, gasLimits, tokensData, 5000000n, expandDecimals(5, 23), 4n);
     expect(result).toEqual({
       feeUsd: 6600000000000000000000000000000n,
+      gasLimit: 6600000n,
       feeTokenAmount: 3300000000000000000000000000000n,
       feeToken: tokensData[NATIVE_TOKEN_ADDRESS],
       isFeeHigh: true,
@@ -62,6 +66,7 @@ describe("getExecutionFee", () => {
     expect(result).toEqual({
       feeUsd: 132000000000000000000000000000000n,
       feeTokenAmount: 66000000000000000000000000000000n,
+      gasLimit: 6600000n,
       feeToken: tokensData[NATIVE_TOKEN_ADDRESS],
       isFeeHigh: true,
       isFeeVeryHigh: true,
