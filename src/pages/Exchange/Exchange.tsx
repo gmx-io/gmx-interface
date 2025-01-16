@@ -78,7 +78,7 @@ function pushSuccessNotification(chainId, message, e) {
   helperToast.success(
     <div>
       {message}{" "}
-      <ExternalLink href={txUrl} className="!text-white">
+      <ExternalLink href={txUrl}>
         <Trans>View</Trans>
       </ExternalLink>
     </div>
