@@ -81,7 +81,7 @@ export const useSubmitButtonState = ({
   isMarketTokenDeposit,
 }: Props) => {
   const chainId = useSelector(selectChainId);
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
 

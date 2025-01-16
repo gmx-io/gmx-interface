@@ -48,7 +48,7 @@ export function useShiftSubmitState({
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { openConnectModal } = useConnectModal();
 

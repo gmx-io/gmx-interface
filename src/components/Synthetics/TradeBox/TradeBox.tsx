@@ -180,7 +180,7 @@ export function TradeBox(p: Props) {
     shouldDisableValidationForTesting,
     shouldDisableValidationForTesting: shouldDisableValidation,
   } = useSettings();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);

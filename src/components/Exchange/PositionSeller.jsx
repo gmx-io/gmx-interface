@@ -332,7 +332,7 @@ export default function PositionSeller(props) {
 
   const isSwapAllowed = orderOption === MARKET;
 
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   let receiveToken;
   let maxAmount;

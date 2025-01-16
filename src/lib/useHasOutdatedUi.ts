@@ -12,7 +12,7 @@ export function useHasOutdatedUi() {
   const { chainId } = useChainId();
   const { active } = useWallet();
 
-  const { data: minVersion, mutate } = useSWR([chainId, active], {
+  const { data: minVersion } = useSWR([chainId, active], {
     fetcher: async () => {
       const noCacheParam = Math.random().toString().substring(2, 8);
 
@@ -38,5 +38,5 @@ export function useHasOutdatedUi() {
     }
   }
 
-  return { data: hasOutdatedUi, mutate };
+  return hasOutdatedUi;
 }

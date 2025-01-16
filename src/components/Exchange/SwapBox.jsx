@@ -320,7 +320,7 @@ export default function SwapBox(props) {
   });
   const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);

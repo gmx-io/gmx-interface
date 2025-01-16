@@ -111,7 +111,7 @@ export function PositionSeller(p: Props) {
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
