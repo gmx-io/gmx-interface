@@ -35,7 +35,7 @@ export function PriceImpactFeesRow() {
       ? "..."
       : formatPercentage(fullPositionPriceImpactPercentage, {
           bps: false,
-          signed: isPriceImpactPositive,
+          signed: true,
         });
 
   const rebateIsApplicable =
@@ -75,7 +75,7 @@ export function PriceImpactFeesRow() {
     return {
       formattedTotalFeePercentage: formatPercentage(positionFeeAfterRebateAndDiscount, {
         bps: false,
-        signed: positionFeeAfterRebateAndDiscount > 0,
+        signed: true,
         displayDecimals: 3,
       }),
       isTotalFeePositive: positionFeeAfterRebateAndDiscount > 0,
