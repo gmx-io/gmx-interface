@@ -99,7 +99,7 @@ function parseEvent(event: ParseEventLogsReturnType<Abi, undefined, true, undefi
     for (const [item, vals] of eventData[key].arrayItems) {
       const value = {
         item: item,
-        value: vals.join(", "),
+        value: vals,
         type,
       };
 

@@ -202,12 +202,12 @@ const fieldFormatters = {
   maxPrice: formatPriceByToken,
   tokenPrice: formatPriceByToken,
 
-  swapPath: (t: string, props: LogEntryComponentProps) => {
-    const swapPath = t.split(",");
+  swapPath: (t: string[], props: LogEntryComponentProps) => {
     const marketsInfo = props.marketsInfoData;
+
     return (
       <div className="flex flex-col gap-4">
-        {swapPath.map((marketAddress) => {
+        {t.map((marketAddress) => {
           const market = marketsInfo[marketAddress];
           return market ? (
             <div key={marketAddress}>
@@ -235,6 +235,17 @@ const fieldFormatters = {
   borrowingFeeAmountForFeeReceiver: formatAmountByCollateralToken,
   protocolFeeAmount: formatAmountByCollateralToken,
   totalBorrowingFees: formatAmountByCollateralToken,
+
+  "referral.totalRebateAmount": formatAmountByCollateralToken,
+  "referral.traderDiscountAmount": formatAmountByCollateralToken,
+  "referral.affiliateRewardAmount": formatAmountByCollateralToken,
+
+  executionPrice: formatPriceByIndexToken,
+  triggerPrice: formatPriceByIndexToken,
+  acceptablePrice: formatPriceByIndexToken,
+
+  initialCollateralDeltaAmount: formatAmountByField("initialCollateralToken"),
+
   feeAmountForPool: formatAmountByEvent({
     SwapFeesCollected: "token",
     default: formatAmountByCollateralToken,
@@ -257,8 +268,10 @@ const fieldFormatters = {
 
   tokenInPrice: formatPriceByField("tokenIn"),
   tokenOutPrice: formatPriceByField("tokenOut"),
-  amountInt: formatAmountByField("tokenIn"),
+  amountIn: formatAmountByField("tokenIn"),
+  amountInAfterFees: formatAmountByField("tokenIn"),
   amountOut: formatAmountByField("tokenOut"),
+  amountAfterFees: formatAmountByField("token"),
 
   timestamp: formatDateField,
   increasedAtTime: formatDateField,
@@ -311,7 +324,7 @@ const fieldFormatters = {
     ClaimableFundingUpdated: "token",
     PoolAmountUpdated: "token",
     ClaimableFeeAmountUpdated: "token",
-    OpenInterestInTokensUpdated: formatPrice,
+    OpenInterestInTokensUpdated: formatAmountByIndexToken,
     PositionImpactPoolAmountUpdated: formatAmountByIndexToken,
   }),
 
@@ -322,7 +335,7 @@ const fieldFormatters = {
     PoolAmountUpdated: "token",
     ClaimableFundingUpdated: "token",
     ClaimableFeeAmountUpdated: "token",
-    OpenInterestInTokensUpdated: formatPrice,
+    OpenInterestInTokensUpdated: formatAmountByIndexToken,
     FundingFeeAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
     ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
     PositionImpactPoolAmountUpdated: formatAmountByIndexToken,

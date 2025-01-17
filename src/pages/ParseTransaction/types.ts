@@ -11,7 +11,7 @@ export type Event = {
 
 export type LogEntry = {
   item: string;
-  value: string | bigint | boolean;
+  value: string | bigint | boolean | string[];
   type: string;
   error?: string;
 };

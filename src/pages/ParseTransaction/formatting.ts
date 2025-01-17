@@ -4,6 +4,7 @@ import { expandDecimals, formatBalanceAmount, formatUsdPrice } from "lib/numbers
 import { NATIVE_TOKENS_MAP } from "sdk/configs/tokens";
 import { LogEntryComponentProps } from "./types";
 import { isGlvInfo } from "../../domain/synthetics/markets/glv";
+import { zeroAddress } from "viem";
 
 type Formatter = (t: bigint, props: LogEntryComponentProps) => string;
 type TokenGetter = (props: LogEntryComponentProps) => Token;
@@ -143,7 +144,7 @@ function getMarketOrGlvToken({ entries, marketsInfoData, marketTokensData, glvDa
   throw new Error(`Field "market" not found in event`);
 }
 
-function getIndexToken({ entries, marketsInfoData }: LogEntryComponentProps) {
+function getIndexToken({ entries, marketsInfoData, tokensData }: LogEntryComponentProps) {
   const marketAddress = entries.find((entry) => entry.item === "market");
 
   if (marketAddress) {
@@ -151,6 +152,13 @@ function getIndexToken({ entries, marketsInfoData }: LogEntryComponentProps) {
 
     if (market) {
       return market.indexToken;
+    }
+  }
+
+  if (marketAddress?.value === zeroAddress) {
+    const nativeToken = Object.values(tokensData).find((e) => e.address === zeroAddress);
+    if (nativeToken) {
+      return nativeToken;
     }
   }
 
