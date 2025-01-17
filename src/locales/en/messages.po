@@ -5185,6 +5185,7 @@ msgid "Order created!"
 msgstr "Order created!"
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
 msgstr "Liquidation"
 
