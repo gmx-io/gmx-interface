@@ -5,5 +5,4 @@ export * from "./createIncreaseOrderTxn";
 export * from "./createSwapOrderTxn";
 export * from "./updateOrderTxn";
 
-export * from "sdk/types/orders";
 export * from "sdk/utils/orders";
