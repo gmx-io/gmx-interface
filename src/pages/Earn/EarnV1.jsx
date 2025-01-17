@@ -695,10 +695,7 @@ export default function EarnV1() {
         helperToast.success(
           <div>
             <Trans>
-              Claim submitted!{" "}
-              <ExternalLink className="!text-white" href={txUrl}>
-                View status.
-              </ExternalLink>
+              Claim submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
             </Trans>
             <br />
           </div>
