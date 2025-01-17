@@ -54,6 +54,10 @@ $gray: var(--color-stroke-primary);
   .rc-slider-handle {
     background-color: $blue;
     border: solid 2px #a1aaff;
+
+    &:active {
+      box-shadow: unset;
+    }
   }
 
   .rc-slider-mark-text,

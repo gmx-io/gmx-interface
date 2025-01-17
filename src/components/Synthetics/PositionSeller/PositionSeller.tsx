@@ -218,13 +218,13 @@ export function PositionSeller(p: Props) {
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
-  const setIsAcceptedLatestRef = useLatest(priceImpactWarningState.setIsAccepted);
+  const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   useEffect(() => {
     if (isVisible) {
-      setIsAcceptedLatestRef.current(false);
+      setIsDismissedLatestRef.current(false);
     }
-  }, [setIsAcceptedLatestRef, isVisible, orderOption]);
+  }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
   const error = useMemo(() => {
     if (!position) {
@@ -251,16 +251,11 @@ export function PositionSeller(p: Props) {
       isLong: position.isLong,
       isContractAccount: false,
       minCollateralUsd,
-      priceImpactWarning: priceImpactWarningState,
       isNotEnoughReceiveTokenLiquidity,
     });
 
     if (commonError[0] || decreaseError[0]) {
       return commonError[0] || decreaseError[0];
-    }
-
-    if (priceImpactWarningState.validationError) {
-      return [t`Acknowledgment Required`];
     }
 
     if (isSubmitting) {
@@ -279,7 +274,6 @@ export function PositionSeller(p: Props) {
     minCollateralUsd,
     nextPositionValues,
     position,
-    priceImpactWarningState,
     receiveToken,
     triggerPrice,
   ]);

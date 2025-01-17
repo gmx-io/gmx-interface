@@ -278,10 +278,6 @@ export function PositionEditor(p: Props) {
       return [t`Loading...`];
     }
 
-    if (priceImpactWarningState.validationError) {
-      return [t`Acknowledgment Required`];
-    }
-
     if (isSubmitting) {
       return [t`Creating Order...`];
     }
@@ -302,7 +298,6 @@ export function PositionEditor(p: Props) {
     needCollateralApproval,
     isAllowanceLoading,
     isBalancesLoading,
-    priceImpactWarningState.validationError,
     isSubmitting,
   ]);
 

@@ -891,3 +891,16 @@ export const selectTradeboxFromToken = createSelector((q) => {
 
   return getByKey(tokenData, fromToken);
 });
+
+export const selectTradeboxFromTokenAmount = createSelector((q) => {
+  const fromToken = q(selectTradeboxFromToken);
+  const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
+
+  return fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
+});
+
+export const selectTradeboxCloseSizeUsd = createSelector((q) => {
+  const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
+
+  return parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+});
