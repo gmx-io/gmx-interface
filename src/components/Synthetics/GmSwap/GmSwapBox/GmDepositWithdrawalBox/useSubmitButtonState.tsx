@@ -5,7 +5,6 @@ import { useCallback, useMemo } from "react";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { useHasOutdatedUi } from "domain/legacy";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
@@ -19,6 +18,7 @@ import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransact
 import { useTokensToApprove } from "./useTokensToApprove";
 
 import { Operation } from "../types";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -81,7 +81,7 @@ export const useSubmitButtonState = ({
   isMarketTokenDeposit,
 }: Props) => {
   const chainId = useSelector(selectChainId);
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
 

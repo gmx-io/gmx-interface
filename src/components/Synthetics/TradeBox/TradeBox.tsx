@@ -52,7 +52,6 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useHasOutdatedUi } from "domain/legacy";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import {
   formatLeverage,
@@ -146,6 +145,7 @@ import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClic
 import { tradeModeLabels, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
 
 import "./TradeBox.scss";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -180,7 +180,7 @@ export function TradeBox(p: Props) {
     shouldDisableValidationForTesting,
     shouldDisableValidationForTesting: shouldDisableValidation,
   } = useSettings();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
