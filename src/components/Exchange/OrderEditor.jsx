@@ -26,7 +26,7 @@ import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals, getToken } from "sdk/configs/tokens";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export default function OrderEditor(props) {
   const {

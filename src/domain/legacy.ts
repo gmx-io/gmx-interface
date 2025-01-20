@@ -21,7 +21,7 @@ import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
 
 import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";

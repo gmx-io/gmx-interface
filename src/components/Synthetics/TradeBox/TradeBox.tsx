@@ -60,12 +60,8 @@ import {
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
-import {
-  TradeType,
-  applySlippageToPrice,
-  getIncreasePositionAmounts,
-  getNextPositionValuesForIncreaseTrade,
-} from "domain/synthetics/trade";
+import { TradeType, getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
+import { applySlippageToPrice } from "sdk/utils/trade";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {

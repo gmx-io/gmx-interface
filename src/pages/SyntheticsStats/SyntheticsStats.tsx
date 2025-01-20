@@ -31,7 +31,7 @@ import {
 import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatAmountHuman } from "lib/numbers";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import "./SyntheticsStats.scss";

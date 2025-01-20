@@ -3,10 +3,10 @@ import { usePrevious } from "react-use";
 
 import { getExcessiveExecutionFee } from "config/chains";
 import { HIGH_PRICE_IMPACT_BPS, USD_DECIMALS } from "config/factors";
-import { ExecutionFee } from "domain/synthetics/fees/types";
+import { ExecutionFee } from "domain/synthetics/fees";
 import { GmSwapFees } from "domain/synthetics/trade";
 
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 

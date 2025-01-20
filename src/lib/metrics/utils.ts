@@ -6,7 +6,7 @@ import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthe
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
-import { TxError } from "lib/contracts/transactionErrors";
+import { TxError } from "sdk/utils/contracts";
 import { bigintToNumber, formatPercentage, roundToOrder } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";

@@ -12,7 +12,7 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { callContract } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";

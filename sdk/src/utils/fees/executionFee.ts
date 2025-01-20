@@ -7,10 +7,8 @@ import { TokensData } from "types/tokens";
 import { applyFactor, expandDecimals } from "utils/numbers";
 import { convertToUsd, getTokenData } from "utils/tokens";
 
-import type { GmxSdk } from "../../index";
-
 export function getExecutionFee(
-  sdk: GmxSdk,
+  chainId: number,
   gasLimits: GasLimitsConfig,
   tokensData: TokensData,
   estimatedGasLimit: bigint,
@@ -18,7 +16,6 @@ export function getExecutionFee(
   oraclePriceCount: bigint
 ): ExecutionFee | undefined {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
-  const chainId = sdk.chainId;
 
   if (!nativeToken) return undefined;
 
@@ -44,6 +41,46 @@ export function getExecutionFee(
     isFeeHigh,
     isFeeVeryHigh,
   };
+}
+
+/**
+ * Copy from contract: `estimateExecuteIncreaseOrderGasLimit`
+ */
+export function estimateExecuteIncreaseOrderGasLimit(
+  gasLimits: GasLimitsConfig,
+  order: { swapsCount?: number; callbackGasLimit?: bigint }
+) {
+  const gasPerSwap = gasLimits.singleSwap;
+  const swapsCount = BigInt(order.swapsCount ?? 0);
+
+  return gasLimits.increaseOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
+}
+
+/**
+ * Copy from contract: `estimateExecuteDecreaseOrderGasLimit`
+ */
+export function estimateExecuteDecreaseOrderGasLimit(
+  gasLimits: GasLimitsConfig,
+  order: { swapsCount: number; callbackGasLimit?: bigint; decreaseSwapType?: DecreasePositionSwapType }
+) {
+  const gasPerSwap = gasLimits.singleSwap;
+  let swapsCount = BigInt(order.swapsCount);
+
+  if (order.decreaseSwapType !== DecreasePositionSwapType.NoSwap) {
+    swapsCount += 1n;
+  }
+
+  return gasLimits.decreaseOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
+}
+
+export function estimateExecuteSwapOrderGasLimit(
+  gasLimits: GasLimitsConfig,
+  order: { swapsCount: number; callbackGasLimit?: bigint }
+) {
+  const gasPerSwap = gasLimits.singleSwap;
+  const swapsCount = BigInt(order.swapsCount);
+
+  return gasLimits.swapOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
 }
 
 /**
@@ -76,6 +113,8 @@ export function estimateExecuteGlvDepositGasLimit(
   }: {
     isMarketTokenDeposit;
     marketsCount: bigint;
+    initialLongTokenAmount: bigint;
+    initialShortTokenAmount: bigint;
   }
 ) {
   const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
@@ -128,44 +167,4 @@ export function estimateExecuteWithdrawalGasLimit(
  */
 export function estimateExecuteShiftGasLimit(gasLimits: GasLimitsConfig, shift: { callbackGasLimit?: bigint }) {
   return gasLimits.shift + (shift.callbackGasLimit ?? 0n);
-}
-
-/**
- * Copy from contract: `estimateExecuteIncreaseOrderGasLimit`
- */
-export function estimateExecuteIncreaseOrderGasLimit(
-  gasLimits: GasLimitsConfig,
-  order: { swapsCount?: number; callbackGasLimit?: bigint }
-) {
-  const gasPerSwap = gasLimits.singleSwap;
-  const swapsCount = BigInt(order.swapsCount ?? 0);
-
-  return gasLimits.increaseOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
-}
-
-/**
- * Copy from contract: `estimateExecuteDecreaseOrderGasLimit`
- */
-export function estimateExecuteDecreaseOrderGasLimit(
-  gasLimits: GasLimitsConfig,
-  order: { swapsCount: number; callbackGasLimit?: bigint; decreaseSwapType?: DecreasePositionSwapType }
-) {
-  const gasPerSwap = gasLimits.singleSwap;
-  let swapsCount = BigInt(order.swapsCount);
-
-  if (order.decreaseSwapType !== DecreasePositionSwapType.NoSwap) {
-    swapsCount += 1n;
-  }
-
-  return gasLimits.decreaseOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
-}
-
-export function estimateExecuteSwapOrderGasLimit(
-  gasLimits: GasLimitsConfig,
-  order: { swapsCount: number; callbackGasLimit?: bigint }
-) {
-  const gasPerSwap = gasLimits.singleSwap;
-  const swapsCount = BigInt(order.swapsCount);
-
-  return gasLimits.swapOrder + gasPerSwap * swapsCount + (order.callbackGasLimit ?? 0n);
 }

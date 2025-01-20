@@ -3,7 +3,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getExecutionFeeBufferBps, getGasPremium, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees";
+import {
+  getExecutionFeeBufferBps,
+  getGasPremium,
+  getMinimumExecutionFeeBufferBps,
+} from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
 import { getCallStaticError } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";

@@ -11,7 +11,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals, formatAmount, formatBalanceAmount } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 

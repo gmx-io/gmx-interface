@@ -51,7 +51,7 @@ import { getFeeItem } from "domain/synthetics/fees";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";

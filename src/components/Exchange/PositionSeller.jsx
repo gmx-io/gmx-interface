@@ -69,7 +69,7 @@ import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useKey } from "react-use";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 

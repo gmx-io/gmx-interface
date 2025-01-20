@@ -1,6 +1,6 @@
 import { applyImpactFactor } from "domain/synthetics/fees";
 import { ethers } from "ethers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals } from "lib/numbers";
 import { describe, expect, it } from "vitest";
 

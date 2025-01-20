@@ -98,7 +98,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useHistory } from "react-router-dom";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";

@@ -186,6 +186,11 @@ msgstr ""
 msgid "V2 Arbitrum"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "GMX transfers not yet enabled"
+#~ msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
@@ -5024,7 +5029,7 @@ msgstr ""
 msgid "Select different tokens"
 msgstr "Anderen Token wählen"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Die Netzwerkgebühren sind derzeit sehr hoch, was auf eine vorübergehende Zunahme von Transaktionen im {chainName}-Netzwerk zurückzuführen sein kann."
 
@@ -5550,6 +5555,10 @@ msgstr ""
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.tsx
+#~ msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+#~ msgstr ""
+
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "No delegate found"
 msgstr ""
@@ -5818,7 +5827,7 @@ msgstr ""
 msgid "Starts in"
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Die Netzwerkgebühren sind derzeit hoch, was auf eine vorüber vorübergehende Zunahme von Transaktionen im {chainName}-Netzwerk zurückzuführen sein kann."
 

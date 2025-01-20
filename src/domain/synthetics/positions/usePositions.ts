@@ -16,7 +16,7 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
 import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
-import { getPositionKey, parsePositionKey } from "./utils";
+import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
 
 import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 
