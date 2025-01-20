@@ -3735,7 +3735,6 @@ msgstr "Trigger price for the order."
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -5219,10 +5218,6 @@ msgstr "Cancel Stop-Loss"
 msgid "Open Binance app"
 msgstr "Open Binance app"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} selected in order form"
-msgstr "{0} selected in order form"
-
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/StakeModal.tsx
@@ -5791,10 +5786,6 @@ msgstr "Max Out"
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Enter an amount"
 msgstr "Enter an amount"
-
-#: src/components/Exchange/PositionsList.jsx
-msgid "{longOrShortText} {0} market selected"
-msgstr "{longOrShortText} {0} market selected"
 
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
@@ -6706,7 +6697,6 @@ msgstr "Shift error."
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -7731,11 +7721,6 @@ msgstr "Limit Swap"
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24H VOL."
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-msgid "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
-msgstr "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx

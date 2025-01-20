@@ -3732,7 +3732,6 @@ msgstr "Цена триггера для ордера."
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -5216,10 +5215,6 @@ msgstr ""
 msgid "Open Binance app"
 msgstr "Открыть приложение Binance"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} selected in order form"
-msgstr "{0} выбран в форме ордера"
-
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/StakeModal.tsx
@@ -5788,10 +5783,6 @@ msgstr ""
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Enter an amount"
 msgstr "Введите сумму"
-
-#: src/components/Exchange/PositionsList.jsx
-msgid "{longOrShortText} {0} market selected"
-msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
@@ -6700,7 +6691,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -7724,11 +7714,6 @@ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-msgid "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
