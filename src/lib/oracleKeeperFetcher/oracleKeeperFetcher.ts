@@ -184,4 +184,10 @@ export class OracleKeeperFetcher implements OracleFetcher {
         return null;
       });
   }
+
+  async fetchUiVersion(currentVersion: number, active: boolean): Promise<number> {
+    return fetch(buildUrl(this.url!, `/ui/min_version?client_version=${currentVersion}&active=${active}`))
+      .then((res) => res.json())
+      .then((res) => res.version);
+  }
 }

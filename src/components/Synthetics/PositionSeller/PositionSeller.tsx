@@ -22,7 +22,6 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { useHasOutdatedUi } from "domain/legacy";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { applySlippageToPrice } from "sdk/utils/trade";
@@ -86,6 +85,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 import "./PositionSeller.scss";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -111,7 +111,7 @@ export function PositionSeller(p: Props) {
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
