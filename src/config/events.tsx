@@ -33,6 +33,20 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "trump-listing",
+    title: "TRUMP market added on Arbitrum",
+    isActive: true,
+    startDate: "20 Jan 2025, 14:30",
+    endDate: "27 Jan 2025, 00:00",
+    bodyText: (
+      <>
+        Trade <TokenSymbolWithIcon symbol="TRUMP" />
+        /USD, or provide liquidity to the pool using <TokenSymbolWithIcon symbol="ETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [ETH-USDC].
+      </>
+    ),
+  },
+  {
     id: "trading-fees-reduction",
     title: "Trading fees reduced",
     isActive: true,

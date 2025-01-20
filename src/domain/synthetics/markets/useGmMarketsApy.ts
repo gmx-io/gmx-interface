@@ -482,5 +482,8 @@ function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: bigint) {
 function calculateAPY(apr: bigint) {
   const aprNumber = bigintToNumber(apr, 30);
   const apyNumber = Math.exp(aprNumber) - 1;
+  if (apyNumber === Infinity) {
+    return 0n;
+  }
   return numberToBigint(apyNumber, 30);
 }
