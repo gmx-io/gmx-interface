@@ -273,11 +273,11 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && markPrice < triggerPrice) {
-      return [t`Limit price above Mark Price`];
+      return [t`Limit Price Above Mark Price`];
     }
 
     if (!isLong && markPrice > triggerPrice) {
-      return [t`Limit price below Mark Price`];
+      return [t`Limit Price Below Mark Price`];
     }
   }
 
