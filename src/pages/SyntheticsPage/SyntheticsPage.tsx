@@ -6,6 +6,7 @@ import { useMedia } from "react-use";
 
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getSyntheticsListSectionKey } from "config/localStorage";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -23,7 +24,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import type { OrderType } from "domain/synthetics/orders/types";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
@@ -32,13 +32,11 @@ import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsP
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { helperToast } from "lib/helperToast";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -169,20 +167,7 @@ export function SyntheticsPage(p: Props) {
 
       if (!position) return;
 
-      const indexName = position?.marketInfo && getMarketIndexName(position?.marketInfo);
-      const poolName = position?.marketInfo && getMarketPoolName(position?.marketInfo);
       setActivePosition(getByKey(positionsInfoData, key), tradeMode);
-      const message = (
-        <Trans>
-          {position?.isLong ? "Long" : "Short"}{" "}
-          <div className="inline-flex">
-            <span>{indexName}</span>
-            <span className="subtext gm-toast !text-white">[{poolName}]</span>
-          </div>{" "}
-          <span>market selected</span>.
-        </Trans>
-      );
-      helperToast.success(message);
     },
     [calcSelector, setActivePosition]
   );

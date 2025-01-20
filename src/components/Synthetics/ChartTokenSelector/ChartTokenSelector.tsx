@@ -6,7 +6,6 @@ import { useMedia } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -40,9 +39,8 @@ import {
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
 
-import { helperToast } from "lib/helperToast";
 import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
@@ -211,36 +209,14 @@ function MarketsList() {
     place: MissedCoinsPlace.marketDropdown,
   });
 
-  const marketsInfoData = useMarketsInfoData();
-
   const handleMarketSelect = useCallback(
     (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => {
       setSearchKeyword("");
       close();
 
-      const chosenMarket = chooseSuitableMarket(tokenAddress, preferredTradeType, tradeType);
-
-      if (chosenMarket?.marketTokenAddress && chosenMarket.tradeType !== TradeType.Swap) {
-        const marketInfo = getByKey(marketsInfoData, chosenMarket.marketTokenAddress);
-        const nextTradeType = chosenMarket.tradeType;
-        if (marketInfo) {
-          const indexName = getMarketIndexName(marketInfo);
-          const poolName = getMarketPoolName(marketInfo);
-
-          helperToast.success(
-            <Trans>
-              <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
-              <div className="inline-flex">
-                <span>{indexName}</span>
-                <span className="subtext gm-toast leading-1 !text-white">[{poolName}]</span>
-              </div>{" "}
-              <span>market selected</span>
-            </Trans>
-          );
-        }
-      }
+      chooseSuitableMarket(tokenAddress, preferredTradeType, tradeType);
     },
-    [chooseSuitableMarket, close, marketsInfoData, tradeType]
+    [chooseSuitableMarket, close, tradeType]
   );
 
   const rowVerticalPadding = cx({
