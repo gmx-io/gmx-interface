@@ -69,6 +69,8 @@ const CONTRACTS = {
     GlvRouter: "0x105b5aFe50FBCe7759051974fB1710ce331C77B3",
     GlvVault: "0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9",
 
+    ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
+
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
   },
   [AVALANCHE]: {

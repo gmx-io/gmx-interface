@@ -71,6 +71,7 @@ const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
   { msg: "unfinalized data" },
   { msg: "could not coalesce error" },
   { msg: "Internal JSON RPC error" },
+  { msg: "execution reverted" },
 ];
 
 export type TxError = {
@@ -247,6 +248,8 @@ export function extractDataFromError(errorMessage: unknown) {
 
 export function getAdditionalValidationType(error: Error) {
   const errorData = parseError(error);
+
+  console.log("ARRRRR", errorData);
 
   const shouldTryCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
     const isMessageMatch =

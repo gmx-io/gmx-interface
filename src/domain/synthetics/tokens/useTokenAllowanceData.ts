@@ -88,7 +88,7 @@ export function useTokensAllowanceData(
   }, [spenderAddress, validAddresses, data, approvalStatuses]);
 
   const isLoaded = validAddresses.length > 0 && validAddresses.every((address) => mergedData?.[address] !== undefined);
-  const isLoading = Boolean(key) && !isLoaded;
+  const isLoading = false;
 
   return {
     tokensAllowanceData: isLoaded ? mergedData : undefined,

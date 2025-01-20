@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
@@ -9,8 +8,11 @@ import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import concat from "lodash/concat";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
+import { getOpenOceanBuildTx } from "../externalSwaps/openOcean";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToPrice } from "../trade";
@@ -18,10 +20,12 @@ import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
+import Token from "sdk/abis/Token.json";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { extendWith, method } from "lodash";
+import { parseError } from "lib/parseError";
 
 const { ZeroAddress } = ethers;
 
@@ -141,6 +145,7 @@ export async function createIncreaseOrderTxn({
   };
 
   const encodedPayload = await createEncodedPayload({
+    chainId,
     router: exchangeRouter,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
@@ -164,6 +169,7 @@ export async function createIncreaseOrderTxn({
   }
 
   const simulationEncodedPayload = await createEncodedPayload({
+    chainId,
     router: walletExchangeRouter,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
@@ -256,12 +262,12 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits,
-    customSignersGasPrices,
+    customSignersGasLimits: [],
+    customSignersGasPrices: [],
     metricId,
     gasLimit,
     gasPriceData,
-    bestNonce,
+    bestNonce: undefined,
     setPendingTxns: p.setPendingTxns,
     pendingTransactionData: {
       estimatedExecutionFee: p.executionFee,
@@ -291,6 +297,7 @@ export async function createIncreaseOrderTxn({
 }
 
 async function createEncodedPayload({
+  chainId,
   router,
   orderVaultAddress,
   totalWntAmount,
@@ -301,6 +308,7 @@ async function createEncodedPayload({
   initialCollateralTokenAddress,
   signer,
 }: {
+  chainId: number;
   router: ethers.Contract;
   orderVaultAddress: string;
   totalWntAmount: bigint;
@@ -312,25 +320,134 @@ async function createEncodedPayload({
   signer: Signer;
 }) {
   const orderParams = createOrderParams({
-    p,
+    p: {
+      ...p,
+      swapPath: [],
+    },
     acceptablePrice,
-    initialCollateralTokenAddress,
+    initialCollateralTokenAddress: p.targetCollateralAddress,
     subaccount,
     isNativePayment,
   });
-  const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
 
+  const externalSwap = await getOpenOceanBuildTx({
+    chainId,
+    senderAddress: getContract(chainId, "ExternalHandler"),
+    receiverAddress: orderVaultAddress,
+    tokenInAddress: p.initialCollateralAddress,
+    tokenOutAddress: p.targetCollateralAddress,
+    tokenInAmount: p.initialCollateralAmount,
+    slippage: p.allowedSlippage,
+  });
+
+  const tokenContract = new ethers.Contract(p.initialCollateralAddress, Token.abi);
+
+  const tokenApproveData = tokenContract.interface.encodeFunctionData("approve", [externalSwap?.to, ethers.MaxUint256]);
+
+  console.log("externalSwap", externalSwap);
+  console.log("tokenApproveData", tokenApproveData);
+
+  // await tokenContract.approve(externalSwap?.to, ethers.MaxUint256);
+  // const res = await signer.sendTransaction(externalSwap!);
+  // console.log("res", res);
+
+  // const res = await router.runner
+  //   ?.provider!.call({
+  //     data: router.interface.encodeFunctionData("makeExternalCalls", [
+  //       [p.initialCollateralAddress],
+  //       [tokenApproveData],
+  //       [p.initialCollateralAddress],
+  //       [p.account],
+  //     ]),
+  //     to: await router.getAddress(),
+  //   })
+  //   .catch((e) => {
+  //     const errorData = parseError(e);
+  //     console.log("errorData", errorData);
+  //   });
+
+  const multicall1 = [
     !isNativePayment && !subaccount
-      ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
+      ? {
+          method: "sendTokens",
+          params: [p.initialCollateralAddress, getContract(chainId, "ExternalHandler"), p.initialCollateralAmount],
+        }
       : undefined,
 
+    {
+      method: "makeExternalCalls",
+      params: [
+        [p.initialCollateralAddress, externalSwap?.to],
+        [tokenApproveData, externalSwap?.data],
+        [getNativeToken(chainId).wrappedAddress, p.initialCollateralAddress],
+        [p.account, p.account],
+      ],
+    },
+
+    // { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+
+    // // { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+
+    // {
+    //   method: "createOrder",
+    //   params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
+    // },
+  ];
+
+  const multicall2 = [
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
     {
       method: "createOrder",
       params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
     },
   ];
-  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+
+  // TODO: Handle WNT
+  // HANDLE Aaprovals
+  // HANDLE
+  // const multicall = [
+  //   { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+
+  //   !isNativePayment && !subaccount
+  //     ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
+  //     : undefined,
+
+  //   {
+  //     method: "createOrder",
+  //     params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
+  //   },
+  // ];
+
+  const encodedData1 = multicall1
+    .filter(Boolean)
+    .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+
+  const encodedData2 = multicall2
+    .filter(Boolean)
+    .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+
+  const encodedData = [...encodedData1, ...encodedData2];
+
+  // const res = await router.runner
+  //   ?.provider!.call({
+  //     data: router.interface.encodeFunctionData("multicall", [encodedData]),
+  //     to: await router.getAddress(),
+  //   })
+  //   .catch((e) => {
+  //     const errorData = parseError(e);
+  //     console.log("errorData", errorData);
+  //   });
+
+  // console.log("encodedData", encodedData);
+
+  // console.log("res", res);
+
+  // console.log("externalSwap?.value", externalSwap?.value);
+
+  await router.multicall(encodedData1);
+  await router.multicall(encodedData2, { value: totalWntAmount });
+
+  return encodedData;
 }
 
 function createOrderParams({
