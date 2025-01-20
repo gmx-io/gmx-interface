@@ -86,7 +86,8 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
+                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>
+                    .
                     <br />
                     <br />
                     Please try increasing execution fee buffer to{" "}
@@ -108,11 +109,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Txn failed.{" "}
-                    <ExternalLink className="!text-white" href={txUrl}>
-                      View
-                    </ExternalLink>
-                    .
+                    Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>.
                   </Trans>
                   <br />
                 </div>
