@@ -32,7 +32,7 @@ export type MetricEventParams = {
 const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
 const MAX_QUEUE_LENGTH = 500;
 const MAX_BATCH_LENGTH = 100;
-const BATCH_INTERVAL_MS = 1000;
+const BATCH_INTERVAL_MS = 2000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
 const BAD_REQUEST_ERROR = "BadRequest";
 
