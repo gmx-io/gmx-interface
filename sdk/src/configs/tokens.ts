@@ -677,6 +677,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "Official Trump",
+      symbol: "TRUMP",
+      address: "0x30021aFA4767Ad66aA52A06dF8a5AB3acA9371fD",
+      decimals: 6,
+      priceDecimals: 4,
+      categories: ["meme"],
+      imageUrl: "https://assets.coingecko.com/coins/images/53746/standard/trump.png?1737171561",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/official-trump",
+      isSynthetic: true,
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
