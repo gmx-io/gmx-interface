@@ -1,9 +1,9 @@
 import { t, Trans } from "@lingui/macro";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
-import { DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
+import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -143,10 +143,10 @@ export function SettingsModal({
           />
           <div className="App-slippage-tolerance-input-percent">%</div>
         </div>
-        {parseFloat(slippageAmount) < (DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100 && (
+        {parseFloat(slippageAmount) < (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100 && (
           <AlertInfo type="warning">
             <Trans>
-              Allowed Slippage below {(DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100}% may result in failed
+              Allowed Slippage below {(DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100}% may result in failed
               orders.
             </Trans>
           </AlertInfo>

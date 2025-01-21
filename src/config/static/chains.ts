@@ -12,6 +12,5 @@ export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
 export const FEES_HIGH_BPS = 50;
-export const DEFAULT_ALLOWED_SLIPPAGE_BPS = 100;
 
 export type ChainId = typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM;
