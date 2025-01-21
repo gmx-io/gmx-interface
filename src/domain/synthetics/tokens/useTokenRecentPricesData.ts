@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
-import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import { TokenPricesData } from "./types";
-import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
+import { useOracleKeeperFetcher } from "../../../lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
 import { parseContractPrice } from "./utils";
 

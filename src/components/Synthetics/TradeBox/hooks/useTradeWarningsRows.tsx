@@ -4,7 +4,6 @@ import { HighPriceImpactWarning } from "components/Synthetics/HighPriceImpactWar
 import { getContract } from "config/contracts";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxExecutionFee,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -13,14 +12,15 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 
 export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<typeof usePriceImpactWarningState>) {
   const tokenData = useTokensData();
+  const { account } = useWallet();
   const { chainId } = useChainId();
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -28,8 +28,11 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
-  const executionFee = useSelector(selectTradeboxExecutionFee);
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
   });
@@ -45,46 +48,37 @@ export function useTradeboxWarningsRows(priceImpactWarningState: ReturnType<type
     }
   }, [increaseAmounts?.initialCollateralAmount, isIncrease, isSwap, isWrapOrUnwrap, swapAmounts?.amountIn]);
 
-  const needPayTokenApproval =
-    tokensAllowanceData &&
-    fromToken &&
-    payAmount !== undefined &&
-    getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
+  const isBalanceLoading = account && fromToken?.address && fromToken.balance === undefined;
 
-  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
-    executionFee?.feeUsd
-  );
+  const needPayTokenApproval = getNeedTokenApprove(tokensAllowanceData, fromToken?.address, payAmount);
 
   const consentError: string | undefined = useMemo(() => {
-    if (highExecutionFeeAcknowledgement && isHighFeeConsentError) {
-      return t`High Network Fee not yet acknowledged`;
+    if (priceImpactWarningState.validationError) {
+      return t`Acknowledgment Required`;
     }
 
-    if (
-      (priceImpactWarningState.shouldShowWarningForPosition && !priceImpactWarningState.isHighPositionImpactAccepted) ||
-      (priceImpactWarningState.shouldShowWarningForSwap && !priceImpactWarningState.isHighSwapImpactAccepted)
-    ) {
-      return t`Price Impact not yet acknowledged`;
+    if (isAllowanceLoading || isBalanceLoading) {
+      return t`Loading...`;
     }
 
-    if (needPayTokenApproval && fromToken) {
+    if (needPayTokenApproval) {
       return t`Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`;
     }
 
     return undefined;
   }, [
-    fromToken,
-    needPayTokenApproval,
     priceImpactWarningState,
-    highExecutionFeeAcknowledgement,
-    isHighFeeConsentError,
+    isAllowanceLoading,
+    isBalanceLoading,
+    needPayTokenApproval,
+    fromToken?.assetSymbol,
+    fromToken?.symbol,
   ]);
 
   const element = (
     <>
       <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
-      {highExecutionFeeAcknowledgement}
-      {needPayTokenApproval && fromToken && (
+      {isAllowanceLoaded && needPayTokenApproval && fromToken && (
         <ApproveTokenButton
           tokenAddress={fromToken.address}
           tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}

@@ -5,7 +5,8 @@ import {
   selectTradeboxCollateralToken,
   selectTradeboxMarketInfo,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { getIsEquivalentTokens, getSpread } from "domain/tokens";
+import { getSpread } from "domain/tokens";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 export const selectTradeboxCollateralSpreadInfo = createSelector((q) => {
   const marketInfo = q(selectTradeboxMarketInfo);

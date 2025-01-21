@@ -1,8 +1,8 @@
 import { isLocal } from "config/env";
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
-import { buildUrl } from "lib/buildUrl";
+import { buildUrl } from "sdk/utils/buildUrl";
 import {
   BatchReportBody,
   DayPriceCandle,
@@ -183,5 +183,11 @@ export class OracleKeeperFetcher implements OracleFetcher {
         this.switchOracleKeeper();
         return null;
       });
+  }
+
+  async fetchUiVersion(currentVersion: number, active: boolean): Promise<number> {
+    return fetch(buildUrl(this.url!, `/ui/min_version?client_version=${currentVersion}&active=${active}`))
+      .then((res) => res.json())
+      .then((res) => res.version);
   }
 }

@@ -1,22 +1,25 @@
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "config/tokens";
-import { Token, TokenPrices } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
-import { PRECISION, applyFactor, expandDecimals } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { PRECISION, expandDecimals } from "lib/numbers";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import {
+  getAvailableUsdLiquidityForCollateral,
+  getMarketPnl,
+  getOpenInterestUsd,
+  getPoolUsdWithoutPnl,
+  getReservedUsd,
+  getTokenPoolType,
+} from "sdk/utils/markets";
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
 import { TokenData, TokensData } from "../tokens/types";
-import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
+import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 import { isGlvInfo } from "./glv";
-import { ContractMarketPrices, GlvInfo, GlvOrMarketInfo, Market, MarketInfo } from "./types";
+import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
+import { getCappedPoolPnl } from "./utils";
 
-export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
-  const { indexToken, longToken, shortToken, isSpotOnly } = p;
-
-  return `${getMarketIndexName({ indexToken, isSpotOnly })} [${getMarketPoolName({ longToken, shortToken })}]`;
-}
+export * from "sdk/utils/markets";
 
 export function getGlvMarketName(chainId: number, address: string) {
   return GLV_MARKETS[chainId]?.[address]?.name;
@@ -56,71 +59,6 @@ export function getGlvMarketShortening(chainId: number, address: string) {
   return GLV_MARKETS[chainId]?.[address]?.shortening || "";
 }
 
-export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token }) & { isSpotOnly: boolean }) {
-  const { isSpotOnly } = p;
-
-  const firstToken = "indexToken" in p ? p.indexToken : p.glvToken;
-
-  if (isSpotOnly) {
-    return `SWAP-ONLY`;
-  }
-
-  const prefix = getTokenVisualMultiplier(firstToken);
-
-  return `${prefix}${firstToken.baseSymbol || firstToken.symbol}/USD`;
-}
-
-export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
-  const { longToken, shortToken } = p;
-
-  if (longToken.address === shortToken.address) {
-    return longToken.symbol;
-  }
-
-  return `${longToken.symbol}-${shortToken.symbol}`;
-}
-
-/**
- * Apart from usual cases, returns `long` for single token backed markets.
- */
-export function getTokenPoolType(
-  marketInfo: {
-    longToken: Token;
-    shortToken: Token;
-  },
-  tokenAddress: string
-): "long" | "short" | undefined {
-  const { longToken, shortToken } = marketInfo;
-
-  if (longToken.address === shortToken.address && tokenAddress === longToken.address) {
-    return "long";
-  }
-
-  if (tokenAddress === longToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && longToken.isWrapped)) {
-    return "long";
-  }
-
-  if (tokenAddress === shortToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && shortToken.isWrapped)) {
-    return "short";
-  }
-
-  return undefined;
-}
-
-export function getOppositeCollateral(marketInfo: MarketInfo, tokenAddress: string) {
-  const poolType = getTokenPoolType(marketInfo, tokenAddress);
-
-  if (poolType === "long") {
-    return marketInfo.shortToken;
-  }
-
-  if (poolType === "short") {
-    return marketInfo.longToken;
-  }
-
-  return undefined;
-}
-
 function isMarketCollateral(marketInfo: MarketInfo, tokenAddress: string) {
   return getTokenPoolType(marketInfo, tokenAddress) !== undefined;
 }
@@ -129,57 +67,8 @@ export function isMarketIndexToken({ indexToken }: { indexToken: TokenData }, to
   return tokenAddress === indexToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && indexToken.isWrapped);
 }
 
-export function getPoolUsdWithoutPnl(
-  marketInfo: MarketInfo,
-  isLong: boolean,
-  priceType: "minPrice" | "maxPrice" | "midPrice"
-) {
-  const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
-  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
-
-  let price: bigint | undefined;
-
-  if (priceType === "minPrice") {
-    price = token.prices?.minPrice;
-  } else if (priceType === "maxPrice") {
-    price = token.prices?.maxPrice;
-  } else {
-    price = getMidPrice(token.prices);
-  }
-
-  return convertToUsd(poolAmount, token.decimals, price)!;
-}
-
 export function getMaxOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.maxOpenInterestLong : marketInfo.maxOpenInterestShort;
-}
-
-export function getOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
-  return isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
-}
-
-export function getOpenInterestInTokens(marketInfo: MarketInfo, isLong: boolean) {
-  return isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
-}
-
-export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
-  const { indexToken } = marketInfo;
-
-  if (isLong) {
-    return convertToUsd(marketInfo.longInterestInTokens, marketInfo.indexToken.decimals, indexToken.prices.maxPrice)!;
-  } else {
-    return marketInfo.shortInterestUsd;
-  }
-}
-
-export function getMarketDivisor({
-  longTokenAddress,
-  shortTokenAddress,
-}: {
-  longTokenAddress: string;
-  shortTokenAddress: string;
-}) {
-  return longTokenAddress === shortTokenAddress ? 2n : 1n;
 }
 
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
@@ -220,27 +109,6 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
   return result < 0 ? 0n : result;
 }
 
-export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
-  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
-
-  if (marketInfo.isSpotOnly) {
-    return poolUsd;
-  }
-
-  const reservedUsd = getReservedUsd(marketInfo, isLong);
-  const maxReserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
-
-  if (maxReserveFactor === 0n) {
-    return 0n;
-  }
-
-  const minPoolUsd = (reservedUsd * PRECISION) / maxReserveFactor;
-
-  const liquidity = poolUsd - minPoolUsd;
-
-  return liquidity;
-}
-
 export function getUsedLiquidity(marketInfo: MarketInfo, isLong: boolean): [bigint, bigint] {
   if (marketInfo.isSpotOnly) {
     return [0n, 0n];
@@ -255,33 +123,6 @@ export function getUsedLiquidity(marketInfo: MarketInfo, isLong: boolean): [bigi
   const isReserveSmaller = maxReservedUsd - reservedUsd < maxOpenInterestUsd - openInterestUsd;
 
   return isReserveSmaller ? [reservedUsd, maxReservedUsd] : [openInterestUsd, maxOpenInterestUsd];
-}
-
-export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: boolean) {
-  // for long positions, pick the larger price to maximize pnl
-  // for short positions, pick the smaller price to maximize pnl
-  if (isLong) {
-    return maximize ? prices.maxPrice : prices.minPrice;
-  }
-
-  return maximize ? prices.minPrice : prices.maxPrice;
-}
-
-export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, forMaxPoolValue: boolean) {
-  const maximize = !forMaxPoolValue;
-  const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
-  const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
-
-  if (openInterestUsd === 0n || openInterestInTokens === 0n) {
-    return 0n;
-  }
-
-  const price = getPriceForPnl(marketInfo.indexToken.prices, isLong, maximize);
-
-  const openInterestValue = convertToUsd(openInterestInTokens, marketInfo.indexToken.decimals, price)!;
-  const pnl = isLong ? openInterestValue - openInterestUsd : openInterestUsd - openInterestValue;
-
-  return pnl;
 }
 
 export function getMarketNetPnl(marketInfo: MarketInfo, maximize: boolean) {
@@ -303,19 +144,6 @@ export function getMarketNetPnl(marketInfo: MarketInfo, maximize: boolean) {
   });
 
   return cappedLongPnl + cappedShortPnl;
-}
-
-export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; poolPnl: bigint; isLong: boolean }) {
-  const { marketInfo, poolUsd, poolPnl, isLong } = p;
-
-  if (poolPnl < 0) {
-    return poolPnl;
-  }
-
-  const maxPnlFactor: bigint = isLong ? marketInfo.maxPnlFactorForTradersLong : marketInfo.maxPnlFactorForTradersShort;
-  const maxPnl = applyFactor(poolUsd, maxPnlFactor);
-
-  return poolPnl > maxPnl ? maxPnl : poolPnl;
 }
 
 export function getMostLiquidMarketForPosition(
@@ -405,13 +233,13 @@ export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
 
 function getDepositCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
-  const maxPoolAmount = getMaxPoolAmount(marketInfo, isLong);
+  const maxPoolAmount = getStrictestMaxPoolAmountForDeposit(marketInfo, isLong);
   const capacityAmount = maxPoolAmount - poolAmount;
 
   return bigMath.max(0n, capacityAmount);
 }
 
-export function getMaxPoolAmount(marketInfo: MarketInfo, isLong: boolean) {
+export function getStrictestMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const maxPoolUsdForDeposit = isLong ? marketInfo.maxLongPoolUsdForDeposit : marketInfo.maxShortPoolUsdForDeposit;
   const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
@@ -422,16 +250,23 @@ export function getMaxPoolAmount(marketInfo: MarketInfo, isLong: boolean) {
   return bigMath.min(maxPoolAmount, maxPoolAmountForDeposit);
 }
 
-export function getMaxPoolUsd(marketInfo: MarketInfo, isLong: boolean) {
+export function getStrictestMaxPoolUsdForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
-  const maxPoolAmount = getMaxPoolAmount(marketInfo, isLong);
+  const maxPoolAmount = getStrictestMaxPoolAmountForDeposit(marketInfo, isLong);
+
+  return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
+}
+
+export function getMaxPoolUsdForSwap(marketInfo: MarketInfo, isLong: boolean) {
+  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
 
   return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
 }
 
 export function getDepositCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
-  const maxPoolUsd = getMaxPoolUsd(marketInfo, isLong);
+  const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(marketInfo, isLong);
 
   const capacityUsd = maxPoolUsd - poolUsd;
 
@@ -539,22 +374,6 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
-export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices | undefined {
-  const indexToken = getByKey(tokensData, market.indexTokenAddress);
-  const longToken = getByKey(tokensData, market.longTokenAddress);
-  const shortToken = getByKey(tokensData, market.shortTokenAddress);
-
-  if (!indexToken || !longToken || !shortToken) {
-    return undefined;
-  }
-
-  return {
-    indexTokenPrice: indexToken && convertToContractTokenPrices(indexToken.prices, indexToken.decimals),
-    longTokenPrice: longToken && convertToContractTokenPrices(longToken.prices, longToken.decimals),
-    shortTokenPrice: shortToken && convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
-  };
-}
-
 export function getTotalGmInfo(tokensData?: TokensData) {
   const defaultResult = {
     balance: 0n,
@@ -573,19 +392,6 @@ export function getTotalGmInfo(tokensData?: TokensData) {
     acc.balanceUsd = acc.balanceUsd + (balanceUsd ?? 0n);
     return acc;
   }, defaultResult);
-}
-
-export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
-  if (minCollateralFactor === undefined) return 100 * BASIS_POINTS_DIVISOR;
-  if (minCollateralFactor === 0n) return 100 * BASIS_POINTS_DIVISOR;
-
-  const x = Number(PRECISION / minCollateralFactor);
-  const rounded = Math.round(x / 10) * 10;
-  return rounded * BASIS_POINTS_DIVISOR;
-}
-
-export function getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
-  return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
 }
 
 export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {

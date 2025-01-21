@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { ethers } from "ethers";
 import {
   adjustForDecimals,
@@ -14,7 +14,7 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
+import { formatBalanceAmount, formatBalanceAmountWithUsd } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
@@ -43,22 +43,15 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
-import {
-  getNativeToken,
-  getToken,
-  getTokenBySymbolSafe,
-  getV1Tokens,
-  getWhitelistedV1Tokens,
-  getWrappedToken,
-} from "config/tokens";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getFeeItem } from "domain/synthetics/fees";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -75,16 +68,23 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { IoChevronDownOutline } from "react-icons/io5";
+import {
+  getNativeToken,
+  getToken,
+  getTokenBySymbolSafe,
+  getV1Tokens,
+  getWhitelistedV1Tokens,
+  getWrappedToken,
+} from "sdk/configs/tokens";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 
 const { ZeroAddress } = ethers;
 
@@ -162,13 +162,26 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
   const { savedAllowedSlippage, shouldDisableValidationForTesting } = useSettings();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const history = useHistory();
   const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const tabOptions = useMemo(() => [t`Buy GLP`, t`Sell GLP`], []);
+  const tabOptionClassNames = useMemo(
+    () => ({
+      [tabOptions[0]]: {
+        active: "!bg-[#1F3445] border-b border-b-green-500",
+        regular: "border-b border-b-[transparent]",
+      },
+      [tabOptions[1]]: {
+        active: "!bg-[#392A46] border-b border-b-red-500",
+        regular: "border-b border-b-[transparent]",
+      },
+    }),
+    [tabOptions]
+  );
 
   const { active, signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -401,7 +414,8 @@ export default function GlpSwap(props) {
   let stakedGlpTrackerApr;
 
   if (
-    gmxPrice &&
+    gmxPrice !== undefined &&
+    gmxPrice > 0n &&
     stakingData &&
     stakingData.stakedGlpTracker !== undefined &&
     stakingData.stakedGlpTracker.tokensPerInterval !== undefined &&
@@ -965,8 +979,9 @@ export default function GlpSwap(props) {
                 <Trans>Wallet</Trans>
               </div>
               <div className="value">
-                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
-                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+                {glpBalance === undefined || glpBalanceUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
               </div>
             </div>
             <div className="App-card-row">
@@ -974,8 +989,9 @@ export default function GlpSwap(props) {
                 <Trans>Staked</Trans>
               </div>
               <div className="value">
-                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
-                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+                {glpBalance === undefined || glpBalanceUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
               </div>
             </div>
           </div>
@@ -1054,12 +1070,13 @@ export default function GlpSwap(props) {
               option={tabLabel}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
+              optionClassnames={tabOptionClassNames}
             />
             {isBuying && (
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Balance`}
-                topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                topRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals)}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
                 showMaxButton={
@@ -1088,7 +1105,7 @@ export default function GlpSwap(props) {
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Available`}
-                topRightValue={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
+                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(maxSellAmount, GLP_DECIMALS)}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
                 showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
@@ -1121,7 +1138,7 @@ export default function GlpSwap(props) {
                 topLeftLabel={receiveLabel}
                 topRightLabel={t`Balance`}
                 topLeftValue={receiveBalance}
-                topRightValue={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
+                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(glpBalance, GLP_DECIMALS)}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
                 defaultTokenName="GLP"
@@ -1450,8 +1467,9 @@ export default function GlpSwap(props) {
                     )}
                   </td>
                   <td>
-                    {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} ($
-                    {formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                    {tokenInfo.balance === undefined || balanceUsd === undefined
+                      ? "..."
+                      : formatBalanceAmountWithUsd(tokenInfo.balance, balanceUsd, tokenInfo.decimals, tokenInfo.symbol)}
                   </td>
                   <td>{renderFees()}</td>
                   <td>

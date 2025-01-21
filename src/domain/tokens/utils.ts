@@ -1,5 +1,5 @@
 import { getExplorerUrl } from "config/chains";
-import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { ethers } from "ethers";
 import {
   DUST_BNB,
@@ -13,7 +13,7 @@ import {
 } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals, PRECISION } from "lib/numbers";
-import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
+import { InfoTokens, Token, TokenInfo, TokenPrices } from "sdk/types/tokens";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 
 const { ZeroAddress } = ethers;
@@ -23,22 +23,6 @@ export function getTokenUrl(chainId: number, address: string) {
     return getExplorerUrl(chainId);
   }
   return getExplorerUrl(chainId) + "token/" + address;
-}
-
-export function getIsEquivalentTokens(token1: Token, token2: Token) {
-  if (token1.address === token2.address) {
-    return true;
-  }
-
-  if (token1.wrappedAddress === token2.address || token2.wrappedAddress === token1.address) {
-    return true;
-  }
-
-  if ((token1.isSynthetic || token2.isSynthetic) && token1.symbol === token2.symbol) {
-    return true;
-  }
-
-  return false;
 }
 
 export function getIsWrap(token1: Token, token2: Token) {

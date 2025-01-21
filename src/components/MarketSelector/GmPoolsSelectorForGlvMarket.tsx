@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -14,6 +14,7 @@ import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStat
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvInfo,
   MarketInfo,
@@ -24,7 +25,6 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 
 import Modal from "../Modal/Modal";

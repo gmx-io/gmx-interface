@@ -8,11 +8,11 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BaseContract, ethers } from "ethers";
-import { extractDataFromError, extractError, getErrorMessage } from "lib/contracts/transactionErrors";
+import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
@@ -23,6 +23,7 @@ import { withRetry } from "viem";
 import { isGlvEnabled } from "../markets/glv";
 import { adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { extractError } from "sdk/utils/contracts";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;

@@ -63,7 +63,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { get1InchSwapUrl } from "config/links";
-import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   approveTokens,
@@ -98,9 +98,10 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useHistory } from "react-router-dom";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 const SWAP_ICONS = {
   [LONG]: <LongIcon />,
@@ -319,7 +320,7 @@ export default function SwapBox(props) {
   });
   const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 
-  const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);

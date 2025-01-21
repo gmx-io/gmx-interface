@@ -6,7 +6,7 @@ import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getByKey } from "sdk/utils/objects";
 
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { getSubsquidGraphClient } from "lib/subgraph/clients";
 
@@ -32,7 +32,13 @@ export function use24hVolumes() {
     timestamp: timestamp,
   };
 
-  const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
+  const { data } = useSWR<
+    | {
+        byIndexToken: PositionVolumeInfosResponse;
+        byMarketToken: PositionVolumeInfosResponse;
+      }
+    | undefined
+  >(
     [chainId, "24hVolume"],
     async () => {
       const client = getSubsquidGraphClient(chainId);
@@ -46,30 +52,40 @@ export function use24hVolumes() {
         variables,
       });
 
-      return response.data?.positionsVolume.reduce(
-        (acc, cur) => {
-          const marketInfo = getByKey(marketsInfoData, cur.market);
+      const byIndexToken: PositionVolumeInfosResponse = {};
+      const byMarketToken: PositionVolumeInfosResponse = {};
+
+      response.data?.positionsVolume.forEach(
+        (entry) => {
+          const marketInfo = getByKey(marketsInfoData, entry.market);
 
           if (!marketInfo) {
-            return acc;
+            return;
           }
+
+          byMarketToken[entry.market] = BigInt(entry.volume);
 
           const indexTokenAddress = marketInfo?.indexTokenAddress;
 
           if (!indexTokenAddress) {
-            return acc;
+            return;
           }
 
-          acc[indexTokenAddress] =
-            (acc[indexTokenAddress] === undefined ? 0n : acc[indexTokenAddress]) + BigInt(cur.volume);
+          byIndexToken[indexTokenAddress] =
+            (byIndexToken[indexTokenAddress] === undefined ? 0n : byIndexToken[indexTokenAddress]) +
+            BigInt(entry.volume);
+
           if (indexTokenAddress === convertTokenAddress(chainId, NATIVE_TOKEN_ADDRESS, "wrapped")) {
-            acc[NATIVE_TOKEN_ADDRESS] = acc[indexTokenAddress];
+            byIndexToken[NATIVE_TOKEN_ADDRESS] = byIndexToken[indexTokenAddress];
           }
-
-          return acc;
         },
         {} as Record<Address, bigint>
       );
+
+      return {
+        byIndexToken,
+        byMarketToken,
+      };
     },
     {
       refreshInterval: 60_000,

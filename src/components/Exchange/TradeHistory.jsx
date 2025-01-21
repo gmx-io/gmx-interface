@@ -14,11 +14,11 @@ import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getPriceDecimals } from "config/tokens";
+import { getPriceDecimals } from "sdk/configs/tokens";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import "./TradeHistory.css";

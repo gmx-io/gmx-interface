@@ -2,7 +2,7 @@ import DataStore from "sdk/abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
-import { hashDataMap } from "lib/multicall/hashDataMap";
+import { hashDataMap } from "sdk/utils/hash";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { ClaimableFundingData, getMarketDivisor, useMarkets } from ".";

@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
+import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
@@ -13,10 +13,10 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -45,6 +45,7 @@ export function PoolSelector({
   showIndexIcon = false,
   withFilters = true,
   favoriteKey,
+  size = "m",
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -150,7 +151,7 @@ export function PoolSelector({
     }
   };
 
-  function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined) {
+  function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined, size: "l" | "m") {
     if (!marketInfo) return "...";
     let name;
 
@@ -163,7 +164,9 @@ export function PoolSelector({
     if (marketsOptions?.length > 1) {
       return (
         <div
-          className="text-h2 -mr-5 flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+          className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+            "text-h2 -mr-5": size === "l",
+          })}
           onClick={() => setIsModalVisible(true)}
         >
           {name ? name : "..."}
@@ -239,7 +242,7 @@ export function PoolSelector({
               displaySize={20}
             />
           )}
-          {displayPoolLabel(marketInfo)}
+          {displayPoolLabel(marketInfo, size)}
         </div>
       )}
     </div>

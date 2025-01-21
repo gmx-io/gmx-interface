@@ -4,12 +4,12 @@ import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
-import { getToken } from "config/tokens";
+import { getToken } from "sdk/configs/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFeesType } from "domain/synthetics/trade";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -110,31 +110,32 @@ export function TradeFeesRow(p: Props) {
         className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
       })) || [];
 
-    const swapProfitFeeRow = (p.swapProfitFee?.deltaUsd === undefined ? undefined : p.swapProfitFee?.deltaUsd !== 0n)
-      ? {
-          id: "swapProfitFee",
-          label: (
-            <>
-              <div className="text-white">{t`Swap Profit Fee`}:</div>
-              <div>
-                (
-                {formatPercentage(
-                  p.swapProfitFee?.precisePercentage === undefined
-                    ? undefined
-                    : bigMath.abs(p.swapProfitFee.precisePercentage),
-                  {
-                    displayDecimals: 3,
-                    bps: false,
-                  }
-                )}{" "}
-                of collateral)
-              </div>
-            </>
-          ),
-          value: formatDeltaUsd(p.swapProfitFee?.deltaUsd),
-          className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-500"),
-        }
-      : undefined;
+    const swapProfitFeeRow =
+      p.swapProfitFee?.deltaUsd !== undefined && p.swapProfitFee?.deltaUsd !== 0n
+        ? {
+            id: "swapProfitFee",
+            label: (
+              <>
+                <div className="text-white">{t`Swap Profit Fee`}:</div>
+                <div>
+                  (
+                  {formatPercentage(
+                    p.swapProfitFee?.precisePercentage === undefined
+                      ? undefined
+                      : bigMath.abs(p.swapProfitFee.precisePercentage),
+                    {
+                      displayDecimals: 3,
+                      bps: false,
+                    }
+                  )}{" "}
+                  of swap amount)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.swapProfitFee?.deltaUsd),
+            className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-500"),
+          }
+        : undefined;
 
     const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
     const positionFeeRow = (p.positionFee?.deltaUsd === undefined ? undefined : p.positionFee?.deltaUsd !== 0n)
@@ -218,19 +219,7 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: (
-              <>
-                <div className="text-white">{t`Borrow Fee`}:</div>
-                <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.borrowFee.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of collateral)
-                </div>
-              </>
-            ),
+            label: <div className="text-white">{t`Borrow Fee`}:</div>,
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
@@ -240,19 +229,7 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: (
-              <>
-                <div className="text-white">{t`Funding Fee`}:</div>
-                <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.fundingFee.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of collateral)
-                </div>
-              </>
-            ),
+            label: <div className="text-white">{t`Funding Fee`}:</div>,
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
@@ -325,7 +302,6 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "decrease") {
       return [
-        swapPriceImpactRow,
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
@@ -334,6 +310,7 @@ export function TradeFeesRow(p: Props) {
         uiFeeRow,
         uiSwapFeeRow,
         swapProfitFeeRow,
+        swapPriceImpactRow,
         ...swapFeeRows,
       ].filter(Boolean) as FeeRow[];
     }

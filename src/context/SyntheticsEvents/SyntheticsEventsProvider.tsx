@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
-import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import {
@@ -40,7 +40,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -121,7 +121,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const eventLogHandlers = useRef({});
 
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const updateNativeTokenBalance = useCallback(() => {
     if (!currentAccount) {

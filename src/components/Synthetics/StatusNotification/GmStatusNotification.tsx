@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import {
   PendingDepositData,
   PendingShiftData,

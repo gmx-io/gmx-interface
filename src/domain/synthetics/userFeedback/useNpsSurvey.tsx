@@ -9,7 +9,6 @@ import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { useOracleKeeperFetcher } from "../tokens";
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
 import { USD_DECIMALS } from "config/factors";
@@ -21,6 +20,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { useUnmount } from "react-use";
 import { formatAnswersByQuestionType } from "./utils";
 import { Answer } from "./types";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 const ACTION_TRIGGERED_DELAY = 5000;
 

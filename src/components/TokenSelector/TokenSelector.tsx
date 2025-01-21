@@ -5,13 +5,13 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getMarketUiConfig } from "config/markets";
-import { getToken } from "config/tokens";
+import { getToken } from "sdk/configs/tokens";
 import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals, formatAmount, formatBalanceAmount } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 

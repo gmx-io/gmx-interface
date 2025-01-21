@@ -3,13 +3,13 @@ import values from "lodash/values";
 import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 
-import { getNormalizedTokenSymbol, getToken } from "config/tokens";
+import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
-import { isOrderForPosition } from "domain/synthetics/orders/utils";
+import { isOrderForPosition } from "domain/synthetics/orders";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
 

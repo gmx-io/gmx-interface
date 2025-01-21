@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
-import { TOKEN_COLOR_MAP } from "config/tokens";
+import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import {
   getMarketIndexName,
   getMarketPoolName,
@@ -12,7 +12,7 @@ import {
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { BN_ZERO, formatTokenAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";

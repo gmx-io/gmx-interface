@@ -6,10 +6,10 @@ import { FaChevronDown } from "react-icons/fa";
 import { BigNumberish } from "ethers";
 
 import { USD_DECIMALS } from "config/factors";
-import { getTokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getTokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { getUsd } from "domain/tokens";
-import { InfoTokens, Token } from "domain/tokens/types";
-import { bigMath } from "lib/bigmath";
+import { InfoTokens, Token } from "sdk/types/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { LONG, SHORT, SWAP, USDG_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
 

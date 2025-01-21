@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce, useMedia } from "react-use";
 
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getToken } from "config/tokens";
+import { getToken } from "sdk/configs/tokens";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -100,6 +100,30 @@ function TVChartHeaderInfoMobile() {
       >
         <div>
           <div className="ExchangeChart-info-label mb-4">
+            <Trans>24h Volume</Trans>
+          </div>
+          {dailyVolume}
+        </div>
+
+        <div>
+          <div className="mb-4 whitespace-nowrap">
+            <span className="text-slate-100">
+              <Trans>Open Interest</Trans>
+            </span>
+            <span className="text-slate-100">{" ("}</span>
+            <span className="positive">{longOIPercentage}</span>
+            <span className="text-slate-100">/</span>
+            <span className="negative">{shortOIPercentage}</span>
+            <span className="text-slate-100">{")"}</span>
+          </div>
+          <div className="flex flex-row items-center gap-8">
+            <div className="flex flex-row items-center gap-8">{longOIValue}</div>
+            <div className="flex flex-row items-center gap-8">{shortOIValue}</div>
+          </div>
+        </div>
+
+        <div>
+          <div className="ExchangeChart-info-label mb-4">
             <Trans>Available Liquidity</Trans>
           </div>
           <div className="flex flex-row items-center gap-8">
@@ -124,30 +148,6 @@ function TVChartHeaderInfoMobile() {
             <div>{netRateLong}</div>
             <div>{netRateShort}</div>
           </TooltipWithPortal>
-        </div>
-
-        <div>
-          <div className="mb-4 whitespace-nowrap">
-            <span className="text-slate-100">
-              <Trans>Open Interest</Trans>
-            </span>
-            <span className="text-slate-100">{" ("}</span>
-            <span className="positive">{longOIPercentage}</span>
-            <span className="text-slate-100">/</span>
-            <span className="negative">{shortOIPercentage}</span>
-            <span className="text-slate-100">{")"}</span>
-          </div>
-          <div className="flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-8">{longOIValue}</div>
-            <div className="flex flex-row items-center gap-8">{shortOIValue}</div>
-          </div>
-        </div>
-
-        <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <Trans>24h Volume</Trans>
-          </div>
-          {dailyVolume}
         </div>
       </div>
     );

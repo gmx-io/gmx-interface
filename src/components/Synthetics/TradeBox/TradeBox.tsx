@@ -9,7 +9,7 @@ import { useKey, useLatest, usePrevious } from "react-use";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -52,7 +52,6 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useHasOutdatedUi } from "domain/legacy";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import {
   formatLeverage,
@@ -61,12 +60,8 @@ import {
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
-import {
-  TradeType,
-  applySlippageToPrice,
-  getIncreasePositionAmounts,
-  getNextPositionValuesForIncreaseTrade,
-} from "domain/synthetics/trade";
+import { TradeType, getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
+import { applySlippageToPrice } from "sdk/utils/trade";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {
@@ -146,6 +141,7 @@ import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClic
 import { tradeModeLabels, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
 
 import "./TradeBox.scss";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -180,7 +176,7 @@ export function TradeBox(p: Props) {
     shouldDisableValidationForTesting,
     shouldDisableValidationForTesting: shouldDisableValidation,
   } = useSettings();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -273,34 +269,33 @@ export function TradeBox(p: Props) {
   const maxAllowedLeverage = maxLeverage / 2;
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionCollateralPriceImpact,
+    collateralImpact: fees?.positionCollateralPriceImpact,
+    positionImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    place: "tradeBox",
+    swapProfitFee: fees?.swapProfitFee,
+    executionFeeUsd: executionFee?.feeUsd,
     tradeFlags,
   });
 
-  const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
-  const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+  const setIsAcceptedRef = useLatest(priceImpactWarningState.setIsAccepted);
 
   const setFromTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setFromTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsHighPositionImpactAcceptedRef.current(false);
-        setIsHighSwapImpactAcceptedRef.current(false);
+        setIsAcceptedRef.current(false);
       }
     },
-    [setFromTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [setFromTokenInputValueRaw, setIsAcceptedRef]
   );
   const setToTokenInputValue = useCallback(
     (value: string, shouldResetPriceImpactWarning: boolean) => {
       setToTokenInputValueRaw(value);
       if (shouldResetPriceImpactWarning) {
-        setIsHighPositionImpactAcceptedRef.current(false);
-        setIsHighSwapImpactAcceptedRef.current(false);
+        setIsAcceptedRef.current(false);
       }
     },
-    [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+    [setToTokenInputValueRaw, setIsAcceptedRef]
   );
 
   const userReferralInfo = useUserReferralInfo();

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE } from "./chains";
 import { getIncentivesV2Url } from "./links";
-import { getNormalizedTokenSymbol } from "./tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
@@ -32,6 +32,50 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
+  {
+    id: "trump-listing",
+    title: "TRUMP market added on Arbitrum",
+    isActive: true,
+    startDate: "20 Jan 2025, 14:30",
+    endDate: "27 Jan 2025, 00:00",
+    bodyText: (
+      <>
+        Trade <TokenSymbolWithIcon symbol="TRUMP" />
+        /USD, or provide liquidity to the pool using <TokenSymbolWithIcon symbol="ETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [ETH-USDC].
+      </>
+    ),
+  },
+  {
+    id: "trading-fees-reduction",
+    title: "Trading fees reduced",
+    isActive: true,
+    startDate: "6 Jan 2025, 12:00",
+    endDate: "13 Jan 2025, 12:00",
+    bodyText: (
+      <>
+        Open and close fees have been lowered from 5/7 bps to 4/6 bps with the introduction of liquidation fees.
+        <br />
+        <br />
+        <ExternalLink href="https://t.me/GMX_Announcements/963">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
+    id: "dydx-inj-listing",
+    title: "DYDX and INJ markets added on Arbitrum",
+    isActive: true,
+    startDate: "26 Dec 2024, 15:00",
+    endDate: "01 Jan 2025, 00:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="DYDX" />
+        /USD and <TokenSymbolWithIcon symbol="INJ" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC].
+      </>
+    ),
+  },
   {
     id: "fil-listing",
     title: "Filecoin (FIL) market added on Arbitrum",

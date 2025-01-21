@@ -479,6 +479,30 @@
       "baseBorrowingFactorShort": "0x488ad2e07ed1c47aa04dd86e97f77426c6197bfa6cff17a8b805a1cd15dd2d90",
       "aboveOptimalUsageBorrowingFactorLong": "0x09bb0347a83fe3a7c85be68bdd48acc437af0a5df63af4d71f89958060a5183b",
       "aboveOptimalUsageBorrowingFactorShort": "0xf537f2f92d9f7d503800034e53ed5df8212d23c932b380ad03aa870876595a35"
+    },
+    "0x467C4A46287F6C4918dDF780D4fd7b46419c2291": {
+      "optimalUsageFactorLong": "0x964962aaee802042c5a9840c0ccec35a3c08b7c3a99b7acec279fdfd6d0f5602",
+      "optimalUsageFactorShort": "0x9497c0e6a7adc621b90db81d6d028f6f5b1583b345b578cfcc4833e7d1279906",
+      "baseBorrowingFactorLong": "0x1640108e55e6399e5b8517089cb4f7862284b1a447a5547af7daa4aa0f6f164c",
+      "baseBorrowingFactorShort": "0x3c5f5cf695ab4f79a081f2a1136a0fd87e68f0a2c119db8c2805f8ca0ece90c6",
+      "aboveOptimalUsageBorrowingFactorLong": "0x5e9f8c8af639f59403d5633aefaa65be94ee1ac99b0910b200b02283d34f2e85",
+      "aboveOptimalUsageBorrowingFactorShort": "0x278832c9b87471c0f856e3f31aa6f860be363c8ebaa0397627c85081e39b12fc"
+    },
+    "0x16466a03449CB9218EB6A980Aa4a44aaCEd27C25": {
+      "optimalUsageFactorLong": "0x9e8b87143824c5582617f91611124f33711bb42d4018d803aa1d9450ad89043d",
+      "optimalUsageFactorShort": "0xaddecfb296f8550d3cbdbe1b9d83a97c06ff83f1fbd39396ff2ac28b43671a66",
+      "baseBorrowingFactorLong": "0x5537e1948501ad11928dc214dc0d165620884e871e9cbbcf5bc4ce6144ff3a11",
+      "baseBorrowingFactorShort": "0xc756628a72705a8f2ba1b0737509bc1e2e38afc2559cf5369c055de4e159007d",
+      "aboveOptimalUsageBorrowingFactorLong": "0xc60421377286117683d89fd5d15804d8e99a3d162b76d2bf5b70c22b1342f0cb",
+      "aboveOptimalUsageBorrowingFactorShort": "0x408b169f8bb5ede6252afb6fc2febaf67d40eb8856da18f261c616a86f65d233"
+    },
+    "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636": {
+      "optimalUsageFactorLong": "0xb0bbe375e4a0501194eb24c6d72a6e1485a2fc7a71a3ba2210452efc231ce057",
+      "optimalUsageFactorShort": "0x9f2221ea701bbe10945f600b466ed40242c81f78347b6bb09f44d7d2f3890a37",
+      "baseBorrowingFactorLong": "0x2e95da37022c244a6d69eb66549f0a98ec05b21cc542e91d1f96ef352d9cd076",
+      "baseBorrowingFactorShort": "0x2e2b3ae8ca19b0139b5ff461e52810bdae6e3994baf60c61d60db402bf0a4406",
+      "aboveOptimalUsageBorrowingFactorLong": "0x77b2d3054c40f15792ca1cf076c931172af3d568fed4f7e5ad53e20072d45b5f",
+      "aboveOptimalUsageBorrowingFactorShort": "0x1c89eecfb665a04121de2af51dfe78fe9aecf9c8882b0f9a418cee6a7ed94958"
     }
   },
   "43113": {

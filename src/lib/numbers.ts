@@ -1,8 +1,10 @@
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
-import { bigMath } from "./bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { getPlusOrMinusSymbol } from "./utils";
+
+export * from "sdk/utils/numbers";
 
 const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
@@ -355,31 +357,6 @@ export function roundUpDivision(a: bigint, b: bigint) {
   return (a + b - 1n) / b;
 }
 
-export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
-  if (a < 0n) {
-    return (a - b + 1n) / b;
-  }
-
-  return (a + b - 1n) / b;
-}
-
-export function applyFactor(value: bigint, factor: bigint) {
-  return (value * factor) / PRECISION;
-}
-
-export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRoundUp = false) {
-  const result = (numerator * BASIS_POINTS_DIVISOR_BIGINT) / denominator;
-
-  if (shouldRoundUp) {
-    const remainder = (numerator * BASIS_POINTS_DIVISOR_BIGINT) % denominator;
-    if (remainder !== 0n) {
-      return result < 0n ? result - 1n : result + 1n;
-    }
-  }
-
-  return result;
-}
-
 /**
  *
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
@@ -394,10 +371,6 @@ export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: n
 
   const amount = bigMath.abs(rate * 100n);
   return `${plurOrMinus}${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
-}
-
-export function basisPointsToFloat(basisPoints: bigint) {
-  return (basisPoints * PRECISION) / BASIS_POINTS_DIVISOR_BIGINT;
 }
 
 export function roundToTwoDecimals(n: number) {
@@ -581,16 +554,59 @@ export function formatAmountHuman(
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
 }
 
-export function formatBalanceAmount(amount: bigint, tokenDecimals: number) {
-  if (amount === undefined || amount === 0n) return "-";
+export function formatBalanceAmount(
+  amount: bigint,
+  tokenDecimals: number,
+  tokenSymbol?: string,
+  showZero = false
+): string {
+  if (amount === undefined) return "-";
+
+  if (amount === 0n) {
+    if (showZero) {
+      if (tokenSymbol) {
+        return `0.0000 ${tokenSymbol}`;
+      }
+      return "0.0000";
+    }
+    return "-";
+  }
 
   const absAmount = bigMath.abs(amount);
   const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);
 
-  if (absAmountFloat >= 1.0) return formatAmount(amount, tokenDecimals, 4, true);
-  else if (absAmountFloat >= 0.1) return formatAmount(amount, tokenDecimals, 5, true);
-  else if (absAmountFloat >= 0.01) return formatAmount(amount, tokenDecimals, 6, true);
-  else if (absAmountFloat >= 0.001) return formatAmount(amount, tokenDecimals, 7, true);
-  else if (absAmountFloat >= 0.00000001) return formatAmount(amount, tokenDecimals, 8, true);
-  else return bigintToNumber(amount, tokenDecimals).toExponential(2);
+  let value = "";
+
+  if (absAmountFloat >= 1.0) value = formatAmount(amount, tokenDecimals, 4, true);
+  else if (absAmountFloat >= 0.1) value = formatAmount(amount, tokenDecimals, 5, true);
+  else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, 6, true);
+  else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, 7, true);
+  else if (absAmountFloat >= 0.00000001) value = formatAmount(amount, tokenDecimals, 8, true);
+  else value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+
+  if (tokenSymbol) {
+    // Non-breaking space
+    return `${value} ${tokenSymbol}`;
+  }
+
+  return value;
+}
+
+export function formatBalanceAmountWithUsd(
+  amount: bigint,
+  amountUsd: bigint,
+  tokenDecimals: number,
+  tokenSymbol?: string,
+  showZero = false
+) {
+  if (!showZero && amount === 0n) {
+    return "-";
+  }
+
+  const value = formatBalanceAmount(amount, tokenDecimals, tokenSymbol, showZero);
+
+  const usd = formatUsd(amountUsd);
+
+  // Regular space
+  return `${value} (${usd})`;
 }

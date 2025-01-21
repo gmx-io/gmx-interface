@@ -7,7 +7,7 @@ import { HIGH_COLLATERAL_IMPACT_BPS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders/types";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { TradeFees, TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { memo, useMemo } from "react";
@@ -155,14 +155,6 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                             bps: false,
                           })}{" "}
                           of position size)
-                        </div>
-                        <div>
-                          (
-                          {formatPercentage(bigMath.abs(fullCollateralPriceImpactPercentage), {
-                            bps: false,
-                            displayDecimals: 3,
-                          })}{" "}
-                          of collateral)
                         </div>
                       </>
                     }

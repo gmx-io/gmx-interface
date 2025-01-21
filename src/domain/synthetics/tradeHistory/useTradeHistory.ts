@@ -6,7 +6,7 @@ import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
@@ -23,8 +23,15 @@ import { Token } from "domain/tokens";
 import { definedOrThrow } from "lib/guards";
 import { bigNumberify } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { GraphQlFilters, buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
-import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "./types";
+import { getSyntheticsGraphClient } from "lib/subgraph";
+import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
+import {
+  PositionTradeAction,
+  RawTradeAction,
+  SwapTradeAction,
+  TradeAction,
+  TradeActionType,
+} from "sdk/types/tradeHistory";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];

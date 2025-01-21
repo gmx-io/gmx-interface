@@ -1,7 +1,7 @@
-export const USD_DECIMALS = 30;
+import { BASIS_POINTS_DIVISOR } from "./factors";
 
-export const BASIS_POINTS_DIVISOR = 10000;
-export const BASIS_POINTS_DIVISOR_BIGINT = 10000n;
+export * from "sdk/configs/factors";
+
 export const FACTOR_TO_PERCENT_MULTIPLIER_BIGINT = 100n;
 
 /**
@@ -20,8 +20,5 @@ export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100; // 1%
 export const EXCESSIVE_SLIPPAGE_AMOUNT = 2 * 100; // 2%
 
 // V2
-export const HIGH_PRICE_IMPACT_BPS = 80; // 0.8%
-export const HIGH_POSITION_IMPACT_BPS = 50; // 0.5%
-export const HIGH_COLLATERAL_IMPACT_BPS = 500; // 5%
-export const HIGH_SWAP_IMPACT_BPS = 50; // 0.5%
-export const DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER = 30; // 0.3%
+export const HIGH_ACCEPTABLE_POSITION_IMPACT_BPS = 50; // 0.5%
+export const HIGH_SWAP_PROFIT_FEE_BPS = 100; // 1%
