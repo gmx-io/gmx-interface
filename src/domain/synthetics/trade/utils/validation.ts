@@ -123,7 +123,7 @@ export function getSwapError(p: {
       !isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio < triggerRatio.ratio)
     ) {
-      return [t`Price above Mark Price`];
+      return [t`Limit price above mark price`];
     }
 
     if (
@@ -131,7 +131,7 @@ export function getSwapError(p: {
       isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio > triggerRatio.ratio)
     ) {
-      return [t`Price below Mark Price`];
+      return [t`Limit price below mark price`];
     }
   }
 
@@ -273,11 +273,11 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && markPrice < triggerPrice) {
-      return [t`Limit Price Above Mark Price`];
+      return [t`Trigger price above mark price`];
     }
 
     if (!isLong && markPrice > triggerPrice) {
-      return [t`Limit Price Below Mark Price`];
+      return [t`Trigger price below mark price`];
     }
   }
 
@@ -386,20 +386,20 @@ export function getDecreaseError(p: {
 
     if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== ethers.MaxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
-        return [t`Price below Liq. Price`];
+        return [t`Trigger price below liq. price`];
       }
 
       if (!isLong && triggerPrice >= existingPosition.liquidationPrice) {
-        return [t`Price above Liq. Price`];
+        return [t`Trigger price above liq. price`];
       }
     }
 
     if (triggerThresholdType === TriggerThresholdType.Above && triggerPrice < (markPrice ?? 0n)) {
-      return [t`Price below Mark Price`];
+      return [t`Trigger price below mark price`];
     }
 
     if (triggerThresholdType === TriggerThresholdType.Below && triggerPrice > (markPrice ?? 0n)) {
-      return [t`Price above Mark Price`];
+      return [t`Trigger price above mark price`];
     }
   }
 

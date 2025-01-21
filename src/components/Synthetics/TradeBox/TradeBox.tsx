@@ -716,7 +716,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
   function renderTriggerPriceInput() {
     return (
       <BuyInputSection
-        topLeftLabel={t`Price`}
+        topLeftLabel={isLimit ? t`Limit Price` : t`Trigger Price`}
         topRightLabel={t`Mark`}
         topRightValue={formatUsdPrice(markPrice, {
           visualMultiplier: toToken?.visualMultiplier,
@@ -734,7 +734,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
   function renderTriggerRatioInput() {
     return (
       <BuyInputSection
-        topLeftLabel={t`Price`}
+        topLeftLabel={t`Limit Price`}
         topRightLabel={t`Mark`}
         topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
         onClickTopRightLabel={handleTriggerMarkPriceClick}

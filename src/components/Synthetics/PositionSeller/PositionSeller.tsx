@@ -588,7 +588,7 @@ export function PositionSeller(p: Props) {
             </div>
             {isTrigger && (
               <BuyInputSection
-                topLeftLabel={t`Price`}
+                topLeftLabel={t`Trigger Price`}
                 topRightLabel={t`Mark`}
                 topRightValue={formatUsd(markPrice, {
                   displayDecimals: marketDecimals,

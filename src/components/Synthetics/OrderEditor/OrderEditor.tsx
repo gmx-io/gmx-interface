@@ -192,11 +192,11 @@ export function OrderEditor(p: Props) {
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Price above Mark Price`;
+        return t`Limit price above mark price`;
       }
 
       if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Price below Mark Price`;
+        return t`Limit price below mark price`;
       }
 
       return;
@@ -227,11 +227,11 @@ export function OrderEditor(p: Props) {
     if (isLimitOrderType(p.order.orderType)) {
       if (p.order.isLong) {
         if (triggerPrice >= markPrice) {
-          return t`Price above Mark Price`;
+          return t`Limit price above mark price`;
         }
       } else {
         if (triggerPrice <= markPrice) {
-          return t`Price below Mark Price`;
+          return t`Limit price below mark price`;
         }
       }
     }
@@ -251,29 +251,29 @@ export function OrderEditor(p: Props) {
 
       if (existingPosition?.liquidationPrice) {
         if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
-          return t`Price below Liq. Price`;
+          return t`Trigger price below liq. price`;
         }
 
         if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
-          return t`Price above Liq. Price`;
+          return t`Trigger price above liq. price`;
         }
       }
 
       if (p.order.isLong) {
         if (p.order.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
-          return t`Price below Mark Price`;
+          return t`Trigger price below mark price`;
         }
 
         if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice >= markPrice) {
-          return t`Price above Mark Price`;
+          return t`Trigger price above mark price`;
         }
       } else {
         if (p.order.orderType === OrderType.LimitDecrease && triggerPrice >= markPrice) {
-          return t`Price above Mark Price`;
+          return t`Trigger price above mark price`;
         }
 
         if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice <= markPrice) {
-          return t`Price below Mark Price`;
+          return t`Trigger price below mark price`;
         }
       }
     }
@@ -542,7 +542,7 @@ export function OrderEditor(p: Props) {
             </BuyInputSection>
 
             <BuyInputSection
-              topLeftLabel={t`Price`}
+              topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Trigger Price` : t`Limit Price`}
               topRightLabel={t`Mark`}
               topRightValue={formatUsdPrice(markPrice, {
                 visualMultiplier: indexToken?.visualMultiplier,
@@ -571,7 +571,7 @@ export function OrderEditor(p: Props) {
           <>
             {triggerRatio && (
               <BuyInputSection
-                topLeftLabel={t`Price`}
+                topLeftLabel={t`Limit Price`}
                 topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                 onClickTopRightLabel={() => {
                   setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
