@@ -58,7 +58,7 @@ export type Props = {
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick: () => void;
-  onSelectPositionClick?: (tradeMode?: TradeMode) => void;
+  onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
   isLarge: boolean;
   openSettings: () => void;
   onOrdersClick?: (key?: string) => void;
@@ -680,7 +680,7 @@ export function PositionItem(p: Props) {
                     onClick={() => {
                       // TODO: remove after adding trigger functionality to Modal
                       window.scrollTo({ top: isMobile ? 500 : 0 });
-                      p.onSelectPositionClick?.(TradeMode.Trigger);
+                      p.onSelectPositionClick?.(TradeMode.Trigger, true);
                     }}
                   >
                     <Trans>TP/SL</Trans>
@@ -690,9 +690,9 @@ export function PositionItem(p: Props) {
                   {!p.position.isOpening && !p.hideActions && (
                     <PositionDropdown
                       handleMarketSelect={() => p.onSelectPositionClick?.()}
-                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
                       handleShare={p.onShareClick}
-                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
                     />
                   )}
                 </div>

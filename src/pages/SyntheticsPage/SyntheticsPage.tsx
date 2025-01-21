@@ -51,6 +51,7 @@ import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEdi
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
+import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { TVChart } from "components/Synthetics/TVChart/TVChart";
@@ -160,16 +161,21 @@ export function SyntheticsPage(p: Props) {
     document.title = title;
   }, [chartToken, isSwap]);
 
+  const [, setIsCurtainOpen] = useIsCurtainOpen();
+
   const onSelectPositionClick = useCallback(
-    (key: string, tradeMode?: TradeMode) => {
+    (key: string, tradeMode?: TradeMode, showCurtain = false) => {
       const positionsInfoData = calcSelector(selectPositionsInfoData);
       const position = getByKey(positionsInfoData, key);
 
       if (!position) return;
 
       setActivePosition(getByKey(positionsInfoData, key), tradeMode);
+      if (showCurtain) {
+        setIsCurtainOpen(true);
+      }
     },
-    [calcSelector, setActivePosition]
+    [calcSelector, setActivePosition, setIsCurtainOpen]
   );
 
   const renderOrdersTabTitle = useCallback(() => {

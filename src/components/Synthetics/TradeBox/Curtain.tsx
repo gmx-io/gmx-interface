@@ -1,6 +1,7 @@
 import cx from "classnames";
 import throttle from "lodash/throttle";
 import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
+import { createGlobalState } from "react-use";
 import { RemoveScroll } from "react-remove-scroll";
 
 import Button from "components/Button/Button";
@@ -16,6 +17,8 @@ const CURTAIN_STYLE: CSSProperties = {
   top: `calc(100dvh - ${HEADER_HEIGHT}px)`,
   height: `calc(100dvh - ${HEADER_HEIGHT}px)`,
 };
+
+export const useIsCurtainOpen = createGlobalState(false);
 
 export function Curtain({
   children,
@@ -40,6 +43,7 @@ export function Curtain({
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [externalIsCurtainOpen, setExternalIsCurtainOpen] = useIsCurtainOpen();
 
   const handleAnimate = useCallback((newIsOpen: boolean) => {
     if (!curtainRef.current) return;
@@ -66,19 +70,22 @@ export function Curtain({
 
   const headerClick = useCallback(() => {
     setIsOpen(true);
+    setExternalIsCurtainOpen(true);
     handleAnimate(true);
-  }, [setIsOpen, handleAnimate]);
+  }, [setIsOpen, handleAnimate, setExternalIsCurtainOpen]);
 
   const handleToggle = useCallback(() => {
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
+    setExternalIsCurtainOpen(newIsOpen);
     handleAnimate(newIsOpen);
-  }, [isOpen, handleAnimate]);
+  }, [isOpen, handleAnimate, setExternalIsCurtainOpen]);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
+    setExternalIsCurtainOpen(false);
     handleAnimate(false);
-  }, [setIsOpen, handleAnimate]);
+  }, [setIsOpen, handleAnimate, setExternalIsCurtainOpen]);
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!curtainRef.current) {
@@ -170,9 +177,10 @@ export function Curtain({
       const heightWithBorder = curtainRef.current.clientHeight + 1;
       const isOpen = heightWithBorder / 2 < -targetY;
       setIsOpen(isOpen);
+      setExternalIsCurtainOpen(isOpen);
       handleAnimate(isOpen);
     }
-  }, [handleAnimate]);
+  }, [handleAnimate, setExternalIsCurtainOpen]);
 
   const handlePointerCancel = useCallback(() => {
     isPointerDownRef.current = false;
@@ -195,6 +203,13 @@ export function Curtain({
       window.removeEventListener("resize", handler);
     };
   }, [handleAnimate, isOpen]);
+
+  useEffect(() => {
+    if (externalIsCurtainOpen && !isOpen) {
+      setIsOpen(true);
+      handleAnimate(true);
+    }
+  }, [externalIsCurtainOpen, isOpen, handleAnimate]);
 
   return (
     <>
