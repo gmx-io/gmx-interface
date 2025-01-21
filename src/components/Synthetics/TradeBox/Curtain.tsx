@@ -14,7 +14,9 @@ const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
 const CURTAIN_STYLE: CSSProperties = {
-  top: `calc(100dvh - ${HEADER_HEIGHT}px)`,
+  // top: `calc(100dvh - ${HEADER_HEIGHT}px)`,
+  bottom: `0`,
+  transform: `translateY(calc(100% - ${HEADER_HEIGHT}px))`,
   height: `calc(100dvh - ${HEADER_HEIGHT}px)`,
 };
 
@@ -31,6 +33,12 @@ export function Curtain({
   const curtainRef = useRef<HTMLDivElement>(null);
   const isPointerDownRef = useRef(false);
   const isDraggingRef = useRef(false);
+  /**
+   * Distance from bottom of the screen to the bottom of the curtain,
+   * positive meaning the bottom of the curtain is below the bottom of the screen
+   * 0 meaning the bottom of the curtain is at the bottom of the screen
+   * negative values are not possible
+   */
   const currentRelativeY = useRef(0);
   const prevScreenY = useRef(0);
   const prevScreenX = useRef(0);
@@ -51,7 +59,7 @@ export function Curtain({
     const oldTransition = curtainRef.current.style.transition;
     const animation = curtainRef.current.animate(
       {
-        transform: `translateY(${newIsOpen ? `calc(-100% + ${HEADER_HEIGHT}px)` : 0})`,
+        transform: `translateY(${newIsOpen ? 0 : `calc(100% - ${HEADER_HEIGHT}px)`})`,
       },
       {
         duration: 150,
@@ -63,6 +71,7 @@ export function Curtain({
       animation.commitStyles();
       animation.cancel();
       if (curtainRef.current) {
+        curtainRef.current.style.transform = `translateY(${newIsOpen ? 0 : `calc(100% - ${HEADER_HEIGHT}px)`})`;
         curtainRef.current.style.transition = oldTransition;
       }
     });
@@ -106,11 +115,8 @@ export function Curtain({
     startY.current = e.screenY;
 
     const curtainRect = curtainRef.current.getBoundingClientRect();
-    // h = 100dvh - 52px
-    // 100dvh = h + 52px
-    // offset from bottom = 100dvh - top
-    // offset from bottom = h + 52px - top
-    currentRelativeY.current = (curtainRect.height + HEADER_HEIGHT - curtainRect.top) * -1;
+
+    currentRelativeY.current = (window.innerHeight - curtainRect.bottom) * -1;
 
     prevScreenY.current = e.screenY;
     prevScreenX.current = e.screenX;
@@ -143,10 +149,10 @@ export function Curtain({
     let newY = currentRelativeY.current + deltaY;
     const heightWithBorder = curtainRef.current.clientHeight + 1;
 
-    if (newY > 0) {
+    if (newY < 0) {
       newY = 0;
-    } else if (newY < -heightWithBorder + HEADER_HEIGHT) {
-      newY = -heightWithBorder + HEADER_HEIGHT;
+    } else if (newY > heightWithBorder - HEADER_HEIGHT) {
+      newY = heightWithBorder - HEADER_HEIGHT;
     }
 
     curtainRef.current.style.transform = `translateY(${newY}px)`;
@@ -169,13 +175,19 @@ export function Curtain({
     isDraggingRef.current = false;
     curtainRef.current.style.willChange = "";
 
+    /**
+     * target y of the top of the curtain
+     * distance from bottom of the screen to the top of the curtain
+     */
     const targetY =
-      currentRelativeY.current +
+      currentRelativeY.current -
+      curtainRef.current.clientHeight +
       (Math.sign(currentVelocity.current) * currentVelocity.current ** 2) / (2 * DECELERATION);
 
     if (curtainRef.current) {
       const heightWithBorder = curtainRef.current.clientHeight + 1;
-      const isOpen = heightWithBorder / 2 < -targetY;
+      const isOpen = -targetY > heightWithBorder / 2;
+
       setIsOpen(isOpen);
       setExternalIsCurtainOpen(isOpen);
       handleAnimate(isOpen);
