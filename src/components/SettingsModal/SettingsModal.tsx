@@ -22,6 +22,8 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import "./SettingsModal.scss";
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 
+const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
+
 export function SettingsModal({
   isSettingsVisible,
   setIsSettingsVisible,
@@ -139,16 +141,13 @@ export function SettingsModal({
             className="App-slippage-tolerance-input with-minus"
             value={slippageAmount}
             onValueChange={(e) => setSlippageAmount(e.target.value)}
-            placeholder="0.3"
+            placeholder={defaultSippageDisplay.toString()}
           />
           <div className="App-slippage-tolerance-input-percent">%</div>
         </div>
-        {parseFloat(slippageAmount) < (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100 && (
+        {parseFloat(slippageAmount) < defaultSippageDisplay && (
           <AlertInfo type="warning">
-            <Trans>
-              Allowed Slippage below {(DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100}% may result in failed
-              orders.
-            </Trans>
+            <Trans>Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders.</Trans>
           </AlertInfo>
         )}
       </div>
