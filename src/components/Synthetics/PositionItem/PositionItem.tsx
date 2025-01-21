@@ -5,9 +5,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { FaAngleRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
-import { useMedia } from "react-use";
 
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -40,6 +38,7 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
@@ -73,7 +72,6 @@ export function PositionItem(p: Props) {
   const currentCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
-  const isMobile = useMedia("(max-width: 1100px)");
   const { minCollateralUsd } = usePositionsConstants();
   const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
   const isCurrentMarket =
@@ -581,7 +579,7 @@ export function PositionItem(p: Props) {
                 <div className="label">
                   <Trans>Market</Trans>
                 </div>
-                <div onClick={() => p.onSelectPositionClick?.()}>
+                <div>
                   <div className="flex items-start">
                     <span>{indexName && indexName}</span>
                     <span className="subtext">{poolName && `[${poolName}]`}</span>
@@ -678,8 +676,6 @@ export function PositionItem(p: Props) {
                     variant="secondary"
                     disabled={p.position.sizeInUsd == 0n}
                     onClick={() => {
-                      // TODO: remove after adding trigger functionality to Modal
-                      window.scrollTo({ top: isMobile ? 500 : 0 });
                       p.onSelectPositionClick?.(TradeMode.Trigger, true);
                     }}
                   >
