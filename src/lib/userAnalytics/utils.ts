@@ -78,7 +78,7 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
       { dedupKey: pair }
     );
   },
-  2000
+  500
 );
 
 export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricId: OrderMetricId) {
