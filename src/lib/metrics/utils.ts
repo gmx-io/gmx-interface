@@ -7,7 +7,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
 import { TxError } from "lib/contracts/transactionErrors";
-import { bigintToNumber, formatPercentage, roundToOrder } from "lib/numbers";
+import { bigintToNumber, formatPercentage, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
 import { parseError } from "../parseError";
@@ -143,6 +143,10 @@ export function initIncreaseOrderMetricData({
   isTPSLCreated,
   slCount,
   tpCount,
+  priceImpactDeltaUsd,
+  priceImpactPercentage,
+  netRate1h,
+  interactionId,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -162,6 +166,10 @@ export function initIncreaseOrderMetricData({
   isTPSLCreated: boolean | undefined;
   slCount: number | undefined;
   tpCount: number | undefined;
+  priceImpactDeltaUsd: bigint | undefined;
+  priceImpactPercentage: bigint | undefined;
+  netRate1h: bigint | undefined;
+  interactionId: string | undefined;
 }) {
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
@@ -201,6 +209,11 @@ export function initIncreaseOrderMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     isFirstOrder,
     isLeverageEnabled,
+    priceImpactDeltaUsd:
+      priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
+    priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
+    netRate1h: parseFloat(formatRatePercentage(netRate1h)),
+    interactionId,
   });
 }
 
@@ -217,6 +230,10 @@ export function initDecreaseOrderMetricData({
   marketInfo,
   isLong,
   place,
+  priceImpactDeltaUsd,
+  priceImpactPercentage,
+  netRate1h,
+  interactionId,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -231,6 +248,10 @@ export function initDecreaseOrderMetricData({
   subaccount: Subaccount | undefined;
   isLong: boolean | undefined;
   place: "tradeBox" | "positionSeller";
+  priceImpactDeltaUsd: bigint | undefined;
+  priceImpactPercentage: bigint | undefined;
+  netRate1h: bigint | undefined;
+  interactionId: string | undefined;
 }) {
   let metricType;
   if (orderType === OrderType.LimitDecrease) {
@@ -278,6 +299,11 @@ export function initDecreaseOrderMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     is1ct: Boolean(subaccount),
     requestId: getRequestId(),
+    priceImpactDeltaUsd:
+      priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
+    priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
+    netRate1h: parseFloat(formatRatePercentage(netRate1h)),
+    interactionId,
   });
 }
 
