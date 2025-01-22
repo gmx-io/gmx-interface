@@ -855,15 +855,17 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         qa="trade-mode"
       />
       <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
-        {(isSwap || isIncrease) && renderTokenInputs()}
-        {isTrigger && renderDecreaseSizeInput()}
+        <div className="flex flex-col gap-2">
+          {(isSwap || isIncrease) && renderTokenInputs()}
+          {isTrigger && renderDecreaseSizeInput()}
 
-        {isSwap && isLimit && renderTriggerRatioInput()}
-        {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+          {isSwap && isLimit && renderTriggerRatioInput()}
+          {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+        </div>
 
         {maxAutoCancelOrdersWarning}
         {isSwap && isLimit && (
-          <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning" className="mb-8">
+          <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning" className="my-14">
             <Trans>
               The execution price will constantly vary based on fees and price impact to guarantee that you receive the
               minimum receive amount.
@@ -871,7 +873,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           </AlertInfoCard>
         )}
 
-        <div className="flex flex-col gap-14 pb-14">
+        <div className="flex flex-col gap-14 pb-14 pt-12">
           {isPosition && (
             <>
               {isIncrease && isLeverageEnabled && (
@@ -950,7 +952,8 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         <div className="flex flex-col gap-14">
           <div className="pt-4">{button}</div>
           <div className="h-1 bg-stroke-primary" />
-          <LimitPriceRow />
+          {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
+          {!(isSwap && isLimit) && <LimitPriceRow />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
             <SyntheticsInfoRow
               label={t`Receive`}
@@ -964,7 +967,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           )}
 
           {isTrigger && renderTriggerOrderInfo()}
-          {!(isTrigger && !selectedPosition) && (
+          {!(isTrigger && !selectedPosition) && !isSwap && (
             <SyntheticsInfoRow
               label={t`Liquidation Price`}
               value={
@@ -984,8 +987,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           <PriceImpactFeesRow />
           <TradeBoxAdvancedGroups />
         </div>
-
-        {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
 
         {triggerConsentRows && triggerConsentRows}
       </form>

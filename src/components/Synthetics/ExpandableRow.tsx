@@ -18,10 +18,6 @@ interface Props {
    * if true - expands the row when the error is present
    */
   autoExpandOnError?: boolean;
-  /**
-   * if true - hides the expand-toggle row
-   */
-  hideExpand?: boolean;
   hasError?: boolean;
   /**
    * error message to show in the tooltip when disableCollapseOnError=true
@@ -43,7 +39,6 @@ export function ExpandableRow({
   hasError,
   disableCollapseOnError = false,
   autoExpandOnError = true,
-  hideExpand = false,
   errorMessage,
   className,
   occupyExpandableSpace = false,
@@ -73,22 +68,21 @@ export function ExpandableRow({
 
   return (
     <div className={className}>
-      {!hideExpand && (
-        <SyntheticsInfoRow
-          className={cx("group !items-center hover:text-blue-300", {
-            "cursor-not-allowed": disabled,
-          })}
-          onClick={disabled ? undefined : handleOnClick}
-          label={<span className="flex flex-row justify-between align-middle group-hover:text-blue-300">{label}</span>}
-          value={
-            open ? (
-              <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
-            ) : (
-              <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
-            )
-          }
-        />
-      )}
+      <SyntheticsInfoRow
+        className={cx("group !items-center hover:text-blue-300", {
+          "cursor-not-allowed": disabled,
+        })}
+        onClick={disabled ? undefined : handleOnClick}
+        label={<span className="flex flex-row justify-between align-middle group-hover:text-blue-300">{label}</span>}
+        value={
+          open ? (
+            <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
+          ) : (
+            <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
+          )
+        }
+      />
+
       <div
         className={cx(
           contentClassName,

@@ -39,6 +39,7 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
+import { LimitPriceRow } from "./LimitPriceRow";
 
 function LeverageInfoRows() {
   const { isIncrease, isTrigger } = useSelector(selectTradeboxTradeFlags);
@@ -219,13 +220,12 @@ export function TradeBoxAdvancedGroups() {
     [setOptions]
   );
 
-  const isVisible = isSwap ? true : options.advancedDisplay;
+  const isVisible = options.advancedDisplay;
 
   return (
     <ExpandableRow
       open={isVisible}
       title={t`Execution Details`}
-      hideExpand={isSwap}
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
@@ -257,6 +257,7 @@ export function TradeBoxAdvancedGroups() {
 
       {/* only when isSwap */}
       {isSwap && <SwapSpreadRow />}
+      {isSwap && isLimit && <LimitPriceRow />}
       {/* only when isLimit */}
       {isLimit && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
