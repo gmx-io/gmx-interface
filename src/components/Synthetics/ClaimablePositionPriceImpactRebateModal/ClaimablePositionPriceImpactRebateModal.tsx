@@ -14,7 +14,7 @@ import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPr
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";

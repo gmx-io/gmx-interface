@@ -9,7 +9,7 @@ import { USD_DECIMALS } from "config/factors";
 import { getTokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { getUsd } from "domain/tokens";
 import { InfoTokens, Token } from "sdk/types/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { LONG, SHORT, SWAP, USDG_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
 

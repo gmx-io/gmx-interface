@@ -51,7 +51,6 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useHasOutdatedUi } from "domain/legacy";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import {
   formatLeverage,
@@ -143,6 +142,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import "./TradeBox.scss";
 
 export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
@@ -173,7 +173,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     shouldDisableValidationForTesting,
     shouldDisableValidationForTesting: shouldDisableValidation,
   } = useSettings();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);

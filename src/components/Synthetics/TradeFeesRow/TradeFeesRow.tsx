@@ -9,7 +9,7 @@ import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFeesType } from "domain/synthetics/trade";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";

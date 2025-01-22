@@ -336,6 +336,11 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("26 Dec 2024"),
     },
+    // TRUMP/USD [ETH-USDC]
+    "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636": {
+      enabled: true,
+      listingDate: p("20 Jan 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

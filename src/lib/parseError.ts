@@ -1,8 +1,9 @@
 import cryptoJs from "crypto-js";
 import { ethers } from "ethers";
-import { extractDataFromError } from "lib/contracts/transactionErrors";
+import { extractDataFromError, getIsUserError, getIsUserRejectedError } from "lib/contracts/transactionErrors";
 import CustomErrors from "sdk/abis/CustomErrors.json";
-import { extractError, getIsUserError, getIsUserRejectedError, TxErrorType } from "./contracts/transactionErrors";
+import { extractError, TxErrorType } from "sdk/utils/contracts";
+
 import { OrderErrorContext } from "./metrics/types";
 
 export type ErrorLike = {

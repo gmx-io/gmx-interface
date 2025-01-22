@@ -1,4 +1,4 @@
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { LIQUIDATION_FEE, MARGIN_FEE_BASIS_POINTS } from "../legacy";
 import { BASIS_POINTS_DIVISOR_BIGINT, MAX_LEVERAGE } from "config/factors";
 

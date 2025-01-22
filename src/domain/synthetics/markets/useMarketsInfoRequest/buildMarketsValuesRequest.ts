@@ -2,7 +2,7 @@ import { MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config/dataStore";
 import { getByKey } from "lib/objects";
 
 import { MarketsData } from "domain/synthetics/markets/types";
-import { MarketValuesMulticallRequestConfig } from "domain/synthetics/markets/useMarketsInfoRequest";
+
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
 
@@ -10,6 +10,7 @@ import { HASHED_MARKET_VALUES_KEYS } from "sdk/prebuilt";
 
 import DataStore from "sdk/abis/DataStore.json";
 import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
+import { MarketValuesMulticallRequestConfig } from "sdk/modules/markets/types";
 
 export async function buildMarketsValuesRequest(
   chainId: number,

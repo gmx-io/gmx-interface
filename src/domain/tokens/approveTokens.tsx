@@ -54,10 +54,7 @@ export function approveTokens({
       helperToast.success(
         <div>
           <Trans>
-            Approval submitted!{" "}
-            <ExternalLink className="!text-white" href={txUrl}>
-              View status.
-            </ExternalLink>
+            Approval submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
           </Trans>
           <br />
         </div>

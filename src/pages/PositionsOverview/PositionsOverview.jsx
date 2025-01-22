@@ -9,7 +9,7 @@ import { formatAmount } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { getTimeRemaining } from "lib/dates";
 import useWallet from "lib/wallets/useWallet";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export default function PositionsOverview() {
   const { chainId } = useChainId();

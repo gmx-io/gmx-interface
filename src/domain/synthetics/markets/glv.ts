@@ -10,7 +10,7 @@ import {
   MarketInfo,
 } from "domain/synthetics/markets";
 
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { GLV_MARKETS } from "config/markets";
 import { TokenData, TokensData } from "../tokens";
