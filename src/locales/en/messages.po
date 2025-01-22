@@ -4955,8 +4955,8 @@ msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Allowed Slippage below {0}% may result in failed orders."
-msgstr "Allowed Slippage below {0}% may result in failed orders."
+#~ msgid "Allowed Slippage below {0}% may result in failed orders."
+#~ msgstr "Allowed Slippage below {0}% may result in failed orders."
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5873,6 +5873,10 @@ msgstr "Save on Fees"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
 msgstr "Price below Mark Price."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
+msgstr "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX staking rewards updates and insights"
@@ -7211,6 +7215,10 @@ msgstr "Initial collateral"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section."
+msgstr "Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section."
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx

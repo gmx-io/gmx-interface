@@ -10,6 +10,5 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "sdk/configs/chains";
 export * from "sdk/configs/chains";
 
 export const FEES_HIGH_BPS = 50;
-export const DEFAULT_ALLOWED_SLIPPAGE_BPS = 30;
 
 export type ChainId = typeof AVALANCHE | typeof AVALANCHE_FUJI | typeof ARBITRUM;

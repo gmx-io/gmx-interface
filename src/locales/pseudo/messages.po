@@ -4952,8 +4952,8 @@ msgid "Stop Loss Decrease"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Allowed Slippage below {0}% may result in failed orders."
-msgstr ""
+#~ msgid "Allowed Slippage below {0}% may result in failed orders."
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5869,6 +5869,10 @@ msgstr ""
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
@@ -7204,6 +7208,10 @@ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
+msgstr ""
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
