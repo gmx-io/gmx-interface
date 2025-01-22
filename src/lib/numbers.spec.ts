@@ -130,11 +130,6 @@ describe("formatBalanceAmount", () => {
     expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC")).toBe("-");
     expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC", true)).toBe("0.0000 USDC ($0.00)");
   });
-
-  it("should display single-digit-zero", () => {
-    expect(formatBalanceAmount(0n, 6, "USDC", "single-digit-zero")).toBe("0 USDC");
-    expect(formatBalanceAmount(0n, 6, undefined, "single-digit-zero")).toBe("0");
-  });
 });
 
 describe("formatFactor", () => {

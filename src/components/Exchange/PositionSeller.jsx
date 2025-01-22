@@ -1151,7 +1151,7 @@ export default function PositionSeller(props) {
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
-              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage} className="mb-10">
                 <span className="text-slate-100">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>

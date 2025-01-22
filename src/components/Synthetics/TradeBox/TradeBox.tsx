@@ -568,7 +568,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           isBottomLeftValueMuted={payUsd === undefined || payUsd === 0n}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
-              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, "single-digit-zero")
+              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol)
               : undefined
           }
           inputValue={fromTokenInputValue}
@@ -612,7 +612,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
                 bottomLeftValue={swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined}
                 bottomRightValue={
                   toToken && toToken.balance !== undefined && toToken.balance > 0n
-                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol, "single-digit-zero")
+                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol)
                     : undefined
                 }
                 isBottomLeftValueMuted={swapAmounts?.usdOut === undefined || swapAmounts.usdOut === 0n}

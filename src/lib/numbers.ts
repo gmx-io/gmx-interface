@@ -558,7 +558,7 @@ export function formatBalanceAmount(
   amount: bigint,
   tokenDecimals: number,
   tokenSymbol?: string,
-  showZero: boolean | "single-digit-zero" = false,
+  showZero = false,
   toExponential = true
 ): string {
   if (amount === undefined) return "-";
@@ -569,13 +569,6 @@ export function formatBalanceAmount(
         return `0.0000 ${tokenSymbol}`;
       }
       return "0.0000";
-    }
-
-    if (showZero === "single-digit-zero") {
-      if (tokenSymbol) {
-        return `0 ${tokenSymbol}`;
-      }
-      return "0";
     }
 
     return "-";
@@ -612,7 +605,7 @@ export function formatBalanceAmountWithUsd(
   amountUsd: bigint,
   tokenDecimals: number,
   tokenSymbol?: string,
-  showZero: boolean | "single-digit-zero" = false
+  showZero = false
 ) {
   if (showZero === false && amount === 0n) {
     return "-";
