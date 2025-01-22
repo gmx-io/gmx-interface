@@ -7,7 +7,7 @@ import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContex
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
-import { isSwapOrderType } from "domain/synthetics/orders/utils";
+import { isSwapOrderType } from "domain/synthetics/orders";
 import {
   fetchTradeActions,
   PositionTradeAction,

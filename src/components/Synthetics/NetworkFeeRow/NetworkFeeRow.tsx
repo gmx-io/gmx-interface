@@ -4,7 +4,10 @@ import { ReactNode, useMemo } from "react";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import type { ExecutionFee } from "domain/synthetics/fees/types";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+
+import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
@@ -12,10 +15,11 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
+import { bigMath } from "sdk/utils/bigmath";
 
 import "./NetworkFeeRow.scss";
-import { bigMath } from "lib/bigmath";
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {
   executionFee?: ExecutionFee;
@@ -32,6 +36,7 @@ const ESTIMATED_REFUND_BPS = 10 * 100;
 export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = false }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
+  const chainId = useSelector(selectChainId);
 
   let displayDecimals = executionFee?.feeToken.priceDecimals;
   if (displayDecimals !== undefined) {
@@ -108,6 +113,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
       return "-";
     }
 
+    const warning = getExecutionFeeWarning(chainId, executionFee);
+
     return (
       <TooltipWithPortal
         tooltipClassName="NetworkFeeRow-tooltip"
@@ -133,7 +140,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
               value={estimatedRefundText}
               textClassName="text-green-500"
             />
-            {executionFee?.warning && <p className="text-yellow-500">{executionFee?.warning}</p>}
+            {warning && <p className="text-yellow-500">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
         )}
@@ -141,7 +148,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
         {formatUsd(executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined)}
       </TooltipWithPortal>
     );
-  }, [estimatedRefundText, executionFee?.feeUsd, executionFee?.warning, executionFeeText, additionalOrdersMsg]);
+  }, [chainId, estimatedRefundText, executionFee, executionFeeText, additionalOrdersMsg]);
 
   if (rowPadding) {
     return (

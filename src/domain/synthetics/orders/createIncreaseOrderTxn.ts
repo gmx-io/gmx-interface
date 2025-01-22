@@ -13,15 +13,16 @@ import concat from "lodash/concat";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { applySlippageToPrice } from "../trade";
+import { applySlippageToPrice } from "sdk/utils/trade";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
-import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
+import { getPendingOrderFromParams } from "./utils";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { isMarketOrderType } from "sdk/utils/orders";
 
 const { ZeroAddress } = ethers;
 

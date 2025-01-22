@@ -12,7 +12,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getFeeItem } from "domain/synthetics/fees/utils";
+import { getFeeItem } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage } from "lib/numbers";

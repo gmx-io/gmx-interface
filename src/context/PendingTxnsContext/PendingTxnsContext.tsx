@@ -3,7 +3,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getExecutionFeeBufferBps, getGasPremium, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees";
+import {
+  getExecutionFeeBufferBps,
+  getGasPremium,
+  getMinimumExecutionFeeBufferBps,
+} from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
 import { getCallStaticError } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
@@ -86,7 +90,8 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
+                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>
+                    .
                     <br />
                     <br />
                     Please try increasing execution fee buffer to{" "}
@@ -108,11 +113,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Txn failed.{" "}
-                    <ExternalLink className="!text-white" href={txUrl}>
-                      View
-                    </ExternalLink>
-                    .
+                    Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>.
                   </Trans>
                   <br />
                 </div>

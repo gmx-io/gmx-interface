@@ -21,7 +21,7 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useHasOutdatedUi } from "domain/legacy";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import {
   DecreasePositionSwapType,
   OrderType,
@@ -122,7 +122,7 @@ export function PositionEditor(p: Props) {
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);

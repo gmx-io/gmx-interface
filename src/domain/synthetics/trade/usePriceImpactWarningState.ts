@@ -8,13 +8,13 @@ import {
   HIGH_SWAP_PROFIT_FEE_BPS,
   USD_DECIMALS,
 } from "config/factors";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import type { FeeItem } from "../fees";
-import type { TradeFlags } from "./types";
+import type { TradeFlags } from "sdk/types/trade";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 

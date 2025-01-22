@@ -1,7 +1,13 @@
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+
 import { getProvider } from "lib/rpc";
 import useSWR from "swr";
-import { estimateExecutionGasPrice, getExecutionFeeBufferBps, getGasPremium, getMaxPriorityFeePerGas } from "./utils";
+import {
+  estimateExecutionGasPrice,
+  getExecutionFeeBufferBps,
+  getGasPremium,
+  getMaxPriorityFeePerGas,
+} from "./utils/executionFee";
 
 export function useGasPrice(chainId: number) {
   const settings = useSettings();

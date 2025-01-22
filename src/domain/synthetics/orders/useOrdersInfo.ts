@@ -5,8 +5,9 @@ import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
 import { OrderType, OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
-import { getOrderInfo } from "./utils";
+import { setOrderInfoTitle } from "./utils";
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+import { getOrderInfo } from "sdk/utils/orders";
 
 export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
@@ -63,6 +64,11 @@ export function useOrdersInfoRequest(
 
         return acc;
       }
+
+      const marketInfo = getByKey(marketsInfoData, order.marketAddress);
+      const indexToken = marketInfo?.indexToken;
+
+      setOrderInfoTitle(orderInfo, indexToken);
 
       acc[orderKey] = orderInfo;
 

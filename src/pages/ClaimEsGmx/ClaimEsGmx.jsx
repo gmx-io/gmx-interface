@@ -24,7 +24,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";

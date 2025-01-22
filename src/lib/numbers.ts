@@ -1,8 +1,10 @@
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
-import { bigMath } from "./bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { getPlusOrMinusSymbol } from "./utils";
+
+export * from "sdk/utils/numbers";
 
 const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
@@ -355,31 +357,6 @@ export function roundUpDivision(a: bigint, b: bigint) {
   return (a + b - 1n) / b;
 }
 
-export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
-  if (a < 0n) {
-    return (a - b + 1n) / b;
-  }
-
-  return (a + b - 1n) / b;
-}
-
-export function applyFactor(value: bigint, factor: bigint) {
-  return (value * factor) / PRECISION;
-}
-
-export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRoundUp = false) {
-  const result = (numerator * BASIS_POINTS_DIVISOR_BIGINT) / denominator;
-
-  if (shouldRoundUp) {
-    const remainder = (numerator * BASIS_POINTS_DIVISOR_BIGINT) % denominator;
-    if (remainder !== 0n) {
-      return result < 0n ? result - 1n : result + 1n;
-    }
-  }
-
-  return result;
-}
-
 /**
  *
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
@@ -394,10 +371,6 @@ export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: n
 
   const amount = bigMath.abs(rate * 100n);
   return `${plurOrMinus}${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
-}
-
-export function basisPointsToFloat(basisPoints: bigint) {
-  return (basisPoints * PRECISION) / BASIS_POINTS_DIVISOR_BIGINT;
 }
 
 export function roundToTwoDecimals(n: number) {
@@ -585,7 +558,8 @@ export function formatBalanceAmount(
   amount: bigint,
   tokenDecimals: number,
   tokenSymbol?: string,
-  showZero = false
+  showZero = false,
+  toExponential = true
 ): string {
   if (amount === undefined) return "-";
 
@@ -609,7 +583,13 @@ export function formatBalanceAmount(
   else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, 6, true);
   else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, 7, true);
   else if (absAmountFloat >= 0.00000001) value = formatAmount(amount, tokenDecimals, 8, true);
-  else value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+  else {
+    if (toExponential) {
+      value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+    } else {
+      value = bigintToNumber(amount, tokenDecimals).toFixed(8);
+    }
+  }
 
   if (tokenSymbol) {
     // Non-breaking space
@@ -636,4 +616,22 @@ export function formatBalanceAmountWithUsd(
 
   // Regular space
   return `${value} (${usd})`;
+}
+
+export function formatFactor(factor: bigint) {
+  if (factor == 0n) {
+    return "0";
+  }
+
+  if (bigMath.abs(factor) > PRECISION * 1000n) {
+    return (factor / PRECISION).toString();
+  }
+
+  const trailingZeroes =
+    bigMath
+      .abs(factor)
+      .toString()
+      .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
+  const factorDecimals = 30 - trailingZeroes;
+  return formatAmount(factor, 30, factorDecimals);
 }

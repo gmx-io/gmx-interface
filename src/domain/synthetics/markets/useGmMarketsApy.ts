@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { sub } from "date-fns";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS, GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
@@ -482,5 +482,8 @@ function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: bigint) {
 function calculateAPY(apr: bigint) {
   const aprNumber = bigintToNumber(apr, 30);
   const apyNumber = Math.exp(aprNumber) - 1;
+  if (apyNumber === Infinity) {
+    return 0n;
+  }
   return numberToBigint(apyNumber, 30);
 }

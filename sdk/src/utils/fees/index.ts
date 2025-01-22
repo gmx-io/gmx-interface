@@ -5,6 +5,8 @@ import { SwapStats } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
 
+export * from "./estimateOraclePriceCount";
+export * from "./executionFee";
 export * from "./priceImpact";
 
 export function getSwapFee(marketInfo: MarketInfo, swapAmount: bigint, forPositiveImpact: boolean) {
@@ -113,6 +115,7 @@ export function getFeeItem(
   return {
     deltaUsd: feeDeltaUsd,
     bps: basis !== undefined && basis > 0 ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : 0n,
+    precisePercentage: basis !== undefined && basis > 0 ? bigMath.mulDiv(feeDeltaUsd, PRECISION, basis) : 0n,
   };
 }
 
@@ -120,11 +123,13 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   const totalFeeItem: FeeItem = {
     deltaUsd: 0n,
     bps: 0n,
+    precisePercentage: 0n,
   };
 
   (feeItems.filter(Boolean) as FeeItem[]).forEach((feeItem) => {
     totalFeeItem.deltaUsd = totalFeeItem.deltaUsd + feeItem.deltaUsd;
     totalFeeItem.bps = totalFeeItem.bps + feeItem.bps;
+    totalFeeItem.precisePercentage = totalFeeItem.precisePercentage + feeItem.precisePercentage;
   });
 
   return totalFeeItem;
