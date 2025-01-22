@@ -71,6 +71,7 @@ export function getOrderTypeLabel(orderType: OrderType) {
     [OrderType.MarketDecrease]: t`Market Decrease`,
     [OrderType.LimitDecrease]: t`Limit Decrease`,
     [OrderType.StopLossDecrease]: t`Stop Loss Decrease`,
+    [OrderType.Liquidation]: t`Liquidation`,
   };
 
   return orderTypeLabels[orderType];
