@@ -1,5 +1,4 @@
-import { buildFiltersBody, GraphQlFilters } from "../buildFiltersBody";
-import { describe, expect, it } from "vitest";
+import { buildFiltersBody, GraphQlFilters } from "../subgraph";
 
 describe("buildFiltersBody", () => {
   it("should return empty object if no filters", () => {

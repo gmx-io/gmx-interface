@@ -25,22 +25,6 @@ export function getTokenUrl(chainId: number, address: string) {
   return getExplorerUrl(chainId) + "token/" + address;
 }
 
-export function getIsEquivalentTokens(token1: Token, token2: Token) {
-  if (token1.address === token2.address) {
-    return true;
-  }
-
-  if (token1.wrappedAddress === token2.address || token2.wrappedAddress === token1.address) {
-    return true;
-  }
-
-  if ((token1.isSynthetic || token2.isSynthetic) && token1.symbol === token2.symbol) {
-    return true;
-  }
-
-  return false;
-}
-
 export function getIsWrap(token1: Token, token2: Token) {
   return token1.isNative && token2.isWrapped;
 }

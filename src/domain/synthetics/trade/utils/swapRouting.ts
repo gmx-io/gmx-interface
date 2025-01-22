@@ -1,13 +1,8 @@
-import {
-  getAvailableUsdLiquidityForCollateral,
-  getSwapCapacityUsd,
-  MarketInfo,
-  MarketsInfoData,
-} from "domain/synthetics/markets";
-import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
-import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
+import { getAvailableUsdLiquidityForCollateral, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "sdk/types/trade";
+import { getMaxSwapPathLiquidity, getSwapCapacityUsd, getSwapStats } from "./swapStats";
 import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "config/markets";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 // limit the number of markets to most N=SWAP_GRAPH_MAX_MARKETS_PER_TOKEN liquid markets for each collateral
 export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {

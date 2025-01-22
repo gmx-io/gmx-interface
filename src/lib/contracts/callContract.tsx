@@ -186,7 +186,7 @@ function showCallContractToast({
     <div>
       {sentMsg || t`Transaction sent.`}{" "}
       {hash && (
-        <ExternalLink className="!text-white" href={getExplorerUrl(chainId) + "tx/" + hash}>
+        <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
           <Trans>View status.</Trans>
         </ExternalLink>
       )}

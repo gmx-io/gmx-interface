@@ -6,8 +6,8 @@ import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
-import { PositionTradeAction, TradeActionType } from "domain/synthetics/tradeHistory/types";
-import { bigMath } from "lib/bigmath";
+import { PositionTradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   BN_NEGATIVE_ONE,
   BN_ONE,

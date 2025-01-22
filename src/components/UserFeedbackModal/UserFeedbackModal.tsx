@@ -1,7 +1,6 @@
 import { USD_DECIMALS } from "config/factors";
 import { MAX_FEEDBACK_LENGTH } from "config/ui";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
-import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { formatAmountForMetrics } from "lib/metrics";
@@ -12,6 +11,7 @@ import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatAnswersByQuestionType, QuestionType } from "domain/synthetics/userFeedback";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 type Props = {
   isVisible: boolean;

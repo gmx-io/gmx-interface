@@ -8,7 +8,7 @@ import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { useGmxPrice } from "domain/legacy";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";

@@ -3,6 +3,9 @@ import { arbitrum, avalanche, avalancheFuji, Chain } from "viem/chains";
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
+export const BSС_MAINNET = 56;
+export const BSС_TESTNET = 97;
+export const ETH_MAINNET = 1;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -12,6 +15,9 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [AVALANCHE_FUJI]: 5, // 5 USD
 };
 
+// added to maxPriorityFeePerGas
+// applied to EIP-1559 transactions only
+// is not applied to execution fee calculation
 export const MAX_FEE_PER_GAS_MAP = {
   [AVALANCHE]: 200000000000n, // 200 gwei
 };

@@ -1,4 +1,3 @@
-import { Address } from "viem";
 import { MarketInfo } from "./markets";
 import { TokenData, TokensRatio } from "./tokens";
 import { SwapPathStats, TriggerThresholdType } from "./trade";
@@ -40,7 +39,7 @@ export type Order = {
   key: string;
   account: string;
   callbackContract: string;
-  initialCollateralTokenAddress: Address;
+  initialCollateralTokenAddress: string;
   marketAddress: string;
   decreasePositionSwapType: DecreasePositionSwapType;
   receiver: string;
@@ -57,12 +56,12 @@ export type Order = {
   isLong: boolean;
   orderType: OrderType;
   shouldUnwrapNativeToken: boolean;
-  data: string;
   autoCancel: boolean;
+  data: string;
+  title?: string;
 };
 
 export type SwapOrderInfo = Order & {
-  title?: string;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio;
   initialCollateralToken: TokenData;
@@ -70,7 +69,6 @@ export type SwapOrderInfo = Order & {
 };
 
 export type PositionOrderInfo = Order & {
-  title: string;
   marketInfo: MarketInfo;
   swapPathStats?: SwapPathStats;
   indexToken: TokenData;

@@ -11,7 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useTradeboxChanges } from "./useTradeboxChanges";
 
 export function useTradeboxAvailablePriceImpactValues() {

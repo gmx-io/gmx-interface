@@ -14,6 +14,9 @@ export type MarketsInfoResult = {
   pricesUpdatedAt?: number;
 };
 
+/**
+ * Updates frequently
+ */
 export type MarketValues = Pick<
   MarketInfo,
   | "longInterestUsd"
@@ -28,12 +31,6 @@ export type MarketValues = Pick<
   | "positionImpactPoolAmount"
   | "swapImpactPoolAmountLong"
   | "swapImpactPoolAmountShort"
-  | "pnlLongMax"
-  | "pnlLongMin"
-  | "pnlShortMax"
-  | "pnlShortMin"
-  | "netPnlMax"
-  | "netPnlMin"
   | "borrowingFactorPerSecondForLongs"
   | "borrowingFactorPerSecondForShorts"
   | "fundingFactorPerSecond"

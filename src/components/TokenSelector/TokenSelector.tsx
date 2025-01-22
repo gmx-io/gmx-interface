@@ -5,19 +5,19 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { getMarketUiConfig } from "config/markets";
-import { getToken } from "sdk/configs/tokens";
 import { getMarketBadge, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals, formatAmount, formatBalanceAmount } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
+import { getToken } from "sdk/configs/tokens";
 
+import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
 
@@ -205,16 +205,16 @@ export default function TokenSelector(props: Props) {
       )}
       onClick={(event) => event.stopPropagation()}
     >
-      <Modal
+      <SlideModal
         qa={qa + "-modal"}
+        className="TokenSelector-modal text-white"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
         footerContent={footerContent}
-        className="text-white"
         headerContent={
           <SearchInput
-            className="mt-15 *:!text-body-medium"
+            className="*:!text-body-medium min-[700px]:mt-15"
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={_handleKeyDown}
@@ -302,7 +302,7 @@ export default function TokenSelector(props: Props) {
             <Trans>No tokens matched.</Trans>
           </div>
         )}
-      </Modal>
+      </SlideModal>
       <div
         data-qa={qa}
         className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"

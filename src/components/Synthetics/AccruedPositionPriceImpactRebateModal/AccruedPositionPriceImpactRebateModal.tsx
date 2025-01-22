@@ -10,7 +10,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { memo, useCallback, useMemo } from "react";
