@@ -1,13 +1,12 @@
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
+  estimateOrderOraclePriceCount,
 } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
@@ -26,11 +25,14 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { bigMath } from "sdk/utils/bigmath";
 import { getPositionKey } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { PRECISION } from "sdk/utils/numbers";
 import {
   selectAccount,
   selectChainId,
@@ -52,7 +54,6 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
-import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
@@ -903,4 +904,44 @@ export const selectTradeboxCloseSizeUsd = createSelector((q) => {
   const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
 
   return parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+});
+
+export const selectTradeboxSwapFeesPercentage = createSelector((q) => {
+  const swapAmounts = q(selectTradeboxSwapAmounts);
+
+  if (swapAmounts?.swapPathStats?.totalSwapFeeUsd === undefined || swapAmounts?.usdIn === undefined) {
+    return undefined;
+  }
+
+  return bigMath.mulDiv(swapAmounts.swapPathStats.totalSwapFeeUsd * -1n, PRECISION, swapAmounts.usdIn);
+});
+
+export const selectTradeboxPriceImpactPercentage = createSelector((q) => {
+  const fees = q(selectTradeboxFees);
+  const feesType = q(selectTradeboxTradeFeesType);
+
+  if (feesType === "swap") {
+    return fees?.swapPriceImpact?.precisePercentage;
+  }
+
+  if (
+    fees?.positionPriceImpact?.precisePercentage === undefined ||
+    fees?.priceImpactDiff?.precisePercentage === undefined
+  ) {
+    return undefined;
+  }
+
+  return fees.positionPriceImpact.precisePercentage - fees.priceImpactDiff.precisePercentage;
+});
+
+export const selectTradeboxFeesPercentage = createSelector((q) => {
+  const feesType = q(selectTradeboxTradeFeesType);
+
+  if (feesType === "swap") {
+    return q(selectTradeboxSwapFeesPercentage);
+  }
+
+  const fees = q(selectTradeboxFees);
+
+  return fees?.positionFee?.precisePercentage;
 });

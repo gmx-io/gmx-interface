@@ -6,6 +6,8 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxFees,
+  selectTradeboxFeesPercentage,
+  selectTradeboxPriceImpactPercentage,
   selectTradeboxTradeFeesType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -17,23 +19,19 @@ import { bigMath } from "sdk/utils/bigmath";
 export function PriceImpactFeesRow() {
   const chainId = useSelector(selectChainId);
   const fees = useSelector(selectTradeboxFees);
+  const priceImpactPercentage = useSelector(selectTradeboxPriceImpactPercentage);
+  const feesPercentage = useSelector(selectTradeboxFeesPercentage);
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const tradingIncentives = useTradingIncentives(chainId);
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
-  const fullPositionPriceImpactPercentage =
-    fees?.positionPriceImpact?.precisePercentage !== undefined && fees?.priceImpactDiff?.precisePercentage !== undefined
-      ? fees.positionPriceImpact.precisePercentage - fees.priceImpactDiff.precisePercentage
-      : undefined;
-
-  const isPriceImpactPositive =
-    fullPositionPriceImpactPercentage !== undefined && fullPositionPriceImpactPercentage > 0;
+  const isPriceImpactPositive = priceImpactPercentage !== undefined && priceImpactPercentage > 0;
 
   const formattedPriceImpactPercentage =
-    fullPositionPriceImpactPercentage === undefined
+    priceImpactPercentage === undefined
       ? "..."
-      : formatPercentage(fullPositionPriceImpactPercentage, {
+      : formatPercentage(priceImpactPercentage, {
           bps: false,
           signed: true,
         });
@@ -42,45 +40,47 @@ export function PriceImpactFeesRow() {
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
 
   const { formattedTotalFeePercentage, isTotalFeePositive } = useMemo(() => {
-    const positionFeePercentage = fees?.positionFee?.precisePercentage;
-
-    if (positionFeePercentage === undefined) {
+    if (feesPercentage === undefined) {
       return {
         formattedTotalFeePercentage: "...",
         isTotalFeePositive: false,
       };
     }
 
-    let referralDiscountPercentageOfSize = 0n;
-    if (userReferralInfo) {
-      referralDiscountPercentageOfSize = bigMath.mulDiv(
-        bigMath.mulDiv(positionFeePercentage, userReferralInfo.totalRebateFactor, PRECISION),
-        userReferralInfo.discountFactor,
-        PRECISION
-      );
-    }
+    let adjustedFeesPercentage = feesPercentage;
 
-    let estimatedRebatesPercentagePreciseOfSize = 0n;
-    if (rebateIsApplicable) {
-      estimatedRebatesPercentagePreciseOfSize = bigMath.mulDiv(
-        bigMath.mulDiv(estimatedRebatesPercentage, PRECISION, BASIS_POINTS_DIVISOR_BIGINT),
-        positionFeePercentage,
-        PRECISION
-      );
-    }
+    if (feesType !== "swap") {
+      let referralDiscountPercentageOfSize = 0n;
+      if (userReferralInfo) {
+        referralDiscountPercentageOfSize = bigMath.mulDiv(
+          bigMath.mulDiv(feesPercentage, userReferralInfo.totalRebateFactor, PRECISION),
+          userReferralInfo.discountFactor,
+          PRECISION
+        );
+      }
 
-    const positionFeeAfterRebateAndDiscount =
-      positionFeePercentage - referralDiscountPercentageOfSize - estimatedRebatesPercentagePreciseOfSize;
+      let estimatedRebatesPercentagePreciseOfSize = 0n;
+      if (rebateIsApplicable) {
+        estimatedRebatesPercentagePreciseOfSize = bigMath.mulDiv(
+          bigMath.mulDiv(estimatedRebatesPercentage, PRECISION, BASIS_POINTS_DIVISOR_BIGINT),
+          feesPercentage,
+          PRECISION
+        );
+      }
+
+      adjustedFeesPercentage =
+        feesPercentage - referralDiscountPercentageOfSize - estimatedRebatesPercentagePreciseOfSize;
+    }
 
     return {
-      formattedTotalFeePercentage: formatPercentage(positionFeeAfterRebateAndDiscount, {
+      formattedTotalFeePercentage: formatPercentage(adjustedFeesPercentage, {
         bps: false,
         signed: true,
         displayDecimals: 3,
       }),
-      isTotalFeePositive: positionFeeAfterRebateAndDiscount > 0,
+      isTotalFeePositive: adjustedFeesPercentage > 0,
     };
-  }, [fees?.positionFee?.precisePercentage, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage]);
+  }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage]);
 
   return (
     <SyntheticsInfoRow
