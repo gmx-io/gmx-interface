@@ -44,6 +44,7 @@ import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "conf
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
@@ -54,7 +55,6 @@ import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils"
 import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
-import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import {
   applyFactor,
@@ -68,7 +68,6 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
@@ -852,7 +851,6 @@ export default function GlpSwap(props) {
   const selectToken = (token) => {
     setAnchorOnSwapAmount(false);
     setSwapTokenAddress(token.address);
-    helperToast.success(t`${token.symbol} selected in order form`);
   };
 
   let feePercentageText = formatAmount(feeBasisPoints, 2, 2, true, "-");

@@ -1,4 +1,3 @@
-import { Trans } from "@lingui/macro";
 import { isAddress } from "ethers";
 import values from "lodash/values";
 import { useEffect, useMemo } from "react";
@@ -10,18 +9,12 @@ import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsSt
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import {
-  getGlvDisplayName,
-  getMarketIndexName,
-  getGlvOrMarketAddress,
-  getMarketPoolName,
-} from "domain/synthetics/markets/utils";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets/utils";
 
-import { helperToast } from "lib/helperToast";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 
-import { isGlvInfo } from "../../../../domain/synthetics/markets/glv";
 import { Mode, Operation } from "./types";
 
 type SearchParams = {
@@ -124,19 +117,6 @@ export function useUpdateByQueryParams({
             onSelectMarket(getGlvOrMarketAddress(marketInfo));
             setIsMarketForGlvSelectedManually?.(false);
             const isGlv = isGlvInfo(marketInfo);
-            const indexName = isGlv ? undefined : getMarketIndexName(marketInfo);
-            const poolName = getMarketPoolName(marketInfo);
-            const titlePrefix = isGlv ? getGlvDisplayName(marketInfo) : "GM: ";
-            helperToast.success(
-              <Trans>
-                <div className="inline-flex">
-                  {titlePrefix}
-                  {indexName ? <span>&nbsp;{indexName}</span> : null}
-                  <span className="ml-2 text-12 font-normal text-white">[{poolName}]</span>
-                </div>{" "}
-                <span>selected in order form</span>
-              </Trans>
-            );
 
             const isCurrentlyShift = currentOperation === Operation.Shift;
             const isNewMarketShiftAvailable = shiftAvailableMarkets.find(

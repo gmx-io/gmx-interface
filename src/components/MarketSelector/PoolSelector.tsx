@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
@@ -19,15 +19,54 @@ import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Modal from "../Modal/Modal";
 import { PoolListItem } from "./PoolListItem";
 
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
 import "./MarketSelector.scss";
+
+function PoolLabel({
+  marketInfo,
+  showAllPools,
+  marketsOptions,
+  size,
+  onClick,
+}: {
+  marketInfo: GlvOrMarketInfo | undefined;
+  showAllPools: boolean;
+  marketsOptions: MarketOption[];
+  size: "l" | "m";
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}) {
+  if (!marketInfo) return "...";
+  let name: string;
+
+  if (isGlvInfo(marketInfo)) {
+    name = getGlvDisplayName(marketInfo);
+  } else {
+    name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
+  }
+
+  if (marketsOptions?.length > 1) {
+    return (
+      <div
+        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+          "text-h2 -mr-5": size === "l",
+        })}
+        onClick={onClick}
+      >
+        {name ? name : "..."}
+        <BiChevronDown className="text-body-large" />
+      </div>
+    );
+  }
+
+  return <div>{name ? name : "..."}</div>;
+}
 
 export function PoolSelector({
   chainId,
@@ -151,36 +190,14 @@ export function PoolSelector({
     }
   };
 
-  function displayPoolLabel(marketInfo: GlvOrMarketInfo | undefined, size: "l" | "m") {
-    if (!marketInfo) return "...";
-    let name;
-
-    if (isGlvInfo(marketInfo)) {
-      name = getGlvDisplayName(marketInfo);
-    } else {
-      name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
-    }
-
-    if (marketsOptions?.length > 1) {
-      return (
-        <div
-          className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
-            "text-h2 -mr-5": size === "l",
-          })}
-          onClick={() => setIsModalVisible(true)}
-        >
-          {name ? name : "..."}
-          <BiChevronDown className="text-body-large" />
-        </div>
-      );
-    }
-
-    return <div>{name ? name : "..."}</div>;
-  }
+  const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setIsModalVisible(true);
+  }, []);
 
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
-      <Modal
+      <SlideModal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
@@ -223,7 +240,7 @@ export function PoolSelector({
             <Trans>No pools matched.</Trans>
           </div>
         )}
-      </Modal>
+      </SlideModal>
 
       {marketInfo && (
         <div className="inline-flex items-center">
@@ -242,7 +259,13 @@ export function PoolSelector({
               displaySize={20}
             />
           )}
-          {displayPoolLabel(marketInfo, size)}
+          <PoolLabel
+            size={size}
+            marketInfo={marketInfo}
+            showAllPools={showAllPools}
+            marketsOptions={marketsOptions}
+            onClick={handleClick}
+          />
         </div>
       )}
     </div>
