@@ -2031,10 +2031,12 @@ export default function SwapBox(props) {
             <>
               <BuyInputSection
                 topLeftLabel={t`Pay`}
-                topLeftValue={fromUsdMin !== undefined && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
-                topRightLabel={t`Balance`}
-                topRightValue={fromBalance !== undefined && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
-                onClickTopRightLabel={setFromValueToMaximumAvailable}
+                bottomLeftValue={fromUsdMin !== undefined && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
+                bottomRightLabel={t`Balance`}
+                bottomRightValue={
+                  fromBalance !== undefined && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`
+                }
+                onClickBottomRightLabel={setFromValueToMaximumAvailable}
                 showMaxButton={shouldShowMaxButton()}
                 inputValue={fromValue}
                 onInputValueChange={onFromValueChange}
@@ -2059,9 +2061,9 @@ export default function SwapBox(props) {
               </div>
               <BuyInputSection
                 topLeftLabel={getToLabel()}
-                topRightLabel={isSwap ? t`Balance` : t`Leverage`}
-                topLeftValue={toUsdMax !== undefined && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
-                topRightValue={
+                bottomRightLabel={isSwap ? t`Balance` : t`Leverage`}
+                bottomLeftValue={toUsdMax !== undefined && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
+                bottomRightValue={
                   isSwap
                     ? formatAmount(toBalance, toToken.decimals, 4, true)
                     : `${parseFloat(leverageOption).toFixed(2)}x`
@@ -2069,7 +2071,6 @@ export default function SwapBox(props) {
                 showMaxButton={false}
                 inputValue={toValue}
                 onInputValueChange={onToValueChange}
-                preventFocusOnLabelClick="right"
               >
                 <TokenSelector
                   label={getTokenLabel()}
@@ -2089,12 +2090,12 @@ export default function SwapBox(props) {
           {showTriggerRatioSection && (
             <BuyInputSection
               topLeftLabel={t`Price`}
-              topRightLabel={formatAmount(
+              bottomRightLabel={formatAmount(
                 getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
                 USD_DECIMALS,
                 4
               )}
-              onClickTopRightLabel={() => {
+              onClickBottomRightLabel={() => {
                 setTriggerRatioValue(
                   formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
                 );
@@ -2121,9 +2122,9 @@ export default function SwapBox(props) {
           {showTriggerPriceSection && (
             <BuyInputSection
               topLeftLabel={t`Price`}
-              topRightLabel={t`Mark`}
-              topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
-              onClickTopRightLabel={() => {
+              bottomRightLabel={t`Mark`}
+              bottomRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
+              onClickBottomRightLabel={() => {
                 setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal));
               }}
               showMaxButton={false}

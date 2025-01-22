@@ -22,23 +22,26 @@ import {
   selectTradeboxMaxLeverage,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
-  selectTradeboxToToken,
   selectTradeboxSwapAmounts,
+  selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { useHasOutdatedUi } from "domain/legacy";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { getCommonError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 
 import { ReactNode, useCallback, useMemo, useState } from "react";
 
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { getTriggerNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
@@ -48,27 +51,24 @@ import {
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade/utils/increase";
+import { approveTokens } from "domain/tokens/approveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { isAddressZero } from "lib/legacy";
 import { formatAmountFree, parseValue } from "lib/numbers";
+import { sleep } from "lib/sleep";
+import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
+import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
+import { ImSpinner2 } from "react-icons/im";
 import { getContract } from "sdk/configs/contracts";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useDecreaseOrdersThatWillBeExecuted } from "./useDecreaseOrdersThatWillBeExecuted";
-import { useTradeboxTransactions } from "./useTradeboxTransactions";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useRequiredActions } from "./useRequiredActions";
-import { sleep } from "lib/sleep";
-import { isAddressZero } from "lib/legacy";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import { approveTokens } from "domain/tokens/approveTokens";
-import useWallet from "lib/wallets/useWallet";
-import { ImSpinner2 } from "react-icons/im";
+import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 interface TradeboxButtonStateOptions {
   isTriggerWarningAccepted: boolean;
@@ -110,7 +110,7 @@ export function useTradeboxButtonState({
   const { isSwap, isIncrease, isLimit, isMarket } = tradeFlags;
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
   // const tokensData = useTokensData();

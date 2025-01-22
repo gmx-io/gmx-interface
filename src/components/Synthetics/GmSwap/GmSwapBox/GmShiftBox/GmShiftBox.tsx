@@ -267,14 +267,14 @@ export function GmShiftBox({
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          topLeftValue={selectedTokenDollarAmount}
-          topRightLabel={t`Balance`}
-          topRightValue={
+          bottomLeftValue={selectedTokenDollarAmount}
+          bottomRightLabel={t`Balance`}
+          bottomRightValue={
             selectedToken && selectedToken.balance !== undefined
               ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
               : undefined
           }
-          onClickTopRightLabel={handleSelectedTokenClickMax}
+          onClickBottomRightLabel={handleSelectedTokenClickMax}
           showMaxButton={selectedTokenShowMaxButton}
           onClickMax={handleSelectedTokenClickMax}
           inputValue={selectedMarketText}
@@ -299,9 +299,9 @@ export function GmShiftBox({
         <Swap />
         <BuyInputSection
           topLeftLabel={t`Receive`}
-          topLeftValue={toTokenShowDollarAmount}
-          topRightLabel={t`Balance`}
-          topRightValue={
+          bottomLeftValue={toTokenShowDollarAmount}
+          bottomRightLabel={t`Balance`}
+          bottomRightValue={
             toToken && toToken.balance !== undefined
               ? formatBalanceAmount(toToken.balance, toToken.decimals)
               : undefined

@@ -83,9 +83,9 @@ import {
 } from "lib/metrics/utils";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 import "./PositionSeller.scss";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -570,12 +570,15 @@ export function PositionSeller(p: Props) {
             <div className="relative">
               <BuyInputSection
                 topLeftLabel={t`Close`}
-                topRightLabel={t`Max`}
-                topRightValue={formatUsd(maxCloseSize)}
+                bottomRightLabel={t`Max`}
+                bottomRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                showMaxButton={maxCloseSize > 0 && closeSizeUsd !== maxCloseSize}
-                onClickMax={() => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))}
+                onClickMax={
+                  maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
+                    ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
+                    : undefined
+                }
                 showPercentSelector={true}
                 onPercentChange={(percentage) => {
                   const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
@@ -589,12 +592,12 @@ export function PositionSeller(p: Props) {
             {isTrigger && (
               <BuyInputSection
                 topLeftLabel={t`Trigger Price`}
-                topRightLabel={t`Mark`}
-                topRightValue={formatUsd(markPrice, {
+                bottomRightLabel={t`Mark`}
+                bottomRightValue={formatUsd(markPrice, {
                   displayDecimals: marketDecimals,
                   visualMultiplier: toToken?.visualMultiplier,
                 })}
-                onClickTopRightLabel={() => {
+                onClickBottomRightLabel={() => {
                   setTriggerPriceInputValueRaw(
                     formatAmount(
                       markPrice,

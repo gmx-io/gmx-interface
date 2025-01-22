@@ -124,12 +124,11 @@ export function UnstakeModal(props: {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
         <BuyInputSection
           topLeftLabel={t`Unstake`}
-          topRightLabel={t`Max`}
-          topRightValue={formatAmount(maxAmount, 18, 4, true)}
-          onClickTopRightLabel={onClickMaxButton}
+          bottomRightLabel={t`Max`}
+          bottomRightValue={formatAmount(maxAmount, 18, 4, true)}
+          onClickBottomRightLabel={onClickMaxButton}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
-          showMaxButton={false}
         >
           <div className="Stake-modal-icons">
             <img

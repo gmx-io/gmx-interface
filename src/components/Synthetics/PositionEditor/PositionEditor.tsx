@@ -541,6 +541,37 @@ export function PositionEditor(p: Props) {
     buttonContent
   );
 
+  const showMaxButton =
+    (isDeposit
+      ? collateralToken?.balance &&
+        showMaxOnDeposit &&
+        (collateralDeltaAmount === undefined ||
+          collateralDeltaAmount != collateralToken?.balance ||
+          collateralDeltaAmount === undefined)
+      : maxWithdrawAmount !== undefined &&
+        (collateralDeltaAmount === undefined ? true : collateralDeltaAmount !== maxWithdrawAmount)) || false;
+
+  const handleMaxButtonClick = () => {
+    let maxDepositAmount = collateralToken?.isNative
+      ? collateralToken!.balance! - BigInt(minResidualAmount ?? 0)
+      : collateralToken!.balance!;
+
+    if (maxDepositAmount < 0) {
+      maxDepositAmount = 0n;
+    }
+
+    const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
+    const finalDepositAmount = isMetamaskMobile
+      ? limitDecimals(formattedMaxDepositAmount, MAX_METAMASK_MOBILE_DECIMALS)
+      : formattedMaxDepositAmount;
+
+    if (isDeposit) {
+      setCollateralInputValue(finalDepositAmount);
+    } else {
+      setCollateralInputValue(formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0));
+    }
+  };
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -569,9 +600,9 @@ export function PositionEditor(p: Props) {
             />
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
-              topLeftValue={formatUsd(collateralDeltaUsd)}
-              topRightLabel={t`Max`}
-              topRightValue={
+              bottomLeftValue={formatUsd(collateralDeltaUsd)}
+              bottomRightLabel={t`Max`}
+              bottomRightValue={
                 isDeposit
                   ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals, "", {
                       useCommas: true,
@@ -582,16 +613,6 @@ export function PositionEditor(p: Props) {
               }
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
-              showMaxButton={
-                (isDeposit
-                  ? collateralToken?.balance &&
-                    showMaxOnDeposit &&
-                    (collateralDeltaAmount === undefined ||
-                      collateralDeltaAmount != collateralToken?.balance ||
-                      collateralDeltaAmount === undefined)
-                  : maxWithdrawAmount !== undefined &&
-                    (collateralDeltaAmount === undefined ? true : collateralDeltaAmount !== maxWithdrawAmount)) || false
-              }
               showPercentSelector={!isDeposit}
               onPercentChange={(percent) => {
                 if (!isDeposit) {
@@ -603,28 +624,7 @@ export function PositionEditor(p: Props) {
                   );
                 }
               }}
-              onClickMax={() => {
-                let maxDepositAmount = collateralToken?.isNative
-                  ? collateralToken!.balance! - BigInt(minResidualAmount ?? 0)
-                  : collateralToken!.balance!;
-
-                if (maxDepositAmount < 0) {
-                  maxDepositAmount = 0n;
-                }
-
-                const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
-                const finalDepositAmount = isMetamaskMobile
-                  ? limitDecimals(formattedMaxDepositAmount, MAX_METAMASK_MOBILE_DECIMALS)
-                  : formattedMaxDepositAmount;
-
-                if (isDeposit) {
-                  setCollateralInputValue(finalDepositAmount);
-                } else {
-                  setCollateralInputValue(
-                    formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0)
-                  );
-                }
-              }}
+              onClickMax={showMaxButton ? handleMaxButtonClick : undefined}
               qa="amount-input"
             >
               {availableSwapTokens ? (

@@ -254,11 +254,11 @@ export default function OrderEditor(props) {
           inputValue={triggerPriceValue}
           onInputValueChange={onTriggerPriceChange}
           topLeftLabel={t`Price`}
-          topRightLabel={t`Mark`}
-          topRightValue={
+          bottomRightLabel={t`Mark`}
+          bottomRightValue={
             indexTokenMarkPrice !== undefined && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)
           }
-          onClickTopRightLabel={() =>
+          onClickBottomRightLabel={() =>
             setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal))
           }
         >
@@ -310,9 +310,13 @@ export default function OrderEditor(props) {
         inputValue={triggerRatioValue}
         onInputValueChange={onTriggerRatioChange}
         topLeftLabel={t`Price`}
-        topRightLabel={t`Mark Price`}
-        topRightValue={formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
-        onClickTopRightLabel={() =>
+        bottomRightLabel={t`Mark Price`}
+        bottomRightValue={formatAmount(
+          getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
+          USD_DECIMALS,
+          2
+        )}
+        onClickBottomRightLabel={() =>
           setTriggerRatioValue(
             formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
           )

@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
-import { IoMdSwap } from "react-icons/io";
+import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
@@ -559,26 +559,21 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
   );
 
   function renderTokenInputs() {
+    const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
     return (
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          topLeftValue={
-            fromUsd !== undefined && fromUsd > 0
-              ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd)
-              : ""
-          }
-          topRightLabel={t`Balance`}
-          topRightValue={
-            fromToken && fromToken.balance !== undefined
-              ? formatBalanceAmount(fromToken.balance, fromToken.decimals)
+          bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd) : ""}
+          isBottomLeftValueMuted={payUsd === undefined || payUsd === 0n}
+          bottomRightValue={
+            fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
+              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, "single-digit-zero")
               : undefined
           }
-          onClickTopRightLabel={onMaxClick}
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
-          showMaxButton={isNotMatchAvailableBalance}
-          onClickMax={onMaxClick}
+          onClickMax={isNotMatchAvailableBalance ? onMaxClick : undefined}
           qa="pay"
         >
           {fromTokenAddress && (
@@ -599,65 +594,65 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           )}
         </BuyInputSection>
 
-        <div className="Exchange-swap-ball-container">
-          <button
-            type="button"
-            disabled={!isSwitchTokensAllowed}
-            className="Exchange-swap-ball bg-blue-500"
-            onClick={onSwitchTokens}
-            data-qa="swap-ball"
-          >
-            <IoMdSwap className="Exchange-swap-ball-icon" />
-          </button>
-        </div>
-
         {isSwap && (
-          <BuyInputSection
-            topLeftLabel={t`Receive`}
-            topLeftValue={swapAmounts?.usdOut && swapAmounts.usdOut > 0 ? formatUsd(swapAmounts?.usdOut) : ""}
-            topRightLabel={t`Balance`}
-            topRightValue={
-              toToken && toToken.balance !== undefined
-                ? formatBalanceAmount(toToken.balance, toToken.decimals)
-                : undefined
-            }
-            inputValue={toTokenInputValue}
-            onInputValueChange={handleToInputTokenChange}
-            showMaxButton={false}
-            preventFocusOnLabelClick="right"
-            qa="swap-receive"
-          >
-            {toTokenAddress && (
-              <TokenSelector
-                label={t`Receive`}
-                chainId={chainId}
-                tokenAddress={toTokenAddress}
-                onSelectToken={handleSelectToTokenAddress}
-                tokens={swapTokens}
-                infoTokens={infoTokens}
-                showSymbolImage={true}
-                showBalances={true}
-                showTokenImgInDropdown={true}
-                extendedSortSequence={sortedLongAndShortTokens}
-                qa="receive-selector"
-              />
-            )}
-          </BuyInputSection>
+          <>
+            <div className="relative">
+              <button
+                type="button"
+                disabled={!isSwitchTokensAllowed}
+                className="desktop-hover:bg-[#484e92] absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500
+                           active:bg-[#505699]"
+                onClick={onSwitchTokens}
+                data-qa="swap-ball"
+              >
+                <IoArrowDown size={24} className="block" />
+              </button>
+              <BuyInputSection
+                topLeftLabel={t`Receive`}
+                bottomLeftValue={swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined}
+                bottomRightValue={
+                  toToken && toToken.balance !== undefined && toToken.balance > 0n
+                    ? formatBalanceAmount(toToken.balance, toToken.decimals, toToken.symbol, "single-digit-zero")
+                    : undefined
+                }
+                isBottomLeftValueMuted={swapAmounts?.usdOut === undefined || swapAmounts.usdOut === 0n}
+                inputValue={toTokenInputValue}
+                onInputValueChange={handleToInputTokenChange}
+                qa="swap-receive"
+              >
+                {toTokenAddress && (
+                  <TokenSelector
+                    label={t`Receive`}
+                    chainId={chainId}
+                    tokenAddress={toTokenAddress}
+                    onSelectToken={handleSelectToTokenAddress}
+                    tokens={swapTokens}
+                    infoTokens={infoTokens}
+                    showSymbolImage={true}
+                    showBalances={true}
+                    showTokenImgInDropdown={true}
+                    extendedSortSequence={sortedLongAndShortTokens}
+                    qa="receive-selector"
+                  />
+                )}
+              </BuyInputSection>
+            </div>
+          </>
         )}
 
         {isIncrease && (
           <BuyInputSection
             topLeftLabel={localizedTradeTypeLabels[tradeType!]}
-            topLeftValue={
-              increaseAmounts?.sizeDeltaUsd && increaseAmounts.sizeDeltaUsd > 0
+            bottomLeftValue={
+              increaseAmounts?.sizeDeltaUsd !== undefined
                 ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
                 : ""
             }
-            topRightLabel={t`Leverage`}
-            topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
+            isBottomLeftValueMuted={increaseAmounts?.sizeDeltaUsd === undefined || increaseAmounts?.sizeDeltaUsd === 0n}
+            bottomRightLabel={t`Leverage`}
+            bottomRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
-            showMaxButton={false}
             qa="buy"
           >
             {toTokenAddress && (
@@ -692,18 +687,19 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
   }
 
   function renderDecreaseSizeInput() {
+    const showMaxButton = Boolean(
+      selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeUsd != selectedPosition.sizeInUsd
+    );
+
     return (
       <BuyInputSection
         topLeftLabel={t`Close`}
-        topRightLabel={selectedPosition?.sizeInUsd ? `Max` : undefined}
         topRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
         inputValue={closeSizeInputValue}
         onInputValueChange={handleCloseInputChange}
-        onClickTopRightLabel={setMaxCloseSize}
-        showMaxButton={Boolean(
-          selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeUsd != selectedPosition.sizeInUsd
-        )}
-        onClickMax={setMaxCloseSize}
+        onClickBottomRightLabel={setMaxCloseSize}
+        maxPosition="top-right"
+        onClickMax={showMaxButton ? setMaxCloseSize : undefined}
         showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
         qa="close"

@@ -582,14 +582,14 @@ export default function PositionEditor(props) {
                   inputValue={fromValue}
                   onInputValueChange={(e) => setFromValue(e.target.value)}
                   topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
-                  topLeftValue={
+                  bottomLeftValue={
                     convertedAmountFormatted
                       ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`
                       : ""
                   }
-                  topRightLabel={t`Max`}
-                  topRightValue={maxAmount && maxAmountFormatted}
-                  onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
+                  bottomRightLabel={t`Max`}
+                  bottomRightValue={maxAmount && maxAmountFormatted}
+                  onClickBottomRightLabel={() => setFromValue(maxAmountFormattedFree)}
                   onClick={() => {
                     const finalMaxAmount = isMetamaskMobile
                       ? limitDecimals(maxAmountFormattedFree, MAX_METAMASK_MOBILE_DECIMALS)

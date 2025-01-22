@@ -543,11 +543,11 @@ export function OrderEditor(p: Props) {
 
             <BuyInputSection
               topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Trigger Price` : t`Limit Price`}
-              topRightLabel={t`Mark`}
-              topRightValue={formatUsdPrice(markPrice, {
+              bottomRightLabel={t`Mark`}
+              bottomRightValue={formatUsdPrice(markPrice, {
                 visualMultiplier: indexToken?.visualMultiplier,
               })}
-              onClickTopRightLabel={() =>
+              onClickBottomRightLabel={() =>
                 setTriggerPriceInputValue(
                   formatAmount(
                     markPrice,
@@ -572,8 +572,8 @@ export function OrderEditor(p: Props) {
             {triggerRatio && (
               <BuyInputSection
                 topLeftLabel={t`Limit Price`}
-                topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
-                onClickTopRightLabel={() => {
+                bottomRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
+                onClickBottomRightLabel={() => {
                   setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
                 }}
                 inputValue={triggerRatioInputValue}

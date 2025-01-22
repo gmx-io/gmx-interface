@@ -797,14 +797,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-            topLeftValue={formatUsd(firstTokenUsd)}
-            topRightLabel={t`Balance`}
-            topRightValue={
+            bottomLeftValue={formatUsd(firstTokenUsd)}
+            bottomRightLabel={t`Balance`}
+            bottomRightValue={
               firstToken && firstToken.balance !== undefined
                 ? formatBalanceAmount(firstToken.balance, firstToken.decimals)
                 : undefined
             }
-            preventFocusOnLabelClick="right"
             onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
             showMaxButton={firstTokenShowMaxButton}
             inputValue={firstTokenInputValue}
@@ -834,14 +833,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           {isPair && secondTokenAddress && (
             <BuyInputSection
               topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-              topLeftValue={formatUsd(secondTokenUsd)}
-              topRightLabel={t`Balance`}
-              topRightValue={
+              bottomLeftValue={formatUsd(secondTokenUsd)}
+              bottomRightLabel={t`Balance`}
+              bottomRightValue={
                 secondToken && secondToken.balance !== undefined
                   ? formatBalanceAmount(secondToken.balance, secondToken.decimals)
                   : undefined
               }
-              preventFocusOnLabelClick="right"
               inputValue={secondTokenInputValue}
               showMaxButton={secondTokenShowMaxButton}
               onInputValueChange={secondTokenInputValueChange}
@@ -858,10 +856,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
           <BuyInputSection
             topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-            topLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
-            topRightLabel={t`Balance`}
-            topRightValue={receiveTokenFormatted}
-            preventFocusOnLabelClick="right"
+            bottomLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
+            bottomRightLabel={t`Balance`}
+            bottomRightValue={receiveTokenFormatted}
             showMaxButton={marketTokenInputShowMaxButton}
             inputValue={marketOrGlvTokenInputValue}
             onInputValueChange={marketOrGlvTokenInputValueChange}

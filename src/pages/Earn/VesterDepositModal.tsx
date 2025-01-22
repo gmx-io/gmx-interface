@@ -142,12 +142,11 @@ export function VesterDepositModal(props: {
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
           <BuyInputSection
             topLeftLabel={t`Deposit`}
-            topRightLabel={t`Max`}
-            topRightValue={formatAmount(maxAmount, 18, 4, true)}
-            onClickTopRightLabel={onClickMaxButton}
+            bottomRightLabel={t`Max`}
+            bottomRightValue={formatAmount(maxAmount, 18, 4, true)}
+            onClickBottomRightLabel={onClickMaxButton}
             inputValue={value}
             onInputValueChange={(e) => setValue(e.target.value)}
-            showMaxButton={false}
           >
             <div className="Stake-modal-icons">
               <img className="icon mr-5 h-22" height="22" src={icons?.esgmx} alt="esGMX" />

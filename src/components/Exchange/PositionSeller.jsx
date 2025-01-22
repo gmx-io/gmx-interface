@@ -1105,12 +1105,12 @@ export default function PositionSeller(props) {
               inputValue={fromValue}
               onInputValueChange={(e) => setFromValue(e.target.value)}
               topLeftLabel={t`Close`}
-              topLeftValue={
+              bottomLeftValue={
                 convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
               }
-              topRightLabel={t`Max`}
-              topRightValue={maxAmount && maxAmountFormatted}
-              onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
+              bottomRightLabel={t`Max`}
+              bottomRightValue={maxAmount && maxAmountFormatted}
+              onClickBottomRightLabel={() => setFromValue(maxAmountFormattedFree)}
               onClickMax={() => setFromValue(maxAmountFormattedFree)}
               showMaxButton={fromValue !== maxAmountFormattedFree}
               showPercentSelector={true}
@@ -1126,11 +1126,11 @@ export default function PositionSeller(props) {
               inputValue={triggerPriceValue}
               onInputValueChange={onTriggerPriceChange}
               topLeftLabel={t`Price`}
-              topRightLabel={t`Mark`}
-              topRightValue={
+              bottomRightLabel={t`Mark`}
+              bottomRightValue={
                 position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
               }
-              onClickTopRightLabel={() => {
+              onClickBottomRightLabel={() => {
                 setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
               }}
             >
