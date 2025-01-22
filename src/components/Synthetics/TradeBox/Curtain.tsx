@@ -14,7 +14,6 @@ const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
 const CURTAIN_STYLE: CSSProperties = {
-  // top: `calc(100dvh - ${HEADER_HEIGHT}px)`,
   bottom: `0`,
   transform: `translateY(calc(100% - ${HEADER_HEIGHT}px))`,
   height: `calc(100dvh - ${HEADER_HEIGHT}px)`,
