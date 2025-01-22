@@ -207,6 +207,7 @@ export function GmPoolsSelectorForGlvMarket({
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
+        className="TokenSelector-modal"
         headerContent={
           <div className="mt-16">
             <SearchInput
