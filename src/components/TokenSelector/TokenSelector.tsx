@@ -207,11 +207,11 @@ export default function TokenSelector(props: Props) {
     >
       <SlideModal
         qa={qa + "-modal"}
+        className="TokenSelector-modal text-white"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
         footerContent={footerContent}
-        className="TokenSelector-modal text-white"
         headerContent={
           <SearchInput
             className="*:!text-body-medium min-[700px]:mt-15"

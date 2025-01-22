@@ -198,6 +198,7 @@ export function PoolSelector({
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
       <SlideModal
+        className="TokenSelector-modal"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}

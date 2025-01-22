@@ -169,6 +169,7 @@ export function MarketSelector({
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
       <SlideModal
         qa="market-selector-modal"
+        className="TokenSelector-modal"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
