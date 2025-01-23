@@ -691,7 +691,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Melania Meme",
       symbol: "MELANIA",
       address: "0xfa4F8E582214eBCe1A08eB2a65e08082053E441F",
-      decimals: 9,
+      decimals: 6,
       priceDecimals: 4,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/53775/standard/melania-meme.png?1737329885",
