@@ -729,6 +729,7 @@ msgid "Incentives Distribution History"
 msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
@@ -812,6 +813,11 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "지불"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price above Limit Price."
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX Governance Page"
@@ -1325,6 +1331,10 @@ msgstr "전송 제출 완료"
 msgid "Shift GM"
 msgstr ""
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price below Liq. Price."
+#~ msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr ""
@@ -1557,6 +1567,12 @@ msgstr "마켓"
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Max {0}"
 msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price above Mark Price."
+#~ msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
@@ -2022,6 +2038,10 @@ msgstr ""
 msgid "Long {0}"
 msgstr "롱 {0}"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "impact on collateral"
+#~ msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
@@ -2261,6 +2281,11 @@ msgstr ""
 msgid "V1 is not supported on {chainName}. Please switch to Arbitrum to use V1."
 msgstr ""
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price below Limit Price."
+#~ msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2381,6 +2406,10 @@ msgstr "시장 평균가 미만 가격"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수수료에 따라 달라집니다."
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#~ msgid "Advanced Display"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Generate & Activate Subaccount"
@@ -2619,6 +2648,10 @@ msgstr "페이지 로드 속도 향상"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#~ msgid "Leverage slider"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "(Rebated)"
@@ -3143,6 +3176,10 @@ msgstr "수령중..."
 msgid "All"
 msgstr ""
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Limit size is required."
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "마켓 증가 요청"
@@ -3162,6 +3199,10 @@ msgstr ""
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#~ msgid "Limit / TP / SL"
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3942,6 +3983,10 @@ msgstr ""
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price below lowest Limit Price."
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr ""
@@ -4556,6 +4601,10 @@ msgstr "주문 업데이트됨!"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "swap profit fee"
+#~ msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
 msgid "The previously authorized maximum number of actions has been reached for One-Click Trading."
 msgstr ""
@@ -4937,8 +4986,8 @@ msgid "Stop Loss Decrease"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Allowed Slippage below {0}% may result in failed orders."
-msgstr ""
+#~ msgid "Allowed Slippage below {0}% may result in failed orders."
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5299,6 +5348,10 @@ msgstr ""
 msgid "Subaccount deactivation failed"
 msgstr ""
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price above lowest Limit Price."
+#~ msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr ""
@@ -5454,8 +5507,6 @@ msgstr "{formattedNetRate} / 1시간"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Balance"
 msgstr "잔고"
 
@@ -5548,6 +5599,10 @@ msgstr "지갑이 아직 연동되지 않았습니다"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation Confirmations"
 msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price above highest Limit Price."
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Acknowledge epoch is ending in {minutes} minutes"
@@ -5877,6 +5932,16 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Save on Fees"
 msgstr "수수료 절약"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price below Mark Price."
+#~ msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX staking rewards updates and insights"
@@ -6335,6 +6400,10 @@ msgstr ""
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Pools that enable trading for a single market, backed by the tokens listed in brackets."
 msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price above Liq. Price."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit"
@@ -6947,6 +7016,10 @@ msgstr ""
 msgid "{ordersText} cancelled"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "Limit price below Mark Price"
+#~ msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "{0}을 {1}로 스왑하는 수수료가 높습니다. <0/>{2}가 담보로 필요합니다."
@@ -7218,6 +7291,10 @@ msgstr "최초 담보"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
@@ -7301,6 +7378,10 @@ msgstr "귀하는 {0} esGMx (IOU) 토큰을 보유하고 있습니다."
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There is currently a high swap price impact for the order swap path."
 msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "Price below highest Limit Price."
+#~ msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling..."
@@ -7455,6 +7536,10 @@ msgstr ""
 msgid "GMX explorer for stats and traders"
 msgstr "통계와 트레이드 정보를 위한 GMX 익스플로러"
 
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+#~ msgid "swap price impact"
+#~ msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr ""
@@ -7500,6 +7585,10 @@ msgstr ""
 msgid "Fee values do not include incentives."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "Limit price above Mark Price"
+#~ msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
 msgstr "추천인 코드 생성"
@@ -7544,6 +7633,10 @@ msgstr "{0} USD를 {1} {longOrShortText}으로 입금"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr ""
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#~ msgid "A Size percentage is required."
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
