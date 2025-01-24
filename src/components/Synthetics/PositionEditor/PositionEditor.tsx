@@ -93,6 +93,7 @@ import {
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 
 import "./PositionEditor.scss";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 export type Props = {
   allowedSlippage: number;
@@ -594,6 +595,7 @@ export function PositionEditor(p: Props) {
               option={operation}
               options={Object.values(Operation)}
               optionLabels={localizedOperationLabels}
+              type="inline"
               className="PositionEditor-tabs"
               size="l"
               qa="operation-tabs"
@@ -601,8 +603,8 @@ export function PositionEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
               bottomLeftValue={formatUsd(collateralDeltaUsd)}
-              bottomRightLabel={t`Max`}
-              bottomRightValue={
+              topRightLabel={t`Max`}
+              topRightValue={
                 isDeposit
                   ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals, "", {
                       useCommas: true,
@@ -644,69 +646,58 @@ export function PositionEditor(p: Props) {
                 collateralToken?.symbol
               )}
             </BuyInputSection>
+            <div className="flex flex-col gap-14 pt-14">
+              <HighPriceImpactOrFeesWarningCard priceImpactWarningState={priceImpactWarningState} />
 
-            <ExchangeInfo className="PositionEditor-info-box" dividerClassName="my-15 -mx-15 h-1 bg-slate-700">
-              <ExchangeInfo.Group>
-                <ExchangeInfoRow
-                  label={t`Liq. Price`}
-                  value={
-                    <ValueTransition
-                      from={formatLiquidationPrice(position.liquidationPrice, {
-                        displayDecimals: marketDecimals,
-                        visualMultiplier: position.indexToken?.visualMultiplier,
-                      })}
-                      to={
-                        collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
-                          ? formatLiquidationPrice(nextLiqPrice, {
-                              displayDecimals: marketDecimals,
-                              visualMultiplier: position.indexToken?.visualMultiplier,
-                            })
-                          : undefined
-                      }
-                    />
-                  }
+              <div className="">{button}</div>
+
+              {!isDeposit && (
+                <SyntheticsInfoRow
+                  label={t`Receive`}
+                  value={formatTokenAmountWithUsd(
+                    receiveAmount,
+                    receiveUsd,
+                    collateralToken?.symbol,
+                    collateralToken?.decimals,
+                    { fallbackToZero: true }
+                  )}
                 />
-              </ExchangeInfo.Group>
-              <ExchangeInfo.Group>
-                <PositionEditorAdvancedRows
-                  operation={operation}
-                  selectedCollateralAddress={selectedCollateralAddress}
-                  collateralInputValue={collateralInputValue}
+              )}
+
+              <SyntheticsInfoRow
+                label={t`Liq. Price`}
+                value={
+                  <ValueTransition
+                    from={formatLiquidationPrice(position.liquidationPrice, {
+                      displayDecimals: marketDecimals,
+                      visualMultiplier: position.indexToken?.visualMultiplier,
+                    })}
+                    to={
+                      collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
+                        ? formatLiquidationPrice(nextLiqPrice, {
+                            displayDecimals: marketDecimals,
+                            visualMultiplier: position.indexToken?.visualMultiplier,
+                          })
+                        : undefined
+                    }
+                  />
+                }
+              />
+
+              <PositionEditorAdvancedRows
+                operation={operation}
+                selectedCollateralAddress={selectedCollateralAddress}
+                collateralInputValue={collateralInputValue}
+              />
+
+              {/* {isAllowanceLoaded && needCollateralApproval && collateralToken && (
+                <ApproveTokenButton
+                  tokenAddress={collateralToken.address}
+                  tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
+                  spenderAddress={routerAddress}
                 />
-              </ExchangeInfo.Group>
-              <ExchangeInfo.Group>
-                <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
-                <NetworkFeeRow executionFee={executionFee} />
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                {!isDeposit && (
-                  <ExchangeInfoRow
-                    label={t`Receive`}
-                    value={formatTokenAmountWithUsd(
-                      receiveAmount,
-                      receiveUsd,
-                      collateralToken?.symbol,
-                      collateralToken?.decimals,
-                      { fallbackToZero: true }
-                    )}
-                  />
-                )}
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                <HighPriceImpactOrFeesWarningCard priceImpactWarningState={priceImpactWarningState} />
-                {isAllowanceLoaded && needCollateralApproval && collateralToken && (
-                  <ApproveTokenButton
-                    tokenAddress={collateralToken.address}
-                    tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
-                    spenderAddress={routerAddress}
-                  />
-                )}
-              </ExchangeInfo.Group>
-            </ExchangeInfo>
-
-            <div className="Exchange-swap-button-container Confirmation-box-row">{button}</div>
+              )} */}
+            </div>
           </>
         )}
       </Modal>

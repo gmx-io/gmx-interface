@@ -24,10 +24,6 @@ interface Props {
    */
   errorMessage?: ReactNode;
   className?: string;
-  /**
-   * if true - occupies the space of the expandable content even when closed
-   */
-  occupyExpandableSpace?: boolean;
   contentClassName?: string;
 }
 
@@ -41,8 +37,6 @@ export function ExpandableRow({
   autoExpandOnError = true,
   errorMessage,
   className,
-  // todo remove
-  occupyExpandableSpace = false,
   contentClassName,
 }: Props) {
   const previousHasError = usePrevious(hasError);
@@ -85,16 +79,9 @@ export function ExpandableRow({
       />
 
       <div
-        className={cx(
-          contentClassName,
-          occupyExpandableSpace
-            ? {
-                invisible: !open,
-              }
-            : {
-                hidden: !open,
-              }
-        )}
+        className={cx(contentClassName, {
+          hidden: !open,
+        })}
       >
         {children}
       </div>

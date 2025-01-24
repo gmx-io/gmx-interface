@@ -14,9 +14,12 @@ import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/
 
 import { ExpandableRow } from "../ExpandableRow";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
-import { Options } from "./hooks/usePositionEditorFees";
+import { Options, usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 export function PositionEditorAdvancedRows({ selectedCollateralAddress, collateralInputValue, operation }: Options) {
   const tokensData = useTokensData();
@@ -39,40 +42,52 @@ export function PositionEditorAdvancedRows({ selectedCollateralAddress, collater
   const { advancedDisplay } = useSelector(selectTradeboxAdvancedOptions);
   const [open, setOpen] = useState(advancedDisplay);
 
+  const { fees, executionFee } = usePositionEditorFees({
+    selectedCollateralAddress,
+    collateralInputValue,
+    operation,
+  });
+
   if (!position || collateralDeltaUsd === undefined) {
     return null;
   }
 
   return (
-    <ExpandableRow className="-my-15" title={t`Advanced display`} open={open} onToggle={setOpen}>
-      <ExchangeInfo.Group>
-        <ExchangeInfoRow
-          label={t`Leverage`}
-          value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
-        />
-        <ExchangeInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
-        <div className="Exchange-info-row">
-          <div>
-            <Tooltip
-              handle={
-                <span className="Exchange-info-label">
-                  <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
-                </span>
-              }
-              position="top-start"
-              renderContent={() => {
-                return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
-              }}
-            />
-          </div>
-          <div className="align-right">
-            <ValueTransition
-              from={formatUsd(position?.collateralUsd)!}
-              to={collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsd(nextCollateralUsd) : undefined}
-            />
-          </div>
-        </div>
-      </ExchangeInfo.Group>
+    <ExpandableRow
+      title={t`Advanced display`}
+      open={open}
+      onToggle={setOpen}
+      contentClassName="flex flex-col gap-14 pt-14"
+    >
+      <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
+      <NetworkFeeRow executionFee={executionFee} />
+
+      <SyntheticsInfoRow
+        label={t`Leverage`}
+        value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
+      />
+      <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
+      <SyntheticsInfoRow
+        label={
+          <Tooltip
+            handle={
+              <span className="Exchange-info-label">
+                <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
+              </span>
+            }
+            position="top-start"
+            renderContent={() => {
+              return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
+            }}
+          />
+        }
+        value={
+          <ValueTransition
+            from={formatUsd(position?.collateralUsd)!}
+            to={collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsd(nextCollateralUsd) : undefined}
+          />
+        }
+      />
     </ExpandableRow>
   );
 }

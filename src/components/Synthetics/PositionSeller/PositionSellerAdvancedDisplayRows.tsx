@@ -121,7 +121,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
       />
     ));
 
-  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
   let keepLeverageAtValue: string | undefined = "...";
   if (position?.leverage && !decreaseAmounts?.isFullClose) {
     keepLeverageAtValue = formatLeverage(position.leverage);
@@ -209,15 +208,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
       {!isTrigger && <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />}
       <div className="h-1 bg-stroke-primary" />
       <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
-
-      <ToggleSwitch
-        textClassName="text-slate-100"
-        isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-        setIsChecked={setKeepLeverage}
-        disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
-      >
-        {keepLeverageTextElem}
-      </ToggleSwitch>
 
       {sizeRow}
       {pnlRow}

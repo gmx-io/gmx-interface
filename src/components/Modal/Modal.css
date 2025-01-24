@@ -11,6 +11,17 @@
   text-align: left;
 }
 
+.Modal.keep-initial-top-offset {
+  display: block;
+}
+
+.Modal.keep-initial-top-offset .Modal-content {
+  width: 380px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .Modal-scrollable .Modal-content .Modal-body {
   overscroll-behavior: smooth;
   max-height: calc(80vh - 5.5rem);

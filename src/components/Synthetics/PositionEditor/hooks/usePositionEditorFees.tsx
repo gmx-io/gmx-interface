@@ -26,6 +26,7 @@ export type Options = {
   operation: Operation;
 };
 
+// todo make it a selector
 export function usePositionEditorFees({ selectedCollateralAddress, collateralInputValue, operation }: Options) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();

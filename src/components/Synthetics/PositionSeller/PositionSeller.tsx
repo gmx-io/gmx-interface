@@ -19,9 +19,13 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
+import {
+  usePositionSeller,
+  usePositionSellerKeepLeverage,
+  usePositionSellerLeverageDisabledByCollateral,
+} from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -80,6 +84,9 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./PositionSeller.scss";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -137,6 +144,7 @@ export function PositionSeller(p: Props) {
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
     setIsReceiveTokenChanged,
+    setKeepLeverage,
   } = usePositionSeller();
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
@@ -498,11 +506,36 @@ export function PositionSeller(p: Props) {
     positionKey: position?.key,
     isCreatingNewAutoCancel: isTrigger,
   });
+  const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
+  const keepLeverage = usePositionSellerKeepLeverage();
+  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
+
+  let keepLeverageAtValue: string | undefined = "...";
+  if (position?.leverage && !decreaseAmounts?.isFullClose) {
+    keepLeverageAtValue = formatLeverage(position.leverage);
+  }
+
+  const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
+
+  const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
+    <TooltipWithPortal
+      handle={keepLeverageText}
+      content={
+        <Trans>
+          Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+        </Trans>
+      }
+    />
+  ) : (
+    keepLeverageText
+  );
 
   return (
-    <div className="PositionEditor PositionSeller text-body-medium">
+    // <div className="PositionEditor PositionSeller text-body-medium">
+    <div className="text-body-medium">
       <Modal
-        className="PositionSeller-modal"
+        // className="PositionSeller-modal"
         isVisible={isVisible}
         setIsVisible={onClose}
         label={
@@ -513,8 +546,10 @@ export function PositionSeller(p: Props) {
           </Trans>
         }
         qa="position-close-modal"
+        keepInitialTopOffset
       >
         <Tab
+          className="mb-[10.5px]"
           options={Object.values(OrderOption)}
           option={orderOption}
           type="inline"
@@ -580,6 +615,15 @@ export function PositionSeller(p: Props) {
             <div className="flex flex-col gap-14 pt-14">
               {isTrigger && maxAutoCancelOrdersWarning}
               <HighPriceImpactOrFeesWarningCard priceImpactWarningState={priceImpactWarningState} />
+              <ToggleSwitch
+                textClassName="text-slate-100"
+                isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                setIsChecked={setKeepLeverage}
+                disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
+              >
+                {keepLeverageTextElem}
+              </ToggleSwitch>
+
               <Button
                 className="w-full"
                 variant="primary-action"
