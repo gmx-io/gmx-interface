@@ -41,7 +41,7 @@ export default function BuyInputSection(props: Props) {
     inputValue,
     onInputValueChange,
     onClickMax,
-    maxPosition = "bottom-right",
+    maxPosition: maybeMaxPosition,
     onFocus,
     shouldClosestLabelTriggerMax = true,
     children,
@@ -51,6 +51,17 @@ export default function BuyInputSection(props: Props) {
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  let maxPosition = "bottom-right";
+  if (maybeMaxPosition) {
+    maxPosition = maybeMaxPosition;
+  } else if (onClickMax && shouldClosestLabelTriggerMax) {
+    if (topRightLabel || topRightValue) {
+      maxPosition = "top-right";
+    } else if (bottomRightLabel || bottomRightValue) {
+      maxPosition = "bottom-right";
+    }
+  }
+
   const handleOnFocus = useCallback(() => {
     if (showPercentSelector && onPercentChange) {
       setIsPercentSelectorVisible(true);
@@ -94,12 +105,12 @@ export default function BuyInputSection(props: Props) {
       if (onClickTopRightLabel) {
         e.stopPropagation();
         onClickTopRightLabel();
-      } else if (onClickMax && maxPosition === "top-right" && shouldClosestLabelTriggerMax) {
+      } else if (onClickMax && maxPosition === "top-right") {
         e.stopPropagation();
         onClickMax();
       }
     },
-    [onClickTopRightLabel, onClickMax, maxPosition, shouldClosestLabelTriggerMax]
+    [onClickTopRightLabel, onClickMax, maxPosition]
   );
 
   const handleBottomRightClick = useCallback(
@@ -107,12 +118,12 @@ export default function BuyInputSection(props: Props) {
       if (onClickBottomRightLabel) {
         e.stopPropagation();
         onClickBottomRightLabel();
-      } else if (onClickMax && maxPosition === "bottom-right" && shouldClosestLabelTriggerMax) {
+      } else if (onClickMax && maxPosition === "bottom-right") {
         e.stopPropagation();
         onClickMax();
       }
     },
-    [onClickBottomRightLabel, onClickMax, maxPosition, shouldClosestLabelTriggerMax]
+    [onClickBottomRightLabel, onClickMax, maxPosition]
   );
 
   return (
@@ -134,8 +145,7 @@ export default function BuyInputSection(props: Props) {
               data-label="right"
               className={cx(
                 "flex items-baseline gap-4",
-                (onClickTopRightLabel || (onClickMax && maxPosition === "top-right" && shouldClosestLabelTriggerMax)) &&
-                  "cursor-pointer"
+                (onClickTopRightLabel || (onClickMax && maxPosition === "top-right")) && "cursor-pointer"
               )}
               onClick={handleTopRightClick}
             >
@@ -186,9 +196,7 @@ export default function BuyInputSection(props: Props) {
             <div
               className={cx(
                 "flex items-baseline gap-4",
-                (onClickBottomRightLabel ||
-                  (onClickMax && maxPosition === "bottom-right" && shouldClosestLabelTriggerMax)) &&
-                  "cursor-pointer"
+                (onClickBottomRightLabel || (onClickMax && maxPosition === "bottom-right")) && "cursor-pointer"
               )}
               onClick={handleBottomRightClick}
             >

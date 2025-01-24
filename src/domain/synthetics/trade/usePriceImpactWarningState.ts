@@ -44,7 +44,7 @@ export function usePriceImpactWarningState({
   swapPriceImpact?: FeeItem;
   swapProfitFee?: FeeItem;
   executionFeeUsd?: bigint;
-  willDecreaseOrdersBeExecuted: boolean;
+  willDecreaseOrdersBeExecuted?: boolean;
   tradeFlags: TradeFlags;
 }): WarningState {
   const { chainId } = useChainId();
@@ -142,7 +142,7 @@ export function usePriceImpactWarningState({
   shouldShowWarningForPosition = isHighPositionImpact;
   shouldShowWarningForSwapProfitFee = isHightSwapProfitFee;
   shouldShowWarningForExecutionFee = isHightExecutionPrice;
-  shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted;
+  shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted ?? false;
 
   if (!shouldShowWarningForPosition) {
     shouldShowWarningForCollateral = isHighCollateralImpact;
