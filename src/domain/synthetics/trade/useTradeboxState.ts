@@ -261,7 +261,7 @@ export function useTradeboxState(
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [leverageInputValue, setLeverageInputValue] = useState<string>(() => leverageOption?.toString() ?? "");
 
-  const avaialbleTradeModes = useMemo(() => {
+  const availableTradeModes = useMemo(() => {
     if (!tradeType) {
       return [];
     }
@@ -623,11 +623,11 @@ export function useTradeboxState(
         return;
       }
 
-      if (tradeType && tradeMode && !avaialbleTradeModes.includes(tradeMode)) {
-        setTradeMode(avaialbleTradeModes[0]);
+      if (tradeType && tradeMode && !availableTradeModes.includes(tradeMode)) {
+        setTradeMode(availableTradeModes[0]);
       }
     },
-    [tradeType, tradeMode, avaialbleTradeModes, setTradeMode, enabled]
+    [tradeType, tradeMode, availableTradeModes, setTradeMode, enabled]
   );
 
   useEffect(
@@ -683,7 +683,7 @@ export function useTradeboxState(
     collateralAddress,
     collateralToken,
     availableTokensOptions,
-    avaialbleTradeModes,
+    availableTradeModes,
     sidecarOrders,
     isSwitchTokensAllowed,
     setActivePosition,

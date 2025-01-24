@@ -24,7 +24,7 @@ export function HighPriceImpactOrFeesWarningCard({
   executionFeeUsd,
 }: Props) {
   const warnings = useMemo(() => {
-    const warnings: { id: string; key: React.ReactNode; value: React.ReactNode }[] = [];
+    const warnings: { id: string; key: React.ReactNode; value?: React.ReactNode }[] = [];
     if (priceImpactWarningState.shouldShowWarningForPosition) {
       warnings.push({
         id: "high-price-impact",
@@ -65,6 +65,13 @@ export function HighPriceImpactOrFeesWarningCard({
       });
     }
 
+    if (priceImpactWarningState.shouldShowWarningForTriggerOrders) {
+      warnings.push({
+        id: "high-trigger-orders",
+        key: t`Existing Executable Trigger Orders`,
+      });
+    }
+
     return warnings;
   }, [
     collateralImpact?.precisePercentage,
@@ -75,6 +82,7 @@ export function HighPriceImpactOrFeesWarningCard({
     priceImpactWarningState.shouldShowWarningForPosition,
     priceImpactWarningState.shouldShowWarningForSwap,
     priceImpactWarningState.shouldShowWarningForSwapProfitFee,
+    priceImpactWarningState.shouldShowWarningForTriggerOrders,
     swapPriceImpact?.deltaUsd,
     swapProfitFee?.deltaUsd,
   ]);

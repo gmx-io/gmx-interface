@@ -9,7 +9,7 @@ export function TradeBoxResponsiveContainer() {
 
   if (!isMobile) {
     return (
-      <div className="text-body-medium flex min-h-[820.5px] flex-col rounded-4 bg-slate-800 p-15" data-qa="tradebox">
+      <div className="text-body-medium flex flex-col rounded-4 bg-slate-800 p-15" data-qa="tradebox">
         <TradeBoxHeaderTabs />
         <TradeBox />
       </div>

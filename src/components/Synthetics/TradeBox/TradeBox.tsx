@@ -68,7 +68,6 @@ import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
-import { useTriggerOrdersConsent } from "./hooks/useTriggerOrdersConsent";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -96,6 +95,7 @@ import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
 import "./TradeBox.scss";
+import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 
 export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -154,7 +154,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     fromTokenAddress,
     marketInfo,
     toTokenAddress,
-    avaialbleTradeModes: availableTradeModes,
+    availableTradeModes,
   } = useSelector(selectTradeboxState);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -194,12 +194,15 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
 
   const maxAllowedLeverage = maxLeverage / 2;
 
+  const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
+
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralImpact: fees?.positionCollateralPriceImpact,
     positionImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
+    willDecreaseOrdersBeExecuted: decreaseOrdersThatWillBeExecuted.length > 0,
     tradeFlags,
   });
 
@@ -228,16 +231,16 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     positionKey: selectedPositionKey,
     isCreatingNewAutoCancel: isTrigger,
   });
-  const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
+  // const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
   const submitButtonState = useTradeboxButtonState({
-    isTriggerWarningAccepted: triggerConsent,
+    // isTriggerWarningAccepted: triggerConsent,
     account,
     setToTokenInputValue,
   });
 
   useTradeboxAvailablePriceImpactValues();
-  useTradeboxTPSLReset(setTriggerConsent);
+  useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
 
   const prevIsISwap = usePrevious(isSwap);
 
@@ -600,8 +603,8 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
               <button
                 type="button"
                 disabled={!isSwitchTokensAllowed}
-                className="desktop-hover:bg-[#484e92] absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500
-                           active:bg-[#505699]"
+                className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
+                           desktop-hover:bg-[#484e92]"
                 onClick={onSwitchTokens}
                 data-qa="swap-ball"
               >
@@ -863,91 +866,107 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
         </div>
 
-        {maxAutoCancelOrdersWarning}
-        {isSwap && isLimit && (
-          <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning" className="my-14">
-            <Trans>
-              The execution price will constantly vary based on fees and price impact to guarantee that you receive the
-              minimum receive amount.
-            </Trans>
-          </AlertInfoCard>
-        )}
+        {(isPosition ||
+          priceImpactWarningState.shouldShowWarning ||
+          (!isTrigger && !isSwap) ||
+          (isSwap && isLimit) ||
+          maxAutoCancelOrdersWarning) && (
+          <div className="flex flex-col gap-14 pb-14 pt-12">
+            {maxAutoCancelOrdersWarning}
+            {isSwap && isLimit && (
+              <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
+                <Trans>
+                  The execution price will constantly vary based on fees and price impact to guarantee that you receive
+                  the minimum receive amount.
+                </Trans>
+              </AlertInfoCard>
+            )}
 
-        <div className="flex flex-col gap-14 pb-14 pt-12">
-          {isPosition && (
-            <>
-              {isIncrease && isLeverageEnabled && (
-                <div className="flex items-start gap-6">
-                  <LeverageSlider
-                    className="grow"
-                    marks={leverageSliderMarks}
-                    value={leverageOption}
-                    onChange={setLeverageOption}
-                    isPositive={isLong}
-                    isSlim
+            {isPosition && (
+              <>
+                {isIncrease && isLeverageEnabled && (
+                  <div className="flex items-start gap-6">
+                    <LeverageSlider
+                      className="grow"
+                      marks={leverageSliderMarks}
+                      value={leverageOption}
+                      onChange={setLeverageOption}
+                      isPositive={isLong}
+                      isSlim
+                    />
+                    <SuggestionInput
+                      className="w-48"
+                      value={leverageInputValue}
+                      setValue={setLeverageInputValue}
+                      onBlur={handleLeverageInputBlur}
+                      onKeyDown={handleLeverageInputKeyDown}
+                      symbol="x"
+                    />
+                  </div>
+                )}
+                {isTrigger && (
+                  <SyntheticsInfoRow
+                    label={t`Market`}
+                    value={
+                      <MarketSelector
+                        chainId={chainId}
+                        label={t`Market`}
+                        className="-mr-4"
+                        selectedIndexName={
+                          toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
+                        }
+                        markets={sortedAllMarkets ?? EMPTY_ARRAY}
+                        isSideMenu
+                        onSelectMarket={handleSelectMarket}
+                        size="m"
+                      />
+                    }
                   />
-                  <SuggestionInput
-                    className="w-48"
-                    value={leverageInputValue}
-                    setValue={setLeverageInputValue}
-                    onBlur={handleLeverageInputBlur}
-                    onKeyDown={handleLeverageInputKeyDown}
-                    symbol="x"
+                )}
+
+                <MarketPoolSelectorRow />
+
+                <CollateralSelectorRow
+                  selectedMarketAddress={marketInfo?.marketTokenAddress}
+                  onSelectCollateralAddress={onSelectCollateralAddress}
+                  isMarket={isMarket}
+                />
+
+                {isTrigger && selectedPosition && selectedPosition?.leverage && (
+                  <ToggleSwitch
+                    isChecked={keepLeverageChecked}
+                    setIsChecked={setKeepLeverage}
+                    disabled={decreaseAmounts?.isFullClose}
+                  >
+                    <span className="text-14 text-slate-100">
+                      <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
+                    </span>
+                  </ToggleSwitch>
+                )}
+              </>
+            )}
+            {/* <TradeBoxOneClickTrading /> */}
+            {(priceImpactWarningState.shouldShowWarning || (!isTrigger && !isSwap)) && (
+              <div
+                className={cx("flex flex-col justify-between", {
+                  "min-h-[167px]": !isTrigger && !isSwap,
+                })}
+              >
+                <LimitAndTPSLGroup />
+                <div className="">
+                  <HighPriceImpactOrFeesWarningCard
+                    priceImpactWarningState={priceImpactWarningState}
+                    collateralImpact={fees?.positionCollateralPriceImpact}
+                    positionImpact={fees?.positionPriceImpact}
+                    swapPriceImpact={fees?.swapPriceImpact}
+                    swapProfitFee={fees?.swapProfitFee}
+                    executionFeeUsd={executionFee?.feeUsd}
                   />
                 </div>
-              )}
-              {isTrigger && (
-                <SyntheticsInfoRow
-                  label={t`Market`}
-                  value={
-                    <MarketSelector
-                      chainId={chainId}
-                      label={t`Market`}
-                      className="-mr-4"
-                      selectedIndexName={
-                        toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
-                      }
-                      markets={sortedAllMarkets ?? EMPTY_ARRAY}
-                      isSideMenu
-                      onSelectMarket={handleSelectMarket}
-                      size="m"
-                    />
-                  }
-                />
-              )}
-
-              <MarketPoolSelectorRow />
-
-              <CollateralSelectorRow
-                selectedMarketAddress={marketInfo?.marketTokenAddress}
-                onSelectCollateralAddress={onSelectCollateralAddress}
-                isMarket={isMarket}
-              />
-
-              {isTrigger && selectedPosition && selectedPosition?.leverage && (
-                <ToggleSwitch
-                  isChecked={keepLeverageChecked}
-                  setIsChecked={setKeepLeverage}
-                  disabled={decreaseAmounts?.isFullClose}
-                >
-                  <span className="text-14 text-slate-100">
-                    <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
-                  </span>
-                </ToggleSwitch>
-              )}
-            </>
-          )}
-          {/* <TradeBoxOneClickTrading /> */}
-          <LimitAndTPSLGroup />
-          <HighPriceImpactOrFeesWarningCard
-            priceImpactWarningState={priceImpactWarningState}
-            collateralImpact={fees?.positionCollateralPriceImpact}
-            positionImpact={fees?.positionPriceImpact}
-            swapPriceImpact={fees?.swapPriceImpact}
-            swapProfitFee={fees?.swapProfitFee}
-            executionFeeUsd={executionFee?.feeUsd}
-          />
-        </div>
+              </div>
+            )}
+          </div>
+        )}
         <div className="grow" />
         <div className="flex flex-col gap-14">
           <div className="pt-4">{button}</div>
@@ -988,7 +1007,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
           <TradeBoxAdvancedGroups />
         </div>
 
-        {triggerConsentRows && triggerConsentRows}
+        {/* {triggerConsentRows} */}
       </form>
     </>
   );

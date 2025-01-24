@@ -17,9 +17,9 @@ import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrde
 import { PERCENTAGE_DECIMALS } from "domain/synthetics/sidecarOrders/utils";
 import { formatAmount, formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 import { useCallback, useMemo, useRef } from "react";
-import { SideOrderEntries } from "../components/SideOrderEntries";
 import { FaPlus } from "react-icons/fa";
 import { EntryButton } from "../components/EntryButton";
+import { SideOrderEntries } from "../components/SideOrderEntries";
 
 function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
   const { stopLoss, takeProfit, limit } = useSidecarOrders();
@@ -57,7 +57,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
   return (
     <>
       <SyntheticsInfoRow
-        className="whitespace-nowrap"
+        className="whitespace-nowrap leading-[16px]"
         label={
           <div className="flex items-center gap-4">
             {label}
@@ -81,7 +81,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
         }
       />
       {(!isLimitGroup && entriesInfo.totalPnL !== undefined && entriesInfo.totalPnLPercentage !== undefined && (
-        <SyntheticsInfoRow label={labelPnl}>
+        <SyntheticsInfoRow label={labelPnl} className="leading-[16px]">
           {entriesInfo.totalPnL === 0n ? (
             "-"
           ) : (
@@ -139,11 +139,11 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
   );
 }
 
-export function LimitAndTPSLRows() {
+export function LimitAndTPSLRows({ hasExistingLimitOrder }: { hasExistingLimitOrder: boolean }) {
   return (
     <div className="flex flex-col gap-14 py-14">
       <SideOrders type="limit" />
-      <div className="h-1 bg-stroke-primary" />
+      {hasExistingLimitOrder && <div className="h-1 bg-stroke-primary" />}
       <SideOrders type="takeProfit" />
       <div className="h-1 bg-stroke-primary" />
       <SideOrders type="stopLoss" />
@@ -201,9 +201,9 @@ export function LimitAndTPSLGroup() {
       autoExpandOnError
       errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
       onToggle={toggleLimitOrTPSL}
-      occupyExpandableSpace
+      contentClassName=""
     >
-      <LimitAndTPSLRows />
+      <LimitAndTPSLRows hasExistingLimitOrder={hasExistingLimitOrder} />
     </ExpandableRow>
   );
 }

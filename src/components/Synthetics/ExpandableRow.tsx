@@ -41,6 +41,7 @@ export function ExpandableRow({
   autoExpandOnError = true,
   errorMessage,
   className,
+  // todo remove
   occupyExpandableSpace = false,
   contentClassName,
 }: Props) {

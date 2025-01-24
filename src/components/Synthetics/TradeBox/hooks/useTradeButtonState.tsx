@@ -71,7 +71,7 @@ import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 interface TradeboxButtonStateOptions {
-  isTriggerWarningAccepted: boolean;
+  // isTriggerWarningAccepted: boolean;
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
 }
@@ -94,7 +94,7 @@ const selectTradeboxPayAmount = createSelector((q) => {
 });
 
 export function useTradeboxButtonState({
-  isTriggerWarningAccepted,
+  // isTriggerWarningAccepted,
   account,
   setToTokenInputValue,
 }: TradeboxButtonStateOptions): {
@@ -123,7 +123,7 @@ export function useTradeboxButtonState({
   const payAmount = useSelector(selectTradeboxPayAmount);
 
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
-  const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
+  // const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
   const {
     tokensAllowanceData,
@@ -401,14 +401,14 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isIncrease && decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
-      return {
-        text: t`Accept confirmation of trigger orders`,
-        tooltipContent,
-        disabled: true,
-        onSubmit,
-      };
-    }
+    // if (isIncrease && decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
+    //   return {
+    //     text: t`Accept confirmation of trigger orders`,
+    //     tooltipContent,
+    //     disabled: true,
+    //     onSubmit,
+    //   };
+    // }
 
     let submitButtonText = "";
     {
@@ -466,8 +466,6 @@ export function useTradeboxButtonState({
     fromToken,
     stage,
     isIncrease,
-    decreaseOrdersThatWillBeExecuted.length,
-    isTriggerWarningAccepted,
     sidecarEntries,
     tooltipContent,
     onSubmit,
