@@ -75,7 +75,7 @@ export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox?.mark
 export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
-export const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.avaialbleTradeModes;
+export const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.availableTradeModes;
 export const selectTradeboxAvailableTokensOptions = (s: SyntheticsState) => s.tradebox.availableTokensOptions;
 export const selectTradeboxFromTokenInputValue = (s: SyntheticsState) => s.tradebox.fromTokenInputValue;
 export const selectTradeboxToTokenInputValue = (s: SyntheticsState) => s.tradebox.toTokenInputValue;
@@ -910,7 +910,7 @@ export const selectTradeboxSwapFeesPercentage = createSelector((q) => {
   const swapAmounts = q(selectTradeboxSwapAmounts);
 
   if (swapAmounts?.swapPathStats?.totalSwapFeeUsd === undefined || swapAmounts?.usdIn === undefined) {
-    return undefined;
+    return 0n;
   }
 
   return bigMath.mulDiv(swapAmounts.swapPathStats.totalSwapFeeUsd * -1n, PRECISION, swapAmounts.usdIn);
@@ -918,30 +918,30 @@ export const selectTradeboxSwapFeesPercentage = createSelector((q) => {
 
 export const selectTradeboxPriceImpactPercentage = createSelector((q) => {
   const fees = q(selectTradeboxFees);
-  const feesType = q(selectTradeboxTradeFeesType);
+  const { isSwap } = q(selectTradeboxTradeFlags);
 
-  if (feesType === "swap") {
-    return fees?.swapPriceImpact?.precisePercentage;
+  if (isSwap) {
+    return fees?.swapPriceImpact?.precisePercentage ?? 0n;
   }
 
   if (
     fees?.positionPriceImpact?.precisePercentage === undefined ||
     fees?.priceImpactDiff?.precisePercentage === undefined
   ) {
-    return undefined;
+    return 0n;
   }
 
   return fees.positionPriceImpact.precisePercentage - fees.priceImpactDiff.precisePercentage;
 });
 
 export const selectTradeboxFeesPercentage = createSelector((q) => {
-  const feesType = q(selectTradeboxTradeFeesType);
+  const { isSwap } = q(selectTradeboxTradeFlags);
 
-  if (feesType === "swap") {
+  if (isSwap) {
     return q(selectTradeboxSwapFeesPercentage);
   }
 
   const fees = q(selectTradeboxFees);
 
-  return fees?.positionFee?.precisePercentage;
+  return fees?.positionFee?.precisePercentage ?? 0n;
 });
