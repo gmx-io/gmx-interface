@@ -1004,7 +1004,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
             />
           )}
           <PriceImpactFeesRow />
-          <TradeBoxAdvancedGroups priceImpactWarningState={priceImpactWarningState} />
+          <TradeBoxAdvancedGroups />
         </div>
       </form>
     </>
