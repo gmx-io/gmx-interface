@@ -18,7 +18,7 @@ export function TradeBoxResponsiveContainer() {
 
   return (
     <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox">
-      <TradeBox isInCurtain />
+      <TradeBox />
     </Curtain>
   );
 }

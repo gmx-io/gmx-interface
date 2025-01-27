@@ -17,7 +17,6 @@ import {
   selectTradeboxFromTokenAddress,
   selectTradeboxFromTokenInputValue,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxIsLeverageEnabled,
   selectTradeboxLeverageOption,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
@@ -47,6 +46,7 @@ import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
 import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
@@ -246,7 +246,7 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const leverageOption = q(selectTradeboxLeverageOption);
-  const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+  const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -269,7 +269,11 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
     leverage,
     marketAddress,
     positionKey,
-    strategy: isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent",
+    strategy: isLeverageSliderEnabled
+      ? focusedInput === "from"
+        ? "leverageByCollateral"
+        : "leverageBySize"
+      : "independent",
     tradeMode,
     tradeType,
     triggerPrice,

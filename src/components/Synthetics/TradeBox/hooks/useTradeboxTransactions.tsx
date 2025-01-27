@@ -1,9 +1,11 @@
 import { t } from "@lingui/macro";
+import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -11,7 +13,6 @@ import {
   selectTradeboxExecutionFee,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxIsLeverageEnabled,
   selectTradeboxMarketInfo,
   selectTradeboxSelectedPosition,
   selectTradeboxSwapAmounts,
@@ -22,13 +23,14 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
 import {
+  OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
-  OrderType,
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -47,8 +49,6 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { getContract } from "config/contracts";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -62,7 +62,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isLimit } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
+  const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
   const blockTimestampData = useSelector(selectBlockTimestampData);
 
@@ -198,7 +198,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         marketInfo,
         isLong,
         isFirstOrder,
-        isLeverageEnabled,
+        isLeverageEnabled: isLeverageSliderEnabled,
         initialCollateralAllowance,
         isTPSLCreated: createSltpEntries.length > 0,
         slCount: createSltpEntries.filter(
@@ -330,7 +330,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       marketInfo,
       isLong,
       isFirstOrder,
-      isLeverageEnabled,
+      isLeverageSliderEnabled,
       initialCollateralAllowance,
       createSltpEntries,
       tokensData,

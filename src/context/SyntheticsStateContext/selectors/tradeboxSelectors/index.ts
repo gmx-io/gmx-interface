@@ -43,7 +43,7 @@ import {
   selectTokensData,
   selectUiFeeFactor,
 } from "../globalSelectors";
-import { selectIsPnlInLeverage } from "../settingsSelectors";
+import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
 import {
   createTradeFlags,
@@ -93,7 +93,6 @@ export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.trade
 export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
 export const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
-export const selectTradeboxIsLeverageEnabled = (s: SyntheticsState) => s.tradebox.isLeverageEnabled;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
 export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebox.setActivePosition;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsState) => s.tradebox.setToTokenAddress;
@@ -154,7 +153,7 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const marketAddress = q(selectTradeboxMarketAddress);
   const leverageOption = q(selectTradeboxLeverageOption);
-  const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+  const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -177,7 +176,11 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
     leverage,
     marketAddress,
     positionKey,
-    strategy: isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent",
+    strategy: isLeverageSliderEnabled
+      ? focusedInput === "from"
+        ? "leverageByCollateral"
+        : "leverageBySize"
+      : "independent",
     tradeMode,
     tradeType,
     triggerPrice,
@@ -517,7 +520,7 @@ const selectNextValuesForIncrease = createSelector(
     const toTokenAmount = q(selectTradeboxToTokenAmount);
     const marketAddress = q(selectTradeboxMarketAddress);
     const leverageOption = q(selectTradeboxLeverageOption);
-    const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+    const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
     const focusedInput = q(selectTradeboxFocusedInput);
     const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
     const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -540,7 +543,7 @@ const selectNextValuesForIncrease = createSelector(
       leverage,
       marketAddress,
       positionKey,
-      increaseStrategy: isLeverageEnabled
+      increaseStrategy: isLeverageSliderEnabled
         ? focusedInput === "from"
           ? "leverageByCollateral"
           : "leverageBySize"

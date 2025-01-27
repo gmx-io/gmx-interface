@@ -93,11 +93,13 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
-
-import "./TradeBox.scss";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 
-export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
+import SettingsIcon24 from "img/ic_settings_24.svg?react";
+
+import "./TradeBox.scss";
+
+export function TradeBox() {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
@@ -145,7 +147,6 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     setLeverageInputValue,
     leverageOption,
     setLeverageOption,
-    isLeverageEnabled,
     isSwitchTokensAllowed,
     switchTokenAddresses,
     tradeMode,
@@ -603,8 +604,8 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
               <button
                 type="button"
                 disabled={!isSwitchTokensAllowed}
-                className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
-                           desktop-hover:bg-[#484e92]"
+                className="desktop-hover:bg-[#484e92] absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500
+                           active:bg-[#505699]"
                 onClick={onSwitchTokens}
                 data-qa="swap-ball"
               >
@@ -653,7 +654,9 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
             }
             isBottomLeftValueMuted={increaseAmounts?.sizeDeltaUsd === undefined || increaseAmounts?.sizeDeltaUsd === 0n}
             bottomRightLabel={t`Leverage`}
-            bottomRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
+            bottomRightValue={
+              formatLeverage(isLeverageSliderEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
+            }
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
@@ -846,17 +849,25 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
   const setKeepLeverage = useSelector(selectTradeboxSetKeepLeverage);
 
+  const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
+
   return (
     <>
-      <Tab
-        options={availableTradeModes}
-        optionLabels={localizedTradeModeLabels}
-        className={cx(isInCurtain ? "mb-8" : "mb-[10.5px] mt-15")}
-        type="inline"
-        option={tradeMode}
-        onChange={onSelectTradeMode}
-        qa="trade-mode"
-      />
+      <div className="flex items-center justify-between">
+        <Tab
+          options={availableTradeModes}
+          optionLabels={localizedTradeModeLabels}
+          commonOptionClassname="py-10"
+          type="inline"
+          option={tradeMode}
+          onChange={onSelectTradeMode}
+          qa="trade-mode"
+        />
+        <SettingsIcon24
+          className="desktop-hover:text-white cursor-pointer text-slate-100"
+          onClick={() => setIsSettingsVisible(true)}
+        />
+      </div>
       <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
         <div className="flex flex-col gap-2">
           {(isSwap || isIncrease) && renderTokenInputs()}
@@ -884,7 +895,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
 
             {isPosition && (
               <>
-                {isIncrease && isLeverageEnabled && (
+                {isIncrease && isLeverageSliderEnabled && (
                   <div className="flex items-start gap-6">
                     <LeverageSlider
                       className="grow"

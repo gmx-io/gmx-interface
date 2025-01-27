@@ -12,6 +12,7 @@ export const APP_VERSION = import.meta.env.VITE_APP_VERSION;
 export const IS_HOME_SITE = import.meta.env.VITE_IS_HOME_SITE;
 
 export function isDevelopment() {
+  return false;
   const isProductionPreview = isWebWorker
     ? // @ts-ignore
       Boolean((self as DedicatedWorkerGlobalScope).PRODUCTION_PREVIEW_KEY)
