@@ -408,7 +408,7 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
   }
   // setting new multiplier for the morph mainnet with lower gas fee 
   if (chainId === MORPH_MAINNET) {
-    multiplier = 700000;
+    multiplier = 1000000;
   }
   // multiplier for Avalanche is just the average gas usage
   // if (chainId === AVALANCHE) {
