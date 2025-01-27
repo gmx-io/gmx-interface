@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import type { NetworkMetadata } from "lib/wallets";
 import sample from "lodash/sample";
-import { isDevelopment } from "./env";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
 
 export * from "./static/chains";
@@ -14,12 +13,6 @@ export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URL
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
-
-export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
-
-if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI);
-}
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
