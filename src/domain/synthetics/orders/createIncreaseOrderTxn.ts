@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -8,19 +7,22 @@ import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/S
 import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
 import concat from "lodash/concat";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { applySlippageToPrice } from "../trade";
+import { applySlippageToPrice } from "sdk/utils/trade";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
-import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
+import { getPendingOrderFromParams } from "./utils";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { isMarketOrderType } from "sdk/utils/orders";
 
 const { ZeroAddress } = ethers;
 
@@ -39,6 +41,7 @@ type IncreaseOrderParams = {
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode: string | undefined;
@@ -105,8 +108,11 @@ export async function createIncreaseOrderTxn({
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
 
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-  const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
+  const walletExchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const exchangeRouter = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : walletExchangeRouter;
+
+  await validateSignerAddress(signer, p.account);
+
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
@@ -136,7 +142,7 @@ export async function createIncreaseOrderTxn({
   };
 
   const encodedPayload = await createEncodedPayload({
-    router,
+    router: exchangeRouter,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
     p,
@@ -159,7 +165,7 @@ export async function createIncreaseOrderTxn({
   }
 
   const simulationEncodedPayload = await createEncodedPayload({
-    router: exchangeRouter,
+    router: walletExchangeRouter,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
     p,
@@ -171,7 +177,7 @@ export async function createIncreaseOrderTxn({
   });
 
   const decreaseEncodedPayload = createDecreaseEncodedPayload({
-    router,
+    router: exchangeRouter,
     orderVaultAddress,
     ps: createDecreaseOrderParams || [],
     subaccount,
@@ -180,7 +186,7 @@ export async function createIncreaseOrderTxn({
   });
 
   const cancelEncodedPayload = createCancelEncodedPayload({
-    router,
+    router: exchangeRouter,
     orderKeys: cancelOrderParams?.map(({ orderKey }) => orderKey) || [],
   });
 
@@ -194,7 +200,7 @@ export async function createIncreaseOrderTxn({
           ...acc,
           ...createUpdateEncodedPayload({
             chainId,
-            router,
+            router: exchangeRouter,
             orderKey,
             sizeDeltaUsd,
             executionFee,
@@ -235,7 +241,7 @@ export async function createIncreaseOrderTxn({
 
   const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
     chainId,
-    router,
+    exchangeRouter,
     "multicall",
     [finalPayload],
     totalWntAmount,
@@ -246,7 +252,7 @@ export async function createIncreaseOrderTxn({
 
   const txnCreatedAt = Date.now();
 
-  await callContract(chainId, router, "multicall", [finalPayload], {
+  await callContract(chainId, exchangeRouter, "multicall", [finalPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
@@ -258,6 +264,10 @@ export async function createIncreaseOrderTxn({
     gasPriceData,
     bestNonce,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   });
 
   if (!subaccount) {

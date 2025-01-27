@@ -1,6 +1,7 @@
 import { PRODUCTION_PREVIEW_KEY } from "./localStorage";
+import staticConfig from "../../public/config.json";
 
-export const UI_VERSION = "1.5";
+export const UI_VERSION = staticConfig.uiVersion;
 
 export const IS_TOUCH = "ontouchstart" in self;
 

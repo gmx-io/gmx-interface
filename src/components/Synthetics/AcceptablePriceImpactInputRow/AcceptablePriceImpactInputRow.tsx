@@ -7,7 +7,7 @@ import { formatPercentage } from "lib/numbers";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {

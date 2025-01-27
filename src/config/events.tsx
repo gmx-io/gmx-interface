@@ -33,6 +33,50 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "ena-melania-listing",
+    title: "ENA and MELANIA markets added on Arbitrum",
+    isActive: true,
+    startDate: "23 Jan 2025, 16:00",
+    endDate: "29 Jan 2025, 16:00",
+    bodyText: (
+      <>
+        Trade <TokenSymbolWithIcon symbol="ENA" />
+        /USD and <TokenSymbolWithIcon symbol="MELANIA" />
+        /USD, or provide liquidity to these pools using <TokenSymbolWithIcon symbol="ETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [ETH-USDC].
+      </>
+    ),
+  },
+  {
+    id: "trump-listing",
+    title: "TRUMP market added on Arbitrum",
+    isActive: true,
+    startDate: "20 Jan 2025, 14:30",
+    endDate: "27 Jan 2025, 00:00",
+    bodyText: (
+      <>
+        Trade <TokenSymbolWithIcon symbol="TRUMP" />
+        /USD, or provide liquidity to the pool using <TokenSymbolWithIcon symbol="ETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [ETH-USDC].
+      </>
+    ),
+  },
+  {
+    id: "trading-fees-reduction",
+    title: "Trading fees reduced",
+    isActive: true,
+    startDate: "6 Jan 2025, 12:00",
+    endDate: "13 Jan 2025, 12:00",
+    bodyText: (
+      <>
+        Open and close fees have been lowered from 5/7 bps to 4/6 bps with the introduction of liquidation fees.
+        <br />
+        <br />
+        <ExternalLink href="https://t.me/GMX_Announcements/963">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: "dydx-inj-listing",
     title: "DYDX and INJ markets added on Arbitrum",
     isActive: true,

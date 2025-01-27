@@ -5,10 +5,10 @@ import { useMemo } from "react";
 
 import { ExecutionFee } from "domain/synthetics/fees";
 import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useHasOutdatedUi } from "domain/legacy";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
-import type { GmSwapFees } from "domain/synthetics/trade/types";
+import type { GmSwapFees } from "sdk/types/trade";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
 
@@ -48,7 +48,7 @@ export function useShiftSubmitState({
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { openConnectModal } = useConnectModal();
 
@@ -64,7 +64,11 @@ export function useShiftSubmitState({
     marketTokenUsd,
   });
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+  const {
+    tokensAllowanceData,
+    isLoading: isAllowanceLoading,
+    isLoaded: isAllowanceLoaded,
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
   });
@@ -73,12 +77,7 @@ export function useShiftSubmitState({
     function getTokensToApprove() {
       const addresses: string[] = [];
 
-      if (
-        amounts?.fromTokenAmount !== undefined &&
-        amounts?.fromTokenAmount > 0 &&
-        selectedToken &&
-        getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)
-      ) {
+      if (selectedToken && getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount)) {
         addresses.push(selectedToken.address);
       }
 
@@ -93,6 +92,18 @@ export function useShiftSubmitState({
         text: t`Submitting...`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
+      };
+    }
+
+    if (isAllowanceLoading) {
+      return {
+        text: t`Loading...`,
+        disabled: true,
+        tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -101,6 +112,8 @@ export function useShiftSubmitState({
         text: t`Connect Wallet`,
         onSubmit: () => openConnectModal?.(),
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -109,10 +122,12 @@ export function useShiftSubmitState({
         text: t`Acknowledgment Required`,
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
-    if (tokensToApprove.length > 0 && selectedToken) {
+    if (isAllowanceLoaded && tokensToApprove.length > 0 && selectedToken) {
       const symbols = tokensToApprove.map((address) => {
         const token = getTokenData(tokensData, address);
         return token?.symbol;
@@ -127,6 +142,8 @@ export function useShiftSubmitState({
         }),
         disabled: true,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
       };
     }
 
@@ -159,6 +176,8 @@ export function useShiftSubmitState({
         error,
         disabled: !shouldDisableValidationForTesting,
         tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
         onSubmit,
       };
     }
@@ -170,18 +189,15 @@ export function useShiftSubmitState({
     };
   }, [
     isSubmitting,
+    isAllowanceLoading,
     account,
+    isAllowanceLoaded,
     tokensToApprove,
     selectedToken,
     chainId,
     hasOutdatedUi,
     selectedMarketInfo,
-    amounts?.fromTokenAmount,
-    amounts?.fromTokenUsd,
-    amounts?.fromLongTokenAmount,
-    amounts?.fromShortTokenAmount,
-    amounts?.toTokenAmount,
-    amounts?.swapPriceImpactDeltaUsd,
+    amounts,
     toMarketInfo,
     toToken,
     fees,

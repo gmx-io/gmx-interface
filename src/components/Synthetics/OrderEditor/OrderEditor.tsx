@@ -26,8 +26,8 @@ import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
+  formatBalanceAmount,
   formatDeltaUsd,
-  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsdPrice,
 } from "lib/numbers";
@@ -84,7 +84,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
@@ -618,7 +618,6 @@ export function OrderEditor(p: Props) {
                 label={t`Acceptable Price`}
                 value={formatAcceptablePrice(acceptablePrice, {
                   visualMultiplier: indexToken?.visualMultiplier,
-                  displayDecimals: indexToken?.priceDecimals,
                 })}
               />
 
@@ -627,7 +626,6 @@ export function OrderEditor(p: Props) {
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
-                    displayDecimals: indexToken?.priceDecimals,
                   })}
                 />
               )}
@@ -676,7 +674,7 @@ export function OrderEditor(p: Props) {
               <>
                 <ExchangeInfoRow
                   label={t`Min. Receive`}
-                  value={formatTokenAmount(
+                  value={formatBalanceAmount(
                     minOutputAmount,
                     p.order.targetCollateralToken.decimals,
                     p.order.targetCollateralToken.symbol

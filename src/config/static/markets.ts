@@ -336,6 +336,21 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("26 Dec 2024"),
     },
+    // TRUMP/USD [ETH-USDC]
+    "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636": {
+      enabled: true,
+      listingDate: p("20 Jan 2025"),
+    },
+    // MELANIA/USD [WETH-USDC]
+    "0x12fD1A4BdB96219E637180Ff5293409502b2951D": {
+      enabled: true,
+      listingDate: p("23 Jan 2025"),
+    },
+    // ENA/USD [WETH-USDC]
+    "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C": {
+      enabled: true,
+      listingDate: p("23 Jan 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

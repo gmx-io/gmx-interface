@@ -7,7 +7,7 @@ export enum TxErrorType {
   Expired = "EXPIRED",
 }
 
-type ErrorPattern = { msg?: string; code?: number };
+export type ErrorPattern = { msg?: string; code?: number };
 
 const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
   [TxErrorType.NotEnoughFunds]: [
@@ -19,6 +19,8 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "User denied transaction signature" },
     { msg: "User rejected" },
     { msg: "user rejected action" },
+    { msg: "ethers-user-denied" },
+    { msg: "User canceled" },
     { msg: "Signing aborted by user" },
   ],
   [TxErrorType.Slippage]: [

@@ -283,6 +283,7 @@ export function GmShiftBox({
         >
           <PoolSelector
             chainId={chainId}
+            size="l"
             selectedMarketAddress={selectedMarketAddress}
             markets={shiftAvailableMarkets}
             onSelectMarket={handleSelectedTokenSelectMarket}
@@ -311,6 +312,7 @@ export function GmShiftBox({
         >
           <PoolSelector
             chainId={chainId}
+            size="l"
             selectedMarketAddress={toMarketAddress}
             markets={shiftAvailableRelatedMarkets}
             onSelectMarket={handleToTokenSelectMarket}
@@ -346,7 +348,7 @@ export function GmShiftBox({
           />
         </ExchangeInfo>
 
-        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
+        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
               const token = getTokenData(tokensData, address)!;

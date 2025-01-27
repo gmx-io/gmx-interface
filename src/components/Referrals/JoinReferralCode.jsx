@@ -6,7 +6,7 @@ import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
 function JoinReferralCode({ active }) {
   const { openConnectModal } = useConnectModal();

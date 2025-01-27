@@ -3,10 +3,10 @@ import { ReactNode, forwardRef, useImperativeHandle, useRef } from "react";
 import type { TooltipProps } from "recharts";
 import { useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 
-import { getFeeItem } from "domain/synthetics/fees/utils";
 import { formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import type { DataPoint } from "./DepthChart";
+import { getFeeItem } from "sdk/utils/fees";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 

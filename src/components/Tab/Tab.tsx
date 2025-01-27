@@ -8,6 +8,7 @@ type Props = {
   option: string | number | undefined;
   setOption?: (option: any) => void;
   onChange?: (option: any) => void;
+  size?: "l" | "m";
   type?: "block" | "inline";
   className?: string;
   optionLabels?: Record<string | number, ReactNode> | string[];
@@ -23,7 +24,18 @@ type Props = {
 };
 
 export default function Tab(props: Props) {
-  const { options, option, setOption, onChange, type = "block", className, optionLabels, icons, qa } = props;
+  const {
+    options,
+    option,
+    setOption,
+    onChange,
+    type = "block",
+    className,
+    optionLabels,
+    icons,
+    qa,
+    size = "m",
+  } = props;
   const onClick = (opt) => {
     if (setOption) {
       setOption(opt);
@@ -34,7 +46,7 @@ export default function Tab(props: Props) {
   };
 
   return (
-    <div data-qa={qa} className={cx("Tab", `Tab__${type}`, className)}>
+    <div data-qa={qa} className={cx("Tab", `Tab__${type}`, `Tab__${size}`, className)}>
       {options.map((opt) => {
         const className = props.optionClassnames && props.optionClassnames[opt];
         const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;

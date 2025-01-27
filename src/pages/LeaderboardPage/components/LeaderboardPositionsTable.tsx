@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import type { SortDirection } from "context/SorterContext/types";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
@@ -16,23 +17,23 @@ import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
-import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -48,7 +49,13 @@ const PER_PAGE = 20;
 export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>("qualifyingPnl", "desc");
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
+    "leaderboard-positions-table",
+    {
+      orderBy: "qualifyingPnl",
+      direction: "desc",
+    }
+  );
   const [search, setSearch] = useState("");
   const handleKeyDown = useCallback(() => null, []);
   const term = useDebounce(search, 300);
@@ -282,16 +289,20 @@ const TableRow = memo(
           <StatsTooltipRow
             label={t`Collateral`}
             showDollar={false}
-            value={formatTokenAmountWithUsd(
-              BigInt(position.collateralAmount),
-              BigInt(position.collateralUsd),
-              collateralToken?.symbol,
-              collateralToken?.decimals
-            )}
+            value={
+              collateralToken
+                ? formatBalanceAmountWithUsd(
+                    position.collateralAmount,
+                    position.collateralUsd,
+                    collateralToken.decimals,
+                    collateralToken.symbol
+                  )
+                : "..."
+            }
           />
         </>
       );
-    }, [collateralToken?.decimals, collateralToken?.symbol, position.collateralAmount, position.collateralUsd]);
+    }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
     const renderNaLiquidationTooltip = useCallback(
       () =>

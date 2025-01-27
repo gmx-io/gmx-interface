@@ -21,12 +21,12 @@ import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { getPriceImpactForPosition } from "domain/synthetics/fees/utils/priceImpact";
+
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
-import { bigMath } from "lib/bigmath";
+
 import {
   bigintToNumber,
   calculateDisplayDecimals,
@@ -37,6 +37,8 @@ import {
 } from "lib/numbers";
 
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
+import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
+import { bigMath } from "sdk/utils/bigmath";
 
 const GREEN = "#0ECC83";
 const RED = "#FF506A";
@@ -795,11 +797,11 @@ function useDepthChartPricesData(
   };
 }
 
-function addLeftPaddingForZeroPriceImpact(price: bigint) {
+function addLeftPaddingForZeroPriceImpact(price: bigint): bigint {
   return bigMath.mulDiv(price, ZERO_PRICE_IMPACT_LEFT_MULTIPLIER_BIGINT, FLOAT_PRECISION);
 }
 
-function addRightPaddingForZeroPriceImpact(price: bigint) {
+function addRightPaddingForZeroPriceImpact(price: bigint): bigint {
   return bigMath.mulDiv(price, ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER_BIGINT, FLOAT_PRECISION);
 }
 

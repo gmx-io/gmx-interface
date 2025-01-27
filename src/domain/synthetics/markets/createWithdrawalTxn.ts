@@ -13,6 +13,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateWithdrawalParams = {
@@ -26,6 +27,7 @@ export type CreateWithdrawalParams = {
   shortTokenSwapPath: string[];
   minShortTokenAmount: bigint;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
@@ -40,6 +42,8 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
   const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
+
+  await validateSignerAddress(signer, p.account);
 
   const wntAmount = p.executionFee;
 
@@ -113,6 +117,10 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingWithdrawal({
       account: p.account,

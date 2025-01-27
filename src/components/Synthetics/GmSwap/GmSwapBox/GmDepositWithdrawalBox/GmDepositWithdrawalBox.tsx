@@ -55,7 +55,6 @@ import { useUpdateTokens } from "./useUpdateTokens";
 
 import type { GmSwapBoxProps } from "../GmSwapBox";
 import { Swap } from "../Swap";
-import { showMarketToast } from "../showMarketToast";
 import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
 
@@ -663,7 +662,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const marketTokenSelectMarket = useCallback(
     (marketInfo: GlvOrMarketInfo): void => {
       onGlvOrMarketChange(getGlvOrMarketAddress(marketInfo));
-      showMarketToast(marketInfo);
       onSelectedMarketForGlv?.(undefined);
     },
     [onGlvOrMarketChange, onSelectedMarketForGlv]
@@ -872,8 +870,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           >
             <PoolSelector
               chainId={chainId}
+              size="l"
               label={t`Pool`}
-              className="-mr-4"
               selectedIndexName={indexName}
               selectedMarketAddress={marketAddress}
               markets={sortedMarketsInfoByIndexToken}
@@ -909,7 +907,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
         {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && <div className="App-card-divider " />}
 
-        {submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
+        {submitState.isAllowanceLoaded && submitState.tokensToApprove && submitState.tokensToApprove.length > 0 && (
           <div>
             {submitState.tokensToApprove.map((address) => {
               const token = getTokenData(allTokensData, address)!;
