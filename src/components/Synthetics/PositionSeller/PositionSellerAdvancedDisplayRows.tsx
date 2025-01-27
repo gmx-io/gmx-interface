@@ -188,7 +188,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
 
   return (
     <ExpandableRow
-      title={t`Advanced display`}
+      title={t`Execution Details`}
       open={open}
       onToggle={setOpen}
       contentClassName="flex flex-col gap-14 pt-14"

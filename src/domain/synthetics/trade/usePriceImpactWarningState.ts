@@ -16,8 +16,6 @@ import type { TradeFlags } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import type { FeeItem } from "../fees";
 
-export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
-
 export type WarningState = {
   shouldShowWarningForPosition: boolean;
   shouldShowWarningForCollateral: boolean;

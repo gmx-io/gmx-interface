@@ -1,6 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -12,14 +10,14 @@ import { useState } from "react";
 
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 
-import { ExpandableRow } from "../ExpandableRow";
-import { usePositionEditorData } from "./hooks/usePositionEditorData";
-import { Options, usePositionEditorFees } from "./hooks/usePositionEditorFees";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { usePositionEditorData } from "./hooks/usePositionEditorData";
+import { Options, usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
 export function PositionEditorAdvancedRows({ selectedCollateralAddress, collateralInputValue, operation }: Options) {
   const tokensData = useTokensData();
@@ -54,7 +52,7 @@ export function PositionEditorAdvancedRows({ selectedCollateralAddress, collater
 
   return (
     <ExpandableRow
-      title={t`Advanced display`}
+      title={t`Execution Details`}
       open={open}
       onToggle={setOpen}
       contentClassName="flex flex-col gap-14 pt-14"

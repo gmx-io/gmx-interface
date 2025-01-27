@@ -27,7 +27,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
 
 import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
@@ -40,6 +40,8 @@ import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { LimitPriceRow } from "./LimitPriceRow";
+import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { usePrevious } from "react-use";
 
 function LeverageInfoRows() {
   const { isIncrease, isTrigger } = useSelector(selectTradeboxTradeFlags);
@@ -176,7 +178,7 @@ function IncreaseOrderRow() {
   );
 }
 
-export function TradeBoxAdvancedGroups() {
+export function TradeBoxAdvancedGroups({ priceImpactWarningState }: { priceImpactWarningState: WarningState }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -221,6 +223,25 @@ export function TradeBoxAdvancedGroups() {
   );
 
   const isVisible = options.advancedDisplay;
+
+  const autoExpand =
+    priceImpactWarningState.shouldShowWarningForCollateral ||
+    priceImpactWarningState.shouldShowWarningForPosition ||
+    priceImpactWarningState.shouldShowWarningForExecutionFee ||
+    priceImpactWarningState.shouldShowWarningForSwap ||
+    priceImpactWarningState.shouldShowWarningForSwapProfitFee;
+
+  const prevAutoExpand = usePrevious(autoExpand);
+
+  useEffect(() => {
+    if (prevAutoExpand === undefined) {
+      return;
+    }
+
+    if (!prevAutoExpand && autoExpand) {
+      toggleAdvancedDisplay(true);
+    }
+  }, [prevAutoExpand, autoExpand, toggleAdvancedDisplay]);
 
   return (
     <ExpandableRow

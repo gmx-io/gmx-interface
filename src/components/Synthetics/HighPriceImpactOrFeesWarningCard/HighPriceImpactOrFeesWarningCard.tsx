@@ -3,11 +3,11 @@ import { useMemo } from "react";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { FeeItem } from "domain/synthetics/fees";
-import { PriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { formatPercentage, formatUsd } from "lib/numbers";
 
 export type Props = {
-  priceImpactWarningState: PriceImpactWarningState;
+  priceImpactWarningState: WarningState;
   collateralImpact?: FeeItem;
   positionImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
