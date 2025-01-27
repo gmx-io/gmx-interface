@@ -2233,6 +2233,10 @@ msgstr ""
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Цена отметки изменилась, подумайте об увеличении Допустимого Скольжения, нажав на значок \"...\" рядом с вашим адресом."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Default Allowed Slippage"
+msgstr ""
+
 #. Total Value Locked
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
@@ -3233,7 +3237,6 @@ msgstr "Пока нет сделок"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed Slippage"
@@ -5835,6 +5838,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Liquidity to fill the Order."
 msgstr "Недостаточно доступной ликвидности для выполнения ордера."
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Show leverage slider"
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
