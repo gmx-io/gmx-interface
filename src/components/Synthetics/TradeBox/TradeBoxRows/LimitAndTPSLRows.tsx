@@ -62,14 +62,24 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
           <div className="flex items-center gap-4">
             {label}
             {entriesInfo.canAddEntry && (
-              <EntryButton
-                theme="green"
-                onClick={handleAddEntry}
-                disabled={!entriesInfo.allowAddEntry}
-                className="-my-5"
+              <TooltipWithPortal
+                as="div"
+                disabled={entriesInfo.allowAddEntry}
+                content={
+                  isStopLoss
+                    ? t`Combined stop-losses are at maximum (100%). Decrease existing values to add more orders.`
+                    : t`Combined take-profits are at maximum (100%). Decrease existing values to add more orders.`
+                }
               >
-                <FaPlus />
-              </EntryButton>
+                <EntryButton
+                  theme="green"
+                  onClick={handleAddEntry}
+                  disabled={!entriesInfo.allowAddEntry}
+                  className="-my-5"
+                >
+                  <FaPlus />
+                </EntryButton>
+              </TooltipWithPortal>
             )}
           </div>
         }
@@ -91,7 +101,9 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
               })})`}
               position="bottom-end"
               handleClassName={
-                entriesInfo.totalPnL !== undefined && entriesInfo.totalPnL < 0 ? "text-red-500" : "text-green-500"
+                entriesInfo.totalPnL !== undefined && entriesInfo.totalPnL < 0
+                  ? "text-red-500 !decoration-red-500/50"
+                  : "text-green-500 !decoration-green-500/50"
               }
               className="SLTP-pnl-tooltip"
               renderContent={() =>

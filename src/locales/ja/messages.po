@@ -4941,6 +4941,10 @@ msgstr "最大 {0} in"
 msgid "Stop Loss Decrease"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Combined take-profits are at maximum (100%). Decrease existing values to add more orders."
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
 msgstr "差異"
@@ -6035,6 +6039,10 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "シェアできる紹介コードがないようです。<0/> コードをいま作成して紹介報酬を稼ぎましょう!"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Combined stop-losses are at maximum (100%). Decrease existing values to add more orders."
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
