@@ -243,11 +243,7 @@ export const ChartTooltip = forwardRef<
       <StatsTooltipRow
         label={t`Price Impact`}
         textClassName={getPositiveOrNegativeClass(stats.priceImpactBigInt)}
-        value={
-          <>
-            {formatUsd(stats.priceImpactBigInt)} ({formatPercentage(priceImpactFeeItem?.bps, { signed: true })})
-          </>
-        }
+        value={formatPercentage(priceImpactFeeItem?.bps, { signed: true })}
         showDollar={false}
       />
     </div>
