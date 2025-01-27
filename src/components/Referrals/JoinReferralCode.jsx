@@ -38,7 +38,7 @@ export function ReferralCodeForm({ callAfterSuccess, userReferralCodeString = ""
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
-  const [pendingTxns, setPendingTxns] = usePendingTxns();
+  const { pendingTxns, setPendingTxns } = usePendingTxns();
   const debouncedReferralCode = useDebounce(referralCode, 300);
 
   function getPrimaryText() {
