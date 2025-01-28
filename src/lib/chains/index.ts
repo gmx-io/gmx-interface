@@ -51,7 +51,7 @@ export function useChainId() {
     const unsubscribe = watchAccount(getRainbowKitConfig(), {
       onChange: (account) => {
         if (!account.chainId) return;
-        if (!isSupportedChain(account.chainId)) return;
+        if (!isSupportedChain(account.chainId, isDevelopment())) return;
 
         setDisplayedChainId(account.chainId);
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, account.chainId.toString());
