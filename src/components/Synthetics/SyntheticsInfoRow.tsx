@@ -22,7 +22,7 @@ export function SyntheticsInfoRow({
   return (
     <div
       className={cx(
-        "flex items-baseline justify-between gap-8",
+        "flex items-baseline justify-between gap-8 text-14 leading-[16px]",
         {
           "cursor-pointer": onClick,
         },
