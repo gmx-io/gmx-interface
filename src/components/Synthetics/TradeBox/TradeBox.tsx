@@ -888,7 +888,7 @@ export function TradeBox() {
         </div>
 
         {showSectionBetweenInputsAndButton && (
-          <div className="flex flex-col gap-14 pb-14 pt-12">
+          <div className="flex flex-col gap-14 pt-12">
             <OneClickTradingInfo />
             {maxAutoCancelOrdersWarning}
             {isSwap && isLimit && (
@@ -985,8 +985,8 @@ export function TradeBox() {
           </div>
         )}
         <div className="grow" />
-        <div className="flex flex-col gap-14">
-          <div className="pt-4">{button}</div>
+        <div className="flex flex-col gap-14 pt-14">
+          <div>{button}</div>
           <div className="h-1 bg-stroke-primary" />
           {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
           {!(isSwap && isLimit) && <LimitPriceRow />}
