@@ -1,22 +1,26 @@
 import { Trans, t } from "@lingui/macro";
-import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
   usePositionsConstants,
-  useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
+  selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxLeverage,
@@ -28,47 +32,40 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-
-import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
-import { getCommonError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-
-import { getByKey } from "lib/objects";
-import { mustNeverExist } from "lib/types";
-
-import { ReactNode, useCallback, useMemo, useState } from "react";
-
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { getTriggerNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
+import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
+import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { getNeedTokenApprove } from "domain/synthetics/tokens/utils";
 import {
   getIncreasePositionAmounts,
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade/utils/increase";
+import { getCommonError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { approveTokens } from "domain/tokens/approveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { isAddressZero } from "lib/legacy";
-import { formatAmountFree, parseValue } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { sleep } from "lib/sleep";
+import { mustNeverExist } from "lib/types";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
-import { ImSpinner2 } from "react-icons/im";
 import { getContract } from "sdk/configs/contracts";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
+
 import { tradeTypeLabels } from "../tradeboxConstants";
-import { useDecreaseOrdersThatWillBeExecuted } from "./useDecreaseOrdersThatWillBeExecuted";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 
 interface TradeboxButtonStateOptions {
   // isTriggerWarningAccepted: boolean;
@@ -112,10 +109,8 @@ export function useTradeboxButtonState({
   const sidecarEntries = useSidecarEntries();
   const hasOutdatedUi = useHasOutdatedUi();
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
-
-  // const tokensData = useTokensData();
-
-  const { stage, isLeverageEnabled, collateralToken, tradeType, setStage } = useSelector(selectTradeboxState);
+  const { stage, collateralToken, tradeType, setStage } = useSelector(selectTradeboxState);
+  const { isLeverageSliderEnabled } = useSettings();
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
@@ -123,7 +118,6 @@ export function useTradeboxButtonState({
   const payAmount = useSelector(selectTradeboxPayAmount);
 
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
-  // const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
   const {
     tokensAllowanceData,
@@ -155,7 +149,7 @@ export function useTradeboxButtonState({
         case "maxLeverage": {
           tooltipContent = (
             <>
-              {isLeverageEnabled ? (
+              {isLeverageSliderEnabled ? (
                 <Trans>Decrease the leverage to match the max. allowed leverage.</Trans>
               ) : (
                 <Trans>Decrease the size to match the max. allowed leverage:</Trans>
@@ -223,7 +217,7 @@ export function useTradeboxButtonState({
     fromToken?.assetSymbol,
     fromToken?.symbol,
     fromToken?.address,
-    isLeverageEnabled,
+    isLeverageSliderEnabled,
     detectAndSetAvailableMaxLeverage,
   ]);
 
@@ -388,10 +382,6 @@ export function useTradeboxButtonState({
       };
     }
 
-    // if () {
-    // isAllowanceLoading
-    // }
-
     if (stage === "processing") {
       return {
         text: t`Creating Order...`,
@@ -400,15 +390,6 @@ export function useTradeboxButtonState({
         onSubmit,
       };
     }
-
-    // if (isIncrease && decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
-    //   return {
-    //     text: t`Accept confirmation of trigger orders`,
-    //     tooltipContent,
-    //     disabled: true,
-    //     onSubmit,
-    //   };
-    // }
 
     let submitButtonText = "";
     {
@@ -487,24 +468,17 @@ export function useDetectAndSetAvailableMaxLeverage({
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong } = tradeFlags;
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
-  const tokensData = useTokensData();
 
   const { minCollateralUsd } = usePositionsConstants();
 
-  const {
-    fromTokenInputValue,
-    isLeverageEnabled,
-    collateralToken,
-    fromTokenAddress,
-    marketInfo,
-    toTokenAddress,
-    selectedTriggerAcceptablePriceImpactBps,
-    setLeverageOption,
-  } = useSelector(selectTradeboxState);
+  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption } =
+    useSelector(selectTradeboxState);
 
-  const fromToken = getByKey(tokensData, fromTokenAddress);
-  const toToken = getByKey(tokensData, toTokenAddress);
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
+  const { isLeverageSliderEnabled } = useSettings();
+
+  const fromToken = useSelector(selectTradeboxFromToken);
+  const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
+  const toToken = useSelector(selectTradeboxToToken);
   const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
@@ -583,7 +557,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     );
 
     if (sizeDeltaInTokens !== undefined) {
-      if (isLeverageEnabled) {
+      if (isLeverageSliderEnabled) {
         // round to int if it's > 1x
         const resultLeverage = maxLeverage > 10 ? Math.floor(maxLeverage / 10) : Math.floor(maxLeverage) / 10;
 
@@ -605,7 +579,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     findSwapPath,
     fromToken,
     fromTokenAmount,
-    isLeverageEnabled,
+    isLeverageSliderEnabled,
     isLong,
     marketInfo,
     maxAllowedLeverage,

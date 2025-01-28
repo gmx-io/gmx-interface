@@ -8,12 +8,7 @@ import values from "lodash/values";
 import { produce } from "immer";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  getKeepLeverageKey,
-  getLeverageEnabledKey,
-  getLeverageKey,
-  getSyntheticsTradeOptionsKey,
-} from "config/localStorage";
+import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";

@@ -1,15 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import {
-  usePositionSeller,
-  usePositionSellerKeepLeverage,
-  usePositionSellerLeverageDisabledByCollateral,
-} from "context/SyntheticsStateContext/hooks/positionSellerHooks";
+import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -17,7 +11,6 @@ import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
   selectPositionSellerDecreaseAmounts,
   selectPositionSellerExecutionPrice,
@@ -49,12 +42,9 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
     defaultTriggerAcceptablePriceImpactBps,
     orderOption,
     setAllowedSlippage,
-    setKeepLeverage,
     setSelectedTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
   } = usePositionSeller();
-  const keepLeverage = usePositionSellerKeepLeverage();
-  const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
 
   const isTrigger = orderOption === OrderOption.Trigger;
 
@@ -121,26 +111,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
       />
     ));
 
-  let keepLeverageAtValue: string | undefined = "...";
-  if (position?.leverage && !decreaseAmounts?.isFullClose) {
-    keepLeverageAtValue = formatLeverage(position.leverage);
-  }
-
-  const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
-  const renderKeepLeverageTooltipContent = useCallback(
-    () => (
-      <Trans>
-        Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-      </Trans>
-    ),
-    []
-  );
-  const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
-    <TooltipWithPortal handle={keepLeverageText} renderContent={renderKeepLeverageTooltipContent} />
-  ) : (
-    keepLeverageText
-  );
   let leverageValue: React.ReactNode = "-";
 
   if (decreaseAmounts?.isFullClose) {

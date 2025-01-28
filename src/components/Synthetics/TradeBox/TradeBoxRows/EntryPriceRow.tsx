@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import {
-  selectTradeboxAdvancedOptions,
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,

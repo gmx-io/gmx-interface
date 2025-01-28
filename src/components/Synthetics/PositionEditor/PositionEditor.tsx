@@ -1,10 +1,7 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import Tab from "components/Tab/Tab";
@@ -21,7 +18,6 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import {
   DecreasePositionSwapType,
   OrderType,
@@ -57,13 +53,12 @@ import {
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -92,8 +87,8 @@ import {
 } from "lib/metrics/utils";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 
-import "./PositionEditor.scss";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import "./PositionEditor.scss";
 
 export type Props = {
   allowedSlippage: number;
@@ -143,11 +138,7 @@ export function PositionEditor(p: Props) {
     return adaptToV1InfoTokens(tokensData);
   }, [tokensData]);
 
-  const {
-    tokensAllowanceData,
-    isLoading: isAllowanceLoading,
-    isLoaded: isAllowanceLoaded,
-  } = useTokensAllowanceData(chainId, {
+  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: position ? [position.collateralTokenAddress] : [],
   });
