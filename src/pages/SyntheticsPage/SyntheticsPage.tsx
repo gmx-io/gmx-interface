@@ -53,6 +53,7 @@ import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSel
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
+import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import Tab from "components/Tab/Tab";
@@ -310,18 +311,28 @@ export function SyntheticsPage(p: Props) {
           )}
         </div>
 
-        <div
-          className={cx("min-[1101px]:max-[1500px]:w-[38.75rem] min-[1501px]:w-[41.85rem]", {
-            absolute: isMobile && !isSwap,
-          })}
-        >
-          <TradeBoxResponsiveContainer />
-          {isSwap && (
-            <div className="w-full min-[1101px]:mt-10">
-              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+        {isMobile ? (
+          <>
+            <div className="absolute">
+              <TradeBoxResponsiveContainer />
             </div>
-          )}
-        </div>
+            <div>
+              {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+              <TradeBoxOneClickTrading />
+            </div>
+          </>
+        ) : (
+          <div className="w-[38.75rem] min-[1501px]:w-[41.85rem]">
+            <TradeBoxResponsiveContainer />
+
+            {isSwap && (
+              <div className="mt-10">
+                <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+              </div>
+            )}
+            <TradeBoxOneClickTrading />
+          </div>
+        )}
 
         {isMobile && (
           <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">

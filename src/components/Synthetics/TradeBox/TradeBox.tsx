@@ -10,6 +10,7 @@ import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/toke
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -40,6 +41,7 @@ import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positi
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token, getMinResidualAmount } from "domain/tokens";
 import { useLocalizedMap } from "lib/i18n";
 import {
@@ -56,15 +58,11 @@ import {
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
+import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ExecutionPriceRow } from "../ExecutionPriceRow";
-import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
-
+import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
@@ -77,23 +75,25 @@ import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import Tab from "components/Tab/Tab";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
+import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import { OneClickTradingInfo, useShowOneClickTradingInfo } from "./OneClickTradingInfo";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
+import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 
-import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
-import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
@@ -604,8 +604,8 @@ export function TradeBox() {
               <button
                 type="button"
                 disabled={!isSwitchTokensAllowed}
-                className="desktop-hover:bg-[#484e92] absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500
-                           active:bg-[#505699]"
+                className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
+                           desktop-hover:bg-[#484e92]"
                 onClick={onSwitchTokens}
                 data-qa="swap-ball"
               >
@@ -851,6 +851,16 @@ export function TradeBox() {
 
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
 
+  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useShowOneClickTradingInfo();
+
+  const showSectionBetweenInputsAndButton =
+    isPosition ||
+    priceImpactWarningState.shouldShowWarning ||
+    (!isTrigger && !isSwap) ||
+    (isSwap && isLimit) ||
+    maxAutoCancelOrdersWarning ||
+    shouldShowOneClickTradingWarning;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -864,7 +874,7 @@ export function TradeBox() {
           qa="trade-mode"
         />
         <SettingsIcon24
-          className="desktop-hover:text-white cursor-pointer text-slate-100"
+          className="cursor-pointer text-slate-100 desktop-hover:text-white"
           onClick={() => setIsSettingsVisible(true)}
         />
       </div>
@@ -877,12 +887,9 @@ export function TradeBox() {
           {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
         </div>
 
-        {(isPosition ||
-          priceImpactWarningState.shouldShowWarning ||
-          (!isTrigger && !isSwap) ||
-          (isSwap && isLimit) ||
-          maxAutoCancelOrdersWarning) && (
+        {showSectionBetweenInputsAndButton && (
           <div className="flex flex-col gap-14 pb-14 pt-12">
+            <OneClickTradingInfo />
             {maxAutoCancelOrdersWarning}
             {isSwap && isLimit && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
@@ -956,7 +963,6 @@ export function TradeBox() {
                 )}
               </>
             )}
-            {/* <TradeBoxOneClickTrading /> */}
             {(priceImpactWarningState.shouldShowWarning || (!isTrigger && !isSwap)) && (
               <div
                 className={cx("flex flex-col justify-between", {
