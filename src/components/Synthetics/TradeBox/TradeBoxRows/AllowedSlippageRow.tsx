@@ -33,7 +33,7 @@ export function AllowedSlippageRow() {
       label={
         <TooltipWithPortal
           handle={t`Allowed Slippage`}
-          position="top-start"
+          position="left-start"
           content={
             <div className="text-white">
               <Trans>

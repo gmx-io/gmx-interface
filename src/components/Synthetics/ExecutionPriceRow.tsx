@@ -128,7 +128,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
       {executionPrice !== undefined ? (
         <TooltipWithPortal
           maxAllowedWidth={350}
-          position="bottom-end"
+          position="left-start"
           handleClassName={handleClassName}
           handle={formatUsdPrice(executionPrice, {
             visualMultiplier,

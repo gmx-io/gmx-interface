@@ -19,8 +19,6 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 import { bigMath } from "sdk/utils/bigmath";
 
-import "./NetworkFeeRow.scss";
-
 type Props = {
   executionFee?: ExecutionFee;
   isAdditionOrdersMsg?: boolean;
@@ -118,8 +116,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
     return (
       <TooltipWithPortal
         tooltipClassName="NetworkFeeRow-tooltip"
-        position="top-end"
-        renderContent={() => (
+        position="left-start"
+        content={
           <>
             <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={executionFeeText} />
             <div className="h-8" />
@@ -143,7 +141,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
             {warning && <p className="text-yellow-500">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
-        )}
+        }
       >
         {formatUsd(executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined)}
       </TooltipWithPortal>
@@ -155,15 +153,13 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
       <ExchangeInfoRow
         label={
           <TooltipWithPortal
-            position="top-start"
-            renderContent={() => (
-              <div>
-                <Trans>
-                  Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
-                  does not impact your collateral.
-                </Trans>
-              </div>
-            )}
+            position="left-start"
+            content={
+              <Trans>
+                Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
+                not impact your collateral.
+              </Trans>
+            }
           >
             <Trans>Network Fee</Trans>
           </TooltipWithPortal>
@@ -177,15 +173,13 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
     <SyntheticsInfoRow
       label={
         <TooltipWithPortal
-          position="top-start"
-          renderContent={() => (
-            <div>
-              <Trans>
-                Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
-                not impact your collateral.
-              </Trans>
-            </div>
-          )}
+          position="left-start"
+          content={
+            <Trans>
+              Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
+              not impact your collateral.
+            </Trans>
+          }
         >
           <Trans>Network Fee</Trans>
         </TooltipWithPortal>
