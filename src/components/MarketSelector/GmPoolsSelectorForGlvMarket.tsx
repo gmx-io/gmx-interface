@@ -27,7 +27,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 
-import Modal from "../Modal/Modal";
+import { SlideModal } from "components/Modal/SlideModal";
 import { PoolListItem } from "./PoolListItem";
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
@@ -39,6 +39,30 @@ type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   onSelectMarket?: (market: MarketInfo) => void;
   disablePoolSelector?: boolean;
 };
+
+function PoolLabel({
+  marketInfo,
+  disablePoolSelector,
+  onClick,
+}: {
+  marketInfo: MarketInfo | undefined;
+  disablePoolSelector?: boolean;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}) {
+  if (!marketInfo) return "...";
+
+  return (
+    <div
+      className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+        "pointer-events-none": disablePoolSelector,
+      })}
+      onClick={!disablePoolSelector ? onClick : undefined}
+    >
+      {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
+      {!disablePoolSelector && <BiChevronDown className="text-body-large" />}
+    </div>
+  );
+}
 
 export function GmPoolsSelectorForGlvMarket({
   chainId,
@@ -172,28 +196,18 @@ export function GmPoolsSelectorForGlvMarket({
     [onSelectGmPool, filteredOptions]
   );
 
-  function displayPoolLabel(marketInfo: MarketInfo | undefined) {
-    if (!marketInfo) return "...";
-
-    return (
-      <div
-        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
-          "pointer-events-none": disablePoolSelector,
-        })}
-        onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}
-      >
-        {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-        {!disablePoolSelector && <BiChevronDown className="text-body-large" />}
-      </div>
-    );
-  }
+  const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setIsModalVisible(true);
+  }, []);
 
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
-      <Modal
+      <SlideModal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
+        className="TokenSelector-modal"
         headerContent={
           <div className="mt-16">
             <SearchInput
@@ -229,7 +243,7 @@ export function GmPoolsSelectorForGlvMarket({
             <Trans>No pools matched.</Trans>
           </div>
         )}
-      </Modal>
+      </SlideModal>
 
       {marketInfo && (
         <div className="inline-flex items-center">
@@ -246,7 +260,7 @@ export function GmPoolsSelectorForGlvMarket({
               displaySize={20}
             />
           )}
-          {displayPoolLabel(marketInfo)}
+          <PoolLabel marketInfo={marketInfo} disablePoolSelector={disablePoolSelector} onClick={handleClick} />
         </div>
       )}
     </div>

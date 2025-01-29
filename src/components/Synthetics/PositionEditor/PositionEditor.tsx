@@ -568,7 +568,8 @@ export function PositionEditor(p: Props) {
               option={operation}
               options={Object.values(Operation)}
               optionLabels={localizedOperationLabels}
-              className="PositionEditor-tabs SwapBox-option-tabs"
+              className="PositionEditor-tabs"
+              size="l"
               qa="operation-tabs"
             />
             <BuyInputSection

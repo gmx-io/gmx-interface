@@ -558,7 +558,8 @@ export function formatBalanceAmount(
   amount: bigint,
   tokenDecimals: number,
   tokenSymbol?: string,
-  showZero = false
+  showZero = false,
+  toExponential = true
 ): string {
   if (amount === undefined) return "-";
 
@@ -582,7 +583,13 @@ export function formatBalanceAmount(
   else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, 6, true);
   else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, 7, true);
   else if (absAmountFloat >= 0.00000001) value = formatAmount(amount, tokenDecimals, 8, true);
-  else value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+  else {
+    if (toExponential) {
+      value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+    } else {
+      value = bigintToNumber(amount, tokenDecimals).toFixed(8);
+    }
+  }
 
   if (tokenSymbol) {
     // Non-breaking space
@@ -609,4 +616,22 @@ export function formatBalanceAmountWithUsd(
 
   // Regular space
   return `${value} (${usd})`;
+}
+
+export function formatFactor(factor: bigint) {
+  if (factor == 0n) {
+    return "0";
+  }
+
+  if (bigMath.abs(factor) > PRECISION * 1000n) {
+    return (factor / PRECISION).toString();
+  }
+
+  const trailingZeroes =
+    bigMath
+      .abs(factor)
+      .toString()
+      .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
+  const factorDecimals = 30 - trailingZeroes;
+  return formatAmount(factor, 30, factorDecimals);
 }

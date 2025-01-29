@@ -3,14 +3,13 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
-import { useHistory } from "react-router-dom";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
@@ -60,8 +59,11 @@ import {
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { TradeType, getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
-import { applySlippageToPrice } from "sdk/utils/trade";
+import {
+  applySlippageToPrice,
+  getIncreasePositionAmounts,
+  getNextPositionValuesForIncreaseTrade,
+} from "domain/synthetics/trade";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {
@@ -98,7 +100,6 @@ import useWallet from "lib/wallets/useWallet";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
-import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
@@ -135,19 +136,17 @@ import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { TradeBoxOneClickTrading } from "./TradeBoxRows/OneClickTrading";
 
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { sendTradeBoxInteractionStartedEvent, sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
-import { tradeModeLabels, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
+import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
-import "./TradeBox.scss";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import "./TradeBox.scss";
 
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
-
-export function TradeBox(p: Props) {
+export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
+  const { setPendingTxns } = usePendingTxns();
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
@@ -157,10 +156,8 @@ export function TradeBox(p: Props) {
   const isCursorInside = useCursorInside(formRef);
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const { setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
-  const history = useHistory();
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = avaialbleTokenOptions;
   const tokensData = useTokensData();
   const marketsInfoData = useMarketsInfoData();
@@ -191,7 +188,6 @@ export function TradeBox(p: Props) {
     setToTokenInputValue: setToTokenInputValueRaw,
     setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
-    setTradeType: onSelectTradeType,
     setTradeMode: onSelectTradeMode,
     stage,
     setStage,
@@ -809,13 +805,6 @@ export function TradeBox(p: Props) {
     toTokenInputValue,
   ]);
 
-  function onTradeTypeChange(type: TradeType) {
-    onSelectTradeType(type);
-    if (tradeType !== type) {
-      history.push(`/trade/${type.toLowerCase()}`);
-    }
-  }
-
   const { onSubmitWrapOrUnwrap, onSubmitSwap, onSubmitIncreaseOrder, onSubmitDecreaseOrder } = useTradeboxTransactions({
     setPendingTxns,
   });
@@ -1417,100 +1406,84 @@ export function TradeBox(p: Props) {
 
   return (
     <>
-      <div>
-        <div data-qa="tradebox" className={`App-box SwapBox`}>
-          <Tab
-            icons={tradeTypeIcons}
-            options={Object.values(TradeType)}
-            optionLabels={localizedTradeTypeLabels}
-            optionClassnames={tradeTypeClassNames}
-            option={tradeType}
-            onChange={onTradeTypeChange}
-            className="SwapBox-option-tabs"
-            qa="trade-direction"
-          />
+      <Tab
+        options={availableTradeModes}
+        optionLabels={localizedTradeModeLabels}
+        className={cx(isInCurtain ? "mb-8" : "mb-[10.5px] mt-15")}
+        type="inline"
+        option={tradeMode}
+        onChange={onSelectTradeMode}
+        qa="trade-mode"
+      />
+      <form onSubmit={handleFormSubmit} ref={formRef} className="flex grow flex-col">
+        {(isSwap || isIncrease) && renderTokenInputs()}
+        {isTrigger && renderDecreaseSizeInput()}
 
-          <Tab
-            options={availableTradeModes}
-            optionLabels={localizedTradeModeLabels}
-            className="SwapBox-asset-options-tabs"
-            type="inline"
-            option={tradeMode}
-            onChange={onSelectTradeMode}
-            qa="trade-mode"
-          />
-          <form onSubmit={handleFormSubmit} ref={formRef}>
-            {(isSwap || isIncrease) && renderTokenInputs()}
-            {isTrigger && renderDecreaseSizeInput()}
+        {isSwap && isLimit && renderTriggerRatioInput()}
+        {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
-            {isSwap && isLimit && renderTriggerRatioInput()}
-            {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+        <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
+          <ExchangeInfo.Group>
+            {maxAutoCancelOrdersWarning}
+            {isSwap && isLimit && (
+              <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact>
+                <Trans>
+                  The execution price will constantly vary based on fees and price impact to guarantee that you receive
+                  the minimum receive amount.
+                </Trans>
+              </AlertInfo>
+            )}
+          </ExchangeInfo.Group>
 
-            <ExchangeInfo className="SwapBox-info-section" dividerClassName="App-card-divider">
-              <ExchangeInfo.Group>
-                {maxAutoCancelOrdersWarning}
-                {isSwap && isLimit && (
-                  <AlertInfo key="showHasBetterOpenFeesAndNetFeesWarning" type="info" compact>
-                    <Trans>
-                      The execution price will constantly vary based on fees and price impact to guarantee that you
-                      receive the minimum receive amount.
-                    </Trans>
-                  </AlertInfo>
+          <ExchangeInfo.Group>{isPosition && renderPositionControls()}</ExchangeInfo.Group>
+          <ExchangeInfo.Group>
+            <TradeBoxOneClickTrading />
+          </ExchangeInfo.Group>
+          <ExchangeInfo.Group>
+            <LimitAndTPSLGroup />
+          </ExchangeInfo.Group>
+
+          <ExchangeInfo.Group>
+            <LimitPriceRow />
+            {isIncrease && renderIncreaseOrderInfo()}
+            {isTrigger && renderTriggerOrderInfo()}
+          </ExchangeInfo.Group>
+
+          <ExchangeInfo.Group>
+            <TradeBoxAdvancedGroups className="-my-[1.05rem]" />
+          </ExchangeInfo.Group>
+
+          <ExchangeInfo.Group>
+            <TradeFeesRow {...fees} feesType={feesType} />
+            <NetworkFeeRow executionFee={executionFee} />
+          </ExchangeInfo.Group>
+
+          {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
+            <ExchangeInfo.Group>
+              <ExchangeInfoRow
+                label={t`Receive`}
+                value={formatTokenAmountWithUsd(
+                  decreaseAmounts.receiveTokenAmount,
+                  decreaseAmounts.receiveUsd,
+                  collateralToken?.symbol,
+                  collateralToken?.decimals
                 )}
-              </ExchangeInfo.Group>
+              />
+            </ExchangeInfo.Group>
+          )}
 
-              <ExchangeInfo.Group>{isPosition && renderPositionControls()}</ExchangeInfo.Group>
-              <ExchangeInfo.Group>
-                <TradeBoxOneClickTrading />
-              </ExchangeInfo.Group>
-              <ExchangeInfo.Group>
-                <LimitAndTPSLGroup />
-              </ExchangeInfo.Group>
+          {isSwap && (
+            <ExchangeInfo.Group>
+              <MinReceiveRow allowedSlippage={allowedSlippage} />
+            </ExchangeInfo.Group>
+          )}
 
-              <ExchangeInfo.Group>
-                <LimitPriceRow />
-                {isIncrease && renderIncreaseOrderInfo()}
-                {isTrigger && renderTriggerOrderInfo()}
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                <TradeBoxAdvancedGroups className="-my-[1.05rem]" />
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                <TradeFeesRow {...fees} feesType={feesType} />
-                <NetworkFeeRow executionFee={executionFee} />
-              </ExchangeInfo.Group>
-
-              {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
-                <ExchangeInfo.Group>
-                  <ExchangeInfoRow
-                    label={t`Receive`}
-                    value={formatTokenAmountWithUsd(
-                      decreaseAmounts.receiveTokenAmount,
-                      decreaseAmounts.receiveUsd,
-                      collateralToken?.symbol,
-                      collateralToken?.decimals
-                    )}
-                  />
-                </ExchangeInfo.Group>
-              )}
-
-              {isSwap && (
-                <ExchangeInfo.Group>
-                  <MinReceiveRow allowedSlippage={allowedSlippage} />
-                </ExchangeInfo.Group>
-              )}
-
-              {tradeboxWarningRows && <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>}
-              {triggerConsentRows && <ExchangeInfo.Group>{triggerConsentRows}</ExchangeInfo.Group>}
-            </ExchangeInfo>
-            <div className="Exchange-swap-button-container">{button}</div>
-          </form>
-        </div>
-      </div>
-
-      {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+          {tradeboxWarningRows && <ExchangeInfo.Group>{tradeboxWarningRows}</ExchangeInfo.Group>}
+          {triggerConsentRows && <ExchangeInfo.Group>{triggerConsentRows}</ExchangeInfo.Group>}
+        </ExchangeInfo>
+        <div className="grow" />
+        <div className="Exchange-swap-button-container">{button}</div>
+      </form>
     </>
   );
 }

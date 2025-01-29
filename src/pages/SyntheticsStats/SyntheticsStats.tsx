@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatUsd, PRECISION } from "lib/numbers";
+import { expandDecimals, formatAmount, formatFactor, formatUsd, PRECISION } from "lib/numbers";
 
 import cx from "classnames";
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
@@ -42,24 +42,6 @@ function pow(bn: bigint, exponent: bigint) {
   const e = Number(exponent.toString()) / 1e30;
   const afterExponent = Math.pow(n, e);
   return expandDecimals(afterExponent.toFixed(0), 30);
-}
-
-function formatFactor(factor: bigint) {
-  if (factor == 0n) {
-    return "0";
-  }
-
-  if (bigMath.abs(factor) > PRECISION * 1000n) {
-    return (factor / PRECISION).toString();
-  }
-
-  const trailingZeroes =
-    bigMath
-      .abs(factor)
-      .toString()
-      .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
-  const factorDecimals = 30 - trailingZeroes;
-  return formatAmount(factor, 30, factorDecimals);
 }
 
 const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = [

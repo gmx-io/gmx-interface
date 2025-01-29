@@ -33,6 +33,21 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "ena-melania-listing",
+    title: "ENA and MELANIA markets added on Arbitrum",
+    isActive: true,
+    startDate: "23 Jan 2025, 16:00",
+    endDate: "29 Jan 2025, 16:00",
+    bodyText: (
+      <>
+        Trade <TokenSymbolWithIcon symbol="ENA" />
+        /USD and <TokenSymbolWithIcon symbol="MELANIA" />
+        /USD, or provide liquidity to these pools using <TokenSymbolWithIcon symbol="ETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing <TokenSymbolWithIcon symbol="GLV" /> [ETH-USDC].
+      </>
+    ),
+  },
+  {
     id: "trump-listing",
     title: "TRUMP market added on Arbitrum",
     isActive: true,

@@ -16,9 +16,13 @@ import { TrackingLink } from "components/TrackingLink/TrackingLink";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
-type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: number };
+type Props = {
+  showRedirectModal?: (to: string) => void;
+  redirectPopupTimestamp?: number;
+  isMobileTradePage?: boolean;
+};
 
-export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Props) {
+export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileTradePage }: Props) {
   const isHome = isHomeSite();
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
@@ -33,10 +37,14 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
   return (
     <>
       <div
-        className={cx("absolute bottom-0 left-0 w-full border-t border-t-stroke-primary px-32 py-40", {
-          "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
-          "flex flex-col gap-20": isMobile,
-        })}
+        className={cx(
+          "absolute bottom-0 left-0 w-full border-t border-t-stroke-primary px-32 pt-40",
+          isMobileTradePage ? "pb-92" : "pb-40",
+          {
+            "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
+            "flex flex-col gap-20": isMobile,
+          }
+        )}
       >
         <div
           className={cx("flex items-center", {

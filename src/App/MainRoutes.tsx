@@ -46,6 +46,7 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import PositionRouter from "sdk/abis/PositionRouter.json";
 import VaultV2 from "sdk/abis/VaultV2.json";
 import VaultV2b from "sdk/abis/VaultV2b.json";
+import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
@@ -233,6 +234,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <UiPage />
         </Route>
       )}
+      <Route path="/parsetx/:network/:tx">
+        <ParseTransactionPage />
+      </Route>
 
       <Route path="*">
         <PageNotFound />

@@ -125,7 +125,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
     throw new Error(`Unknown method: ${method}`);
   }
 
-  const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
+  let errorTitle = p.errorTitle || t`Execute order simulation failed.`;
 
   const tenderlyConfig = getTenderlyConfig();
   const router = isGlv ? glvRouter : exchangeRouter;
@@ -187,6 +187,10 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
         acc[k] = parsedError?.args[k].toString();
         return acc;
       }, {});
+
+      if (parsedError?.name === "OrderNotFulfillableAtAcceptablePrice") {
+        errorTitle = t`Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section.`;
+      }
 
       msg = (
         <div>
