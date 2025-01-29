@@ -28,6 +28,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
 import "./TradeHistoryRow.scss";
+import { NETWORKS_BY_CHAIN_IDS } from "pages/ParseTransaction/ParseTransaction";
 
 type Props = {
   tradeAction: TradeAction;
@@ -206,12 +207,22 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
                 {msg.action}
               </span>
             )}
-            <ExternalLink
-              className="TradeHistoryRow-external-link ml-5"
-              href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
-            >
-              <NewLink20ReactComponent />
-            </ExternalLink>
+            <div className="flex flex-row items-center">
+              <ExternalLink
+                className="TradeHistoryRow-external-link ml-5"
+                href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
+              >
+                <NewLink20ReactComponent />
+              </ExternalLink>
+              {showDebugValues && (
+                <Link
+                  to={`/parsetx/${NETWORKS_BY_CHAIN_IDS[chainId]}/${tradeAction.transaction.hash}`}
+                  className="text-body-small ml-5 text-slate-100 hover:text-white"
+                >
+                  Events
+                </Link>
+              )}
+            </div>
           </div>
           <TooltipWithPortal
             disableHandleStyle

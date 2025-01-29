@@ -4,7 +4,7 @@ import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
 import { OrderType } from "domain/synthetics/orders/types";
-import { TradeActionType } from "domain/synthetics/tradeHistory/types";
+import { TradeActionType } from "sdk/types/tradeHistory";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";

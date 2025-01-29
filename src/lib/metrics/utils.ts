@@ -6,7 +6,7 @@ import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthe
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
-import { TxError } from "lib/contracts/transactionErrors";
+import { ErrorLike } from "lib/parseError";
 import { bigintToNumber, formatPercentage, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
@@ -624,7 +624,7 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
 
 export function sendTxnErrorMetric(
   metricId: OrderMetricId,
-  error: Error | TxError | undefined,
+  error: ErrorLike | undefined,
   errorContext: OrderErrorContext
 ) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
@@ -648,7 +648,7 @@ export function sendTxnErrorMetric(
 }
 
 export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {
-  return (error: Error | TxError) => {
+  return (error: ErrorLike) => {
     sendTxnErrorMetric(metricId, error, "sending");
     throw error;
   };

@@ -55,7 +55,6 @@ import { useUpdateTokens } from "./useUpdateTokens";
 
 import type { GmSwapBoxProps } from "../GmSwapBox";
 import { Swap } from "../Swap";
-import { showMarketToast } from "../showMarketToast";
 import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
 
@@ -663,7 +662,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const marketTokenSelectMarket = useCallback(
     (marketInfo: GlvOrMarketInfo): void => {
       onGlvOrMarketChange(getGlvOrMarketAddress(marketInfo));
-      showMarketToast(marketInfo);
       onSelectedMarketForGlv?.(undefined);
     },
     [onGlvOrMarketChange, onSelectedMarketForGlv]

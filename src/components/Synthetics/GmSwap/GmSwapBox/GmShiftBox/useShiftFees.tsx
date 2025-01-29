@@ -5,14 +5,14 @@ import {
   type FeeItem,
   type GasLimitsConfig,
   estimateExecuteShiftGasLimit,
-  getExecutionFee,
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
-import { estimateShiftOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateShiftOraclePriceCount } from "domain/synthetics/fees";
 import type { TokensData } from "domain/synthetics/tokens/types";
-import type { GmSwapFees } from "domain/synthetics/trade/types";
+import type { GmSwapFees } from "sdk/types/trade";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export function useShiftFees({
   gasLimits,

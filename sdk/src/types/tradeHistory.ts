@@ -1,3 +1,4 @@
+import { BytesLike } from "./common";
 import { MarketInfo } from "./markets";
 import { OrderType } from "./orders";
 import { TokenData } from "./tokens";
@@ -32,6 +33,7 @@ export type RawTradeAction = {
   positionFeeAmount?: string;
   borrowingFeeAmount?: string;
   fundingFeeAmount?: string;
+  liquidationFeeAmount?: string;
   pnlUsd?: string;
   basePnlUsd?: string;
 
@@ -47,7 +49,7 @@ export type RawTradeAction = {
   shouldUnwrapNativeToken?: boolean;
 
   reason?: string;
-  reasonBytes?: string | Uint8Array;
+  reasonBytes?: BytesLike;
 
   transaction: {
     timestamp: number;
@@ -89,6 +91,7 @@ export type PositionTradeAction = {
   reason?: string;
   reasonBytes?: string | Uint8Array;
   shouldUnwrapNativeToken: boolean;
+  liquidationFeeAmount?: bigint;
 
   transaction: {
     timestamp: number;

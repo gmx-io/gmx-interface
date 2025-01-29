@@ -9,7 +9,7 @@ import {
   getUsedLiquidity,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
 export type MarketStat = {
   marketInfo: MarketInfo;

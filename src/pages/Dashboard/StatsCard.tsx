@@ -8,7 +8,7 @@ import { useV1FeesInfo, useTotalVolume } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useInfoTokens } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { GLP_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";

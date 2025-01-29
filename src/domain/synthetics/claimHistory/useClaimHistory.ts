@@ -11,7 +11,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { BN_ZERO, bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
+import { getSyntheticsGraphClient } from "lib/subgraph";
+import { buildFiltersBody } from "sdk/utils/subgraph";
 
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";

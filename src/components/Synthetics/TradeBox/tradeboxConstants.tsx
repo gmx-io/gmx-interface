@@ -42,3 +42,9 @@ export const tradeTypeClassNames = {
     regular: "border-b border-b-[transparent]",
   },
 };
+
+export const mobileTradeTypeClassNames = {
+  [TradeType.Long]: "!bg-[#1F3445] border-b border-b-green-500",
+  [TradeType.Short]: "!bg-[#392A46] border-b border-b-red-500",
+  [TradeType.Swap]: "!bg-[#252B57] border-b border-b-blue-300",
+};
