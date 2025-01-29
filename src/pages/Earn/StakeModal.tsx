@@ -184,24 +184,26 @@ export function StakeModal(props: {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-        <BuyInputSection
-          topLeftLabel={t`Stake`}
-          bottomRightLabel={t`Max`}
-          bottomRightValue={formatAmount(maxAmount, 18, 4, true)}
-          onClickBottomRightLabel={onClickMaxButton}
-          inputValue={value}
-          onInputValueChange={(e) => setValue(e.target.value)}
-        >
-          <div className="Stake-modal-icons">
-            <img
-              className="icon mr-5 h-22"
-              height="22"
-              src={icons?.[stakingTokenSymbol.toLowerCase()]}
-              alt={stakingTokenSymbol}
-            />
-            {stakingTokenSymbol}
-          </div>
-        </BuyInputSection>
+        <div className="mb-12">
+          <BuyInputSection
+            topLeftLabel={t`Stake`}
+            topRightLabel={t`Max`}
+            topRightValue={formatAmount(maxAmount, 18, 4, true)}
+            onClickMax={amount !== maxAmount && maxAmount !== 0n ? onClickMaxButton : undefined}
+            inputValue={value}
+            onInputValueChange={(e) => setValue(e.target.value)}
+          >
+            <div className="Stake-modal-icons">
+              <img
+                className="icon mr-5 h-22"
+                height="22"
+                src={icons?.[stakingTokenSymbol.toLowerCase()]}
+                alt={stakingTokenSymbol}
+              />
+              {stakingTokenSymbol}
+            </div>
+          </BuyInputSection>
+        </div>
 
         {(needApproval || isApproving) && (
           <div className="mb-12">
