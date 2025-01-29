@@ -265,66 +265,70 @@ export function GmShiftBox({
   return (
     <>
       <form className="flex flex-col" onSubmit={handleFormSubmit}>
-        <BuyInputSection
-          topLeftLabel={t`Pay`}
-          bottomLeftValue={selectedTokenDollarAmount}
-          bottomRightLabel={t`Balance`}
-          bottomRightValue={
-            selectedToken && selectedToken.balance !== undefined
-              ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
-              : undefined
-          }
-          onClickBottomRightLabel={handleSelectedTokenClickMax}
-          onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
-          inputValue={selectedMarketText}
-          onInputValueChange={handleSelectedTokenInputValueChange}
-          onFocus={handleSelectedTokenFocus}
-        >
-          <PoolSelector
-            chainId={chainId}
-            size="l"
-            selectedMarketAddress={selectedMarketAddress}
-            markets={shiftAvailableMarkets}
-            onSelectMarket={handleSelectedTokenSelectMarket}
-            selectedIndexName={selectedIndexName}
-            showAllPools
-            isSideMenu
-            showIndexIcon
-            showBalances
-            marketTokensData={depositMarketTokensData}
-            favoriteKey="gm-token-selector"
-          />
-        </BuyInputSection>
-        <Swap />
-        <BuyInputSection
-          topLeftLabel={t`Receive`}
-          bottomLeftValue={toTokenShowDollarAmount}
-          bottomRightLabel={t`Balance`}
-          bottomRightValue={
-            toToken && toToken.balance !== undefined
-              ? formatBalanceAmount(toToken.balance, toToken.decimals)
-              : undefined
-          }
-          inputValue={toMarketText}
-          onInputValueChange={handleToTokenInputValueChange}
-          onFocus={handleToTokenFocus}
-        >
-          <PoolSelector
-            chainId={chainId}
-            size="l"
-            selectedMarketAddress={toMarketAddress}
-            markets={shiftAvailableRelatedMarkets}
-            onSelectMarket={handleToTokenSelectMarket}
-            selectedIndexName={toIndexName}
-            getMarketState={getShiftReceiveMarketState}
-            showAllPools
-            isSideMenu
-            showIndexIcon
-            showBalances
-            marketTokensData={depositMarketTokensData}
-            favoriteKey="gm-token-selector"
-          />
-        </BuyInputSection>
+        <div className="mb-12 flex flex-col gap-4">
+          <BuyInputSection
+            topLeftLabel={t`Pay`}
+            bottomLeftValue={selectedTokenDollarAmount}
+            bottomRightLabel={t`Balance`}
+            bottomRightValue={
+              selectedToken && selectedToken.balance !== undefined
+                ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
+                : undefined
+            }
+            onClickBottomRightLabel={handleSelectedTokenClickMax}
+            onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
+            inputValue={selectedMarketText}
+            onInputValueChange={handleSelectedTokenInputValueChange}
+            onFocus={handleSelectedTokenFocus}
+          >
+            <PoolSelector
+              chainId={chainId}
+              size="l"
+              selectedMarketAddress={selectedMarketAddress}
+              markets={shiftAvailableMarkets}
+              onSelectMarket={handleSelectedTokenSelectMarket}
+              selectedIndexName={selectedIndexName}
+              showAllPools
+              isSideMenu
+              showIndexIcon
+              showBalances
+              marketTokensData={depositMarketTokensData}
+              favoriteKey="gm-token-selector"
+            />
+          </BuyInputSection>
+          <div>
+            <Swap />
+            <BuyInputSection
+              topLeftLabel={t`Receive`}
+              bottomLeftValue={toTokenShowDollarAmount}
+              bottomRightLabel={t`Balance`}
+              bottomRightValue={
+                toToken && toToken.balance !== undefined
+                  ? formatBalanceAmount(toToken.balance, toToken.decimals)
+                  : undefined
+              }
+              inputValue={toMarketText}
+              onInputValueChange={handleToTokenInputValueChange}
+              onFocus={handleToTokenFocus}
+            >
+              <PoolSelector
+                chainId={chainId}
+                size="l"
+                selectedMarketAddress={toMarketAddress}
+                markets={shiftAvailableRelatedMarkets}
+                onSelectMarket={handleToTokenSelectMarket}
+                selectedIndexName={toIndexName}
+                getMarketState={getShiftReceiveMarketState}
+                showAllPools
+                isSideMenu
+                showIndexIcon
+                showBalances
+                marketTokensData={depositMarketTokensData}
+                favoriteKey="gm-token-selector"
+              />
+            </BuyInputSection>
+          </div>
+        </div>
         <ExchangeInfo className={shouldShowWarning ? undefined : "mb-10"} dividerClassName="App-card-divider">
           <ExchangeInfo.Group>
             <GmFees

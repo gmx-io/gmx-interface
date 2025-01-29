@@ -794,7 +794,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   return (
     <>
       <form>
-        <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
+        <div className={cx("mb-12 flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
             bottomLeftValue={formatUsd(firstTokenUsd)}
@@ -850,34 +850,36 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             </BuyInputSection>
           )}
 
-          <Swap />
+          <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
+            <Swap />
 
-          <BuyInputSection
-            topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-            bottomLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
-            bottomRightLabel={t`Balance`}
-            bottomRightValue={receiveTokenFormatted}
-            inputValue={marketOrGlvTokenInputValue}
-            onInputValueChange={marketOrGlvTokenInputValueChange}
-            onClickTopRightLabel={marketTokenInputClickTopRightLabel}
-            onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
-          >
-            <PoolSelector
-              chainId={chainId}
-              size="l"
-              label={t`Pool`}
-              selectedIndexName={indexName}
-              selectedMarketAddress={marketAddress}
-              markets={sortedMarketsInfoByIndexToken}
-              marketTokensData={marketTokensData}
-              isSideMenu
-              showAllPools
-              showBalances
-              showIndexIcon
-              onSelectMarket={marketTokenSelectMarket}
-              favoriteKey="gm-token-receive-pay-selector"
-            />
-          </BuyInputSection>
+            <BuyInputSection
+              topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
+              bottomLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
+              bottomRightLabel={t`Balance`}
+              bottomRightValue={receiveTokenFormatted}
+              inputValue={marketOrGlvTokenInputValue}
+              onInputValueChange={marketOrGlvTokenInputValueChange}
+              onClickTopRightLabel={marketTokenInputClickTopRightLabel}
+              onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
+            >
+              <PoolSelector
+                chainId={chainId}
+                size="l"
+                label={t`Pool`}
+                selectedIndexName={indexName}
+                selectedMarketAddress={marketAddress}
+                markets={sortedMarketsInfoByIndexToken}
+                marketTokensData={marketTokensData}
+                isSideMenu
+                showAllPools
+                showBalances
+                showIndexIcon
+                onSelectMarket={marketTokenSelectMarket}
+                favoriteKey="gm-token-receive-pay-selector"
+              />
+            </BuyInputSection>
+          </div>
         </div>
 
         <InfoRows
