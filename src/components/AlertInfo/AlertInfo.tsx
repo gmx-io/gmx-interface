@@ -45,7 +45,7 @@ export function AlertInfo({
       <div className="pr-6 pt-2">
         <Icon aria-label="Alert Icon" className="block" />
       </div>
-      <div className=" text-body-small">{children}</div>
+      <div className="text-body-small">{children}</div>
     </div>
   );
 }

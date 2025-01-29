@@ -232,10 +232,8 @@ export function TradeBox() {
     positionKey: selectedPositionKey,
     isCreatingNewAutoCancel: isTrigger,
   });
-  // const [triggerConsentRows, triggerConsent, setTriggerConsent] = useTriggerOrdersConsent();
 
   const submitButtonState = useTradeboxButtonState({
-    // isTriggerWarningAccepted: triggerConsent,
     account,
     setToTokenInputValue,
   });
@@ -252,8 +250,9 @@ export function TradeBox() {
       }
 
       // reset input values when switching between swap and position tabs
-      if (isSwap !== prevIsISwap) {
+      if (prevIsISwap !== undefined && isSwap !== prevIsISwap) {
         setFocusedInput("from");
+
         setFromTokenInputValue("", true);
         return;
       }

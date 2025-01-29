@@ -27,7 +27,6 @@ export function MarketPoolSelectorRow() {
   return (
     <>
       <SyntheticsInfoRow
-        // className="SwapBox-info-row"
         label={t`Pool`}
         value={
           <>

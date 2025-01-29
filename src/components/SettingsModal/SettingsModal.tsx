@@ -156,7 +156,7 @@ export function SettingsModal({
         )}
       </div>
       {settings.shouldUseExecutionFeeBuffer && (
-        <div className=" mb-8">
+        <div className="mb-8">
           <div>
             <Tooltip
               handle={<Trans>Max Network Fee Buffer</Trans>}
