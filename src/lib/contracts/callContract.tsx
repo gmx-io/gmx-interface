@@ -126,7 +126,7 @@ export async function callContract(
       }
 
       return cntrct[method](...params, txnInstance).catch(
-        makeTransactionErrorHandler(cntrct, method, params, txnInstance, wallet.address)
+        makeTransactionErrorHandler(chainId, cntrct, method, params, txnInstance, wallet.address)
       );
     });
 
