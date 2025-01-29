@@ -499,6 +499,9 @@ export default function PositionSeller(props) {
         collateralToken.maxPrice
       );
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
+    } else {
+      convertedAmount = 0n;
+      convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
     receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
@@ -1100,7 +1103,7 @@ export default function PositionSeller(props) {
               onChange={onOrderOptionChange}
             />
           )}
-          <div className="relative">
+          <div className="mb-12 flex flex-col gap-4">
             <BuyInputSection
               inputValue={fromValue}
               onInputValueChange={(e) => setFromValue(e.target.value)}
@@ -1108,11 +1111,10 @@ export default function PositionSeller(props) {
               bottomLeftValue={
                 convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
               }
-              bottomRightLabel={t`Max`}
-              bottomRightValue={maxAmount && maxAmountFormatted}
-              onClickBottomRightLabel={() => setFromValue(maxAmountFormattedFree)}
-              onClickMax={() => setFromValue(maxAmountFormattedFree)}
-              showMaxButton={fromValue !== maxAmountFormattedFree}
+              isBottomLeftValueMuted={convertedAmount === 0n}
+              topRightLabel={t`Max`}
+              topRightValue={maxAmount && maxAmountFormatted}
+              onClickMax={fromValue !== maxAmountFormattedFree ? () => setFromValue(maxAmountFormattedFree) : undefined}
               showPercentSelector={true}
               onPercentChange={(percentage) => {
                 setFromValue(formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2));
@@ -1120,23 +1122,23 @@ export default function PositionSeller(props) {
             >
               USD
             </BuyInputSection>
+            {orderOption === STOP && (
+              <BuyInputSection
+                inputValue={triggerPriceValue}
+                onInputValueChange={onTriggerPriceChange}
+                topLeftLabel={t`Price`}
+                topRightLabel={t`Mark`}
+                topRightValue={
+                  position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
+                }
+                onClickTopRightLabel={() => {
+                  setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
+                }}
+              >
+                USD
+              </BuyInputSection>
+            )}
           </div>
-          {orderOption === STOP && (
-            <BuyInputSection
-              inputValue={triggerPriceValue}
-              onInputValueChange={onTriggerPriceChange}
-              topLeftLabel={t`Price`}
-              bottomRightLabel={t`Mark`}
-              bottomRightValue={
-                position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
-              }
-              onClickBottomRightLabel={() => {
-                setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
-              }}
-            >
-              USD
-            </BuyInputSection>
-          )}
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
