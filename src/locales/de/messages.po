@@ -4951,10 +4951,6 @@ msgstr "Max. {0} in"
 msgid "Stop Loss Decrease"
 msgstr ""
 
-#: src/components/SettingsModal/SettingsModal.tsx
-#~ msgid "Allowed Slippage below {0}% may result in failed orders."
-#~ msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
 msgstr "Diff"
