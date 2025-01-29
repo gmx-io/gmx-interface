@@ -965,7 +965,7 @@ export function TradeBox() {
             {(priceImpactWarningState.shouldShowWarning || (!isTrigger && !isSwap)) && (
               <div
                 className={cx("flex flex-col justify-between", {
-                  "min-h-[167px]": !isTrigger && !isSwap,
+                  "min-[1101px]:min-h-[167px]": !isTrigger && !isSwap,
                 })}
               >
                 <LimitAndTPSLGroup />
