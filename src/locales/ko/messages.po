@@ -377,7 +377,7 @@ msgstr ""
 msgid "Main Account Balance"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "추천인 코드가 추가되었습니다!"
 
@@ -848,7 +848,7 @@ msgstr ""
 msgid "Buy with {0}"
 msgstr "{0}로 구매"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding..."
 msgstr "추가중..."
 
@@ -1822,7 +1822,7 @@ msgid "Max"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Checking code..."
 msgstr "코드 확인중..."
 
@@ -1896,7 +1896,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -2156,7 +2156,7 @@ msgid "Reserved for Vesting"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -2678,7 +2678,7 @@ msgstr "{0}의 최대 풀 수용량에 도달했습니다"
 msgid "Trade"
 msgstr "트레이드"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "추천 코드 추가 실패"
 
@@ -3275,7 +3275,7 @@ msgstr ""
 msgid "Ends in"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "수수료 할인의 혜택을 받으려면 추천인 코드를 입력해주세요."
 
@@ -3798,7 +3798,7 @@ msgstr ""
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating..."
 msgstr "업데이트중..."
 
@@ -4410,7 +4410,7 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
@@ -4755,7 +4755,7 @@ msgstr ""
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated failed."
 msgstr "추천인 코드 업데이트 실패."
 
@@ -5524,7 +5524,7 @@ msgstr ""
 msgid "Failed to download trade history CSV."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
 msgstr "현재 유효한 코드와 같음"
 
@@ -5625,7 +5625,7 @@ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "제출"
@@ -6605,7 +6605,7 @@ msgstr "{0} 스왑 제출완료!"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral Code does not exist"
 msgstr "추천인 코드가 존재하지 않습니다"
 
@@ -7635,8 +7635,8 @@ msgstr ""
 msgid "Claim GMX Rewards"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter Referral Code"
 msgstr "추천 코드 입력"
 

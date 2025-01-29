@@ -377,7 +377,7 @@ msgstr "Subaccount Balance"
 msgid "Main Account Balance"
 msgstr "Main Account Balance"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "Referral code added!"
 
@@ -848,7 +848,7 @@ msgstr "Selling {symbol}..."
 msgid "Buy with {0}"
 msgstr "Buy with {0}"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding..."
 msgstr "Adding..."
 
@@ -1822,7 +1822,7 @@ msgid "Max"
 msgstr "Max"
 
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Checking code..."
 msgstr "Checking code..."
 
@@ -1896,7 +1896,7 @@ msgstr "We value your experience and insights and invite you to participate in a
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -2156,7 +2156,7 @@ msgid "Reserved for Vesting"
 msgstr "Reserved for Vesting"
 
 #: src/components/Exchange/TradeHistory.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -2678,7 +2678,7 @@ msgstr "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgid "Trade"
 msgstr "Trade"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "Adding referral code failed."
 
@@ -3275,7 +3275,7 @@ msgstr "Settled Funding Fees"
 msgid "Ends in"
 msgstr "Ends in"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Please input a referral code to benefit from fee discounts."
 
@@ -3801,7 +3801,7 @@ msgstr "Affiliate Vault"
 msgid "Enter a price"
 msgstr "Enter a price"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating..."
 msgstr "Updating..."
 
@@ -4413,7 +4413,7 @@ msgstr "Stake GMX"
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
@@ -4758,7 +4758,7 @@ msgstr "You have not traded during the selected period."
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated failed."
 msgstr "Referral code updated failed."
 
@@ -5527,7 +5527,7 @@ msgstr "OPEN INTEREST"
 msgid "Failed to download trade history CSV."
 msgstr "Failed to download trade history CSV."
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
 msgstr "Same as current active code"
 
@@ -5628,7 +5628,7 @@ msgstr "{daysConsidered}d accrued Fees"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "Submit"
@@ -6611,7 +6611,7 @@ msgstr "Swap {0} submitted!"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral Code does not exist"
 msgstr "Referral Code does not exist"
 
@@ -7641,8 +7641,8 @@ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leve
 msgid "Claim GMX Rewards"
 msgstr "Claim GMX Rewards"
 
-#: src/components/Referrals/JoinReferralCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter Referral Code"
 msgstr "Enter Referral Code"
 

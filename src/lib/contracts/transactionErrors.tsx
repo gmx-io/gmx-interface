@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { getChainName } from "config/chains";
+import { EXECUTION_FEE_CONFIG_V2, getChainName } from "config/chains";
 import { BaseContract, Overrides, Provider, Signer, TransactionRequest } from "ethers";
 import { helperToast } from "lib/helperToast";
 import { ErrorEvent } from "lib/metrics";
@@ -179,6 +179,7 @@ export function getEstimateGasError(contract: BaseContract, method: string, para
 }
 
 export async function getCallStaticError(
+  chainId: number,
   provider: Provider,
   txnData?: TransactionRequest,
   txnHash?: string
@@ -200,6 +201,15 @@ export async function getCallStaticError(
   }
 
   try {
+    const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
+
+    if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
+      delete txnData.gasPrice;
+    } else {
+      delete txnData.maxPriorityFeePerGas;
+      delete txnData.maxFeePerGas;
+    }
+
     await provider.call(txnData);
     return { txnData };
   } catch (error) {
@@ -210,6 +220,7 @@ export async function getCallStaticError(
 }
 
 export function makeTransactionErrorHandler(
+  chainId: number,
   contract: BaseContract,
   method: string,
   params: any[],
@@ -228,7 +239,7 @@ export function makeTransactionErrorHandler(
 
       switch (additionalValidationType) {
         case "tryCallStatic": {
-          const { error: callStaticError } = await getCallStaticError(contract.runner!.provider!, {
+          const { error: callStaticError } = await getCallStaticError(chainId, contract.runner!.provider!, {
             data: contract.interface.encodeFunctionData(method, params),
             to: await contract.getAddress(),
             from,

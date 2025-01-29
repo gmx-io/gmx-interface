@@ -1,14 +1,16 @@
-import { useEffect, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
-import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
-import { REFERRAL_CODE_REGEX } from "./referralsHelper";
-import { useDebounce } from "lib/useDebounce";
-import Button from "components/Button/Button";
-import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useEffect, useRef, useState } from "react";
+
+import Button from "components/Button/Button";
+import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
+import { useDebounce } from "lib/useDebounce";
+import useWallet from "lib/wallets/useWallet";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
-function JoinReferralCode({ active }) {
+import { REFERRAL_CODE_REGEX } from "./referralsHelper";
+
+function JoinReferralCode({ active }: { active: boolean }) {
   const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center mt-medium">
@@ -31,14 +33,22 @@ function JoinReferralCode({ active }) {
   );
 }
 
-export function ReferralCodeForm({ callAfterSuccess, userReferralCodeString = "", type = "join" }) {
+export function ReferralCodeForm({
+  callAfterSuccess = undefined,
+  userReferralCodeString = "",
+  type = "join",
+}: {
+  callAfterSuccess?: () => void;
+  userReferralCodeString?: string;
+  type?: string;
+}) {
   const { account, signer, chainId } = useWallet();
   const [referralCode, setReferralCode] = useState("");
-  const inputRef = useRef("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
-  const [pendingTxns, setPendingTxns] = usePendingTxns();
+  const { pendingTxns, setPendingTxns } = usePendingTxns();
   const debouncedReferralCode = useDebounce(referralCode, 300);
 
   function getPrimaryText() {
@@ -130,7 +140,7 @@ export function ReferralCodeForm({ callAfterSuccess, userReferralCodeString = ""
   }, [debouncedReferralCode, chainId]);
 
   useEffect(() => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }, []);
 
   return (
