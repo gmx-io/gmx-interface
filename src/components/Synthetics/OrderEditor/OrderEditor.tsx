@@ -33,8 +33,6 @@ import {
 } from "lib/numbers";
 
 import Button from "components/Button/Button";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -84,11 +82,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { bigMath } from "sdk/utils/bigmath";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
+import { bigMath } from "sdk/utils/bigmath";
 
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./OrderEditor.scss";
 
 type Props = {
@@ -531,90 +530,90 @@ export function OrderEditor(p: Props) {
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
       >
-        {!isSwapOrderType(p.order.orderType) && (
-          <>
-            <BuyInputSection
-              topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
-              inputValue={sizeInputValue}
-              onInputValueChange={(e) => setSizeInputValue(e.target.value)}
-            >
-              USD
-            </BuyInputSection>
-
-            <BuyInputSection
-              topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Trigger Price` : t`Limit Price`}
-              bottomRightLabel={t`Mark`}
-              bottomRightValue={formatUsdPrice(markPrice, {
-                visualMultiplier: indexToken?.visualMultiplier,
-              })}
-              onClickBottomRightLabel={() =>
-                setTriggerPriceInputValue(
-                  formatAmount(
-                    markPrice,
-                    USD_DECIMALS,
-                    calculateDisplayDecimals(markPrice, USD_DECIMALS, indexToken?.visualMultiplier),
-                    undefined,
-                    undefined,
-                    indexToken?.visualMultiplier
-                  )
-                )
-              }
-              inputValue={triggerPriceInputValue}
-              onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
-            >
-              USD
-            </BuyInputSection>
-          </>
-        )}
-
-        {isSwapOrderType(p.order.orderType) && (
-          <>
-            {triggerRatio && (
+        <div className="mb-12 flex flex-col gap-4">
+          {!isSwapOrderType(p.order.orderType) && (
+            <>
               <BuyInputSection
-                topLeftLabel={t`Limit Price`}
-                bottomRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
-                onClickBottomRightLabel={() => {
-                  setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
-                }}
-                inputValue={triggerRatioInputValue}
-                onInputValueChange={(e) => {
-                  setTriggerRatioInputValue(e.target.value);
-                }}
+                topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
+                inputValue={sizeInputValue}
+                onInputValueChange={(e) => setSizeInputValue(e.target.value)}
               >
-                {`${triggerRatio.smallestToken.symbol} per ${triggerRatio.largestToken.symbol}`}
+                USD
               </BuyInputSection>
-            )}
-          </>
-        )}
 
-        <ExchangeInfo className="PositionEditor-info-box" dividerClassName="my-15 -mx-15 h-1 bg-slate-700">
-          <ExchangeInfo.Group>
-            {isLimitIncreaseOrder && (
-              <ExchangeInfoRow
-                label={t`Leverage`}
-                value={
-                  <ValueTransition
-                    from={formatLeverage(existingPosition?.leverage)}
-                    to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage) ?? "-"}
-                  />
+              <BuyInputSection
+                topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Trigger Price` : t`Limit Price`}
+                topRightLabel={t`Mark`}
+                topRightValue={formatUsdPrice(markPrice, {
+                  visualMultiplier: indexToken?.visualMultiplier,
+                })}
+                onClickTopRightLabel={() =>
+                  setTriggerPriceInputValue(
+                    formatAmount(
+                      markPrice,
+                      USD_DECIMALS,
+                      calculateDisplayDecimals(markPrice, USD_DECIMALS, indexToken?.visualMultiplier),
+                      undefined,
+                      undefined,
+                      indexToken?.visualMultiplier
+                    )
+                  )
                 }
-              />
-            )}
-          </ExchangeInfo.Group>
+                inputValue={triggerPriceInputValue}
+                onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
+              >
+                USD
+              </BuyInputSection>
+            </>
+          )}
+
+          {isSwapOrderType(p.order.orderType) && (
+            <>
+              {triggerRatio && (
+                <BuyInputSection
+                  topLeftLabel={t`Limit Price`}
+                  topRightLabel={t`Mark`}
+                  topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
+                  onClickTopRightLabel={() => {
+                    setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
+                  }}
+                  inputValue={triggerRatioInputValue}
+                  onInputValueChange={(e) => {
+                    setTriggerRatioInputValue(e.target.value);
+                  }}
+                >
+                  {`${triggerRatio.smallestToken.symbol} per ${triggerRatio.largestToken.symbol}`}
+                </BuyInputSection>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-14">
+          {isLimitIncreaseOrder && (
+            <SyntheticsInfoRow
+              label={t`Leverage`}
+              value={
+                <ValueTransition
+                  from={formatLeverage(existingPosition?.leverage)}
+                  to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage) ?? "-"}
+                />
+              }
+            />
+          )}
+
           {!isSwapOrderType(p.order.orderType) && p.order.orderType !== OrderType.StopLossDecrease && (
-            <ExchangeInfo.Group>
-              <AcceptablePriceImpactInputRow
-                acceptablePriceImpactBps={acceptablePriceImpactBps}
-                initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
-                recommendedAcceptablePriceImpactBps={recommendedAcceptablePriceImpactBps}
-                setAcceptablePriceImpactBps={setAcceptablePriceImpactBps}
-                priceImpactFeeBps={priceImpactFeeBps}
-              />
-            </ExchangeInfo.Group>
+            <AcceptablePriceImpactInputRow
+              acceptablePriceImpactBps={acceptablePriceImpactBps}
+              initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
+              recommendedAcceptablePriceImpactBps={recommendedAcceptablePriceImpactBps}
+              setAcceptablePriceImpactBps={setAcceptablePriceImpactBps}
+              priceImpactFeeBps={priceImpactFeeBps}
+            />
           )}
           {!isSwapOrderType(p.order.orderType) && (
-            <ExchangeInfo.Group>
-              <ExchangeInfoRow
+            <>
+              <SyntheticsInfoRow
                 label={t`Acceptable Price`}
                 value={formatAcceptablePrice(acceptablePrice, {
                   visualMultiplier: indexToken?.visualMultiplier,
@@ -622,70 +621,67 @@ export function OrderEditor(p: Props) {
               />
 
               {existingPosition && (
-                <ExchangeInfoRow
+                <SyntheticsInfoRow
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
                 />
               )}
-            </ExchangeInfo.Group>
+            </>
           )}
-          <ExchangeInfo.Group>
-            {additionalExecutionFee && (
-              <ExchangeInfoRow
-                label={t`Fees`}
-                value={
-                  <TooltipWithPortal
-                    position="top-end"
-                    tooltipClassName="PositionEditor-fees-tooltip"
-                    handle={formatDeltaUsd(
-                      additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n
-                    )}
-                    renderContent={() => (
-                      <>
-                        <StatsTooltipRow
-                          label={<div className="text-white">{t`Network Fee`}:</div>}
-                          value={formatTokenAmountWithUsd(
-                            additionalExecutionFee.feeTokenAmount * -1n,
-                            additionalExecutionFee.feeUsd === undefined
-                              ? undefined
-                              : additionalExecutionFee.feeUsd * -1n,
-                            additionalExecutionFee.feeToken.symbol,
-                            additionalExecutionFee.feeToken.decimals,
-                            {
-                              displayDecimals: 5,
-                            }
-                          )}
-                          showDollar={false}
-                        />
-                        <br />
-                        <div className="text-white">
-                          <Trans>As network fees have increased, an additional network fee is needed.</Trans>
-                        </div>
-                      </>
-                    )}
-                  />
-                }
-              />
-            )}
 
-            {isSwapOrderType(p.order.orderType) && (
-              <>
-                <ExchangeInfoRow
-                  label={t`Min. Receive`}
-                  value={formatBalanceAmount(
-                    minOutputAmount,
-                    p.order.targetCollateralToken.decimals,
-                    p.order.targetCollateralToken.symbol
+          {additionalExecutionFee && (
+            <SyntheticsInfoRow
+              label={t`Fees`}
+              value={
+                <TooltipWithPortal
+                  position="top-end"
+                  tooltipClassName="PositionEditor-fees-tooltip"
+                  handle={formatDeltaUsd(
+                    additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n
+                  )}
+                  renderContent={() => (
+                    <>
+                      <StatsTooltipRow
+                        label={<div className="text-white">{t`Network Fee`}:</div>}
+                        value={formatTokenAmountWithUsd(
+                          additionalExecutionFee.feeTokenAmount * -1n,
+                          additionalExecutionFee.feeUsd === undefined ? undefined : additionalExecutionFee.feeUsd * -1n,
+                          additionalExecutionFee.feeToken.symbol,
+                          additionalExecutionFee.feeToken.decimals,
+                          {
+                            displayDecimals: 5,
+                          }
+                        )}
+                        showDollar={false}
+                      />
+                      <br />
+                      <div className="text-white">
+                        <Trans>As network fees have increased, an additional network fee is needed.</Trans>
+                      </div>
+                    </>
                   )}
                 />
-              </>
-            )}
-          </ExchangeInfo.Group>
-        </ExchangeInfo>
+              }
+            />
+          )}
 
-        <div className="Exchange-swap-button-container">{button}</div>
+          {isSwapOrderType(p.order.orderType) && (
+            <>
+              <SyntheticsInfoRow
+                label={t`Min. Receive`}
+                value={formatBalanceAmount(
+                  minOutputAmount,
+                  p.order.targetCollateralToken.decimals,
+                  p.order.targetCollateralToken.symbol
+                )}
+              />
+            </>
+          )}
+
+          <div className="Exchange-swap-button-container">{button}</div>
+        </div>
       </Modal>
     </div>
   );
