@@ -375,7 +375,7 @@ export function SyntheticsPage(p: Props) {
         )}
       </div>
       <PositionSeller setPendingTxns={setPendingTxns} />
-      <PositionEditor allowedSlippage={savedAllowedSlippage} setPendingTxns={setPendingTxns} />
+      <PositionEditor />
       <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
       <Footer isMobileTradePage={isMobile} />

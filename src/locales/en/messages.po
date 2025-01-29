@@ -69,7 +69,7 @@ msgstr "Stake GMX Rewards"
 msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 msgstr "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 
@@ -356,6 +356,7 @@ msgstr "Max pool USD exceeded"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
 msgstr "Limit price below mark price"
 
@@ -594,6 +595,7 @@ msgstr "Edit Collateral"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price above mark price"
 msgstr "Limit price above mark price"
@@ -1681,7 +1683,6 @@ msgid "Mark"
 msgstr "Mark"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr "Keep leverage at {keepLeverageAtValue}"
 
@@ -2131,6 +2132,8 @@ msgid "Initial top-up"
 msgstr "Initial top-up"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
@@ -3394,7 +3397,6 @@ msgstr "Select a GLV Vault"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -3491,10 +3493,6 @@ msgstr "The position will be opened at {0} USD with a max slippage of {1}%.<0/><
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "Active Referral Code"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Pending {0} approval"
-msgstr "Pending {0} approval"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Please switch your network to Arbitrum."
@@ -4038,7 +4036,7 @@ msgstr "Docs"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating Order..."
@@ -4567,7 +4565,7 @@ msgstr "Order updated!"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "The previously authorized maximum number of actions has been reached for One-Click Trading."
 msgstr "The previously authorized maximum number of actions has been reached for One-Click Trading."
 
@@ -4664,7 +4662,7 @@ msgstr "Swap Order submitted!"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -4679,7 +4677,7 @@ msgstr "Loading..."
 msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "There are insufficient funds in your subaccount for One-Click Trading"
 msgstr "There are insufficient funds in your subaccount for One-Click Trading"
 
@@ -5072,7 +5070,7 @@ msgstr "Last 7 days"
 msgid "Begin Transfer"
 msgstr "Begin Transfer"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 
@@ -5542,7 +5540,6 @@ msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied a
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "Trigger price below mark price"
 
@@ -5574,7 +5571,7 @@ msgstr "We want your insights to help improve GMX. For security reasons, we won'
 msgid "Claim esGMX"
 msgstr "Claim esGMX"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "Re-authorize"
 msgstr "Re-authorize"
 
@@ -5851,7 +5848,6 @@ msgstr "Show leverage slider"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "Trigger price above mark price"
 
@@ -6000,7 +5996,7 @@ msgstr "Open {0} in Explorer"
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 
@@ -6090,7 +6086,6 @@ msgstr "Could not execute deposit into {0} {longOrShortText}"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Earn/VesterDepositModal.tsx
@@ -6239,7 +6234,7 @@ msgstr "Meme"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
@@ -7378,7 +7373,6 @@ msgid "Confirm Swap"
 msgstr "Confirm Swap"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 
@@ -7447,7 +7441,7 @@ msgstr "2nd Place"
 msgid "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
 msgstr "<0>The APY is an estimate based on the fees collected for the past seven days, extrapolating the current borrowing fee. It excludes:</0><1><2>price changes of the underlying token(s)</2><3>traders' PnL, which is expected to be neutral in the long term</3><4>funding fees, which are exchanged between traders</4></1><5><6>Read more about GM token pricing</6>.</5><7>Check GM pools' performance against other LP Positions in the <8>GMX Dune Dashboard</8>.</7>"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading.tsx
+#: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "Top-Up"
 msgstr "Top-Up"
 

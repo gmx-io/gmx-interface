@@ -1,15 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { formatLeverage } from "domain/synthetics/positions";
-import { convertToUsd } from "domain/synthetics/tokens";
-import { formatUsd, parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { formatUsd } from "lib/numbers";
 import { useState } from "react";
 
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 
+import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpandableRow } from "../ExpandableRow";
@@ -19,21 +17,12 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { Options, usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
-export function PositionEditorAdvancedRows({ selectedCollateralAddress, collateralInputValue, operation }: Options) {
-  const tokensData = useTokensData();
-
+export function PositionEditorAdvancedRows({ operation }: Options) {
   const position = usePositionEditorPosition();
 
-  const collateralToken = getByKey(tokensData, selectedCollateralAddress);
-
-  const collateralPrice = collateralToken?.prices.minPrice;
-
-  const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
-  const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
+  const { collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
 
   const { nextCollateralUsd, nextLeverage } = usePositionEditorData({
-    selectedCollateralAddress,
-    collateralInputValue,
     operation,
   });
 
@@ -41,8 +30,6 @@ export function PositionEditorAdvancedRows({ selectedCollateralAddress, collater
   const [open, setOpen] = useState(advancedDisplay);
 
   const { fees, executionFee } = usePositionEditorFees({
-    selectedCollateralAddress,
-    collateralInputValue,
     operation,
   });
 

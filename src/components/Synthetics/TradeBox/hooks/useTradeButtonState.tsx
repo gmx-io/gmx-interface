@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
 import { getBridgingOptionsForToken } from "config/bridging";
@@ -121,13 +121,20 @@ export function useTradeboxButtonState({
 
   const {
     tokensAllowanceData,
-    // isLoading: isAllowanceLoading,
+
     isLoaded: isAllowanceLoaded,
   } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
   });
   const needPayTokenApproval = getNeedTokenApprove(tokensAllowanceData, fromToken?.address, payAmount);
+  const [isApproving, setIsApproving] = useState(false);
+
+  useEffect(() => {
+    if (!needPayTokenApproval && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, needPayTokenApproval]);
 
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
@@ -232,10 +239,6 @@ export function useTradeboxButtonState({
     setPendingTxns,
   });
 
-  const [isApproveSubmitted, setIsApproveSubmitted] = useState(false);
-  const [isApproving, setIsApproving] = useState(false);
-  const isApproveLoading = isApproving || (isApproveSubmitted && needPayTokenApproval);
-
   const onSubmit = useCallback(async () => {
     if (!account) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
@@ -244,7 +247,7 @@ export function useTradeboxButtonState({
     }
 
     if (isAllowanceLoaded && needPayTokenApproval && fromToken) {
-      if (!chainId || isApproveSubmitted) return;
+      if (!chainId || isApproving) return;
 
       const wrappedToken = getWrappedToken(chainId);
       const tokenAddress = isAddressZero(fromToken.address) ? wrappedToken.address : fromToken.address;
@@ -265,11 +268,6 @@ export function useTradeboxButtonState({
         setPendingTxns: () => null,
         infoTokens: {},
         chainId,
-        // approveAmount: p.approveAmount,
-        onApproveSubmitted: () => {
-          setIsApproveSubmitted(true);
-          // p.onApproveSubmitted?.();
-        },
         onApproveFail: () => {
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",
@@ -323,7 +321,7 @@ export function useTradeboxButtonState({
     subaccount,
     openConnectModal,
     chainId,
-    isApproveSubmitted,
+    isApproving,
     signer,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,
@@ -359,7 +357,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isApproveLoading) {
+    if (isApproving) {
       return {
         text: (
           <>
@@ -441,7 +439,7 @@ export function useTradeboxButtonState({
     buttonErrorText,
     stopLoss.error?.percentage,
     takeProfit.error?.percentage,
-    isApproveLoading,
+    isApproving,
     isAllowanceLoaded,
     needPayTokenApproval,
     fromToken,

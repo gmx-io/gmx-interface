@@ -805,10 +805,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                 : undefined
             }
             onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
-            showMaxButton={firstTokenShowMaxButton}
             inputValue={firstTokenInputValue}
             onInputValueChange={handleFirstTokenInputValueChange}
-            onClickMax={onMaxClickFirstToken}
+            onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
           >
             {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
               <TokenSelector
@@ -841,10 +840,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                   : undefined
               }
               inputValue={secondTokenInputValue}
-              showMaxButton={secondTokenShowMaxButton}
               onInputValueChange={secondTokenInputValueChange}
               onClickTopRightLabel={onMaxClickSecondToken}
-              onClickMax={onMaxClickSecondToken}
+              onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
             >
               <div className="selected-token">
                 <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
@@ -859,11 +857,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             bottomLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
             bottomRightLabel={t`Balance`}
             bottomRightValue={receiveTokenFormatted}
-            showMaxButton={marketTokenInputShowMaxButton}
             inputValue={marketOrGlvTokenInputValue}
             onInputValueChange={marketOrGlvTokenInputValueChange}
             onClickTopRightLabel={marketTokenInputClickTopRightLabel}
-            onClickMax={marketTokenInputClickMax}
+            onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
           >
             <PoolSelector
               chainId={chainId}

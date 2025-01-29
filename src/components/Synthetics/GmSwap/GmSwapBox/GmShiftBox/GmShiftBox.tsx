@@ -275,8 +275,7 @@ export function GmShiftBox({
               : undefined
           }
           onClickBottomRightLabel={handleSelectedTokenClickMax}
-          showMaxButton={selectedTokenShowMaxButton}
-          onClickMax={handleSelectedTokenClickMax}
+          onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
           inputValue={selectedMarketText}
           onInputValueChange={handleSelectedTokenInputValueChange}
           onFocus={handleSelectedTokenFocus}

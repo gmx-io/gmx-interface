@@ -1,127 +1,59 @@
-import { Trans, msg, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { Trans, t } from "@lingui/macro";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useKey } from "react-use";
+import { Address } from "viem";
+
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { usePositionsConstants, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionEditorCollateralInputValue,
+  usePositionEditorPosition,
+  usePositionEditorPositionState,
+  usePositionEditorSelectedCollateralAddress,
+} from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
+import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { adaptToV1InfoTokens, convertToTokenAmount } from "domain/synthetics/tokens";
+import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { getMinResidualAmount } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { useLocalizedMap } from "lib/i18n";
+import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, limitDecimals } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
+
+import { usePositionEditorData } from "./hooks/usePositionEditorData";
+import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
+import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
+
+import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
+import { OPERATION_LABELS, Operation } from "./types";
+
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { getContract } from "config/contracts";
-import { getSyntheticsCollateralEditAddressKey } from "config/localStorage";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  DecreasePositionSwapType,
-  OrderType,
-  createDecreaseOrderTxn,
-  createIncreaseOrderTxn,
-} from "domain/synthetics/orders";
-import {
-  formatLiquidationPrice,
-  getIsPositionInfoLoaded,
-  substractMaxLeverageSlippage,
-  willPositionCollateralBeSufficientForPosition,
-} from "domain/synthetics/positions";
-import {
-  adaptToV1InfoTokens,
-  convertToTokenAmount,
-  convertToUsd,
-  useTokensAllowanceData,
-} from "domain/synthetics/tokens";
-import { getMarkPrice, getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
-import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
-import { getMinResidualAmount } from "domain/tokens";
-import { ethers } from "ethers";
-import { bigNumberBinarySearch } from "lib/binarySearch";
-import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import {
-  expandDecimals,
-  formatAmountFree,
-  formatTokenAmount,
-  formatTokenAmountWithUsd,
-  formatUsd,
-  limitDecimals,
-  parseValue,
-} from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { usePrevious } from "lib/usePrevious";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
-
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  usePositionEditorMinCollateralFactor,
-  usePositionEditorPosition,
-  usePositionEditorPositionState,
-} from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { useLocalizedMap } from "lib/i18n";
-import { useKey } from "react-use";
-
-import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
-import { usePositionEditorData } from "./hooks/usePositionEditorData";
-import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
-
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { helperToast } from "lib/helperToast";
-import {
-  initEditCollateralMetricData,
-  makeTxnErrorMetricsHandler,
-  makeTxnSentMetricsHandler,
-  sendOrderSubmittedMetric,
-  sendTxnValidationErrorMetric,
-} from "lib/metrics/utils";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
-
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
 import "./PositionEditor.scss";
 
-export type Props = {
-  allowedSlippage: number;
-  setPendingTxns: (txns: any) => void;
-};
-
-enum Operation {
-  Deposit = "Deposit",
-  Withdraw = "Withdraw",
-}
-
-const OPERATION_LABELS = {
-  [Operation.Deposit]: msg`Deposit`,
-  [Operation.Withdraw]: msg`Withdraw`,
-};
-
-export function PositionEditor(p: Props) {
-  const [, setEditingPositionKey] = usePositionEditorPositionState();
-  const { setPendingTxns, allowedSlippage } = p;
+export function PositionEditor() {
   const { chainId } = useChainId();
-  const { shouldDisableValidationForTesting } = useSettings();
+  const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
-  const { account, signer } = useWallet();
-  const { openConnectModal } = useConnectModal();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
-  const userReferralInfo = useUserReferralInfo();
-  const hasOutdatedUi = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
-  const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -138,24 +70,12 @@ export function PositionEditor(p: Props) {
     return adaptToV1InfoTokens(tokensData);
   }, [tokensData]);
 
-  const { tokensAllowanceData, isLoading: isAllowanceLoading } = useTokensAllowanceData(chainId, {
-    spenderAddress: routerAddress,
-    tokenAddresses: position ? [position.collateralTokenAddress] : [],
-  });
-  const tokenAllowance = position ? tokensAllowanceData?.[position.collateralTokenAddress] : undefined;
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
-  const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey(
-    getSyntheticsCollateralEditAddressKey(chainId, position?.collateralTokenAddress),
-    position?.collateralTokenAddress
-  );
+  const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
 
   const collateralToken = getByKey(tokensData, selectedCollateralAddress);
-  const isBalancesLoading = collateralToken?.balance === undefined;
 
   const availableSwapTokens = useMemo(() => {
     return position?.collateralToken.isWrapped
@@ -169,26 +89,10 @@ export function PositionEditor(p: Props) {
 
   const collateralPrice = collateralToken?.prices.minPrice;
 
-  const markPrice = position
-    ? getMarkPrice({
-        prices: position.indexToken.prices,
-        isLong: position.isLong,
-        isIncrease: isDeposit,
-      })
-    : undefined;
-
-  const [collateralInputValue, setCollateralInputValue] = useState("");
-  const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
-  const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
+  const [collateralInputValue, setCollateralInputValue] = usePositionEditorCollateralInputValue();
+  const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.market.indexTokenAddress));
-
-  const needCollateralApproval =
-    isDeposit &&
-    tokenAllowance !== undefined &&
-    collateralDeltaAmount !== undefined &&
-    selectedCollateralAddress !== ethers.ZeroAddress &&
-    collateralDeltaAmount > tokenAllowance;
 
   const maxWithdrawAmount = useMemo(() => {
     if (!getIsPositionInfoLoaded(position)) return 0n;
@@ -214,8 +118,6 @@ export function PositionEditor(p: Props) {
   }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
 
   const { fees, executionFee } = usePositionEditorFees({
-    selectedCollateralAddress,
-    collateralInputValue,
     operation,
   });
 
@@ -228,251 +130,22 @@ export function PositionEditor(p: Props) {
     tradeFlags: getTradeFlagsForCollateralEdit(position?.isLong, isDeposit),
   });
 
-  const { nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = usePositionEditorData({
-    selectedCollateralAddress,
-    collateralInputValue,
+  const { nextLiqPrice, receiveUsd, receiveAmount } = usePositionEditorData({
     operation,
   });
 
-  const minCollateralFactor = usePositionEditorMinCollateralFactor();
-
-  const [error, tooltipName] = useMemo(() => {
-    const commonError = getCommonError({
-      chainId,
-      isConnected: Boolean(account),
-      hasOutdatedUi,
-    });
-
-    const editCollateralError = getEditCollateralError({
-      collateralDeltaAmount,
-      collateralDeltaUsd,
-      nextLeverage,
-      nextLiqPrice,
-      isDeposit,
-      position,
-      depositToken: collateralToken,
-      depositAmount: collateralDeltaAmount,
-      minCollateralFactor,
-    });
-
-    const error = commonError[0] || editCollateralError[0];
-    const tooltipName = commonError[1] || editCollateralError[1];
-
-    if (error) {
-      return [error, tooltipName];
-    }
-
-    if (needCollateralApproval) {
-      return [t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`];
-    }
-
-    if (isAllowanceLoading || isBalancesLoading) {
-      return [t`Loading...`];
-    }
-
-    if (isSubmitting) {
-      return [t`Creating Order...`];
-    }
-
-    return [];
-  }, [
-    chainId,
-    account,
-    hasOutdatedUi,
-    collateralDeltaAmount,
-    collateralDeltaUsd,
-    nextLeverage,
-    nextLiqPrice,
-    isDeposit,
-    position,
-    collateralToken,
-    minCollateralFactor,
-    needCollateralApproval,
-    isAllowanceLoading,
-    isBalancesLoading,
-    isSubmitting,
-  ]);
-
-  const detectAndSetMaxSize = useCallback(() => {
-    if (maxWithdrawAmount === undefined) return;
-    if (!collateralToken) return;
-    if (!position) return;
-    if (minCollateralFactor === undefined) return;
-
-    const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
-      BigInt(1),
-      maxWithdrawAmount,
-      expandDecimals(1, Math.ceil(collateralToken.decimals / 3)),
-      (x) => {
-        const isValid = willPositionCollateralBeSufficientForPosition(position, x, 0n, minCollateralFactor, 0n);
-        return { isValid, returnValue: null };
-      }
-    );
-    setCollateralInputValue(
-      formatAmountFree(substractMaxLeverageSlippage(safeMaxWithdrawal), collateralToken.decimals)
-    );
-  }, [collateralToken, maxWithdrawAmount, minCollateralFactor, position]);
-
-  const errorTooltipContent = useMemo(() => {
-    if (tooltipName !== "maxLeverage") return null;
-
-    return (
-      <Trans>
-        Decrease the withdraw size to match the max.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-        <br />
-        <br />
-        <span onClick={detectAndSetMaxSize} className="Tradebox-handle">
-          <Trans>Set max withdrawal</Trans>
-        </span>
-      </Trans>
-    );
-  }, [detectAndSetMaxSize, tooltipName]);
-
-  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
-
-  function onSubmit() {
-    if (!account) {
-      openConnectModal?.();
-      return;
-    }
-
-    const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
-
-    const metricData = initEditCollateralMetricData({
-      collateralToken,
-      executionFee,
-      selectedCollateralAddress,
-      marketInfo: position?.marketInfo,
-      collateralDeltaAmount,
-      subaccount,
-      orderType,
-      isLong: position?.isLong,
-    });
-
-    sendOrderSubmittedMetric(metricData.metricId);
-
-    if (
-      executionFee?.feeTokenAmount === undefined ||
-      !tokensData ||
-      markPrice === undefined ||
-      !position?.indexToken ||
-      collateralDeltaAmount === undefined ||
-      !selectedCollateralAddress ||
-      !signer
-    ) {
-      helperToast.error(t`Error submitting order`);
-      sendTxnValidationErrorMetric(metricData.metricId);
-      return;
-    }
-
-    let txnPromise: Promise<void>;
-
-    if (isDeposit) {
-      setIsSubmitting(true);
-
-      txnPromise = createIncreaseOrderTxn({
-        chainId,
-        signer,
-        subaccount,
-        metricId: metricData.metricId,
-        blockTimestampData,
-        createIncreaseOrderParams: {
-          account,
-          marketAddress: position.marketAddress,
-          initialCollateralAddress: selectedCollateralAddress,
-          initialCollateralAmount: collateralDeltaAmount,
-          targetCollateralAddress: position.collateralTokenAddress,
-          collateralDeltaAmount,
-          swapPath: [],
-          sizeDeltaUsd: 0n,
-          sizeDeltaInTokens: 0n,
-          acceptablePrice: markPrice,
-          triggerPrice: undefined,
-          orderType: OrderType.MarketIncrease,
-          isLong: position.isLong,
-          executionFee: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          allowedSlippage,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          indexToken: position.indexToken,
-          tokensData,
-          skipSimulation: shouldDisableValidationForTesting,
-          setPendingTxns,
-          setPendingOrder,
-          setPendingPosition,
-        },
-      });
-    } else {
-      if (receiveUsd === undefined) {
-        return;
-      }
-
-      setIsSubmitting(true);
-
-      txnPromise = createDecreaseOrderTxn(
-        chainId,
-        signer,
-        subaccount,
-        {
-          account,
-          marketAddress: position.marketAddress,
-          initialCollateralAddress: position.collateralTokenAddress,
-          initialCollateralDeltaAmount: collateralDeltaAmount,
-          receiveTokenAddress: selectedCollateralAddress,
-          swapPath: [],
-          sizeDeltaUsd: 0n,
-          sizeDeltaInTokens: 0n,
-          acceptablePrice: markPrice,
-          triggerPrice: undefined,
-          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-          orderType: OrderType.MarketDecrease,
-          isLong: position.isLong,
-          minOutputUsd: receiveUsd,
-          executionFee: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          allowedSlippage,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          indexToken: position.indexToken,
-          tokensData,
-          skipSimulation: shouldDisableValidationForTesting,
-          autoCancel: false,
-        },
-        {
-          setPendingTxns,
-          setPendingOrder,
-          setPendingPosition,
-        },
-        blockTimestampData,
-        metricData.metricId
-      );
-    }
-
-    if (subaccount) {
-      onClose();
-      setIsSubmitting(false);
-      return;
-    }
-
-    txnPromise = txnPromise
-      .then(makeTxnSentMetricsHandler(metricData.metricId))
-      .catch(makeTxnErrorMetricsHandler(metricData.metricId));
-
-    txnPromise.then(onClose).finally(() => {
-      setIsSubmitting(false);
-    });
-  }
+  const { text, tooltipContent, onSubmit, disabled } = usePositionEditorButtonState(operation);
 
   useKey(
     "Enter",
     () => {
-      if (isVisible && !error) {
+      if (isVisible && !disabled) {
         submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
         onSubmit();
       }
     },
     {},
-    [isVisible, error]
+    [isVisible, disabled]
   );
 
   useEffect(
@@ -485,7 +158,7 @@ export function PositionEditor(p: Props) {
         !selectedCollateralAddress ||
         !availableSwapTokens?.find((token) => token.address === selectedCollateralAddress)
       ) {
-        setSelectedCollateralAddress(position.collateralTokenAddress);
+        setSelectedCollateralAddress(position.collateralTokenAddress as Address);
       }
     },
     [availableSwapTokens, position, selectedCollateralAddress, setSelectedCollateralAddress]
@@ -497,7 +170,7 @@ export function PositionEditor(p: Props) {
         setCollateralInputValue("");
       }
     },
-    [isVisible, prevIsVisible]
+    [isVisible, prevIsVisible, setCollateralInputValue]
   );
 
   const showMaxOnDeposit = collateralToken?.isNative
@@ -506,24 +179,22 @@ export function PositionEditor(p: Props) {
       collateralToken.balance > minResidualAmount
     : true;
 
-  const renderErrorTooltipContent = useCallback(() => errorTooltipContent, [errorTooltipContent]);
-
   const buttonContent = (
     <Button
       className="w-full"
       variant="primary-action"
       onClick={onSubmit}
-      disabled={Boolean(error) && !shouldDisableValidationForTesting}
+      disabled={disabled}
       buttonRef={submitButtonRef}
       qa="confirm-button"
     >
-      {error || localizedOperationLabels[operation]}
+      {text}
     </Button>
   );
-  const button = errorTooltipContent ? (
+  const button = tooltipContent ? (
     <TooltipWithPortal
       className="w-full"
-      renderContent={renderErrorTooltipContent}
+      content={tooltipContent}
       isHandlerDisabled
       handle={buttonContent}
       handleClassName="w-full"
@@ -625,7 +296,7 @@ export function PositionEditor(p: Props) {
                   label={localizedOperationLabels[operation]}
                   chainId={chainId}
                   tokenAddress={selectedCollateralAddress!}
-                  onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
+                  onSelectToken={(token) => setSelectedCollateralAddress(token.address as Address)}
                   tokens={availableSwapTokens}
                   infoTokens={infoTokens}
                   className="Edit-collateral-token-selector"
@@ -675,19 +346,7 @@ export function PositionEditor(p: Props) {
                 }
               />
 
-              <PositionEditorAdvancedRows
-                operation={operation}
-                selectedCollateralAddress={selectedCollateralAddress}
-                collateralInputValue={collateralInputValue}
-              />
-
-              {/* {isAllowanceLoaded && needCollateralApproval && collateralToken && (
-                <ApproveTokenButton
-                  tokenAddress={collateralToken.address}
-                  tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
-                  spenderAddress={routerAddress}
-                />
-              )} */}
+              <PositionEditorAdvancedRows operation={operation} />
             </div>
           </>
         )}
