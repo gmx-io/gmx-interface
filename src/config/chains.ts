@@ -2,8 +2,15 @@ import { ethers } from "ethers";
 import type { NetworkMetadata } from "lib/wallets";
 import sample from "lodash/sample";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET, ETH_MAINNET } from "./static/chains";
+import {
+  SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
+  SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
+} from "../../sdk/src/configs/chains";
+import { isDevelopment } from "./env";
 
 export * from "./static/chains";
+
+export const SUPPORTED_CHAIN_IDS = isDevelopment() ? SDK_SUPPORTED_CHAIN_IDS_DEV : SDK_SUPPORTED_CHAIN_IDS;
 
 const { parseEther } = ethers;
 
