@@ -102,6 +102,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { isDevelopment } from "config/env";
 
 const SWAP_ICONS = {
   [LONG]: <LongIcon />,
@@ -1111,7 +1112,7 @@ export default function SwapBox(props) {
     if (!active) {
       return t`Connect Wallet`;
     }
-    if (!isSupportedChain(chainId)) {
+    if (!isSupportedChain(chainId, isDevelopment())) {
       return t`Incorrect Network`;
     }
     const [error, errorType] = getError();

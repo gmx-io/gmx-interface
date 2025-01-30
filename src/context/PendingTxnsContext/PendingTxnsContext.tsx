@@ -68,6 +68,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             const { error: onchainError, txnData } = await getCallStaticError(
+              chainId,
               signer.provider,
               undefined,
               pendingTxn.hash

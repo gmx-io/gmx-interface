@@ -321,6 +321,10 @@ export type PositionOrderMetricParams = {
   executionFee: number | undefined;
   is1ct: boolean;
   requestId: string;
+  priceImpactDeltaUsd: number | undefined;
+  priceImpactPercentage: number | undefined;
+  netRate1h: number | undefined;
+  interactionId: string | undefined;
 };
 
 export type EditCollateralMetricData = {

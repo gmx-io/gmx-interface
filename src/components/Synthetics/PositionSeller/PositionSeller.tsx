@@ -305,6 +305,10 @@ export function PositionSeller(p: Props) {
       allowedSlippage,
       isLong: position?.isLong,
       place: "positionSeller",
+      interactionId: undefined,
+      priceImpactDeltaUsd: undefined,
+      priceImpactPercentage: undefined,
+      netRate1h: undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
