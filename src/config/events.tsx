@@ -33,17 +33,36 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "ai16z-anime-fartcoin-listing",
-    title: "AI16Z, ANIME and FARTCOIN market added on Arbitrum",
+    id: "trump-melania-avalanche",
+    title: "TRUMP and MELANIA markets added on Avalanche",
     isActive: true,
     startDate: "30 Jan 2025, 16:00",
     endDate: "05 Feb 2025, 16:00",
     bodyText: (
       <>
-        Trade <TokenSymbolWithIcon symbol="AI16Z" />
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="TRUMP" />
+        /USD and <TokenSymbolWithIcon symbol="MELANIA" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="AVAX" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WAVAX-USDC]
+        </span>
+        .
+      </>
+    ),
+  },
+  {
+    id: "ai16z-anime-fartcoin-listing",
+    title: "AI16Z, ANIME and FARTCOIN markets added on Arbitrum",
+    isActive: true,
+    startDate: "30 Jan 2025, 16:00",
+    endDate: "05 Feb 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="AI16Z" />
         /USD, <TokenSymbolWithIcon symbol="ANIME" />
         /USD and <TokenSymbolWithIcon symbol="FARTCOIN" />
-        /USD, or provide liquidity to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
         <TokenSymbolWithIcon symbol="ANIME" />, <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
         <span className="whitespace-nowrap">
           <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC]
