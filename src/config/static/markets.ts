@@ -351,6 +351,21 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("23 Jan 2025"),
     },
+    // AI16Z/USD [WBTC.e-USDC]
+    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // ANIME/USD [ANIME-USDC]
+    "0x5707673D95a8fD317e2745C4217aCD64ca021B68": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // FARTCOIN/USD [WBTC.e-USDC]
+    "0xe2730Ffe2136aA549327EBce93D58160df7821CB": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -422,6 +437,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
       enabled: true,
       listingDate: DEFAULT_LISTING,
+    },
+    // TRUMP/USD [WAVAX-USDC]
+    "0xfB626c4e3E153947A6A94041814c25E449064dAD": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // MELANIA/USD [WAVAX-USDC]
+    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
     },
   },
   [AVALANCHE_FUJI]: {
