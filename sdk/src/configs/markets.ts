@@ -593,20 +593,6 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       shortTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
     },
-    // TRUMP/USD [WAVAX-USDC]
-    "0xfB626c4e3E153947A6A94041814c25E449064dAD": {
-      marketTokenAddress: "0xfB626c4e3E153947A6A94041814c25E449064dAD",
-      indexTokenAddress: "0x2f6d7be53fab5538065a226BA091015d422a7528",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // MELANIA/USD [WAVAX-USDC]
-    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
-      marketTokenAddress: "0xe19da27Bf9733c429445E289B662bECDCa6ce10b",
-      indexTokenAddress: "0xd42C991a4FAb293C57a7bf25C2E2ec5aE1dB1714",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
   },
   [AVALANCHE_FUJI]: {
     // AVAX/USD [WAVAX-USDC]
