@@ -382,7 +382,7 @@ msgstr ""
 msgid "Main Account Balance"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "紹介コードが追加されました!"
 
@@ -853,7 +853,7 @@ msgstr ""
 msgid "Buy with {0}"
 msgstr "{0}で購入"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding..."
 msgstr "追加中"
 
@@ -1831,7 +1831,7 @@ msgid "Max"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Checking code..."
 msgstr "コード確認中..."
 
@@ -1905,7 +1905,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -2165,7 +2165,7 @@ msgid "Reserved for Vesting"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -2691,7 +2691,7 @@ msgstr ""
 msgid "Trade"
 msgstr "トレード"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "紹介コードが追加できませんでした"
 
@@ -3288,7 +3288,7 @@ msgstr ""
 msgid "Ends in"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "紹介コードを入力すると手数料割引を受けられます。"
 
@@ -3815,7 +3815,7 @@ msgstr ""
 msgid "Enter a price"
 msgstr "価格を入力"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating..."
 msgstr "更新中..."
 
@@ -4432,7 +4432,7 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
@@ -4781,7 +4781,7 @@ msgstr ""
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated failed."
 msgstr "紹介コードが更新できませんでした。"
 
@@ -5554,7 +5554,7 @@ msgstr ""
 msgid "Failed to download trade history CSV."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
 msgstr "現在アクティブなコードと同じです"
 
@@ -5655,7 +5655,7 @@ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "提出"
@@ -6635,7 +6635,7 @@ msgstr "{0}のスワップの申し込み完了!"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral Code does not exist"
 msgstr "紹介コードが存在しません"
 
@@ -7674,8 +7674,8 @@ msgstr ""
 msgid "Claim GMX Rewards"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter Referral Code"
 msgstr "紹介コードを入力"
 

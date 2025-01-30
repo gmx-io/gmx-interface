@@ -27,6 +27,10 @@ type DedupEventsStorage = {
   [keyAndEvent: string]: number;
 };
 
+type InteractionIdsStorage = {
+  [key: string]: string;
+};
+
 type AnalyticsEventParams = {
   event: string;
   data: object;
@@ -38,6 +42,7 @@ const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
 
 const MAX_DEDUP_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
 const USER_ANALYTICS_DEDUP_EVENTS_STORAGE = "USER_ANALYTICS_DEDUP_EVENTS_STORAGE";
+const USER_ANALYTICS_INTERACTION_IDS_STORAGE = "USER_ANALYTICS_INTERACTION_IDS_STORAGE";
 
 const PROCESS_QUEUE_INTERVAL_MS = 2000;
 
@@ -65,6 +70,15 @@ export class UserAnalytics {
     const dedupEventsStorage = dedupEventsStorageStr ? (JSON.parse(dedupEventsStorageStr) as DedupEventsStorage) : {};
 
     return dedupEventsStorage;
+  }
+
+  getInteractionIdsStorage() {
+    const interactionIdsStorageStr = localStorage.getItem(USER_ANALYTICS_INTERACTION_IDS_STORAGE);
+    const interactionIdsStorage = interactionIdsStorageStr
+      ? (JSON.parse(interactionIdsStorageStr) as InteractionIdsStorage)
+      : {};
+
+    return interactionIdsStorage;
   }
 
   setDebug = (val: boolean) => {
@@ -103,6 +117,23 @@ export class UserAnalytics {
 
     localStorage.setItem(USER_ANALYTICS_DEDUP_EVENTS_STORAGE, JSON.stringify(dedupEventsStorage));
   }
+
+  setInteractionId = (key: string, value: string) => {
+    const interactionIdsStorage = this.getInteractionIdsStorage();
+    interactionIdsStorage[key] = value;
+    localStorage.setItem(USER_ANALYTICS_INTERACTION_IDS_STORAGE, JSON.stringify(interactionIdsStorage));
+  };
+
+  getInteractionId = (key: string) => {
+    const interactionIdsStorage = this.getInteractionIdsStorage();
+    return interactionIdsStorage[key];
+  };
+
+  createInteractionId = (key: string) => {
+    const interactionId = Math.random().toString(36).substring(2, 15);
+    this.setInteractionId(key, interactionId);
+    return interactionId;
+  };
 
   setSessionId(sessionId: string) {
     localStorage.setItem(SESSION_ID_KEY, sessionId);
