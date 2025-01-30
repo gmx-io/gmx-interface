@@ -8,6 +8,7 @@ export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD
@@ -84,8 +85,8 @@ export function getExcessiveExecutionFee(chainId) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
-export function isSupportedChain(chainId: number) {
-  return SUPPORTED_CHAIN_IDS.includes(chainId);
+export function isSupportedChain(chainId: number, dev = false) {
+  return (dev ? SUPPORTED_CHAIN_IDS_DEV : SUPPORTED_CHAIN_IDS).includes(chainId);
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {
