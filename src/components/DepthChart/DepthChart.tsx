@@ -20,7 +20,7 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
@@ -71,14 +71,14 @@ const TOOLTIP_WRAPPER_POSITION = { x: 0, y: 0 };
 const Y_AXIS_TICK: YAxisProps["tick"] = { fill: "#ffffff", opacity: 0.7, fontSize: 12 };
 const TICKS_SPACING = 120;
 const DEFAULT_TICK_COUNT_BIGINT = 9n;
-const LINE_PATH_ELLIPSIS = "3px 3px 3px 3px 3px 3px 100%";
+const LINE_PATH_ELLIPSIS = "3px 3px 3px 3px 3px 3px 1000%";
 
 const ZERO_PRICE_IMPACT_LEFT_MULTIPLIER_BIGINT = 9990n; // 0.999
 const ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER_BIGINT = 10010n; // 1.001
 const FLOAT_PRECISION = 10000n;
 const FLOAT_DECIMALS = 4;
 const SIDE_POINTS_COUNT = 60n;
-const GAP_MAX_RELATIVE_WIDTH_BPS = 500n;
+// const GAP_MAX_RELATIVE_WIDTH_BPS = 500n;
 
 export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -206,16 +206,12 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     rightMin,
     realLeftMax,
     realRightMax,
-    leftCenter,
-    rightCenter,
   } = useEdgePoints(marketInfo, zoom);
 
   const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
     leftExecutionPrice: leftMaxExecutionPrice,
     rightExecutionPrice: rightMaxExecutionPrice,
     isZeroPriceImpact,
-    leftCenter,
-    rightCenter,
   });
 
   const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
@@ -805,34 +801,16 @@ function addRightPaddingForZeroPriceImpact(price: bigint): bigint {
   return bigMath.mulDiv(price, ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER_BIGINT, FLOAT_PRECISION);
 }
 
-function stretchSpanEdgesAroundPointByFraction(
-  left: bigint,
-  right: bigint,
-  center: bigint,
-  fraction: bigint,
-  denominator: bigint
-): [newLeft: bigint, newRight: bigint, newSpan: bigint] {
-  const newLeft = center - bigMath.mulDiv(center - left, fraction, denominator);
-  const newRight = center + bigMath.mulDiv(right - center, fraction, denominator);
-  const newSpan = newRight - newLeft;
-
-  return [newLeft, newRight, newSpan];
-}
-
 function useXAxis(
   marketInfo: MarketInfo,
   {
     leftExecutionPrice,
     rightExecutionPrice,
     isZeroPriceImpact,
-    leftCenter,
-    rightCenter,
   }: {
     leftExecutionPrice: bigint;
     rightExecutionPrice: bigint;
     isZeroPriceImpact: boolean;
-    leftCenter: bigint;
-    rightCenter: bigint;
   }
 ) {
   const midPrice = getMidPrice(marketInfo.indexToken.prices);
@@ -844,50 +822,17 @@ function useXAxis(
   let lowPriceFloat = bigintToNumber(lowPrice, USD_DECIMALS);
   let highPriceFloat = bigintToNumber(highPrice, USD_DECIMALS);
 
-  const gapBigInt = rightCenter - leftCenter;
-  const gapCenter = (rightCenter + leftCenter) / 2n;
-  const gapToSpanRatio = bigMath.mulDiv(gapBigInt, BASIS_POINTS_DIVISOR_BIGINT, span);
-
-  if (gapToSpanRatio >= GAP_MAX_RELATIVE_WIDTH_BPS) {
-    [lowPrice, highPrice, span] = stretchSpanEdgesAroundPointByFraction(
-      lowPrice,
-      highPrice,
-      gapCenter,
-      gapToSpanRatio,
-      GAP_MAX_RELATIVE_WIDTH_BPS
-    );
-  }
-
-  const [memoized, setMemoized] = useState({
-    xAxisDomain: [lowPriceFloat, highPriceFloat],
-    span,
-  });
-
-  const { xAxisDomain: memoizedXAxisDomain, span: memoizedSpan } = memoized;
-
-  useEffect(() => {
-    const THRESHOLD_BPS = 500n;
-    const diff = bigMath.abs(span - memoizedSpan);
-
-    const ratio = bigMath.mulDiv(diff, BASIS_POINTS_DIVISOR_BIGINT, span);
-    if (ratio > THRESHOLD_BPS) {
-      setMemoized({ xAxisDomain: [lowPriceFloat, highPriceFloat], span });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [span, lowPriceFloat, highPriceFloat, memoizedSpan]);
-
   const [tickCount, setTickCount] = useState(DEFAULT_TICK_COUNT_BIGINT);
 
   const { ticks, marketPriceIndex } = calculateTicks({
-    span: memoizedSpan,
+    span,
     tickCount,
     midPrice,
     lowPrice,
     highPrice,
   });
 
-  return { ticks, marketPriceIndex, xAxisDomain: memoizedXAxisDomain, setTickCount };
+  return { ticks, marketPriceIndex, xAxisDomain: [lowPriceFloat, highPriceFloat], setTickCount };
 }
 
 function calculateTicks({
@@ -907,6 +852,7 @@ function calculateTicks({
 
   const midPriceFloat = bigintToNumber(midPrice, USD_DECIMALS);
   const stepRaw = bigMath.divRound(span, tickCount);
+
   const stepScale = numberToBigint(Math.pow(10, Math.floor(Math.log10(bigintToNumber(stepRaw, decimals)))), decimals);
   const step = bigMath.divRound(stepRaw, stepScale) * stepScale;
 
@@ -952,8 +898,6 @@ function useEdgePoints(
   rightMin: bigint;
   realLeftMax: bigint;
   realRightMax: bigint;
-  leftCenter: bigint;
-  rightCenter: bigint;
 } {
   const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
   const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
@@ -972,9 +916,6 @@ function useEdgePoints(
 
   let leftMaxExecutionPrice = 0n;
   let rightMaxExecutionPrice = 0n;
-
-  let leftCenter = 0n;
-  let rightCenter = 0n;
 
   {
     const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMax, true, { fallbackToZero: true });
@@ -1004,32 +945,6 @@ function useEdgePoints(
     leftMaxExecutionPrice = executionPrice;
   }
 
-  {
-    const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, false, { fallbackToZero: true });
-    const executionPrice = getNextPositionExecutionPrice({
-      isIncrease: true,
-      isLong: false,
-      priceImpactUsd,
-      sizeDeltaUsd: DOLLAR,
-      triggerPrice: marketInfo.indexToken.prices.minPrice,
-    })!;
-
-    leftCenter = executionPrice;
-  }
-
-  {
-    const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, true, { fallbackToZero: true });
-    const executionPrice = getNextPositionExecutionPrice({
-      isIncrease: true,
-      isLong: true,
-      priceImpactUsd,
-      sizeDeltaUsd: DOLLAR,
-      triggerPrice: marketInfo.indexToken.prices.maxPrice,
-    })!;
-
-    rightCenter = executionPrice;
-  }
-
   return {
     leftMaxExecutionPrice,
     rightMaxExecutionPrice,
@@ -1039,8 +954,6 @@ function useEdgePoints(
     rightMin,
     realLeftMax,
     realRightMax,
-    leftCenter,
-    rightCenter,
   };
 }
 
