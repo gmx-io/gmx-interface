@@ -10,6 +10,7 @@ const totalFeeQuery = gql`
     position: positionFeesInfoWithPeriod(id: "total") {
       totalBorrowingFeeUsd
       totalPositionFeeUsd
+      totalLiquidationFeeUsd
     }
     swap: swapFeesInfoWithPeriod(id: "total") {
       totalFeeReceiverUsd
@@ -23,6 +24,7 @@ const weeklyFeeQuery = gql`
     position: positionFeesInfoWithPeriods(where: { id_gte: $epochStartedTimestamp, period: "1d" }) {
       totalBorrowingFeeUsd
       totalPositionFeeUsd
+      totalLiquidationFeeUsd
     }
 
     swap: swapFeesInfoWithPeriods(where: { id_gte: $epochStartedTimestamp, period: "1d" }) {
@@ -57,6 +59,7 @@ export default function useV2FeesInfo(chainId: number) {
       const totalSwapFees =
         BigInt(totalFeesInfo.swap.totalFeeReceiverUsd) + BigInt(totalFeesInfo.swap.totalFeeUsdForPool);
 
+      const totalLiquidationFees = BigInt(totalFeesInfo.position.totalLiquidationFeeUsd);
       const weeklyPositionFees = weeklyFeesInfo.position.reduce((acc, fee) => {
         return acc + BigInt(fee.totalBorrowingFeeUsd) + BigInt(fee.totalPositionFeeUsd);
       }, 0n);
@@ -65,9 +68,13 @@ export default function useV2FeesInfo(chainId: number) {
         return acc + BigInt(fee.totalFeeReceiverUsd) + BigInt(fee.totalFeeUsdForPool);
       }, 0n);
 
+      const weeklyLiquidationFees = weeklyFeesInfo.position.reduce((acc, fee) => {
+        return acc + BigInt(fee.totalLiquidationFeeUsd);
+      }, 0n);
+
       return {
-        weeklyFees: weeklyPositionFees + weeklySwapFees,
-        totalFees: totalPositionFees + totalSwapFees,
+        weeklyFees: weeklyPositionFees + weeklySwapFees + weeklyLiquidationFees,
+        totalFees: totalPositionFees + totalSwapFees + totalLiquidationFees,
       };
     } catch (error) {
       // eslint-disable-next-line no-console
