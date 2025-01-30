@@ -36,8 +36,8 @@ export const appEventsData: EventData[] = [
     id: "ai16z-anime-fartcoin-listing",
     title: "AI16Z, ANIME and FARTCOIN markets added on Arbitrum",
     isActive: true,
-    startDate: "30 Jan 2025, 16:00",
-    endDate: "05 Feb 2025, 16:00",
+    startDate: "30 Jan 2025, 17:00",
+    endDate: "05 Feb 2025, 17:00",
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="AI16Z" />
