@@ -260,6 +260,8 @@ export class Metrics {
         if (!res.ok) {
           throw new Error(res.statusText);
         }
+
+        return sleep(BATCH_INTERVAL_MS).then(() => this._processQueue());
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -270,8 +272,9 @@ export class Metrics {
         } else {
           this.queue.push(...items);
         }
-      })
-      .finally(() => sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1)));
+
+        return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
+      });
   };
 
   subscribeToEvents = () => {
