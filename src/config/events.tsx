@@ -33,6 +33,26 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "ai16z-anime-fartcoin-listing",
+    title: "AI16Z, ANIME and FARTCOIN markets added on Arbitrum",
+    isActive: true,
+    startDate: "30 Jan 2025, 17:00",
+    endDate: "05 Feb 2025, 17:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="AI16Z" />
+        /USD, <TokenSymbolWithIcon symbol="ANIME" />
+        /USD and <TokenSymbolWithIcon symbol="FARTCOIN" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="ANIME" />, <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC]
+        </span>
+        .
+      </>
+    ),
+  },
+  {
     id: "ena-melania-listing",
     title: "ENA and MELANIA markets added on Arbitrum",
     isActive: true,

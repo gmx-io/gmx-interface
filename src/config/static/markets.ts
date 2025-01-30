@@ -351,6 +351,21 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("23 Jan 2025"),
     },
+    // AI16Z/USD [WBTC.e-USDC]
+    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // ANIME/USD [ANIME-USDC]
+    "0x5707673D95a8fD317e2745C4217aCD64ca021B68": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // FARTCOIN/USD [WBTC.e-USDC]
+    "0xe2730Ffe2136aA549327EBce93D58160df7821CB": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

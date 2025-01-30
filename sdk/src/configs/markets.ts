@@ -472,6 +472,27 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // AI16Z/USD [WBTC.e-USDC]
+    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169": {
+      marketTokenAddress: "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169",
+      indexTokenAddress: "0xBb69bd9dc152C2c0F083507641a46193d2B61EBb",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // ANIME/USD [ANIME-USDC]
+    "0x5707673D95a8fD317e2745C4217aCD64ca021B68": {
+      marketTokenAddress: "0x5707673D95a8fD317e2745C4217aCD64ca021B68",
+      indexTokenAddress: "0x37a645648dF29205C6261289983FB04ECD70b4B3",
+      longTokenAddress: "0x37a645648dF29205C6261289983FB04ECD70b4B3",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // FARTCOIN/USD [WBTC.e-USDC]
+    "0xe2730Ffe2136aA549327EBce93D58160df7821CB": {
+      marketTokenAddress: "0xe2730Ffe2136aA549327EBce93D58160df7821CB",
+      indexTokenAddress: "0xaca341E61aB6177B0b0Df46a612e4311F8a7605f",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
