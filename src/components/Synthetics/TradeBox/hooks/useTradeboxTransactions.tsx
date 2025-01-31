@@ -253,6 +253,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           targetCollateralAddress: collateralToken.address,
           collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
           swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+          externalSwapQuote: increaseAmounts.externalSwapQuote,
           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
           sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
           triggerPrice: isLimit ? triggerPrice : undefined,

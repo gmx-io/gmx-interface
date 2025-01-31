@@ -249,8 +249,6 @@ export function extractDataFromError(errorMessage: unknown) {
 export function getAdditionalValidationType(error: Error) {
   const errorData = parseError(error);
 
-  console.log("ARRRRR", errorData);
-
   const shouldTryCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
     const isMessageMatch =
       pattern.msg &&

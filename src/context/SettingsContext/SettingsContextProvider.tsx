@@ -16,6 +16,7 @@ import {
   getExecutionFeeBufferBpsKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
+  EXTERNAL_SWAPS_ENABLED_KEY,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
@@ -56,6 +57,9 @@ export type SettingsContextType = {
 
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
+
+  externalSwapsEnabled: boolean;
+  setExternalSwapsEnabled: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -120,6 +124,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyLsKeys.enabled,
     false
   );
+
+  const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -193,6 +199,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       isSettingsVisible,
       setIsSettingsVisible,
+
+      externalSwapsEnabled: externalSwapsEnabled!,
+      setExternalSwapsEnabled,
     };
   }, [
     showDebugValues,
@@ -225,6 +234,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    externalSwapsEnabled,
+    setExternalSwapsEnabled,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

@@ -31,6 +31,7 @@ import {
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -182,6 +183,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     tradeType,
     triggerPrice,
     tokenTypeForSwapRoute,
+    externalSwapQuote,
   }: {
     initialCollateralTokenAddress: string | undefined;
     indexTokenAddress: string | undefined;
@@ -189,6 +191,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     tradeMode: TradeMode;
     tradeType: TradeType;
     collateralTokenAddress: string | undefined;
+    externalSwapQuote: ExternalSwapQuote | undefined;
     marketAddress: string | undefined;
     initialCollateralAmount: bigint;
     indexTokenAmount: bigint | undefined;
@@ -257,6 +260,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
           userReferralInfo,
           uiFeeFactor,
           strategy,
+          externalSwapQuote,
         });
       }
     )
@@ -406,6 +410,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     triggerPrice,
     tokenTypeForSwapRoute,
     isPnlInLeverage,
+    externalSwapQuote,
   }: {
     initialCollateralTokenAddress: string | undefined;
     indexTokenAddress: string | undefined;
@@ -422,6 +427,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
     isPnlInLeverage: boolean;
+    externalSwapQuote: ExternalSwapQuote | undefined;
   }) =>
     createSelectorDeprecated(
       [
@@ -443,6 +449,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
           tradeType,
           triggerPrice,
           tokenTypeForSwapRoute,
+          externalSwapQuote,
         }),
         selectPositionsInfoData,
         selectUserReferralInfo,

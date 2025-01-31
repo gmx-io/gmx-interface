@@ -1,78 +1,74 @@
-import { ARBITRUM } from "config/chains";
+import { DISABLED_OPEN_OCEAN_DEXES, getOpenOceanUrl } from "config/externalSwaps";
 import { buildUrl } from "lib/buildUrl";
 import { formatTokenAmount } from "lib/numbers";
-import { AVALANCHE } from "sdk/configs/chains";
-import { getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
-const OPEN_OCEAN_BASE_URL = "https://open-api.openocean.finance/v3";
-
-const OPEN_OCEAN_API_URL = {
-  [ARBITRUM]: `${OPEN_OCEAN_BASE_URL}/arbitrum`,
-  [AVALANCHE]: `${OPEN_OCEAN_BASE_URL}/avax`,
+type OpenOceanQuoteResponse = {
+  code: number;
+  data: {
+    inToken: {
+      address: string;
+      decimals: number;
+      symbol: string;
+      name: string;
+      usd: string;
+      volume: number;
+    };
+    outToken: {
+      address: string;
+      decimals: number;
+      symbol: string;
+      name: string;
+      usd: string;
+      volume: number;
+    };
+    inAmount: string;
+    outAmount: string;
+    estimatedGas: string;
+    price_impact: string;
+  };
 };
-
-const DISABLED_OPEN_OCEAN_DEXES = {
-  /**
-   *  @see https://open-api.openocean.finance/v3/arbitrum/dexList
-   */
-  [ARBITRUM]: [8, 54],
-  /**
-   *  @see https://open-api.openocean.finance/v3/avax/dexList
-   */
-  [AVALANCHE]: [
-    18, // GMX
-  ],
-};
-
-export function getOpenOceanUrl(chainId: number) {
-  const url = OPEN_OCEAN_API_URL[chainId];
-
-  if (!url) {
-    throw new Error("Unsupported open ocean network");
-  }
-
-  return url;
-}
 
 export async function getOpenOceanPriceQuote({
   chainId,
-  tokenInAddress,
-  tokenOutAddress,
-  tokenInAmount,
+  fromTokenAddress,
+  toTokenAddress,
+  fromTokenAmount,
+  gasPrice,
   slippage,
 }: {
   chainId: number;
-  tokenInAddress: string;
-  tokenOutAddress: string;
-  tokenInAmount: bigint;
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  fromTokenAmount: bigint;
   gasPrice: bigint;
   slippage: number;
 }) {
   const disabledDexIds = DISABLED_OPEN_OCEAN_DEXES[chainId] ?? [];
 
-  const tokenIn = getToken(chainId, tokenInAddress);
+  const fromToken = getToken(chainId, fromTokenAddress);
 
   const url = buildUrl(getOpenOceanUrl(chainId), "/quote", {
-    inTokenAddress: tokenInAddress,
-    outTokenAddress: tokenOutAddress,
-    amount: formatTokenAmount(tokenInAmount, tokenIn.decimals, undefined, { displayDecimals: 8 }),
-    gasPrice: "1",
-    slippage,
+    inTokenAddress: convertTokenAddress(chainId, fromTokenAddress, "wrapped"),
+    outTokenAddress: convertTokenAddress(chainId, toTokenAddress, "wrapped"),
+    amount: formatTokenAmount(fromTokenAmount, fromToken.decimals, undefined, { displayDecimals: 8 }),
+    gasPrice: gasPrice.toString(),
+    slippage: slippage.toString(),
     disabledDexIds: disabledDexIds.join(","),
   });
 
   try {
     const res = await fetch(url);
 
-    const parsedRes = await res.json();
-
-    const outAmount = BigInt(parsedRes.data.outAmount);
+    const parsedRes = (await res.json()) as OpenOceanQuoteResponse;
 
     return {
-      outAmount,
+      outAmount: BigInt(parsedRes.data.outAmount),
+      estimatedGas: BigInt(parsedRes.data.estimatedGas),
     };
   } catch (e) {
-    // TODO: metrics
+    // eslint-disable-next-line no-console
+    console.error("Error fetching external swap quote", e);
     return undefined;
   }
 }
@@ -107,8 +103,6 @@ export async function getOpenOceanBuildTx({
     account: receiverAddress,
     disabledDexIds: disabledDexIds.join(","),
   });
-
-  console.log("url", url);
 
   try {
     const res = await fetch(url);

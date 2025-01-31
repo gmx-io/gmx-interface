@@ -9,19 +9,18 @@ import { useKey, useLatest, usePrevious } from "react-use";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
-  useMarketsInfoData,
   usePositionsConstants,
   useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -86,7 +85,6 @@ import {
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
-  formatDeltaUsd,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -167,7 +165,6 @@ export function TradeBox(p: Props) {
   const history = useHistory();
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = avaialbleTokenOptions;
   const tokensData = useTokensData();
-  const marketsInfoData = useMarketsInfoData();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
@@ -175,11 +172,8 @@ export function TradeBox(p: Props) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const {
-    showDebugValues,
-    shouldDisableValidationForTesting,
-    shouldDisableValidationForTesting: shouldDisableValidation,
-  } = useSettings();
+  const { shouldDisableValidationForTesting, shouldDisableValidationForTesting: shouldDisableValidation } =
+    useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -260,6 +254,7 @@ export function TradeBox(p: Props) {
   const fees = useSelector(selectTradeboxFees);
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const executionFee = useSelector(selectTradeboxExecutionFee);
+  const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const { markRatio, triggerRatio } = useSelector(selectTradeboxTradeRatios);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const { maxLiquidity: swapOutLiquidity } = useSelector(selectTradeboxMaxLiquidityPath);
@@ -316,6 +311,7 @@ export function TradeBox(p: Props) {
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
           findSwapPath,
+          externalSwapQuote,
           indexToken: toToken,
           indexTokenAmount: toTokenAmount,
           initialCollateralAmount: fromTokenAmount,
@@ -388,6 +384,7 @@ export function TradeBox(p: Props) {
   }, [
     acceptablePriceImpactBuffer,
     collateralToken,
+    externalSwapQuote,
     findSwapPath,
     fromToken,
     fromTokenAmount,
@@ -427,6 +424,7 @@ export function TradeBox(p: Props) {
         swapPathStats: swapAmounts?.swapPathStats,
         swapLiquidity: swapOutLiquidity,
         priceImpactWarning: priceImpactWarningState,
+        externalSwapQuote: swapAmounts?.externalSwapQuote,
         isLimit,
         isWrapOrUnwrap,
         triggerRatio,
@@ -446,6 +444,7 @@ export function TradeBox(p: Props) {
         existingPosition: selectedPosition,
         fees,
         swapPathStats: increaseAmounts?.swapPathStats,
+        externalSwapQuote: increaseAmounts?.externalSwapQuote,
         collateralLiquidity: swapOutLiquidity,
         minCollateralUsd,
         longLiquidity,
@@ -557,6 +556,7 @@ export function TradeBox(p: Props) {
     swapAmounts?.usdIn,
     swapAmounts?.usdOut,
     swapAmounts?.swapPathStats,
+    swapAmounts?.externalSwapQuote,
     toTokenAmount,
     swapOutLiquidity,
     priceImpactWarningState,
@@ -570,6 +570,7 @@ export function TradeBox(p: Props) {
     increaseAmounts?.collateralDeltaUsd,
     increaseAmounts?.sizeDeltaUsd,
     increaseAmounts?.swapPathStats,
+    increaseAmounts?.externalSwapQuote,
     collateralToken,
     selectedPosition,
     minCollateralUsd,
@@ -874,19 +875,6 @@ export function TradeBox(p: Props) {
   ]);
 
   const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);
-
-  if (showDebugValues) {
-    const swapPathStats = swapAmounts?.swapPathStats || increaseAmounts?.swapPathStats;
-
-    if (swapPathStats) {
-      // eslint-disable-next-line no-console
-      // console.log("Swap Path", {
-      //   path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
-      //   priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),
-      //   usdOut: swapPathStats.swapSteps.map((step) => formatUsd(step.usdOut)).join(" -> "),
-      // });
-    }
-  }
 
   const onMaxClick = useCallback(() => {
     if (fromToken?.balance) {

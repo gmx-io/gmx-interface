@@ -5,6 +5,7 @@ import values from "lodash/values";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
+  selectExternalSwapQuote,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
@@ -259,9 +260,11 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const positionKey = q(selectTradeboxSelectedPositionKey);
+  const externalSwapQuote = q(selectExternalSwapQuote);
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
+    externalSwapQuote,
     fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
     indexTokenAddress: toTokenAddress,
     indexTokenAmount: toTokenAmount,

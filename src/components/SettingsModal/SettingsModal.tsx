@@ -21,6 +21,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./SettingsModal.scss";
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
+import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 
 export function SettingsModal({
   isSettingsVisible,
@@ -229,6 +230,13 @@ export function SettingsModal({
           </span>
         </Checkbox>
       </div>
+
+      <div className="Exchange-settings-row">
+        <Checkbox isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+          <Trans>Enable external swaps</Trans>
+        </Checkbox>
+      </div>
+
       {isDevelopment() && (
         <div className="Exchange-settings-row">
           <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
@@ -246,6 +254,8 @@ export function SettingsModal({
       )}
 
       {isDevelopment() && <AbFlagSettings />}
+
+      {isDevelopment() && <DebugSwapsSettings />}
 
       {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
 

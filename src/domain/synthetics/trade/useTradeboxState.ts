@@ -14,7 +14,6 @@ import {
   getLeverageKey,
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
-import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -22,6 +21,7 @@ import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
+import { getToken, isSimilarToken } from "sdk/configs/tokens";
 
 import { MarketInfo } from "domain/synthetics/markets";
 import { MarketsData, MarketsInfoData } from "../markets";
@@ -282,6 +282,7 @@ export function useTradeboxState(
   const toTokenAddress = tradeFlags.isSwap
     ? storedOptions?.tokens.swapToTokenAddress
     : storedOptions?.tokens.indexTokenAddress;
+
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const isWrapOrUnwrap = Boolean(

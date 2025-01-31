@@ -557,6 +557,8 @@ function getIsMaxLeverageError(
     tokenOut: order.targetCollateralToken,
     amountIn: order.initialCollateralDeltaAmount,
     isLimit: false,
+    // TODO: check if this is correct
+    externalSwapQuote: undefined,
     findSwapPath,
     uiFeeFactor,
   });
@@ -623,5 +625,6 @@ export function getPendingOrderFromParams(
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativeReceive,
     orderKey,
+    externalSwapQuote: undefined,
   };
 }

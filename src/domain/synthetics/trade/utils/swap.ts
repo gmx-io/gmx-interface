@@ -4,6 +4,7 @@ import { getIsEquivalentTokens } from "domain/tokens";
 import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";
 import { bigMath } from "lib/bigmath";
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -11,10 +12,11 @@ export function getSwapAmountsByFromValue(p: {
   amountIn: bigint;
   triggerRatio?: TokensRatio;
   isLimit: boolean;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
+  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor, externalSwapQuote } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -34,6 +36,7 @@ export function getSwapAmountsByFromValue(p: {
     priceIn,
     priceOut,
     swapPathStats: undefined,
+    externalSwapQuote,
   };
 
   if (amountIn <= 0) {
@@ -54,6 +57,7 @@ export function getSwapAmountsByFromValue(p: {
       priceIn,
       priceOut,
       swapPathStats: undefined,
+      externalSwapQuote: undefined,
     };
   }
 
@@ -105,6 +109,7 @@ export function getSwapAmountsByFromValue(p: {
     priceOut,
     minOutputAmount,
     swapPathStats,
+    externalSwapQuote,
   };
 }
 
@@ -116,8 +121,9 @@ export function getSwapAmountsByToValue(p: {
   isLimit: boolean;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
+  externalSwapQuote: ExternalSwapQuote | undefined;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
+  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath, uiFeeFactor, externalSwapQuote } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -139,6 +145,7 @@ export function getSwapAmountsByToValue(p: {
     priceIn,
     priceOut,
     swapPathStats: undefined,
+    externalSwapQuote,
   };
 
   if (amountOut <= 0) {
@@ -158,6 +165,7 @@ export function getSwapAmountsByToValue(p: {
       priceIn,
       priceOut,
       swapPathStats: undefined,
+      externalSwapQuote: undefined,
     };
   }
 
@@ -205,5 +213,6 @@ export function getSwapAmountsByToValue(p: {
     priceIn,
     priceOut,
     swapPathStats,
+    externalSwapQuote,
   };
 }

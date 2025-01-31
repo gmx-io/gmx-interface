@@ -6,7 +6,7 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
 import { getToken } from "sdk/configs/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFeesType } from "domain/synthetics/trade";
 import { bigMath } from "lib/bigmath";
@@ -27,6 +27,7 @@ type Props = {
   totalFees?: FeeItem;
   shouldShowRebate?: boolean;
   swapFees?: SwapFeeItem[];
+  externalSwapFees?: ExternalSwapFeeItem[];
   swapProfitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
@@ -84,6 +85,31 @@ export function TradeFeesRow(p: Props) {
           className: getPositiveOrNegativeClass(p.swapPriceImpact!.deltaUsd, "text-green-500"),
         }
       : undefined;
+
+    const externalSwapFeeRows: FeeRow[] =
+      p.externalSwapFees?.map((swap) => ({
+        id: `external-swap-${swap.tokenInAddress}-${swap.tokenOutAddress}`,
+        label: (
+          <>
+            <div className="text-white">
+              {t`External Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
+                getToken(chainId, swap.tokenOutAddress).symbol
+              }`}
+              :
+            </div>
+            <div>
+              (
+              {formatPercentage(bigMath.abs(swap.precisePercentage), {
+                displayDecimals: 3,
+                bps: false,
+              })}{" "}
+              of swap amount)
+            </div>
+          </>
+        ),
+        value: formatDeltaUsd(swap.deltaUsd),
+        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
+      })) || [];
 
     const swapFeeRows: FeeRow[] =
       p.swapFees?.map((swap) => ({
@@ -281,12 +307,13 @@ export function TradeFeesRow(p: Props) {
         : undefined;
 
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, ...externalSwapFeeRows, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
       return [
         swapPriceImpactRow,
+        ...externalSwapFeeRows,
         ...swapFeeRows,
         positionFeeRow,
         rebateRow,
@@ -311,6 +338,7 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         swapProfitFeeRow,
         swapPriceImpactRow,
+        ...externalSwapFeeRows,
         ...swapFeeRows,
       ].filter(Boolean) as FeeRow[];
     }
@@ -369,14 +397,14 @@ export function TradeFeesRow(p: Props) {
   }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
   const swapRouteMsg = useMemo(() => {
-    if (p.swapFees && p.swapFees.length <= 2) return;
+    if ((p.swapFees && p.swapFees.length <= 2) || p.externalSwapFees) return;
     return (
       <>
         <br />
         <Trans>This swap is routed through several GM pools for the lowest possible fees and price impact.</Trans>
       </>
     );
-  }, [p.swapFees]);
+  }, [p.externalSwapFees, p.swapFees]);
 
   let value: ReactNode = useMemo(() => {
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {

@@ -394,6 +394,7 @@ export function PositionEditor(p: Props) {
           account,
           marketAddress: position.marketAddress,
           initialCollateralAddress: selectedCollateralAddress,
+          externalSwapQuote: undefined,
           initialCollateralAmount: collateralDeltaAmount,
           targetCollateralAddress: position.collateralTokenAddress,
           collateralDeltaAmount,

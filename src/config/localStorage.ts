@@ -41,6 +41,8 @@ export const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
+export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
+export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
 
 export const ONE_CLICK_TRADING_OFFER_HIDDEN = "one-click-trading-offer-hidden";
 export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN = "one-click-trading-native-token-warn-hidden";

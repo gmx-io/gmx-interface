@@ -8,6 +8,7 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -40,13 +41,13 @@ import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -102,6 +103,8 @@ export type SyntheticsState = {
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeboxState;
+  externalSwapQuote: ExternalSwapQuote | undefined;
+  setExternalSwapQuote: (quote: ExternalSwapQuote | undefined) => void;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
@@ -213,6 +216,8 @@ export function SyntheticsStateContextProvider({
     ordersInfoData: ordersInfo.ordersInfoData,
   });
 
+  const [externalSwapQuote, setExternalSwapQuote] = useState<ExternalSwapQuote>();
+
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
   const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
@@ -302,6 +307,8 @@ export function SyntheticsStateContextProvider({
       leaderboard,
       settings,
       tradebox: tradeboxState,
+      externalSwapQuote,
+      setExternalSwapQuote,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
@@ -324,6 +331,8 @@ export function SyntheticsStateContextProvider({
     userReferralInfo,
     depositMarketTokensData,
     closingPositionKey,
+    externalSwapQuote,
+    setExternalSwapQuote,
     missedCoinsModalPlace,
     gasLimits,
     gasPrice,

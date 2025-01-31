@@ -11,8 +11,10 @@ import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import concat from "lodash/concat";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import Token from "sdk/abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { getOpenOceanBuildTx } from "../externalSwaps/openOcean";
+import { ExternalSwapQuote } from "../externalSwaps/useExternalSwapsQuote";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToPrice } from "../trade";
@@ -20,12 +22,9 @@ import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
-import Token from "sdk/abis/Token.json";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
-import { extendWith, method } from "lodash";
-import { parseError } from "lib/parseError";
 
 const { ZeroAddress } = ethers;
 
@@ -37,6 +36,7 @@ type IncreaseOrderParams = {
   initialCollateralAmount: bigint;
   collateralDeltaAmount: bigint;
   swapPath: string[];
+  externalSwapQuote: ExternalSwapQuote | undefined;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
   acceptablePrice: bigint;
@@ -136,6 +136,7 @@ export async function createIncreaseOrderTxn({
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.initialCollateralAmount,
     swapPath: p.swapPath,
+    externalSwapQuote: p.externalSwapQuote,
     sizeDeltaUsd: p.sizeDeltaUsd,
     minOutputAmount: 0n,
     isLong: p.isLong,
@@ -262,12 +263,12 @@ export async function createIncreaseOrderTxn({
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits: [],
-    customSignersGasPrices: [],
+    customSignersGasLimits,
+    customSignersGasPrices,
     metricId,
     gasLimit,
     gasPriceData,
-    bestNonce: undefined,
+    bestNonce,
     setPendingTxns: p.setPendingTxns,
     pendingTransactionData: {
       estimatedExecutionFee: p.executionFee,
@@ -319,133 +320,71 @@ async function createEncodedPayload({
   initialCollateralTokenAddress: string;
   signer: Signer;
 }) {
+  const externalSwap = p.externalSwapQuote
+    ? await getOpenOceanBuildTx({
+        chainId,
+        senderAddress: getContract(chainId, "ExternalHandler"),
+        receiverAddress: orderVaultAddress,
+        tokenInAddress: p.initialCollateralAddress,
+        tokenOutAddress: p.targetCollateralAddress,
+        tokenInAmount: p.initialCollateralAmount,
+        slippage: p.allowedSlippage,
+      })
+    : undefined;
+
+  let orderProps = { ...p };
+
+  if (externalSwap) {
+    orderProps.swapPath = [];
+    initialCollateralTokenAddress = p.targetCollateralAddress;
+  }
+
   const orderParams = createOrderParams({
-    p: {
-      ...p,
-      swapPath: [],
-    },
+    p: orderProps,
     acceptablePrice,
-    initialCollateralTokenAddress: p.targetCollateralAddress,
+    initialCollateralTokenAddress,
     subaccount,
     isNativePayment,
   });
 
-  const externalSwap = await getOpenOceanBuildTx({
-    chainId,
-    senderAddress: getContract(chainId, "ExternalHandler"),
-    receiverAddress: orderVaultAddress,
-    tokenInAddress: p.initialCollateralAddress,
-    tokenOutAddress: p.targetCollateralAddress,
-    tokenInAmount: p.initialCollateralAmount,
-    slippage: p.allowedSlippage,
-  });
-
   const tokenContract = new ethers.Contract(p.initialCollateralAddress, Token.abi);
 
-  const tokenApproveData = tokenContract.interface.encodeFunctionData("approve", [externalSwap?.to, ethers.MaxUint256]);
-
-  console.log("externalSwap", externalSwap);
-  console.log("tokenApproveData", tokenApproveData);
-
-  // await tokenContract.approve(externalSwap?.to, ethers.MaxUint256);
-  // const res = await signer.sendTransaction(externalSwap!);
-  // console.log("res", res);
-
-  // const res = await router.runner
-  //   ?.provider!.call({
-  //     data: router.interface.encodeFunctionData("makeExternalCalls", [
-  //       [p.initialCollateralAddress],
-  //       [tokenApproveData],
-  //       [p.initialCollateralAddress],
-  //       [p.account],
-  //     ]),
-  //     to: await router.getAddress(),
-  //   })
-  //   .catch((e) => {
-  //     const errorData = parseError(e);
-  //     console.log("errorData", errorData);
-  //   });
+  const tokensDestination = externalSwap ? getContract(chainId, "ExternalHandler") : orderVaultAddress;
 
   const multicall1 = [
+    { method: "sendWnt", params: [tokensDestination, totalWntAmount] },
+
     !isNativePayment && !subaccount
       ? {
           method: "sendTokens",
-          params: [p.initialCollateralAddress, getContract(chainId, "ExternalHandler"), p.initialCollateralAmount],
+          params: [p.initialCollateralAddress, tokensDestination, p.initialCollateralAmount],
         }
       : undefined,
 
-    {
-      method: "makeExternalCalls",
-      params: [
-        [p.initialCollateralAddress, externalSwap?.to],
-        [tokenApproveData, externalSwap?.data],
-        [getNativeToken(chainId).wrappedAddress, p.initialCollateralAddress],
-        [p.account, p.account],
-      ],
-    },
+    externalSwap
+      ? {
+          method: "makeExternalCalls",
+          params: [
+            [p.initialCollateralAddress, externalSwap?.to],
+            [
+              tokenContract.interface.encodeFunctionData("approve", [externalSwap?.to, p.initialCollateralAmount]),
+              externalSwap?.data,
+            ],
+            [getNativeToken(chainId).wrappedAddress, p.initialCollateralAddress],
+            [p.account, p.account],
+          ],
+        }
+      : undefined,
 
-    // { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
-
-    // // { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
-
-    // {
-    //   method: "createOrder",
-    //   params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
-    // },
-  ];
-
-  const multicall2 = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
     {
       method: "createOrder",
       params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
     },
   ];
 
-  // TODO: Handle WNT
-  // HANDLE Aaprovals
-  // HANDLE
-  // const multicall = [
-  //   { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
-
-  //   !isNativePayment && !subaccount
-  //     ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
-  //     : undefined,
-
-  //   {
-  //     method: "createOrder",
-  //     params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
-  //   },
-  // ];
-
-  const encodedData1 = multicall1
+  const encodedData = multicall1
     .filter(Boolean)
     .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
-
-  const encodedData2 = multicall2
-    .filter(Boolean)
-    .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
-
-  const encodedData = [...encodedData1, ...encodedData2];
-
-  // const res = await router.runner
-  //   ?.provider!.call({
-  //     data: router.interface.encodeFunctionData("multicall", [encodedData]),
-  //     to: await router.getAddress(),
-  //   })
-  //   .catch((e) => {
-  //     const errorData = parseError(e);
-  //     console.log("errorData", errorData);
-  //   });
-
-  // console.log("encodedData", encodedData);
-
-  // console.log("res", res);
-
-  // console.log("externalSwap?.value", externalSwap?.value);
-
-  await router.multicall(encodedData1);
-  await router.multicall(encodedData2, { value: totalWntAmount });
 
   return encodedData;
 }

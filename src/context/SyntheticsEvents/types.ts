@@ -1,3 +1,4 @@
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
 import { OrderTxnType, OrderType } from "../../domain/synthetics/orders";
 
 export type SyntheticsEventsContextType = {
@@ -52,6 +53,7 @@ export type OrderCreatedEventData = {
   orderType: OrderType;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
+  externalSwapQuote: undefined;
   isFrozen: boolean;
 };
 
@@ -61,6 +63,7 @@ export type PendingOrderData = {
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
+  externalSwapQuote: ExternalSwapQuote | undefined;
   initialCollateralDeltaAmount: bigint;
   minOutputAmount: bigint;
   sizeDeltaUsd: bigint;

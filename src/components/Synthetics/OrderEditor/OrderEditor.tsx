@@ -335,6 +335,7 @@ export function OrderEditor(p: Props) {
           userReferralInfo,
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
           fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+          externalSwapQuote: undefined,
           leverage,
           triggerPrice,
         });

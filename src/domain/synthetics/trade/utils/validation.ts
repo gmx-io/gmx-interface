@@ -22,6 +22,7 @@ import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers"
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
@@ -59,6 +60,7 @@ export function getSwapError(p: {
   markRatio: TokensRatio | undefined;
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   priceImpactWarning: PriceImpactWarningState;
   isWrapOrUnwrap: boolean;
   swapLiquidity: bigint | undefined;
@@ -77,6 +79,7 @@ export function getSwapError(p: {
     priceImpactWarning,
     swapLiquidity,
     swapPathStats,
+    externalSwapQuote,
   } = p;
 
   if (!fromToken || !toToken) {
@@ -107,7 +110,12 @@ export function getSwapError(p: {
     return [t`Insufficient liquidity`];
   }
 
-  if (!swapPathStats?.swapPath || (!isLimit && swapPathStats.swapSteps.some((step) => step.isOutLiquidity))) {
+  const noInternalSwap =
+    !swapPathStats?.swapPath || (!isLimit && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
+
+  const noExternalSwap = !externalSwapQuote;
+
+  if (noInternalSwap && noExternalSwap) {
     return [t`Couldn't find a swap path with enough liquidity`];
   }
 
@@ -160,6 +168,7 @@ export function getIncreaseError(p: {
   markPrice: bigint | undefined;
   priceImpactWarning: PriceImpactWarningState;
   triggerPrice: bigint | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   swapPathStats: SwapPathStats | undefined;
   collateralLiquidity: bigint | undefined;
   longLiquidity: bigint | undefined;
@@ -182,6 +191,7 @@ export function getIncreaseError(p: {
     existingPosition,
     fees,
     swapPathStats,
+    externalSwapQuote,
     collateralLiquidity,
     longLiquidity,
     shortLiquidity,
@@ -221,9 +231,11 @@ export function getIncreaseError(p: {
   }
 
   const isNeedSwap = !getIsEquivalentTokens(initialCollateralToken, targetCollateralToken);
+  const noInternalSwap = !swapPathStats?.swapPath?.length;
+  const noExternalSwap = !externalSwapQuote;
 
   if (isNeedSwap) {
-    if (!swapPathStats?.swapPath?.length) {
+    if (noInternalSwap && noExternalSwap) {
       return [t`No swap path found`, "noSwapPath"];
     }
 

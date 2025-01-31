@@ -66,6 +66,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.fromTokenAmount,
     swapPath: p.swapPath,
+    externalSwapQuote: undefined,
     sizeDeltaUsd: 0n,
     minOutputAmount,
     isLong: false,
