@@ -1,9 +1,8 @@
-import Multicall from "sdk/abis/Multicall.json";
 import { getContract } from "config/contracts";
 import { useMemo } from "react";
+import Multicall from "sdk/abis/Multicall.json";
 import { useMulticall } from "./multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "./timeConstants";
-import { getIsFlagEnabled } from "config/ab";
 
 export type BlockTimestampData = {
   blockTimestamp: bigint;
@@ -43,7 +42,7 @@ export function useBlockTimestampRequest(chainId: number, { skip }: { skip?: boo
     },
   });
 
-  return useMemo(() => ({ blockTimestampData: getIsFlagEnabled("testBlockTimestampHook") ? data : undefined }), [data]);
+  return useMemo(() => ({ blockTimestampData: data }), [data]);
 }
 
 export function adjustBlockTimestamp(blockTimestampData: BlockTimestampData) {

@@ -12,9 +12,9 @@ import { getServerBaseUrl } from "config/backend";
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { isValidToken } from "sdk/configs/tokens";
 import { getMostAbundantStableToken, TokenInfo } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
+import { isValidToken } from "sdk/configs/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import {
@@ -27,7 +27,6 @@ import {
 } from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
-import { getIsFlagEnabled } from "config/ab";
 
 const { ZeroAddress } = ethers;
 
@@ -1556,10 +1555,6 @@ export function getOrderError(account, order, positionsMap, position) {
 }
 
 export function shouldShowRedirectModal(timestamp?: number): boolean {
-  if (getIsFlagEnabled("testRemoveConfirmationModal")) {
-    return false;
-  }
-
   if (!timestamp) {
     return true;
   }

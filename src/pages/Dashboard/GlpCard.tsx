@@ -6,7 +6,7 @@ import { getIcons } from "config/icons";
 import { TOKEN_COLOR_MAP, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { GLP_PRICE_DECIMALS } from "config/ui";
 import { useInfoTokens } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { GLP_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";

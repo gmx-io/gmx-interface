@@ -4,7 +4,7 @@ import { Address } from "viem";
 
 import { getToken } from "sdk/configs/tokens";
 
-import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
+import { useOracleKeeperFetcher } from "../../../lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 
 export type PriceDelta = {
   close: number;

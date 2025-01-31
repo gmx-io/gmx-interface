@@ -37,7 +37,7 @@ export const getOrderExecutionFee = (
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
-  return getExecutionFee(sdk, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+  return getExecutionFee(sdk.chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 };
 
 export const getExecutionFeeAmountForEntry = (
@@ -145,7 +145,7 @@ export function matchByMarket({
             outTokenAddress !== undefined && isAddressEqual(outTokenAddress as Address, filter.collateralAddress);
         }
       } else if (isTriggerDecreaseOrderType(order.orderType)) {
-        collateralMatch = isAddressEqual(order.initialCollateralTokenAddress, filter.collateralAddress);
+        collateralMatch = isAddressEqual(order.initialCollateralTokenAddress as Address, filter.collateralAddress);
       }
 
       return marketMatch && directionMath && collateralMatch;

@@ -5,10 +5,10 @@ import { useMemo } from "react";
 
 import { ExecutionFee } from "domain/synthetics/fees";
 import { getNeedTokenApprove, getTokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { useHasOutdatedUi } from "domain/legacy";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
-import type { GmSwapFees } from "domain/synthetics/trade/types";
+import type { GmSwapFees } from "sdk/types/trade";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
 
@@ -48,7 +48,7 @@ export function useShiftSubmitState({
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { openConnectModal } = useConnectModal();
 

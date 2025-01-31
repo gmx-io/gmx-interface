@@ -9,12 +9,12 @@ import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
 import { MARKETS } from "config/markets";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
-import { formatAmount, formatKeyAmount } from "lib/numbers";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { formatAmount, formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -34,7 +34,7 @@ export function TotalRewardsCard({
   const { active, account, signer } = useWallet();
   const { chainId } = useChainId();
   const { openConnectModal } = useConnectModal();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
 
@@ -164,10 +164,15 @@ export function TotalRewardsCard({
             <div className="label">GMX</div>
             <Tooltip
               handle={
-                <div>
-                  {formatKeyAmount(processedData, "totalGmxRewards", 18, 4, true)} ($
-                  {formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)})
-                </div>
+                processedData?.totalGmxRewards === undefined || processedData?.totalGmxRewardsUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(
+                      processedData.totalGmxRewards,
+                      processedData.totalGmxRewardsUsd,
+                      18,
+                      undefined,
+                      true
+                    )
               }
               position="bottom-end"
               content={
@@ -181,10 +186,16 @@ export function TotalRewardsCard({
                     }
                     showDollar={false}
                     value={
-                      <>
-                        {formatKeyAmount(processedData, "extendedGmxTrackerRewards", 18, 4, true)} ($
-                        {formatKeyAmount(processedData, "extendedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})
-                      </>
+                      processedData?.extendedGmxTrackerRewards === undefined ||
+                      processedData?.extendedGmxTrackerRewardsUsd === undefined
+                        ? "..."
+                        : formatBalanceAmountWithUsd(
+                            processedData.extendedGmxTrackerRewards,
+                            processedData.extendedGmxTrackerRewardsUsd,
+                            18,
+                            undefined,
+                            true
+                          )
                     }
                   />
                   <StatsTooltipRow
@@ -196,10 +207,16 @@ export function TotalRewardsCard({
                     }
                     showDollar={false}
                     value={
-                      <>
-                        {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} ($
-                        {formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)})
-                      </>
+                      processedData?.totalVesterRewards === undefined ||
+                      processedData?.totalVesterRewardsUsd === undefined
+                        ? "..."
+                        : formatBalanceAmountWithUsd(
+                            processedData.totalVesterRewards,
+                            processedData.totalVesterRewardsUsd,
+                            18,
+                            undefined,
+                            true
+                          )
                     }
                   />
                 </>
@@ -211,8 +228,15 @@ export function TotalRewardsCard({
               <Trans>Escrowed GMX</Trans>
             </div>
             <div>
-              {formatKeyAmount(processedData, "totalEsGmxRewards", 18, 4, true)} ($
-              {formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
+              {processedData?.totalEsGmxRewards === undefined || processedData?.totalEsGmxRewardsUsd === undefined
+                ? "..."
+                : formatBalanceAmountWithUsd(
+                    processedData.totalEsGmxRewards,
+                    processedData.totalEsGmxRewardsUsd,
+                    18,
+                    undefined,
+                    true
+                  )}
             </div>
           </div>
           {isAnyNativeTokenRewards ? (

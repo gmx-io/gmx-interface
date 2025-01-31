@@ -20,7 +20,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 
 type Props = {
-  onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
+  onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
   onClosePositionClick: (key: string) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
   onCancelOrder: (key: string) => void;
@@ -177,7 +177,7 @@ const PositionItemWrapper = memo(
     onEditCollateralClick: (positionKey: string) => void;
     onClosePositionClick: (positionKey: string) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
-    onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined) => void;
+    onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
     onShareClick: (positionKey: string) => void;
     openSettings: () => void;
@@ -195,7 +195,7 @@ const PositionItemWrapper = memo(
     );
 
     const handleSelectPositionClick = useCallback(
-      (tradeMode?: TradeMode) => onSelectPositionClick(position.key, tradeMode),
+      (tradeMode?: TradeMode, showCurtain?: boolean) => onSelectPositionClick(position.key, tradeMode, showCurtain),
       [onSelectPositionClick, position.key]
     );
     const handleShareClick = useCallback(() => onShareClick(position.key), [onShareClick, position.key]);

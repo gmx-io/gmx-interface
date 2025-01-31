@@ -831,6 +831,10 @@ button.App-button {
   background: #333957;
   color: var(--color-white);
   border-radius: 0.6rem;
+
+  .link-underline {
+    color: var(--color-white) !important;
+  }
 }
 
 .Toastify__toast--success {
@@ -838,6 +842,10 @@ button.App-button {
   color: var(--color-white);
   box-shadow: 0px 0.3rem 0.6rem #0000005c;
   border-radius: 0.4rem;
+
+  .link-underline {
+    color: var(--color-white) !important;
+  }
 }
 
 .Toastify__toast--default {

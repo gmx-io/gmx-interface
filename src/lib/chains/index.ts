@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { DEFAULT_CHAIN_ID, isSupportedChain } from "config/chains";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { isDevelopment } from "config/env";
 
 /**
  * This returns default chainId if chainId is not supported or not found
@@ -16,8 +17,9 @@ export function useChainId() {
 
   const chainIdFromLocalStorage = parseInt(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || "");
 
-  const currentChainIdIsSupported = unsanitizedChainId && isSupportedChain(unsanitizedChainId);
-  const localStorageChainIdIsSupported = chainIdFromLocalStorage && isSupportedChain(chainIdFromLocalStorage);
+  const currentChainIdIsSupported = unsanitizedChainId && isSupportedChain(unsanitizedChainId, isDevelopment());
+  const localStorageChainIdIsSupported =
+    chainIdFromLocalStorage && isSupportedChain(chainIdFromLocalStorage, isDevelopment());
 
   const mustChangeChainId = !currentChainIdIsSupported || !unsanitizedChainId;
 
@@ -49,7 +51,7 @@ export function useChainId() {
     const unsubscribe = watchAccount(getRainbowKitConfig(), {
       onChange: (account) => {
         if (!account.chainId) return;
-        if (!isSupportedChain(account.chainId)) return;
+        if (!isSupportedChain(account.chainId, isDevelopment())) return;
 
         setDisplayedChainId(account.chainId);
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, account.chainId.toString());

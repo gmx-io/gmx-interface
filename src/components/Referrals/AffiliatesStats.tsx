@@ -7,7 +7,6 @@ import { useCopyToClipboard } from "react-use";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
@@ -15,8 +14,9 @@ import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referral
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
-import { formatTokenAmount } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import {
   getReferralCodeTradeUrl,
   getSharePercentage,
@@ -531,12 +531,7 @@ function AffiliatesStats({
                                         key={tokenAddress}
                                         showDollar={false}
                                         label={token.symbol}
-                                        value={formatTokenAmount(
-                                          amountsByTokens[tokenAddress],
-                                          token.decimals,
-                                          undefined,
-                                          { displayDecimals: 6 }
-                                        )}
+                                        value={formatBalanceAmount(amountsByTokens[tokenAddress], token.decimals)}
                                       />
                                     </>
                                   );

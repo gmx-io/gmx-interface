@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { sub } from "date-fns";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS, GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
@@ -431,7 +431,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         const marketBalance = market.gmBalance;
         const price = marketTokensData?.[market.address].prices.minPrice ?? 0n;
         const decimals = marketTokensData?.[market.address].decimals ?? 0;
-        const amountUsd = convertToUsd(marketBalance, decimals, price) ?? 0n;
+        const amountUsd = apy !== 0n ? convertToUsd(marketBalance, decimals, price) ?? 0n : 0n;
 
         return {
           apy,
@@ -482,5 +482,8 @@ function calcAprByBorrowingFee(marketInfo: MarketInfo, poolValue: bigint) {
 function calculateAPY(apr: bigint) {
   const aprNumber = bigintToNumber(apr, 30);
   const apyNumber = Math.exp(aprNumber) - 1;
+  if (apyNumber === Infinity) {
+    return 0n;
+  }
   return numberToBigint(apyNumber, 30);
 }

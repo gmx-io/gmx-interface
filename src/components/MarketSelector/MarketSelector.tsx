@@ -3,10 +3,9 @@ import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses } from "sdk/configs/tokens";
+import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
-import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords } from "domain/tokens/utils";
@@ -14,13 +13,14 @@ import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { getCategoryTokenAddresses } from "sdk/configs/tokens";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
-import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 import "./MarketSelector.scss";
@@ -160,18 +160,24 @@ export function MarketSelector({
     }
   };
 
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsModalVisible(true);
+  }, []);
+
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
-      <Modal
+      <SlideModal
         qa="market-selector-modal"
+        className="TokenSelector-modal"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
         footerContent={footerContent}
         headerContent={
-          <div className="mt-16">
+          <>
             <SearchInput
-              className="mb-8 *:!text-body-medium"
+              className="mb-8 *:!text-body-medium min-[700px]:mt-16"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Market`}
@@ -180,7 +186,7 @@ export function MarketSelector({
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="market-selector" />
             </ButtonRowScrollFadeContainer>
-          </div>
+          </>
         }
       >
         <div className="TokenSelector-tokens">
@@ -202,12 +208,12 @@ export function MarketSelector({
             <Trans>No markets matched.</Trans>
           </div>
         )}
-      </Modal>
+      </SlideModal>
       <div
         className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
           "text-h2 -mr-5": size === "l",
         })}
-        onClick={() => setIsModalVisible(true)}
+        onClick={handleClick}
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}

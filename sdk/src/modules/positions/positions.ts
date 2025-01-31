@@ -15,7 +15,12 @@ import {
 import { ContractMarketPrices, MarketsData, MarketsInfoData } from "types/markets";
 import { Position, PositionsData, PositionsInfoData } from "types/positions";
 import { TokensData } from "types/tokens";
-import { getContractMarketPrices, getMaxAllowedLeverageByMinCollateralFactor } from "utils/markets";
+import {
+  getContractMarketPrices,
+  getMarketIndexName,
+  getMarketPoolName,
+  getMaxAllowedLeverageByMinCollateralFactor,
+} from "utils/markets";
 import { getByKey } from "utils/objects";
 import {
   getEntryPrice,
@@ -157,12 +162,12 @@ export class Positions extends Module {
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
-        const { position, fees } = positionInfo;
+        const { position, fees, basePnlUsd } = positionInfo;
         const { addresses, numbers, flags, data } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
-        if (BigInt(numbers.increasedAtTime) == 0n) {
+        if (numbers.increasedAtTime == 0n) {
           return positionsMap;
         }
 
@@ -185,6 +190,10 @@ export class Positions extends Module {
           fundingFeeAmount: fees.funding.fundingFeeAmount,
           claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
           claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
+          pnl: basePnlUsd,
+          positionFeeAmount: fees.positionFeeAmount,
+          traderDiscountAmount: fees.referral.traderDiscountAmount,
+          uiFeeAmount: fees.ui.uiFeeAmount,
           data,
         };
 
@@ -495,10 +504,13 @@ export class Positions extends Module {
 
       const marketInfo = getByKey(marketsInfoData, position.marketAddress);
       const indexToken = marketInfo?.indexToken;
+      const longToken = getByKey(tokensData, marketInfo?.longTokenAddress);
+      const shortToken = getByKey(tokensData, marketInfo?.shortTokenAddress);
+
       const pnlToken = position.isLong ? marketInfo?.longToken : marketInfo?.shortToken;
       const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
 
-      if (!marketInfo || !indexToken || !pnlToken || !collateralToken) {
+      if (!marketInfo || !indexToken || !pnlToken || !collateralToken || !longToken || !shortToken) {
         return acc;
       }
 
@@ -621,12 +633,20 @@ export class Positions extends Module {
         isLong: position.isLong,
       });
 
+      const indexName = getMarketIndexName({ indexToken, isSpotOnly: false });
+      const poolName = getMarketPoolName({ longToken, shortToken });
+
       acc[positionKey] = {
         ...position,
+        market: marketInfo,
         marketInfo,
+        indexName,
+        poolName,
         indexToken,
         collateralToken,
         pnlToken,
+        longToken,
+        shortToken,
         markPrice,
         entryPrice,
         liquidationPrice,

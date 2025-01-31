@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { Hash } from "viem";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { ToastContainer, cssTransition } from "react-toastify";
@@ -10,7 +11,7 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
-import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
+import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
 import useRouteQuery from "lib/useRouteQuery";
@@ -31,6 +32,7 @@ import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigure
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -88,17 +90,17 @@ export function AppRoutes() {
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
 
   const [selectedToPage, setSelectedToPage] = useState("");
-  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 
   const openSettings = useCallback(() => {
     setIsSettingsVisible(true);
-  }, []);
+  }, [setIsSettingsVisible]);
 
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
   let appRedirectUrl = baseUrl + selectedToPage;
   if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.ZeroHash) {
-    const decodedRefCode = decodeReferralCode(localStorageCode);
+    const decodedRefCode = decodeReferralCode(localStorageCode as Hash);
     if (decodedRefCode) {
       appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;
     }

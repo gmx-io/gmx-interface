@@ -45,14 +45,6 @@ export type MarketInfo = Market &
     poolValueMax: bigint;
     poolValueMin: bigint;
 
-    pnlLongMin: bigint;
-    pnlLongMax: bigint;
-    pnlShortMin: bigint;
-    pnlShortMax: bigint;
-
-    netPnlMin: bigint;
-    netPnlMax: bigint;
-
     reserveFactorLong: bigint;
     reserveFactorShort: bigint;
 
@@ -130,22 +122,6 @@ export type MarketInfo = Market &
     virtualShortTokenId: string;
   };
 
-export type FastMarketInfo = Omit<MarketInfo, keyof MarketPoolTokens | keyof Market> & {
-  marketTokenAddress: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-  indexTokenAddress: string;
-};
-
-export type ClaimableFunding = {
-  claimableFundingAmountLong: bigint;
-  claimableFundingAmountShort: bigint;
-};
-
-export type ClaimableFundingData = {
-  [marketAddress: string]: ClaimableFunding;
-};
-
 export type MarketsData = {
   [marketTokenAddress: string]: Market;
 };
@@ -186,4 +162,13 @@ export type ContractMarketPrices = {
     min: bigint;
     max: bigint;
   };
+};
+
+export type ClaimableFunding = {
+  claimableFundingAmountLong: bigint;
+  claimableFundingAmountShort: bigint;
+};
+
+export type ClaimableFundingData = {
+  [marketAddress: string]: ClaimableFunding;
 };

@@ -3,8 +3,20 @@ import { MarketInfo, MarketsInfoData } from "types/markets";
 import { getByKey } from "./objects";
 import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "./markets";
 import { SwapPathStats, SwapStats } from "types/trade";
-import { convertToTokenAmount, convertToUsd } from "./tokens";
+import { convertToTokenAmount, convertToUsd, getMidPrice } from "./tokens";
 import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "./fees";
+
+export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+  const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+
+  const capacityAmount = maxPoolAmount - poolAmount;
+  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
+
+  const capacityUsd = convertToUsd(capacityAmount, token.decimals, getMidPrice(token.prices))!;
+
+  return capacityUsd;
+}
 
 export function getSwapPathOutputAddresses(p: {
   marketsInfoData: MarketsInfoData;
@@ -272,6 +284,10 @@ export function getSwapStats(p: {
 
   amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
+  const capacityUsd = getSwapCapacityUsd(marketInfo, getTokenPoolType(marketInfo, tokenInAddress) === "long");
+
+  const isOutCapacity = capacityUsd < usdInAfterFees;
+
   const liquidity = getAvailableUsdLiquidityForCollateral(
     marketInfo,
     getTokenPoolType(marketInfo, tokenOutAddress) === "long"
@@ -294,5 +310,6 @@ export function getSwapStats(p: {
     amountOut,
     usdOut,
     isOutLiquidity,
+    isOutCapacity,
   };
 }

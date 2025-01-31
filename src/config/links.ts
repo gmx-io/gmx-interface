@@ -1,6 +1,8 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { TOKENS_BY_SYMBOL_MAP } from "sdk/configs/tokens";
 
+export const PRODUCTION_HOST = "https://app.gmx.io";
+
 const oneInchTokensMap = {
   [ARBITRUM]: {
     BTC: "WBTC",

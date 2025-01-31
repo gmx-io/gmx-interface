@@ -1,12 +1,12 @@
 import values from "lodash/values";
 import { useMemo } from "react";
 
-import type { SortDirection } from "components/Sorter/Sorter";
+import type { SortDirection } from "context/SorterContext/types";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import type { TokenFavoritesTabOption } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, MarketsInfoData, getMarketPoolName } from "domain/synthetics/markets";
 import type { TokensData } from "domain/synthetics/tokens";
-import type { TokenFavoritesTabOption } from "domain/synthetics/tokens/useTokensFavorites";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";

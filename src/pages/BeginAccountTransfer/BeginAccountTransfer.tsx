@@ -23,7 +23,7 @@ import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "d
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 import { zeroAddress } from "viem";
 import "./BeginAccountTransfer.css";
@@ -43,7 +43,7 @@ function ValidationRow({ isValid, children }) {
 export default function BeginAccountTransfer() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const [receiver, setReceiver] = useState("");
   const [isTransferring, setIsTransferring] = useState(false);
   const [isApproving, setIsApproving] = useState(false);

@@ -8,7 +8,7 @@ import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
@@ -23,6 +23,7 @@ import type { ChainStats } from "./useDashboardChainStatsMulticall";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
+import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
 
 export function OverviewCard({
   statsArbitrum,
@@ -61,6 +62,9 @@ export function OverviewCard({
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
+
+  const arbitrumPositionsCollateralUsd = usePositionsTotalCollateral(ARBITRUM);
+  const avalanchePositionsCollateralUsd = usePositionsTotalCollateral(AVALANCHE);
 
   // #region TVL and GLP Pool
   const glpTvlArbitrum = statsArbitrum?.glp.aum;
@@ -105,14 +109,17 @@ export function OverviewCard({
     stakedGmxArbitrum !== undefined &&
     stakedGmxAvalanche !== undefined &&
     glpMarketCapArbitrum !== undefined &&
-    glpMarketCapAvalanche !== undefined
+    glpMarketCapAvalanche !== undefined &&
+    arbitrumPositionsCollateralUsd !== undefined &&
+    avalanchePositionsCollateralUsd !== undefined
   ) {
     const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
     const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
 
     // GMX Staked + GLP Pools + GM Pools
-    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum;
-    displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche;
+    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsCollateralUsd;
+    displayTvlAvalanche =
+      stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsCollateralUsd;
     displayTvl = displayTvlArbitrum + displayTvlAvalanche;
   }
 
@@ -285,6 +292,7 @@ export function OverviewCard({
                     <li className="p-2">GMX Staked</li>
                     <li className="p-2">GLP Pool</li>
                     <li className="p-2">GM Pools</li>
+                    <li className="p-2">Positions' Collateral</li>
                   </ul>
                   <StatsTooltipRow label="Arbitrum" value={formatAmount(displayTvlArbitrum, USD_DECIMALS, 0, true)} />
                   <StatsTooltipRow label="Avalanche" value={formatAmount(displayTvlAvalanche, USD_DECIMALS, 0, true)} />

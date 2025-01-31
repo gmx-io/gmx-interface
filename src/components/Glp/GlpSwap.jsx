@@ -14,6 +14,7 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
+import { formatBalanceAmount, formatBalanceAmountWithUsd } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
@@ -43,6 +44,7 @@ import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "conf
 import { getIcon } from "config/icons";
 import { getIncentivesV2Url } from "config/links";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
@@ -50,10 +52,9 @@ import { getFeeItem } from "domain/synthetics/fees";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
-import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import {
   applyFactor,
@@ -67,7 +68,6 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import { usePendingTxns } from "lib/usePendingTxns";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
@@ -161,7 +161,7 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
   const { savedAllowedSlippage, shouldDisableValidationForTesting } = useSettings();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const history = useHistory();
   const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -851,7 +851,6 @@ export default function GlpSwap(props) {
   const selectToken = (token) => {
     setAnchorOnSwapAmount(false);
     setSwapTokenAddress(token.address);
-    helperToast.success(t`${token.symbol} selected in order form`);
   };
 
   let feePercentageText = formatAmount(feeBasisPoints, 2, 2, true, "-");
@@ -978,8 +977,9 @@ export default function GlpSwap(props) {
                 <Trans>Wallet</Trans>
               </div>
               <div className="value">
-                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
-                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+                {glpBalance === undefined || glpBalanceUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
               </div>
             </div>
             <div className="App-card-row">
@@ -987,8 +987,9 @@ export default function GlpSwap(props) {
                 <Trans>Staked</Trans>
               </div>
               <div className="value">
-                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
-                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+                {glpBalance === undefined || glpBalanceUsd === undefined
+                  ? "..."
+                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
               </div>
             </div>
           </div>
@@ -1073,7 +1074,7 @@ export default function GlpSwap(props) {
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Balance`}
-                topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                topRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals)}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
                 showMaxButton={
@@ -1102,7 +1103,7 @@ export default function GlpSwap(props) {
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Available`}
-                topRightValue={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
+                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(maxSellAmount, GLP_DECIMALS)}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
                 showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
@@ -1135,7 +1136,7 @@ export default function GlpSwap(props) {
                 topLeftLabel={receiveLabel}
                 topRightLabel={t`Balance`}
                 topLeftValue={receiveBalance}
-                topRightValue={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
+                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(glpBalance, GLP_DECIMALS)}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
                 defaultTokenName="GLP"
@@ -1464,8 +1465,9 @@ export default function GlpSwap(props) {
                     )}
                   </td>
                   <td>
-                    {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} ($
-                    {formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                    {tokenInfo.balance === undefined || balanceUsd === undefined
+                      ? "..."
+                      : formatBalanceAmountWithUsd(tokenInfo.balance, balanceUsd, tokenInfo.decimals, tokenInfo.symbol)}
                   </td>
                   <td>{renderFees()}</td>
                   <td>

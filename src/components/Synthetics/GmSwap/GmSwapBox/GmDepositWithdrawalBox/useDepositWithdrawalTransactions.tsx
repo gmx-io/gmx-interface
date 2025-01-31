@@ -9,7 +9,7 @@ import { createDepositTxn, createWithdrawalTxn, GlvInfo, MarketInfo } from "doma
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 
 import { t } from "@lingui/macro";
@@ -77,7 +77,7 @@ export const useDepositWithdrawalTransactions = ({
   const chainId = useSelector(selectChainId);
   const { signer, account } = useWallet();
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const onCreateDeposit = useCallback(
@@ -152,6 +152,7 @@ export const useDepositWithdrawalTransactions = ({
           marketTokenAmount: marketTokenAmount ?? 0n,
           allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           skipSimulation: shouldDisableValidation,
           tokensData,
           blockTimestampData,
@@ -175,6 +176,7 @@ export const useDepositWithdrawalTransactions = ({
         marketTokenAddress: marketToken.address,
         minMarketTokens: marketTokenAmount,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
         tokensData,
@@ -276,6 +278,7 @@ export const useDepositWithdrawalTransactions = ({
           minLongTokenAmount: longTokenAmount,
           minShortTokenAmount: shortTokenAmount,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           skipSimulation: shouldDisableValidation,
           tokensData,
@@ -300,6 +303,7 @@ export const useDepositWithdrawalTransactions = ({
         minShortTokenAmount: shortTokenAmount,
         marketTokenAddress: marketToken.address,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         tokensData,
         skipSimulation: shouldDisableValidation,

@@ -13,7 +13,6 @@ import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import NetValueTooltip from "./NetValueTooltip";
-import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -119,8 +118,6 @@ export default function PositionsList(props) {
 
   const onPositionClick = (position) => {
     if (hideActions) return;
-    const longOrShortText = position.isLong ? t`Long` : t`Short`;
-    helperToast.success(t`${longOrShortText} ${position.indexToken.symbol} market selected`);
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
   };
   const positivePercentage = positionToShare?.hasProfitAfterFees;

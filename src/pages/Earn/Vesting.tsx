@@ -5,13 +5,13 @@ import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 import { getIcons } from "config/icons";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatKeyAmount } from "lib/numbers";
-import { usePendingTxns } from "lib/usePendingTxns";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -32,7 +32,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   const { openConnectModal } = useConnectModal();
   const [isAffiliateVesterWithdrawModalVisible, setIsAffiliateVesterWithdrawModalVisible] = useState(false);
   const vestingData = useVestingData(account);
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
 
   const [isVesterWithdrawModalVisible, setIsVesterWithdrawModalVisible] = useState(false);
   const [vesterWithdrawTitle, setVesterWithdrawTitle] = useState("");
@@ -317,18 +317,15 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                         true
                       )}`}
                       position="bottom-end"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            <Trans>
-                              {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
-                              vesting.
-                            </Trans>
-                          </div>
-                        );
-                      }}
+                      content={
+                        <div>
+                          <Trans>
+                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
+                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
+                            deposited for vesting.
+                          </Trans>
+                        </div>
+                      }
                     />
                   </div>
                 </div>

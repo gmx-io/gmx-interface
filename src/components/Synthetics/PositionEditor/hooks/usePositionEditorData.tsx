@@ -11,7 +11,7 @@ import { useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { Operation } from "../types";
 
 import { Options, usePositionEditorFees } from "./usePositionEditorFees";

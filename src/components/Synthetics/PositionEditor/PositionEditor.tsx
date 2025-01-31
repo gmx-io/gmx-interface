@@ -21,7 +21,7 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useHasOutdatedUi } from "domain/legacy";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import {
   DecreasePositionSwapType,
   OrderType,
@@ -122,7 +122,7 @@ export function PositionEditor(p: Props) {
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -405,6 +405,7 @@ export function PositionEditor(p: Props) {
           orderType: OrderType.MarketIncrease,
           isLong: position.isLong,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           allowedSlippage,
           referralCode: userReferralInfo?.referralCodeForTxn,
           indexToken: position.indexToken,
@@ -442,6 +443,7 @@ export function PositionEditor(p: Props) {
           isLong: position.isLong,
           minOutputUsd: receiveUsd,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           allowedSlippage,
           referralCode: userReferralInfo?.referralCodeForTxn,
           indexToken: position.indexToken,
@@ -566,7 +568,8 @@ export function PositionEditor(p: Props) {
               option={operation}
               options={Object.values(Operation)}
               optionLabels={localizedOperationLabels}
-              className="PositionEditor-tabs SwapBox-option-tabs"
+              className="PositionEditor-tabs"
+              size="l"
               qa="operation-tabs"
             />
             <BuyInputSection

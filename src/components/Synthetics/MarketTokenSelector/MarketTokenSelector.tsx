@@ -7,7 +7,10 @@ import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
+import {
+  TokenFavoritesTabOption,
+  useTokensFavorites,
+} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,
@@ -23,20 +26,21 @@ import {
 } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
-import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import type { SortDirection } from "context/SorterContext/types";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
@@ -157,7 +161,7 @@ function MarketTokenSelectorInternal(props: Props) {
     glvTokensApyData,
   } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-token-selector");
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 
@@ -218,7 +222,7 @@ function MarketTokenSelectorInternal(props: Props) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col gap-8">
+        <div className="flex flex-col gap-8">
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}

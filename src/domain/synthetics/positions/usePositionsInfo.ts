@@ -15,13 +15,8 @@ import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsData, PositionsInfoData } from "./types";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
-import {
-  getEntryPrice,
-  getLeverage,
-  getLiquidationPrice,
-  getPositionNetValue,
-  getPositionPendingFeesUsd,
-} from "./utils";
+import { getLeverage, getLiquidationPrice, getPositionNetValue, getPositionPendingFeesUsd } from "./utils";
+import { getEntryPrice } from "sdk/utils/positions";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 export type PositionsInfoResult = {

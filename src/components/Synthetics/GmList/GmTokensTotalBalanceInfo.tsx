@@ -10,7 +10,7 @@ import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 
-import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
@@ -30,18 +30,18 @@ export const GmTokensBalanceInfo = ({
 }) => {
   const content = (
     <TokenValuesInfoCell
-      token={formatTokenAmount(token.balance, token.decimals, token.symbol, {
-        useCommas: true,
-        displayDecimals: 2,
-        fallbackToZero: true,
-      })}
-      usd={formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-        fallbackToZero: true,
-      })}
+      token={formatBalanceAmount(token.balance ?? 0n, token.decimals, token.symbol)}
+      usd={
+        token.balance !== undefined && token.balance !== 0n
+          ? formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+              fallbackToZero: true,
+            })
+          : undefined
+      }
     />
   );
 
-  const renderTooltipContent = useCallback(() => {
+  const tooltipContent = useMemo(() => {
     if (earnedTotal === undefined && earnedRecently === undefined) return null;
     return (
       <>
@@ -75,9 +75,9 @@ export const GmTokensBalanceInfo = ({
 
   return (
     <TooltipWithPortal
-      renderContent={renderTooltipContent}
+      content={tooltipContent}
       handle={content}
-      handleClassName="!block"
+      handleClassName="!inline-block"
       position="bottom-end"
     />
   );

@@ -22,7 +22,6 @@ import {
 } from "domain/tradingview/utils";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
-import { prepareErrorMetricData } from "lib/metrics/errorReporting";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { sleep } from "lib/sleep";
 import {
@@ -31,6 +30,7 @@ import {
   getTokenVisualMultiplier,
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
+import { parseError } from "lib/parseError";
 
 const RESOLUTION_TO_SECONDS = {
   1: 60,
@@ -180,17 +180,19 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       }
     }
 
-    onResult(barsToReturn, { noData: offset + countBack >= 10_000 });
+    onResult(barsToReturn, { noData: offset + countBack >= 10_000 || barsToReturn.length < countBack });
 
-    metrics.pushEvent<LoadingSuccessEvent>({
-      event: "candlesDisplay.success",
-      isError: false,
-      time: metrics.getTime("candlesDisplay", true),
-      data: {
-        requestId: metricsRequestId!,
-        isFirstTimeLoad: isFirstDraw,
-      },
-    });
+    if (metricsIsFirstDrawTime) {
+      metrics.pushEvent<LoadingSuccessEvent>({
+        event: "candlesDisplay.success",
+        isError: false,
+        time: metrics.getTime("candlesDisplay", true),
+        data: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: isFirstDraw,
+        },
+      });
+    }
 
     this.dispatchEvent(
       new CustomEvent("candlesDisplay.success", {
@@ -338,15 +340,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     metricsRequestId = metricsRequestId ?? getRequestId();
 
-    metrics.pushEvent<LoadingStartEvent>({
-      event: "candlesLoad.started",
-      isError: false,
-      time: metrics.getTime("candlesLoad", true),
-      data: {
-        requestId: metricsRequestId,
-        isFirstTimeLoad: isPrefetch,
-      },
-    });
+    if (isPrefetch) {
+      metrics.pushEvent<LoadingStartEvent>({
+        event: "candlesLoad.started",
+        isError: false,
+        time: metrics.getTime("candlesLoad", true),
+        data: {
+          requestId: metricsRequestId,
+          isFirstTimeLoad: isPrefetch,
+        },
+      });
+    }
 
     metrics.startTimer("candlesLoad");
 
@@ -400,15 +404,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     if (success) {
-      metrics.pushEvent<LoadingSuccessEvent>({
-        event: "candlesLoad.success",
-        isError: false,
-        time: metrics.getTime("candlesLoad", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: isPrefetch,
-        },
-      });
+      if (isPrefetch) {
+        metrics.pushEvent<LoadingSuccessEvent>({
+          event: "candlesLoad.success",
+          isError: false,
+          time: metrics.getTime("candlesLoad", true),
+          data: {
+            requestId: metricsRequestId!,
+            isFirstTimeLoad: isPrefetch,
+          },
+        });
+      }
     }
 
     return result;
@@ -432,7 +438,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 }
 
 function onCandlesLoadFailed(ex: any, isPrefetch: boolean) {
-  const metricData = prepareErrorMetricData(ex);
+  const metricData = parseError(ex);
 
   metrics.pushEvent<LoadingFailedEvent>({
     event: "candlesLoad.failed",

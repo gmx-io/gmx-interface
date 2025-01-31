@@ -425,111 +425,111 @@ describe("TradeHistoryRow helpers", () => {
   it("formatSwapMessage", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": ">  3,327.54 USDC / WETH",
-  "action": "Request Market Swap",
-  "executionPrice": "...",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "market": "...",
-  "price": ">  3,327.54 USDC / WETH",
-  "priceComment": [
-    "Acceptable price for the order.",
-  ],
-  "size": "0.0119 WETH to 39.8800 USDC",
-  "swapFromTokenAmount": "0.0119",
-  "swapFromTokenSymbol": "WETH",
-  "swapToTokenAmount": "39.8800",
-  "swapToTokenSymbol": "USDC",
-  "timestamp": "02 Oct 2023, 18:35",
-  "timestampISO": "2023-10-02T18:35:16+04:00",
-}
-`);
+      {
+        "acceptablePrice": ">  3,327.54 USDC / WETH",
+        "action": "Request Market Swap",
+        "executionPrice": "...",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "market": "...",
+        "price": ">  3,327.54 USDC / WETH",
+        "priceComment": [
+          "Acceptable price for the order.",
+        ],
+        "size": "0.011984 WETH to 39.8800 USDC",
+        "swapFromTokenAmount": "0.011984",
+        "swapFromTokenSymbol": "WETH",
+        "swapToTokenAmount": "39.8800",
+        "swapToTokenSymbol": "USDC",
+        "timestamp": "02 Oct 2023, 18:35",
+        "timestampISO": "2023-10-02T18:35:16+04:00",
+      }
+    `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  968.043 USDC / ETH",
-  "action": "Execute Market Swap",
-  "executionPrice": "965.184 USDC / ETH",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "market": "...",
-  "price": "965.184 USDC / ETH",
-  "priceComment": [
-    "Execution price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  968.043 USDC / ETH",
-    },
-  ],
-  "size": "1,080.6325 USDC to 1.1196 ETH",
-  "swapFromTokenAmount": "1,080.6325",
-  "swapFromTokenSymbol": "USDC",
-  "swapToTokenAmount": "1.1196",
-  "swapToTokenSymbol": "ETH",
-  "timestamp": "02 Oct 2023, 06:08",
-  "timestampISO": "2023-10-02T06:08:40+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  968.043 USDC / ETH",
+        "action": "Execute Market Swap",
+        "executionPrice": "965.184 USDC / ETH",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "market": "...",
+        "price": "965.184 USDC / ETH",
+        "priceComment": [
+          "Execution price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  968.043 USDC / ETH",
+          },
+        ],
+        "size": "1,080.6325 USDC to 1.1196 ETH",
+        "swapFromTokenAmount": "1,080.6325",
+        "swapFromTokenSymbol": "USDC",
+        "swapToTokenAmount": "1.1196",
+        "swapToTokenSymbol": "ETH",
+        "timestamp": "02 Oct 2023, 06:08",
+        "timestampISO": "2023-10-02T06:08:40+04:00",
+      }
+    `);
     // LIMIT SWAPS
     expect(formatSwapMessage(executeOrderSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  2.2613 WETH / BTC",
-  "action": "Execute Limit Swap",
-  "executionPrice": "0.81109 WETH / BTC",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "market": "...",
-  "price": "0.81109 WETH / BTC",
-  "priceComment": [
-    "Execution price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  2.2613 WETH / BTC",
-    },
-  ],
-  "size": "0.3000 WETH to 0.3698 BTC",
-  "swapFromTokenAmount": "0.3000",
-  "swapFromTokenSymbol": "WETH",
-  "swapToTokenAmount": "0.3698",
-  "swapToTokenSymbol": "BTC",
-  "timestamp": "29 Sep 2023, 10:46",
-  "timestampISO": "2023-09-29T10:46:39+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  2.2613 WETH / BTC",
+        "action": "Execute Limit Swap",
+        "executionPrice": "0.81109 WETH / BTC",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "market": "...",
+        "price": "0.81109 WETH / BTC",
+        "priceComment": [
+          "Execution price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  2.2613 WETH / BTC",
+          },
+        ],
+        "size": "0.30000 WETH to 0.36987 BTC",
+        "swapFromTokenAmount": "0.30000",
+        "swapFromTokenSymbol": "WETH",
+        "swapToTokenAmount": "0.36987",
+        "swapToTokenSymbol": "BTC",
+        "timestamp": "29 Sep 2023, 10:46",
+        "timestampISO": "2023-09-29T10:46:39+04:00",
+      }
+    `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  2,054.58 USDC / ETH",
-  "action": "Failed Limit Swap",
-  "actionComment": [
-    {
-      "state": "error",
-      "text": "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.",
-    },
-  ],
-  "executionPrice": "...",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "isActionError": true,
-  "market": "...",
-  "price": "2,056.13 USDC / ETH",
-  "priceComment": [
-    "Execution price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  2,054.58 USDC / ETH",
-    },
-  ],
-  "size": "1.0000 USDC to 0.0004 ETH",
-  "swapFromTokenAmount": "1.0000",
-  "swapFromTokenSymbol": "USDC",
-  "swapToTokenAmount": "0.0004",
-  "swapToTokenSymbol": "ETH",
-  "timestamp": "14 Feb 2024, 13:33",
-  "timestampISO": "2024-02-14T13:33:19+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  2,054.58 USDC / ETH",
+        "action": "Failed Limit Swap",
+        "actionComment": [
+          {
+            "state": "error",
+            "text": "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.",
+          },
+        ],
+        "executionPrice": "...",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "isActionError": true,
+        "market": "...",
+        "price": "2,056.13 USDC / ETH",
+        "priceComment": [
+          "Execution price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  2,054.58 USDC / ETH",
+          },
+        ],
+        "size": "1.0000 USDC to 0.00048634 ETH",
+        "swapFromTokenAmount": "1.0000",
+        "swapFromTokenSymbol": "USDC",
+        "swapToTokenAmount": "0.00048634",
+        "swapToTokenSymbol": "ETH",
+        "timestamp": "14 Feb 2024, 13:33",
+        "timestampISO": "2024-02-14T13:33:19+04:00",
+      }
+    `);
   });
 });

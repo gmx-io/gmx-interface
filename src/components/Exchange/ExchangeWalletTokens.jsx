@@ -2,7 +2,7 @@ import React from "react";
 
 import "./ExchangeWalletTokens.css";
 import { expandDecimals, formatAmount } from "lib/numbers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 export default function ExchangeWalletTokens(props) {
   const { tokens, infoTokens, onSelectToken } = props;

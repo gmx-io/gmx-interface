@@ -2,7 +2,7 @@ import { Token, TokenData } from "types/tokens";
 import { bigMath } from "./bigmath";
 import { applyFactor, expandDecimals } from "./numbers";
 import { MarketInfo } from "types/markets";
-import { getCappedPoolPnl, getPoolUsdWithoutPnl } from "./markets";
+import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "./markets";
 import { convertToUsd, getIsEquivalentTokens } from "./tokens";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { UserReferralInfo } from "types/referrals";
@@ -27,6 +27,7 @@ export function getEntryPrice(p: { sizeInUsd: bigint; sizeInTokens: bigint; inde
 
   return bigMath.mulDiv(sizeInUsd, expandDecimals(1, indexToken.decimals), sizeInTokens);
 }
+
 export function getPositionPnlUsd(p: {
   marketInfo: MarketInfo;
   sizeInUsd: bigint;
@@ -44,14 +45,14 @@ export function getPositionPnlUsd(p: {
     return totalPnl;
   }
 
-  const poolPnl = isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
+  const poolPnl = getMarketPnl(marketInfo, isLong, true);
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({
     marketInfo,
     poolUsd,
+    poolPnl,
     isLong,
-    maximize: true,
   });
 
   const WEI_PRECISION = expandDecimals(1, 18);

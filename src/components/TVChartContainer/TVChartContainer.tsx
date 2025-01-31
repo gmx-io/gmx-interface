@@ -3,7 +3,7 @@ import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
@@ -243,7 +243,7 @@ export default function TVChartContainer({
   return (
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
-      <div style={style} ref={chartContainerRef} className="TVChartContainer ExchangeChart-bottom-content" />
+      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
     </div>
   );
 }

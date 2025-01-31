@@ -1,6 +1,4 @@
-@use "src/styles/slide-up" as *;
-
-.TokenSelector .Modal .Modal-content {
+.TokenSelector-modal .Modal-content {
   width: 42rem;
   position: absolute;
   max-height: 100vh;
@@ -113,7 +111,7 @@
 }
 
 @media (max-width: 1100px) {
-  .TokenSelector .Modal .Modal-content {
+  .TokenSelector-modal .Modal-content {
     max-height: 80vh;
     min-height: 80vh;
     top: auto;
@@ -123,28 +121,6 @@
 }
 
 @media (max-width: 700px) {
-  .TokenSelector .Modal .Modal-content {
-    bottom: 0;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-
-    width: 100vw;
-
-    border: 1px solid var(--color-gray-700);
-    border-bottom: none;
-
-    @include slide-up;
-  }
-
-  .TokenSelector.right .Modal {
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    left: 3.1rem;
-    top: 0;
-    right: 3.1rem;
-    bottom: 0;
-  }
   .Token-info .token-logo {
     width: 3rem;
     height: 3rem;

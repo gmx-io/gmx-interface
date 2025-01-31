@@ -451,6 +451,27 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // TRUMP/USD [ETH-USDC]
+    "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636": {
+      marketTokenAddress: "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636",
+      indexTokenAddress: "0x30021aFA4767Ad66aA52A06dF8a5AB3acA9371fD",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // MELANIA/USD [WETH-USDC]
+    "0x12fD1A4BdB96219E637180Ff5293409502b2951D": {
+      marketTokenAddress: "0x12fD1A4BdB96219E637180Ff5293409502b2951D",
+      indexTokenAddress: "0xfa4F8E582214eBCe1A08eB2a65e08082053E441F",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // ENA/USD [WETH-USDC]
+    "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C": {
+      marketTokenAddress: "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C",
+      indexTokenAddress: "0xfe1Aac2CD9C5cC77b58EeCfE75981866ed0c8b7a",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

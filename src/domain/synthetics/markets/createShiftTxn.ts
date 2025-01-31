@@ -23,6 +23,7 @@ type Params = {
   toMarketTokenAddress: string;
   minToMarketTokenAmount: bigint;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
@@ -95,6 +96,10 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingShift({
       account: p.account,

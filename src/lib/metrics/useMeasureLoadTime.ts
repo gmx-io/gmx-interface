@@ -1,6 +1,6 @@
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { metrics } from "lib/metrics";
-import { prepareErrorMetricData } from "lib/metrics/errorReporting";
+import { parseError } from "lib/parseError";
 import {
   LoadingFailedEvent,
   LoadingStartEvent,
@@ -102,7 +102,7 @@ export function useMeasureLoadTime({
       if (!skip && error && !measure.done && measure.requestId) {
         clearTimeout(measure.timeoutId);
 
-        const errorData = prepareErrorMetricData(error);
+        const errorData = parseError(error);
 
         metrics.pushEvent<LoadingFailedEvent>({
           event: `${metricType}.failed`,

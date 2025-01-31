@@ -98,9 +98,11 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useHistory } from "react-router-dom";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { isDevelopment } from "config/env";
 
 const SWAP_ICONS = {
   [LONG]: <LongIcon />,
@@ -319,7 +321,7 @@ export default function SwapBox(props) {
   });
   const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
 
-  const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);
@@ -1110,7 +1112,7 @@ export default function SwapBox(props) {
     if (!active) {
       return t`Connect Wallet`;
     }
-    if (!isSupportedChain(chainId)) {
+    if (!isSupportedChain(chainId, isDevelopment())) {
       return t`Incorrect Network`;
     }
     const [error, errorType] = getError();

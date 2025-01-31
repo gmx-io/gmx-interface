@@ -191,13 +191,17 @@ export async function callContract(
     });
   });
 
-  const res = await Promise.any(txnCalls).catch((error) => {
-    if (error.errors && error.errors.length > 1) {
-      // eslint-disable-next-line no-console
-      console.error("All transactions failed", ...error.errors);
-    }
-    throw error.errors ? error.errors[0] : error;
-  });
+  const res = await Promise.any(txnCalls)
+    .catch((error) => {
+      if (error.errors && error.errors.length > 1) {
+        // eslint-disable-next-line no-console
+        console.error("All transactions failed", ...error.errors);
+      }
+      throw error.errors ? error.errors[0] : error;
+    })
+    .catch((error) => {
+      throw error;
+    });
 
   return res;
 }

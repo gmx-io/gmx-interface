@@ -1,5 +1,4 @@
 import { USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { EventLogData } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -7,10 +6,11 @@ import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthe
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
-import { TxError } from "lib/contracts/transactionErrors";
-import { bigintToNumber, formatPercentage, roundToOrder } from "lib/numbers";
+import { ErrorLike } from "lib/parseError";
+import { bigintToNumber, formatPercentage, formatRatePercentage, roundToOrder } from "lib/numbers";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { metrics, OrderErrorContext, SubmittedOrderEvent } from ".";
-import { prepareErrorMetricData } from "./errorReporting";
+import { parseError } from "../parseError";
 import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
@@ -26,7 +26,6 @@ import {
   OrderStage,
   OrderTxnFailedEvent,
   OrderTxnSubmittedEvent,
-  PendingTxnErrorEvent,
   ShiftGmMetricData,
   SwapGLVMetricData,
   SwapGmMetricData,
@@ -144,6 +143,10 @@ export function initIncreaseOrderMetricData({
   isTPSLCreated,
   slCount,
   tpCount,
+  priceImpactDeltaUsd,
+  priceImpactPercentage,
+  netRate1h,
+  interactionId,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -163,6 +166,10 @@ export function initIncreaseOrderMetricData({
   isTPSLCreated: boolean | undefined;
   slCount: number | undefined;
   tpCount: number | undefined;
+  priceImpactDeltaUsd: bigint | undefined;
+  priceImpactPercentage: bigint | undefined;
+  netRate1h: bigint | undefined;
+  interactionId: string | undefined;
 }) {
   return metrics.setCachedMetricData<IncreaseOrderMetricData>({
     metricId: getPositionOrderMetricId({
@@ -202,6 +209,11 @@ export function initIncreaseOrderMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     isFirstOrder,
     isLeverageEnabled,
+    priceImpactDeltaUsd:
+      priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
+    priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
+    netRate1h: parseFloat(formatRatePercentage(netRate1h)),
+    interactionId,
   });
 }
 
@@ -218,6 +230,10 @@ export function initDecreaseOrderMetricData({
   marketInfo,
   isLong,
   place,
+  priceImpactDeltaUsd,
+  priceImpactPercentage,
+  netRate1h,
+  interactionId,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -232,6 +248,10 @@ export function initDecreaseOrderMetricData({
   subaccount: Subaccount | undefined;
   isLong: boolean | undefined;
   place: "tradeBox" | "positionSeller";
+  priceImpactDeltaUsd: bigint | undefined;
+  priceImpactPercentage: bigint | undefined;
+  netRate1h: bigint | undefined;
+  interactionId: string | undefined;
 }) {
   let metricType;
   if (orderType === OrderType.LimitDecrease) {
@@ -279,6 +299,11 @@ export function initDecreaseOrderMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     is1ct: Boolean(subaccount),
     requestId: getRequestId(),
+    priceImpactDeltaUsd:
+      priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
+    priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
+    netRate1h: parseFloat(formatRatePercentage(netRate1h)),
+    interactionId,
   });
 }
 
@@ -597,7 +622,11 @@ export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
   });
 }
 
-export function sendTxnErrorMetric(metricId: OrderMetricId, error: Error | TxError, errorContext: OrderErrorContext) {
+export function sendTxnErrorMetric(
+  metricId: OrderMetricId,
+  error: ErrorLike | undefined,
+  errorContext: OrderErrorContext
+) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
@@ -605,7 +634,7 @@ export function sendTxnErrorMetric(metricId: OrderMetricId, error: Error | TxErr
     return;
   }
 
-  const errorData = prepareErrorMetricData(error);
+  const errorData = parseError(error);
 
   metrics.pushEvent<OrderTxnFailedEvent>({
     event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
@@ -619,31 +648,10 @@ export function sendTxnErrorMetric(metricId: OrderMetricId, error: Error | TxErr
 }
 
 export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {
-  return (error: Error | TxError) => {
+  return (error: ErrorLike) => {
     sendTxnErrorMetric(metricId, error, "sending");
     throw error;
   };
-}
-
-export function sendPendingOrderTxnErrorMetric(metricId: OrderMetricId) {
-  const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId, true);
-  const metricType = (metricData as OrderMetricData)?.metricType || "unknownOrder";
-
-  if (!metricData) {
-    metrics.pushError("Order metric data not found", "sendPendingOrderTxnErrorMetric");
-    return;
-  }
-
-  metrics.pushEvent<PendingTxnErrorEvent>({
-    event: `${metricType}.failed`,
-    isError: true,
-    time: metrics.getTime(metricId, true),
-    data: {
-      ...(metricData || {}),
-      errorContext: "minting",
-      errorMessage: "Pending txn error",
-    },
-  });
 }
 
 export function sendOrderCreatedMetric(metricId: OrderMetricId) {

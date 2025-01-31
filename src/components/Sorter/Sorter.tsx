@@ -1,11 +1,12 @@
 import cx from "classnames";
-import React, { PropsWithChildren, useCallback, useRef, useState } from "react";
+import React, { PropsWithChildren, useCallback, useRef } from "react";
+
+import { useSorterConfig } from "context/SorterContext/SorterContextProvider";
+import { SortDirection, SorterConfig, SorterKey } from "context/SorterContext/types";
 
 import IcSortable from "img/ic_sortable.svg?react";
 import IcSortedAsc from "img/ic_sorted_asc.svg?react";
 import IcSortedDesc from "img/ic_sorted_desc.svg?react";
-
-export type SortDirection = "asc" | "desc" | "unspecified";
 
 const directionIconMap: Record<SortDirection, React.ComponentType> = {
   asc: IcSortedAsc,
@@ -39,32 +40,53 @@ export function Sorter(
 }
 
 export function useSorterHandlers<SortField extends string | "unspecified">(
-  initialOrderBy?: SortField,
-  initialDirection?: SortDirection
+  key: SorterKey,
+  initialConfig?: SorterConfig<SortField>
 ) {
-  const [orderBy, setOrderBy] = useState<SortField | "unspecified">(initialOrderBy ?? "unspecified");
-  const [direction, setDirection] = useState<SortDirection>(initialDirection ?? "unspecified");
-  const onChangeCache = useRef<Partial<Record<SortField, (direction: SortDirection) => void>>>({});
+  const [config, setConfig] = useSorterConfig<SortField | "unspecified">(key, initialConfig);
+  const onChangeCache = useRef<Partial<Record<SortField | "unspecified", (direction: SortDirection) => void>>>({});
 
   const getSorterProps = useCallback(
-    (field: SortField) => {
+    (field: SortField | "unspecified") => {
       let cachedHandler = onChangeCache.current[field];
 
       if (!cachedHandler) {
         cachedHandler = (newDirection: SortDirection) => {
-          setOrderBy(field);
-          setDirection(newDirection);
+          setConfig({
+            orderBy: field,
+            direction: newDirection,
+          });
         };
         onChangeCache.current[field] = cachedHandler;
       }
 
       return {
-        direction: orderBy === field ? direction : "unspecified",
+        direction: config.orderBy === field ? config.direction : "unspecified",
         onChange: cachedHandler!,
       };
     },
-    [direction, orderBy]
+    [config.direction, config.orderBy, setConfig]
   );
 
-  return { getSorterProps, orderBy, direction, setOrderBy, setDirection };
+  const setOrderBy = useCallback(
+    (field: SortField | "unspecified") => {
+      setConfig((prev) => ({
+        ...prev,
+        orderBy: field,
+      }));
+    },
+    [setConfig]
+  );
+
+  const setDirection = useCallback(
+    (direction: SortDirection) => {
+      setConfig((prev) => ({
+        ...prev,
+        direction,
+      }));
+    },
+    [setConfig]
+  );
+
+  return { getSorterProps, orderBy: config.orderBy, direction: config.direction, setOrderBy, setDirection };
 }

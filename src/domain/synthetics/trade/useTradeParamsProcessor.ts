@@ -13,7 +13,7 @@ import isMatch from "lodash/isMatch";
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getMarketPoolName } from "../markets";
-import { TradeMode, TradeSearchParams, TradeType } from "./types";
+import { TradeMode, TradeSearchParams, TradeType } from "sdk/types/trade";
 
 type TradeOptions = {
   fromTokenAddress?: string;

@@ -17,7 +17,8 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import { getReferralsGraphClient } from "lib/subgraph";
 import { UserReferralInfo } from "../types";
-import { decodeReferralCode, encodeReferralCode } from "../utils";
+import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
+import { Hash } from "viem";
 
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
@@ -186,11 +187,11 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
     if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;
       userReferralCode = onChainCode;
-      userReferralCodeString = decodeReferralCode(onChainCode);
+      userReferralCodeString = decodeReferralCode(onChainCode as Hash);
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
       attachedOnChain = false;
       userReferralCode = localStorageCode!;
-      userReferralCodeString = decodeReferralCode(localStorageCode!);
+      userReferralCodeString = decodeReferralCode(localStorageCode! as Hash);
       referralCodeForTxn = localStorageCode!;
     }
 
