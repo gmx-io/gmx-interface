@@ -1,7 +1,10 @@
 import { Trans } from "@lingui/macro";
 import { useMedia } from "react-use";
 
-import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
@@ -35,17 +38,31 @@ const TAB_LABELS = {
 export function Chart() {
   const isMobile = useMedia("(max-width: 700px)");
   const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   return (
     <div className="ExchangeChart tv">
       <TVChartHeader isMobile={isMobile} />
 
-      <div className="flex h-[49.6rem] flex-col overflow-hidden rounded-4 bg-slate-800 text-15">
-        <div className="border-b border-slate-700 px-20 py-10">
-          <Tab type="inline" options={TABS} option={tab} optionLabels={TAB_LABELS} onChange={setTab} />
-        </div>
+      <div className="flex h-[49.6rem] flex-col overflow-hidden rounded-4 bg-slate-800">
+        {isSwap ? (
+          <TVChart />
+        ) : (
+          <>
+            <div className="text-body-medium border-b border-stroke-primary px-20 py-10">
+              <Tab
+                type="inline"
+                className="flex"
+                options={TABS}
+                option={tab}
+                optionLabels={TAB_LABELS}
+                onChange={setTab}
+              />
+            </div>
 
-        {tab === "PRICE" ? <TVChart /> : <DepthChartContainer />}
+            {tab === "PRICE" ? <TVChart /> : <DepthChartContainer />}
+          </>
+        )}
       </div>
     </div>
   );
