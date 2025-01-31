@@ -95,16 +95,13 @@ export default function Modal({
 
   const setContentRef = useCallback(
     (node: HTMLDivElement | null) => {
+      if (isMobile) return;
       if (!node || !keepInitialTopOffset) return;
       const initialTopOffset = node.getBoundingClientRect().top;
-      const initialBottomOffset = window.innerHeight - node.getBoundingClientRect().bottom;
 
       node.style.top = "0px";
       node.style.marginTop = `${initialTopOffset}px`;
       node.style.transform = `translateX(-50%)`;
-      if (isMobile) {
-        node.style.marginBottom = `${initialBottomOffset}px`;
-      }
     },
     [isMobile, keepInitialTopOffset]
   );
@@ -114,7 +111,7 @@ export default function Modal({
       {isVisible && (
         <RemoveScroll>
           <motion.div
-            className={cx("Modal", { "keep-initial-top-offset": keepInitialTopOffset }, className)}
+            className={cx("Modal", { "keep-initial-top-offset": keepInitialTopOffset && !isMobile }, className)}
             ref={modalRef}
             style={modalStyle}
             initial="hidden"
