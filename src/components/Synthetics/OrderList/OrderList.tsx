@@ -160,7 +160,9 @@ export function OrderList({
   return (
     <div ref={ref}>
       {isContainerSmall && orders.length === 0 && (
-        <div className="slate-100 rounded-4 bg-slate-800 p-14">{isLoading ? t`Loading...` : t`No open orders`}</div>
+        <div className="rounded-4 bg-slate-800 p-14 text-slate-100">
+          {isLoading ? t`Loading...` : t`No open orders`}
+        </div>
       )}
 
       {(isContainerSmall || isScreenSmall) && !isLoading && orders.length !== 0 && (

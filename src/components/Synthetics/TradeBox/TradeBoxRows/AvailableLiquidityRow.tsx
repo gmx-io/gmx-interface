@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import {
   selectTradeboxIncreasePositionAmounts,
@@ -40,7 +40,7 @@ export function AvailableLiquidityRow() {
   }
 
   return (
-    <ExchangeInfo.Row label={t`Available Liquidity`}>
+    <SyntheticsInfoRow label={t`Available Liquidity`}>
       <Tooltip
         position="bottom-end"
         handleClassName={isLiquidityRisk ? "negative" : ""}
@@ -51,6 +51,6 @@ export function AvailableLiquidityRow() {
         }
         renderContent={() => tooltipContent}
       />
-    </ExchangeInfo.Row>
+    </SyntheticsInfoRow>
   );
 }

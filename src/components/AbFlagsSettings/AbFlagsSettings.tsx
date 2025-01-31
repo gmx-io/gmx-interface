@@ -1,4 +1,4 @@
-import Checkbox from "components/Checkbox/Checkbox";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { AbFlag, getAbStorage, setAbFlagEnabled } from "config/ab";
 import { useState } from "react";
 
@@ -7,28 +7,32 @@ export function AbFlagSettings() {
   const [abStorage, setAbStorage] = useState({ ...getAbStorage() });
 
   return (
-    <div className="mb-8 mt-16">
-      <div className="cursor-pointer text-14 underline" onClick={() => setIsShown((old) => !old)}>
+    <div>
+      <div className="cursor-pointer underline" onClick={() => setIsShown((old) => !old)}>
         {isShown ? "Hide" : "Show"} AB flags
       </div>
       {isShown && (
         <div className="mt-8">
           <div className="divider"></div>
-          <div className="flex max-h-80 flex-col overflow-auto py-8">
-            {Object.entries(abStorage).map(([flag, flagValue]) => (
-              <div key={flag} className="Exchange-settings-row">
-                <Checkbox
-                  isChecked={flagValue.enabled}
-                  setIsChecked={(checked) => {
-                    setAbFlagEnabled(flag as AbFlag, checked);
-                    setAbStorage({ ...getAbStorage() });
-                  }}
-                >
-                  {flag}
-                </Checkbox>
-              </div>
-            ))}
-          </div>
+          {Object.entries(abStorage).length === 0 ? (
+            <div className="py-8">No AB flags.</div>
+          ) : (
+            <div className="flex max-h-80 flex-col gap-8 overflow-auto py-8">
+              {Object.entries(abStorage).map(([flag, flagValue]) => (
+                <div key={flag}>
+                  <ToggleSwitch
+                    isChecked={flagValue.enabled}
+                    setIsChecked={(checked) => {
+                      setAbFlagEnabled(flag as AbFlag, checked);
+                      setAbStorage({ ...getAbStorage() });
+                    }}
+                  >
+                    {flag}
+                  </ToggleSwitch>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="divider"></div>
         </div>
       )}

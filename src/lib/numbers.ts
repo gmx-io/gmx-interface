@@ -564,12 +564,13 @@ export function formatBalanceAmount(
   if (amount === undefined) return "-";
 
   if (amount === 0n) {
-    if (showZero) {
+    if (showZero === true) {
       if (tokenSymbol) {
         return `0.0000 ${tokenSymbol}`;
       }
       return "0.0000";
     }
+
     return "-";
   }
 
@@ -606,7 +607,7 @@ export function formatBalanceAmountWithUsd(
   tokenSymbol?: string,
   showZero = false
 ) {
-  if (!showZero && amount === 0n) {
+  if (showZero === false && amount === 0n) {
     return "-";
   }
 

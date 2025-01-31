@@ -12,7 +12,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
-export function useTradeboxTPSLReset(setTriggerConsent: (value: boolean) => void) {
+export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => void) {
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketAddress = useSelector(selectTradeboxMarketAddress);
@@ -38,8 +38,8 @@ export function useTradeboxTPSLReset(setTriggerConsent: (value: boolean) => void
 
   useEffect(() => {
     if (shouldResetLimitOrTPSL) {
-      setTriggerConsent(false);
+      setIsDismissed(false);
       reset();
     }
-  }, [reset, shouldResetLimitOrTPSL, setTriggerConsent]);
+  }, [reset, shouldResetLimitOrTPSL, setIsDismissed]);
 }

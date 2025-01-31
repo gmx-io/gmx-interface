@@ -16,7 +16,8 @@ import ModalWithPortal from "../Modal/ModalWithPortal";
 import LanguageModalContent from "./LanguageModalContent";
 
 import language24Icon from "img/ic_language24.svg";
-import settingsIcon from "img/ic_settings_16.svg";
+import SettingsIcon16 from "img/ic_settings_16.svg?react";
+import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
 import "./NetworkDropdown.css";
 
@@ -132,7 +133,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
             >
               <div className="menu-item-group">
                 <div className="menu-item-icon">
-                  <img className="network-dropdown-icon" src={settingsIcon} alt="" />
+                  <SettingsIcon16 className="network-dropdown-icon text-slate-100" />
                 </div>
                 <span className="network-dropdown-item-label">
                   <Trans>Settings</Trans>
@@ -228,7 +229,7 @@ function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, op
           }}
         >
           <div className="menu-item-group">
-            <img className="network-option-img" src={settingsIcon} alt="" />
+            <SettingsIcon24 className="mr-16 text-slate-100" />
             <span className="network-option-img-label">
               <Trans>Settings</Trans>
             </span>

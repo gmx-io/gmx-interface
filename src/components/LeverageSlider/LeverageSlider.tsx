@@ -14,6 +14,8 @@ type Props = {
   value?: number;
   onChange: (value: number) => void;
   marks: number[];
+  className?: string;
+  isSlim?: boolean;
 };
 
 type HandleProps = {
@@ -63,10 +65,15 @@ export function LeverageSlider(p: Props) {
 
   return (
     <div
-      className={cx("LeverageSlider", {
-        positive: p.isPositive,
-        negative: !p.isPositive,
-      })}
+      className={cx(
+        "LeverageSlider",
+        {
+          positive: p.isPositive,
+          negative: !p.isPositive,
+          slim: p.isSlim,
+        },
+        p.className
+      )}
       data-qa="leverage-slider"
     >
       <Slider

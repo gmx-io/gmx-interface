@@ -19,6 +19,7 @@ type Props = {
       regular?: string;
     }
   >;
+  commonOptionClassname?: string;
   icons?: Record<string, ReactNode>;
   qa?: string;
 };
@@ -35,6 +36,7 @@ export default function Tab(props: Props) {
     icons,
     qa,
     size = "m",
+    commonOptionClassname,
   } = props;
   const onClick = (opt) => {
     if (setOption) {
@@ -54,7 +56,7 @@ export default function Tab(props: Props) {
         const optionClassName = opt === option ? className?.active : className?.regular;
         return (
           <div
-            className={cx("Tab-option flex items-center justify-center gap-8", optionClassName, {
+            className={cx("Tab-option flex items-center justify-center gap-8", commonOptionClassname, optionClassName, {
               active: opt === option,
             })}
             onClick={() => onClick(opt)}

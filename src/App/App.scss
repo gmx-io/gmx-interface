@@ -1060,10 +1060,6 @@ button.App-button {
   align-items: center;
 }
 
-.chart-positions-settings {
-  display: none;
-}
-
 @media (max-width: 1400px) {
   .App-header-container-left .a,
   .App-header-container-left a {
@@ -1075,11 +1071,6 @@ button.App-button {
   }
 }
 
-@media (max-width: 1100px) {
-  .chart-positions-settings {
-    display: block;
-  }
-}
 @media (max-width: 1200px) {
   .long-connect-btn {
     display: none !important;

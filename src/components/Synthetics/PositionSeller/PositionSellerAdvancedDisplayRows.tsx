@@ -1,16 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import {
-  usePositionSeller,
-  usePositionSellerKeepLeverage,
-  usePositionSellerLeverageDisabledByCollateral,
-} from "context/SyntheticsStateContext/hooks/positionSellerHooks";
+import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -18,9 +11,9 @@ import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
   selectPositionSellerDecreaseAmounts,
+  selectPositionSellerExecutionPrice,
   selectPositionSellerFees,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
@@ -28,14 +21,18 @@ import {
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
+import { applySlippageToPrice } from "domain/synthetics/trade/utils";
+import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 export type Props = {
   triggerPriceInputValue: string;
 };
 
-export function PositionSellerAdvancedRows(p: Props) {
-  const { triggerPriceInputValue } = p;
+export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
   const tradeboxAdvancedOptions = useSelector(selectTradeboxAdvancedOptions);
   const [open, setOpen] = React.useState(tradeboxAdvancedOptions.advancedDisplay);
   const position = useSelector(selectPositionSellerPosition);
@@ -45,12 +42,9 @@ export function PositionSellerAdvancedRows(p: Props) {
     defaultTriggerAcceptablePriceImpactBps,
     orderOption,
     setAllowedSlippage,
-    setKeepLeverage,
     setSelectedTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
   } = usePositionSeller();
-  const keepLeverage = usePositionSellerKeepLeverage();
-  const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
 
   const isTrigger = orderOption === OrderOption.Trigger;
 
@@ -58,7 +52,7 @@ export function PositionSellerAdvancedRows(p: Props) {
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
-  const { fees } = useSelector(selectPositionSellerFees);
+  const { fees, executionFee } = useSelector(selectPositionSellerFees);
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -75,7 +69,7 @@ export function PositionSellerAdvancedRows(p: Props) {
   })();
 
   const sizeRow = (
-    <ExchangeInfoRow
+    <SyntheticsInfoRow
       label={t`Size`}
       value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
     />
@@ -84,7 +78,7 @@ export function PositionSellerAdvancedRows(p: Props) {
   const pnlRow =
     position &&
     (isTrigger ? (
-      <ExchangeInfoRow
+      <SyntheticsInfoRow
         label={t`PnL`}
         value={
           <ValueTransition
@@ -106,7 +100,7 @@ export function PositionSellerAdvancedRows(p: Props) {
         }
       />
     ) : (
-      <ExchangeInfoRow
+      <SyntheticsInfoRow
         label={t`PnL`}
         value={
           <ValueTransition
@@ -117,27 +111,6 @@ export function PositionSellerAdvancedRows(p: Props) {
       />
     ));
 
-  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
-  let keepLeverageAtValue: string | undefined = "...";
-  if (position?.leverage && !decreaseAmounts?.isFullClose) {
-    keepLeverageAtValue = formatLeverage(position.leverage);
-  }
-
-  const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
-  const renderKeepLeverageTooltipContent = useCallback(
-    () => (
-      <Trans>
-        Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-      </Trans>
-    ),
-    []
-  );
-  const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
-    <TooltipWithPortal handle={keepLeverageText} renderContent={renderKeepLeverageTooltipContent} />
-  ) : (
-    keepLeverageText
-  );
   let leverageValue: React.ReactNode = "-";
 
   if (decreaseAmounts?.isFullClose) {
@@ -155,51 +128,75 @@ export function PositionSellerAdvancedRows(p: Props) {
     }
   }
 
+  const toToken = position?.indexToken;
+
+  const executionPrice = useSelector(selectPositionSellerExecutionPrice);
+
+  const executionPriceFlags = useMemo(
+    () => ({
+      isLimit: false,
+      isMarket: orderOption === OrderOption.Market,
+      isIncrease: false,
+      isLong: !!position?.isLong,
+      isShort: !position?.isLong,
+      isSwap: false,
+      isPosition: true,
+      isTrigger: orderOption === OrderOption.Trigger,
+    }),
+    [position?.isLong, orderOption]
+  );
+
   if (!position) {
     return null;
   }
 
+  const shouldApplySlippage = orderOption === OrderOption.Market;
+  const acceptablePrice =
+    shouldApplySlippage && decreaseAmounts?.acceptablePrice && position
+      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong)
+      : decreaseAmounts?.acceptablePrice;
+
   return (
-    <ExpandableRow className="-my-15" title={t`Advanced display`} open={open} onToggle={setOpen}>
+    <ExpandableRow
+      title={t`Execution Details`}
+      open={open}
+      onToggle={setOpen}
+      contentClassName="flex flex-col gap-14 pt-14"
+    >
+      <ExecutionPriceRow
+        tradeFlags={executionPriceFlags}
+        fees={fees}
+        executionPrice={executionPrice ?? undefined}
+        acceptablePrice={acceptablePrice}
+        triggerOrderType={decreaseAmounts?.triggerOrderType}
+        visualMultiplier={toToken?.visualMultiplier}
+      />
+
+      <TradeFeesRow {...fees} feesType="decrease" />
+      <NetworkFeeRow executionFee={executionFee} />
       {isTrigger && acceptablePriceImpactInputRow}
       {!isTrigger && <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />}
-      <div className="App-card-divider" />
-      <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
+      <div className="h-1 bg-stroke-primary" />
+      <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
 
-      <div className="PositionEditor-keep-leverage-settings">
-        <ToggleSwitch
-          textClassName="Exchange-info-label"
-          isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-          setIsChecked={setKeepLeverage}
-          disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
-        >
-          {keepLeverageTextElem}
-        </ToggleSwitch>
-      </div>
       {sizeRow}
       {pnlRow}
 
-      <div className="Exchange-info-row">
-        <div>
+      <SyntheticsInfoRow
+        label={
           <Tooltip
-            handle={
-              <span className="Exchange-info-label">
-                <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
-              </span>
-            }
+            handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
             position="top-start"
-            renderContent={() => {
-              return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
-            }}
+            content={<Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>}
           />
-        </div>
-        <div className="align-right">
+        }
+        value={
           <ValueTransition
             from={formatUsd(position?.collateralUsd)!}
             to={formatUsd(nextPositionValues?.nextCollateralUsd)}
           />
-        </div>
-      </div>
+        }
+      />
     </ExpandableRow>
   );
 }

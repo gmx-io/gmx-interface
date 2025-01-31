@@ -271,6 +271,6 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     deleteEntry,
     reset,
     canAddEntry,
-    allowAddEntry: canAddEntry && totalPercentage <= MAX_PERCENTAGE,
+    allowAddEntry: canAddEntry && totalPercentage < MAX_PERCENTAGE,
   };
 }

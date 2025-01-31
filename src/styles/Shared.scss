@@ -43,26 +43,35 @@ input {
   font-family: "RelativeNumber";
 }
 
-::-webkit-scrollbar {
-  width: 0.6rem;
-  height: 0.6rem;
+@supports (scrollbar-width: auto) {
+  :root {
+    scrollbar-color: #a0a3c4 #16182e;
+  }
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: var(--color-slate-800);
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background-color: #16182e;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background-color: #a0a3c4;
+    border-radius: 15px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #b3b4c2;
+  }
 }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: var(--color-slate-100);
-  border-radius: 1.5rem;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #b3b4c2;
-}
 :root {
   --main-bg-color: var(--color-slate-950);
   --dark-blue: var(--color-slate-800);
@@ -107,6 +116,7 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+// TODO: remove this
 input {
   font-size: var(--font-size-body-medium);
   color: var(--color-white);

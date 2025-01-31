@@ -24,15 +24,6 @@
   }
 }
 
-.GmSwapBox-form-layout {
-  display: flex;
-  flex-direction: column;
-
-  &.reverse {
-    flex-direction: column-reverse;
-  }
-}
-
 .GmSwapBox-warning {
   margin-bottom: 1.05rem !important;
 }

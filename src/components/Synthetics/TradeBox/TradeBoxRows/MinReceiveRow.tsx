@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import {
   selectTradeboxSwapAmounts,
   selectTradeboxToToken,
@@ -20,7 +20,7 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
   }
 
   return (
-    <ExchangeInfo.Row label={<Trans>Min. Receive</Trans>}>
+    <SyntheticsInfoRow label={<Trans>Min. Receive</Trans>}>
       {isMarket
         ? formatBalanceAmount(
             applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
@@ -28,6 +28,6 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
             toToken.symbol
           )
         : formatBalanceAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol)}
-    </ExchangeInfo.Row>
+    </SyntheticsInfoRow>
   );
 }

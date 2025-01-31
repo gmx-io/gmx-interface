@@ -189,7 +189,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }, {});
 
       if (parsedError?.name === "OrderNotFulfillableAtAcceptablePrice") {
-        errorTitle = t`Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section.`;
+        errorTitle = t`Prices are now volatile for this market, try again with increased Allowed Slippage value in Execution Details section.`;
       }
 
       msg = (

@@ -9,7 +9,7 @@ export function TradeBoxResponsiveContainer() {
 
   if (!isMobile) {
     return (
-      <div className="App-box SwapBox" data-qa="tradebox">
+      <div className="text-body-medium flex flex-col rounded-4 bg-slate-800 p-15" data-qa="tradebox">
         <TradeBoxHeaderTabs />
         <TradeBox />
       </div>
@@ -18,7 +18,7 @@ export function TradeBoxResponsiveContainer() {
 
   return (
     <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox">
-      <TradeBox isInCurtain />
+      <TradeBox />
     </Curtain>
   );
 }

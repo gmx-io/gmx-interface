@@ -122,25 +122,26 @@ export function UnstakeModal(props: {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-        <BuyInputSection
-          topLeftLabel={t`Unstake`}
-          topRightLabel={t`Max`}
-          topRightValue={formatAmount(maxAmount, 18, 4, true)}
-          onClickTopRightLabel={onClickMaxButton}
-          inputValue={value}
-          onInputValueChange={(e) => setValue(e.target.value)}
-          showMaxButton={false}
-        >
-          <div className="Stake-modal-icons">
-            <img
-              className="icon mr-5 h-22"
-              height="22"
-              src={icons?.[unstakingTokenSymbol.toLowerCase()]}
-              alt={unstakingTokenSymbol}
-            />
-            {unstakingTokenSymbol}
-          </div>
-        </BuyInputSection>
+        <div className="mb-12">
+          <BuyInputSection
+            topLeftLabel={t`Unstake`}
+            topRightLabel={t`Max`}
+            topRightValue={formatAmount(maxAmount, 18, 4, true)}
+            onClickMax={amount !== maxAmount && maxAmount !== 0n ? onClickMaxButton : undefined}
+            inputValue={value}
+            onInputValueChange={(e) => setValue(e.target.value)}
+          >
+            <div className="Stake-modal-icons">
+              <img
+                className="icon mr-5 h-22"
+                height="22"
+                src={icons?.[unstakingTokenSymbol.toLowerCase()]}
+                alt={unstakingTokenSymbol}
+              />
+              {unstakingTokenSymbol}
+            </div>
+          </BuyInputSection>
+        </div>
         {reservedAmount !== undefined && reservedAmount > 0 && (
           <AlertInfo type="info">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.

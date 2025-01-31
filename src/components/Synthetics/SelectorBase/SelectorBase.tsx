@@ -97,7 +97,7 @@ export function SelectorBaseDesktopRow(
         as={TableTr}
         className={cx("SelectorBaseUtils-row SelectorBaseUtils-row-disabled", props.className)}
         content={props.disabledMessage}
-        position="bottom-end"
+        position="left-start"
         bordered={false}
         hoverable={false}
       >
