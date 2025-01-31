@@ -53,6 +53,7 @@ import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { getContract } from "config/contracts";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { getTokensRatioByAmounts } from "sdk/utils/tokens";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -140,6 +141,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+      const { ratio: triggerRatio } = getTokensRatioByAmounts({
+        fromToken: fromToken,
+        toToken: toToken,
+        fromTokenAmount: swapAmounts.amountIn,
+        toTokenAmount: swapAmounts.minOutputAmount,
+      });
+
       return createSwapOrderTxn(chainId, signer, subaccount, {
         account,
         fromTokenAddress: fromToken.address,
@@ -148,6 +156,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         toTokenAddress: toToken.address,
         orderType,
         minOutputAmount: swapAmounts.minOutputAmount,
+        triggerRatio,
         referralCode: referralCodeForTxn,
         executionFee: executionFee.feeTokenAmount,
         allowedSlippage,

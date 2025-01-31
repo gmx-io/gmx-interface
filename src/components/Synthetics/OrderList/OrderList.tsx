@@ -301,6 +301,8 @@ function useFilteredOrders({
     tokensData: useTokensData(),
   });
 
+  console.log("--------> ordersResponse", ordersResponse);
+
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const orders = useMemo(() => {
     const { sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } = availableTokensOptions;

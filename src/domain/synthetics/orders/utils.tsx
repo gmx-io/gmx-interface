@@ -210,6 +210,8 @@ export function getOrderInfo(p: {
       initialCollateralAmount: order.initialCollateralDeltaAmount,
     });
 
+    console.log("-------->", order.contractTriggerPrice);
+
     const orderInfo: SwapOrderInfo = {
       ...order,
       swapPathStats,
