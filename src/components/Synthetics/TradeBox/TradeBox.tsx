@@ -603,8 +603,8 @@ export function TradeBox() {
               <button
                 type="button"
                 disabled={!isSwitchTokensAllowed}
-                className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
-                           desktop-hover:bg-[#484e92]"
+                className="desktop-hover:bg-[#484e92] absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500
+                           active:bg-[#505699]"
                 onClick={onSwitchTokens}
                 data-qa="swap-ball"
               >
@@ -873,7 +873,7 @@ export function TradeBox() {
           qa="trade-mode"
         />
         <SettingsIcon24
-          className="cursor-pointer text-slate-100 desktop-hover:text-white"
+          className="gmx-hover:text-white cursor-pointer text-slate-100"
           onClick={() => setIsSettingsVisible(true)}
         />
       </div>
@@ -964,26 +964,24 @@ export function TradeBox() {
             )}
             {(priceImpactWarningState.shouldShowWarning || (!isTrigger && !isSwap)) && (
               <div
-                className={cx("flex flex-col justify-between", {
+                className={cx("flex flex-col justify-between gap-14", {
                   "min-[1101px]:min-h-[167px]": !isTrigger && !isSwap,
                 })}
               >
                 <LimitAndTPSLGroup />
-                <div className="">
-                  <HighPriceImpactOrFeesWarningCard
-                    priceImpactWarningState={priceImpactWarningState}
-                    collateralImpact={fees?.positionCollateralPriceImpact}
-                    positionImpact={fees?.positionPriceImpact}
-                    swapPriceImpact={fees?.swapPriceImpact}
-                    swapProfitFee={fees?.swapProfitFee}
-                    executionFeeUsd={executionFee?.feeUsd}
-                  />
-                </div>
+
+                <HighPriceImpactOrFeesWarningCard
+                  priceImpactWarningState={priceImpactWarningState}
+                  collateralImpact={fees?.positionCollateralPriceImpact}
+                  positionImpact={fees?.positionPriceImpact}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
+                  executionFeeUsd={executionFee?.feeUsd}
+                />
               </div>
             )}
           </div>
         )}
-        <div className="grow" />
         <div className="flex flex-col gap-14 pt-14">
           <div>{button}</div>
           <div className="h-1 bg-stroke-primary" />

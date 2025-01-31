@@ -316,21 +316,17 @@ export function SyntheticsPage(p: Props) {
             <div className="absolute">
               <TradeBoxResponsiveContainer />
             </div>
-            <div>
-              {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-              <TradeBoxOneClickTrading />
-            </div>
+            {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+            <TradeBoxOneClickTrading />
           </>
         ) : (
           <div className="w-[38.75rem] min-[1501px]:w-[41.85rem]">
             <TradeBoxResponsiveContainer />
 
-            {isSwap && (
-              <div className="mt-10">
-                <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
-              </div>
-            )}
-            <TradeBoxOneClickTrading />
+            <div className="mt-12 flex flex-col gap-12">
+              {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+              <TradeBoxOneClickTrading />
+            </div>
           </div>
         )}
 

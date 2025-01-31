@@ -51,7 +51,7 @@ export function SwapCard(p: Props) {
   );
 
   return (
-    <div className="text-body-medium relative mt-12 rounded-4 bg-slate-800 p-15 max-[1100px]:mt-0">
+    <div className="text-body-medium relative rounded-4 bg-slate-800 p-15 max-[1100px]:mt-0">
       <div className="text-[15px]">
         <Trans>Swap</Trans>
       </div>

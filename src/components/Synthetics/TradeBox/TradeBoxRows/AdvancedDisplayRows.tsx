@@ -231,6 +231,7 @@ export function TradeBoxAdvancedGroups() {
       hasError={hasError}
       className="flex flex-col gap-14"
       contentClassName="flex flex-col gap-14"
+      scrollIntoViewOnMobile
     >
       {(isLimit || isTrigger) && !isSwap && (
         <>

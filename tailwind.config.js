@@ -107,8 +107,12 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
     },
   });
 
-  // addVariant("mobile-hover", [`@media (hover: hover) {&:hover}`, `@media (hover: none) {&:active}`]);
   addVariant("desktop-hover", [`@media (hover: hover) {&:not(:active):hover}`]);
+  addVariant("gmx-hover", [`@media (hover: hover) {&:hover}`, `@media (hover: none) {&:active}`]);
+  addVariant("group-gmx-hover", [
+    `@media (hover: hover) {:merge(.group):hover &}`,
+    `@media (hover: none) {:merge(.group):active &}`,
+  ]);
 }
 
 /**

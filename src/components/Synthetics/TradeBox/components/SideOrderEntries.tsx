@@ -27,9 +27,6 @@ interface SidecarEntryProps {
   displayMode: "sizeUsd" | "percentage";
   updateEntry: (id: string, field: "sizeUsd" | "percentage" | "price", value: string) => void;
   deleteEntry: (id: string) => void;
-  // canAddEntry: boolean;
-  // allowAddEntry: boolean;
-  // handleAddEntry: () => void;
   entriesCount: number;
 }
 
@@ -41,9 +38,6 @@ function SideOrderEntry({
   entriesCount,
   updateEntry,
   deleteEntry,
-  // canAddEntry,
-  // allowAddEntry,
-  // handleAddEntry,
 }: SidecarEntryProps) {
   const percentageError = commonError?.percentage || entry.percentage?.error;
   const priceError = commonError?.price || entry.price?.error;
@@ -106,6 +100,13 @@ function SideOrderEntry({
 
   const isSmallMobile = useMedia("(max-width: 375px)");
 
+  const handleIgnoreEnterKey = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, []);
+
   return (
     <div className="flex flex-row gap-4" key={entry.id}>
       <TooltipWithPortal
@@ -129,6 +130,7 @@ function SideOrderEntry({
           <NumberInput
             value={entry.price.input}
             onValueChange={onPriceValueChange}
+            onKeyDown={handleIgnoreEnterKey}
             placeholder="Price"
             className={cx("SideOrderInput rounded-4 py-2 pr-5 text-right text-14", {
               "max-w-60": isSmallMobile,

@@ -1,7 +1,9 @@
 import cx from "classnames";
+import { useMedia } from "react-use";
+
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { usePrevious } from "lib/usePrevious";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
@@ -25,6 +27,7 @@ interface Props {
   errorMessage?: ReactNode;
   className?: string;
   contentClassName?: string;
+  scrollIntoViewOnMobile?: boolean;
 }
 
 export function ExpandableRow({
@@ -38,8 +41,10 @@ export function ExpandableRow({
   errorMessage,
   className,
   contentClassName,
+  scrollIntoViewOnMobile = false,
 }: Props) {
   const previousHasError = usePrevious(hasError);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (autoExpandOnError && hasError && !previousHasError) {
@@ -61,24 +66,34 @@ export function ExpandableRow({
 
   const disabled = disableCollapseOnError && hasError;
 
+  const isMobile = useMedia(`(max-width: 1100px)`, false);
+  useEffect(() => {
+    if (open && scrollIntoViewOnMobile && isMobile && contentRef.current) {
+      contentRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [scrollIntoViewOnMobile, open, isMobile]);
+
   return (
     <div className={className}>
       <SyntheticsInfoRow
-        className={cx("group !items-center hover:text-blue-300", {
+        className={cx("gmx-hover:text-blue-300 group !items-center", {
           "cursor-not-allowed": disabled,
         })}
         onClick={disabled ? undefined : handleOnClick}
-        label={<span className="flex flex-row justify-between align-middle group-hover:text-blue-300">{label}</span>}
+        label={
+          <span className="group-gmx-hover:text-blue-300 flex flex-row justify-between align-middle">{label}</span>
+        }
         value={
           open ? (
-            <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
+            <BiChevronUp className="group-gmx-hover:text-blue-300 -mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white" />
           ) : (
-            <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
+            <BiChevronDown className="group-gmx-hover:text-blue-300 -mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white" />
           )
         }
       />
 
       <div
+        ref={contentRef}
         className={cx(contentClassName, {
           hidden: !open,
         })}

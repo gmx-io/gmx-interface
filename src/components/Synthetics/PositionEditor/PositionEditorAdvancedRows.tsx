@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
@@ -7,6 +6,7 @@ import { useState } from "react";
 
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -54,16 +54,14 @@ export function PositionEditorAdvancedRows({ operation }: Options) {
       <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
       <SyntheticsInfoRow
         label={
-          <Tooltip
+          <TooltipWithPortal
             handle={
               <span className="Exchange-info-label">
                 <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
               </span>
             }
-            position="top-start"
-            renderContent={() => {
-              return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
-            }}
+            position="left-start"
+            content={<Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>}
           />
         }
         value={
