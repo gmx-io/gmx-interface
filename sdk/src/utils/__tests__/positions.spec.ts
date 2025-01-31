@@ -1,3 +1,4 @@
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { MarketInfo } from "types/markets";
 import { Token } from "types/tokens";
 import { bigMath } from "../bigmath";
@@ -16,22 +17,22 @@ import {
 } from "../positions";
 import { convertToUsd, getIsEquivalentTokens } from "../tokens";
 
-jest.mock("../markets", () => ({
-  ...jest.requireActual("../markets"),
-  getMarketPnl: jest.fn(),
-  getPoolUsdWithoutPnl: jest.fn(),
-  getCappedPoolPnl: jest.fn(),
+vi.mock("../markets", () => ({
+  ...vi.importActual("../markets"),
+  getMarketPnl: vi.fn(),
+  getPoolUsdWithoutPnl: vi.fn(),
+  getCappedPoolPnl: vi.fn(),
 }));
 
-jest.mock("../tokens", () => ({
-  ...jest.requireActual("../tokens"),
-  convertToUsd: jest.fn(),
-  getIsEquivalentTokens: jest.fn(),
+vi.mock("../tokens", () => ({
+  ...vi.importActual("../tokens"),
+  convertToUsd: vi.fn(),
+  getIsEquivalentTokens: vi.fn(),
 }));
 
-jest.mock("../fees", () => ({
-  getPositionFee: jest.fn(),
-  getPriceImpactForPosition: jest.fn(),
+vi.mock("../fees", () => ({
+  getPositionFee: vi.fn(),
+  getPriceImpactForPosition: vi.fn(),
 }));
 
 describe("getPositionKey", () => {
