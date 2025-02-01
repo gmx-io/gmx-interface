@@ -51,22 +51,21 @@ export function getPositionFee(
 export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
   const { fundingFactorPerSecond, longsPayShorts, longInterestUsd, shortInterestUsd } = marketInfo;
 
-  const isLargerSide = isLong ? longsPayShorts : !longsPayShorts;
+  const largerInterestUsd = bigMath.max(longInterestUsd, shortInterestUsd);
 
-  let factorPerSecond: bigint;
+  const payingInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
+  const receivingInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
 
-  if (isLargerSide) {
-    factorPerSecond = fundingFactorPerSecond * -1n;
+  const fundingForPayingSide = (fundingFactorPerSecond * largerInterestUsd) / payingInterestUsd;
+  const fundingForReceivingSide = (fundingForPayingSide * payingInterestUsd) / receivingInterestUsd;
+
+  if ((longsPayShorts && isLong) || (!longsPayShorts && !isLong)) {
+    // paying side
+    return fundingForPayingSide * BigInt(periodInSeconds) * -1n;
   } else {
-    const largerInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
-    const smallerInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
-
-    const ratio = smallerInterestUsd > 0 ? bigMath.mulDiv(largerInterestUsd, PRECISION, smallerInterestUsd) : 0n;
-
-    factorPerSecond = applyFactor(ratio, fundingFactorPerSecond);
+    // receiving side
+    return fundingForReceivingSide * BigInt(periodInSeconds);
   }
-
-  return factorPerSecond * BigInt(periodInSeconds);
 }
 
 export function getFundingFeeRateUsd(
