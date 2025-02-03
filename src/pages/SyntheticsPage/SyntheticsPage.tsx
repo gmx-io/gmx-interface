@@ -245,6 +245,7 @@ export function SyntheticsPage(p: Props) {
       })}
     >
       <div className="-mt-15 grid grid-cols-[1fr_auto] gap-15 px-10 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
+        {isMobile && <TradeBoxOneClickTrading />}
         <div className="Exchange-left">
           <TVChart />
           {!isMobile && (
@@ -317,7 +318,6 @@ export function SyntheticsPage(p: Props) {
               <TradeBoxResponsiveContainer />
             </div>
             {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-            <TradeBoxOneClickTrading />
           </>
         ) : (
           <div className="w-[38.75rem] min-[1501px]:w-[41.85rem]">
