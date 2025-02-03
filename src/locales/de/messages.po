@@ -1527,8 +1527,8 @@ msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
-msgid "Fees for the past"
-msgstr ""
+#~ msgid "Fees for the past"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
@@ -2661,6 +2661,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "Nicht genügend verfügbare Liquidität, um den Auftrag zu erfüllen. Der Auftrag wird ausgeführt, wenn die Bedingung erfüllt ist und genügend verfügbare Liquidität vorhanden ist."
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days."
+msgstr ""
 
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
@@ -4904,6 +4908,10 @@ msgstr "Transaktion"
 msgid "Invalid liq. price"
 msgstr "Ungültiger Liq.-Preis"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized Buy Pressure (BB&D):"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr ""
@@ -5795,6 +5803,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
+msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized:"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
@@ -7096,6 +7108,10 @@ msgstr ""
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "Letzter Monat"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Fees for the past 7 days"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx

@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
@@ -16,7 +16,6 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
-import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 import { getPositionStats } from "./getPositionStats";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
@@ -260,14 +259,34 @@ export function OverviewCard({
     [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees]
   );
 
-  const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
+  const feesSubtotal = useMemo(() => {
+    const v1BuyingPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
+    const v2BuyingPressure = (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n)) * 27n) / 100n;
+    const annualizedTotal = (totalWeeklyFeesUsd * 365n) / 7n;
+    const totalBuyingPressure = v1BuyingPressure + v2BuyingPressure;
+    const annualizedTotalBuyingPressure = (totalBuyingPressure * 365n) / 7n;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFormattedDuration(getFormattedFeesDuration());
-    }, 1000 * 60);
-    return () => clearInterval(interval);
-  }, []);
+    return (
+      <>
+        <div className="my-5 h-1 bg-gray-800" />
+        <p className="Tooltip-row">
+          <span className="label">
+            <Trans>Annualized:</Trans>
+          </span>
+          <span className="amount">${formatAmount(annualizedTotal, USD_DECIMALS, 0, true)}</span>
+        </p>
+        <p className="Tooltip-row">
+          <span className="label">
+            <Trans>Annualized Buy Pressure (BB&D):</Trans>
+          </span>
+          <span className="amount">${formatAmount(annualizedTotalBuyingPressure, USD_DECIMALS, 0, true)}</span>
+        </p>
+        <p className="Tooltip-row !mt-16">
+          <Trans>Annualized data based on the past 7 days.</Trans>
+        </p>
+      </>
+    );
+  }, [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees, totalWeeklyFeesUsd]);
 
   return (
     <div className="App-card">
@@ -406,14 +425,14 @@ export function OverviewCard({
         </div>
         <div className="App-card-row">
           <div className="label">
-            <Trans>Fees for the past</Trans> {formattedDuration}
+            <Trans>Fees for the past 7 days</Trans>
           </div>
           <div>
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
               handle={`$${formatAmount(totalWeeklyFeesUsd, USD_DECIMALS, 2, true)}`}
-              content={<ChainsStatsTooltipRow entries={weeklyFeesEntries} />}
+              content={<ChainsStatsTooltipRow entries={weeklyFeesEntries} subtotal={feesSubtotal} />}
             />
           </div>
         </div>

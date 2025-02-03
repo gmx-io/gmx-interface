@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 import { getGmxGraphClient } from "lib/subgraph/clients";
-import { getCurrentEpochStartedTimestamp } from "domain/stats";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { sumBigInts } from "lib/sumBigInts";
+import { getWeekAgoTimestamp } from "./getWeekAgoTimestamp";
 
 const feeStatsQuery = gql`
   query feesInfo($epochStartedTimestamp: Int!) {
@@ -43,7 +43,7 @@ export function useV1FeesInfo(chainId: number) {
   async function fetcher() {
     try {
       const client = getGmxGraphClient(chainId);
-      const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
+      const epochStartedTimestamp = getWeekAgoTimestamp();
 
       const { data: feeStatsData } = await client!.query<FeeStatsData>({
         query: feeStatsQuery,
