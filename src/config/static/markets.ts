@@ -438,6 +438,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: DEFAULT_LISTING,
     },
+    // TRUMP/USD [WAVAX-USDC]
+    "0xfB626c4e3E153947A6A94041814c25E449064dAD": {
+      enabled: true,
+      listingDate: p("3 Feb 2025"),
+    },
+    // MELANIA/USD [WAVAX-USDC]
+    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
+      enabled: true,
+      listingDate: p("3 Feb 2025"),
+    },
   },
   [AVALANCHE_FUJI]: {
     // AVAX/USD [WAVAX-USDC]

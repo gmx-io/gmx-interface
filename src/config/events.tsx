@@ -33,6 +33,25 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "trump-melania-avalanche",
+    title: "TRUMP and MELANIA markets added on Avalanche",
+    isActive: true,
+    startDate: "3 Feb 2025, 16:00",
+    endDate: "09 Feb 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="TRUMP" />
+        /USD and <TokenSymbolWithIcon symbol="MELANIA" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="AVAX" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WAVAX-USDC]
+        </span>
+        .
+      </>
+    ),
+  },
+  {
     id: "ai16z-anime-fartcoin-listing",
     title: "AI16Z, ANIME and FARTCOIN markets added on Arbitrum",
     isActive: true,
