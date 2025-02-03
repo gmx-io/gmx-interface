@@ -3,6 +3,7 @@ import {
   Area,
   CartesianGrid,
   ComposedChart,
+  DotProps,
   LabelProps,
   Line,
   Tooltip as RechartsTooltip,
@@ -11,11 +12,12 @@ import {
   ReferenceLine,
   ResponsiveContainer,
   Text,
+  TextProps,
   XAxis,
   YAxis,
   YAxisProps,
 } from "recharts";
-import { useOffset } from "recharts/es6/context/chartLayoutContext";
+import { useOffset, useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 import type { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
@@ -36,9 +38,9 @@ import {
   numberWithCommas,
 } from "lib/numbers";
 
-import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
-import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 import { bigMath } from "sdk/utils/bigmath";
+import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
+import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
 const GREEN = "#0ECC83";
 const RED = "#FF506A";
@@ -105,7 +107,6 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           return;
         }
         setZoom((pZoom) => clamp(pZoom * Math.exp(-event.deltaY * 0.001), 1, 20));
-        // setIsZooming(true);
       };
 
       container.addEventListener("wheel", wheelHandler, { passive: false, signal: abortController.signal });
@@ -244,17 +245,25 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
   }, [marketInfo.marketTokenAddress]);
 
   const tooltipRef = useRef<ChartTooltipHandle>(null);
+  const lastMousePositionRef = useRef<{ x: number; y: number } | undefined>(undefined);
 
-  const handleMouseMove = useCallback<CategoricalChartFunc>(
-    (nextState) => {
-      if (!tooltipRef.current) {
-        return;
-      }
+  const handleMouseMove = useCallback<CategoricalChartFunc>((nextState) => {
+    if (!tooltipRef.current) {
+      return;
+    }
 
-      tooltipRef.current.setMouseRelativePosition(nextState.chartX, nextState.chartY);
-    },
-    [tooltipRef]
-  );
+    tooltipRef.current.setMouseRelativePosition(nextState.chartX, nextState.chartY);
+
+    if (nextState.chartX !== undefined && nextState.chartY !== undefined) {
+      lastMousePositionRef.current = { x: nextState.chartX, y: nextState.chartY };
+      document.dispatchEvent(
+        new CustomEvent("chartMouseMove", { detail: { x: nextState.chartX, y: nextState.chartY } })
+      );
+    } else {
+      lastMousePositionRef.current = undefined;
+      document.dispatchEvent(new CustomEvent("chartMouseMove", { detail: undefined }));
+    }
+  }, []);
 
   return (
     <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
@@ -281,37 +290,57 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               stroke={GREEN}
               opacity={0.3}
               strokeWidth={2}
-              dot={isZeroPriceImpact ? renderLeftLineDot : false}
+              dot={isZeroPriceImpact ? <LineDot side="left" /> : false}
               isAnimationActive={false}
-              activeDot={renderActiveDotSemiTransparent}
+              activeDot={
+                isZeroPriceImpact ? (
+                  <ActiveDotForZeroPriceImpact opacity={0.5} initialMousePositionRef={lastMousePositionRef} />
+                ) : (
+                  <ActiveDot opacity={0.5} />
+                )
+              }
               strokeDasharray={drawLeftTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
             />
-            <ReferenceDot
-              x={leftMinExecutionPrice}
-              y={bigintToNumber(leftMin, USD_DECIMALS)}
-              fill={GREEN}
-              shape={<TransparentOpaqueSeparatorDot />}
-            />
+            {!isZeroPriceImpact && (
+              <ReferenceDot
+                x={leftMinExecutionPrice}
+                y={bigintToNumber(leftMin, USD_DECIMALS)}
+                fill={GREEN}
+                shape={<TransparentOpaqueSeparatorDot />}
+              />
+            )}
           </>
         )}
         <Area
           dataKey="leftOpaqueSize"
           stroke={GREEN}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
-          dot={isZeroPriceImpact ? renderLeftAreaDot : false}
+          dot={isZeroPriceImpact ? <AreaDot side="left" /> : false}
           fill="url(#colorGreen)"
           isAnimationActive={false}
-          activeDot={renderActiveDot}
+          activeDot={
+            isZeroPriceImpact ? (
+              <ActiveDotForZeroPriceImpact initialMousePositionRef={lastMousePositionRef} />
+            ) : (
+              <ActiveDot />
+            )
+          }
           strokeDasharray={drawLeftOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
         />
         <Area
           dataKey="rightOpaqueSize"
           stroke={RED}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
-          dot={isZeroPriceImpact ? renderRightAreaDot : false}
+          dot={isZeroPriceImpact ? <AreaDot side="right" /> : false}
           fill="url(#colorRed)"
           isAnimationActive={false}
-          activeDot={renderActiveDot}
+          activeDot={
+            isZeroPriceImpact ? (
+              <ActiveDotForZeroPriceImpact initialMousePositionRef={lastMousePositionRef} />
+            ) : (
+              <ActiveDot />
+            )
+          }
           strokeDasharray={drawRightOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
         />
         {drawRightTransparent && (
@@ -327,9 +356,15 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               stroke={RED}
               strokeWidth={2}
               opacity={0.3}
-              dot={isZeroPriceImpact ? renderRightLineDot : false}
+              dot={isZeroPriceImpact ? <LineDot side="right" /> : false}
               isAnimationActive={false}
-              activeDot={renderActiveDotSemiTransparent}
+              activeDot={
+                isZeroPriceImpact ? (
+                  <ActiveDotForZeroPriceImpact opacity={0.5} initialMousePositionRef={lastMousePositionRef} />
+                ) : (
+                  <ActiveDot opacity={0.5} />
+                )
+              }
               strokeDasharray={drawRightTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
             />
           </>
@@ -350,6 +385,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           }
         />
         <YAxis
+          id="yAxis"
           orientation="right"
           dataKey="size"
           axisLine={false}
@@ -389,39 +425,8 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
   );
 });
 
-const renderActiveDot = (props: any) => {
-  return <ActiveDot {...props} />;
-};
-
-const renderActiveDotSemiTransparent = (props: any) => {
-  return <ActiveDot {...props} opacity={0.5} />;
-};
-
-const renderLeftAreaDot = (props: any) => {
-  return <AreaDot {...props} side="left" />;
-};
-
-const renderRightAreaDot = (props: any) => {
-  return <AreaDot {...props} side="right" />;
-};
-
-const renderLeftLineDot = (props: any) => {
-  return <LineDot {...props} side="left" />;
-};
-
-const renderRightLineDot = (props: any) => {
-  return <LineDot {...props} side="right" />;
-};
-
-function AreaDot(props: {
-  cx: number;
-  cy: number;
-  stroke: string;
-  fill: string;
-  opacity: number;
-  side: "left" | "right";
-}) {
-  const { side, cx, cy, stroke, fill, opacity } = props;
+function AreaDot(props: Partial<DotProps> & { side: "left" | "right" }) {
+  const { side, cx, cy, stroke, fill, opacity } = props as Required<typeof props>;
 
   const { top, height, width } = useOffset();
 
@@ -451,8 +456,8 @@ function AreaDot(props: {
   );
 }
 
-function LineDot(props: { cx: number; cy: number; stroke: string; opacity: number; side: "left" | "right" }) {
-  const { side, cx, cy, stroke, opacity } = props;
+function LineDot(props: Partial<DotProps> & { side: "left" | "right" }) {
+  const { side, cx, cy, stroke, opacity } = props as Required<typeof props>;
 
   const { top, height, width } = useOffset();
 
@@ -470,8 +475,101 @@ function LineDot(props: { cx: number; cy: number; stroke: string; opacity: numbe
   );
 }
 
-function ActiveDot(props: any) {
-  const { cx, cy, dataKey, fill, opacity } = props;
+function ActiveDotForZeroPriceImpact(
+  props: Partial<
+    DotProps & {
+      dataKey: "leftOpaqueSize" | "rightOpaqueSize" | "leftTransparentSize" | "rightTransparentSize";
+      payload: DataPoint;
+    }
+  > & { initialMousePositionRef: { current: { x: number; y: number } | undefined } }
+) {
+  const { cx, cy, dataKey, fill, opacity, payload, initialMousePositionRef } = props as Required<typeof props>;
+
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | undefined>(
+    initialMousePositionRef.current
+  );
+
+  const { top, height } = useOffset();
+  const viewBox = useViewBox();
+  const yAxis = useYAxisWithFiniteDomainOrRandom();
+
+  useEffect(() => {
+    const handler = (event: CustomEvent<{ x: number; y: number } | undefined>) => {
+      setMousePosition(event.detail);
+    };
+
+    document.addEventListener("chartMouseMove", handler);
+
+    return () => {
+      document.removeEventListener("chartMouseMove", handler);
+    };
+  }, []);
+
+  if (cy === null) {
+    return null;
+  }
+
+  const domainSpan = yAxis.niceTicks.at(-1)! - yAxis.niceTicks.at(0)!;
+
+  let stats: DataPoint = payload as DataPoint;
+
+  let isOpaqueCloser = true;
+  let isLogicallyLeft = false;
+
+  if (stats) {
+    isLogicallyLeft = stats.leftTransparentSize !== null || stats.leftOpaqueSize !== null;
+
+    const transparentSize: number | null = isLogicallyLeft ? stats.leftTransparentSize : stats.rightTransparentSize;
+
+    const opaqueSize: number | null = isLogicallyLeft ? stats.leftOpaqueSize : stats.rightOpaqueSize;
+
+    if (transparentSize !== null && opaqueSize !== null) {
+      const transparentFloatY = viewBox.height - (transparentSize! / domainSpan) * viewBox.height + viewBox.y;
+      const opaqueFloatY = viewBox.height - (opaqueSize! / domainSpan) * viewBox.height + viewBox.y;
+
+      const distanceToTransparent = Math.abs((mousePosition?.y ?? 0) - transparentFloatY);
+      const distanceToOpaque = Math.abs((mousePosition?.y ?? 0) - opaqueFloatY);
+
+      isOpaqueCloser = distanceToOpaque < distanceToTransparent;
+    }
+
+    let shouldShowDot = true;
+
+    if (isOpaqueCloser && dataKey !== "leftOpaqueSize" && dataKey !== "rightOpaqueSize") {
+      shouldShowDot = false;
+    } else if (!isOpaqueCloser && (dataKey === "leftOpaqueSize" || dataKey === "rightOpaqueSize")) {
+      shouldShowDot = false;
+    }
+
+    if (!shouldShowDot) {
+      return null;
+    }
+  }
+
+  return (
+    <>
+      <path
+        d={`M${cx},${cy}L${cx},${top + height}`}
+        stroke={fill}
+        strokeDasharray="2 2"
+        key={`dot-${dataKey}`}
+        opacity={opacity}
+      />
+      <circle cx={cx} cy={cy} r={4} fill={fill} opacity={opacity} />
+      <circle cx={cx} cy={cy} r={6} stroke={fill} strokeWidth={1} fill="none" opacity={opacity} />
+    </>
+  );
+}
+
+function ActiveDot(
+  props: Partial<
+    DotProps & {
+      dataKey: "leftOpaqueSize" | "rightOpaqueSize" | "leftTransparentSize" | "rightTransparentSize";
+      payload: DataPoint;
+    }
+  >
+) {
+  const { cx, cy, dataKey, fill, opacity } = props as Required<typeof props>;
 
   const { top, height } = useOffset();
 
@@ -494,8 +592,12 @@ function ActiveDot(props: any) {
   );
 }
 
-function Tick(props: any) {
-  const { x, y, height, textAnchor, payload, verticalAnchor, index, marketPriceIndex } = props;
+function Tick(
+  props: Partial<TextProps & { index: number; payload: { value: number } }> & { marketPriceIndex: number | undefined }
+) {
+  const { x, y, height, textAnchor, payload, verticalAnchor, index, marketPriceIndex } = props as Required<
+    typeof props
+  >;
 
   const value = numberToBigint(payload.value as number, USD_DECIMALS);
   const visual = formatAmount(value, USD_DECIMALS, calculateDisplayDecimals(value), false);
@@ -913,6 +1015,7 @@ function calculateTicks({
   midPrice: bigint;
   lowPrice: bigint;
   highPrice: bigint;
+  gap?: [bigint, bigint];
 }) {
   const decimals = USD_DECIMALS;
 

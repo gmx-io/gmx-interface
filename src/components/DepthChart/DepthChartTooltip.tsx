@@ -231,7 +231,7 @@ export const ChartTooltip = forwardRef<
   return (
     <div
       ref={tooltipRef}
-      className="DepthChartTooltip body-large z-50 rounded-4 p-8 text-14 transition-transform duration-100 ease-linear"
+      className="DepthChartTooltip text-body-medium z-50 rounded-4 p-8 transition-transform duration-100 ease-linear max-[700px]:text-body-small"
     >
       <p className="mb-8">{tooltip}</p>
       <StatsTooltipRow
