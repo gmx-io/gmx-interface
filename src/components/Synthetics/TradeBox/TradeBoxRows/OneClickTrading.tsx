@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback } from "react";
+import { useAccount } from "wagmi";
 
 import { IS_TOUCH } from "config/env";
 import { ONE_CLICK_TRADING_OFFER_HIDDEN } from "config/localStorage";
@@ -19,6 +20,7 @@ import CrossIconComponent from "img/cross.svg?react";
 
 export function TradeBoxOneClickTrading() {
   const fromToken = useSelector(selectTradeboxFromToken);
+  const { isConnected } = useAccount();
 
   const isSubaccountActive = useIsSubaccountActive();
   const [, setModalOpen] = useSubaccountModalOpen();
@@ -32,6 +34,10 @@ export function TradeBoxOneClickTrading() {
   const handleCloseOfferClick = useCallback(() => {
     setOfferButtonHidden(true);
   }, [setOfferButtonHidden]);
+
+  if (!isConnected) {
+    return null;
+  }
 
   const isNativeToken = fromToken?.isNative;
 
