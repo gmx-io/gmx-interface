@@ -119,7 +119,7 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
  * @type {import('tailwindcss/types/config').PluginCreator}
  * @See https://www.notion.so/gmxio/Fonts-Clean-Up-13303574745d8015b115e03426827f3c
  */
-function fontComponentsPlugin({ addComponents, addBase, addUtilities }) {
+function fontComponentsPlugin({ addComponents, addBase }) {
   addBase({
     ":root": {
       "--font-size-h1": "3.4rem",

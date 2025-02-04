@@ -68,7 +68,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
 
 interface TradeboxButtonStateOptions {
-  // isTriggerWarningAccepted: boolean;
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
 }
@@ -90,11 +89,7 @@ const selectTradeboxPayAmount = createSelector((q) => {
   return undefined;
 });
 
-export function useTradeboxButtonState({
-  // isTriggerWarningAccepted,
-  account,
-  setToTokenInputValue,
-}: TradeboxButtonStateOptions): {
+export function useTradeboxButtonState({ account, setToTokenInputValue }: TradeboxButtonStateOptions): {
   text: ReactNode;
   tooltipContent: ReactNode | null;
   disabled: boolean;
