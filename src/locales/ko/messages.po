@@ -2671,6 +2671,10 @@ msgstr ""
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "주문을 채울만한 충분한 유동성이 없습니다. 조건이 충족되고 충분한 유동성이 있을 때 주문이 채워집니다."
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -4898,6 +4902,10 @@ msgstr "거래"
 msgid "Invalid liq. price"
 msgstr "유효하지 않은 청산가"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized Buy Pressure (BB&D):"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr ""
@@ -5805,6 +5813,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
+msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized:"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
@@ -7125,6 +7137,10 @@ msgstr ""
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "지난 달"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+#~ msgid "Fees for the past 7 days"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
