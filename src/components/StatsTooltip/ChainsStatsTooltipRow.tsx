@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { USD_DECIMALS } from "config/factors";
 import "./StatsTooltip.css";
 import { formatAmount } from "lib/numbers";
+import { ReactNode } from "react";
 
 type Props = {
   entries: { [key: string]: bigint | string | undefined };
@@ -9,6 +10,7 @@ type Props = {
   decimalsForConversion?: number;
   symbol?: string;
   shouldFormat?: boolean;
+  subtotal?: ReactNode;
 };
 
 export default function ChainsStatsTooltipRow({
@@ -16,6 +18,7 @@ export default function ChainsStatsTooltipRow({
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
   symbol,
+  subtotal,
   shouldFormat = true,
 }: Props) {
   const validEntries = Object.entries(entries).filter(([, value]) => value);
@@ -52,6 +55,7 @@ export default function ChainsStatsTooltipRow({
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>
+      {subtotal}
     </>
   );
 }

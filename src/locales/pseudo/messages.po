@@ -2671,6 +2671,10 @@ msgstr ""
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -4930,6 +4934,10 @@ msgstr ""
 msgid "Invalid liq. price"
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized Buy Pressure (BB&D):"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr ""
@@ -5825,6 +5833,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
+msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized:"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
@@ -7130,6 +7142,10 @@ msgstr ""
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+#~ msgid "Fees for the past 7 days"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx

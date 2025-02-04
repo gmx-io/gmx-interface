@@ -2671,6 +2671,10 @@ msgstr "This swap is routed through several GM pools for the lowest possible fee
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days."
+msgstr "Annualized data based on the past 7 days."
+
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -4933,6 +4937,10 @@ msgstr "Transaction"
 msgid "Invalid liq. price"
 msgstr "Invalid liq. price"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized Buy Pressure (BB&D):"
+msgstr "Annualized Buy Pressure (BB&D):"
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr "buy"
@@ -5829,6 +5837,10 @@ msgstr "V1 Avalanche Fuji"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
 msgstr "1st Place"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized:"
+msgstr "Annualized:"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "Starts in"
@@ -7136,6 +7148,10 @@ msgstr "APY"
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "Last month"
+
+#: src/pages/Dashboard/OverviewCard.tsx
+#~ msgid "Fees for the past 7 days"
+#~ msgstr "Fees for the past 7 days"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
