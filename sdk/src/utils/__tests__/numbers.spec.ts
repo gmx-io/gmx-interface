@@ -45,7 +45,7 @@ describe("numbers utils", () => {
       expect(getBasisPoints(1n, 2n)).toBe(5000n);
     });
 
-    it.only("rounds up if remainder != 0 and shouldRoundUp=true", () => {
+    it("rounds up if remainder != 0 and shouldRoundUp=true", () => {
       expect(getBasisPoints(7n, 3n, true)).toBe(23334n);
     });
 

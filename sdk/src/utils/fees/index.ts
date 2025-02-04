@@ -58,11 +58,11 @@ export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolea
 
   let fundingForPayingSide = 0n;
   if (payingInterestUsd !== 0n) {
-    fundingForPayingSide = (fundingFactorPerSecond * largerInterestUsd) / payingInterestUsd;
+    fundingForPayingSide = bigMath.mulDiv(fundingFactorPerSecond, largerInterestUsd, payingInterestUsd);
   }
   let fundingForReceivingSide = 0n;
   if (receivingInterestUsd !== 0n) {
-    fundingForReceivingSide = (fundingForPayingSide * payingInterestUsd) / receivingInterestUsd;
+    fundingForReceivingSide = bigMath.mulDiv(fundingForPayingSide, payingInterestUsd, receivingInterestUsd);
   }
 
   if ((longsPayShorts && isLong) || (!longsPayShorts && !isLong)) {

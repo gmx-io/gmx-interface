@@ -1,32 +1,11 @@
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketInfo } from "types/markets";
 import { getFundingFactorPerPeriod } from ".";
+import { numberToBigint } from "utils/numbers";
 
 const dollar = 10n ** BigInt(USD_DECIMALS);
 const eightMillion = 8_000_000n;
 const tenMillion = 10_000_000n;
-
-function numberToBigint(value: number, decimals: number) {
-  const negative = value < 0;
-  if (negative) value *= -1;
-
-  const int = Math.trunc(value);
-  let frac = value - int;
-
-  let res = BigInt(int);
-
-  for (let i = 0; i < decimals; i++) {
-    res *= 10n;
-    if (frac !== 0) {
-      frac *= 10;
-      const fracInt = Math.trunc(frac);
-      res += BigInt(fracInt);
-      frac -= fracInt;
-    }
-  }
-
-  return negative ? -res : res;
-}
 
 function toFactor(percent: `${number}%`) {
   const value = parseFloat(percent.replace("%", ""));

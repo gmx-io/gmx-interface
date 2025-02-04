@@ -38,3 +38,36 @@ export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
 export function applyFactor(value: bigint, factor: bigint) {
   return (value * factor) / PRECISION;
 }
+
+export function numberToBigint(value: number, decimals: number) {
+  const negative = value < 0;
+  if (negative) value *= -1;
+
+  const int = Math.trunc(value);
+  let frac = value - int;
+
+  let res = BigInt(int);
+
+  for (let i = 0; i < decimals; i++) {
+    res *= 10n;
+    if (frac !== 0) {
+      frac *= 10;
+      const fracInt = Math.trunc(frac);
+      res += BigInt(fracInt);
+      frac -= fracInt;
+    }
+  }
+
+  return negative ? -res : res;
+}
+
+export function bigintToNumber(value: bigint, decimals: number) {
+  const negative = value < 0;
+  if (negative) value *= -1n;
+  const precision = 10n ** BigInt(decimals);
+  const int = value / precision;
+  const frac = value % precision;
+
+  const num = parseFloat(`${int}.${frac.toString().padStart(decimals, "0")}`);
+  return negative ? -num : num;
+}
