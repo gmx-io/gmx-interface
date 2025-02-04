@@ -7144,10 +7144,6 @@ msgstr "APY"
 msgid "Last month"
 msgstr "Last month"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-#~ msgid "Fees for the past 7 days"
-#~ msgstr "Fees for the past 7 days"
-
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas"
