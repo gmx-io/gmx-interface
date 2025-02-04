@@ -32,7 +32,7 @@ export function SyntheticsInfoRow({
       data-qa={qa ? `info-row-${qa}` : undefined}
     >
       <div className="text-slate-100">{label}</div>
-      <div className={cx({ "text-red-500": isWarning }, valueClassName)}>{children || value}</div>
+      <div className={cx("text-right", { "text-red-500": isWarning }, valueClassName)}>{children || value}</div>
     </div>
   );
 }
