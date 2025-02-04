@@ -536,10 +536,8 @@ export function PositionSeller(p: Props) {
   );
 
   return (
-    // <div className="PositionEditor PositionSeller text-body-medium">
     <div className="text-body-medium">
       <Modal
-        // className="PositionSeller-modal"
         isVisible={isVisible}
         setIsVisible={onClose}
         label={
@@ -618,7 +616,14 @@ export function PositionSeller(p: Props) {
 
             <div className="flex flex-col gap-14 pt-14">
               {isTrigger && maxAutoCancelOrdersWarning}
-              <HighPriceImpactOrFeesWarningCard priceImpactWarningState={priceImpactWarningState} />
+              <HighPriceImpactOrFeesWarningCard
+                priceImpactWarningState={priceImpactWarningState}
+                collateralImpact={fees?.positionCollateralPriceImpact}
+                positionImpact={fees?.positionPriceImpact}
+                swapPriceImpact={fees?.swapPriceImpact}
+                swapProfitFee={fees?.swapProfitFee}
+                executionFeeUsd={executionFee?.feeUsd}
+              />
               <ToggleSwitch
                 textClassName="text-slate-100"
                 isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}

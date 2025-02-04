@@ -309,7 +309,14 @@ export function PositionEditor() {
               )}
             </BuyInputSection>
             <div className="flex flex-col gap-14 pt-14">
-              <HighPriceImpactOrFeesWarningCard priceImpactWarningState={priceImpactWarningState} />
+              <HighPriceImpactOrFeesWarningCard
+                priceImpactWarningState={priceImpactWarningState}
+                collateralImpact={fees?.positionCollateralPriceImpact}
+                positionImpact={fees?.positionPriceImpact}
+                swapPriceImpact={fees?.swapPriceImpact}
+                swapProfitFee={fees?.swapProfitFee}
+                executionFeeUsd={executionFee?.feeUsd}
+              />
 
               <div className="">{button}</div>
 
