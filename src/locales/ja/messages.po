@@ -1527,8 +1527,8 @@ msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
-#~ msgid "Fees for the past"
-#~ msgstr ""
+msgid "Fees for the past"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
@@ -7110,8 +7110,8 @@ msgid "Last month"
 msgstr "先月"
 
 #: src/pages/Dashboard/OverviewCard.tsx
-msgid "Fees for the past 7 days"
-msgstr ""
+#~ msgid "Fees for the past 7 days"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
