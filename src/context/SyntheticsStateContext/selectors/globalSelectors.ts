@@ -57,6 +57,9 @@ export const selectAccountStats = (s: SyntheticsState) => s.globals.accountStats
 export const selectExternalSwapQuote = (s: SyntheticsState) => s.externalSwapQuote;
 export const selectSetExternalSwapQuote = (s: SyntheticsState) => s.setExternalSwapQuote;
 
+export const selectExternalSwapFails = (s: SyntheticsState) => s.externalSwapFails;
+export const selectSetExternalSwapFails = (s: SyntheticsState) => s.setExternalSwapFails;
+
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
   (minCollateralUsd, minPositionSizeUsd) => ({

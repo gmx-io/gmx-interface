@@ -78,17 +78,7 @@ export function useExternalSwapsQuote({
       ? ["useExternalSwapsQuote", chainId, fromTokenAddress, toTokenAddress, fromTokenAmount.toString(), slippage]
       : null;
 
-  const debouncedKey = useDebounce(swapKey, 500); // Debounce the entire key
-
-  // console.log(
-  //   "externalSwapsQuote debouncedKey",
-  //   debouncedKey,
-  //   enabled,
-  //   fromTokenAddress,
-  //   toTokenAddress,
-  //   fromTokenAmount,
-  //   slippage
-  // );
+  const debouncedKey = useDebounce(swapKey, 500);
 
   const { data: externalSwapOutput } = useSWR(debouncedKey, {
     keepPreviousData: true,
@@ -156,8 +146,6 @@ export function useExternalSwapsQuote({
       outputUsd: toTokenUsd,
       slippage,
     };
-
-    // console.log("externalSwapQuote", externalSwapQuote);
 
     return {
       externalSwapQuote,

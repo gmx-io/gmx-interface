@@ -105,6 +105,8 @@ export type SyntheticsState = {
   tradebox: TradeboxState;
   externalSwapQuote: ExternalSwapQuote | undefined;
   setExternalSwapQuote: (quote: ExternalSwapQuote | undefined) => void;
+  externalSwapFails: number;
+  setExternalSwapFails: (fails: number | ((fails: number) => number)) => void;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
@@ -217,6 +219,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const [externalSwapQuote, setExternalSwapQuote] = useState<ExternalSwapQuote>();
+  const [externalSwapFails, setExternalSwapFails] = useState(0);
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
@@ -309,6 +312,8 @@ export function SyntheticsStateContextProvider({
       tradebox: tradeboxState,
       externalSwapQuote,
       setExternalSwapQuote,
+      externalSwapFails,
+      setExternalSwapFails,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
@@ -331,8 +336,6 @@ export function SyntheticsStateContextProvider({
     userReferralInfo,
     depositMarketTokensData,
     closingPositionKey,
-    externalSwapQuote,
-    setExternalSwapQuote,
     missedCoinsModalPlace,
     gasLimits,
     gasPrice,
@@ -350,6 +353,8 @@ export function SyntheticsStateContextProvider({
     leaderboard,
     settings,
     tradeboxState,
+    externalSwapQuote,
+    externalSwapFails,
     orderEditor,
     positionSellerState,
     positionEditorState,

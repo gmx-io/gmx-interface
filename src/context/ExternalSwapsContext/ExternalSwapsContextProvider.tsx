@@ -1,8 +1,10 @@
 import { getSwapDebugSettings, SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS } from "config/externalSwaps";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
+  selectExternalSwapFails,
   selectMarketsInfoData,
   selectPositionsInfoData,
+  selectSetExternalSwapFails,
   selectSetExternalSwapQuote,
   selectTokensData,
   selectUiFeeFactor,
@@ -53,13 +55,6 @@ const ExternalSwapsContext = createContext<ExternalSwapsContextType>({ externalS
 
 const swapDebugSettings = getSwapDebugSettings();
 
-const swapPriceImpactForExternalSwapThresholdBps =
-  swapDebugSettings?.swapPriceImpactForExternalSwapThresholdBps || SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS;
-
-// const autoSwapFallbackMaxFeesBps = swapDebugSettings?.autoSwapFallbackMaxFeesBps || AUTO_SWAP_FALLBACK_MAX_FEES_BPS;
-
-const forceExternalSwaps = swapDebugSettings?.forceExternalSwaps || false;
-
 export function ExternalSwapsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const settings = useSettings();
@@ -88,150 +83,155 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
   const existingPosition = getByKey(positionsInfoData, existingPositionKey);
   const setExternalSwapQuote = useSelector(selectSetExternalSwapQuote);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
+  const externalSwapFails = useSelector(selectExternalSwapFails);
+  const setExternalSwapFails = useSelector(selectSetExternalSwapFails);
   const uiFeeFactor = useSelector(selectUiFeeFactor);
 
   const swapToTokenAddress = tradeFlags.isSwap ? toTokenAddress : collateralTokenAddress;
 
-  const { amountIn, priceIn, usdOut, baseUsdIn, baseAmountIn, internalSwapPriceImpact } = useMemo(() => {
-    if (tradeFlags.isSwap) {
-      if (!fromToken || !toToken) {
-        return {};
-      }
+  const { amountIn, priceIn, usdOut, baseUsdIn, baseAmountIn, internalSwapPriceImpact, internalSwapFeesDeltaUsd } =
+    useMemo(() => {
+      if (tradeFlags.isIncrease) {
+        switch (strategy) {
+          case "leverageByCollateral":
+          case "independent": {
+            if (!fromToken || !collateralToken) {
+              return {};
+            }
 
-      const swapAmounts = getSwapAmountsByFromValue({
-        tokenIn: fromToken,
-        tokenOut: toToken,
-        amountIn: fromTokenAmount,
-        isLimit: false,
-        externalSwapQuote: undefined,
-        findSwapPath,
-        uiFeeFactor,
-      });
+            const swapAmounts = getSwapAmountsByFromValue({
+              tokenIn: fromToken,
+              tokenOut: collateralToken,
+              amountIn: fromTokenAmount,
+              isLimit: false,
+              externalSwapQuote: undefined,
+              findSwapPath,
+              uiFeeFactor,
+            });
 
-      return {
-        amountIn: fromTokenAmount,
-        internalSwapPriceImpact: getFeeItem(swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd, swapAmounts.usdIn),
-      };
-    }
+            const internalSwapPriceImpact = getFeeItem(
+              swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+              swapAmounts.usdIn
+            );
 
-    if (tradeFlags.isIncrease) {
-      switch (strategy) {
-        case "leverageByCollateral":
-        case "independent": {
-          if (!fromToken || !collateralToken) {
-            return {};
+            const internalSwapFeesDeltaUsd = swapAmounts.swapPathStats
+              ? -swapAmounts.swapPathStats.totalSwapFeeUsd + swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd
+              : 0n;
+
+            return {
+              amountIn: fromTokenAmount,
+              internalSwapPriceImpact,
+              internalSwapFeesDeltaUsd,
+            };
           }
 
-          const swapAmounts = getSwapAmountsByFromValue({
-            tokenIn: fromToken,
-            tokenOut: collateralToken,
-            amountIn: fromTokenAmount,
-            isLimit: false,
-            externalSwapQuote: undefined,
-            findSwapPath,
-            uiFeeFactor,
-          });
-          const internalSwapPriceImpact = getFeeItem(
-            swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-            swapAmounts.usdIn
-          );
+          case "leverageBySize": {
+            if (!toToken || !collateralToken || !marketInfo || !fromToken) {
+              return {};
+            }
 
-          return {
-            amountIn: fromTokenAmount,
-            internalSwapPriceImpact,
-          };
-        }
+            const indexPrice =
+              tradeFlags.isLimit && triggerPrice !== undefined
+                ? triggerPrice
+                : getMarkPrice({ prices: toToken.prices, isIncrease: true, isLong: tradeFlags.isLong });
 
-        case "leverageBySize": {
-          if (!toToken || !collateralToken || !marketInfo || !fromToken) {
-            return {};
+            const collateralPrice = getIsEquivalentTokens(toToken, collateralToken)
+              ? indexPrice
+              : collateralToken.prices.minPrice;
+
+            const sizeDeltaUsd = convertToUsd(toTokenAmount, toToken.decimals, indexPrice)!;
+
+            const positionFeeInfo = getPositionFee(marketInfo, sizeDeltaUsd, false, userReferralInfo);
+
+            const positionFeeUsd = positionFeeInfo.positionFeeUsd;
+            const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor);
+
+            const { baseCollateralAmount } = leverageBySizeValues({
+              collateralToken,
+              leverage,
+              sizeDeltaUsd,
+              collateralPrice,
+              uiFeeFactor,
+              positionFeeUsd,
+              fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || 0n,
+              borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || 0n,
+              uiFeeUsd,
+              swapUiFeeUsd: 0n,
+            });
+
+            const usdOut = convertToUsd(
+              baseCollateralAmount,
+              collateralToken.decimals,
+              collateralToken.prices.maxPrice
+            );
+            const baseUsdIn = usdOut;
+            const baseAmountIn = convertToTokenAmount(baseUsdIn, fromToken.decimals, fromToken.prices.minPrice);
+
+            const swapAmounts = getSwapAmountsByToValue({
+              tokenIn: fromToken,
+              tokenOut: collateralToken,
+              amountOut: baseCollateralAmount,
+              isLimit: false,
+              externalSwapQuote: undefined,
+              findSwapPath,
+              uiFeeFactor,
+            });
+
+            const internalSwapPriceImpact = getFeeItem(
+              swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+              swapAmounts.usdIn
+            );
+
+            const internalSwapFeesDeltaUsd = swapAmounts.swapPathStats
+              ? -swapAmounts.swapPathStats.totalSwapFeeUsd + swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd
+              : 0n;
+
+            return {
+              priceIn: fromToken.prices.minPrice,
+              priceOut: collateralToken.prices.maxPrice,
+              usdOut,
+              baseUsdIn,
+              baseAmountIn,
+              internalSwapPriceImpact,
+              internalSwapFeesDeltaUsd,
+            };
           }
 
-          const indexPrice =
-            tradeFlags.isLimit && triggerPrice !== undefined
-              ? triggerPrice
-              : getMarkPrice({ prices: toToken.prices, isIncrease: true, isLong: tradeFlags.isLong });
-
-          const collateralPrice = getIsEquivalentTokens(toToken, collateralToken)
-            ? indexPrice
-            : collateralToken.prices.minPrice;
-
-          const sizeDeltaUsd = convertToUsd(toTokenAmount, toToken.decimals, indexPrice)!;
-
-          const positionFeeInfo = getPositionFee(marketInfo, sizeDeltaUsd, false, userReferralInfo);
-
-          const positionFeeUsd = positionFeeInfo.positionFeeUsd;
-          const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor);
-
-          const { baseCollateralAmount } = leverageBySizeValues({
-            collateralToken,
-            leverage,
-            sizeDeltaUsd,
-            collateralPrice,
-            uiFeeFactor,
-            positionFeeUsd,
-            fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || 0n,
-            borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || 0n,
-            uiFeeUsd,
-            swapUiFeeUsd: 0n,
-          });
-
-          const usdOut = convertToUsd(baseCollateralAmount, collateralToken.decimals, collateralToken.prices.maxPrice);
-          const baseUsdIn = usdOut;
-          const baseAmountIn = convertToTokenAmount(baseUsdIn, fromToken.decimals, fromToken.prices.minPrice);
-
-          const swapAmounts = getSwapAmountsByToValue({
-            tokenIn: fromToken,
-            tokenOut: collateralToken,
-            amountOut: baseCollateralAmount,
-            isLimit: false,
-            externalSwapQuote: undefined,
-            findSwapPath,
-            uiFeeFactor,
-          });
-
-          const internalSwapPriceImpact = getFeeItem(
-            swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-            swapAmounts.usdIn
-          );
-
-          return {
-            priceIn: fromToken.prices.minPrice,
-            priceOut: collateralToken.prices.maxPrice,
-            usdOut,
-            baseUsdIn,
-            baseAmountIn,
-            internalSwapPriceImpact,
-          };
-        }
-
-        default: {
-          mustNeverExist(strategy);
+          default: {
+            mustNeverExist(strategy);
+          }
         }
       }
-    }
 
-    return {};
-  }, [
-    tradeFlags.isSwap,
-    tradeFlags.isIncrease,
-    tradeFlags.isLimit,
-    tradeFlags.isLong,
-    fromToken,
-    toToken,
-    fromTokenAmount,
-    findSwapPath,
-    uiFeeFactor,
-    strategy,
-    collateralToken,
-    marketInfo,
-    triggerPrice,
-    toTokenAmount,
-    userReferralInfo,
-    leverage,
-    existingPosition?.pendingFundingFeesUsd,
-    existingPosition?.pendingBorrowingFeesUsd,
-  ]);
+      return {};
+    }, [
+      tradeFlags.isIncrease,
+      tradeFlags.isLimit,
+      tradeFlags.isLong,
+      fromToken,
+      toToken,
+      fromTokenAmount,
+      findSwapPath,
+      uiFeeFactor,
+      strategy,
+      collateralToken,
+      marketInfo,
+      triggerPrice,
+      toTokenAmount,
+      userReferralInfo,
+      leverage,
+      existingPosition?.pendingFundingFeesUsd,
+      existingPosition?.pendingBorrowingFeesUsd,
+    ]);
+
+  const swapPriceImpactForExternalSwapThresholdBps =
+    swapDebugSettings?.swapPriceImpactForExternalSwapThresholdBps || SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS;
+
+  const isExternalSwapsEnabled = settings.externalSwapsEnabled && !externalSwapFails;
+  const isSwapImpactConditionMet =
+    // np internal swap or negative swap impact is less than threshold
+    !internalSwapPriceImpact || internalSwapPriceImpact.bps < swapPriceImpactForExternalSwapThresholdBps;
+  const debugForceExternalSwaps = swapDebugSettings?.forceExternalSwaps || false;
 
   const { externalSwapQuote: baseExternalSwapQuote } = useExternalSwapsQuote({
     chainId,
@@ -240,12 +240,14 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
     toTokenAddress: swapToTokenAddress,
     fromTokenAmount: baseAmountIn ?? amountIn,
     slippage,
-    enabled: Boolean(
-      forceExternalSwaps ||
-        (settings.externalSwapsEnabled &&
-          (!internalSwapPriceImpact || internalSwapPriceImpact.bps < swapPriceImpactForExternalSwapThresholdBps))
-    ),
+    enabled: debugForceExternalSwaps || (isExternalSwapsEnabled && isSwapImpactConditionMet),
   });
+
+  const isInternalSwapBetter =
+    (!debugForceExternalSwaps && !baseExternalSwapQuote) ||
+    (internalSwapFeesDeltaUsd !== undefined &&
+      baseExternalSwapQuote &&
+      internalSwapFeesDeltaUsd > -baseExternalSwapQuote.feesUsd);
 
   // console.log(
   //   "externalSwapQuote",
@@ -257,12 +259,7 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
   // );
 
   const adjustedExternalSwapQuote = useMemo(() => {
-    if (
-      !baseExternalSwapQuote ||
-      (!forceExternalSwaps &&
-        internalSwapPriceImpact &&
-        -baseExternalSwapQuote.feesUsd < internalSwapPriceImpact.deltaUsd)
-    ) {
+    if (!baseExternalSwapQuote || isInternalSwapBetter) {
       return undefined;
     }
 
@@ -289,7 +286,7 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
     baseExternalSwapQuote,
     baseUsdIn,
     fromToken,
-    internalSwapPriceImpact,
+    isInternalSwapBetter,
     priceIn,
     strategy,
     tradeFlags.isIncrease,

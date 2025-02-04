@@ -1,5 +1,6 @@
 import { DISABLED_OPEN_OCEAN_DEXES, getOpenOceanUrl } from "config/externalSwaps";
 import { buildUrl } from "lib/buildUrl";
+import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
@@ -67,13 +68,12 @@ export async function getOpenOceanPriceQuote({
       estimatedGas: BigInt(parsedRes.data.estimatedGas),
     };
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error("Error fetching external swap quote", e);
+    metrics.pushError(e, "openOceanQuote");
     return undefined;
   }
 }
 
-export async function getOpenOceanBuildTx({
+export async function getOpenOceanTxnData({
   chainId,
   tokenInAddress,
   tokenOutAddress,
@@ -121,6 +121,7 @@ export async function getOpenOceanBuildTx({
       outputAmount: BigInt(data.data.outputAmount || "0"),
     };
   } catch (e) {
+    metrics.pushError(e, "openOceanBuildTx");
     return undefined;
   }
 }
