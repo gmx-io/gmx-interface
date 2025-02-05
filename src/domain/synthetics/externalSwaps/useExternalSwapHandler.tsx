@@ -1,7 +1,15 @@
-import { getSwapDebugSettings, SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS } from "config/externalSwaps";
+import { Trans } from "@lingui/macro";
+import {
+  AUTO_SWAP_FALLBACK_MAX_FEES_BPS,
+  DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT,
+  getSwapDebugSettings,
+  SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS,
+} from "config/externalSwaps";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectExternalSwapFails,
+  selectGasPrice,
   selectMarketsInfoData,
   selectPositionsInfoData,
   selectSetExternalSwapFails,
@@ -28,7 +36,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExternalSwapQuote, useExternalSwapsQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
+import { useExternalSwapsQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
 import { getPositionFee } from "domain/synthetics/fees";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import {
@@ -39,24 +47,18 @@ import {
 } from "domain/synthetics/trade";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import React, { createContext, useContext, useEffect, useMemo } from "react";
+import useWallet from "lib/wallets/useWallet";
+import { useEffect, useMemo, useState } from "react";
 import { bigMath } from "sdk/utils/bigmath";
 import { getFeeItem } from "sdk/utils/fees";
 import { applyFactor } from "sdk/utils/numbers";
-import { useContextSelector } from "use-context-selector";
 
-type ExternalSwapsContextType = {
-  externalSwapQuote?: ExternalSwapQuote;
-};
-
-const ExternalSwapsContext = createContext<ExternalSwapsContextType>({ externalSwapQuote: undefined });
-
-const swapDebugSettings = getSwapDebugSettings();
-
-export function ExternalSwapsContextProvider({ children }: { children: React.ReactNode }) {
+export function useExternalSwapHandler() {
   const { chainId } = useChainId();
+  const { orderStatuses } = useSyntheticsEvents();
   const settings = useSettings();
   const tradeMode = useSelector(selectTradeboxTradeMode);
   const tradeType = useSelector(selectTradeboxTradeType);
@@ -82,9 +84,14 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
   const strategy = useSelector(selectTradeboxLeverageStrategy);
   const existingPosition = getByKey(positionsInfoData, existingPositionKey);
   const setExternalSwapQuote = useSelector(selectSetExternalSwapQuote);
+  const gasPrice = useSelector(selectGasPrice);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
+
+  const swapDebugSettings = getSwapDebugSettings();
+
   const externalSwapFails = useSelector(selectExternalSwapFails);
   const setExternalSwapFails = useSelector(selectSetExternalSwapFails);
+
   const uiFeeFactor = useSelector(selectUiFeeFactor);
 
   const swapToTokenAddress = tradeFlags.isSwap ? toTokenAddress : collateralTokenAddress;
@@ -227,10 +234,13 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
   const swapPriceImpactForExternalSwapThresholdBps =
     swapDebugSettings?.swapPriceImpactForExternalSwapThresholdBps || SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS;
 
-  const isExternalSwapsEnabled = settings.externalSwapsEnabled && !externalSwapFails;
+  const [shouldFallbackToInternalSwap, setShouldFallbackToInternalSwap] = useState(false);
+
+  const isExternalSwapsEnabled = settings.externalSwapsEnabled && !shouldFallbackToInternalSwap;
   const isSwapImpactConditionMet =
     // np internal swap or negative swap impact is less than threshold
     !internalSwapPriceImpact || internalSwapPriceImpact.bps < swapPriceImpactForExternalSwapThresholdBps;
+
   const debugForceExternalSwaps = swapDebugSettings?.forceExternalSwaps || false;
 
   const { externalSwapQuote: baseExternalSwapQuote } = useExternalSwapsQuote({
@@ -240,6 +250,7 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
     toTokenAddress: swapToTokenAddress,
     fromTokenAmount: baseAmountIn ?? amountIn,
     slippage,
+    gasPrice,
     enabled: debugForceExternalSwaps || (isExternalSwapsEnabled && isSwapImpactConditionMet),
   });
 
@@ -248,15 +259,6 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
     (internalSwapFeesDeltaUsd !== undefined &&
       baseExternalSwapQuote &&
       internalSwapFeesDeltaUsd > -baseExternalSwapQuote.feesUsd);
-
-  // console.log(
-  //   "externalSwapQuote",
-  //   baseExternalSwapQuote,
-  //   Boolean(
-  //     settings.externalSwapsEnabled &&
-  //       (!internalSwapPriceImpact || internalSwapPriceImpact.bps < swapPriceImpactForExternalSwapThresholdBps)
-  //   )
-  // );
 
   const adjustedExternalSwapQuote = useMemo(() => {
     if (!baseExternalSwapQuote || isInternalSwapBetter) {
@@ -294,28 +296,53 @@ export function ExternalSwapsContextProvider({ children }: { children: React.Rea
   ]);
 
   useEffect(() => {
+    if (externalSwapFails > 0 && shouldFallbackToInternalSwap) {
+      if (
+        internalSwapFeesDeltaUsd !== undefined &&
+        baseExternalSwapQuote &&
+        internalSwapFeesDeltaUsd - -baseExternalSwapQuote.feesUsd > AUTO_SWAP_FALLBACK_MAX_FEES_BPS
+      ) {
+        setShouldFallbackToInternalSwap(true);
+      } else {
+        helperToast.error(
+          <div>
+            <div>External swap failed. Fallback to internal swap.</div>
+            <span
+              className="inline-block cursor-pointer border-b border-dashed"
+              onClick={() => setShouldFallbackToInternalSwap(true)}
+            >
+              <Trans>Switch to internal swap</Trans>
+            </span>
+          </div>
+        );
+      }
+    }
+
+    if (externalSwapFails >= DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT && settings.externalSwapsEnabled) {
+      setExternalSwapFails(0);
+      settings.setExternalSwapsEnabled(false);
+    }
+  }, [
+    baseExternalSwapQuote,
+    externalSwapFails,
+    internalSwapFeesDeltaUsd,
+    setExternalSwapFails,
+    settings,
+    shouldFallbackToInternalSwap,
+  ]);
+
+  useEffect(
+    function resetInternalSwapFallbackEff() {
+      const isLastOrderExecuted = Object.values(orderStatuses).every((os) => os.executedTxnHash);
+
+      if (isLastOrderExecuted && shouldFallbackToInternalSwap) {
+        setShouldFallbackToInternalSwap(false);
+      }
+    },
+    [orderStatuses, shouldFallbackToInternalSwap]
+  );
+
+  useEffect(() => {
     setExternalSwapQuote(adjustedExternalSwapQuote);
   }, [adjustedExternalSwapQuote, setExternalSwapQuote]);
-
-  const state = useMemo(() => {
-    return {
-      externalSwapQuote: adjustedExternalSwapQuote,
-    };
-  }, [adjustedExternalSwapQuote]);
-
-  return <ExternalSwapsContext.Provider value={state}>{children}</ExternalSwapsContext.Provider>;
-}
-
-export function useExternalSwapsContext() {
-  return useContext(ExternalSwapsContext);
-}
-
-export function useExternalSwapsSelector<Selected>(selector: (state: ExternalSwapsContextType) => Selected) {
-  const value = useContext(ExternalSwapsContext);
-
-  if (!value) {
-    throw new Error("Used useExternalSwapsSelector outside of ExternalSwapsContextProvider");
-  }
-
-  return useContextSelector(ExternalSwapsContext, selector);
 }

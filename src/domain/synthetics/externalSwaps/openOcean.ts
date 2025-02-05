@@ -80,6 +80,7 @@ export async function getOpenOceanTxnData({
   tokenInAmount,
   senderAddress,
   receiverAddress,
+  gasPrice,
   slippage,
 }: {
   senderAddress: string;
@@ -88,6 +89,7 @@ export async function getOpenOceanTxnData({
   tokenInAddress: string;
   tokenOutAddress: string;
   tokenInAmount: bigint;
+  gasPrice: string;
   slippage: number;
 }) {
   const disabledDexIds = DISABLED_OPEN_OCEAN_DEXES[chainId] ?? [];
@@ -97,7 +99,7 @@ export async function getOpenOceanTxnData({
     inTokenAddress: tokenInAddress,
     outTokenAddress: tokenOutAddress,
     amount: formatTokenAmount(tokenInAmount, tokenIn.decimals, undefined, { displayDecimals: 8 }),
-    gasPrice: "0.13000000",
+    gasPrice: gasPrice.toString(),
     slippage: slippage.toString(),
     sender: senderAddress,
     account: receiverAddress,

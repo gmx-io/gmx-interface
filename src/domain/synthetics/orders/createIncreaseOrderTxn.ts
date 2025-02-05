@@ -330,6 +330,7 @@ async function createEncodedPayload({
         tokenOutAddress: p.targetCollateralAddress,
         tokenInAmount: p.initialCollateralAmount,
         slippage: p.allowedSlippage,
+        gasPrice: gasPrice.toString(),
       }).catch((error: ErrorLike) => {
         error.errorSource = "externalSwap";
 

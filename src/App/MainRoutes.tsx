@@ -126,9 +126,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
       <Route exact path="/trade/:tradeType?">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
-          <ExternalSwapsContextProvider>
-            <SyntheticsPage openSettings={openSettings} />
-          </ExternalSwapsContextProvider>
+          <SyntheticsPage openSettings={openSettings} />
         </SyntheticsStateContextProvider>
       </Route>
       <Redirect from="/v2" to="/trade" />

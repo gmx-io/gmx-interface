@@ -54,6 +54,7 @@ import { useMedia } from "react-use";
 import { useMeasureComponentMountTime } from "lib/metrics";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 
 export type Props = {
   openSettings: () => void;
@@ -72,6 +73,8 @@ export function SyntheticsPage(p: Props) {
   const { account } = useWallet();
   const calcSelector = useCalcSelector();
   const { setPendingTxns } = usePendingTxns();
+
+  useExternalSwapHandler();
 
   const isMobile = useMedia("(max-width: 1100px)");
 

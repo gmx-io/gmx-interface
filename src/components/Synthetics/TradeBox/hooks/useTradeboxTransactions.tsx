@@ -3,7 +3,11 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectBlockTimestampData,
+  selectIsFirstOrder,
+  selectSetExternalSwapFails,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -49,6 +53,7 @@ import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { getContract } from "config/contracts";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { ErrorLike } from "lib/parseError";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -72,6 +77,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+
+  const setExternalSwapFails = useSelector(selectSetExternalSwapFails);
 
   const { shouldDisableValidationForTesting } = useSettings();
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
@@ -316,6 +323,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch((e) => {
+          if ((e as ErrorLike).errorSource === "externalSwap") {
+            setExternalSwapFails((old) => old + 1);
+          }
+
+          throw e;
+        })
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
@@ -348,6 +362,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
+      setExternalSwapFails,
     ]
   );
 

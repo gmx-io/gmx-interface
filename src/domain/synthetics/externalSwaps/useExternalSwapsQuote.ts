@@ -5,6 +5,7 @@ import { TokenData, TokensData } from "sdk/types/tokens";
 import useSWR from "swr";
 import { convertToUsd } from "../tokens";
 import { getOpenOceanPriceQuote } from "./openOcean";
+import useWallet from "lib/wallets/useWallet";
 
 export enum ExternalSwapAggregator {
   OpenOcean = "openOcean",
@@ -57,6 +58,7 @@ export function useExternalSwapsQuote({
   toTokenAddress,
   fromTokenAmount,
   slippage,
+  gasPrice,
   enabled = true,
 }: {
   chainId: number;
@@ -65,8 +67,13 @@ export function useExternalSwapsQuote({
   toTokenAddress: string | undefined;
   fromTokenAmount: bigint | undefined;
   slippage: number | undefined;
+  gasPrice: bigint | undefined;
   enabled?: boolean;
 }) {
+  const { signer } = useWallet();
+
+  console.log("signer address", signer?.address);
+
   const swapKey =
     enabled &&
     fromTokenAddress &&
@@ -74,19 +81,39 @@ export function useExternalSwapsQuote({
     toTokenAddress !== fromTokenAddress &&
     fromTokenAmount !== undefined &&
     fromTokenAmount > 0n &&
-    slippage !== undefined
-      ? ["useExternalSwapsQuote", chainId, fromTokenAddress, toTokenAddress, fromTokenAmount.toString(), slippage]
+    slippage !== undefined &&
+    gasPrice !== undefined
+      ? ["useExternalSwapsQuote", chainId, fromTokenAddress, toTokenAddress, fromTokenAmount, slippage, gasPrice]
       : null;
 
   const debouncedKey = useDebounce(swapKey, 500);
 
+  console.log("debouncedKey", debouncedKey, [
+    "useExternalSwapsQuote",
+    chainId,
+    fromTokenAddress,
+    toTokenAddress,
+    fromTokenAmount?.toString(),
+    slippage,
+    gasPrice,
+  ]);
+
   const { data: externalSwapOutput } = useSWR(debouncedKey, {
     keepPreviousData: true,
+
     fetcher: async () => {
       try {
-        if (!fromTokenAddress || !toTokenAddress || fromTokenAmount === undefined || slippage === undefined) {
+        if (
+          !fromTokenAddress ||
+          !toTokenAddress ||
+          fromTokenAmount === undefined ||
+          slippage === undefined ||
+          gasPrice === undefined
+        ) {
           throw new Error("Invalid swap parameters");
         }
+
+        console.log("gasPrice", gasPrice);
 
         const openOceanQuote = await getOpenOceanPriceQuote({
           chainId,
@@ -94,7 +121,7 @@ export function useExternalSwapsQuote({
           toTokenAddress,
           fromTokenAmount,
           slippage,
-          gasPrice: BigInt(1),
+          gasPrice,
         });
 
         if (!openOceanQuote) {
