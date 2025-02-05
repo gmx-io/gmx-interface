@@ -86,9 +86,6 @@ export class Multicall {
       });
     });
 
-    // const providerUrl = rpcUrl;
-    // const rpcProviderName = getProviderNameFromUrl(providerUrl);
-
     const processResponse = (response: any) => {
       const multicallResult: MulticallResult<any> = {
         success: true,
@@ -135,14 +132,18 @@ export class Multicall {
       return multicallResult;
     };
 
+    const timeoutController = new AbortController();
+
     const result = await Promise.race([
       client.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
+      sleep(maxTimeout, timeoutController).then(() => Promise.reject(new Error("multicall timeout"))),
     ])
       .then((response) => {
+        timeoutController.abort();
         return processResponse(response);
       })
       .catch((_viemError) => {
+        timeoutController.abort();
         const e = new Error(_viemError.message.slice(0, 150));
 
         /* eslint-disable-next-line */

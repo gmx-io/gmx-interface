@@ -97,9 +97,10 @@ export class Markets extends Module {
           // Skip invalid market
           if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
             // eslint-disable-next-line no-console
-            console.log("market info error", marketAddress, readerErrors, dataStoreErrors, readerValues);
+            console.warn(`No market found ${marketAddress} in getMarketsValues`);
             return acc;
           }
+
           const market = getByKey(marketsData, marketAddress)!;
           const marketDivisor = market.isSameCollaterals ? 2n : 1n;
 
