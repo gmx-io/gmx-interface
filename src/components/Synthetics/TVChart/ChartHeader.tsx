@@ -24,7 +24,7 @@ const MIN_FADE_AREA = 24; //px
 const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
 const MIN_SCROLL_END_SPACE = 5; // px
 
-function TVChartHeaderInfoMobile() {
+function ChartHeaderInfoMobile() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -202,7 +202,7 @@ function TVChartHeaderInfoMobile() {
   );
 }
 
-function TVChartHeaderInfoDesktop() {
+function ChartHeaderInfoDesktop() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -462,6 +462,6 @@ function TVChartHeaderInfoDesktop() {
   );
 }
 
-export function TVChartHeader({ isMobile }: { isMobile: boolean }) {
-  return isMobile ? <TVChartHeaderInfoMobile /> : <TVChartHeaderInfoDesktop />;
+export function ChartHeader({ isMobile }: { isMobile: boolean }) {
+  return isMobile ? <ChartHeaderInfoMobile /> : <ChartHeaderInfoDesktop />;
 }
