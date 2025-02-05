@@ -64,14 +64,14 @@ export function useV1FeesInfo(chainId: number) {
 
       let epochFees = 0n;
       const weeklyFees = feeStatsData.daily.reduce((acc, h) => {
-        let accumFees = sumBigInts(...[acc, h.swap, h.marginAndLiquidation, h.mint, h.burn].map(BigInt));
+        const incr = sumBigInts(...[h.swap, h.marginAndLiquidation, h.mint, h.burn].map(BigInt));
 
         const [timestamp] = h.id.split(":");
         if (Number(timestamp) >= epochStartedTimestamp) {
-          epochFees = accumFees;
+          epochFees += incr;
         }
 
-        return accumFees;
+        return acc + incr;
       }, 0n);
 
       return { weeklyFees, epochFees, totalFees };
