@@ -16,7 +16,6 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
-import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 import { getPositionStats } from "./getPositionStats";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
@@ -24,6 +23,7 @@ import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
+import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 
 export function OverviewCard({
   statsArbitrum,
@@ -186,6 +186,19 @@ export function OverviewCard({
   // #endregion Short Position Sizes
 
   // #region Fees
+  const v1ArbitrumEpochFees = v1ArbitrumFees?.epochFees;
+  const v1AvalancheEpochFees = v1AvalancheFees?.epochFees;
+
+  const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
+  const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
+
+  const totalEpochFeesUsd = sumBigInts(
+    v1ArbitrumEpochFees,
+    v1AvalancheEpochFees,
+    v2ArbitrumEpochFees,
+    v2AvalancheEpochFees
+  );
+
   const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
   const v1AvalancheWeeklyFees = v1AvalancheFees?.weeklyFees;
 
@@ -198,6 +211,7 @@ export function OverviewCard({
     v2ArbitrumWeeklyFees,
     v2AvalancheWeeklyFees
   );
+
   // #endregion Fees
 
   const dailyVolumeEntries = useMemo(
@@ -250,14 +264,14 @@ export function OverviewCard({
     ]
   );
 
-  const weeklyFeesEntries = useMemo(
+  const epochFeesEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumWeeklyFees,
-      "V2 Arbitrum": v2ArbitrumWeeklyFees,
-      "V1 Avalanche": v1AvalancheWeeklyFees,
-      "V2 Avalanche": v2AvalancheWeeklyFees,
+      "V1 Arbitrum": v1ArbitrumEpochFees,
+      "V2 Arbitrum": v2ArbitrumEpochFees,
+      "V1 Avalanche": v1AvalancheEpochFees,
+      "V2 Avalanche": v2AvalancheEpochFees,
     }),
-    [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees]
+    [v1ArbitrumEpochFees, v1AvalancheEpochFees, v2ArbitrumEpochFees, v2AvalancheEpochFees]
   );
 
   const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
@@ -268,6 +282,35 @@ export function OverviewCard({
     }, 1000 * 60);
     return () => clearInterval(interval);
   }, []);
+
+  const feesSubtotal = useMemo(() => {
+    const v1BuyingPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
+    const v2BuyingPressure = (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n)) * 27n) / 100n;
+    const annualizedTotal = (totalWeeklyFeesUsd * 365n) / 7n;
+    const totalBuyingPressure = v1BuyingPressure + v2BuyingPressure;
+    const annualizedTotalBuyingPressure = (totalBuyingPressure * 365n) / 7n;
+
+    return (
+      <>
+        <div className="my-5 h-1 bg-gray-800" />
+        <p className="Tooltip-row">
+          <span className="label">
+            <Trans>Annualized:</Trans>
+          </span>
+          <span className="amount">${formatAmount(annualizedTotal, USD_DECIMALS, 0, true)}</span>
+        </p>
+        <p className="Tooltip-row">
+          <span className="label">
+            <Trans>Annualized Buy Pressure (BB&D):</Trans>
+          </span>
+          <span className="amount">${formatAmount(annualizedTotalBuyingPressure, USD_DECIMALS, 0, true)}</span>
+        </p>
+        <p className="Tooltip-row !mt-16">
+          <Trans>Annualized data based on the past 7 days.</Trans>
+        </p>
+      </>
+    );
+  }, [v1ArbitrumWeeklyFees, v1AvalancheWeeklyFees, v2ArbitrumWeeklyFees, v2AvalancheWeeklyFees, totalWeeklyFeesUsd]);
 
   return (
     <div className="App-card">
@@ -412,8 +455,8 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(totalWeeklyFeesUsd, USD_DECIMALS, 2, true)}`}
-              content={<ChainsStatsTooltipRow entries={weeklyFeesEntries} />}
+              handle={`$${formatAmount(totalEpochFeesUsd, USD_DECIMALS, 2, true)}`}
+              content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
             />
           </div>
         </div>

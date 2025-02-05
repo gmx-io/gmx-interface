@@ -13,6 +13,7 @@ type DashboardOverview = {
   dailyVolume: bigint;
   totalVolume: bigint;
   weeklyFees: bigint;
+  epochFees: bigint;
   totalFees: bigint;
   totalUsers: bigint;
 };
@@ -48,6 +49,7 @@ export default function useV2Stats(chainId: number): DashboardOverview {
       dailyVolume: BigInt(volumeInfo?.dailyVolume ?? 0) || 0n,
       totalVolume: BigInt(volumeInfo?.totalVolume ?? 0) || 0n,
       weeklyFees: BigInt(feesInfo?.weeklyFees ?? 0) || 0n,
+      epochFees: BigInt(feesInfo?.epochFees ?? 0) || 0n,
       totalFees: BigInt(feesInfo?.totalFees ?? 0) || 0n,
       totalUsers: BigInt(usersInfo?.totalUsers ?? 0) || 0n,
     };
