@@ -4,4 +4,4 @@
 yarn test:ci
 
 cd sdk
-yarn test
+yarn test:ci

@@ -19,6 +19,7 @@
     "prepare": "ts-patch install -s",
     "copy:jsons": "cp -r src/abis build/src && cp -r src/prebuilt build/src",
     "test": "vitest",
+    "test:ci": "vitest run",
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "build": "rm -rf build && tsc -p tsconfig.json && yarn copy:jsons"
   },
