@@ -3484,8 +3484,8 @@ msgstr "ファンディング手数料"
 msgid "Approval failed"
 msgstr "承認が失敗しました"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
@@ -3698,8 +3698,8 @@ msgstr "実行価格が許容価格条件を満たしませんでした。条件
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "ネットレート / 1時間"
 
@@ -4370,8 +4370,8 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "合計 アクティブ: {openTotal} 執行済: {executedTotal} キャンセル済: {cancelledTotal}"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
 msgstr ""
 
@@ -4479,8 +4479,8 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Available Liquidity"
 msgstr "利用可能な流動性"
 
@@ -7143,10 +7143,6 @@ msgstr ""
 msgid "Last month"
 msgstr "先月"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-#~ msgid "Fees for the past 7 days"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas"
@@ -7575,8 +7571,8 @@ msgstr "スワップ"
 msgid "long"
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr ""
 
@@ -7742,7 +7738,7 @@ msgstr "テイクプロフィット注文とストップロス注文はポジシ
 msgid "Partial Liquidation"
 msgstr "部分的清算"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
 msgstr "24時間取引高"

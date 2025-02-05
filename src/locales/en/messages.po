@@ -3484,8 +3484,8 @@ msgstr "Funding Fees"
 msgid "Approval failed"
 msgstr "Approval failed"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
@@ -3701,8 +3701,8 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Orde
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "Net Rate / 1h"
 
@@ -4373,8 +4373,8 @@ msgstr "You will be long {indexSymbol} only from your long position."
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
 msgstr "24h Low"
 
@@ -4482,8 +4482,8 @@ msgstr "Wallet total accrued Fees"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Available Liquidity"
 msgstr "Available Liquidity"
 
@@ -7149,10 +7149,6 @@ msgstr "APY"
 msgid "Last month"
 msgstr "Last month"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-#~ msgid "Fees for the past 7 days"
-#~ msgstr "Fees for the past 7 days"
-
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas"
@@ -7581,8 +7577,8 @@ msgstr "Swap"
 msgid "long"
 msgstr "long"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr "24h High"
 
@@ -7748,7 +7744,7 @@ msgstr "Take-profit and stop-loss orders can be set after opening a position. <0
 msgid "Partial Liquidation"
 msgstr "Partial Liquidation"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
 msgstr "24h Volume"

@@ -3484,8 +3484,8 @@ msgstr "资金费用"
 msgid "Approval failed"
 msgstr "核准失败"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
@@ -3698,8 +3698,8 @@ msgstr "执行价格未满足可接受价格条件。当条件满足时，订单
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "净率 / 1小时"
 
@@ -4370,8 +4370,8 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "活跃总数： {openTotal}, 已执行: {executedTotal}, 已取消: {cancelledTotal}"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
 msgstr ""
 
@@ -4479,8 +4479,8 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Available Liquidity"
 msgstr "可用的流动资金"
 
@@ -7143,10 +7143,6 @@ msgstr ""
 msgid "Last month"
 msgstr "上个月"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-#~ msgid "Fees for the past 7 days"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas"
@@ -7575,8 +7571,8 @@ msgstr "交易"
 msgid "long"
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr ""
 
@@ -7742,7 +7738,7 @@ msgstr "获利和止损订单可以在开仓后设置 <0/><1/>每一行仓位上
 msgid "Partial Liquidation"
 msgstr "部分清偿"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
 msgstr "24小时数量"

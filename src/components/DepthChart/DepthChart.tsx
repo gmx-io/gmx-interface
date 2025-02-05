@@ -41,8 +41,9 @@ import {
 import { bigMath } from "sdk/utils/bigmath";
 import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
+import { GREEN } from "components/TVChartContainer/constants";
+import { clamp } from "lib/numbers";
 
-const GREEN = "#0ECC83";
 const RED = "#FF506A";
 
 const Y_AXIS_LABEL: LabelProps = {
@@ -74,6 +75,10 @@ const Y_AXIS_TICK: YAxisProps["tick"] = { fill: "#ffffff", opacity: 0.7, fontSiz
 const TICKS_SPACING = 120;
 const DEFAULT_TICK_COUNT_BIGINT = 9n;
 const LINE_PATH_ELLIPSIS = "3px 3px 3px 3px 3px 3px 1000%";
+const DESKTOP_ZOOM_SPEED_COEFFICIENT = 0.001;
+const TOUCH_ZOOM_SPEED_COEFFICIENT = 0.004;
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 20;
 
 const ZERO_PRICE_IMPACT_LEFT_MULTIPLIER_BIGINT = 9990n; // 0.999
 const ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER_BIGINT = 10010n; // 1.001
@@ -101,12 +106,11 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       const abortController = new AbortController();
 
       const wheelHandler = (event: WheelEvent) => {
-        event.preventDefault();
-
         if (isZeroPriceImpact) {
           return;
         }
-        setZoom((pZoom) => clamp(pZoom * Math.exp(-event.deltaY * 0.001), 1, 20));
+        event.preventDefault();
+        setZoom((pZoom) => clamp(pZoom * Math.exp(-event.deltaY * DESKTOP_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM));
       };
 
       container.addEventListener("wheel", wheelHandler, { passive: false, signal: abortController.signal });
@@ -176,13 +180,15 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
             Math.abs(gestureRecognizeDistanceY) > Math.abs(gestureRecognizeDistanceX)
           ) {
             gestureRecognizeState = "vertical";
-            setZoom((pZoom) => clamp(pZoom * Math.exp(-gestureRecognizeDistanceY * 0.004), 1, 20));
+            setZoom((pZoom) =>
+              clamp(pZoom * Math.exp(-gestureRecognizeDistanceY * TOUCH_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM)
+            );
             setIsZooming(true);
           } else if (gestureRecognizeDistance > 10) {
             gestureRecognizeState = "horizontal";
           }
         } else if (gestureRecognizeState === "vertical") {
-          setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * 0.004), 1, 20));
+          setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * TOUCH_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM));
         }
 
         prevTouchY = event.touches[0].clientY;
@@ -533,13 +539,11 @@ function ActiveDotForZeroPriceImpact(
       isOpaqueCloser = distanceToOpaque < distanceToTransparent;
     }
 
-    let shouldShowDot = true;
+    const isTransparentCloser = !isOpaqueCloser;
+    const isOpaque = dataKey === "leftOpaqueSize" || dataKey === "rightOpaqueSize";
+    const isTransparent = dataKey === "leftTransparentSize" || dataKey === "rightTransparentSize";
 
-    if (isOpaqueCloser && dataKey !== "leftOpaqueSize" && dataKey !== "rightOpaqueSize") {
-      shouldShowDot = false;
-    } else if (!isOpaqueCloser && (dataKey === "leftOpaqueSize" || dataKey === "rightOpaqueSize")) {
-      shouldShowDot = false;
-    }
+    let shouldShowDot = (isOpaqueCloser && isOpaque) || (isTransparentCloser && isTransparent);
 
     if (!shouldShowDot) {
       return null;
@@ -599,7 +603,7 @@ function Tick(
     typeof props
   >;
 
-  const value = numberToBigint(payload.value as number, USD_DECIMALS);
+  const value = numberToBigint(payload.value, USD_DECIMALS);
   const visual = formatAmount(value, USD_DECIMALS, calculateDisplayDecimals(value), false);
 
   return (
@@ -721,177 +725,40 @@ function useDepthChartPricesData(
       priceImpactBigInt: 0n,
     });
   } else {
-    const rightInc = (rightMax - DOLLAR) / SIDE_POINTS_COUNT;
     const leftInc = (leftMax - DOLLAR) / SIDE_POINTS_COUNT;
-
-    // open long
-    // from center to right max
-    for (let i = DOLLAR; i < rightMax; i += rightInc) {
-      const priceImpactUsd = getPriceImpactForPosition(marketInfo, i, true, { fallbackToZero: false });
-
-      const executionPrice = getNextPositionExecutionPrice({
-        isIncrease: true,
-        isLong: true,
-        priceImpactUsd,
-        sizeDeltaUsd: i,
-        triggerPrice: marketInfo.indexToken.prices.maxPrice,
-      })!;
-
-      if (priceImpactUsd === 0n) {
-        data.push({
-          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          rightOpaqueSize: bigintToNumber(rightMin, USD_DECIMALS),
-          rightOpaqueSizeBigInt: rightMin,
-          size: bigintToNumber(rightMax, USD_DECIMALS),
-          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-          leftOpaqueSize: null,
-          leftOpaqueSizeBigInt: null,
-          rightTransparentSize: rightMax > rightMin ? bigintToNumber(rightMax, USD_DECIMALS) : null,
-          rightTransparentSizeBigInt: rightMax > rightMin ? rightMax : null,
-          leftTransparentSize: null,
-          leftTransparentSizeBigInt: null,
-          sizeBigInt: rightMax,
-          executionPriceBigInt: executionPrice,
-          priceImpactBigInt: priceImpactUsd,
-        });
-
-        break;
-      }
-
-      data.unshift({
-        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        rightOpaqueSize: i < rightMin ? bigintToNumber(i, USD_DECIMALS) : null,
-        rightOpaqueSizeBigInt: i < rightMin ? i : null,
-        size: bigintToNumber(i, USD_DECIMALS),
-        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        leftOpaqueSize: null,
-        leftOpaqueSizeBigInt: null,
-        rightTransparentSize: i > rightMin ? bigintToNumber(i, USD_DECIMALS) : null,
-        rightTransparentSizeBigInt: i > rightMin ? i : null,
-        leftTransparentSize: null,
-        leftTransparentSizeBigInt: null,
-        sizeBigInt: i,
-        executionPriceBigInt: executionPrice,
-        priceImpactBigInt: priceImpactUsd,
-      });
-
-      if (i + rightInc > rightMin && i < rightMin) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, {
-          fallbackToZero: true,
-        });
-
-        const executionPrice = getNextPositionExecutionPrice({
-          isIncrease: true,
-          isLong: true,
-          priceImpactUsd,
-          sizeDeltaUsd: rightMin,
-          triggerPrice: marketInfo.indexToken.prices.maxPrice,
-        })!;
-
-        rightMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
-
-        data.unshift({
-          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          rightOpaqueSize: bigintToNumber(rightMin, USD_DECIMALS),
-          rightOpaqueSizeBigInt: rightMin,
-          size: bigintToNumber(rightMin, USD_DECIMALS),
-          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-          leftOpaqueSize: null,
-          leftOpaqueSizeBigInt: null,
-          rightTransparentSize: bigintToNumber(rightMin, USD_DECIMALS),
-          rightTransparentSizeBigInt: rightMin,
-          leftTransparentSize: null,
-          leftTransparentSizeBigInt: null,
-
-          sizeBigInt: rightMin,
-          executionPriceBigInt: executionPrice,
-          priceImpactBigInt: priceImpactUsd,
-        });
-      }
-
-      if (i + rightInc >= rightMax) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMax, true, { fallbackToZero: true });
-
-        const executionPrice = getNextPositionExecutionPrice({
-          isIncrease: true,
-          isLong: true,
-          priceImpactUsd,
-          sizeDeltaUsd: rightMax,
-          triggerPrice: marketInfo.indexToken.prices.maxPrice,
-        })!;
-
-        data.unshift({
-          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          rightOpaqueSize: rightMax > rightMin ? null : bigintToNumber(rightMax, USD_DECIMALS),
-          rightOpaqueSizeBigInt: rightMax > rightMin ? null : rightMax,
-          size: bigintToNumber(rightMax, USD_DECIMALS),
-          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-          leftOpaqueSize: null,
-          leftOpaqueSizeBigInt: null,
-          rightTransparentSize: rightMax > rightMin ? bigintToNumber(rightMax, USD_DECIMALS) : null,
-          rightTransparentSizeBigInt: rightMax > rightMin ? rightMax : null,
-          leftTransparentSize: null,
-          leftTransparentSizeBigInt: null,
-
-          sizeBigInt: rightMax,
-          executionPriceBigInt: executionPrice,
-          priceImpactBigInt: priceImpactUsd,
-        });
-      }
-    }
+    const rightInc = (rightMax - DOLLAR) / SIDE_POINTS_COUNT;
 
     // open short
-    // append to the start of the points from center to left max
-    for (let i = DOLLAR; i <= leftMax; i += leftInc) {
-      const priceImpactUsd = getPriceImpactForPosition(marketInfo, i, false, { fallbackToZero: true });
+    // from left to center
+    for (let positionSize = leftMax; positionSize >= DOLLAR; positionSize -= leftInc) {
+      const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, false, { fallbackToZero: true });
 
       const executionPrice = getNextPositionExecutionPrice({
         isIncrease: true,
         isLong: false,
         priceImpactUsd,
-        sizeDeltaUsd: i,
+        sizeDeltaUsd: positionSize,
         triggerPrice: marketInfo.indexToken.prices.minPrice,
       })!;
 
-      if (priceImpactUsd == 0n) {
-        data.unshift({
-          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          leftOpaqueSize: bigintToNumber(leftMin, USD_DECIMALS),
-          leftOpaqueSizeBigInt: leftMin,
-          size: bigintToNumber(leftMax, USD_DECIMALS),
-          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-          rightOpaqueSize: null,
-          rightOpaqueSizeBigInt: null,
-          rightTransparentSize: null,
-          rightTransparentSizeBigInt: null,
-          leftTransparentSize: leftMax > leftMin ? bigintToNumber(leftMax, USD_DECIMALS) : null,
-          leftTransparentSizeBigInt: leftMax > leftMin ? leftMax : null,
-          sizeBigInt: leftMax,
-          executionPriceBigInt: executionPrice,
-          priceImpactBigInt: priceImpactUsd,
-        });
-
-        break;
-      }
-
-      data.unshift({
-        leftOpaqueSize: i < leftMin ? bigintToNumber(i, USD_DECIMALS) : null,
-        leftOpaqueSizeBigInt: i < leftMin ? i : null,
+      data.push({
+        leftOpaqueSize: positionSize <= leftMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+        leftOpaqueSizeBigInt: positionSize <= leftMin ? positionSize : null,
         executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        size: bigintToNumber(i, USD_DECIMALS),
+        size: bigintToNumber(positionSize, USD_DECIMALS),
         priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
         rightOpaqueSize: null,
         rightOpaqueSizeBigInt: null,
         rightTransparentSize: null,
         rightTransparentSizeBigInt: null,
-        leftTransparentSize: i > leftMin ? bigintToNumber(i, USD_DECIMALS) : null,
-        leftTransparentSizeBigInt: i > leftMin ? i : null,
-        sizeBigInt: i,
+        leftTransparentSize: positionSize > leftMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+        leftTransparentSizeBigInt: positionSize > leftMin ? positionSize : null,
+        sizeBigInt: positionSize,
         executionPriceBigInt: executionPrice,
         priceImpactBigInt: priceImpactUsd,
       });
 
-      if (i + leftInc > leftMin && i < leftMin) {
+      if (positionSize - leftInc < leftMin && positionSize > leftMin) {
         const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, {
           fallbackToZero: true,
         });
@@ -905,7 +772,7 @@ function useDepthChartPricesData(
 
         leftMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
 
-        data.unshift({
+        data.push({
           executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
           leftOpaqueSize: bigintToNumber(leftMin, USD_DECIMALS),
           leftOpaqueSizeBigInt: leftMin,
@@ -924,30 +791,124 @@ function useDepthChartPricesData(
         });
       }
 
-      if (i + leftInc >= leftMax) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMax, false, { fallbackToZero: true });
+      if (positionSize - leftInc < DOLLAR && positionSize > DOLLAR) {
+        const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, false, { fallbackToZero: true });
 
         const executionPrice = getNextPositionExecutionPrice({
           isIncrease: true,
           isLong: false,
           priceImpactUsd,
-          sizeDeltaUsd: leftMax,
+          sizeDeltaUsd: DOLLAR,
           triggerPrice: marketInfo.indexToken.prices.minPrice,
         })!;
 
-        data.unshift({
+        data.push({
           executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          leftOpaqueSize: leftMax > leftMin ? null : bigintToNumber(leftMax, USD_DECIMALS),
-          leftOpaqueSizeBigInt: leftMax > leftMin ? null : leftMax,
-          size: bigintToNumber(leftMax, USD_DECIMALS),
+          leftOpaqueSize: DOLLAR > leftMin ? null : bigintToNumber(DOLLAR, USD_DECIMALS),
+          leftOpaqueSizeBigInt: DOLLAR > leftMin ? null : DOLLAR,
+          size: bigintToNumber(DOLLAR, USD_DECIMALS),
           priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
           rightOpaqueSize: null,
           rightOpaqueSizeBigInt: null,
           rightTransparentSize: null,
           rightTransparentSizeBigInt: null,
-          leftTransparentSize: leftMax > leftMin ? bigintToNumber(leftMax, USD_DECIMALS) : null,
-          leftTransparentSizeBigInt: leftMax > leftMin ? leftMax : null,
-          sizeBigInt: leftMax,
+          leftTransparentSize: DOLLAR > leftMin ? bigintToNumber(DOLLAR, USD_DECIMALS) : null,
+          leftTransparentSizeBigInt: DOLLAR > leftMin ? DOLLAR : null,
+          sizeBigInt: DOLLAR,
+          executionPriceBigInt: executionPrice,
+          priceImpactBigInt: priceImpactUsd,
+        });
+      }
+    }
+
+    // open long
+    // from right max to center
+    for (let positionSize = rightMax; positionSize >= DOLLAR; positionSize -= rightInc) {
+      const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, true, { fallbackToZero: true });
+
+      const executionPrice = getNextPositionExecutionPrice({
+        isIncrease: true,
+        isLong: true,
+        priceImpactUsd,
+        sizeDeltaUsd: positionSize,
+        triggerPrice: marketInfo.indexToken.prices.maxPrice,
+      })!;
+
+      data.push({
+        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+        rightOpaqueSize: positionSize <= rightMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+        rightOpaqueSizeBigInt: positionSize <= rightMin ? positionSize : null,
+        size: bigintToNumber(positionSize, USD_DECIMALS),
+        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+        leftOpaqueSize: null,
+        leftOpaqueSizeBigInt: null,
+        rightTransparentSize: positionSize > rightMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+        rightTransparentSizeBigInt: positionSize > rightMin ? positionSize : null,
+        leftTransparentSize: null,
+        leftTransparentSizeBigInt: null,
+        sizeBigInt: positionSize,
+        executionPriceBigInt: executionPrice,
+        priceImpactBigInt: priceImpactUsd,
+      });
+
+      if (positionSize - rightInc < rightMin && positionSize > rightMin) {
+        const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, {
+          fallbackToZero: true,
+        });
+
+        const executionPrice = getNextPositionExecutionPrice({
+          isIncrease: true,
+          isLong: true,
+          priceImpactUsd,
+          sizeDeltaUsd: rightMin,
+          triggerPrice: marketInfo.indexToken.prices.maxPrice,
+        })!;
+
+        rightMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
+
+        data.push({
+          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+          rightOpaqueSize: bigintToNumber(rightMin, USD_DECIMALS),
+          rightOpaqueSizeBigInt: rightMin,
+          size: bigintToNumber(rightMin, USD_DECIMALS),
+          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+          leftOpaqueSize: null,
+          leftOpaqueSizeBigInt: null,
+          rightTransparentSize: bigintToNumber(rightMin, USD_DECIMALS),
+          rightTransparentSizeBigInt: rightMin,
+          leftTransparentSize: null,
+          leftTransparentSizeBigInt: null,
+
+          sizeBigInt: rightMin,
+          executionPriceBigInt: executionPrice,
+          priceImpactBigInt: priceImpactUsd,
+        });
+      }
+
+      if (positionSize - rightInc < DOLLAR && positionSize > DOLLAR) {
+        const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, true, { fallbackToZero: true });
+
+        const executionPrice = getNextPositionExecutionPrice({
+          isIncrease: true,
+          isLong: true,
+          priceImpactUsd,
+          sizeDeltaUsd: DOLLAR,
+          triggerPrice: marketInfo.indexToken.prices.maxPrice,
+        })!;
+
+        data.push({
+          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+          rightOpaqueSize: DOLLAR > rightMin ? null : bigintToNumber(DOLLAR, USD_DECIMALS),
+          rightOpaqueSizeBigInt: DOLLAR > rightMin ? null : DOLLAR,
+          size: bigintToNumber(DOLLAR, USD_DECIMALS),
+          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+          leftOpaqueSize: null,
+          leftOpaqueSizeBigInt: null,
+          rightTransparentSize: DOLLAR > rightMin ? bigintToNumber(DOLLAR, USD_DECIMALS) : null,
+          rightTransparentSizeBigInt: DOLLAR > rightMin ? DOLLAR : null,
+          leftTransparentSize: null,
+          leftTransparentSizeBigInt: null,
+          sizeBigInt: DOLLAR,
           executionPriceBigInt: executionPrice,
           priceImpactBigInt: priceImpactUsd,
         });
@@ -1017,12 +978,13 @@ function calculateTicks({
   highPrice: bigint;
   gap?: [bigint, bigint];
 }) {
-  const decimals = USD_DECIMALS;
-
   const midPriceFloat = bigintToNumber(midPrice, USD_DECIMALS);
   const stepRaw = bigMath.divRound(span, tickCount);
 
-  const stepScale = numberToBigint(Math.pow(10, Math.floor(Math.log10(bigintToNumber(stepRaw, decimals)))), decimals);
+  const stepScale = numberToBigint(
+    Math.pow(10, Math.floor(Math.log10(bigintToNumber(stepRaw, USD_DECIMALS)))),
+    USD_DECIMALS
+  );
   const step = bigMath.divRound(stepRaw, stepScale) * stepScale;
 
   let ticks: number[] = [];
@@ -1034,21 +996,21 @@ function calculateTicks({
     const leftStart = bigMath.divRound(midPrice, stepScale) * stepScale - step;
     const rightStart = bigMath.divRound(midPrice, stepScale) * stepScale + step;
     for (let i = leftStart; i > lowPrice; i -= step) {
-      ticks.unshift(bigintToNumber(i, decimals));
+      ticks.unshift(bigintToNumber(i, USD_DECIMALS));
     }
 
     ticks.push(midPriceFloat);
     marketPriceIndex = ticks.length - 1;
 
     for (let i = rightStart; i < highPrice; i += step) {
-      ticks.push(bigintToNumber(i, decimals));
+      ticks.push(bigintToNumber(i, USD_DECIMALS));
     }
   } else {
     // divide and ceil
     const leftStart = (lowPrice / stepScale + 1n) * stepScale;
 
     for (let i = leftStart; i < highPrice; i += step) {
-      ticks.push(bigintToNumber(i, decimals));
+      ticks.push(bigintToNumber(i, USD_DECIMALS));
     }
   }
 
@@ -1133,8 +1095,4 @@ function yAxisTickFormatter(value: number) {
   }
 
   return numberWithCommas(value / 1000);
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.max(min, Math.min(value, max));
 }

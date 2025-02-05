@@ -10,8 +10,6 @@ import { getFeeItem } from "sdk/utils/fees";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-import "./DepthChartTooltip.css";
-
 const LEFT_OPAQUE_TOOLTIP = (
   <Trans>
     Execution prices for increasing shorts and
@@ -231,7 +229,7 @@ export const ChartTooltip = forwardRef<
   return (
     <div
       ref={tooltipRef}
-      className="DepthChartTooltip text-body-medium z-50 rounded-4 p-8 transition-transform duration-100 ease-linear max-[700px]:text-body-small"
+      className="text-body-medium z-50 rounded-4 bg-slate-600 p-8 shadow-[0px_4px_14px_rgba(0,0,0,0.25)] transition-transform duration-100 ease-linear will-change-transform max-[700px]:text-body-small"
     >
       <p className="mb-8">{tooltip}</p>
       <StatsTooltipRow

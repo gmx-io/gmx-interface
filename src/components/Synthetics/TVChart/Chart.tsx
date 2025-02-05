@@ -8,7 +8,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-import { TVChartHeader } from "./TVChartHeader";
+import { ChartHeader } from "./ChartHeader";
 import { DepthChart } from "components/DepthChart/DepthChart";
 import Tab from "components/Tab/Tab";
 import { TVChart } from "./TVChart";
@@ -42,7 +42,7 @@ export function Chart() {
 
   return (
     <div className="ExchangeChart tv">
-      <TVChartHeader isMobile={isMobile} />
+      <ChartHeader isMobile={isMobile} />
 
       <div className="flex h-[49.6rem] flex-col overflow-hidden rounded-4 bg-slate-800">
         {isSwap ? (
