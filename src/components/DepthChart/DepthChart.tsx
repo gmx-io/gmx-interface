@@ -758,7 +758,7 @@ function useDepthChartPricesData(
         priceImpactBigInt: priceImpactUsd,
       });
 
-      if (positionSize - leftInc < leftMin && positionSize > leftMin) {
+      if (positionSize - leftInc < leftMin && positionSize > leftMin && leftMin > DOLLAR) {
         const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, {
           fallbackToZero: true,
         });
@@ -851,7 +851,7 @@ function useDepthChartPricesData(
         priceImpactBigInt: priceImpactUsd,
       });
 
-      if (positionSize - rightInc < rightMin && positionSize > rightMin) {
+      if (positionSize - rightInc < rightMin && positionSize > rightMin && rightMin > DOLLAR) {
         const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, {
           fallbackToZero: true,
         });
