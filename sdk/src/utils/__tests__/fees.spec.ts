@@ -1,6 +1,6 @@
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketInfo } from "types/markets";
-import { getFundingFactorPerPeriod } from ".";
+import { getFundingFactorPerPeriod } from "../fees";
 import { numberToBigint } from "utils/numbers";
 
 const dollar = 10n ** BigInt(USD_DECIMALS);
