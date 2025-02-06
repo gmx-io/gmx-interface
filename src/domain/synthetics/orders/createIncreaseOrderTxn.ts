@@ -15,7 +15,6 @@ import Token from "sdk/abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { isMarketOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
@@ -25,6 +24,7 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 const { ZeroAddress } = ethers;
 
