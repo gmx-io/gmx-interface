@@ -52,6 +52,7 @@ msgstr ""
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/TVChart/Chart.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "PRIX"
@@ -189,6 +190,10 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
+msgstr ""
+
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "Total size"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -1661,6 +1666,10 @@ msgstr "Sortir en {0} max"
 msgid "Updating Subaccount"
 msgstr ""
 
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2677,6 +2686,10 @@ msgstr "Permettre les ordres"
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "Capacité maximale du pool atteinte pour {0}. Veuillez minter GLP avec un autre token"
 
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
+msgstr ""
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Trade"
@@ -3471,8 +3484,8 @@ msgstr "Frais de financement"
 msgid "Approval failed"
 msgstr "Approbation rejetée"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
@@ -3563,6 +3576,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
+msgstr ""
+
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -3681,8 +3698,8 @@ msgstr "Le prix d'exécution n'a pas respecté la condition de prix acceptable. 
 msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "Taux net / 1h"
 
@@ -3968,6 +3985,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
+#: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -4352,8 +4370,8 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Actif total: {openTotal}, exécuté: {executedTotal}, annulé: {cancelledTotal}"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
 msgstr ""
 
@@ -4390,6 +4408,10 @@ msgstr "Simulateur de rendement GMX"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
+msgstr ""
+
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "DEPTH"
 msgstr ""
 
 #: src/pages/Earn/EarnV2.tsx
@@ -4457,8 +4479,8 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Available Liquidity"
 msgstr "Liquidité Disponible"
 
@@ -4510,6 +4532,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "Leverage Trading Terminal"
+msgstr ""
+
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "Execution prices for increasing shorts and<0/>decreasing longs."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -5329,6 +5355,10 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Use the edit collateral icon to deposit or withdraw collateral."
 msgstr "Utilisez l'icône d'édition du collatéral pour déposer ou retirer du collatéral."
+
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "No liquidity is available for increasing longs for<0/>this size. Max long size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing shorts for<4/>this size."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using any token from any network:"
@@ -6812,6 +6842,10 @@ msgstr ""
 msgid "Avg. Lev."
 msgstr ""
 
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche LP incentives"
 msgstr ""
@@ -7108,10 +7142,6 @@ msgstr ""
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "Le mois dernier"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-#~ msgid "Fees for the past 7 days"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -7475,6 +7505,7 @@ msgstr ""
 msgid "Last 30 days"
 msgstr ""
 
+#: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Execution Price"
@@ -7540,8 +7571,8 @@ msgstr "Échanger"
 msgid "long"
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr ""
 
@@ -7626,6 +7657,10 @@ msgstr ""
 msgid "You do not have any eligible trade during the competition window."
 msgstr ""
 
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "Execution prices for increasing longs and<0/>decreasing shorts."
+msgstr ""
+
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 30d"
@@ -7703,7 +7738,7 @@ msgstr "Les ordres Take-profit et Stop-loss peuvent être définis après l'ouve
 msgid "Partial Liquidation"
 msgstr "Liquidation partielle"
 
-#: src/components/Synthetics/TVChart/TVChartHeader.tsx
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
 msgstr "Volume sur 24h"
@@ -7731,6 +7766,10 @@ msgstr "Projets de la Communauté"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
+msgstr ""
+
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "No liquidity is available for increasing longs for<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx

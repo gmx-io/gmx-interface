@@ -1,15 +1,17 @@
-import {
-  PRECISION,
-  BN_ZERO,
-  BN_ONE,
-  BN_NEGATIVE_ONE,
-  expandDecimals,
-  basisPointsToFloat,
-  getBasisPoints,
-  roundUpMagnitudeDivision,
-  applyFactor,
-} from "../numbers";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
+import {
+  BN_NEGATIVE_ONE,
+  BN_ONE,
+  BN_ZERO,
+  PRECISION,
+  applyFactor,
+  basisPointsToFloat,
+  bigintToNumber,
+  expandDecimals,
+  getBasisPoints,
+  numberToBigint,
+  roundUpMagnitudeDivision,
+} from "../numbers";
 
 describe("numbers utils", () => {
   it("constants", () => {
@@ -45,7 +47,7 @@ describe("numbers utils", () => {
       expect(getBasisPoints(1n, 2n)).toBe(5000n);
     });
 
-    it.only("rounds up if remainder != 0 and shouldRoundUp=true", () => {
+    it("rounds up if remainder != 0 and shouldRoundUp=true", () => {
       expect(getBasisPoints(7n, 3n, true)).toBe(23334n);
     });
 
@@ -71,5 +73,33 @@ describe("numbers utils", () => {
       const factor = 200n;
       expect(applyFactor(value, factor)).toBe(20000n);
     });
+  });
+
+  it("bigintToNumber", () => {
+    expect(bigintToNumber(0n, 30)).toEqual(0);
+    expect(bigintToNumber(1n, 30)).toEqual(1e-30);
+    expect(bigintToNumber(PRECISION, 30)).toEqual(1);
+    expect(bigintToNumber(PRECISION * 100n, 30)).toEqual(100);
+    expect(bigintToNumber(PRECISION * 2n, 30)).toEqual(2);
+    expect(bigintToNumber(PRECISION / 2n, 30)).toEqual(0.5);
+
+    expect(bigintToNumber(1123456n, 6)).toEqual(1.123456);
+    expect(bigintToNumber(-1123456n, 6)).toEqual(-1.123456);
+  });
+
+  it("numberToBigint", () => {
+    expect(numberToBigint(0, 30)).toEqual(0n);
+    expect(numberToBigint(1e-30, 30)).toEqual(1n);
+    expect(numberToBigint(-1e-30, 30)).toEqual(-1n);
+    expect(numberToBigint(1, 30)).toEqual(PRECISION);
+    expect(numberToBigint(100, 30)).toEqual(PRECISION * 100n);
+    expect(numberToBigint(2, 30)).toEqual(PRECISION * 2n);
+    expect(numberToBigint(0.5, 30)).toEqual(PRECISION / 2n);
+    expect(numberToBigint(-0.5, 30)).toEqual(-PRECISION / 2n);
+
+    expect(numberToBigint(1.1234567, 6)).toEqual(1123456n);
+    expect(numberToBigint(1.12345678, 6)).toEqual(1123456n);
+    expect(numberToBigint(1.123456789, 6)).toEqual(1123456n);
+    expect(numberToBigint(-1.123456789, 6)).toEqual(-1123456n);
   });
 });

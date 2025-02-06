@@ -54,7 +54,7 @@ import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
-import { TVChart } from "components/Synthetics/TVChart/TVChart";
+import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tab from "components/Tab/Tab";
 
 export type Props = {
@@ -245,7 +245,7 @@ export function SyntheticsPage(p: Props) {
     >
       <div className="-mt-15 grid grid-cols-[1fr_auto] gap-15 px-10 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
         <div className="Exchange-left">
-          <TVChart />
+          <Chart />
           {!isMobile && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
               <div className="Exchange-list-tab-container">

@@ -5,6 +5,7 @@ import { NATIVE_TOKENS_MAP } from "sdk/configs/tokens";
 import { LogEntryComponentProps } from "./types";
 import { isGlvInfo } from "../../domain/synthetics/markets/glv";
 import { zeroAddress } from "viem";
+import { getMarketFullName } from "sdk/utils/markets";
 
 type Formatter = (t: bigint, props: LogEntryComponentProps) => string;
 type TokenGetter = (props: LogEntryComponentProps) => Token;
@@ -138,10 +139,12 @@ function getMarketOrGlvToken({ entries, marketsInfoData, marketTokensData, glvDa
     if (marketOrGlv) {
       const tokenAddress = isGlvInfo(marketOrGlv) ? marketOrGlv.glvTokenAddress : marketOrGlv.marketTokenAddress;
       return marketTokensData[tokenAddress];
+    } else {
+      throw new Error(`Market not found`);
     }
+  } else {
+    throw new Error(`Field "market" not found in event`);
   }
-
-  throw new Error(`Field "market" not found in event`);
 }
 
 function getIndexToken({ entries, marketsInfoData, tokensData }: LogEntryComponentProps) {
@@ -255,3 +258,26 @@ export const formatAmountByShortToken15Shift = formatAmountByFieldWithDecimalsSh
   getMarketLongOrShortToken(false),
   15
 );
+
+export const formatSwapPath = (t: string[], props: LogEntryComponentProps) => {
+  const marketsInfo = props.marketsInfoData;
+
+  if (t.length === 0) {
+    return "[]";
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {t.map((marketAddress) => {
+        const market = marketsInfo[marketAddress];
+        return market ? (
+          <div key={marketAddress}>
+            {getMarketFullName(market)} ({marketAddress})
+          </div>
+        ) : (
+          <span key={marketAddress}>{marketAddress}</span>
+        );
+      })}
+    </div>
+  );
+};
