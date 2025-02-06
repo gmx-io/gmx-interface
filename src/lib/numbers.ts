@@ -3,6 +3,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "sdk/utils/bigmath";
 import { getPlusOrMinusSymbol } from "./utils";
+import { bigintToNumber } from "sdk/utils/numbers";
 
 export * from "sdk/utils/numbers";
 
@@ -458,39 +459,6 @@ export function deserializeBigIntsInObject<T extends object>(obj: T): Deserializ
   return result;
 }
 
-export function bigintToNumber(value: bigint, decimals: number) {
-  const negative = value < 0;
-  if (negative) value *= -1n;
-  const precision = 10n ** BigInt(decimals);
-  const int = value / precision;
-  const frac = value % precision;
-
-  const num = parseFloat(`${int}.${frac.toString().padStart(decimals, "0")}`);
-  return negative ? -num : num;
-}
-
-export function numberToBigint(value: number, decimals: number) {
-  const negative = value < 0;
-  if (negative) value *= -1;
-
-  const int = Math.trunc(value);
-  let frac = value - int;
-
-  let res = BigInt(int);
-
-  for (let i = 0; i < decimals; i++) {
-    res *= 10n;
-    if (frac !== 0) {
-      frac *= 10;
-      const fracInt = Math.trunc(frac);
-      res += BigInt(fracInt);
-      frac -= fracInt;
-    }
-  }
-
-  return negative ? -res : res;
-}
-
 export function calculateDisplayDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
   if (price === undefined || price === 0n) return 2;
   const priceNumber = bigintToNumber(bigMath.abs(price) * BigInt(visualMultiplier), decimals);
@@ -634,4 +602,8 @@ export function formatFactor(factor: bigint) {
       .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
   const factorDecimals = 30 - trailingZeroes;
   return formatAmount(factor, 30, factorDecimals);
+}
+
+export function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(value, max));
 }

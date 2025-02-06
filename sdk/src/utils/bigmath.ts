@@ -27,4 +27,7 @@ export const bigMath = {
 
     return sum / count;
   },
+  divRound(x: bigint, y: bigint) {
+    return x / y + ((x % y) * 2n > y ? 1n : 0n);
+  },
 };
