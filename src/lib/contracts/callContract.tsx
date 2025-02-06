@@ -126,7 +126,7 @@ export async function callContract(
       }
 
       return cntrct[method](...params, txnInstance).catch(
-        makeTransactionErrorHandler(cntrct, method, params, txnInstance, wallet.address)
+        makeTransactionErrorHandler(chainId, cntrct, method, params, txnInstance, wallet.address)
       );
     });
 
@@ -186,7 +186,7 @@ function showCallContractToast({
     <div>
       {sentMsg || t`Transaction sent.`}{" "}
       {hash && (
-        <ExternalLink className="!text-white" href={getExplorerUrl(chainId) + "tx/" + hash}>
+        <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
           <Trans>View status.</Trans>
         </ExternalLink>
       )}

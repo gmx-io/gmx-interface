@@ -13,19 +13,18 @@ import concat from "lodash/concat";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import Token from "sdk/abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
-import { getOpenOceanTxnData } from "../externalSwaps/openOcean";
-import { ExternalSwapQuote } from "../externalSwaps/useExternalSwapsQuote";
+import { isMarketOrderType } from "sdk/utils/orders";
+import { applySlippageToPrice } from "sdk/utils/trade";
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { applySlippageToPrice } from "../trade";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
-import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
-import { ErrorLike } from "lib/parseError";
+import { getPendingOrderFromParams } from "./utils";
 
 const { ZeroAddress } = ethers;
 
@@ -321,26 +320,9 @@ async function createEncodedPayload({
   initialCollateralTokenAddress: string;
   signer: Signer;
 }) {
-  const externalSwap = p.externalSwapQuote
-    ? await getOpenOceanTxnData({
-        chainId,
-        senderAddress: getContract(chainId, "ExternalHandler"),
-        receiverAddress: orderVaultAddress,
-        tokenInAddress: p.initialCollateralAddress,
-        tokenOutAddress: p.targetCollateralAddress,
-        tokenInAmount: p.initialCollateralAmount,
-        slippage: p.allowedSlippage,
-        gasPrice: gasPrice.toString(),
-      }).catch((error: ErrorLike) => {
-        error.errorSource = "externalSwap";
-
-        throw error;
-      })
-    : undefined;
-
   const createOrderProps = { ...p };
 
-  if (externalSwap) {
+  if (p.externalSwapQuote?.txnData) {
     createOrderProps.swapPath = [];
     initialCollateralTokenAddress = p.targetCollateralAddress;
   }
@@ -355,7 +337,7 @@ async function createEncodedPayload({
 
   const tokenContract = new ethers.Contract(p.initialCollateralAddress, Token.abi);
 
-  const tokensDestination = externalSwap ? getContract(chainId, "ExternalHandler") : orderVaultAddress;
+  const tokensDestination = p.externalSwapQuote ? getContract(chainId, "ExternalHandler") : orderVaultAddress;
 
   const multicall1 = [
     { method: "sendWnt", params: [tokensDestination, totalWntAmount] },
@@ -367,14 +349,17 @@ async function createEncodedPayload({
         }
       : undefined,
 
-    externalSwap
+    p.externalSwapQuote?.txnData
       ? {
           method: "makeExternalCalls",
           params: [
-            [p.initialCollateralAddress, externalSwap?.to],
+            [p.initialCollateralAddress, p.externalSwapQuote?.txnData.to],
             [
-              tokenContract.interface.encodeFunctionData("approve", [externalSwap?.to, p.initialCollateralAmount]),
-              externalSwap?.data,
+              tokenContract.interface.encodeFunctionData("approve", [
+                p.externalSwapQuote.txnData?.to,
+                p.initialCollateralAmount,
+              ]),
+              p.externalSwapQuote.txnData?.data,
             ],
             [getNativeToken(chainId).wrappedAddress, p.initialCollateralAddress],
             [p.account, p.account],

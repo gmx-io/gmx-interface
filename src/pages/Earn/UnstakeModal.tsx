@@ -6,7 +6,7 @@ import { ARBITRUM } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { callContract } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";

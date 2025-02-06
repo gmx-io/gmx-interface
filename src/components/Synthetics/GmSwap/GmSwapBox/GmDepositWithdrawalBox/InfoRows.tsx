@@ -18,7 +18,6 @@ import { TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
-import { showMarketToast } from "../showMarketToast";
 import { Operation } from "../types";
 
 export function InfoRows({
@@ -71,7 +70,6 @@ export function InfoRows({
   const onSelectMarketOrGlv = useCallback(
     (glvOrMarketInfo: GlvOrMarketInfo) => {
       onMarketChange(getGlvOrMarketAddress(glvOrMarketInfo));
-      showMarketToast(glvOrMarketInfo);
     },
     [onMarketChange]
   );

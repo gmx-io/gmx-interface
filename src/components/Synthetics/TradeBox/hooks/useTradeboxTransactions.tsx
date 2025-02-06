@@ -1,8 +1,10 @@
 import { t } from "@lingui/macro";
+import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import {
   selectBlockTimestampData,
   selectIsFirstOrder,
@@ -13,6 +15,7 @@ import {
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
+  selectTradeboxFees,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsLeverageEnabled,
@@ -33,6 +36,7 @@ import {
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -46,14 +50,17 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
-import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
+import { ErrorLike } from "lib/parseError";
+import {
+  getTradeInteractionKey,
+  makeUserAnalyticsOrderFailResultHandler,
+  sendUserAnalyticsOrderConfirmClickEvent,
+  userAnalytics,
+} from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { getContract } from "config/contracts";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
-import { ErrorLike } from "lib/parseError";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -70,6 +77,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
   const blockTimestampData = useSelector(selectBlockTimestampData);
+  const fees = useSelector(selectTradeboxFees);
+  const chartHeaderInfo = useSelector(selectChartHeaderInfo);
 
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
@@ -213,6 +222,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         ).length,
         tpCount: createSltpEntries.filter((entry) => entry.decreaseAmounts.triggerOrderType === OrderType.LimitDecrease)
           .length,
+        priceImpactDeltaUsd: increaseAmounts?.positionPriceImpactDeltaUsd,
+        priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
+        netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
+        interactionId: marketInfo?.name
+          ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name))
+          : undefined,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -348,6 +363,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isLeverageEnabled,
       initialCollateralAllowance,
       createSltpEntries,
+      fees?.positionPriceImpact?.precisePercentage,
+      chartHeaderInfo?.fundingRateLong,
+      chartHeaderInfo?.fundingRateShort,
       tokensData,
       account,
       collateralToken,
@@ -382,6 +400,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         allowedSlippage,
         isLong,
         place: "tradeBox",
+        interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
+        priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
+        priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
+        netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -449,24 +471,27 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
-      account,
-      allowedSlippage,
-      chainId,
       collateralToken,
       decreaseAmounts,
-      executionFee,
-      isLong,
-      marketInfo,
-      referralCodeForTxn,
       selectedPosition,
+      executionFee,
+      referralCodeForTxn,
+      subaccount,
+      triggerPrice,
+      marketInfo,
+      allowedSlippage,
+      isLong,
+      fees?.positionPriceImpact?.precisePercentage,
+      chartHeaderInfo?.fundingRateLong,
+      chartHeaderInfo?.fundingRateShort,
+      account,
+      tokensData,
+      signer,
+      chainId,
+      autoCancelOrdersLimit,
+      setPendingTxns,
       setPendingOrder,
       setPendingPosition,
-      setPendingTxns,
-      signer,
-      subaccount,
-      tokensData,
-      triggerPrice,
-      autoCancelOrdersLimit,
       blockTimestampData,
     ]
   );

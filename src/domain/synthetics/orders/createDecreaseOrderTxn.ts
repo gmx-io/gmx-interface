@@ -18,7 +18,8 @@ import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { getPendingOrderFromParams, isMarketOrderType } from "./utils";
+import { getPendingOrderFromParams } from "./utils";
+import { isMarketOrderType } from "sdk/utils/orders";
 
 const { ZeroAddress } = ethers;
 

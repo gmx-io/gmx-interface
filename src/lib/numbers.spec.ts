@@ -6,6 +6,7 @@ import {
   PRECISION,
   formatAmountHuman,
   formatBalanceAmount,
+  formatFactor,
   formatBalanceAmountWithUsd,
 } from "./numbers";
 import { describe, expect, it } from "vitest";
@@ -128,5 +129,22 @@ describe("formatBalanceAmount", () => {
     expect(formatBalanceAmountWithUsd(ONE_USD, ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC ($1.00)");
     expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC")).toBe("-");
     expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC", true)).toBe("0.0000 USDC ($0.00)");
+  });
+});
+
+describe("formatFactor", () => {
+  it("should format factor", () => {
+    expect(formatFactor(0n)).toBe("0");
+    expect(formatFactor(1n)).toBe("0.000000000000000000000000000001");
+    expect(formatFactor(1000n)).toBe("0.000000000000000000000000001");
+    expect(formatFactor(1000000n)).toBe("0.000000000000000000000001");
+    expect(formatFactor(1000000000n)).toBe("0.000000000000000000001");
+    expect(formatFactor(1000000000000n)).toBe("0.000000000000000001");
+    expect(formatFactor(1000000000000000n)).toBe("0.000000000000001");
+    expect(formatFactor(1000000000000000000n)).toBe("0.000000000001");
+    expect(formatFactor(1000000000000000000000n)).toBe("0.000000001");
+    expect(formatFactor(1000000000000000000000000n)).toBe("0.000001");
+    expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
+    expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
   });
 });

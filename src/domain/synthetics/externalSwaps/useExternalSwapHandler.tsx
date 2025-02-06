@@ -38,14 +38,13 @@ import { createTradeFlags } from "context/SyntheticsStateContext/selectors/trade
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExternalSwapsQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
 import { getPositionFee } from "domain/synthetics/fees";
-import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import {
   getMarkPrice,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "domain/synthetics/trade";
-import { getIsEquivalentTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
@@ -86,6 +85,7 @@ export function useExternalSwapHandler() {
   const setExternalSwapQuote = useSelector(selectSetExternalSwapQuote);
   const gasPrice = useSelector(selectGasPrice);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
+  const { signer } = useWallet();
 
   const swapDebugSettings = getSwapDebugSettings();
 
@@ -111,7 +111,6 @@ export function useExternalSwapHandler() {
               tokenOut: collateralToken,
               amountIn: fromTokenAmount,
               isLimit: false,
-              externalSwapQuote: undefined,
               findSwapPath,
               uiFeeFactor,
             });
@@ -179,7 +178,6 @@ export function useExternalSwapHandler() {
               tokenOut: collateralToken,
               amountOut: baseCollateralAmount,
               isLimit: false,
-              externalSwapQuote: undefined,
               findSwapPath,
               uiFeeFactor,
             });
@@ -247,6 +245,7 @@ export function useExternalSwapHandler() {
     chainId,
     tokensData,
     fromTokenAddress,
+    receiverAddress: signer?.address,
     toTokenAddress: swapToTokenAddress,
     fromTokenAmount: baseAmountIn ?? amountIn,
     slippage,

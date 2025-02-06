@@ -180,17 +180,19 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       }
     }
 
-    onResult(barsToReturn, { noData: offset + countBack >= 10_000 });
+    onResult(barsToReturn, { noData: offset + countBack >= 10_000 || barsToReturn.length < countBack });
 
-    metrics.pushEvent<LoadingSuccessEvent>({
-      event: "candlesDisplay.success",
-      isError: false,
-      time: metrics.getTime("candlesDisplay", true),
-      data: {
-        requestId: metricsRequestId!,
-        isFirstTimeLoad: isFirstDraw,
-      },
-    });
+    if (metricsIsFirstDrawTime) {
+      metrics.pushEvent<LoadingSuccessEvent>({
+        event: "candlesDisplay.success",
+        isError: false,
+        time: metrics.getTime("candlesDisplay", true),
+        data: {
+          requestId: metricsRequestId!,
+          isFirstTimeLoad: isFirstDraw,
+        },
+      });
+    }
 
     this.dispatchEvent(
       new CustomEvent("candlesDisplay.success", {

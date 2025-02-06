@@ -31,7 +31,7 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees/utils";
+import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
@@ -39,8 +39,7 @@ import {
   getMostLiquidMarketForPosition,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPositionOrOrder } from "domain/synthetics/markets/chooseSuitableMarket";
-import { PositionOrderInfo } from "domain/synthetics/orders/types";
-import { isIncreaseOrderType } from "domain/synthetics/orders/utils";
+import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   IndexTokenStat,
   marketsInfoData2IndexTokenStatsMap,

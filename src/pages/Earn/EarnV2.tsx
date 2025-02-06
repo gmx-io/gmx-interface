@@ -10,7 +10,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";

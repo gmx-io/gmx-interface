@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
@@ -11,10 +11,9 @@ import {
   getLiquidationPrice,
   getPositionPnlUsd,
 } from "domain/synthetics/positions";
-import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
+import { TokenData, convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
 import {
   getAcceptablePriceInfo,
@@ -148,7 +147,6 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       tokenOut: collateralToken,
       amountIn: initialCollateralAmount,
       isLimit: false,
-      externalSwapQuote,
       findSwapPath,
       uiFeeFactor,
     });
@@ -247,7 +245,6 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       tokenOut: collateralToken,
       amountOut: baseCollateralAmount,
       isLimit: false,
-      externalSwapQuote,
       findSwapPath,
       uiFeeFactor,
     });
@@ -294,7 +291,6 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         tokenOut: collateralToken,
         amountIn: initialCollateralAmount,
         isLimit: false,
-        externalSwapQuote,
         findSwapPath,
         uiFeeFactor,
       });

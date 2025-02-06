@@ -381,7 +381,7 @@ msgstr ""
 msgid "Main Account Balance"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "추천인 코드가 추가되었습니다!"
 
@@ -852,7 +852,7 @@ msgstr ""
 msgid "Buy with {0}"
 msgstr "{0}로 구매"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding..."
 msgstr "추가중..."
 
@@ -1826,7 +1826,7 @@ msgid "Max"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Checking code..."
 msgstr "코드 확인중..."
 
@@ -1900,7 +1900,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -2160,7 +2160,7 @@ msgid "Reserved for Vesting"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -2191,6 +2191,10 @@ msgstr "원클릭 트레이딩으로 지갑 서명 팝업을 줄이세요. 이 �
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
+msgstr ""
+
+#: src/domain/synthetics/externalSwaps/useExternalSwapHandler.tsx
+msgid "Switch to internal swap"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -2666,6 +2670,10 @@ msgstr ""
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "주문을 채울만한 충분한 유동성이 없습니다. 조건이 충족되고 충분한 유동성이 있을 때 주문이 채워집니다."
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -2682,7 +2690,7 @@ msgstr "{0}의 최대 풀 수용량에 도달했습니다"
 msgid "Trade"
 msgstr "트레이드"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "추천 코드 추가 실패"
 
@@ -3279,7 +3287,7 @@ msgstr ""
 msgid "Ends in"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "수수료 할인의 혜택을 받으려면 추천인 코드를 입력해주세요."
 
@@ -3736,7 +3744,6 @@ msgstr "주문의 트리거 가격입니다."
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -3746,7 +3753,6 @@ msgstr "주문의 트리거 가격입니다."
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -3804,7 +3810,7 @@ msgstr ""
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating..."
 msgstr "업데이트중..."
 
@@ -3837,10 +3843,6 @@ msgstr "청산가"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trading Pair Price Alerts"
-msgstr ""
-
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
@@ -4420,7 +4422,7 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
@@ -4769,7 +4771,7 @@ msgstr ""
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated failed."
 msgstr "추천인 코드 업데이트 실패."
 
@@ -4918,6 +4920,10 @@ msgstr "거래"
 msgid "Invalid liq. price"
 msgstr "유효하지 않은 청산가"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized Buy Pressure (BB&D):"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr ""
@@ -4963,10 +4969,6 @@ msgstr "최대 {0} in"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -5032,7 +5034,7 @@ msgstr ""
 msgid "Select different tokens"
 msgstr "다른 토큰 선택"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "현재 네트워크 수수료가 매우 높습니다. 이는 {chainName} 네트워크의 일시적인 거래량 증가로 인한 것일 수 있습니다."
 
@@ -5194,6 +5196,7 @@ msgid "Order created!"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
 msgstr "청산"
 
@@ -5232,10 +5235,6 @@ msgstr ""
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
 msgstr "Binance 앱 열기"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} selected in order form"
-msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
 
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx
@@ -5549,7 +5548,7 @@ msgstr ""
 msgid "Failed to download trade history CSV."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
 msgstr "현재 유효한 코드와 같음"
 
@@ -5650,7 +5649,7 @@ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "제출"
@@ -5806,10 +5805,6 @@ msgstr ""
 msgid "Enter an amount"
 msgstr "수량 입력"
 
-#: src/components/Exchange/PositionsList.jsx
-msgid "{longOrShortText} {0} market selected"
-msgstr ""
-
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
 msgstr "연동"
@@ -5826,11 +5821,15 @@ msgstr ""
 msgid "1st Place"
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized:"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "Starts in"
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "현재 네트워크 수수료가 높습니다. 이는 {chainName} 네트워크의 일시적인 거래량 증가로 인한 것일 수 있습니다."
 
@@ -5894,6 +5893,10 @@ msgstr "수수료 절약"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
@@ -6024,10 +6027,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "추천인 코드"
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -6638,7 +6637,7 @@ msgstr "{0} 스왑 제출완료!"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral Code does not exist"
 msgstr "추천인 코드가 존재하지 않습니다"
 
@@ -6727,7 +6726,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -6737,7 +6735,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -7140,6 +7137,10 @@ msgstr ""
 msgid "Last month"
 msgstr "지난 달"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+#~ msgid "Fees for the past 7 days"
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas"
@@ -7247,6 +7248,10 @@ msgstr "최초 담보"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
+msgstr ""
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -7674,8 +7679,8 @@ msgstr ""
 msgid "Claim GMX Rewards"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter Referral Code"
 msgstr "추천 코드 입력"
 
@@ -7758,11 +7763,6 @@ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-msgid "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx

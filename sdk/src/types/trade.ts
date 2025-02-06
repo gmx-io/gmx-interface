@@ -167,6 +167,7 @@ export type SwapStats = {
   isWrap: boolean;
   isUnwrap: boolean;
   isOutLiquidity?: boolean;
+  isOutCapacity?: boolean;
   swapFeeAmount: bigint;
   swapFeeUsd: bigint;
   priceImpactDeltaUsd: bigint;
@@ -220,6 +221,31 @@ export type SwapEstimator = (
 export type FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
+
+export enum ExternalSwapAggregator {
+  OpenOcean = "openOcean",
+}
+
+export type ExternalSwapOutput = {
+  aggregator: ExternalSwapAggregator;
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  fromTokenAmount: bigint;
+  outputAmount: bigint;
+  txnData?: {
+    to: string;
+    data: string;
+    value: bigint;
+    estimatedGas: bigint;
+  };
+};
+
+export type ExternalSwapQuote = ExternalSwapOutput & {
+  fromTokenUsd: bigint;
+  outputUsd: bigint;
+  feesUsd: bigint;
+  slippage: number;
+};
 
 export type TradeFees = {
   totalFees?: FeeItem;

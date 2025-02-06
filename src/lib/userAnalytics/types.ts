@@ -85,6 +85,7 @@ export type TradeBoxInteractionStartedEvent = {
     openInterestPercent: number;
     tradeType: TradeType;
     tradeMode: TradeMode;
+    interactionId: string;
   };
 };
 
@@ -121,6 +122,10 @@ export type TradeBoxConfirmClickEvent = {
     tpCount?: number;
     chain: string;
     isFirstOrder: boolean;
+    priceImpactDeltaUsd: number | undefined;
+    priceImpactPercentage: number | undefined;
+    netRate1h: number | undefined;
+    interactionId: string | undefined;
   };
 };
 
@@ -150,6 +155,10 @@ export type TradeBoxResultEvent = {
     isFirstOrder: boolean;
     isLeverageEnabled?: boolean;
     isUserError: boolean;
+    priceImpactDeltaUsd: number | undefined;
+    priceImpactPercentage: number | undefined;
+    netRate1h: number | undefined;
+    interactionId: string | undefined;
   };
 };
 

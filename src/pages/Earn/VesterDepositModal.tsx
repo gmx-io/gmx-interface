@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import { getIcons } from "config/icons";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { callContract } from "lib/contracts";
 import { getPageTitle } from "lib/legacy";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";

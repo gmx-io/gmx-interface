@@ -381,7 +381,7 @@ msgstr ""
 msgid "Main Account Balance"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "Referral Code hinzugefügt!"
 
@@ -852,7 +852,7 @@ msgstr ""
 msgid "Buy with {0}"
 msgstr "Kaufe mit {0}"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding..."
 msgstr "Hinzufügen..."
 
@@ -1826,7 +1826,7 @@ msgid "Max"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Checking code..."
 msgstr "Überprüfung des Codes..."
 
@@ -1900,7 +1900,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -2160,7 +2160,7 @@ msgid "Reserved for Vesting"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -2191,6 +2191,10 @@ msgstr "Reduziere die Anzahl der Wallet-Popups mit One-Click Trading. Diese Opti
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
+msgstr ""
+
+#: src/domain/synthetics/externalSwaps/useExternalSwapHandler.tsx
+msgid "Switch to internal swap"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -2666,6 +2670,10 @@ msgstr ""
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "Nicht genügend verfügbare Liquidität, um den Auftrag zu erfüllen. Der Auftrag wird ausgeführt, wenn die Bedingung erfüllt ist und genügend verfügbare Liquidität vorhanden ist."
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized data based on the past 7 days."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -2682,7 +2690,7 @@ msgstr "Max. Poolkapazität für {0} erreicht. Bitte minte GLP mit einem anderen
 msgid "Trade"
 msgstr "Handeln"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "Hinzufügen des Empfehlungscodes fehlgeschlagen."
 
@@ -3279,7 +3287,7 @@ msgstr ""
 msgid "Ends in"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Bitte gebe einen Empfehlungscode ein, um von Gebührenermäßigungen zu profitieren."
 
@@ -3736,7 +3744,6 @@ msgstr "Trigger-Preis für den Auftrag."
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -3746,7 +3753,6 @@ msgstr "Trigger-Preis für den Auftrag."
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -3804,7 +3810,7 @@ msgstr ""
 msgid "Enter a price"
 msgstr "Einen Preis eingeben"
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating..."
 msgstr "Updating.."
 
@@ -3837,10 +3843,6 @@ msgstr "Liq. Preis"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trading Pair Price Alerts"
-msgstr ""
-
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
@@ -4420,7 +4422,7 @@ msgstr ""
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "Referral Code aktualisiert!"
 
@@ -4769,7 +4771,7 @@ msgstr ""
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated failed."
 msgstr "Referral Code Update fehlgeschlagen."
 
@@ -4918,6 +4920,10 @@ msgstr "Transaktion"
 msgid "Invalid liq. price"
 msgstr "Ungültiger Liq.-Preis"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized Buy Pressure (BB&D):"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr ""
@@ -4963,10 +4969,6 @@ msgstr "Max. {0} in"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
-msgstr ""
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -5032,7 +5034,7 @@ msgstr ""
 msgid "Select different tokens"
 msgstr "Anderen Token wählen"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Die Netzwerkgebühren sind derzeit sehr hoch, was auf eine vorübergehende Zunahme von Transaktionen im {chainName}-Netzwerk zurückzuführen sein kann."
 
@@ -5194,6 +5196,7 @@ msgid "Order created!"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
 msgstr "Liquidation"
 
@@ -5232,10 +5235,6 @@ msgstr ""
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
 msgstr "Binance-App öffnen"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} selected in order form"
-msgstr "{0} ausgewählt im Orderformular"
 
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/EarnV1.jsx
@@ -5549,7 +5548,7 @@ msgstr ""
 msgid "Failed to download trade history CSV."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
 msgstr "Gleicher Code wie der derzeitige aktive Code"
 
@@ -5650,7 +5649,7 @@ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "Übermitteln"
@@ -5806,10 +5805,6 @@ msgstr ""
 msgid "Enter an amount"
 msgstr "Einen Betrag eingeben"
 
-#: src/components/Exchange/PositionsList.jsx
-msgid "{longOrShortText} {0} market selected"
-msgstr ""
-
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
 msgstr "Verbinden"
@@ -5826,11 +5821,15 @@ msgstr ""
 msgid "1st Place"
 msgstr ""
 
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized:"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "Starts in"
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
+#: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Die Netzwerkgebühren sind derzeit hoch, was auf eine vorüber vorübergehende Zunahme von Transaktionen im {chainName}-Netzwerk zurückzuführen sein kann."
 
@@ -5894,6 +5893,10 @@ msgstr "Gebühren sparen"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Price below Mark Price."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.jsx
@@ -6024,10 +6027,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "Referral Codes"
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -6638,7 +6637,7 @@ msgstr "Swap{0} übermittelt!"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral Code does not exist"
 msgstr "Referral Code existiert nicht"
 
@@ -6727,7 +6726,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -6737,7 +6735,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -7140,6 +7137,10 @@ msgstr ""
 msgid "Last month"
 msgstr "Letzter Monat"
 
+#: src/pages/Dashboard/OverviewCard.tsx
+#~ msgid "Fees for the past 7 days"
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas"
@@ -7247,6 +7248,10 @@ msgstr "Ursprüngliches Kollateral"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
+msgstr ""
+
+#: src/domain/synthetics/orders/simulateExecuteTxn.tsx
+msgid "Prices are now volatile for this market, try again with increased Allowed Slippage value in Advanced Display section."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -7674,8 +7679,8 @@ msgstr ""
 msgid "Claim GMX Rewards"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.jsx
-#: src/components/Referrals/JoinReferralCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter Referral Code"
 msgstr "Referral Code eingeben"
 
@@ -7758,11 +7763,6 @@ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/showMarketToast.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/useUpdateByQueryParams.tsx
-msgid "<0>{titlePrefix}{0}<1>[{poolName}]</1></0> <2>selected in order form</2>"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx

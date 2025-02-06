@@ -12,7 +12,7 @@ import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType } from "./utils";
+import { isMarketOrderType } from "sdk/utils/orders";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "./prepareOrderTxn";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";

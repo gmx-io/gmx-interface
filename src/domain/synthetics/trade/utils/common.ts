@@ -1,3 +1,4 @@
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
 import {
   ExternalSwapFeeItem,
   SwapFeeItem,
@@ -5,11 +6,10 @@ import {
   getTotalFeeItem,
   getTotalSwapVolumeFromSwapStats,
 } from "domain/synthetics/fees";
-import { applyFactor, getBasisPoints, PRECISION } from "lib/numbers";
-import { SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "../types";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { bigMath } from "lib/bigmath";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
+import { PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
+import { SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): TradeFlags {
   const isLong = tradeType === TradeType.Long;

@@ -17,6 +17,10 @@ import {
 } from "lib/userAnalytics/types";
 import debounce from "lodash/debounce";
 
+export function getTradeInteractionKey(pair: string) {
+  return `trade-${pair}`;
+}
+
 export function sendUserAnalyticsConnectWalletClickEvent(position: ConnectWalletClickEvent["data"]["position"]) {
   userAnalytics.pushEvent<ConnectWalletClickEvent>({
     event: "ConnectWalletAction",
@@ -51,6 +55,8 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
       amountUsd,
     } = p;
 
+    const interactionId = userAnalytics.createInteractionId(getTradeInteractionKey(pair));
+
     userAnalytics.pushEvent<TradeBoxInteractionStartedEvent>(
       {
         event: "TradeBoxAction",
@@ -66,12 +72,13 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
           openInterestPercent: openInterestPercent !== undefined ? Number(openInterestPercent) : 0,
           tradeType,
           tradeMode,
+          interactionId,
         },
       },
       { dedupKey: pair }
     );
   },
-  400
+  500
 );
 
 export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricId: OrderMetricId) {
@@ -101,6 +108,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           isTPSLCreated: metricData.isTPSLCreated ?? false,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -121,6 +132,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
           isFirstOrder: false,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -139,6 +154,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
+          interactionId: undefined,
+          priceImpactDeltaUsd: undefined,
+          priceImpactPercentage: undefined,
+          netRate1h: undefined,
         },
       });
       break;
@@ -209,6 +228,10 @@ export function sendUserAnalyticsOrderResultEvent(
           isFirstOrder: metricData.isFirstOrder ?? false,
           isLeverageEnabled: Boolean(metricData.isLeverageEnabled),
           isUserError,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -230,6 +253,10 @@ export function sendUserAnalyticsOrderResultEvent(
           chain: getChainName(chainId),
           isFirstOrder: false,
           isUserError,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -249,6 +276,10 @@ export function sendUserAnalyticsOrderResultEvent(
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
           isUserError,
+          interactionId: undefined,
+          priceImpactDeltaUsd: undefined,
+          priceImpactPercentage: undefined,
+          netRate1h: undefined,
         },
       });
       break;

@@ -14,15 +14,15 @@ import {
 } from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "domain/tokens";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { ethers } from "ethers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
-import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
+import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "sdk/types/trade";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
+import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
