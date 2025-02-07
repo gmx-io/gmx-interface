@@ -33,6 +33,25 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "bera-ldo-listing",
+    title: "BERA and LDO markets added on Arbitrum",
+    isActive: true,
+    startDate: "7 Feb 2025, 16:00",
+    endDate: "13 Feb 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="BERA" />
+        /USD and <TokenSymbolWithIcon symbol="LDO" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WETH-USDC]
+        </span>
+        .
+      </>
+    ),
+  },
+  {
     id: "trump-melania-avalanche",
     title: "TRUMP and MELANIA markets added on Avalanche",
     isActive: true,
