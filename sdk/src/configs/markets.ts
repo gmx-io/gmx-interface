@@ -493,6 +493,20 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // BERA/USD [WETH-USDC]
+    "0x876Ff160d63809674e03f82DC4D3C3Ae8B0acF28": {
+      marketTokenAddress: "0x876Ff160d63809674e03f82DC4D3C3Ae8B0acF28",
+      indexTokenAddress: "0x67ADABbAd211eA9b3B4E2fd0FD165E593De1e983",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // LDO/USD [WETH-USDC]
+    "0xE61e608Ba010fF48A7dcE8eDd8B906744263d33E": {
+      marketTokenAddress: "0xE61e608Ba010fF48A7dcE8eDd8B906744263d33E",
+      indexTokenAddress: "0x9D678B4Dd38a6E01df8090aEB7974aD71142b05f",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
