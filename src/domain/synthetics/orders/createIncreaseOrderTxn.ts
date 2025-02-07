@@ -11,10 +11,11 @@ import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import concat from "lodash/concat";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
-import Token from "sdk/abis/Token.json";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { ExternalSwapQuote } from "sdk/types/trade";
 import { isMarketOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
+import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
@@ -24,7 +25,6 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
-import { ExternalSwapQuote } from "sdk/types/trade";
 
 const { ZeroAddress } = ethers;
 
@@ -320,50 +320,50 @@ async function createEncodedPayload({
   initialCollateralTokenAddress: string;
   signer: Signer;
 }) {
-  const createOrderProps = { ...p };
+  const createOrderProps = { p: { ...p }, initialCollateralTokenAddress };
 
   if (p.externalSwapQuote?.txnData) {
-    createOrderProps.swapPath = [];
-    initialCollateralTokenAddress = p.targetCollateralAddress;
+    createOrderProps.p.swapPath = [];
+    createOrderProps.initialCollateralTokenAddress = p.targetCollateralAddress;
   }
 
   const orderParams = createOrderParams({
-    p: createOrderProps,
+    p: createOrderProps.p,
     acceptablePrice,
-    initialCollateralTokenAddress,
+    initialCollateralTokenAddress: createOrderProps.initialCollateralTokenAddress,
     subaccount,
     isNativePayment,
   });
 
-  const tokenContract = new ethers.Contract(p.initialCollateralAddress, Token.abi);
+  const externalSwapWntAmount =
+    isNativePayment && p.externalSwapQuote?.txnData ? p.externalSwapQuote.fromTokenAmount : 0n;
+  const orderVaultWntAmount = totalWntAmount - externalSwapWntAmount;
 
-  const tokensDestination = p.externalSwapQuote ? getContract(chainId, "ExternalHandler") : orderVaultAddress;
+  const externalHandlerAddress = getContract(chainId, "ExternalHandler");
 
-  const multicall1 = [
-    { method: "sendWnt", params: [tokensDestination, totalWntAmount] },
+  const tokensDestination = p.externalSwapQuote?.txnData ? externalHandlerAddress : orderVaultAddress;
+
+  const multicall = [
+    { method: "sendWnt", params: [orderVaultAddress, orderVaultWntAmount] },
+
+    externalSwapWntAmount !== 0n
+      ? {
+          method: "sendWnt",
+          params: [externalHandlerAddress, externalSwapWntAmount],
+        }
+      : undefined,
 
     !isNativePayment && !subaccount
       ? {
           method: "sendTokens",
-          params: [p.initialCollateralAddress, tokensDestination, p.initialCollateralAmount],
+          params: [initialCollateralTokenAddress, tokensDestination, p.initialCollateralAmount],
         }
       : undefined,
 
     p.externalSwapQuote?.txnData
       ? {
           method: "makeExternalCalls",
-          params: [
-            [p.initialCollateralAddress, p.externalSwapQuote?.txnData.to],
-            [
-              tokenContract.interface.encodeFunctionData("approve", [
-                p.externalSwapQuote.txnData?.to,
-                p.initialCollateralAmount,
-              ]),
-              p.externalSwapQuote.txnData?.data,
-            ],
-            [getNativeToken(chainId).wrappedAddress, p.initialCollateralAddress],
-            [p.account, p.account],
-          ],
+          params: getExternalCallsParams(chainId, p.account, p.externalSwapQuote),
         }
       : undefined,
 
@@ -373,7 +373,7 @@ async function createEncodedPayload({
     },
   ];
 
-  const encodedData = multicall1
+  const encodedData = multicall
     .filter(Boolean)
     .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
 

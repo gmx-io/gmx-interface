@@ -33,7 +33,6 @@ import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import {
   selectChainId,
-  selectExternalSwapQuote,
   selectGasLimits,
   selectGasPrice,
   selectKeepLeverage,
@@ -45,6 +44,7 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
+import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";

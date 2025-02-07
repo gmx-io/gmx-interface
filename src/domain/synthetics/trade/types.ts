@@ -1,7 +1,7 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MarketInfo } from "../markets";
-import { ExternalSwapQuote } from "../externalSwaps/types";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export enum TradeType {
   Long = "Long",

@@ -1,6 +1,5 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
@@ -22,6 +21,7 @@ import {
   getTriggerThresholdType,
 } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;

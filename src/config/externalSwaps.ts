@@ -20,6 +20,7 @@ let swapDebugSettings = {
 };
 
 const OPEN_OCEAN_BASE_URL = "https://open-api.openocean.finance/v3";
+export const OPEN_OCEAN_REFERRER = "0xC539cB358a58aC67185BaAD4d5E3f7fCfc903700";
 
 const OPEN_OCEAN_API_URL = {
   [ARBITRUM]: `${OPEN_OCEAN_BASE_URL}/arbitrum`,

@@ -1,5 +1,5 @@
 import { MarketInfo } from "types/markets";
-import { FeeItem, SwapFeeItem } from "./fees";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
 
 export enum TradeType {
@@ -245,6 +245,7 @@ export type ExternalSwapQuote = ExternalSwapOutput & {
   outputUsd: bigint;
   feesUsd: bigint;
   slippage: number;
+  needSpenderApproval?: boolean;
 };
 
 export type TradeFees = {
@@ -264,6 +265,7 @@ export type TradeFees = {
   uiSwapFee?: FeeItem;
   feeDiscountUsd?: bigint;
   swapProfitFee?: FeeItem;
+  externalSwapFees?: ExternalSwapFeeItem[];
 };
 
 export type GmSwapFees = {

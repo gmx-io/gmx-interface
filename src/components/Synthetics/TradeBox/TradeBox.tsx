@@ -19,7 +19,8 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId, selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -416,7 +417,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
         swapPathStats: swapAmounts?.swapPathStats,
         swapLiquidity: swapOutLiquidity,
         priceImpactWarning: priceImpactWarningState,
-        externalSwapQuote: swapAmounts?.externalSwapQuote,
+        externalSwapQuote: undefined,
         isLimit,
         isWrapOrUnwrap,
         triggerRatio,
@@ -545,10 +546,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     fromToken,
     toToken,
     fromTokenAmount,
-    swapAmounts?.usdIn,
-    swapAmounts?.usdOut,
-    swapAmounts?.swapPathStats,
-    swapAmounts?.externalSwapQuote,
+    swapAmounts,
     toTokenAmount,
     swapOutLiquidity,
     priceImpactWarningState,
@@ -558,11 +556,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
     markRatio,
     fees,
     marketInfo,
-    increaseAmounts?.initialCollateralUsd,
-    increaseAmounts?.collateralDeltaUsd,
-    increaseAmounts?.sizeDeltaUsd,
-    increaseAmounts?.swapPathStats,
-    increaseAmounts?.externalSwapQuote,
+    increaseAmounts,
     collateralToken,
     selectedPosition,
     minCollateralUsd,

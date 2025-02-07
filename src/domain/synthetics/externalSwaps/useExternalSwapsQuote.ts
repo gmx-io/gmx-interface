@@ -3,10 +3,10 @@ import { useDebounce } from "lib/useDebounce";
 import { useMemo } from "react";
 import { getContract } from "sdk/configs/contracts";
 import { TokenData, TokensData } from "sdk/types/tokens";
-import useSWR from "swr";
-import { convertToUsd } from "../tokens";
-import { getOpenOceanPriceQuote, getOpenOceanTxnData } from "./openOcean";
 import { ExternalSwapAggregator, ExternalSwapOutput, ExternalSwapQuote } from "sdk/types/trade";
+import useSWR from "swr";
+import { convertToUsd, getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
+import { getOpenOceanTxnData } from "./openOcean";
 
 export function useExternalSwapsQuote({
   chainId,
@@ -14,7 +14,6 @@ export function useExternalSwapsQuote({
   fromTokenAddress,
   toTokenAddress,
   fromTokenAmount,
-  receiverAddress,
   slippage,
   gasPrice,
   enabled = true,
@@ -26,7 +25,6 @@ export function useExternalSwapsQuote({
   fromTokenAmount: bigint | undefined;
   slippage: number | undefined;
   gasPrice: bigint | undefined;
-  receiverAddress: string | undefined;
   enabled?: boolean;
 }) {
   const swapKey =
@@ -38,19 +36,10 @@ export function useExternalSwapsQuote({
     fromTokenAmount > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? [
-          "useExternalSwapsQuote",
-          chainId,
-          fromTokenAddress,
-          toTokenAddress,
-          fromTokenAmount,
-          slippage,
-          gasPrice,
-          receiverAddress,
-        ]
+      ? ["useExternalSwapsQuote", chainId, fromTokenAddress, toTokenAddress, fromTokenAmount, slippage, gasPrice]
       : null;
 
-  const debouncedKey = useDebounce(swapKey, 500);
+  const debouncedKey = useDebounce(swapKey, 300);
 
   const { data: externalSwapOutput } = useSWR(debouncedKey, {
     keepPreviousData: true,
@@ -67,59 +56,34 @@ export function useExternalSwapsQuote({
           throw new Error("Invalid swap parameters");
         }
 
-        let quote: ExternalSwapOutput;
+        const result = await getOpenOceanTxnData({
+          chainId,
+          senderAddress: getContract(chainId, "ExternalHandler"),
+          receiverAddress: getContract(chainId, "OrderVault"),
+          fromTokenAddress,
+          toTokenAddress,
+          fromTokenAmount,
+          gasPrice,
+          slippage,
+        });
 
-        if (receiverAddress) {
-          const result = await getOpenOceanTxnData({
-            chainId,
-            senderAddress: getContract(chainId, "ExternalHandler"),
-            receiverAddress,
-            tokenInAddress: fromTokenAddress,
-            tokenOutAddress: toTokenAddress,
-            tokenInAmount: fromTokenAmount,
-            gasPrice: gasPrice.toString(),
-            slippage,
-          });
-
-          if (!result) {
-            throw new Error("Failed to fetch open ocean txn data");
-          }
-
-          quote = {
-            aggregator: ExternalSwapAggregator.OpenOcean,
-            fromTokenAddress,
-            toTokenAddress,
-            fromTokenAmount,
-            outputAmount: result.outputAmount,
-            txnData: {
-              to: result.to,
-              data: result.data,
-              value: result.value,
-              estimatedGas: result.estimatedGas,
-            },
-          };
-        } else {
-          const openOceanQuote = await getOpenOceanPriceQuote({
-            chainId,
-            fromTokenAddress,
-            toTokenAddress,
-            fromTokenAmount,
-            slippage,
-            gasPrice,
-          });
-
-          if (!openOceanQuote) {
-            throw new Error("Failed to fetch external swap quote");
-          }
-
-          quote = {
-            aggregator: ExternalSwapAggregator.OpenOcean,
-            fromTokenAddress,
-            toTokenAddress,
-            fromTokenAmount,
-            outputAmount: openOceanQuote.outAmount,
-          };
+        if (!result) {
+          throw new Error("Failed to fetch open ocean txn data");
         }
+
+        const quote: ExternalSwapOutput = {
+          aggregator: ExternalSwapAggregator.OpenOcean,
+          fromTokenAddress,
+          toTokenAddress,
+          fromTokenAmount,
+          outputAmount: result.outputAmount,
+          txnData: {
+            to: result.to,
+            data: result.data,
+            value: result.value,
+            estimatedGas: result.estimatedGas,
+          },
+        };
 
         return quote;
       } catch (error) {
@@ -128,6 +92,11 @@ export function useExternalSwapsQuote({
         throw error;
       }
     },
+  });
+
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: externalSwapOutput?.txnData?.to,
+    tokenAddresses: fromTokenAddress ? [fromTokenAddress] : [],
   });
 
   return useMemo(() => {
@@ -151,18 +120,33 @@ export function useExternalSwapsQuote({
       toTokenAmount: externalSwapOutput.outputAmount,
     });
 
+    const needSpenderApproval = getNeedTokenApprove(
+      tokensAllowanceData,
+      fromTokenAddress,
+      externalSwapOutput.fromTokenAmount
+    );
+
     const externalSwapQuote: ExternalSwapQuote = {
       ...externalSwapOutput,
       ...externalSwapFees,
       fromTokenUsd,
       outputUsd: toTokenUsd,
       slippage,
+      needSpenderApproval,
     };
 
     return {
       externalSwapQuote,
     };
-  }, [externalSwapOutput, fromTokenAddress, fromTokenAmount, slippage, toTokenAddress, tokensData]);
+  }, [
+    externalSwapOutput,
+    fromTokenAddress,
+    fromTokenAmount,
+    slippage,
+    toTokenAddress,
+    tokensAllowanceData,
+    tokensData,
+  ]);
 }
 
 function estimateExternalSwapFees({

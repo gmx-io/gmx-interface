@@ -13,7 +13,7 @@ import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
-import type { FeeItem } from "../fees";
+import type { FeeItem } from "sdk/types/fees";
 import type { TradeFlags } from "sdk/types/trade";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;

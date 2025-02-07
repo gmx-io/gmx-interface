@@ -5,12 +5,12 @@ import values from "lodash/values";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
-  selectExternalSwapQuote,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxExistingOrder,

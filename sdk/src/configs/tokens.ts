@@ -131,6 +131,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       explorerUrl: "https://arbiscan.io/address/0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       isV1Available: true,
+      shouldResetAllowance: true,
     },
     {
       name: "Dai",
@@ -867,6 +868,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       explorerUrl: "https://snowtrace.io/address/0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+      shouldResetAllowance: true,
     },
     {
       name: "Tether",
@@ -1084,6 +1086,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
       coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       explorerUrl: "https://testnet.snowtrace.io/address/0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
+      shouldResetAllowance: true,
     },
     {
       name: "Dai",

@@ -6,7 +6,7 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
 import { getToken } from "sdk/configs/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "sdk/types/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFeesType } from "domain/synthetics/trade";
 import { bigMath } from "sdk/utils/bigmath";

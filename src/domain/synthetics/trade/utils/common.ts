@@ -1,4 +1,4 @@
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
+import { ExternalSwapQuote } from "sdk/types/trade";
 import {
   ExternalSwapFeeItem,
   SwapFeeItem,

@@ -27,7 +27,6 @@ export async function prepareOrderTxn(
   const customSignerContracts = customSigners?.map((signer) => contract.connect(signer)) || [];
 
   const [gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce] = await Promise.all([
-    // Promise.resolve(undefined),
     getGasLimit(contract, method, params, value).catch(makeCatchTransactionError(chainId, metricId, "gasLimit")),
     getGasPrice(contract.runner.provider, chainId).catch(makeCatchTransactionError(chainId, metricId, "gasPrice")),
     // subaccount

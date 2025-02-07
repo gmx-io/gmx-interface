@@ -362,8 +362,6 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
     tokenIn: position.collateralToken,
     tokenOut: receiveToken,
     amountIn: decreaseAmounts.receiveTokenAmount,
-    // TODO: externalSwapQuote
-    externalSwapQuote: undefined,
     isLimit: false,
     findSwapPath,
     uiFeeFactor,

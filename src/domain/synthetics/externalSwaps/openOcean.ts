@@ -1,4 +1,5 @@
-import { DISABLED_OPEN_OCEAN_DEXES, getOpenOceanUrl } from "config/externalSwaps";
+import { getContract } from "config/contracts";
+import { DISABLED_OPEN_OCEAN_DEXES, getOpenOceanUrl, OPEN_OCEAN_REFERRER } from "config/externalSwaps";
 import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
@@ -6,7 +7,8 @@ import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 type OpenOceanQuoteResponse = {
   code: number;
-  data: {
+  error?: string;
+  data?: {
     inToken: {
       address: string;
       decimals: number;
@@ -30,6 +32,37 @@ type OpenOceanQuoteResponse = {
   };
 };
 
+type OpenOceanTxnResponse = {
+  code: number;
+  error?: string;
+  data?: {
+    inToken: {
+      address: string;
+      decimals: number;
+      symbol: string;
+      name: string;
+      usd: string;
+      volume: number;
+    };
+    outToken: {
+      address: string;
+      decimals: number;
+      symbol: string;
+      name: string;
+      usd: string;
+      volume: number;
+    };
+    inAmount: string;
+    outAmount: string;
+    estimatedGas: string;
+    value: string;
+    gasPrice: string;
+    to: string;
+    data: string;
+    price_impact: string;
+  };
+};
+
 export async function getOpenOceanPriceQuote({
   chainId,
   fromTokenAddress,
@@ -49,23 +82,34 @@ export async function getOpenOceanPriceQuote({
 
   const fromToken = getToken(chainId, fromTokenAddress);
 
+  const gweiGasPrice = formatTokenAmount(gasPrice, 18 - 9, undefined, { displayDecimals: 8 });
+
   const url = buildUrl(getOpenOceanUrl(chainId), "/quote", {
     inTokenAddress: convertTokenAddress(chainId, fromTokenAddress, "wrapped"),
     outTokenAddress: convertTokenAddress(chainId, toTokenAddress, "wrapped"),
     amount: formatTokenAmount(fromTokenAmount, fromToken.decimals, undefined, { displayDecimals: 8 }),
-    gasPrice: gasPrice.toString(),
-    slippage: slippage.toString(),
+    gasPrice: gweiGasPrice,
+    slippage: (slippage / 100).toString(),
+    referrer: OPEN_OCEAN_REFERRER,
     disabledDexIds: disabledDexIds.join(","),
   });
 
   try {
     const res = await fetch(url);
 
-    const parsedRes = (await res.json()) as OpenOceanQuoteResponse;
+    if (res.status === 403) {
+      throw new Error(`IP is banned ${await res.text()}`);
+    }
+
+    const parsed = (await res.json()) as OpenOceanQuoteResponse;
+
+    if (!parsed.data || parsed.code !== 200) {
+      throw new Error(`Failed to build transaction: ${parsed.code} ${parsed.error}`);
+    }
 
     return {
-      outAmount: BigInt(parsedRes.data.outAmount),
-      estimatedGas: BigInt(parsedRes.data.estimatedGas),
+      outAmount: BigInt(parsed.data.outAmount),
+      estimatedGas: BigInt(parsed.data.estimatedGas),
     };
   } catch (e) {
     metrics.pushError(e, "openOceanQuote");
@@ -75,9 +119,9 @@ export async function getOpenOceanPriceQuote({
 
 export async function getOpenOceanTxnData({
   chainId,
-  tokenInAddress,
-  tokenOutAddress,
-  tokenInAmount,
+  fromTokenAddress,
+  toTokenAddress,
+  fromTokenAmount,
   senderAddress,
   receiverAddress,
   gasPrice,
@@ -86,41 +130,53 @@ export async function getOpenOceanTxnData({
   senderAddress: string;
   receiverAddress: string;
   chainId: number;
-  tokenInAddress: string;
-  tokenOutAddress: string;
-  tokenInAmount: bigint;
-  gasPrice: string;
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  fromTokenAmount: bigint;
+  gasPrice: bigint;
   slippage: number;
 }) {
   const disabledDexIds = DISABLED_OPEN_OCEAN_DEXES[chainId] ?? [];
-  const tokenIn = getToken(chainId, tokenInAddress);
+  const fromToken = getToken(chainId, fromTokenAddress);
+
+  const gweiGasPrice = formatTokenAmount(gasPrice, 18 - 9, undefined, { displayDecimals: 8 });
 
   const url = buildUrl(getOpenOceanUrl(chainId), "/swap_quote", {
-    inTokenAddress: tokenInAddress,
-    outTokenAddress: tokenOutAddress,
-    amount: formatTokenAmount(tokenInAmount, tokenIn.decimals, undefined, { displayDecimals: 8 }),
-    gasPrice: gasPrice.toString(),
-    slippage: slippage.toString(),
+    inTokenAddress: convertTokenAddress(chainId, fromTokenAddress, "wrapped"),
+    outTokenAddress: convertTokenAddress(chainId, toTokenAddress, "wrapped"),
+    amount: formatTokenAmount(fromTokenAmount, fromToken.decimals, undefined, { displayDecimals: 8 }),
+    gasPrice: gweiGasPrice,
+    slippage: (slippage / 100).toString(),
     sender: senderAddress,
     account: receiverAddress,
+    referrer: OPEN_OCEAN_REFERRER,
     disabledDexIds: disabledDexIds.join(","),
   });
 
   try {
     const res = await fetch(url);
-    const data = await res.json();
 
-    if (!data.data || data.code !== 200) {
-      throw new Error(data.message || "Failed to build transaction");
+    if (res.status === 403) {
+      throw new Error(`IP is banned ${await res.text()}`);
+    }
+
+    const parsed = (await res.json()) as OpenOceanTxnResponse;
+
+    if (!parsed.data || parsed.code !== 200) {
+      throw new Error(`Failed to build transaction: ${parsed.code} ${parsed.error}`);
+    }
+
+    if (parsed.data.to !== getContract(chainId, "OpenOceanRouter")) {
+      throw new Error(`Invalid OpenOceanRouter address: ${parsed.data.to}`);
     }
 
     return {
-      to: data.data.to as string,
-      data: data.data.data as string,
-      value: BigInt(data.data.value || "0"),
-      estimatedGas: BigInt(data.data.estimatedGas || "0"),
-      gasPrice: BigInt(data.data.gasPrice || "0"),
-      outputAmount: BigInt(data.data.outputAmount || "0"),
+      to: parsed.data.to as string,
+      data: parsed.data.data as string,
+      value: BigInt(parsed.data.value),
+      estimatedGas: BigInt(parsed.data.estimatedGas),
+      gasPrice: BigInt(parsed.data.gasPrice),
+      outputAmount: BigInt(parsed.data.outAmount),
     };
   } catch (e) {
     metrics.pushError(e, "openOceanBuildTx");

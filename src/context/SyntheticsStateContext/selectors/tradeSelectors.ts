@@ -31,7 +31,7 @@ import {
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 

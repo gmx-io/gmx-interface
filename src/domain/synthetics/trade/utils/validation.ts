@@ -22,7 +22,7 @@ import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers"
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "sdk/types/trade";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/types";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =

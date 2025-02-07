@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { isDevelopment } from "config/env";
 import {
   AUTO_SWAP_FALLBACK_MAX_FEES_BPS,
   DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT,
@@ -9,11 +10,13 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectExternalSwapFails,
+  selectSetExternalSwapFails,
+  selectSetExternalSwapQuote,
+} from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
+import {
   selectGasPrice,
   selectMarketsInfoData,
   selectPositionsInfoData,
-  selectSetExternalSwapFails,
-  selectSetExternalSwapQuote,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -49,11 +52,16 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import useWallet from "lib/wallets/useWallet";
+import throttle from "lodash/throttle";
 import { useEffect, useMemo, useState } from "react";
 import { bigMath } from "sdk/utils/bigmath";
 import { getFeeItem } from "sdk/utils/fees";
 import { applyFactor } from "sdk/utils/numbers";
+
+const throttleLog = throttle((...args) => {
+  // eslint-disable-next-line no-console
+  console.log(...args);
+}, 1000);
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -85,7 +93,6 @@ export function useExternalSwapHandler() {
   const setExternalSwapQuote = useSelector(selectSetExternalSwapQuote);
   const gasPrice = useSelector(selectGasPrice);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
-  const { signer } = useWallet();
 
   const swapDebugSettings = getSwapDebugSettings();
 
@@ -245,7 +252,6 @@ export function useExternalSwapHandler() {
     chainId,
     tokensData,
     fromTokenAddress,
-    receiverAddress: signer?.address,
     toTokenAddress: swapToTokenAddress,
     fromTokenAmount: baseAmountIn ?? amountIn,
     slippage,
@@ -254,13 +260,12 @@ export function useExternalSwapHandler() {
   });
 
   const isInternalSwapBetter =
-    (!debugForceExternalSwaps && !baseExternalSwapQuote) ||
-    (internalSwapFeesDeltaUsd !== undefined &&
-      baseExternalSwapQuote &&
-      internalSwapFeesDeltaUsd > -baseExternalSwapQuote.feesUsd);
+    internalSwapFeesDeltaUsd !== undefined &&
+    baseExternalSwapQuote &&
+    internalSwapFeesDeltaUsd > -baseExternalSwapQuote.feesUsd;
 
   const adjustedExternalSwapQuote = useMemo(() => {
-    if (!baseExternalSwapQuote || isInternalSwapBetter) {
+    if (!baseExternalSwapQuote || (!debugForceExternalSwaps && isInternalSwapBetter)) {
       return undefined;
     }
 
@@ -286,6 +291,7 @@ export function useExternalSwapHandler() {
   }, [
     baseExternalSwapQuote,
     baseUsdIn,
+    debugForceExternalSwaps,
     fromToken,
     isInternalSwapBetter,
     priceIn,
@@ -341,7 +347,16 @@ export function useExternalSwapHandler() {
     [orderStatuses, shouldFallbackToInternalSwap]
   );
 
+  if (isDevelopment()) {
+    throttleLog("SWAPS", {
+      internalSwapFeesDeltaUsd,
+      internalSwapPriceImpact,
+      baseExternalSwapQuote,
+      adjustedExternalSwapQuote,
+    });
+  }
+
   useEffect(() => {
     setExternalSwapQuote(adjustedExternalSwapQuote);
-  }, [adjustedExternalSwapQuote, setExternalSwapQuote]);
+  }, [adjustedExternalSwapQuote, fromTokenAddress, setExternalSwapQuote]);
 }

@@ -1,4 +1,5 @@
 import { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;

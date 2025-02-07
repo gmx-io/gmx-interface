@@ -35,7 +35,6 @@ import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import {
   selectAccount,
   selectChainId,
-  selectExternalSwapQuote,
   selectGasLimits,
   selectGasPrice,
   selectOrdersInfoData,
@@ -43,6 +42,7 @@ import {
   selectTokensData,
   selectUiFeeFactor,
 } from "../globalSelectors";
+import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import { selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
 import {
@@ -54,6 +54,7 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
+import { bigMath } from "sdk/utils/bigmath";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
 export * from "./selectTradeboxAvailableMarketsOptions";
@@ -265,7 +266,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
-  const externalSwapQuote = q(selectExternalSwapQuote);
   const fromTokenPrice = fromToken?.prices.minPrice;
 
   if (!fromToken || !toToken || fromTokenPrice === undefined) {
@@ -289,7 +289,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       amountOut: tokenAmount,
       usdOut: usdAmount!,
       swapPathStats: undefined,
-      externalSwapQuote: undefined,
       priceIn: price,
       priceOut: price,
       minOutputAmount: tokenAmount,
@@ -303,7 +302,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       amountIn: fromTokenAmount,
       triggerRatio: triggerRatio || markRatio,
       isLimit: tradeFlags.isLimit,
-      externalSwapQuote,
       findSwapPath: findSwapPath,
       uiFeeFactor,
     });
@@ -314,7 +312,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       amountOut: toTokenAmount,
       triggerRatio: triggerRatio || markRatio,
       isLimit: tradeFlags.isLimit,
-      externalSwapQuote,
       findSwapPath: findSwapPath,
       uiFeeFactor,
     });
@@ -467,7 +464,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
         swapSteps: swapAmounts.swapPathStats.swapSteps,
-        externalSwapQuotas: swapAmounts.externalSwapQuote ? [swapAmounts.externalSwapQuote] : [],
+        externalSwapQuotas: [],
         positionFeeUsd: 0n,
         swapPriceImpactDeltaUsd: swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd,
         positionPriceImpactDeltaUsd: 0n,

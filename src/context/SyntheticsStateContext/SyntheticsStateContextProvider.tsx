@@ -8,7 +8,7 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
-import { ExternalSwapQuote } from "domain/synthetics/externalSwaps/useExternalSwapsQuote";
+import { ExternalSwapQuote } from "sdk/types/trade";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -103,10 +103,12 @@ export type SyntheticsState = {
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeboxState;
-  externalSwapQuote: ExternalSwapQuote | undefined;
-  setExternalSwapQuote: (quote: ExternalSwapQuote | undefined) => void;
-  externalSwapFails: number;
-  setExternalSwapFails: (fails: number | ((fails: number) => number)) => void;
+  externalSwap: {
+    quote: ExternalSwapQuote | undefined;
+    setQuote: (quote: ExternalSwapQuote | undefined) => void;
+    fails: number;
+    setFails: (fails: number | ((fails: number) => number)) => void;
+  };
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
@@ -310,10 +312,12 @@ export function SyntheticsStateContextProvider({
       leaderboard,
       settings,
       tradebox: tradeboxState,
-      externalSwapQuote,
-      setExternalSwapQuote,
-      externalSwapFails,
-      setExternalSwapFails,
+      externalSwap: {
+        quote: externalSwapQuote,
+        setQuote: setExternalSwapQuote,
+        fails: externalSwapFails,
+        setFails: setExternalSwapFails,
+      },
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,

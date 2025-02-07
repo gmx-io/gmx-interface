@@ -5,11 +5,8 @@ import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import {
-  selectBlockTimestampData,
-  selectIsFirstOrder,
-  selectSetExternalSwapFails,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSetExternalSwapFails } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
+import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -50,7 +47,6 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
-import { ErrorLike } from "lib/parseError";
 import {
   getTradeInteractionKey,
   makeUserAnalyticsOrderFailResultHandler,
@@ -339,7 +335,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((e) => {
-          if ((e as ErrorLike).errorSource === "externalSwap") {
+          if (increaseAmounts.externalSwapQuote) {
             setExternalSwapFails((old) => old + 1);
           }
 
