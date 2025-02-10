@@ -48,11 +48,11 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
 
   const label = {
     stopLoss: t`Stop-Loss`,
-    takeProfit: t`Take-Profit`,
+    takeProfit: t`Take Profit`,
     limit: t`Limit`,
   }[type];
 
-  const labelPnl = isStopLoss ? t`Stop-Loss PnL` : t`Take-Profit PnL`;
+  const labelPnl = isStopLoss ? t`Stop-Loss PnL` : t`Take Profit PnL`;
 
   return (
     <>
@@ -69,7 +69,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                 content={
                   isStopLoss
                     ? t`Combined stop-losses are at maximum (100%). Decrease existing values to add more orders.`
-                    : t`Combined take-profits are at maximum (100%). Decrease existing values to add more orders.`
+                    : t`Combined take profits are at maximum (100%). Decrease existing values to add more orders.`
                 }
               >
                 <EntryButton
@@ -207,7 +207,7 @@ export function LimitAndTPSLGroup() {
     <ExpandableRow
       open={isTpSlVisible}
       title={
-        hasExistingLimitOrder ? <Trans>Limit / Take-Profit / Stop Loss</Trans> : <Trans>Take-Profit / Stop Loss</Trans>
+        hasExistingLimitOrder ? <Trans>Limit / Take Profit / Stop Loss</Trans> : <Trans>Take Profit / Stop Loss</Trans>
       }
       hasError={hasError}
       disableCollapseOnError

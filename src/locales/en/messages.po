@@ -179,6 +179,10 @@ msgstr "Current Reserved"
 msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 msgstr "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Take Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+msgstr "Take Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -292,6 +296,10 @@ msgstr "Enter NFT Address"
 msgid "AVAILABLE"
 msgstr "AVAILABLE"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed Take Profit"
+msgstr "Failed Take Profit"
+
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm Settle"
 msgstr "Confirm Settle"
@@ -342,10 +350,6 @@ msgstr "Insufficient GM balance"
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
 msgstr "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Failed Take-Profit"
-msgstr "Failed Take-Profit"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1078,10 +1082,6 @@ msgstr "Tokens"
 msgid "Request Withdraw"
 msgstr "Request Withdraw"
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
-msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
-
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
 msgstr "Copied"
@@ -1127,10 +1127,6 @@ msgstr "Total value of tokens in the GLP pools."
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Generating and activating Subaccount"
 msgstr "Generating and activating Subaccount"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
-msgstr "Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
@@ -1744,10 +1740,6 @@ msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbols
 msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
 msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
 
-#: src/components/Exchange/PositionsList.jsx
-msgid "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
-msgstr "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
-
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "Show details"
@@ -2032,10 +2024,6 @@ msgstr "Long {0}"
 msgid "Address"
 msgstr "Address"
 
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Update Take-Profit"
-msgstr "Update Take-Profit"
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "Winner:"
 msgstr "Winner:"
@@ -2141,10 +2129,6 @@ msgstr "Initial top-up"
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
 msgstr "Allow {0} to be spent"
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take-Profit / Stop Loss"
-msgstr "Take-Profit / Stop Loss"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap Order created!"
@@ -2493,6 +2477,10 @@ msgstr "Minimum received"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 
+#: src/components/Exchange/PositionsList.jsx
+msgid "Use the \"Close\" button to reduce your Position Size, or to set Take Profit / Stop-Loss Orders."
+msgstr "Use the \"Close\" button to reduce your Position Size, or to set Take Profit / Stop-Loss Orders."
+
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Enter your feedback here"
 msgstr "Enter your feedback here"
@@ -2703,6 +2691,10 @@ msgstr "Max leverage without PnL: {0}x"
 msgid "V2 doesn't currently support this network"
 msgstr "V2 doesn't currently support this network"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop-Loss Orders."
+msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop-Loss Orders."
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -2740,6 +2732,10 @@ msgstr "An aggregate of high-quality price feeds determine when liquidations occ
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
 msgstr "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create Take Profit"
+msgstr "Create Take Profit"
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Update Order"
@@ -2900,10 +2896,6 @@ msgstr "Withdrawing..."
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
 msgstr "No claims match the selected filters"
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Limit / Take-Profit / Stop Loss"
-msgstr "Limit / Take-Profit / Stop Loss"
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -3109,6 +3101,10 @@ msgstr "Avg. Size"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Take Profit PnL"
+msgstr "Take Profit PnL"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Let us know which coins you're missing"
@@ -3378,10 +3374,6 @@ msgstr "Swap submitted."
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PnL"
 msgstr "PnL"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Execute Take-Profit"
-msgstr "Execute Take-Profit"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -4077,6 +4069,12 @@ msgstr "Settings"
 msgid "Amount of traders you referred."
 msgstr "Amount of traders you referred."
 
+#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/domain/synthetics/positions/utils.ts
+msgid "Take Profit"
+msgstr "Take Profit"
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close submitted!"
 msgstr "Close submitted!"
@@ -4178,6 +4176,10 @@ msgstr "Available amount to deposit into the specific GM pool."
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Take Profit / Stop Loss"
+msgstr "Take Profit / Stop Loss"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
@@ -4240,6 +4242,10 @@ msgstr "No markets found."
 msgid "Edit Referral Code"
 msgstr "Edit Referral Code"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Take Profit"
+msgstr "Execute Take Profit"
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
 msgstr "GMX APR"
@@ -4267,6 +4273,10 @@ msgstr "Decreasing"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "Create Referral Code"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
+msgstr "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4640,6 +4650,10 @@ msgstr "Sell order executed"
 msgid "Affiliate Rewards Claimed"
 msgstr "Affiliate Rewards Claimed"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Limit / Take Profit / Stop Loss"
+msgstr "Limit / Take Profit / Stop Loss"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/SwapSpreadRow.tsx
@@ -4808,6 +4822,10 @@ msgstr "Incorrect Network"
 msgid "Incorrect Account"
 msgstr "Incorrect Account"
 
+#: src/components/Exchange/SwapBox.jsx
+msgid "Take profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
+msgstr "Take profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Min residual collateral: 10 USD"
 msgstr "Min residual collateral: 10 USD"
@@ -4955,10 +4973,6 @@ msgstr "Max {0} in"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined take-profits are at maximum (100%). Decrease existing values to add more orders."
-msgstr "Combined take-profits are at maximum (100%). Decrease existing values to add more orders."
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
@@ -5908,6 +5922,10 @@ msgstr "Save on Fees"
 msgid "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
 msgstr "Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders."
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Take Profit"
+msgstr "Update Take Profit"
+
 #: src/pages/Ecosystem/Ecosystem.jsx
 msgid "GMX staking rewards updates and insights"
 msgstr "GMX staking rewards updates and insights"
@@ -6136,10 +6154,6 @@ msgstr "Enabling Leverage..."
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Create Take-Profit"
-msgstr "Create Take-Profit"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
@@ -6500,10 +6514,6 @@ msgstr "Keep leverage at {0}x"
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "The amount left in the subaccount is not enough to cover network gas costs."
 msgstr "The amount left in the subaccount is not enough to cover network gas costs."
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take-Profit PnL"
-msgstr "Take-Profit PnL"
 
 #: src/pages/Earn/EarnV1.jsx
 #: src/pages/Earn/StakeModal.tsx
@@ -6884,6 +6894,10 @@ msgstr "Voting Power"
 msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
 msgstr "The long reserve accounts for the PnL of open positions, while the open interest does not."
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Take Profit"
+msgstr "Cancel Take Profit"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "Top PnL ($)"
@@ -7073,10 +7087,6 @@ msgstr "Fees will be shown once you have entered an amount in the order form."
 #: src/pages/Earn/Vesting.tsx
 msgid "GLP Vault"
 msgstr "GLP Vault"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Take-Profit"
-msgstr "Cancel Take-Profit"
 
 #: src/components/Footer/constants.ts
 #: src/pages/ReferralTerms/ReferralTerms.jsx
@@ -7717,10 +7727,6 @@ msgstr "Mark Price"
 msgid "Open {marketName} in Explorer"
 msgstr "Open {marketName} in Explorer"
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
-msgstr "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
-
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Partial Liquidation"
 msgstr "Partial Liquidation"
@@ -7979,12 +7985,6 @@ msgstr "Depositing {0} to {positionText}"
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee"
 msgstr "Max Network Fee"
-
-#: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#: src/domain/synthetics/positions/utils.ts
-msgid "Take-Profit"
-msgstr "Take-Profit"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval was cancelled"
