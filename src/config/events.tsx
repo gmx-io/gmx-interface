@@ -293,7 +293,7 @@ export const appEventsData: EventData[] = [
     endDate: "15 Nov 2024, 00:00",
     bodyText: (
       <>
-        New Take Profit and Stop-Loss orders will now be automatically cancelled when the associated position is fully
+        New Take Profit and Stop Loss orders will now be automatically cancelled when the associated position is fully
         closed. You can disable this feature in the settings.
         <br />
         <br />

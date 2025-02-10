@@ -309,7 +309,7 @@ export default function PositionSeller(props) {
       // only Stop orders can't be executed without corresponding opened position
       if (order.type !== DECREASE) continue;
 
-      // if user creates Stop-Loss we need only Stop-Loss orders and vice versa
+      // if user creates Stop Loss we need only Stop Loss orders and vice versa
       if (orderOption === STOP) {
         const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
         if (triggerAboveThreshold !== order.triggerAboveThreshold) continue;

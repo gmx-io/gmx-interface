@@ -96,7 +96,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
       }
 
       if (triggerOrderType === OrderType.StopLossDecrease) {
-        return t`Acceptable price does not apply to stop-loss orders, as they will be executed regardless of any price impact.`;
+        return t`Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact.`;
       }
     }
 

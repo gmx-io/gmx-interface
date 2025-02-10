@@ -551,7 +551,7 @@ export default function PositionsList(props) {
                               <br />
                               <br />
                               <Trans>
-                                Use the "Close" button to reduce your Position Size, or to set Take Profit / Stop-Loss
+                                Use the "Close" button to reduce your Position Size, or to set Take Profit / Stop Loss
                                 Orders.
                               </Trans>
                             </div>

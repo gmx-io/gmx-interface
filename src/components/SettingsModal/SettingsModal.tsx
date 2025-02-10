@@ -216,7 +216,7 @@ export function SettingsModal({
             content={
               <div onClick={(e) => e.stopPropagation()}>
                 <Trans>
-                  Take Profit and Stop-Loss orders will be automatically cancelled when the associated position is
+                  Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
                   completely closed. This will only affect newly created TP/SL orders.
                 </Trans>
                 <br />

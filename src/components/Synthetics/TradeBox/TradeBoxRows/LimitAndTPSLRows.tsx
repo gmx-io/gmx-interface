@@ -47,12 +47,12 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
   if (!entriesInfo || entriesInfo.entries.every((e) => e.txnType === "cancel")) return;
 
   const label = {
-    stopLoss: t`Stop-Loss`,
+    stopLoss: t`Stop Loss`,
     takeProfit: t`Take Profit`,
     limit: t`Limit`,
   }[type];
 
-  const labelPnl = isStopLoss ? t`Stop-Loss PnL` : t`Take Profit PnL`;
+  const labelPnl = isStopLoss ? t`Stop Loss PnL` : t`Take Profit PnL`;
 
   return (
     <>
@@ -68,7 +68,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                 disabled={entriesInfo.allowAddEntry}
                 content={
                   isStopLoss
-                    ? t`Combined stop-losses are at maximum (100%). Decrease existing values to add more orders.`
+                    ? t`Combined stop losses are at maximum (100%). Decrease existing values to add more orders.`
                     : t`Combined take profits are at maximum (100%). Decrease existing values to add more orders.`
                 }
               >

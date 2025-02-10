@@ -43,11 +43,11 @@ export const actionTextMapBase: Partial<
   "LimitDecrease-OrderUpdated": msg`Update Take Profit`,
   "LimitDecrease-OrderFrozen": msg`Failed Take Profit`,
 
-  "StopLossDecrease-OrderCreated": msg`Create Stop-Loss`,
-  "StopLossDecrease-OrderExecuted": msg`Execute Stop-Loss`,
-  "StopLossDecrease-OrderCancelled": msg`Cancel Stop-Loss`,
-  "StopLossDecrease-OrderUpdated": msg`Update Stop-Loss`,
-  "StopLossDecrease-OrderFrozen": msg`Failed Stop-Loss`,
+  "StopLossDecrease-OrderCreated": msg`Create Stop Loss`,
+  "StopLossDecrease-OrderExecuted": msg`Execute Stop Loss`,
+  "StopLossDecrease-OrderCancelled": msg`Cancel Stop Loss`,
+  "StopLossDecrease-OrderUpdated": msg`Update Stop Loss`,
+  "StopLossDecrease-OrderFrozen": msg`Failed Stop Loss`,
 
   "Liquidation-OrderExecuted": msg`Liquidated`,
 };

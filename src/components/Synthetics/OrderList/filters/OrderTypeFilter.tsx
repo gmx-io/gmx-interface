@@ -33,7 +33,7 @@ const GROUPS: Groups = [
       },
       {
         data: OrderType.StopLossDecrease,
-        text: msg`Stop-Loss`,
+        text: msg`Stop Loss`,
       },
     ],
   },
