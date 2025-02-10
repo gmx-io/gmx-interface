@@ -23,28 +23,6 @@
     "tscheck": "tsc -p tsconfig.json --noEmit",
     "build": "rm -rf build && tsc -p tsconfig.json && yarn copy:jsons"
   },
-  "jest": {
-    "preset": "ts-jest/presets/default-esm",
-    "testEnvironment": "node",
-    "testTimeout": 15000,
-    "testPathIgnorePatterns": [
-      "/build/",
-      "/node_modules/"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "js",
-      "json"
-    ],
-    "moduleNameMapper": {
-      "^configs/(.*)$": "<rootDir>/src/configs/$1",
-      "^modules/(.*)$": "<rootDir>/src/modules/$1",
-      "^utils/(.*)$": "<rootDir>/src/utils/$1",
-      "^types/(.*)$": "<rootDir>/src/types/$1",
-      "prebuilt": "<rootDir>/src/prebuilt/index.ts",
-      "^abis/(.*)$": "<rootDir>/src/abis/$1"
-    }
-  },
   "publishConfig": {
     "access": "public"
   },
