@@ -69,7 +69,7 @@ function executeChainsMulticalls() {
 }
 
 async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
-  const MAX_CALLS_PER_BATCH = 500;
+  const MAX_CALLS_PER_BATCH = 350;
 
   const callChunks = chunk(entries(calls), MAX_CALLS_PER_BATCH);
   const batchedRequests = callChunks.map((chunk) => ({
