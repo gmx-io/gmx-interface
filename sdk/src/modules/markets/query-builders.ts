@@ -89,7 +89,7 @@ export async function buildMarketsValuesRequest(
 
     if (!marketPrices) {
       // eslint-disable-next-line no-console
-      console.warn("missed market prices", market);
+      console.warn(`No market prices for ${marketAddress}, skipping market values request`);
       continue;
     }
 

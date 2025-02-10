@@ -1,5 +1,6 @@
 import { hashData, hashString, hashDataMap } from "../hash";
 import { LRUCache } from "../LruCache";
+import { describe, expect, it } from "vitest";
 
 describe("hashData", () => {
   it("returns a valid hash and caches it", () => {
