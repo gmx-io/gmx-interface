@@ -4,12 +4,12 @@ declare global {
   }
 }
 
-export const sleep = (ms: number, abortController?: AbortController) =>
+export const sleep = (ms: number, abortSignal?: AbortSignal) =>
   new Promise((resolve) => {
     const timeout = setTimeout(resolve, ms);
 
-    if (abortController) {
-      abortController.signal.addEventListener("abort", () => {
+    if (abortSignal) {
+      abortSignal.addEventListener("abort", () => {
         clearTimeout(timeout);
         resolve(undefined);
       });

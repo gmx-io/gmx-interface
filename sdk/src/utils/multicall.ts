@@ -136,7 +136,7 @@ export class Multicall {
 
     const result = await Promise.race([
       client.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout, timeoutController).then(() => Promise.reject(new Error("multicall timeout"))),
+      sleep(maxTimeout, timeoutController.signal).then(() => Promise.reject(new Error("multicall timeout"))),
     ])
       .then((response) => {
         timeoutController.abort();
