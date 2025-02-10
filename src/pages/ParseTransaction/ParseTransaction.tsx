@@ -45,6 +45,7 @@ import {
   formatPriceByField,
   formatPriceByIndexToken,
   formatPriceByToken,
+  formatSwapPath,
 } from "./formatting";
 import { parseTxEvents } from "./parseTxEvents";
 import { LogEntryComponentProps } from "./types";
@@ -202,24 +203,9 @@ const fieldFormatters = {
   maxPrice: formatPriceByToken,
   tokenPrice: formatPriceByToken,
 
-  swapPath: (t: string[], props: LogEntryComponentProps) => {
-    const marketsInfo = props.marketsInfoData;
-
-    return (
-      <div className="flex flex-col gap-4">
-        {t.map((marketAddress) => {
-          const market = marketsInfo[marketAddress];
-          return market ? (
-            <div key={marketAddress}>
-              {getMarketFullName(market)} ({marketAddress})
-            </div>
-          ) : (
-            <span key={marketAddress}>{marketAddress}</span>
-          );
-        })}
-      </div>
-    );
-  },
+  swapPath: formatSwapPath,
+  longTokenSwapPath: formatSwapPath,
+  shortTokenSwapPath: formatSwapPath,
 
   "indexTokenPrice.max": formatPriceByIndexToken,
   "indexTokenPrice.min": formatPriceByIndexToken,
