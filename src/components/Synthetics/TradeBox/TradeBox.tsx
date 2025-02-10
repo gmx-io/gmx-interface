@@ -63,6 +63,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
@@ -85,7 +86,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { OneClickTradingInfo, useShowOneClickTradingInfo } from "./OneClickTradingInfo";
+import { OneClickTradingInfo } from "./OneClickTradingInfo";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
@@ -603,8 +604,8 @@ export function TradeBox() {
               <button
                 type="button"
                 disabled={!isSwitchTokensAllowed}
-                className="desktop-hover:bg-[#484e92] absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500
-                           active:bg-[#505699]"
+                className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
+                           desktop-hover:bg-[#484e92]"
                 onClick={onSwitchTokens}
                 data-qa="swap-ball"
               >
@@ -703,7 +704,7 @@ export function TradeBox() {
         inputValue={closeSizeInputValue}
         onInputValueChange={handleCloseInputChange}
         onClickBottomRightLabel={setMaxCloseSize}
-        maxPosition="top-right"
+        maxButtonPosition="top-right"
         onClickMax={showMaxButton ? setMaxCloseSize : undefined}
         showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
@@ -873,7 +874,7 @@ export function TradeBox() {
           qa="trade-mode"
         />
         <SettingsIcon24
-          className="gmx-hover:text-white cursor-pointer text-slate-100"
+          className="cursor-pointer text-slate-100 gmx-hover:text-white"
           onClick={() => setIsSettingsVisible(true)}
         />
       </div>

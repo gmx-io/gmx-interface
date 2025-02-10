@@ -239,6 +239,20 @@ export default function OrderEditor(props) {
     return t`Update Order`;
   };
 
+  const TokensLabel = () => {
+    if (!toTokenInfo || !fromTokenInfo) {
+      return;
+    }
+    const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
+    return (
+      <div className="PositionEditor-token-symbol Order-editor-tokens">
+        <TokenWithIcon className="Order-editor-icon" symbol={tokenA.symbol} displaySize={20} />
+        &nbsp;/&nbsp;
+        <TokenWithIcon className="Order-editor-icon" symbol={tokenB.symbol} displaySize={20} />
+      </div>
+    );
+  };
+
   if (order.type !== SWAP) {
     const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
     const indexTokenInfo = getToken(chainId, order.indexToken);
@@ -328,18 +342,7 @@ export default function OrderEditor(props) {
             )
           }
         >
-          {(() => {
-            if (!toTokenInfo) return;
-            if (!fromTokenInfo) return;
-            const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
-            return (
-              <div className="PositionEditor-token-symbol Order-editor-tokens">
-                <TokenWithIcon className="Order-editor-icon" symbol={tokenA.symbol} displaySize={20} />
-                &nbsp;/&nbsp;
-                <TokenWithIcon className="Order-editor-icon" symbol={tokenB.symbol} displaySize={20} />
-              </div>
-            );
-          })()}
+          <TokensLabel />
         </BuyInputSection>
       </div>
       <ExchangeInfoRow label={t`Minimum received`}>

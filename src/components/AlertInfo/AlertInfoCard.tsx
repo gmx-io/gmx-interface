@@ -5,7 +5,7 @@ import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";
 import { MdClose } from "react-icons/md";
 
-interface Props {
+type Props = {
   /**
    * @default "info"
    */
@@ -13,7 +13,7 @@ interface Props {
   children: ReactNode;
   className?: string;
   onClose?: () => void;
-}
+};
 
 export function AlertInfoCard({ children, type = "info", onClose, className }: Props) {
   const [closed, setClosed] = useState(false);

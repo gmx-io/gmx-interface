@@ -4,7 +4,7 @@ import cx from "classnames";
 import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";
 
-interface Props {
+type Props = {
   type: "warning" | "info";
   children: ReactNode;
   className?: string;
@@ -15,7 +15,7 @@ interface Props {
    * @default "text-slate-100"
    */
   textColor?: "text-slate-100" | "text-yellow-500";
-}
+};
 
 export function AlertInfo({
   compact = false,

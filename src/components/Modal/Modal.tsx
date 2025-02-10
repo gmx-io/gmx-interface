@@ -95,8 +95,7 @@ export default function Modal({
 
   const setContentRef = useCallback(
     (node: HTMLDivElement | null) => {
-      if (isMobile) return;
-      if (!node || !keepInitialTopOffset) return;
+      if (isMobile || !node || !keepInitialTopOffset) return;
       const initialTopOffset = node.getBoundingClientRect().top;
 
       node.style.top = "0px";

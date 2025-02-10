@@ -76,18 +76,18 @@ export function ExpandableRow({
   return (
     <div className={className}>
       <SyntheticsInfoRow
-        className={cx("gmx-hover:text-blue-300 group !items-center", {
+        className={cx("group !items-center gmx-hover:text-blue-300", {
           "cursor-not-allowed": disabled,
         })}
         onClick={disabled ? undefined : handleOnClick}
         label={
-          <span className="group-gmx-hover:text-blue-300 flex flex-row justify-between align-middle">{label}</span>
+          <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
         }
         value={
           open ? (
-            <BiChevronUp className="group-gmx-hover:text-blue-300 -mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white" />
+            <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
           ) : (
-            <BiChevronDown className="group-gmx-hover:text-blue-300 -mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white" />
+            <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
           )
         }
       />

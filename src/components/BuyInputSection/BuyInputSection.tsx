@@ -17,15 +17,39 @@ type Props = {
   onClickTopRightLabel?: () => void;
   inputValue?: number | string;
   onInputValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  maxPosition?: "bottom-right" | "top-right";
+  // eslint-disable-next-line react/no-unused-prop-types
+  maxButtonPosition?: "bottom-right" | "top-right";
   onClickMax?: () => void;
   onFocus?: () => void;
+  // eslint-disable-next-line react/no-unused-prop-types
   shouldClosestLabelTriggerMax?: boolean;
   children?: ReactNode;
   showPercentSelector?: boolean;
   onPercentChange?: (percentage: number) => void;
   qa?: string;
 };
+
+function getMaxButtonPosition({
+  maxButtonPosition: maybeMaxButtonPosition,
+  onClickMax,
+  shouldClosestLabelTriggerMax = true,
+  topRightLabel,
+  topRightValue,
+  bottomRightLabel,
+  bottomRightValue,
+}: Props) {
+  let maxPosition = "bottom-right";
+  if (maybeMaxButtonPosition) {
+    maxPosition = maybeMaxButtonPosition;
+  } else if (onClickMax && shouldClosestLabelTriggerMax) {
+    if (topRightLabel || topRightValue) {
+      maxPosition = "top-right";
+    } else if (bottomRightLabel || bottomRightValue) {
+      maxPosition = "bottom-right";
+    }
+  }
+  return maxPosition;
+}
 
 export default function BuyInputSection(props: Props) {
   const {
@@ -41,9 +65,7 @@ export default function BuyInputSection(props: Props) {
     inputValue,
     onInputValueChange,
     onClickMax,
-    maxPosition: maybeMaxPosition,
     onFocus,
-    shouldClosestLabelTriggerMax = true,
     children,
     showPercentSelector,
     onPercentChange,
@@ -51,16 +73,7 @@ export default function BuyInputSection(props: Props) {
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  let maxPosition = "bottom-right";
-  if (maybeMaxPosition) {
-    maxPosition = maybeMaxPosition;
-  } else if (onClickMax && shouldClosestLabelTriggerMax) {
-    if (topRightLabel || topRightValue) {
-      maxPosition = "top-right";
-    } else if (bottomRightLabel || bottomRightValue) {
-      maxPosition = "bottom-right";
-    }
-  }
+  const maxButtonPosition = getMaxButtonPosition(props);
 
   const handleOnFocus = useCallback(() => {
     if (showPercentSelector && onPercentChange) {
@@ -105,12 +118,12 @@ export default function BuyInputSection(props: Props) {
       if (onClickTopRightLabel) {
         e.stopPropagation();
         onClickTopRightLabel();
-      } else if (onClickMax && maxPosition === "top-right") {
+      } else if (onClickMax && maxButtonPosition === "top-right") {
         e.stopPropagation();
         onClickMax();
       }
     },
-    [onClickTopRightLabel, onClickMax, maxPosition]
+    [onClickTopRightLabel, onClickMax, maxButtonPosition]
   );
 
   const handleBottomRightClick = useCallback(
@@ -118,12 +131,12 @@ export default function BuyInputSection(props: Props) {
       if (onClickBottomRightLabel) {
         e.stopPropagation();
         onClickBottomRightLabel();
-      } else if (onClickMax && maxPosition === "bottom-right") {
+      } else if (onClickMax && maxButtonPosition === "bottom-right") {
         e.stopPropagation();
         onClickMax();
       }
     },
-    [onClickBottomRightLabel, onClickMax, maxPosition]
+    [onClickBottomRightLabel, onClickMax, maxButtonPosition]
   );
 
   return (
@@ -140,18 +153,18 @@ export default function BuyInputSection(props: Props) {
           <div data-label="left" className="text-slate-100">
             {topLeftLabel}
           </div>
-          {(topRightLabel || topRightValue || (onClickMax && maxPosition === "top-right")) && (
+          {(topRightLabel || topRightValue || (onClickMax && maxButtonPosition === "top-right")) && (
             <div
               data-label="right"
               className={cx(
                 "flex items-baseline gap-4",
-                (onClickTopRightLabel || (onClickMax && maxPosition === "top-right")) && "cursor-pointer"
+                (onClickTopRightLabel || (onClickMax && maxButtonPosition === "top-right")) && "cursor-pointer"
               )}
               onClick={handleTopRightClick}
             >
               {topRightLabel && <span className="text-slate-100">{topRightLabel}:</span>}
               {topRightValue && <span>{topRightValue}</span>}
-              {onClickMax && maxPosition === "top-right" && (
+              {onClickMax && maxButtonPosition === "top-right" && (
                 <button
                   type="button"
                   className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
@@ -183,7 +196,7 @@ export default function BuyInputSection(props: Props) {
           <div className="shrink-0 text-24 leading-[24px]">{children}</div>
         </div>
 
-        {(bottomLeftValue || bottomRightValue || (onClickMax && maxPosition === "bottom-right")) && (
+        {(bottomLeftValue || bottomRightValue || (onClickMax && maxButtonPosition === "bottom-right")) && (
           <div className="flex justify-between">
             <div
               className={cx({
@@ -196,14 +209,14 @@ export default function BuyInputSection(props: Props) {
             <div
               className={cx(
                 "flex items-baseline gap-4",
-                (onClickBottomRightLabel || (onClickMax && maxPosition === "bottom-right")) && "cursor-pointer"
+                (onClickBottomRightLabel || (onClickMax && maxButtonPosition === "bottom-right")) && "cursor-pointer"
               )}
               onClick={handleBottomRightClick}
             >
               {bottomRightLabel && <span className="text-slate-100">{bottomRightLabel}:</span>}
               {bottomRightValue && <span>{bottomRightValue}</span>}
 
-              {onClickMax && maxPosition === "bottom-right" && (
+              {onClickMax && maxButtonPosition === "bottom-right" && (
                 <button
                   type="button"
                   className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
