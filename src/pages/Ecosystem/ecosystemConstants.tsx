@@ -179,15 +179,6 @@ export const dashboardProjects: EcosystemDashboardProject[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`GMX Analytics`,
-    link: "https://gmxstats.info/",
-    linkLabel: "gmxstats.info",
-    about: msg`Financial reports and protocol analytics`,
-    creatorLabel: "@sliux",
-    creatorLink: "https://x.com/sliux",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`TokenTerminal`,
     link: "https://tokenterminal.com/terminal/projects/gmx",
     linkLabel: "tokenterminal.com",
