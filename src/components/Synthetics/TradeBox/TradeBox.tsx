@@ -5,7 +5,6 @@ import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -42,7 +41,8 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { Token, getMinResidualAmount } from "domain/tokens";
+import { Token } from "domain/tokens";
+import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalizedMap } from "lib/i18n";
 import {
   calculateDisplayDecimals,
@@ -53,13 +53,11 @@ import {
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
-  limitDecimals,
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
@@ -120,14 +118,10 @@ export function TradeBox() {
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
-  const isMetamaskMobile = useIsMetamaskMobile();
   const { showDebugValues, shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minResidualAmount = useMemo(
-    () => getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice),
-    [nativeToken?.decimals, nativeToken?.prices.maxPrice]
-  );
+
   const {
     fromTokenInputValue,
     setFromTokenInputValue: setFromTokenInputValueRaw,
@@ -164,16 +158,13 @@ export function TradeBox() {
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
-  const isNotMatchAvailableBalance = useMemo(
-    () =>
-      ((fromToken?.balance ?? 0n) > 0n &&
-        fromToken?.balance !== fromTokenAmount &&
-        (fromToken?.isNative
-          ? minResidualAmount !== undefined && (fromToken?.balance ?? 0n) > minResidualAmount
-          : true)) ||
-      false,
-    [fromToken?.balance, fromToken?.isNative, fromTokenAmount, minResidualAmount]
-  );
+
+  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+    fromToken,
+    nativeToken,
+    fromTokenAmount,
+    fromTokenInputValue,
+  });
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
 
@@ -424,31 +415,11 @@ export function TradeBox() {
   }
 
   const onMaxClick = useCallback(() => {
-    if (fromToken?.balance) {
-      let maxAvailableAmount = fromToken?.isNative
-        ? fromToken.balance - BigInt(minResidualAmount ?? 0n)
-        : fromToken.balance;
-
-      if (maxAvailableAmount < 0) {
-        maxAvailableAmount = 0n;
-      }
-
+    if (formattedMaxAvailableAmount) {
       setFocusedInput("from");
-      const formattedAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals);
-      const finalAmount = isMetamaskMobile
-        ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
-        : formattedAmount;
-      setFromTokenInputValue(finalAmount, true);
+      setFromTokenInputValue(formattedMaxAvailableAmount, true);
     }
-  }, [
-    fromToken?.balance,
-    fromToken?.decimals,
-    fromToken?.isNative,
-    isMetamaskMobile,
-    minResidualAmount,
-    setFocusedInput,
-    setFromTokenInputValue,
-  ]);
+  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
   const handleFromInputTokenChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -577,7 +548,7 @@ export function TradeBox() {
           }
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
-          onClickMax={isNotMatchAvailableBalance ? onMaxClick : undefined}
+          onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
         >
           {fromTokenAddress && (

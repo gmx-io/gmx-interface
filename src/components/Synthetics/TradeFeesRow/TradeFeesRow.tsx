@@ -8,11 +8,12 @@ import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFeesType } from "domain/synthetics/trade";
-import { bigMath } from "sdk/utils/bigmath";
+import { getIsHighSwapImpact } from "domain/synthetics/trade/utils/getIsHighSwapImpact";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -22,7 +23,6 @@ import sparkleIcon from "img/sparkle.svg";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./TradeFeesRow.scss";
-
 type Props = {
   totalFees?: FeeItem;
   shouldShowRebate?: boolean;
@@ -54,6 +54,7 @@ export function TradeFeesRow(p: Props) {
   const tradingIncentives = useTradingIncentives(chainId);
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
+  const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
@@ -381,12 +382,25 @@ export function TradeFeesRow(p: Props) {
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
     } else if (!feeRows.length && !incentivesBottomText) {
-      return <span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>;
+      return (
+        <span
+          className={cx({
+            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
+            "text-yellow-500": shouldShowWarning,
+          })}
+        >
+          {formatDeltaUsd(totalFeeUsd)}
+        </span>
+      );
     } else {
       return (
         <TooltipWithPortal
           tooltipClassName="TradeFeesRow-tooltip"
-          handle={<span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>}
+          handleClassName={cx({
+            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
+            "text-yellow-500 !decoration-yellow-500/50": shouldShowWarning,
+          })}
+          handle={formatDeltaUsd(totalFeeUsd)}
           position="left-start"
           content={
             <div>
@@ -407,7 +421,7 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [feeRows, incentivesBottomText, totalFeeUsd, swapRouteMsg]);
+  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, swapRouteMsg]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }

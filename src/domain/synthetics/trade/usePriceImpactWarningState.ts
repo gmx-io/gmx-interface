@@ -4,7 +4,6 @@ import { getExcessiveExecutionFee } from "config/chains";
 import {
   HIGH_COLLATERAL_IMPACT_BPS,
   HIGH_POSITION_IMPACT_BPS,
-  HIGH_SWAP_IMPACT_BPS,
   HIGH_SWAP_PROFIT_FEE_BPS,
   USD_DECIMALS,
 } from "config/factors";
@@ -15,6 +14,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { TradeFlags } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import type { FeeItem } from "../fees";
+import { getIsHighSwapImpact } from "./utils/getIsHighSwapImpact";
 
 export type WarningState = {
   shouldShowWarningForPosition: boolean;
@@ -73,9 +73,7 @@ export function usePriceImpactWarningState({
   );
   const prevIsHighCollateralImpact = usePrevious(isHighCollateralImpact);
 
-  const isHighSwapImpact = Boolean(
-    swapPriceImpact && swapPriceImpact.deltaUsd < 0 && bigMath.abs(swapPriceImpact.bps) >= HIGH_SWAP_IMPACT_BPS
-  );
+  const isHighSwapImpact = getIsHighSwapImpact(swapPriceImpact);
   const prevIsHighSwapImpact = usePrevious(isHighSwapImpact);
 
   const isHightSwapProfitFee = Boolean(

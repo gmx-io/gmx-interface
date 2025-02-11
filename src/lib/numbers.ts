@@ -1,4 +1,4 @@
-import { USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "sdk/utils/bigmath";
@@ -607,4 +607,16 @@ export function formatFactor(factor: bigint) {
 
 export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(value, max));
+}
+
+export function absDiffBps(value: bigint, base: bigint) {
+  if ((value === 0n && base !== 0n) || (value !== 0n && base === 0n)) {
+    return BASIS_POINTS_DIVISOR_BIGINT;
+  }
+
+  if (value === 0n && base === 0n) {
+    return 0n;
+  }
+
+  return bigMath.mulDiv(bigMath.abs(value - base), BASIS_POINTS_DIVISOR_BIGINT, base);
 }

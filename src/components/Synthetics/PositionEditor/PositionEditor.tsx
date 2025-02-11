@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey } from "react-use";
 import { Address } from "viem";
 
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { usePositionsConstants, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorCollateralInputValue,
@@ -18,13 +17,12 @@ import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/syntheti
 import { adaptToV1InfoTokens, convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { getMinResidualAmount } from "domain/tokens";
+import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, limitDecimals } from "lib/numbers";
+import { absDiffBps, formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
@@ -50,7 +48,6 @@ export function PositionEditor() {
   const { chainId } = useChainId();
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
-  const isMetamaskMobile = useIsMetamaskMobile();
   const { minCollateralUsd } = usePositionsConstants();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
@@ -58,7 +55,6 @@ export function PositionEditor() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -173,12 +169,6 @@ export function PositionEditor() {
     [isVisible, prevIsVisible, setCollateralInputValue]
   );
 
-  const showMaxOnDeposit = collateralToken?.isNative
-    ? minResidualAmount !== undefined &&
-      collateralToken?.balance !== undefined &&
-      collateralToken.balance > minResidualAmount
-    : true;
-
   const buttonContent = (
     <Button
       className="w-full"
@@ -204,36 +194,33 @@ export function PositionEditor() {
     buttonContent
   );
 
-  const showMaxButton =
-    (isDeposit
-      ? collateralToken?.balance &&
-        showMaxOnDeposit &&
-        (collateralDeltaAmount === undefined ||
-          collateralDeltaAmount != collateralToken?.balance ||
-          collateralDeltaAmount === undefined)
-      : maxWithdrawAmount !== undefined &&
-        (collateralDeltaAmount === undefined ? true : collateralDeltaAmount !== maxWithdrawAmount)) || false;
+  const maxDepositDetails = useMaxAvailableAmount({
+    fromToken: collateralToken,
+    nativeToken,
+    fromTokenAmount: collateralDeltaAmount ?? 0n,
+    fromTokenInputValue: collateralInputValue,
+  });
 
-  const handleMaxButtonClick = () => {
-    let maxDepositAmount = collateralToken?.isNative
-      ? collateralToken!.balance! - BigInt(minResidualAmount ?? 0)
-      : collateralToken!.balance!;
+  const showMaxButton = isDeposit
+    ? maxDepositDetails.showClickMax
+    : maxWithdrawAmount !== undefined &&
+      (collateralDeltaAmount === undefined
+        ? true
+        : absDiffBps(collateralDeltaAmount, maxWithdrawAmount) > 50n); /* 0.5% */
 
-    if (maxDepositAmount < 0) {
-      maxDepositAmount = 0n;
-    }
-
-    const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
-    const finalDepositAmount = isMetamaskMobile
-      ? limitDecimals(formattedMaxDepositAmount, MAX_METAMASK_MOBILE_DECIMALS)
-      : formattedMaxDepositAmount;
-
+  const handleMaxButtonClick = useCallback(() => {
     if (isDeposit) {
-      setCollateralInputValue(finalDepositAmount);
+      setCollateralInputValue(maxDepositDetails.formattedMaxAvailableAmount);
     } else {
       setCollateralInputValue(formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0));
     }
-  };
+  }, [
+    isDeposit,
+    maxDepositDetails.formattedMaxAvailableAmount,
+    position?.collateralToken?.decimals,
+    setCollateralInputValue,
+    maxWithdrawAmount,
+  ]);
 
   return (
     <div className="PositionEditor">

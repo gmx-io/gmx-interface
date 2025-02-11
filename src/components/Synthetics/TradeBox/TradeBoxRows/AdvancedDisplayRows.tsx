@@ -1,4 +1,6 @@
 import { t } from "@lingui/macro";
+import { ReactNode, useCallback, useMemo } from "react";
+
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -27,7 +29,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
-import { ReactNode, useCallback, useMemo } from "react";
 
 import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
