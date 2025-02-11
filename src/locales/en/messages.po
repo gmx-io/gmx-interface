@@ -5799,6 +5799,10 @@ msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied a
 msgid "No delegate found"
 msgstr "No delegate found"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Community with NFTs, Trading and Education initiatives"
+msgstr "GMX Community with NFTs, Trading and Education initiatives"
+
 #: src/pages/Earn/EarnV1.jsx
 msgid "Wallet not yet connected"
 msgstr "Wallet not yet connected"
@@ -7412,10 +7416,6 @@ msgstr "Total Volume"
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
 msgstr "Subaccount:"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry NFTs"
-msgstr "GMX Blueberry NFTs"
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx

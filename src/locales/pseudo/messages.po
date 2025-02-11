@@ -5796,6 +5796,10 @@ msgstr ""
 msgid "No delegate found"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Community with NFTs, Trading and Education initiatives"
+msgstr ""
+
 #: src/pages/Earn/EarnV1.jsx
 msgid "Wallet not yet connected"
 msgstr ""
@@ -7405,10 +7409,6 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry NFTs"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx

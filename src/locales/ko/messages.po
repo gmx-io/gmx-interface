@@ -5796,6 +5796,10 @@ msgstr ""
 msgid "No delegate found"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Community with NFTs, Trading and Education initiatives"
+msgstr ""
+
 #: src/pages/Earn/EarnV1.jsx
 msgid "Wallet not yet connected"
 msgstr "지갑이 아직 연동되지 않았습니다"
@@ -7406,10 +7410,6 @@ msgstr "총 거래량"
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry NFTs"
-msgstr "GMX 블루베리 NFT"
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
