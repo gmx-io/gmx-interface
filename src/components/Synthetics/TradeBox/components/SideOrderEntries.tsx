@@ -132,7 +132,7 @@ function SideOrderEntry({
             onValueChange={onPriceValueChange}
             onKeyDown={handleIgnoreEnterKey}
             placeholder="Price"
-            className={cx("SideOrderInput rounded-4 py-2 pr-5 text-right text-14", {
+            className={cx("SideOrderInput text-body-medium rounded-4 py-2 pr-5 text-right", {
               "max-w-60": isSmallMobile,
               "max-w-90": !isSmallMobile,
             })}

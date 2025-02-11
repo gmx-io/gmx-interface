@@ -530,7 +530,7 @@ export function OrderEditor(p: Props) {
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
       >
-        <div className="mb-12 flex flex-col gap-4">
+        <div className="mb-14 flex flex-col gap-2">
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <BuyInputSection
@@ -590,6 +590,8 @@ export function OrderEditor(p: Props) {
         </div>
 
         <div className="flex flex-col gap-14">
+          {button}
+
           {isLimitIncreaseOrder && (
             <SyntheticsInfoRow
               label={t`Leverage`}
@@ -679,8 +681,6 @@ export function OrderEditor(p: Props) {
               />
             </>
           )}
-
-          <div className="Exchange-swap-button-container">{button}</div>
         </div>
       </Modal>
     </div>

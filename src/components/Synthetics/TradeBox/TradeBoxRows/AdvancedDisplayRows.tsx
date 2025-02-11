@@ -164,15 +164,39 @@ function IncreaseOrderRow() {
       : increaseAmounts?.acceptablePrice;
 
   return (
-    <>
-      <ExecutionPriceRow
-        tradeFlags={tradeFlags}
-        fees={fees}
-        acceptablePrice={acceptablePrice}
-        executionPrice={executionPrice ?? undefined}
-        visualMultiplier={toToken?.visualMultiplier}
-      />
-    </>
+    <ExecutionPriceRow
+      tradeFlags={tradeFlags}
+      fees={fees}
+      acceptablePrice={acceptablePrice}
+      executionPrice={executionPrice ?? undefined}
+      visualMultiplier={toToken?.visualMultiplier}
+    />
+  );
+}
+
+function DecreaseOrderRow() {
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const { isMarket, isLong } = tradeFlags;
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
+  const fees = useSelector(selectTradeboxFees);
+  const executionPrice = useSelector(selectTradeboxExecutionPrice);
+  const toToken = useSelector(selectTradeboxToToken);
+
+  const acceptablePrice =
+    isMarket && decreaseAmounts?.acceptablePrice
+      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, true, isLong)
+      : decreaseAmounts?.acceptablePrice;
+
+  return (
+    <ExecutionPriceRow
+      tradeFlags={tradeFlags}
+      fees={fees}
+      acceptablePrice={acceptablePrice}
+      executionPrice={executionPrice ?? undefined}
+      visualMultiplier={toToken?.visualMultiplier}
+      triggerOrderType={decreaseAmounts?.triggerOrderType}
+    />
   );
 }
 
@@ -251,6 +275,7 @@ export function TradeBoxAdvancedGroups() {
       )}
 
       {isIncrease && <IncreaseOrderRow />}
+      {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow executionFee={executionFee} />
 

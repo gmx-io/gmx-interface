@@ -64,6 +64,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
             {entriesInfo.canAddEntry && (
               <TooltipWithPortal
                 as="div"
+                className="flex items-center"
                 position="left-start"
                 disabled={entriesInfo.allowAddEntry}
                 content={
