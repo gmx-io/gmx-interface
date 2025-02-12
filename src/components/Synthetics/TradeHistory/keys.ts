@@ -37,17 +37,17 @@ export const actionTextMapBase: Partial<
   "MarketDecrease-OrderExecuted": msg`Market Decrease`,
   "MarketDecrease-OrderCancelled": msg`Failed Market Decrease`,
 
-  "LimitDecrease-OrderCreated": msg`Create Take-Profit`,
-  "LimitDecrease-OrderExecuted": msg`Execute Take-Profit`,
-  "LimitDecrease-OrderCancelled": msg`Cancel Take-Profit`,
-  "LimitDecrease-OrderUpdated": msg`Update Take-Profit`,
-  "LimitDecrease-OrderFrozen": msg`Failed Take-Profit`,
+  "LimitDecrease-OrderCreated": msg`Create Take Profit`,
+  "LimitDecrease-OrderExecuted": msg`Execute Take Profit`,
+  "LimitDecrease-OrderCancelled": msg`Cancel Take Profit`,
+  "LimitDecrease-OrderUpdated": msg`Update Take Profit`,
+  "LimitDecrease-OrderFrozen": msg`Failed Take Profit`,
 
-  "StopLossDecrease-OrderCreated": msg`Create Stop-Loss`,
-  "StopLossDecrease-OrderExecuted": msg`Execute Stop-Loss`,
-  "StopLossDecrease-OrderCancelled": msg`Cancel Stop-Loss`,
-  "StopLossDecrease-OrderUpdated": msg`Update Stop-Loss`,
-  "StopLossDecrease-OrderFrozen": msg`Failed Stop-Loss`,
+  "StopLossDecrease-OrderCreated": msg`Create Stop Loss`,
+  "StopLossDecrease-OrderExecuted": msg`Execute Stop Loss`,
+  "StopLossDecrease-OrderCancelled": msg`Cancel Stop Loss`,
+  "StopLossDecrease-OrderUpdated": msg`Update Stop Loss`,
+  "StopLossDecrease-OrderFrozen": msg`Failed Stop Loss`,
 
   "Liquidation-OrderExecuted": msg`Liquidated`,
 };

@@ -5,9 +5,9 @@
 
     cursor: pointer;
 
-    &:hover:not(&-disabled),
-    &:hover:not(&-disabled) * {
-      color: var(--color-blue-300);
+    &:not(&-disabled),
+    &:not(&-disabled) * {
+      @apply gmx-hover:text-blue-300;
     }
 
     &-disabled {

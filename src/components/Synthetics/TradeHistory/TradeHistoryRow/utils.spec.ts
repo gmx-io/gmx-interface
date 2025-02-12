@@ -101,7 +101,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
         "acceptablePrice": ">  $29,700.00",
-        "action": "Create Take-Profit",
+        "action": "Create Take Profit",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",

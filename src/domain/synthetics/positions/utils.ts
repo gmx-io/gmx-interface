@@ -316,8 +316,8 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
 
 export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr = false) {
   const triggerStr = abbr ? t`T` : t`Trigger`;
-  const takeProfitStr = abbr ? t`TP` : t`Take-Profit`;
-  const stopLossStr = abbr ? t`SL` : t`Stop-Loss`;
+  const takeProfitStr = abbr ? t`TP` : t`Take Profit`;
+  const stopLossStr = abbr ? t`SL` : t`Stop Loss`;
 
   if (orderType === OrderType.LimitDecrease) {
     return takeProfitStr;

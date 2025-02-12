@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useMemo, PropsWithChildren, useCallback, ReactNode } from "react";
 import cx from "classnames";
-import { motion, AnimatePresence, Variants } from "framer-motion";
-import { RemoveScroll } from "react-remove-scroll";
+import { AnimatePresence, Variants, motion } from "framer-motion";
+import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { MdClose } from "react-icons/md";
+import { RemoveScroll } from "react-remove-scroll";
 
 import "./Modal.css";
 
@@ -51,8 +51,7 @@ export default function Modal({
   setIsVisible,
   qa,
 }: ModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const modalBodyRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     function close(e: KeyboardEvent) {
@@ -83,21 +82,20 @@ export default function Modal({
     [isVisible]
   );
 
-  const style = useMemo(() => ({ zIndex }), [zIndex]);
+  const modalStyle = useMemo(() => ({ zIndex }), [zIndex]);
 
   const stopPropagation = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
   }, []);
 
   return (
-    // @ts-ignore
     <AnimatePresence>
       {isVisible && (
         <RemoveScroll>
           <motion.div
             className={cx("Modal", className)}
             ref={modalRef}
-            style={style}
+            style={modalStyle}
             initial="hidden"
             animate="visible"
             exit="hidden"
@@ -121,9 +119,7 @@ export default function Modal({
               </div>
               {!noDivider && <div className="divider" />}
               <div className="overflow-auto">
-                <div className={cx("Modal-body", { "no-content-padding": !contentPadding })} ref={modalBodyRef}>
-                  {children}
-                </div>
+                <div className={cx("Modal-body", { "no-content-padding": !contentPadding })}>{children}</div>
               </div>
               {footerContent && (
                 <>

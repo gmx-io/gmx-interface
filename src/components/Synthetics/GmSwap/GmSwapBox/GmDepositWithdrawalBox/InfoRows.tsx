@@ -128,7 +128,7 @@ export function InfoRows({
             swapPriceImpact={fees?.swapPriceImpact}
             uiFee={fees?.uiFee}
           />
-          <NetworkFeeRow executionFee={executionFee} />
+          <NetworkFeeRow rowPadding executionFee={executionFee} />
         </div>
       </ExchangeInfo.Group>
 

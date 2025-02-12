@@ -29,11 +29,11 @@ const GROUPS: Groups = [
       },
       {
         data: OrderType.LimitDecrease,
-        text: msg`Take-Profit`,
+        text: msg`Take Profit`,
       },
       {
         data: OrderType.StopLossDecrease,
-        text: msg`Stop-Loss`,
+        text: msg`Stop Loss`,
       },
     ],
   },

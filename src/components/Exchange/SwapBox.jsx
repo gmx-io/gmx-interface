@@ -2028,111 +2028,122 @@ export default function SwapBox(props) {
               />
             )}
           </div>
-          {showFromAndToSection && (
-            <>
-              <BuyInputSection
-                topLeftLabel={t`Pay`}
-                topLeftValue={fromUsdMin !== undefined && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
-                topRightLabel={t`Balance`}
-                topRightValue={fromBalance !== undefined && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
-                onClickTopRightLabel={setFromValueToMaximumAvailable}
-                showMaxButton={shouldShowMaxButton()}
-                inputValue={fromValue}
-                onInputValueChange={onFromValueChange}
-                onClickMax={setFromValueToMaximumAvailable}
-              >
-                <TokenSelector
-                  label={t`Pay`}
-                  size="l"
-                  chainId={chainId}
-                  tokenAddress={fromTokenAddress}
-                  onSelectToken={onSelectFromToken}
-                  tokens={fromTokens}
-                  infoTokens={infoTokens}
-                  showTokenImgInDropdown={true}
-                  showSymbolImage
-                />
-              </BuyInputSection>
-              <div className="Exchange-swap-ball-container">
-                <button type="button" className="Exchange-swap-ball" onClick={switchTokens}>
-                  <IoMdSwap className="Exchange-swap-ball-icon" />
-                </button>
-              </div>
-              <BuyInputSection
-                topLeftLabel={getToLabel()}
-                topRightLabel={isSwap ? t`Balance` : t`Leverage`}
-                topLeftValue={toUsdMax !== undefined && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
-                topRightValue={
-                  isSwap
-                    ? formatAmount(toBalance, toToken.decimals, 4, true)
-                    : `${parseFloat(leverageOption).toFixed(2)}x`
-                }
-                showMaxButton={false}
-                inputValue={toValue}
-                onInputValueChange={onToValueChange}
-                preventFocusOnLabelClick="right"
-              >
-                <TokenSelector
-                  label={getTokenLabel()}
-                  size="l"
-                  chainId={chainId}
-                  tokenAddress={toTokenAddress}
-                  onSelectToken={onSelectToToken}
-                  tokens={toTokens}
-                  infoTokens={infoTokens}
-                  showTokenImgInDropdown={true}
-                  showSymbolImage
-                  showBalances={false}
-                />
-              </BuyInputSection>
-            </>
-          )}
-          {showTriggerRatioSection && (
-            <BuyInputSection
-              topLeftLabel={t`Price`}
-              topRightLabel={formatAmount(
-                getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
-                USD_DECIMALS,
-                4
-              )}
-              onClickTopRightLabel={() => {
-                setTriggerRatioValue(
-                  formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
-                );
-              }}
-              showMaxButton={false}
-              inputValue={triggerRatioValue}
-              onInputValueChange={onTriggerRatioChange}
-            >
-              {(() => {
-                if (!toTokenInfo || !fromTokenInfo) return;
-                const [tokenA, tokenB] = triggerRatioInverted
-                  ? [toTokenInfo, fromTokenInfo]
-                  : [fromTokenInfo, toTokenInfo];
-                return (
-                  <div className="PositionEditor-token-symbol">
-                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenA.symbol} displaySize={20} />
-                    &nbsp;per&nbsp;
-                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenB.symbol} displaySize={20} />
+          {(showFromAndToSection || showTriggerRatioSection || showTriggerPriceSection) && (
+            <div className="mb-12 flex flex-col gap-4">
+              {showFromAndToSection && (
+                <>
+                  <BuyInputSection
+                    topLeftLabel={t`Pay`}
+                    bottomLeftValue={fromUsdMin !== undefined && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
+                    bottomRightLabel={t`Balance`}
+                    bottomRightValue={
+                      fromBalance !== undefined && formatAmount(fromBalance, fromToken.decimals, 4, true)
+                    }
+                    onClickBottomRightLabel={setFromValueToMaximumAvailable}
+                    showMaxButton={shouldShowMaxButton()}
+                    inputValue={fromValue}
+                    onInputValueChange={onFromValueChange}
+                    onClickMax={setFromValueToMaximumAvailable}
+                  >
+                    <TokenSelector
+                      label={t`Pay`}
+                      size="l"
+                      chainId={chainId}
+                      tokenAddress={fromTokenAddress}
+                      onSelectToken={onSelectFromToken}
+                      tokens={fromTokens}
+                      infoTokens={infoTokens}
+                      showTokenImgInDropdown={true}
+                      showSymbolImage
+                    />
+                  </BuyInputSection>
+                  <div>
+                    <div className="Exchange-swap-ball-container">
+                      <button type="button" className="Exchange-swap-ball" onClick={switchTokens}>
+                        <IoMdSwap className="Exchange-swap-ball-icon" />
+                      </button>
+                    </div>
+                    <BuyInputSection
+                      topLeftLabel={getToLabel()}
+                      bottomRightLabel={isSwap ? t`Balance` : t`Leverage`}
+                      bottomLeftValue={toUsdMax !== undefined && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
+                      bottomRightValue={
+                        isSwap
+                          ? formatAmount(toBalance, toToken.decimals, 4, true)
+                          : `${parseFloat(leverageOption).toFixed(2)}x`
+                      }
+                      showMaxButton={false}
+                      inputValue={toValue}
+                      onInputValueChange={onToValueChange}
+                    >
+                      <TokenSelector
+                        label={getTokenLabel()}
+                        size="l"
+                        chainId={chainId}
+                        tokenAddress={toTokenAddress}
+                        onSelectToken={onSelectToToken}
+                        tokens={toTokens}
+                        infoTokens={infoTokens}
+                        showTokenImgInDropdown={true}
+                        showSymbolImage
+                        showBalances={false}
+                      />
+                    </BuyInputSection>
                   </div>
-                );
-              })()}
-            </BuyInputSection>
-          )}
-          {showTriggerPriceSection && (
-            <BuyInputSection
-              topLeftLabel={t`Price`}
-              topRightLabel={t`Mark`}
-              topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
-              onClickTopRightLabel={() => {
-                setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal));
-              }}
-              showMaxButton={false}
-              inputValue={triggerPriceValue}
-              onInputValueChange={onTriggerPriceChange}
-            >
-              USD
-            </BuyInputSection>
+                </>
+              )}
+              {showTriggerRatioSection && (
+                <BuyInputSection
+                  topLeftLabel={t`Price`}
+                  topRightValue={formatAmount(
+                    getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
+                    USD_DECIMALS,
+                    4
+                  )}
+                  topRightLabel={t`Mark`}
+                  onClickTopRightLabel={() => {
+                    setTriggerRatioValue(
+                      formatAmountFree(
+                        getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
+                        USD_DECIMALS,
+                        10
+                      )
+                    );
+                  }}
+                  inputValue={triggerRatioValue}
+                  onInputValueChange={onTriggerRatioChange}
+                >
+                  {(() => {
+                    if (!toTokenInfo || !fromTokenInfo) return;
+                    const [tokenA, tokenB] = triggerRatioInverted
+                      ? [toTokenInfo, fromTokenInfo]
+                      : [fromTokenInfo, toTokenInfo];
+                    return (
+                      <div className="PositionEditor-token-symbol">
+                        <TokenWithIcon className="Swap-limit-icon" symbol={tokenA.symbol} displaySize={20} />
+                        &nbsp;per&nbsp;
+                        <TokenWithIcon className="Swap-limit-icon" symbol={tokenB.symbol} displaySize={20} />
+                      </div>
+                    );
+                  })()}
+                </BuyInputSection>
+              )}
+              {showTriggerPriceSection && (
+                <BuyInputSection
+                  topLeftLabel={t`Price`}
+                  topRightLabel={t`Mark`}
+                  topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
+                  onClickTopRightLabel={() => {
+                    setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal));
+                  }}
+                  showMaxButton={false}
+                  inputValue={triggerPriceValue}
+                  onInputValueChange={onTriggerPriceChange}
+                >
+                  USD
+                </BuyInputSection>
+              )}
+            </div>
           )}
           {isSwap && (
             <div className="Exchange-swap-box-info">
@@ -2149,7 +2160,7 @@ export default function SwapBox(props) {
           {(isLong || isShort) && !isStopOrder && (
             <div className="Exchange-leverage-box">
               <ToggleSwitch
-                className="Exchange-leverage-toggle-wrapper"
+                className="mb-8"
                 isChecked={isLeverageSliderEnabled}
                 setIsChecked={setIsLeverageSliderEnabled}
               >
@@ -2303,7 +2314,7 @@ export default function SwapBox(props) {
           {isStopOrder && (
             <div className="Exchange-swap-section Exchange-trigger-order-info">
               <Trans>
-                Take-profit and stop-loss orders can be set after opening a position. <br />
+                Take profit and stop loss orders can be set after opening a position. <br />
                 <br />
                 There will be a "Close" button on each position row, clicking this will display the option to set
                 trigger orders. <br />

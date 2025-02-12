@@ -7,6 +7,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TriggerThresholdType } from "domain/synthetics/trade";
+import { EMPTY_ARRAY } from "lib/objects";
 
 import { useMemo } from "react";
 
@@ -23,7 +24,7 @@ export function useDecreaseOrdersThatWillBeExecuted() {
 
   return useMemo(() => {
     if (!existingPosition || markPrice === undefined) {
-      return [];
+      return EMPTY_ARRAY;
     }
 
     return existingTriggerOrders.filter((order) => {
