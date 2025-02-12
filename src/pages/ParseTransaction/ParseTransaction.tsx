@@ -89,16 +89,16 @@ export function ParseTransactionPage() {
 
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
-  const { tokensData = {} } = useTokensDataRequest(chainId);
-  const { marketsInfoData = {} } = useMarketsInfoRequest(chainId);
-  const { glvData = {} } = useGlvMarketsInfo(true, {
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { glvData } = useGlvMarketsInfo(true, {
     marketsInfoData,
     tokensData,
     chainId,
     account: undefined,
     filterIncorrectMarkets: false,
   });
-  const { marketTokensData = {} } = useMarketTokensDataRequest(chainId, {
+  const { marketTokensData } = useMarketTokensDataRequest(chainId, {
     isDeposit,
     withGlv: true,
     glvData,
@@ -341,8 +341,8 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     if (props.item === "affiliate" || props.item === "callbackContract" || props.item === "uiFeeReceiver") {
       value = props.value;
     } else {
-      const token = props.tokensData[props.value];
-      const marketOrGlv = props.marketsInfoData[props.value] || props.glvData[props.value];
+      const token = props.tokensData?.[props.value];
+      const marketOrGlv = props.marketsInfoData?.[props.value] || props.glvData?.[props.value];
 
       if (token) {
         value = (

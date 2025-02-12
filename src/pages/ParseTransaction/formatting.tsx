@@ -29,7 +29,8 @@ export function formatPriceByField(tokenField: string | TokenGetter) {
     const field = entries.find((entry) => entry.item === tokenField);
 
     if (field) {
-      const token = tokensData[field.value as string];
+      const token = tokensData?.[field.value as string];
+
       if (token) {
         return formatUsdPrice(convertFromContractPrice(t, token.decimals));
       }
@@ -52,7 +53,7 @@ export function formatAmountByField(tokenField: string | TokenGetter) {
     const field = entries.find((entry) => entry.item === tokenField);
 
     if (field) {
-      const token = tokensData[field.value as string];
+      const token = tokensData?.[field.value as string];
       if (token) {
         return formatBalanceAmount(t, token.decimals, token.symbol, true, false) ?? t.toString();
       }
@@ -73,10 +74,10 @@ export function formatByMarketLongOrShortToken(isLong: boolean) {
       marketAddress = event?.values.find((e) => e.item === "market")?.value;
     }
 
-    const market = marketsInfoData[marketAddress as string];
+    const market = marketsInfoData?.[marketAddress as string];
 
     if (market) {
-      let tokenData = tokensData[isLong ? market.longTokenAddress : market.shortTokenAddress];
+      let tokenData = tokensData?.[isLong ? market.longTokenAddress : market.shortTokenAddress];
       if (tokenData) {
         return formatBalanceAmount(t, tokenData.decimals, tokenData.symbol, true, false);
       }
@@ -105,7 +106,7 @@ export function formatAmountByEvent(cfg: { [eventName: string]: string | Formatt
     const field = entries.find((entry) => entry.item === tokenField);
 
     if (field) {
-      const token = tokensData[field.value as string];
+      const token = tokensData?.[field.value as string];
       if (token) {
         return formatBalanceAmount(t, token.decimals, token.symbol, true, false);
       }
@@ -117,6 +118,10 @@ export function formatAmountByEvent(cfg: { [eventName: string]: string | Formatt
 
 export const formatAmountByCollateralToken = formatAmountByField("collateralToken");
 export const formatAmountByNativeToken = formatAmountByField(({ chainId, tokensData }) => {
+  if (!tokensData) {
+    throw new Error(`Tokens data not found`);
+  }
+
   return tokensData[NATIVE_TOKENS_MAP[chainId].address];
 });
 
@@ -124,7 +129,13 @@ export function getCollateralToken({ entries, tokensData }: LogEntryComponentPro
   const collateralToken = entries.find((entry) => entry.item === "collateralToken");
 
   if (collateralToken) {
-    return tokensData[collateralToken.value as string];
+    const token = tokensData?.[collateralToken.value as string];
+
+    if (!token) {
+      throw new Error(`Collateral token not found in tokensData`);
+    }
+
+    return token;
   }
 
   throw new Error(`Field "collateralToken" not found in event`);
@@ -134,14 +145,20 @@ function getMarketOrGlvToken({ entries, marketsInfoData, marketTokensData, glvDa
   const marketAddress = entries.find((entry) => entry.item === "market");
 
   if (marketAddress) {
-    const marketOrGlv = marketsInfoData[marketAddress.value as string] || glvData[marketAddress.value as string];
+    const marketOrGlv = marketsInfoData?.[marketAddress.value as string] || glvData?.[marketAddress.value as string];
 
     if (marketOrGlv) {
       const tokenAddress = isGlvInfo(marketOrGlv) ? marketOrGlv.glvTokenAddress : marketOrGlv.marketTokenAddress;
-      return marketTokensData[tokenAddress];
-    } else {
-      throw new Error(`Market not found`);
+      const marketToken = marketTokensData?.[tokenAddress];
+
+      if (!marketToken) {
+        throw new Error(`Market token not found in marketTokensData`);
+      }
+
+      return marketToken;
     }
+
+    throw new Error(`Market or GLV token not found in marketsInfoData or glvData`);
   } else {
     throw new Error(`Field "market" not found in event`);
   }
@@ -151,7 +168,7 @@ function getIndexToken({ entries, marketsInfoData, tokensData }: LogEntryCompone
   const marketAddress = entries.find((entry) => entry.item === "market");
 
   if (marketAddress) {
-    const market = marketsInfoData[marketAddress.value as string];
+    const market = marketsInfoData?.[marketAddress.value as string];
 
     if (market) {
       return market.indexToken;
@@ -159,7 +176,7 @@ function getIndexToken({ entries, marketsInfoData, tokensData }: LogEntryCompone
   }
 
   if (marketAddress?.value === zeroAddress) {
-    const nativeToken = Object.values(tokensData).find((e) => e.address === zeroAddress);
+    const nativeToken = Object.values(tokensData ?? {}).find((e) => e.address === zeroAddress);
     if (nativeToken) {
       return nativeToken;
     }
@@ -177,7 +194,7 @@ export const formatAmountByEventField = (eventName: string, field: string | Toke
         typeof field === "function"
           ? field({ ...props, entries: event.values })
           : event.values.find((e) => e.item === field)?.value;
-      const token = typeof field === "function" ? (entry as Token) : props.tokensData[entry as string];
+      const token = typeof field === "function" ? (entry as Token) : props.tokensData?.[entry as string];
 
       if (token) {
         return formatBalanceAmount(t, token.decimals, token.symbol, true, false);
@@ -214,7 +231,7 @@ export const formatAmountByFieldWithDecimalsShift = (tokenField: string | TokenG
       throw new Error("Field not found");
     }
 
-    const token = typeof tokenField === "function" ? (field as Token) : tokensData[field as string];
+    const token = typeof tokenField === "function" ? (field as Token) : tokensData?.[field as string];
 
     if (token) {
       return {
@@ -237,10 +254,10 @@ export function getMarketLongOrShortToken(isLong: boolean) {
   return (props: LogEntryComponentProps) => {
     const { entries, tokensData, marketsInfoData } = props;
     const marketAddress = entries.find((entry) => entry.item === "market");
-    const market = marketsInfoData[marketAddress?.value as string];
+    const market = marketsInfoData?.[marketAddress?.value as string];
 
     if (market) {
-      let tokenData = tokensData[isLong ? market.longTokenAddress : market.shortTokenAddress];
+      let tokenData = tokensData?.[isLong ? market.longTokenAddress : market.shortTokenAddress];
       if (tokenData) {
         return tokenData;
       }
@@ -269,7 +286,7 @@ export const formatSwapPath = (t: string[], props: LogEntryComponentProps) => {
   return (
     <div className="flex flex-col gap-4">
       {t.map((marketAddress) => {
-        const market = marketsInfo[marketAddress];
+        const market = marketsInfo?.[marketAddress];
         return market ? (
           <div key={marketAddress}>
             {getMarketFullName(market)} ({marketAddress})
