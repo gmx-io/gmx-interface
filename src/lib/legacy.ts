@@ -47,12 +47,12 @@ export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 export const BASIS_POINTS_DIVISOR_BIGINT = BigInt(10000);
 
 
-export const TAX_BASIS_POINTS = 10;
+export const TAX_BASIS_POINTS = 60;
 export const STABLE_TAX_BASIS_POINTS = 5;
-export const MINT_BURN_FEE_BASIS_POINTS = 20;
+export const MINT_BURN_FEE_BASIS_POINTS = 25;
 export const SWAP_FEE_BASIS_POINTS = 20;
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
-export const MARGIN_FEE_BASIS_POINTS = 10;
+export const MARGIN_FEE_BASIS_POINTS = 20;
 
 export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
 
