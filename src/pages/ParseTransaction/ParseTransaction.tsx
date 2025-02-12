@@ -89,16 +89,16 @@ export function ParseTransactionPage() {
 
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
-  const { glvData } = useGlvMarketsInfo(true, {
+  const { tokensData = {} } = useTokensDataRequest(chainId);
+  const { marketsInfoData = {} } = useMarketsInfoRequest(chainId);
+  const { glvData = {} } = useGlvMarketsInfo(true, {
     marketsInfoData,
     tokensData,
     chainId,
     account: undefined,
     filterIncorrectMarkets: false,
   });
-  const { marketTokensData } = useMarketTokensDataRequest(chainId, {
+  const { marketTokensData = {} } = useMarketTokensDataRequest(chainId, {
     isDeposit,
     withGlv: true,
     glvData,
@@ -122,7 +122,7 @@ export function ParseTransactionPage() {
     );
   }
 
-  if (isLoading || !data || !tokensData || !marketsInfoData || !glvData || !marketTokensData) {
+  if (isLoading || !data) {
     return (
       <div className="mt-32">
         <Loader />
