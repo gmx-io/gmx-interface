@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { LRUCache } from "../LruCache";
 
 describe("LruCache", () => {

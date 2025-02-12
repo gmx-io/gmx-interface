@@ -22,6 +22,10 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr "지갑이 연결되지 않음"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Pear Protocol"
+msgstr ""
+
 #: src/components/RatingToast/RatingToast.tsx
 msgid "Not likely"
 msgstr ""
@@ -30,7 +34,7 @@ msgstr ""
 msgid "Available on your preferred network"
 msgstr "선택한 네트워크에서 이용가능"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Trading Protocol"
 msgstr "탈중앙화 트레이딩 프로토콜"
 
@@ -60,6 +64,10 @@ msgstr "가격"
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "receive"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Referrals Dashboard"
 msgstr ""
 
 #: src/pages/Earn/ClaimModal.tsx
@@ -102,6 +110,10 @@ msgstr "허용가능한 슬리피지 안에서는 {tokenSymbol} {longOrShortText
 msgid "Agree"
 msgstr "동의하기"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "BonsaiDAO"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr ""
@@ -118,7 +130,7 @@ msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 msgid "Max Pool Capacity"
 msgstr "풀 최대 수용량"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 일드 옵티마이저"
 
@@ -153,6 +165,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL order(s)"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "RabbitHole"
 msgstr ""
 
 #: src/pages/Dashboard/WeightText.tsx
@@ -470,6 +486,10 @@ msgstr ""
 msgid "Discord account: <0>@gmx_feedback</0>"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX V2 Data Analytics within Telegram"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "아래의 옵션중 하나를 사용해, ETH를 Arbitrum에 보낼 수 있습니다."
@@ -583,6 +603,14 @@ msgstr ""
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Plutus"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Pairs Trading"
+msgstr ""
+
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "GMX {versionName} {networkName} actions for all accounts."
 msgstr ""
@@ -639,6 +667,10 @@ msgstr ""
 msgid "Search Token"
 msgstr "토큰 찾기"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "DeltaPrime"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr ""
@@ -674,6 +706,14 @@ msgstr ""
 msgid "Claim {totalUsd}"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Yield Yak Swap"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Vaultka"
+msgstr ""
+
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
@@ -683,6 +723,10 @@ msgstr "마켓"
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What did you like the most about our service?"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Paraswap"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -730,6 +774,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order."
 msgstr "주문에 대한 허용 가능한 가격"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Cross-chain one-click deposits into GM"
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
@@ -825,11 +873,11 @@ msgstr ""
 msgid "Pay"
 msgstr "지불"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance Page"
 msgstr "GMX 거버넌스 페이지"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Money Market"
 msgstr ""
 
@@ -862,6 +910,10 @@ msgstr ""
 msgid "Buy with {0}"
 msgstr "{0}로 구매"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Asset Management"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding..."
 msgstr "추가중..."
@@ -878,12 +930,8 @@ msgstr "{0} 숏"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met"
 msgstr "가격 조건이 충족되었을 때 귀하의 주문을 실행할 수 있는 충분한 유동성이 존재하지 않을 수 있습니다"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX uses TradingView to provide real-time cryptocurrency charts, so you can easily follow <0>BTCUSD</0> price in real-time, along with other currency pair rates. The interactive charts offer advanced tools and a user-friendly interface for easier market analysis and decision-making."
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Simulate your hedge strategy"
 msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
@@ -957,7 +1005,7 @@ msgstr "추천인 코드의 길이는 {MAX_REFERRAL_CODE_LENGTH}글자를 넘을
 msgid "Trigger Orders"
 msgstr "트리거 주문"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX fundamentals"
 msgstr "GMX 펀더멘탈"
 
@@ -978,6 +1026,10 @@ msgstr ""
 msgid "Staked Tokens"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Beefy"
+msgstr ""
+
 #: src/pages/Earn/UnstakeModal.tsx
 msgid "Unstake completed!"
 msgstr ""
@@ -991,6 +1043,10 @@ msgstr "최소 수취량"
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Estimated Fee Refund"
 msgstr "예상 수수료 환불"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Swaps"
+msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Deactivating..."
@@ -1081,6 +1137,10 @@ msgstr "토큰"
 msgid "Request Withdraw"
 msgstr "인출 요청"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "1inch"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
 msgstr ""
@@ -1097,6 +1157,10 @@ msgstr ""
 msgid "Request deposit into {0} {longOrShortText}"
 msgstr "{0} {longOrShortText} 예치 요청"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "0x"
+msgstr ""
+
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "FUNDING FEE"
@@ -1105,6 +1169,10 @@ msgstr ""
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Real-time rants about GMX Trades"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -1179,10 +1247,6 @@ msgstr "{stakingTokenSymbol} 승인"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Limit Swap"
 msgstr "지정가 스왑 실패"
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Overall protocol analytics"
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -1276,6 +1340,11 @@ msgstr ""
 msgid "Created At"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Symbiosis"
+msgstr ""
+
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched."
 msgstr ""
@@ -1293,7 +1362,7 @@ msgstr ""
 msgid "Page not found"
 msgstr "페이지를 찾을 수 없습니다"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for GMX position updates"
 msgstr "GMX 포지션 업데이트를 위한 텔레그램 봇"
 
@@ -1375,7 +1444,7 @@ msgstr "{0} 업그레이드를 위해 GLP 판매가 비활성화되었습니다"
 msgid "Insufficient receive token liquidity"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
 msgstr "GMX 공지 및 업데이트"
 
@@ -1437,7 +1506,7 @@ msgstr ""
 msgid "NFT Wallet"
 msgstr "NFT 지갑"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
 msgstr "GMX 프로포절 투표 페이지"
 
@@ -1449,14 +1518,14 @@ msgstr ""
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX Aggregator"
 msgstr "DEX 어그리게이터"
 
@@ -1478,10 +1547,6 @@ msgstr "주문을 위한 시장 평균가"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Net Value"
 msgstr "순이익"
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GMX staking calculator and guide"
-msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
@@ -1508,6 +1573,10 @@ msgstr "트랜잭션 ID"
 msgid "Borrow Fee / Day"
 msgstr "차용 수수료 / 일"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX (Chinese)"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price is below Mark Price"
 msgstr "가격이 시장 평군가보다 낮습니다"
@@ -1530,6 +1599,10 @@ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Yield Optimizations"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1618,6 +1691,7 @@ msgid "V1 Airdrop"
 msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
 msgstr ""
 
@@ -1628,10 +1702,6 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Close to execution price"
 msgstr "집행 가격에 종료"
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Open trades ranking and stats"
-msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -1669,6 +1739,10 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Option-based Vaults"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
@@ -1765,6 +1839,10 @@ msgstr ""
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Blueberry Club"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
 msgstr ""
@@ -1784,7 +1862,7 @@ msgstr ""
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol risk explorer and stats"
 msgstr ""
 
@@ -1979,6 +2057,10 @@ msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습
 msgid "Limit order creation failed."
 msgstr "지정가 주문 생성 실패."
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Dune Analytics"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr ""
@@ -2061,7 +2143,7 @@ msgstr ""
 msgid "Index"
 msgstr "인덱스"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Finance Dashboard"
 msgstr "탈중앙화 금융 대시보드"
 
@@ -2106,7 +2188,7 @@ msgstr ""
 msgid "Receiver has not staked GMX tokens before"
 msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니다."
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for GMX Swaps monitoring"
 msgstr ""
 
@@ -2168,6 +2250,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Update"
 msgstr "업데이트"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "DODO"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Your transfer has been initiated."
@@ -2259,6 +2345,10 @@ msgstr ""
 msgid "V1 is not supported on {chainName}. Please switch to Arbitrum to use V1."
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Saulius GMX Analytics"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -2270,6 +2360,10 @@ msgstr "{0} 가격"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Bridge and swap"
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -2315,6 +2409,10 @@ msgstr "숏 포지션보다 롱 포지션이 더 많이 열려있기 때문에, 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Dune Analytics for GMX"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
@@ -2404,6 +2502,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Acknowledge high {0} and {1}"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "User Quests"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -2644,6 +2746,10 @@ msgstr "주문 실행은 보장되지 않습니다.<0/><1/>이것은 다음과 �
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open Positions with Orders"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Copin"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -3035,6 +3141,10 @@ msgstr ""
 msgid "Liquidated"
 msgstr "청산"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Blueberry Pulse"
+msgstr ""
+
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -3202,6 +3312,10 @@ msgstr ""
 msgid "<0>Set Recommended Impact: {0}</0>."
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Defi Llama"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "주문 취소"
@@ -3260,7 +3374,7 @@ msgstr "승인 대기중"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr "커뮤니티 주도 텔레그램 그룹"
 
@@ -3578,9 +3692,9 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Buy GLV"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Financial reports and protocol analytics"
-msgstr "금융 보고서 및 프로토콜 분석"
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Compass Labs GM Token Dashboard"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
@@ -3702,10 +3816,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request"
 msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Structured Products"
-msgstr "구조화금융 프로덕트"
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/AprInfo/AprInfo.tsx
@@ -3875,6 +3985,10 @@ msgstr "{1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX 토큰을 현�
 msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Open Ocean"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
 msgstr ""
@@ -4030,6 +4144,10 @@ msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격�
 msgid "Docs"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Trading Stats"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
@@ -4046,9 +4164,14 @@ msgstr ""
 msgid "Jobs"
 msgstr "구인"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Strategies"
 msgstr "탈중앙화 옵션 전략"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Technical Announcements"
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -4061,6 +4184,10 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Settings"
 msgstr "설정"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Compass Labs Trading Simulations"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
@@ -4081,10 +4208,14 @@ msgstr ""
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Creator"
 msgstr "제작자"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Derivatives Portfolio Tracker"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Limit"
@@ -4108,6 +4239,10 @@ msgstr "코드 입력"
 msgid "Subaccount is updated"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Umami DAO"
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order"
@@ -4125,6 +4260,10 @@ msgstr "미디어 키트"
 #: src/pages/Home/Home.tsx
 msgid "Reduce Liquidation Risks"
 msgstr "청산 위험 감소하기"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "UniDex Leverage"
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "collateral"
@@ -4206,6 +4345,10 @@ msgstr ""
 msgid "Shorts Net Rate / 1h"
 msgstr "숏 순율 / 1시간"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX (Portuguese)"
+msgstr ""
+
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgstr ""
@@ -4216,6 +4359,10 @@ msgstr ""
 
 #: src/pages/Earn/TotalRewardsCard.tsx
 msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Mozaic Finance"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -4239,12 +4386,29 @@ msgstr ""
 msgid "No markets found."
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "ODOS"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Substack"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Positions Bot"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
 msgstr "추천 코드 수정"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Take Profit"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Stryke"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
@@ -4359,7 +4523,7 @@ msgstr ""
 msgid "Dec."
 msgstr "12월"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Weekly Updates"
 msgstr "GMX 주간 업데이트"
 
@@ -4390,10 +4554,6 @@ msgstr ""
 msgid "Price on Arbitrum"
 msgstr "Arbitrum에서 가격"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Fees generated by GMX"
-msgstr "GMX로 획득한 수수료"
-
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "GM can be sold for {0} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr ""
@@ -4402,10 +4562,6 @@ msgstr ""
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "REBATE"
 msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Yield simulator for GMX"
-msgstr "GMX를 위한 일드 시뮬레이터"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
@@ -4427,6 +4583,10 @@ msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Firebird Finance"
 msgstr ""
 
 #: src/pages/Earn/EarnV2.tsx
@@ -4518,19 +4678,23 @@ msgstr ""
 msgid "Delegate"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Harmonix"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
 msgstr "유요하지 않은 NFT 주소"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "esGMX OTC Market"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Leverage Trading Terminal"
 msgstr ""
 
@@ -4549,10 +4713,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap submitted!"
 msgstr "스왑 제출완료"
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GBC NFTs APR tracker and rewards"
-msgstr "GBC NFT의 APR 트래커 및 보상"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4600,6 +4760,14 @@ msgstr ""
 msgid "Select a pool containing {0} to use it as collateral."
 msgstr "담보로 사용할 {0}이 포함된 풀을 선택하세요."
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Trading Simulations on GMX using DOJO"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Yield Farming"
+msgstr ""
+
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed!"
 msgstr "트랜잭션 완료!"
@@ -4618,6 +4786,7 @@ msgid "UTILIZATION"
 msgstr "이용률"
 
 #: src/components/NotifyModal/NotifyModal.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
 msgstr ""
 
@@ -4703,10 +4872,6 @@ msgstr "스왑 주문 제출 완료!"
 msgid "Loading..."
 msgstr "로딩중..."
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Leaderboard for GMX traders"
-msgstr "GMX 트레이더를 위한 리더보드"
-
 #: src/components/Synthetics/TradeBox/OneClickTradingInfo.tsx
 msgid "There are insufficient funds in your subaccount for One-Click Trading"
 msgstr ""
@@ -4727,7 +4892,7 @@ msgstr "실행"
 msgid "Trades"
 msgstr "트레이드"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
 
@@ -4763,7 +4928,7 @@ msgstr "주문의 실행 가격입니다."
 msgid "wstETH APR"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Group"
 msgstr "텔레그램 그룹"
 
@@ -4827,6 +4992,10 @@ msgstr ""
 msgid "Incorrect Network"
 msgstr "잘못된 네트워크입니다"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Yield Yak Optimizer"
+msgstr ""
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Incorrect Account"
 msgstr "잘못된 계정입니다"
@@ -4858,7 +5027,7 @@ msgstr "이전중"
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr ""
 
@@ -4987,7 +5156,7 @@ msgstr ""
 msgid "Diff"
 msgstr "차이"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "GMX 추천 시스템 통계 대시보드"
 
@@ -5071,8 +5240,16 @@ msgstr ""
 msgid "Search Pool"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Trading Chat"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Perpie"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -5098,6 +5275,10 @@ msgstr "사용가능"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7 days"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Solv Finance"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5149,6 +5330,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "취소"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Tradao"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Redemption time not yet reached"
 msgstr "아직 판매할 수 있는 시간이 아닙니다"
@@ -5159,6 +5344,10 @@ msgstr "아직 판매할 수 있는 시간이 아닙니다"
 msgid "Insufficient liquidity"
 msgstr "유동성 부족"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Telegram Bot"
+msgstr ""
+
 #: src/domain/legacy.ts
 msgid "Order cancelled."
 msgstr "주문이 취소되었습니다."
@@ -5167,7 +5356,11 @@ msgstr "주문이 취소되었습니다."
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "TokenTerminal"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX 미결제약정을 위한 텔레그램 봇"
 
@@ -5206,16 +5399,16 @@ msgstr ""
 msgid "Liquidation"
 msgstr "청산"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Risk Monitoring"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
 msgstr "수취인은 지금까지 GLP 토큰을 스테이킹한 적이 없습니다."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Spreadsheet for position calculations"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5368,12 +5561,24 @@ msgstr ""
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "SNTL esGMX Market"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Tier {0} ({currentTierDiscount}% discount)"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Generative Market eXplore - AIGMX Agent"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Dolomite"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -5444,10 +5649,6 @@ msgstr ""
 msgid "Withdrawn!"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Yield Trading"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
@@ -5483,6 +5684,10 @@ msgstr "{0} 롱 최대치를 초과했습니다"
 msgid "Amount should be greater than zero"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Perpetuals Aggregator"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "LIVE"
 msgstr ""
@@ -5506,6 +5711,10 @@ msgstr "잔고"
 
 #: src/pages/Earn/EarnV2.tsx
 msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX v2 Telegram & Discord Analytics"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5579,6 +5788,10 @@ msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "No delegate found"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr ""
 
 #: src/pages/Earn/EarnV1.jsx
@@ -5743,6 +5956,10 @@ msgstr ""
 msgid "No rebates distribution history yet."
 msgstr "소개 보수 분배 내역이 없습니다."
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Governance"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
 msgstr ""
@@ -5837,6 +6054,10 @@ msgstr ""
 msgid "1st Place"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "D2.Finance"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized:"
 msgstr ""
@@ -5897,7 +6118,7 @@ msgstr "주문 업데이트 제출 완료!"
 msgid "Enable withdraw failed."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr ""
 
@@ -5931,14 +6152,14 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GMX staking rewards updates and insights"
-msgstr "GMX 스테이킹 보상 업데이트 및 인사이트"
-
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
 msgstr "활성화된 주문"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Lending and Borrowing"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Switch to {0} collateral."
@@ -5947,6 +6168,10 @@ msgstr ""
 #: src/pages/Earn/Vesting.tsx
 #: src/pages/Earn/Vesting.tsx
 msgid "GMX Vault"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Jones DAO"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
@@ -5970,8 +6195,7 @@ msgstr "보기"
 msgid "Accept terms to enable orders"
 msgstr "주문을 활성화하기 위해 약관에 동의해주세요"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
 
@@ -6084,6 +6308,10 @@ msgstr ""
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "공유할 수 있는 추천인 코드가 없는 것 같습니다. <0/> 코드를 바로 생성해서 소개 보수를 획득하세요!"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Kudai AI Agent"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr "NFT ID 입력"
@@ -6141,6 +6369,10 @@ msgstr "허용 가능한 가격"
 msgid "Sell request sent"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "DeFi Margin Protocol"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -6195,10 +6427,6 @@ msgstr ""
 msgid "Receive"
 msgstr "수령하기"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "Returns calculator for GMX and GLP"
-msgstr "GMX 및 GLP 수익 계산기"
-
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "time to liq"
 msgstr "청산까지의 시간"
@@ -6209,10 +6437,6 @@ msgstr "청산까지의 시간"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized Fees"
 msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GMX Perpetuals Data"
-msgstr "GMX 파생상품 데이터"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top Positions"
@@ -6313,7 +6537,7 @@ msgstr "{0}의 최대 수용량"
 msgid "Copy error"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
@@ -6352,13 +6576,13 @@ msgstr ""
 msgid "Sending order request"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GMX Stats Page"
-msgstr "GMX 통계 페이지"
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Can't execute because of an error"
 msgstr "에러로 인해 실행되지 못했습니다"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Decentralized Yield Products"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Keep Leverage is not possible"
@@ -6563,6 +6787,10 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Proposals"
+msgstr ""
+
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "BUY…"
 msgstr ""
@@ -6585,6 +6813,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Liquidation price would cross mark price."
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Perfectswap"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -6638,7 +6870,7 @@ msgstr "{stakingTokenSymbol} 승인중..."
 msgid "Current Weight"
 msgstr "현재 가중치"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
 msgstr "파트너쉽 및 합병"
 
@@ -6675,10 +6907,6 @@ msgstr "추천인 코드가 존재하지 않습니다"
 msgid "shift"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GMX staking calculator"
-msgstr "GMX 스테이킹 계산기"
-
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr ""
@@ -6691,11 +6919,14 @@ msgstr ""
 msgid "GM token pricing includes price impact pool amounts, the pending PnL of open positions, and borrowing fees. It excludes funding fees, which are exchanged between traders.<0/><1/><2>Read more about GM token pricing</2>."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Vaults"
 msgstr "일드 볼트"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Group (Portuguese)"
 msgstr "텔레그램 그룹 (포르투갈어)"
 
@@ -6717,7 +6948,7 @@ msgstr "이 코드는 다른 사람에 의해 {takenNetworkNames}에서 사용�
 msgid "Confirm Claim"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
 msgstr "GMX 커뮤니티 토론"
 
@@ -6806,6 +7037,10 @@ msgstr "롱"
 msgid "Pool"
 msgstr "풀"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Venus"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr ""
@@ -6814,7 +7049,7 @@ msgstr ""
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>풀의 최대허용량이 {0}에 도달했습니다. 다른 토큰을 이용해 GLP를 구매해주세요.</0><1>\"수수료 절약\" 섹션을 통해 가장 저렴한 수수료를 확인하세요.</1>"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics."
 msgstr "GMX 대시보드 및 통계"
 
@@ -6874,7 +7109,7 @@ msgstr ""
 msgid "{nativeTokenSymbol} APR"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Group (Chinese)"
 msgstr "텔레그램 그룹 (중국어)"
 
@@ -7041,7 +7276,7 @@ msgstr "최소 필요 담보"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 msgstr "우측 상단의 세팅을 이용해 \"허용 가능한 슬리피지\"를 증가시켜보세요"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages."
 msgstr "GMX 이코시스템 페이지"
 
@@ -7134,6 +7369,10 @@ msgstr ""
 msgid "Failed Market Swap"
 msgstr "시장 스왑 실패"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "HoudiniSwap"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Error occurred. Please try again"
@@ -7182,10 +7421,6 @@ msgstr "총 거래량"
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
 msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GMX Blueberry NFTs"
-msgstr "GMX 블루베리 NFT"
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -7241,7 +7476,7 @@ msgstr ""
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi Portfolio Tracker"
 msgstr "DeFi 포트폴리오 트래커"
 
@@ -7258,7 +7493,7 @@ msgstr "Arbitrum APR:"
 msgid "Job Openings"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects integrated with GMX."
 msgstr "GMX와 통합된 프로젝트"
 
@@ -7336,6 +7571,10 @@ msgstr ""
 msgid "Limit Decrease"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Stabilize Protocol"
+msgstr ""
+
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter a valid coin names"
 msgstr ""
@@ -7353,6 +7592,10 @@ msgstr ""
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GBC Kudai AI Agent"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -7520,10 +7763,6 @@ msgstr ""
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-msgid "GMX explorer for stats and traders"
-msgstr "통계와 트레이드 정보를 위한 GMX 익스플로러"
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr ""
@@ -7550,11 +7789,11 @@ msgstr "주문이 실행될 수 있는 가격은 차트에 표시된 가격과 �
 msgid "Claims History"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "About"
 msgstr "대하여"
 
@@ -7697,12 +7936,16 @@ msgstr ""
 msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "대시보드"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Rage Trade"
 msgstr ""
 
 #: src/pages/Home/Home.tsx
@@ -7781,7 +8024,7 @@ msgstr ""
 msgid "Withdrawing {0} from {positionText}"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community Projects"
 msgstr "커뮤니티 프로젝트"
 
@@ -7809,6 +8052,10 @@ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
+msgstr ""
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "GMX Market Token Price Chart"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -7932,7 +8179,7 @@ msgstr "이전"
 msgid "Cancelling {ordersText}"
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem Projects"
 msgstr ""
 
@@ -8002,11 +8249,11 @@ msgstr ""
 msgid "Close"
 msgstr "포지션 종료"
 
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Link"
 msgstr "링크"
 
@@ -8040,7 +8287,7 @@ msgstr "중가 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
 msgid "Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX Pages"
 msgstr "GMX 페이지"
 
@@ -8048,7 +8295,7 @@ msgstr "GMX 페이지"
 msgid "{0} is required for collateral."
 msgstr "담보를 위해 {0}이 필요합니다."
 
-#: src/pages/Ecosystem/Ecosystem.jsx
+#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Protocol"
 msgstr "탈중앙화 옵션 프로토콜"
 
@@ -8096,6 +8343,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Price conditions are met"
 msgstr "가격 조건에 충족되었습니다"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "DeBank"
+msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "Unstake GMX"

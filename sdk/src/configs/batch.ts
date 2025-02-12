@@ -1,11 +1,10 @@
-import { ClientConfig } from "viem";
-import type { BatchOptions } from "viem/_types/clients/transports/http";
+import { ClientConfig, MulticallBatchOptions } from "viem";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export const BATCH_CONFIGS: Record<
   number,
   {
-    http: BatchOptions;
+    http: MulticallBatchOptions;
     client: ClientConfig["batch"];
   }
 > = {

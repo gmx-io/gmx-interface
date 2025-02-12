@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { decodeReferralCode, encodeReferralCode, MAX_REFERRAL_CODE_LENGTH } from "../referrals";
 import { zeroHash } from "viem";
 

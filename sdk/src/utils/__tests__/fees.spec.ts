@@ -1,3 +1,5 @@
+import { describe, it, expect } from "vitest";
+
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketInfo } from "types/markets";
 import { getFundingFactorPerPeriod } from "../fees";
