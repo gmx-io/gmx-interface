@@ -548,7 +548,6 @@ export function PositionSeller(p: Props) {
           </Trans>
         }
         qa="position-close-modal"
-        keepInitialTopOffset
       >
         <Tab
           className="mb-[10.5px]"
