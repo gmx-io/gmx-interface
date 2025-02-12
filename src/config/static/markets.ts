@@ -366,6 +366,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("30 Jan 2025"),
     },
+    // BERA/USD [WETH-USDC]
+    "0x876Ff160d63809674e03f82DC4D3C3Ae8B0acF28": {
+      enabled: true,
+      listingDate: p("7 Feb 2025"),
+    },
+    // LDO/USD [WETH-USDC]
+    "0xE61e608Ba010fF48A7dcE8eDd8B906744263d33E": {
+      enabled: true,
+      listingDate: p("7 Feb 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
