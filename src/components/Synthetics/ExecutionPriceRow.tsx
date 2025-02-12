@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -11,6 +10,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { memo, useMemo } from "react";
+import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
 interface Props {
   tradeFlags: TradeFlags;
@@ -96,7 +96,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
       }
 
       if (triggerOrderType === OrderType.StopLossDecrease) {
-        return t`Acceptable price does not apply to stop-loss orders, as they will be executed regardless of any price impact.`;
+        return t`Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact.`;
       }
     }
 
@@ -124,11 +124,11 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   }, [positionPriceImpactDeltaUsd, fullCollateralPriceImpactBps]);
 
   return (
-    <ExchangeInfoRow label={t`Execution Price`}>
+    <SyntheticsInfoRow label={t`Execution Price`}>
       {executionPrice !== undefined ? (
         <TooltipWithPortal
           maxAllowedWidth={350}
-          position="bottom-end"
+          position="left-start"
           handleClassName={handleClassName}
           handle={formatUsdPrice(executionPrice, {
             visualMultiplier,
@@ -223,6 +223,6 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
       ) : (
         "-"
       )}
-    </ExchangeInfoRow>
+    </SyntheticsInfoRow>
   );
 });

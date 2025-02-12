@@ -16,6 +16,7 @@ import {
   getExecutionFeeBufferBpsKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
+  getLeverageEnabledKey as getLeverageSliderEnabledKey,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
@@ -44,6 +45,8 @@ export type SettingsContextType = {
   setShouldShowPositionLines: (val: boolean) => void;
   isAutoCancelTPSL: boolean;
   setIsAutoCancelTPSL: (val: boolean) => void;
+  isLeverageSliderEnabled: boolean;
+  setIsLeverageSliderEnabled: (val: boolean) => void;
 
   tenderlyAccountSlug: string | undefined;
   setTenderlyAccountSlug: (val: string | undefined) => void;
@@ -110,6 +113,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedIsAutoCancelTPSL, setIsAutoCancelTPSL] = useLocalStorageSerializeKey(
     [chainId, IS_AUTO_CANCEL_TPSL_KEY],
+    true
+  );
+
+  const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey(
+    getLeverageSliderEnabledKey(chainId),
     true
   );
 
@@ -181,6 +189,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
       isAutoCancelTPSL: savedIsAutoCancelTPSL!,
       setIsAutoCancelTPSL: setIsAutoCancelTPSL,
+      isLeverageSliderEnabled: isLeverageSliderEnabled!,
+      setIsLeverageSliderEnabled: setIsLeverageSliderEnabled,
 
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
@@ -216,6 +226,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldShowPositionLines,
     savedIsAutoCancelTPSL,
     setIsAutoCancelTPSL,
+    isLeverageSliderEnabled,
+    setIsLeverageSliderEnabled,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,

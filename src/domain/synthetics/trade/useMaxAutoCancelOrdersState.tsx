@@ -1,12 +1,12 @@
 import { Trans } from "@lingui/macro";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
-import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { useMemo } from "react";
 
 export function useMaxAutoCancelOrdersState({
@@ -50,7 +50,7 @@ export function useMaxAutoCancelOrdersState({
 
   if (showWarning) {
     warning = (
-      <AlertInfo type="info">
+      <AlertInfoCard>
         <Trans>
           You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must
           be canceled manually, while existing ones will still close automatically with their related position.
@@ -58,7 +58,7 @@ export function useMaxAutoCancelOrdersState({
         <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
           <Trans>Read more.</Trans>
         </ExternalLink>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 

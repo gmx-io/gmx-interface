@@ -57,8 +57,8 @@ type PositionsConstantsResult = {
 export class Positions extends Module {
   static MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
-  private getKeysAndPricesParams(p: { marketsInfoData: MarketsData | undefined; tokensData: TokensData | undefined }) {
-    const { marketsInfoData, tokensData } = p;
+  private getKeysAndPricesParams(p: { marketsData: MarketsData | undefined; tokensData: TokensData | undefined }) {
+    const { marketsData, tokensData } = p;
     const account = this.account;
 
     const values = {
@@ -67,11 +67,11 @@ export class Positions extends Module {
       marketsKeys: [] as string[],
     };
 
-    if (!account || !marketsInfoData || !tokensData) {
+    if (!account || !marketsData || !tokensData) {
       return values;
     }
 
-    const markets = Object.values(marketsInfoData);
+    const markets = Object.values(marketsData);
 
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(tokensData, market);
@@ -126,8 +126,8 @@ export class Positions extends Module {
   }
 
   async getPositions(p: {
-    marketsInfoData: MarketsData | undefined;
-    tokensData: TokensData | undefined;
+    marketsData: MarketsData;
+    tokensData: TokensData;
     start?: number;
     end?: number;
   }): Promise<PositionsResult> {
@@ -488,7 +488,7 @@ export class Positions extends Module {
   }): Promise<PositionsInfoData> {
     const { showPnlInLeverage, marketsInfoData, tokensData } = p;
     const { positionsData } = await this.getPositions({
-      marketsInfoData,
+      marketsData: marketsInfoData,
       tokensData,
     });
     const { minCollateralUsd } = await this.getPositionsConstants();

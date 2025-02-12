@@ -1,9 +1,11 @@
 import cx from "classnames";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import { useMedia } from "react-use";
+
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { usePrevious } from "lib/usePrevious";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
 interface Props {
   title: ReactNode;
@@ -18,16 +20,14 @@ interface Props {
    * if true - expands the row when the error is present
    */
   autoExpandOnError?: boolean;
-  /**
-   * if true - hides the expand-toggle row
-   */
-  hideExpand?: boolean;
   hasError?: boolean;
   /**
    * error message to show in the tooltip when disableCollapseOnError=true
    */
   errorMessage?: ReactNode;
   className?: string;
+  contentClassName?: string;
+  scrollIntoViewOnMobile?: boolean;
 }
 
 export function ExpandableRow({
@@ -38,11 +38,13 @@ export function ExpandableRow({
   hasError,
   disableCollapseOnError = false,
   autoExpandOnError = true,
-  hideExpand = false,
   errorMessage,
   className,
+  contentClassName,
+  scrollIntoViewOnMobile = false,
 }: Props) {
   const previousHasError = usePrevious(hasError);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (autoExpandOnError && hasError && !previousHasError) {
@@ -64,30 +66,35 @@ export function ExpandableRow({
 
   const disabled = disableCollapseOnError && hasError;
 
+  const isMobile = useMedia(`(max-width: 1100px)`, false);
+  useEffect(() => {
+    if (open && scrollIntoViewOnMobile && isMobile && contentRef.current) {
+      contentRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [scrollIntoViewOnMobile, open, isMobile]);
+
   return (
-    <div
-      className={cx("-mx-15 px-15 py-[1.05rem]", className, {
-        "bg-slate-900": open && !hideExpand,
-      })}
-    >
-      {!hideExpand && (
-        <ExchangeInfo.Row
-          className={cx("group !items-center hover:text-blue-300", open ? "!mb-12" : "!mb-0", {
-            "cursor-not-allowed": disabled,
-          })}
-          onClick={disabled ? undefined : handleOnClick}
-          label={<span className="flex flex-row justify-between align-middle group-hover:text-blue-300">{label}</span>}
-          value={
-            open ? (
-              <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
-            ) : (
-              <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-hover:text-blue-300" />
-            )
-          }
-        />
-      )}
+    <div className={className}>
+      <SyntheticsInfoRow
+        className={cx("group !items-center gmx-hover:text-blue-300", {
+          "cursor-not-allowed": disabled,
+        })}
+        onClick={disabled ? undefined : handleOnClick}
+        label={
+          <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
+        }
+        value={
+          open ? (
+            <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+          ) : (
+            <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+          )
+        }
+      />
+
       <div
-        className={cx({
+        ref={contentRef}
+        className={cx(contentClassName, {
           hidden: !open,
         })}
       >

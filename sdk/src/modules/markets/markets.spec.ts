@@ -1,5 +1,6 @@
 import { GmxSdk } from "../../index";
 import { arbitrumSdk, arbitrumSdkConfig } from "utils/testUtil";
+import { describe, expect, it } from "vitest";
 
 describe("Markets", () => {
   describe("getMarkets", () => {

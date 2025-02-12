@@ -14,6 +14,7 @@ import {
   useHover,
   useInteractions,
 } from "@floating-ui/react";
+import { getOppositePlacement, getOppositeAlignmentPlacement } from "@floating-ui/utils";
 import cx from "classnames";
 import {
   ComponentPropsWithoutRef,
@@ -28,8 +29,6 @@ import {
 
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { usePrevious } from "lib/usePrevious";
-
-import { DEFAULT_ARROW_COLOR, arrowColor } from "./arrowColor";
 
 import "./Tooltip.scss";
 
@@ -102,10 +101,19 @@ export default function Tooltip<T extends ElementType>({
 }: TooltipProps<T>) {
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<SVGSVGElement>(null);
-  const { refs, floatingStyles, context, middlewareData } = useFloating({
+  const { refs, floatingStyles, context } = useFloating({
     middleware: [
       offset(10),
-      flip(),
+      flip({
+        fallbackPlacements: [
+          getOppositeAlignmentPlacement(position),
+          getOppositePlacement(position),
+          "left-start",
+          "right-start",
+          "bottom",
+          "top",
+        ],
+      }),
       shift({
         padding: 10,
       }),
@@ -124,7 +132,6 @@ export default function Tooltip<T extends ElementType>({
         },
       }),
       arrow({ element: arrowRef, padding: 4 }),
-      arrowColor(),
     ],
     placement: position,
     whileElementsMounted: autoUpdate,
@@ -185,8 +192,6 @@ export default function Tooltip<T extends ElementType>({
     [disabled, refs.reference, visible]
   );
 
-  const color = middlewareData?.color?.color ?? DEFAULT_ARROW_COLOR;
-
   const finalContent = visible ? content ?? renderContent?.() : undefined;
 
   const tooltipContent = visible ? (
@@ -196,7 +201,7 @@ export default function Tooltip<T extends ElementType>({
       {...getFloatingProps()}
       className={cx("Tooltip-popup", tooltipClassName)}
     >
-      <FloatingArrow ref={arrowRef} context={context} fill={color} />
+      <FloatingArrow ref={arrowRef} context={context} className="fill-slate-600" />
       {finalContent}
     </div>
   ) : undefined;

@@ -4,8 +4,8 @@ import { ReactNode, useMemo } from "react";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
@@ -15,14 +15,14 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 import { bigMath } from "sdk/utils/bigmath";
-
-import "./NetworkFeeRow.scss";
 
 type Props = {
   executionFee?: ExecutionFee;
   isAdditionOrdersMsg?: boolean;
+  rowPadding?: boolean;
 };
 
 /**
@@ -31,7 +31,7 @@ type Props = {
  */
 const ESTIMATED_REFUND_BPS = 10 * 100;
 
-export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
+export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = false }: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokenData = useTokensData();
   const chainId = useSelector(selectChainId);
@@ -116,8 +116,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
     return (
       <TooltipWithPortal
         tooltipClassName="NetworkFeeRow-tooltip"
-        position="top-end"
-        renderContent={() => (
+        position="left-start"
+        content={
           <>
             <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={executionFeeText} />
             <div className="h-8" />
@@ -141,26 +141,45 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg }: Props) {
             {warning && <p className="text-yellow-500">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
-        )}
+        }
       >
         {formatUsd(executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined)}
       </TooltipWithPortal>
     );
   }, [chainId, estimatedRefundText, executionFee, executionFeeText, additionalOrdersMsg]);
 
-  return (
-    <ExchangeInfoRow
-      label={
-        <TooltipWithPortal
-          position="top-start"
-          renderContent={() => (
-            <div>
+  if (rowPadding) {
+    return (
+      <ExchangeInfoRow
+        label={
+          <TooltipWithPortal
+            position="left-start"
+            content={
               <Trans>
                 Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
                 not impact your collateral.
               </Trans>
-            </div>
-          )}
+            }
+          >
+            <Trans>Network Fee</Trans>
+          </TooltipWithPortal>
+        }
+        value={value}
+      />
+    );
+  }
+
+  return (
+    <SyntheticsInfoRow
+      label={
+        <TooltipWithPortal
+          position="left-start"
+          content={
+            <Trans>
+              Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
+              not impact your collateral.
+            </Trans>
+          }
         >
           <Trans>Network Fee</Trans>
         </TooltipWithPortal>

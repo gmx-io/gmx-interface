@@ -3,8 +3,8 @@ import { Trans, t } from "@lingui/macro";
 import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { formatPercentage } from "lib/numbers";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function AllowedSlippageRow({
@@ -15,7 +15,7 @@ export function AllowedSlippageRow({
   allowedSlippage: number;
 }) {
   return (
-    <ExchangeInfoRow
+    <SyntheticsInfoRow
       label={
         <TooltipWithPortal
           handle={t`Allowed Slippage`}
@@ -36,6 +36,7 @@ export function AllowedSlippageRow({
           }}
         />
       }
+      valueClassName="-my-5"
     >
       <PercentageInput
         onChange={setAllowedSlippage}
@@ -45,6 +46,6 @@ export function AllowedSlippageRow({
         highValueWarningText={t`Slippage is too high`}
         negativeSign
       />
-    </ExchangeInfoRow>
+    </SyntheticsInfoRow>
   );
 }
