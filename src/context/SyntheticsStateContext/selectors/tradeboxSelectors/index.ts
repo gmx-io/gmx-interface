@@ -927,14 +927,11 @@ export const selectTradeboxPriceImpactPercentage = createSelector((q) => {
     return fees?.swapPriceImpact?.precisePercentage ?? 0n;
   }
 
-  if (
-    fees?.positionPriceImpact?.precisePercentage === undefined ||
-    fees?.priceImpactDiff?.precisePercentage === undefined
-  ) {
+  if (fees?.positionPriceImpact?.precisePercentage === undefined) {
     return 0n;
   }
 
-  return fees.positionPriceImpact.precisePercentage - fees.priceImpactDiff.precisePercentage;
+  return fees.positionPriceImpact.precisePercentage;
 });
 
 export const selectTradeboxFeesPercentage = createSelector((q) => {
