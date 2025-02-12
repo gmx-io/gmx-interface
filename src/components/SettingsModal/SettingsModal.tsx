@@ -133,8 +133,9 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium"
+      desktopContentClassName="w-[380px]"
     >
-      <div className="mb-8 min-[700px]:w-[380px]">
+      <div className="mb-8">
         <div>
           <Trans>Default Allowed Slippage</Trans>
         </div>

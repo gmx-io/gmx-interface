@@ -548,6 +548,7 @@ export function PositionSeller(p: Props) {
           </Trans>
         }
         qa="position-close-modal"
+        contentClassName="w-[380px]"
       >
         <Tab
           className="mb-[10.5px]"
