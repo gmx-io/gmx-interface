@@ -311,6 +311,7 @@ export function SlideModal({
   footerContent,
   className,
   noDivider = false,
+  desktopContentClassName,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -322,6 +323,7 @@ export function SlideModal({
   footerContent?: React.ReactNode;
   className?: string;
   noDivider?: boolean;
+  desktopContentClassName?: string;
 }>) {
   const isMobile = useMedia("(max-width: 700px)", false);
 
@@ -356,6 +358,7 @@ export function SlideModal({
         noDivider={noDivider}
         footerContent={footerContent}
         className={className}
+        contentClassName={desktopContentClassName}
       >
         {children}
       </Modal>

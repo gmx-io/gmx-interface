@@ -35,6 +35,7 @@ export type ModalProps = PropsWithChildren<{
   contentPadding?: boolean;
   qa?: string;
   noDivider?: boolean;
+  contentClassName?: string;
 }>;
 
 export default function Modal({
@@ -50,6 +51,7 @@ export default function Modal({
   onAfterOpen,
   setIsVisible,
   qa,
+  contentClassName,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -107,7 +109,7 @@ export default function Modal({
               style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
               onClick={() => setIsVisible(false)}
             />
-            <div className="Modal-content flex flex-col" onClick={stopPropagation} data-qa={qa}>
+            <div className={cx("Modal-content flex flex-col", contentClassName)} onClick={stopPropagation} data-qa={qa}>
               <div className="Modal-header-wrapper">
                 <div className="Modal-title-bar">
                   <div className="Modal-title">{label}</div>
