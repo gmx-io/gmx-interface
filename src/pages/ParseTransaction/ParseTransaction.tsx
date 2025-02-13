@@ -122,7 +122,7 @@ export function ParseTransactionPage() {
     );
   }
 
-  if (isLoading || !data || !tokensData || !marketsInfoData || !glvData || !marketTokensData) {
+  if (isLoading || !data) {
     return (
       <div className="mt-32">
         <Loader />
@@ -341,8 +341,8 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     if (props.item === "affiliate" || props.item === "callbackContract" || props.item === "uiFeeReceiver") {
       value = props.value;
     } else {
-      const token = props.tokensData[props.value];
-      const marketOrGlv = props.marketsInfoData[props.value] || props.glvData[props.value];
+      const token = props.tokensData?.[props.value];
+      const marketOrGlv = props.marketsInfoData?.[props.value] || props.glvData?.[props.value];
 
       if (token) {
         value = (
