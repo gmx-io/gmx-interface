@@ -507,6 +507,20 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // VIRTUAL/USD [WBTC-USDC]
+    "0x75F190E0Be6E8B933A01423EFE398c6C721A5CfF": {
+      marketTokenAddress: "0x75F190E0Be6E8B933A01423EFE398c6C721A5CfF",
+      indexTokenAddress: "0xB6672496214C90134A9223894e709F26A5eED362",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // PENGU/USD [WBTC-USDC]
+    "0x0c11Ed89889Fd03394E8d9d685cC5b85be569C99": {
+      marketTokenAddress: "0x0c11Ed89889Fd03394E8d9d685cC5b85be569C99",
+      indexTokenAddress: "0x4C1dac9b6eAf122Fe3DE824c1C2220413F3aC197",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
