@@ -93,6 +93,7 @@ export function useExternalSwapHandler() {
   const setExternalSwapQuote = useSelector(selectSetExternalSwapQuote);
   const gasPrice = useSelector(selectGasPrice);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
+  const isNeedSwap = fromToken && collateralToken && !getIsEquivalentTokens(fromToken, collateralToken);
 
   const swapDebugSettings = getSwapDebugSettings();
 
@@ -105,6 +106,10 @@ export function useExternalSwapHandler() {
 
   const { amountIn, priceIn, usdOut, baseUsdIn, baseAmountIn, internalSwapPriceImpact, internalSwapFeesDeltaUsd } =
     useMemo(() => {
+      if (!isNeedSwap) {
+        return {};
+      }
+
       if (tradeFlags.isIncrease) {
         switch (strategy) {
           case "leverageByCollateral":
@@ -217,16 +222,17 @@ export function useExternalSwapHandler() {
 
       return {};
     }, [
+      isNeedSwap,
       tradeFlags.isIncrease,
       tradeFlags.isLimit,
       tradeFlags.isLong,
+      strategy,
       fromToken,
-      toToken,
+      collateralToken,
       fromTokenAmount,
       findSwapPath,
       uiFeeFactor,
-      strategy,
-      collateralToken,
+      toToken,
       marketInfo,
       triggerPrice,
       toTokenAmount,
@@ -246,7 +252,7 @@ export function useExternalSwapHandler() {
     // np internal swap or negative swap impact is less than threshold
     !internalSwapPriceImpact || internalSwapPriceImpact.bps < swapPriceImpactForExternalSwapThresholdBps;
 
-  const debugForceExternalSwaps = swapDebugSettings?.forceExternalSwaps || false;
+  const debugForceExternalSwaps = isNeedSwap && (swapDebugSettings?.forceExternalSwaps || false);
 
   const { externalSwapQuote: baseExternalSwapQuote } = useExternalSwapsQuote({
     chainId,
