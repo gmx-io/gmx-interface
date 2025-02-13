@@ -363,7 +363,7 @@ async function createEncodedPayload({
     p.externalSwapQuote?.txnData
       ? {
           method: "makeExternalCalls",
-          params: getExternalCallsParams(chainId, p.account, p.externalSwapQuote),
+          params: getExternalCallsParams(chainId, subaccount?.address ?? p.account, p.externalSwapQuote),
         }
       : undefined,
 

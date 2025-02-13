@@ -115,7 +115,7 @@ export function getTradeFees(p: {
       : undefined;
 
   const externalSwapFees: ExternalSwapFeeItem[] | undefined =
-    initialCollateralUsd > 0
+    initialCollateralUsd > 0 && externalSwapQuotas.length
       ? externalSwapQuotas.map((quote) => ({
           aggregator: quote.aggregator,
           tokenInAddress: quote.fromTokenAddress,

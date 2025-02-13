@@ -166,8 +166,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { shouldDisableValidationForTesting, shouldDisableValidationForTesting: shouldDisableValidation } =
-    useSettings();
+  const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
   const hasOutdatedUi = useHasOutdatedUi();
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -1368,7 +1367,7 @@ export function TradeBox({ isInCurtain }: { isInCurtain?: boolean }) {
       variant="primary-action"
       className="mt-4 w-full [text-decoration:inherit]"
       onClick={onSubmit}
-      disabled={submitButtonState.disabled && !shouldDisableValidationForTesting}
+      disabled={submitButtonState.disabled && !shouldDisableValidation}
     >
       {submitButtonState.text}
     </Button>
