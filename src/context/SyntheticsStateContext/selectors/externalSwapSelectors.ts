@@ -64,10 +64,11 @@ export const selectExternalSwapQuote = createSelector((q) => {
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
 
-  const usdOut = convertToUsd(baseOutput.amountOut, tokenOut.decimals, priceOut)!;
-
   let usdIn = convertToUsd(inputs.amountIn, tokenIn.decimals, priceIn)!;
   let amountIn = inputs.amountIn;
+
+  const usdOut = convertToUsd(baseOutput.amountOut, tokenOut.decimals, priceOut)!;
+  const amountOut = baseOutput.amountOut;
 
   if (inputs?.strategy === "leverageBySize") {
     usdIn = bigMath.mulDiv(usdIn, inputs.usdOut, usdOut);
@@ -78,13 +79,14 @@ export const selectExternalSwapQuote = createSelector((q) => {
     tokenIn,
     tokenOut,
     amountIn,
-    amountOut: baseOutput.amountOut,
+    amountOut,
   });
 
   const quote: ExternalSwapQuote = {
     ...baseOutput,
     amountIn,
     usdIn,
+    amountOut,
     usdOut,
     feesUsd,
   };

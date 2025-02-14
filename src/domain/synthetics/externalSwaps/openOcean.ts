@@ -27,6 +27,7 @@ type OpenOceanTxnResponse = {
     };
     inAmount: string;
     outAmount: string;
+    minOutAmount: string;
     estimatedGas: string;
     value: string;
     gasPrice: string;
@@ -95,7 +96,7 @@ export async function getOpenOceanTxnData({
       value: BigInt(parsed.data.value),
       estimatedGas: BigInt(parsed.data.estimatedGas),
       gasPrice: BigInt(parsed.data.gasPrice),
-      outputAmount: BigInt(parsed.data.outAmount),
+      outputAmount: BigInt(parsed.data.minOutAmount),
     };
   } catch (e) {
     metrics.pushError(e, "openOceanBuildTx");
