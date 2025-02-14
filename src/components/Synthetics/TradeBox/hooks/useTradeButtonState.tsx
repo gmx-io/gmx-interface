@@ -34,7 +34,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { getTriggerNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
+import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
@@ -109,6 +109,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const payAmount = useSelector(selectTradeboxPayAmount);
 
@@ -402,9 +403,9 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
           submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken?.symbol}`;
         }
       } else if (isLimit) {
-        submitButtonText = t`Create Limit order`;
+        submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType)} order`;
       } else {
-        submitButtonText = t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
+        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
       }
     }
 
@@ -449,6 +450,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     toToken,
     localizedTradeTypeLabels,
     tradeType,
+    increaseAmounts?.limitOrderType,
     decreaseAmounts?.triggerOrderType,
   ]);
 }

@@ -223,6 +223,10 @@ export function TradeBoxAdvancedGroups() {
 
   const isInputDisabled = useMemo(() => {
     if (isLimit && increaseAmounts) {
+      if (increaseAmounts.limitOrderType === OrderType.StopIncrease) {
+        return true;
+      }
+
       return limitPrice === undefined || limitPrice === 0n;
     }
 

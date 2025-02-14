@@ -6,6 +6,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxToToken,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -13,9 +14,11 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatTokensRatio } from "domain/synthetics/tokens";
 import { formatUsdPrice } from "lib/numbers";
 import { useMemo } from "react";
+import { TradeMode } from "sdk/types/trade";
 
 export function LimitPriceRow() {
   const { isLimit, isSwap, isIncrease } = useSelector(selectTradeboxTradeFlags);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const toToken = useSelector(selectTradeboxToToken);
   const fromToken = useSelector(selectTradeboxFromToken);
@@ -49,5 +52,7 @@ export function LimitPriceRow() {
     return null;
   }
 
-  return <SyntheticsInfoRow label={t`Limit Price`} value={value} />;
+  const priceLabel = tradeMode === TradeMode.StopMarket ? t`Stop Price` : t`Limit Price`;
+
+  return <SyntheticsInfoRow label={priceLabel} value={value} />;
 }

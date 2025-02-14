@@ -314,20 +314,58 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   return `${days} days`;
 }
 
-export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr = false) {
-  const triggerStr = abbr ? t`T` : t`Trigger`;
-  const takeProfitStr = abbr ? t`TP` : t`Take Profit`;
-  const stopLossStr = abbr ? t`SL` : t`Stop Loss`;
+export function getNameByOrderType(orderType: OrderType | undefined, opts: { abbr?: boolean; lower?: boolean } = {}) {
+  const { abbr, lower } = opts;
 
   if (orderType === OrderType.LimitDecrease) {
-    return takeProfitStr;
+    if (abbr) {
+      return t`TP`;
+    }
+
+    if (lower) {
+      return t`take profit`;
+    }
+
+    return t`Take Profit`;
   }
 
   if (orderType === OrderType.StopLossDecrease) {
-    return stopLossStr;
+    if (abbr) {
+      return t`SL`;
+    }
+
+    if (lower) {
+      return t`stop loss`;
+    }
+
+    return t`Stop Loss`;
   }
 
-  return triggerStr;
+  if (orderType === OrderType.StopIncrease) {
+    if (lower) {
+      return t`stop market`;
+    }
+
+    return t`Stop Market`;
+  }
+
+  if (orderType === OrderType.LimitIncrease || orderType === OrderType.LimitSwap) {
+    if (lower) {
+      return t`limit`;
+    }
+
+    return t`Limit`;
+  }
+
+  if (abbr) {
+    return t`T`;
+  }
+
+  if (lower) {
+    return t`trigger`;
+  }
+
+  return t`Trigger`;
 }
 
 function willPositionCollateralBeSufficient(
