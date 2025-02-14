@@ -4,6 +4,7 @@ import { AUTO_SWAP_FALLBACK_MAX_FEES_BPS, DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
+  selectBaseExternalSwapOutput,
   selectExternalSwapFails,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
@@ -26,6 +27,7 @@ import { throttleLog } from "lib/logging";
 import { useEffect } from "react";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 import { formatUsd } from "lib/numbers";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -50,6 +52,8 @@ export function useExternalSwapHandler() {
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
+  const subaccount = useSubaccount(null);
+
   const { externalSwapOutput } = useExternalSwapOutputRequest({
     chainId,
     tokensData,
@@ -58,7 +62,7 @@ export function useExternalSwapHandler() {
     amountIn: externalSwapInputs?.amountIn,
     slippage,
     gasPrice,
-    enabled: shouldRequestExternalSwapQuote,
+    enabled: !subaccount && shouldRequestExternalSwapQuote,
   });
 
   if (isDevelopment() && settings.showDebugValues) {
