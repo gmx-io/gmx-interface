@@ -31,13 +31,15 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { TradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { getPositionKey } from "lib/legacy";
-import { parseValue } from "lib/numbers";
+import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { convertTokenAddress } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { createTradeFlags } from "sdk/utils/trade";
+import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import {
   selectAccount,
   selectChainId,
@@ -48,8 +50,7 @@ import {
   selectTokensData,
   selectUiFeeFactor,
 } from "../globalSelectors";
-import { selectExternalSwapQuote } from "../externalSwapSelectors";
-import { selectIsPnlInLeverage } from "../settingsSelectors";
+import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
 import {
   makeSelectDecreasePositionAmounts,
@@ -59,14 +60,12 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
-import { createTradeFlags } from "sdk/utils/trade";
-import { bigMath } from "sdk/utils/bigmath";
 
-export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
-export * from "./selectTradeboxAvailableMarketsOptions";
 export * from "./selectTradeboxChooseSuitableMarket";
 export * from "./selectTradeboxGetMaxLongShortLiquidityPool";
 export * from "./selectTradeboxRelatedMarketsStats";
+export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
+export * from "./selectTradeboxAvailableMarketsOptions";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -82,7 +81,7 @@ export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox?.mark
 export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
-export const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.avaialbleTradeModes;
+export const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.availableTradeModes;
 export const selectTradeboxAvailableTokensOptions = (s: SyntheticsState) => s.tradebox.availableTokensOptions;
 export const selectTradeboxFromTokenInputValue = (s: SyntheticsState) => s.tradebox.fromTokenInputValue;
 export const selectTradeboxToTokenInputValue = (s: SyntheticsState) => s.tradebox.toTokenInputValue;
@@ -100,7 +99,6 @@ export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.trade
 export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
 export const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
-export const selectTradeboxIsLeverageEnabled = (s: SyntheticsState) => s.tradebox.isLeverageEnabled;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
 export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebox.setActivePosition;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsState) => s.tradebox.setToTokenAddress;
@@ -169,14 +167,14 @@ export const selectTradeBoxLeverage = createSelector((q) => {
   return BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
 });
 
-export const getTradeBoxLeverageStrategy = (s: { tradeBoxState: TradeboxState }) => {
-  const isLeverageEnabled = s.tradeBoxState.isLeverageEnabled;
-  const focusedInput = s.tradeBoxState.focusedInput;
+export const getTradeBoxLeverageStrategy = (s: SyntheticsState) => {
+  const isLeverageEnabled = s.settings.isLeverageSliderEnabled;
+  const focusedInput = s.tradebox.focusedInput;
   return isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent";
 };
 
 export const selectTradeboxLeverageStrategy = createSelector((q) => {
-  const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+  const isLeverageEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
   return isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent";
 });
@@ -556,7 +554,7 @@ const selectNextValuesForIncrease = createSelector(
     const toTokenAmount = q(selectTradeboxToTokenAmount);
     const marketAddress = q(selectTradeboxMarketAddress);
     const leverageOption = q(selectTradeboxLeverageOption);
-    const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+    const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
     const focusedInput = q(selectTradeboxFocusedInput);
     const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
     const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -581,7 +579,7 @@ const selectNextValuesForIncrease = createSelector(
       leverage,
       marketAddress,
       positionKey,
-      increaseStrategy: isLeverageEnabled
+      increaseStrategy: isLeverageSliderEnabled
         ? focusedInput === "from"
           ? "leverageByCollateral"
           : "leverageBySize"
@@ -966,4 +964,52 @@ export const selectTradeboxExistingPosition = createSelector((q) => {
   const positionsInfoData = q(selectPositionsInfoData);
 
   return getByKey(positionsInfoData, selectedPositionKey);
+});
+
+export const selectTradeboxCloseSizeUsd = createSelector((q) => {
+  const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
+
+  return parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+});
+
+export const selectTradeboxSwapFeesPercentage = createSelector((q) => {
+  const swapAmounts = q(selectTradeboxSwapAmounts);
+
+  if (
+    swapAmounts === undefined ||
+    swapAmounts.swapPathStats?.totalSwapFeeUsd === undefined ||
+    swapAmounts.usdIn === undefined ||
+    swapAmounts.usdIn === 0n
+  ) {
+    return 0n;
+  }
+
+  return bigMath.mulDiv(swapAmounts.swapPathStats.totalSwapFeeUsd * -1n, PRECISION, swapAmounts.usdIn);
+});
+
+export const selectTradeboxPriceImpactPercentage = createSelector((q) => {
+  const fees = q(selectTradeboxFees);
+  const { isSwap } = q(selectTradeboxTradeFlags);
+
+  if (isSwap) {
+    return fees?.swapPriceImpact?.precisePercentage ?? 0n;
+  }
+
+  if (fees?.positionPriceImpact?.precisePercentage === undefined) {
+    return 0n;
+  }
+
+  return fees.positionPriceImpact.precisePercentage;
+});
+
+export const selectTradeboxFeesPercentage = createSelector((q) => {
+  const { isSwap } = q(selectTradeboxTradeFlags);
+
+  if (isSwap) {
+    return q(selectTradeboxSwapFeesPercentage);
+  }
+
+  const fees = q(selectTradeboxFees);
+
+  return fees?.positionFee?.precisePercentage ?? 0n;
 });

@@ -1,4 +1,5 @@
 import { arbitrumSdk } from "utils/testUtil";
+import { describe, expect, it } from "vitest";
 
 describe("Positions", () => {
   describe("getPositions", () => {
@@ -9,7 +10,7 @@ describe("Positions", () => {
         throw new Error("Tokens data or markets info is not available");
       }
 
-      const positions = await arbitrumSdk.positions.getPositions({ tokensData, marketsInfoData });
+      const positions = await arbitrumSdk.positions.getPositions({ tokensData, marketsData: marketsInfoData });
 
       expect(positions).toBeDefined();
     });

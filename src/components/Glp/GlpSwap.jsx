@@ -1070,109 +1070,129 @@ export default function GlpSwap(props) {
               className="Exchange-swap-option-tabs"
               optionClassnames={tabOptionClassNames}
             />
-            {isBuying && (
-              <BuyInputSection
-                topLeftLabel={payLabel}
-                topRightLabel={t`Balance`}
-                topRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals)}
-                inputValue={swapValue}
-                onInputValueChange={onSwapValueChange}
-                showMaxButton={
-                  showMaxButtonBasedOnBalance &&
-                  swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)
-                }
-                onClickTopRightLabel={fillMaxAmount}
-                onClickMax={fillMaxAmount}
-                topLeftValue={payBalance}
-              >
-                <TokenSelector
-                  label={t`Pay`}
-                  chainId={chainId}
-                  tokenAddress={swapTokenAddress}
-                  onSelectToken={onSelectSwapToken}
-                  tokens={whitelistedTokens}
-                  infoTokens={infoTokens}
-                  size="l"
-                  showSymbolImage={true}
-                  showTokenImgInDropdown={true}
-                />
-              </BuyInputSection>
-            )}
+            <div className="mb-12 flex flex-col gap-4">
+              {isBuying && (
+                <>
+                  <BuyInputSection
+                    topLeftLabel={payLabel}
+                    bottomRightLabel={t`Balance`}
+                    bottomRightValue={formatBalanceAmount(swapTokenBalance, swapToken.decimals)}
+                    inputValue={swapValue}
+                    onInputValueChange={onSwapValueChange}
+                    showMaxButton={
+                      showMaxButtonBasedOnBalance &&
+                      swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)
+                    }
+                    onClickBottomRightLabel={fillMaxAmount}
+                    onClickMax={fillMaxAmount}
+                    bottomLeftValue={payBalance}
+                  >
+                    <TokenSelector
+                      label={t`Pay`}
+                      chainId={chainId}
+                      tokenAddress={swapTokenAddress}
+                      onSelectToken={onSelectSwapToken}
+                      tokens={whitelistedTokens}
+                      infoTokens={infoTokens}
+                      size="l"
+                      showSymbolImage={true}
+                      showTokenImgInDropdown={true}
+                    />
+                  </BuyInputSection>
 
-            {!isBuying && (
-              <BuyInputSection
-                topLeftLabel={payLabel}
-                topRightLabel={t`Available`}
-                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(maxSellAmount, GLP_DECIMALS)}
-                inputValue={glpValue}
-                onInputValueChange={onGlpValueChange}
-                showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
-                onClickTopRightLabel={fillMaxAmount}
-                onClickMax={fillMaxAmount}
-                topLeftValue={payBalance}
-              >
-                <div className="selected-token inline-flex items-center">
-                  <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
-                  GLP
-                </div>
-              </BuyInputSection>
-            )}
+                  <div>
+                    <div className="AppOrder-ball-container">
+                      <button
+                        type="button"
+                        className="AppOrder-ball"
+                        onClick={() => {
+                          setIsBuying(!isBuying);
+                          switchSwapOption(isBuying ? "redeem" : "");
+                        }}
+                      >
+                        <IoChevronDownOutline className="AppOrder-ball-icon" />
+                      </button>
+                    </div>
 
-            <div className="AppOrder-ball-container">
-              <button
-                type="button"
-                className="AppOrder-ball"
-                onClick={() => {
-                  setIsBuying(!isBuying);
-                  switchSwapOption(isBuying ? "redeem" : "");
-                }}
-              >
-                <IoChevronDownOutline className="AppOrder-ball-icon" />
-              </button>
+                    <BuyInputSection
+                      topLeftLabel={receiveLabel}
+                      bottomRightLabel={t`Balance`}
+                      bottomLeftValue={receiveBalance}
+                      bottomRightValue={
+                        glpBalance === undefined ? "..." : formatBalanceAmount(glpBalance, GLP_DECIMALS)
+                      }
+                      inputValue={glpValue}
+                      onInputValueChange={onGlpValueChange}
+                      defaultTokenName="GLP"
+                    >
+                      <div className="selected-token inline-flex items-center">
+                        <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
+                        GLP
+                      </div>
+                    </BuyInputSection>
+                  </div>
+                </>
+              )}
+
+              {!isBuying && (
+                <>
+                  <BuyInputSection
+                    topLeftLabel={payLabel}
+                    bottomRightLabel={t`Available`}
+                    bottomRightValue={
+                      glpBalance === undefined ? "..." : formatBalanceAmount(maxSellAmount, GLP_DECIMALS)
+                    }
+                    inputValue={glpValue}
+                    onInputValueChange={onGlpValueChange}
+                    showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
+                    onClickBottomRightLabel={fillMaxAmount}
+                    onClickMax={fillMaxAmount}
+                    bottomLeftValue={payBalance}
+                  >
+                    <div className="selected-token inline-flex items-center">
+                      <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
+                      GLP
+                    </div>
+                  </BuyInputSection>
+
+                  <div>
+                    <div className="AppOrder-ball-container">
+                      <button
+                        type="button"
+                        className="AppOrder-ball"
+                        onClick={() => {
+                          setIsBuying(!isBuying);
+                          switchSwapOption(isBuying ? "redeem" : "");
+                        }}
+                      >
+                        <IoChevronDownOutline className="AppOrder-ball-icon" />
+                      </button>
+                    </div>
+                    <BuyInputSection
+                      topLeftLabel={receiveLabel}
+                      bottomRightLabel={t`Balance`}
+                      bottomLeftValue={receiveBalance}
+                      bottomRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                      inputValue={swapValue}
+                      onInputValueChange={onSwapValueChange}
+                      selectedToken={swapToken}
+                    >
+                      <TokenSelector
+                        label={t`Receive`}
+                        chainId={chainId}
+                        tokenAddress={swapTokenAddress}
+                        onSelectToken={onSelectSwapToken}
+                        tokens={whitelistedTokens}
+                        infoTokens={infoTokens}
+                        size="l"
+                        showSymbolImage={true}
+                        showTokenImgInDropdown={true}
+                      />
+                    </BuyInputSection>
+                  </div>
+                </>
+              )}
             </div>
-
-            {isBuying && (
-              <BuyInputSection
-                topLeftLabel={receiveLabel}
-                topRightLabel={t`Balance`}
-                topLeftValue={receiveBalance}
-                topRightValue={glpBalance === undefined ? "..." : formatBalanceAmount(glpBalance, GLP_DECIMALS)}
-                inputValue={glpValue}
-                onInputValueChange={onGlpValueChange}
-                defaultTokenName="GLP"
-                preventFocusOnLabelClick="right"
-              >
-                <div className="selected-token inline-flex items-center">
-                  <img className="mr-5" width={20} src={glpIcon} alt="GLP" />
-                  GLP
-                </div>
-              </BuyInputSection>
-            )}
-
-            {!isBuying && (
-              <BuyInputSection
-                topLeftLabel={receiveLabel}
-                topRightLabel={t`Balance`}
-                topLeftValue={receiveBalance}
-                topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
-                inputValue={swapValue}
-                onInputValueChange={onSwapValueChange}
-                selectedToken={swapToken}
-                preventFocusOnLabelClick="right"
-              >
-                <TokenSelector
-                  label={t`Receive`}
-                  chainId={chainId}
-                  tokenAddress={swapTokenAddress}
-                  onSelectToken={onSelectSwapToken}
-                  tokens={whitelistedTokens}
-                  infoTokens={infoTokens}
-                  size="l"
-                  showSymbolImage={true}
-                  showTokenImgInDropdown={true}
-                />
-              </BuyInputSection>
-            )}
 
             <div>
               <div className="Exchange-info-row">

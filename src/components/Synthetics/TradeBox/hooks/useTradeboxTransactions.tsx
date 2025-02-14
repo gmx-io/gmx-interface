@@ -7,6 +7,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectSetExternalSwapFails } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -15,7 +16,6 @@ import {
   selectTradeboxFees,
   selectTradeboxFromTokenAddress,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxIsLeverageEnabled,
   selectTradeboxMarketInfo,
   selectTradeboxSelectedPosition,
   selectTradeboxSwapAmounts,
@@ -26,10 +26,10 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
 import {
+  OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
-  OrderType,
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
@@ -70,7 +70,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isLimit } = tradeFlags;
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const isLeverageEnabled = useSelector(selectTradeboxIsLeverageEnabled);
+  const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const isFirstOrder = useSelector(selectIsFirstOrder);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const fees = useSelector(selectTradeboxFees);
@@ -210,7 +210,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         marketInfo,
         isLong,
         isFirstOrder,
-        isLeverageEnabled,
+        isLeverageEnabled: isLeverageSliderEnabled,
         initialCollateralAllowance,
         isTPSLCreated: createSltpEntries.length > 0,
         slCount: createSltpEntries.filter(
@@ -356,7 +356,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       marketInfo,
       isLong,
       isFirstOrder,
-      isLeverageEnabled,
+      isLeverageSliderEnabled,
       initialCollateralAllowance,
       createSltpEntries,
       fees?.positionPriceImpact?.precisePercentage,

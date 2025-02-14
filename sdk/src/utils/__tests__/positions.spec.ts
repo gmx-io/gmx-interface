@@ -1,3 +1,4 @@
+import { describe, expect, it, vi, beforeEach, Mock } from "vitest";
 import { MarketInfo } from "types/markets";
 import { Token } from "types/tokens";
 import { bigMath } from "../bigmath";
@@ -16,22 +17,22 @@ import {
 } from "../positions";
 import { convertToUsd, getIsEquivalentTokens } from "../tokens";
 
-jest.mock("../markets", () => ({
-  ...jest.requireActual("../markets"),
-  getMarketPnl: jest.fn(),
-  getPoolUsdWithoutPnl: jest.fn(),
-  getCappedPoolPnl: jest.fn(),
+vi.mock("../markets", () => ({
+  ...vi.importActual("../markets"),
+  getMarketPnl: vi.fn(),
+  getPoolUsdWithoutPnl: vi.fn(),
+  getCappedPoolPnl: vi.fn(),
 }));
 
-jest.mock("../tokens", () => ({
-  ...jest.requireActual("../tokens"),
-  convertToUsd: jest.fn(),
-  getIsEquivalentTokens: jest.fn(),
+vi.mock("../tokens", () => ({
+  ...vi.importActual("../tokens"),
+  convertToUsd: vi.fn(),
+  getIsEquivalentTokens: vi.fn(),
 }));
 
-jest.mock("../fees", () => ({
-  getPositionFee: jest.fn(),
-  getPriceImpactForPosition: jest.fn(),
+vi.mock("../fees", () => ({
+  getPositionFee: vi.fn(),
+  getPriceImpactForPosition: vi.fn(),
 }));
 
 describe("getPositionKey", () => {
@@ -67,7 +68,7 @@ describe("getEntryPrice", () => {
 
 describe("getPositionValueUsd", () => {
   it("uses convertToUsd under the hood", () => {
-    (convertToUsd as jest.Mock).mockReturnValueOnce(5000n);
+    (convertToUsd as Mock).mockReturnValueOnce(5000n);
     const token = { decimals: 18 } as Token;
     const result = getPositionValueUsd({ indexToken: token, sizeInTokens: 100n, markPrice: 10n });
     expect(convertToUsd).toHaveBeenCalledWith(100n, 18, 10n);
@@ -79,13 +80,13 @@ describe("getPositionPnlUsd", () => {
   const marketInfo = { indexToken: {}, maxPositionImpactFactorForLiquidations: 2n } as MarketInfo;
 
   beforeEach(() => {
-    (getMarketPnl as jest.Mock).mockReturnValue(1000n);
-    (getPoolUsdWithoutPnl as jest.Mock).mockReturnValue(5000n);
-    (getCappedPoolPnl as jest.Mock).mockReturnValue(800n);
+    (getMarketPnl as Mock).mockReturnValue(1000n);
+    (getPoolUsdWithoutPnl as Mock).mockReturnValue(5000n);
+    (getCappedPoolPnl as Mock).mockReturnValue(800n);
   });
 
   it("returns negative PnL if positionValueUsd < sizeInUsd for a long", () => {
-    (convertToUsd as jest.Mock).mockReturnValueOnce(900n); // positionValueUsd
+    (convertToUsd as Mock).mockReturnValueOnce(900n); // positionValueUsd
     const result = getPositionPnlUsd({
       marketInfo,
       sizeInUsd: 1000n,
@@ -147,9 +148,9 @@ describe("getLeverage", () => {
 
 describe("getLiquidationPrice", () => {
   beforeEach(() => {
-    (getPositionFee as jest.Mock).mockReturnValue({ positionFeeUsd: 50n });
-    (getPriceImpactForPosition as jest.Mock).mockReturnValue(-100n);
-    (getIsEquivalentTokens as jest.Mock).mockReturnValue(false);
+    (getPositionFee as Mock).mockReturnValue({ positionFeeUsd: 50n });
+    (getPriceImpactForPosition as Mock).mockReturnValue(-100n);
+    (getIsEquivalentTokens as Mock).mockReturnValue(false);
   });
 
   it("returns undefined if sizeInUsd <= 0 or sizeInTokens <= 0", () => {
@@ -187,7 +188,7 @@ describe("getLiquidationPrice", () => {
   });
 
   it("computes liquidation price for non-equivalent tokens and isLong=true", () => {
-    (getIsEquivalentTokens as jest.Mock).mockReturnValue(false);
+    (getIsEquivalentTokens as Mock).mockReturnValue(false);
     const marketInfo = {
       indexToken: { decimals: 8 },
       minCollateralFactor: 1000n, // 0.001

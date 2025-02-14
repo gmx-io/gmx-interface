@@ -309,7 +309,7 @@ export default function PositionSeller(props) {
       // only Stop orders can't be executed without corresponding opened position
       if (order.type !== DECREASE) continue;
 
-      // if user creates Stop-Loss we need only Stop-Loss orders and vice versa
+      // if user creates Stop Loss we need only Stop Loss orders and vice versa
       if (orderOption === STOP) {
         const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
         if (triggerAboveThreshold !== order.triggerAboveThreshold) continue;
@@ -498,6 +498,9 @@ export default function PositionSeller(props) {
         expandDecimals(1, collateralToken.decimals),
         collateralToken.maxPrice
       );
+      convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
+    } else {
+      convertedAmount = 0n;
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
@@ -1100,19 +1103,18 @@ export default function PositionSeller(props) {
               onChange={onOrderOptionChange}
             />
           )}
-          <div className="relative">
+          <div className="mb-12 flex flex-col gap-4">
             <BuyInputSection
               inputValue={fromValue}
               onInputValueChange={(e) => setFromValue(e.target.value)}
               topLeftLabel={t`Close`}
-              topLeftValue={
+              bottomLeftValue={
                 convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
               }
+              isBottomLeftValueMuted={convertedAmount === 0n}
               topRightLabel={t`Max`}
               topRightValue={maxAmount && maxAmountFormatted}
-              onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
-              onClickMax={() => setFromValue(maxAmountFormattedFree)}
-              showMaxButton={fromValue !== maxAmountFormattedFree}
+              onClickMax={fromValue !== maxAmountFormattedFree ? () => setFromValue(maxAmountFormattedFree) : undefined}
               showPercentSelector={true}
               onPercentChange={(percentage) => {
                 setFromValue(formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2));
@@ -1120,23 +1122,23 @@ export default function PositionSeller(props) {
             >
               USD
             </BuyInputSection>
+            {orderOption === STOP && (
+              <BuyInputSection
+                inputValue={triggerPriceValue}
+                onInputValueChange={onTriggerPriceChange}
+                topLeftLabel={t`Price`}
+                topRightLabel={t`Mark`}
+                topRightValue={
+                  position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
+                }
+                onClickTopRightLabel={() => {
+                  setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
+                }}
+              >
+                USD
+              </BuyInputSection>
+            )}
           </div>
-          {orderOption === STOP && (
-            <BuyInputSection
-              inputValue={triggerPriceValue}
-              onInputValueChange={onTriggerPriceChange}
-              topLeftLabel={t`Price`}
-              topRightLabel={t`Mark`}
-              topRightValue={
-                position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
-              }
-              onClickTopRightLabel={() => {
-                setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
-              }}
-            >
-              USD
-            </BuyInputSection>
-          )}
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
@@ -1151,7 +1153,7 @@ export default function PositionSeller(props) {
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
-              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage} className="mb-10">
                 <span className="text-slate-100">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>

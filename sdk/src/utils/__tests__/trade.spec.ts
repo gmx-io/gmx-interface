@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 
 describe("applySlippageToPrice", () => {

@@ -1,7 +1,8 @@
 import { t } from "@lingui/macro";
 
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { HIGH_SPREAD_THRESHOLD } from "config/constants";
+import { USD_DECIMALS } from "config/factors";
 import {
   selectTradeboxFromToken,
   selectTradeboxMarketInfo,
@@ -10,7 +11,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSpread } from "domain/tokens";
-import { USD_DECIMALS } from "config/factors";
 import { formatAmount } from "lib/numbers";
 import { useMemo } from "react";
 
@@ -50,16 +50,13 @@ export function SwapSpreadRow() {
     return { spread, showSpread, isHigh };
   }, [isSwap, fromToken, toToken, isIncrease, indexToken, isMarket, isLong]);
 
-  if (!isSwap) {
+  if (!isSwap || !swapSpreadInfo.showSpread || swapSpreadInfo.spread === undefined) {
     return null;
   }
 
   return (
-    swapSpreadInfo.showSpread &&
-    swapSpreadInfo.spread !== undefined && (
-      <ExchangeInfo.Row label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
-        {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}%
-      </ExchangeInfo.Row>
-    )
+    <SyntheticsInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
+      {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}%
+    </SyntheticsInfoRow>
   );
 }

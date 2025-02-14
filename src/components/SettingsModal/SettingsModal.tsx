@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useKey } from "react-use";
 
 import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -9,19 +10,19 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 
+import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
+import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Modal from "components/Modal/Modal";
+import { SlideModal } from "components/Modal/SlideModal";
 import NumberInput from "components/NumberInput/NumberInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
-import { useKey } from "react-use";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./SettingsModal.scss";
-import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
+import Checkbox from "components/Checkbox/Checkbox";
 
 const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
 
@@ -42,6 +43,7 @@ export function SettingsModal({
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showDebugValues, setShowDebugValues] = useState(false);
+  const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useState(false);
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -57,6 +59,7 @@ export function SettingsModal({
     setShowPnlAfterFees(settings.showPnlAfterFees);
     setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
+    setIsLeverageSliderEnabled(settings.isLeverageSliderEnabled);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
@@ -100,17 +103,20 @@ export function SettingsModal({
     settings.setShowPnlAfterFees(showPnlAfterFees);
     settings.setShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     settings.setShowDebugValues(showDebugValues);
+    settings.setIsLeverageSliderEnabled(isLeverageSliderEnabled);
+
     setIsSettingsVisible(false);
   }, [
-    settings,
     slippageAmount,
-    executionFeeBufferBps,
+    settings,
     isPnlInLeverage,
     isAutoCancelTPSL,
     showPnlAfterFees,
     shouldDisableValidationForTesting,
     showDebugValues,
+    isLeverageSliderEnabled,
     setIsSettingsVisible,
+    executionFeeBufferBps,
   ]);
 
   useKey(
@@ -125,26 +131,28 @@ export function SettingsModal({
   );
 
   return (
-    <Modal
-      className="App-settings"
+    <SlideModal
       isVisible={isSettingsVisible}
       setIsVisible={setIsSettingsVisible}
       label={t`Settings`}
       qa="settings-modal"
+      className="text-body-medium"
+      desktopContentClassName="w-[380px]"
     >
-      <div className="App-settings-row">
+      <div className="mb-8">
         <div>
-          <Trans>Allowed Slippage</Trans>
+          <Trans>Default Allowed Slippage</Trans>
         </div>
-        <div className="App-slippage-tolerance-input-container">
-          <div className="App-slippage-tolerance-input-minus muted">-</div>
+        <div className="relative">
+          <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-100">-</div>
           <NumberInput
-            className="App-slippage-tolerance-input with-minus"
+            className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
             value={slippageAmount}
             onValueChange={(e) => setSlippageAmount(e.target.value)}
             placeholder={defaultSippageDisplay.toString()}
           />
-          <div className="App-slippage-tolerance-input-percent">%</div>
+
+          <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">%</div>
         </div>
         {parseFloat(slippageAmount) < defaultSippageDisplay && (
           <AlertInfo type="warning">
@@ -153,12 +161,12 @@ export function SettingsModal({
         )}
       </div>
       {settings.shouldUseExecutionFeeBuffer && (
-        <div className="App-settings-row">
+        <div className="mb-8">
           <div>
             <Tooltip
               handle={<Trans>Max Network Fee Buffer</Trans>}
-              renderContent={() => (
-                <div>
+              content={
+                <>
                   <Trans>
                     The Max Network Fee is set to a higher value to handle potential increases in gas price during order
                     execution. Any excess network fee will be refunded to your account when the order is executed. Only
@@ -167,18 +175,18 @@ export function SettingsModal({
                   <br />
                   <br />
                   <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
-                </div>
-              )}
+                </>
+              }
             />
           </div>
-          <div className="App-slippage-tolerance-input-container">
+          <div className="relative">
             <NumberInput
-              className="App-slippage-tolerance-input"
+              className="mb-8 mt-8 w-full rounded-4 border border-gray-700"
               value={executionFeeBufferBps}
               onValueChange={(e) => setExecutionFeeBufferBps(e.target.value)}
               placeholder="10"
             />
-            <div className="App-slippage-tolerance-input-percent">%</div>
+            <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">%</div>
           </div>
           {parseFloat(executionFeeBufferBps) <
             (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
@@ -194,74 +202,74 @@ export function SettingsModal({
           )}
         </div>
       )}
-      <div className="Exchange-settings-row">
-        <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+      <div className="flex flex-col gap-16">
+        <ToggleSwitch isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
+          <Trans>Show leverage slider</Trans>
+        </ToggleSwitch>
+
+        <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
           <Trans>Display PnL after fees</Trans>
-        </Checkbox>
-      </div>
-      <div className="Exchange-settings-row">
-        <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
+        </ToggleSwitch>
+
+        <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
           <Trans>Include PnL in leverage display</Trans>
-        </Checkbox>
-      </div>
-      <div className="Exchange-settings-row">
-        <Checkbox isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
+        </ToggleSwitch>
+
+        <ToggleSwitch isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
           <TooltipWithPortal
             handle={t`Auto-Cancel TP/SL`}
-            renderContent={() => (
+            content={
               <div onClick={(e) => e.stopPropagation()}>
                 <Trans>
-                  Take-Profit and Stop-Loss orders will be automatically cancelled when the associated position is
+                  Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
                   completely closed. This will only affect newly created TP/SL orders.
                 </Trans>
                 <br />
                 <br />
                 <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>.
               </div>
-            )}
+            }
           />
-        </Checkbox>
-      </div>
-      <div className="Exchange-settings-row chart-positions-settings">
-        <Checkbox isChecked={settings.shouldShowPositionLines} setIsChecked={settings.setShouldShowPositionLines}>
-          <span>
+        </ToggleSwitch>
+
+        <div className="hidden max-[1100px]:block">
+          <ToggleSwitch isChecked={settings.shouldShowPositionLines} setIsChecked={settings.setShouldShowPositionLines}>
             <Trans>Chart positions</Trans>
-          </span>
-        </Checkbox>
-      </div>
+          </ToggleSwitch>
+        </div>
 
-      <div className="Exchange-settings-row">
-        <Checkbox isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-          <Trans>Enable external swaps</Trans>
-        </Checkbox>
-      </div>
-
-      {isDevelopment() && (
         <div className="Exchange-settings-row">
-          <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
+          <Checkbox isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+            <Trans>Enable external swaps</Trans>
+          </Checkbox>
+        </div>
+
+        {isDevelopment() && (
+          <ToggleSwitch
+            isChecked={shouldDisableValidationForTesting}
+            setIsChecked={setShouldDisableValidationForTesting}
+          >
             <Trans>Disable order validations</Trans>
-          </Checkbox>
-        </div>
-      )}
+          </ToggleSwitch>
+        )}
 
-      {isDevelopment() && (
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
+        {isDevelopment() && (
+          <ToggleSwitch isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
             <Trans>Show debug values</Trans>
-          </Checkbox>
-        </div>
-      )}
+          </ToggleSwitch>
+        )}
 
-      {isDevelopment() && <AbFlagSettings />}
+        {isDevelopment() && <AbFlagSettings />}
 
-      {isDevelopment() && <DebugSwapsSettings />}
+        {isDevelopment() && <DebugSwapsSettings />}
 
-      {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
+        {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
+      </div>
 
       <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
       </Button>
-    </Modal>
+    </SlideModal>
   );
 }
 
@@ -290,17 +298,17 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
   }, [isSettingsVisible, tenderlyAccessKey, tenderlyAccountSlug, tenderlyProjectSlug]);
 
   return (
-    <div className="w-full text-12">
+    <div>
       <br />
-      <h1 className="text-14">Tenderly Settings</h1>
+      <h1>Tenderly Settings</h1>
       <br />
       <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
       <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
       <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
       <div className="">
-        <Checkbox isChecked={tenderlySimulationEnabled} setIsChecked={setTenderlySimulationEnabled}>
-          <span className="text-12">Simulate TXs</span>
-        </Checkbox>
+        <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
+          <span className="">Simulate TXs</span>
+        </ToggleSwitch>
       </div>
       <br />
       See{" "}

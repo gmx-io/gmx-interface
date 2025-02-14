@@ -6,8 +6,9 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   DISABLE_ORDER_VALIDATION_KEY,
-  IS_PNL_IN_LEVERAGE_KEY,
+  EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
+  IS_PNL_IN_LEVERAGE_KEY,
   ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -15,8 +16,8 @@ import {
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
+  getLeverageEnabledKey as getLeverageSliderEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
-  EXTERNAL_SWAPS_ENABLED_KEY,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
@@ -45,6 +46,8 @@ export type SettingsContextType = {
   setShouldShowPositionLines: (val: boolean) => void;
   isAutoCancelTPSL: boolean;
   setIsAutoCancelTPSL: (val: boolean) => void;
+  isLeverageSliderEnabled: boolean;
+  setIsLeverageSliderEnabled: (val: boolean) => void;
 
   tenderlyAccountSlug: string | undefined;
   setTenderlyAccountSlug: (val: string | undefined) => void;
@@ -114,6 +117,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedIsAutoCancelTPSL, setIsAutoCancelTPSL] = useLocalStorageSerializeKey(
     [chainId, IS_AUTO_CANCEL_TPSL_KEY],
+    true
+  );
+
+  const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey(
+    getLeverageSliderEnabledKey(chainId),
     true
   );
 
@@ -187,6 +195,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
       isAutoCancelTPSL: savedIsAutoCancelTPSL!,
       setIsAutoCancelTPSL: setIsAutoCancelTPSL,
+      isLeverageSliderEnabled: isLeverageSliderEnabled!,
+      setIsLeverageSliderEnabled: setIsLeverageSliderEnabled,
 
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
@@ -225,6 +235,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldShowPositionLines,
     savedIsAutoCancelTPSL,
     setIsAutoCancelTPSL,
+    isLeverageSliderEnabled,
+    setIsLeverageSliderEnabled,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,

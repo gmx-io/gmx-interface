@@ -33,6 +33,44 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "pengu-virtual-listing",
+    title: "PENGU and VIRTUAL markets added on Arbitrum",
+    isActive: true,
+    startDate: "13 Feb 2025, 16:00",
+    endDate: "19 Feb 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="PENGU" />
+        /USD and <TokenSymbolWithIcon symbol="VIRTUAL" />
+        /USD, or provide liquidity to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC]
+        </span>
+        .
+      </>
+    ),
+  },
+  {
+    id: "bera-ldo-listing",
+    title: "BERA and LDO markets added on Arbitrum",
+    isActive: true,
+    startDate: "7 Feb 2025, 16:00",
+    endDate: "13 Feb 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="BERA" />
+        /USD and <TokenSymbolWithIcon symbol="LDO" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools using <TokenSymbolWithIcon symbol="WETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WETH-USDC]
+        </span>
+        .
+      </>
+    ),
+  },
+  {
     id: "trump-melania-avalanche",
     title: "TRUMP and MELANIA markets added on Avalanche",
     isActive: true,
@@ -293,7 +331,7 @@ export const appEventsData: EventData[] = [
     endDate: "15 Nov 2024, 00:00",
     bodyText: (
       <>
-        New Take-Profit and Stop-Loss orders will now be automatically cancelled when the associated position is fully
+        New Take Profit and Stop Loss orders will now be automatically cancelled when the associated position is fully
         closed. You can disable this feature in the settings.
         <br />
         <br />
