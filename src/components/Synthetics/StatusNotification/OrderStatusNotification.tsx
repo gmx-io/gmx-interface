@@ -185,7 +185,7 @@ export function OrderStatusNotification({
     }
 
     return <TransactionStatus status={status} txnHash={undefined} text={text} />;
-  }, [orderData, orderStatus?.createdTxnHash]);
+  }, [orderData, orderStatus]);
 
   const sendingStatus = useMemo(() => {
     let text = t`Sending order request`;

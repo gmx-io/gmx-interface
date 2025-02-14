@@ -118,7 +118,9 @@ export async function createIncreaseOrderTxn({
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+
+  const { initialCollateralTokenAddress, swapPath } = getCollateralAndSwapAddresses(chainId, p);
+
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
@@ -135,7 +137,7 @@ export async function createIncreaseOrderTxn({
     marketAddress: p.marketAddress,
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.initialCollateralAmount,
-    swapPath: p.swapPath,
+    swapPath,
     externalSwapQuote: p.externalSwapQuote,
     sizeDeltaUsd: p.sizeDeltaUsd,
     minOutputAmount: 0n,
@@ -155,6 +157,7 @@ export async function createIncreaseOrderTxn({
     subaccount,
     isNativePayment,
     initialCollateralTokenAddress,
+    swapPath,
     signer,
   });
 
@@ -179,6 +182,7 @@ export async function createIncreaseOrderTxn({
     subaccount: null,
     isNativePayment,
     initialCollateralTokenAddress,
+    swapPath,
     signer,
   });
 
@@ -307,6 +311,7 @@ async function createEncodedPayload({
   subaccount,
   isNativePayment,
   initialCollateralTokenAddress,
+  swapPath,
   signer,
 }: {
   chainId: number;
@@ -318,19 +323,14 @@ async function createEncodedPayload({
   subaccount: Subaccount;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
+  swapPath: string[];
   signer: Signer;
 }) {
-  const createOrderProps = { p: { ...p }, initialCollateralTokenAddress };
-
-  if (p.externalSwapQuote?.txnData) {
-    createOrderProps.p.swapPath = [];
-    createOrderProps.initialCollateralTokenAddress = p.targetCollateralAddress;
-  }
-
   const orderParams = createOrderParams({
-    p: createOrderProps.p,
+    p,
     acceptablePrice,
-    initialCollateralTokenAddress: createOrderProps.initialCollateralTokenAddress,
+    initialCollateralTokenAddress,
+    swapPath,
     subaccount,
     isNativePayment,
   });
@@ -383,12 +383,14 @@ function createOrderParams({
   p,
   acceptablePrice,
   initialCollateralTokenAddress,
+  swapPath,
   subaccount,
   isNativePayment,
 }: {
   p: IncreaseOrderParams;
   acceptablePrice: bigint;
   initialCollateralTokenAddress: string;
+  swapPath: string[];
   subaccount: Subaccount | null;
   isNativePayment: boolean;
 }) {
@@ -399,7 +401,7 @@ function createOrderParams({
       initialCollateralToken: initialCollateralTokenAddress,
       callbackContract: ZeroAddress,
       market: p.marketAddress,
-      swapPath: p.swapPath,
+      swapPath,
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
@@ -418,5 +420,20 @@ function createOrderParams({
     shouldUnwrapNativeToken: isNativePayment,
     autoCancel: false,
     referralCode: p.referralCode || ethers.ZeroHash,
+  };
+}
+
+function getCollateralAndSwapAddresses(chainId: number, p: IncreaseOrderParams) {
+  let swapPath = p.swapPath;
+  let initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+
+  if (p.externalSwapQuote?.txnData) {
+    swapPath = [];
+    initialCollateralTokenAddress = p.targetCollateralAddress;
+  }
+
+  return {
+    swapPath,
+    initialCollateralTokenAddress,
   };
 }

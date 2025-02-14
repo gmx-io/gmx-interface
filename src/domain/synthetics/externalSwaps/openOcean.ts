@@ -3,7 +3,7 @@ import { DISABLED_OPEN_OCEAN_DEXES, getOpenOceanUrl, OPEN_OCEAN_REFERRER } from 
 import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { getToken } from "sdk/configs/tokens";
 
 type OpenOceanTxnResponse = {
   code: number;
@@ -61,8 +61,8 @@ export async function getOpenOceanTxnData({
   const gweiGasPrice = formatTokenAmount(gasPrice, 18 - 9, undefined, { displayDecimals: 8 });
 
   const url = buildUrl(getOpenOceanUrl(chainId), "/swap_quote", {
-    inTokenAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-    outTokenAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
+    inTokenAddress: tokenInAddress,
+    outTokenAddress: tokenOutAddress,
     amount: formatTokenAmount(amountIn, tokenIn.decimals, undefined, { displayDecimals: 8 }),
     gasPrice: gweiGasPrice,
     slippage: (slippage / 100).toString(),

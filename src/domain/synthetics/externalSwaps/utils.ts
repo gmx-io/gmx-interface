@@ -3,7 +3,7 @@ import Token from "sdk/abis/Token.json";
 
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
-import { getNativeToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
 import { TokenData } from "sdk/types/tokens";
@@ -26,18 +26,20 @@ export function getExternalCallsParams(chainId: number, account: string, quote: 
     return [];
   }
 
+  const inTokenAddress = convertTokenAddress(chainId, quote.inTokenAddress, "wrapped");
+
   const addresses: string[] = [];
   const callData: string[] = [];
 
   if (quote.needSpenderApproval) {
-    addresses.push(quote.inTokenAddress);
+    addresses.push(inTokenAddress);
     callData.push(tokenContract.interface.encodeFunctionData("approve", [quote.txnData.to, ethers.MaxUint256]));
   }
 
   addresses.push(quote.txnData.to);
   callData.push(quote.txnData.data);
 
-  const refundTokens = [getNativeToken(chainId).wrappedAddress, quote.inTokenAddress];
+  const refundTokens = [getNativeToken(chainId).wrappedAddress, inTokenAddress];
   const refundReceivers = [account, account];
 
   return [addresses, callData, refundTokens, refundReceivers];

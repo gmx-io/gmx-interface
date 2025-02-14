@@ -6,6 +6,7 @@ import { ExternalSwapAggregator, ExternalSwapOutput } from "sdk/types/trade";
 import useSWR from "swr";
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getOpenOceanTxnData } from "./openOcean";
+import { convertTokenAddress } from "sdk/configs/tokens";
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -58,8 +59,8 @@ export function useExternalSwapOutputRequest({
           chainId,
           senderAddress: getContract(chainId, "ExternalHandler"),
           receiverAddress: getContract(chainId, "OrderVault"),
-          tokenInAddress,
-          tokenOutAddress,
+          tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
+          tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
           amountIn,
           gasPrice,
           slippage,
@@ -94,15 +95,19 @@ export function useExternalSwapOutputRequest({
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: data?.txnData?.to,
-    tokenAddresses: tokenInAddress ? [tokenInAddress] : [],
+    tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
   return useMemo(() => {
-    if (!data || amountIn === undefined) {
+    if (!tokenInAddress || !data || amountIn === undefined) {
       return {};
     }
 
-    const needSpenderApproval = getNeedTokenApprove(tokensAllowanceData, tokenInAddress, amountIn);
+    const needSpenderApproval = getNeedTokenApprove(
+      tokensAllowanceData,
+      convertTokenAddress(chainId, tokenInAddress, "wrapped"),
+      amountIn
+    );
 
     const externalSwapOutput: ExternalSwapOutput = {
       ...data,
@@ -112,5 +117,5 @@ export function useExternalSwapOutputRequest({
     return {
       externalSwapOutput,
     };
-  }, [data, amountIn, tokensAllowanceData, tokenInAddress]);
+  }, [tokenInAddress, data, amountIn, tokensAllowanceData, chainId]);
 }
