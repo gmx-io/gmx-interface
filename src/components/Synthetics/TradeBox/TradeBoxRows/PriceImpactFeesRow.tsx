@@ -34,6 +34,7 @@ export function PriceImpactFeesRow() {
       : formatPercentage(priceImpactPercentage, {
           bps: false,
           signed: true,
+          displayDecimals: 3,
         });
 
   const rebateIsApplicable =

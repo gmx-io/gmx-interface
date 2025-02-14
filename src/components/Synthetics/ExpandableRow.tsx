@@ -1,11 +1,17 @@
 import cx from "classnames";
 import { useMedia } from "react-use";
+import { motion, AnimatePresence } from "framer-motion";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { usePrevious } from "lib/usePrevious";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
+
+const EXPAND_ANIMATION_INITIAL = { height: 0, opacity: 0 };
+const EXPAND_ANIMATION_ANIMATE = { height: "auto", opacity: 1 };
+const EXPAND_ANIMATION_EXIT = { height: 0, opacity: 0 };
+const EXPAND_ANIMATION_TRANSITION = { duration: 0.2, ease: "easeInOut" };
 
 interface Props {
   title: ReactNode;
@@ -92,14 +98,20 @@ export function ExpandableRow({
         }
       />
 
-      <div
-        ref={contentRef}
-        className={cx(contentClassName, {
-          hidden: !open,
-        })}
-      >
-        {children}
-      </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            ref={contentRef}
+            className={contentClassName}
+            initial={EXPAND_ANIMATION_INITIAL}
+            animate={EXPAND_ANIMATION_ANIMATE}
+            exit={EXPAND_ANIMATION_EXIT}
+            transition={EXPAND_ANIMATION_TRANSITION}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

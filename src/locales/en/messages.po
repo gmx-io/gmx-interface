@@ -3941,7 +3941,6 @@ msgstr "EIP-4844 Competition"
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -7131,6 +7130,7 @@ msgstr "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>
 msgid "DeFi"
 msgstr "DeFi"
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Liquidation Price"
 msgstr "Liquidation Price"

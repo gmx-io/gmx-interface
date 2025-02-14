@@ -649,8 +649,8 @@ export function PositionSeller(p: Props) {
 
               <div className="h-1 bg-stroke-primary" />
               {receiveTokenRow}
-              {liqPriceRow}
               {isTrigger && <SyntheticsInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />}
+              {liqPriceRow}
 
               <PositionSellerAdvancedRows triggerPriceInputValue={triggerPriceInputValue} />
             </div>
