@@ -125,7 +125,7 @@ export const RPC_PROVIDERS = {
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
-    "https://arbitrum-one.public.blastapi.io",
+    // "https://arbitrum-one.public.blastapi.io",
     // "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
@@ -143,7 +143,13 @@ export const RPC_PROVIDERS = {
 };
 
 export const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS
+    ? JSON.parse(ENV_ARBITRUM_RPC_URLS)
+    : [
+        "https://arb1.arbitrum.io/rpc",
+        "https://arbitrum-one-rpc.publicnode.com",
+        // getAlchemyArbitrumHttpUrl()
+      ],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",

@@ -53,6 +53,7 @@ import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSel
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
+import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tab from "components/Tab/Tab";
@@ -244,6 +245,7 @@ export function SyntheticsPage(p: Props) {
       })}
     >
       <div className="-mt-15 grid grid-cols-[1fr_auto] gap-15 px-10 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
+        {isMobile && <TradeBoxOneClickTrading />}
         <div className="Exchange-left">
           <Chart />
           {!isMobile && (
@@ -310,18 +312,23 @@ export function SyntheticsPage(p: Props) {
           )}
         </div>
 
-        <div
-          className={cx("min-[1101px]:max-[1500px]:w-[38.75rem] min-[1501px]:w-[41.85rem]", {
-            absolute: isMobile && !isSwap,
-          })}
-        >
-          <TradeBoxResponsiveContainer />
-          {isSwap && (
-            <div className="w-full min-[1101px]:mt-10">
-              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+        {isMobile ? (
+          <>
+            <div className="absolute">
+              <TradeBoxResponsiveContainer />
             </div>
-          )}
-        </div>
+            {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+          </>
+        ) : (
+          <div className="w-[38.75rem] min-[1501px]:w-[41.85rem]">
+            <TradeBoxResponsiveContainer />
+
+            <div className="mt-12 flex flex-col gap-12">
+              {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
+              <TradeBoxOneClickTrading />
+            </div>
+          </div>
+        )}
 
         {isMobile && (
           <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">
@@ -364,7 +371,7 @@ export function SyntheticsPage(p: Props) {
         )}
       </div>
       <PositionSeller setPendingTxns={setPendingTxns} />
-      <PositionEditor allowedSlippage={savedAllowedSlippage} setPendingTxns={setPendingTxns} />
+      <PositionEditor />
       <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
       <Footer isMobileTradePage={isMobile} />

@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { getMarkPrice, getShouldUseMaxPrice, getTriggerThresholdType } from "../prices";
 import { OrderType } from "types/orders";
 import { TokenPrices } from "types/tokens";

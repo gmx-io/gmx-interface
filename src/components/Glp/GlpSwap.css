@@ -217,11 +217,11 @@
 
 .AppOrder-ball {
   position: absolute;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 36px;
+  height: 36px;
   left: 50%;
-  margin-left: -1.7825rem;
-  top: -2.5rem;
+  transform: translateX(-50%);
+  top: -20px;
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;

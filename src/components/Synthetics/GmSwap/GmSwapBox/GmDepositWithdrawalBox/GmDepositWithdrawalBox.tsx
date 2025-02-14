@@ -3,7 +3,6 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -28,12 +27,12 @@ import {
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { Token, getMinResidualAmount } from "domain/tokens";
+import { Token } from "domain/tokens";
+import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 
 import { useChainId } from "lib/chains";
-import { formatAmountFree, formatBalanceAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -69,7 +68,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     selectedMarketForGlv,
     onSelectedMarketForGlv,
   } = p;
-  const isMetamaskMobile = useIsMetamaskMobile();
   const { shouldDisableValidationForTesting } = useSettings();
   const { chainId } = useChainId();
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
@@ -138,7 +136,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   }, [marketAddress, glvAndMarketsInfoData, marketsInfoData, selectedMarketForGlv]);
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const isWithdrawal = operation === Operation.Withdrawal;
   const isSingle = mode === Mode.Single;
@@ -404,39 +401,32 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     marketsInfoData,
   });
 
-  const firstTokenShowMaxButton =
-    (isDeposit &&
-      firstToken?.balance &&
-      (firstTokenAmount === undefined || firstTokenAmount !== firstToken.balance) &&
-      (firstToken?.isNative
-        ? minResidualAmount !== undefined && firstToken?.balance !== undefined && firstToken.balance > minResidualAmount
-        : true)) ||
-    false;
+  const firstTokenMaxDetails = useMaxAvailableAmount({
+    fromToken: firstToken,
+    fromTokenAmount: firstTokenAmount ?? 0n,
+    fromTokenInputValue: firstTokenInputValue,
+    nativeToken: nativeToken,
+  });
 
-  const secondTokenShowMaxButton =
-    (isDeposit &&
-      secondToken?.balance &&
-      (secondTokenAmount === undefined || secondTokenAmount !== secondToken.balance) &&
-      (secondToken?.isNative
-        ? minResidualAmount !== undefined &&
-          secondToken?.balance !== undefined &&
-          secondToken.balance > minResidualAmount
-        : true)) ||
-    false;
+  const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
 
-  const marketTokenInputShowMaxButton = useMemo(() => {
-    if (!isWithdrawal) {
-      return false;
-    }
+  const secondTokenMaxDetails = useMaxAvailableAmount({
+    fromToken: secondToken,
+    fromTokenAmount: secondTokenAmount ?? 0n,
+    fromTokenInputValue: secondTokenInputValue,
+    nativeToken: nativeToken,
+  });
 
-    if (glvInfo) {
-      return Boolean(glvToken?.balance && (glvTokenAmount === undefined || glvTokenAmount !== glvToken.balance));
-    }
+  const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;
 
-    return Boolean(
-      marketToken?.balance && (marketTokenAmount === undefined || marketTokenAmount !== marketToken.balance)
-    );
-  }, [isWithdrawal, glvInfo, glvToken, glvTokenAmount, marketToken, marketTokenAmount]);
+  const marketTokenMaxDetails = useMaxAvailableAmount({
+    fromToken: glvInfo ? glvToken : marketToken,
+    fromTokenAmount: glvInfo ? glvTokenAmount : marketTokenAmount,
+    fromTokenInputValue: marketOrGlvTokenInputValue,
+    nativeToken: nativeToken,
+  });
+
+  const marketTokenInputShowMaxButton = isWithdrawal && marketTokenMaxDetails.showClickMax;
 
   const receiveTokenFormatted = useMemo(() => {
     const usedMarketToken = glvInfo ? glvToken : marketToken;
@@ -516,66 +506,29 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
 
   const onMaxClickFirstToken = useCallback(() => {
-    if (firstToken?.balance) {
-      let maxAvailableAmount = firstToken.isNative
-        ? firstToken.balance - (minResidualAmount ?? 0n)
-        : firstToken.balance;
-
-      if (maxAvailableAmount < 0) {
-        maxAvailableAmount = 0n;
-      }
-
-      const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
-      const finalAmount = isMetamaskMobile
-        ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
-        : formattedMaxAvailableAmount;
-
-      setFirstTokenInputValue(finalAmount);
+    if (firstTokenMaxDetails.formattedMaxAvailableAmount && firstToken?.address) {
+      setFirstTokenInputValue(firstTokenMaxDetails.formattedMaxAvailableAmount);
       onFocusedCollateralInputChange(firstToken.address);
     }
   }, [
     firstToken?.address,
-    firstToken?.balance,
-    firstToken?.decimals,
-    firstToken?.isNative,
-    isMetamaskMobile,
-    minResidualAmount,
+    firstTokenMaxDetails.formattedMaxAvailableAmount,
     onFocusedCollateralInputChange,
     setFirstTokenInputValue,
   ]);
 
   const onMaxClickSecondToken = useCallback(() => {
-    if (!isDeposit) {
+    if (!isDeposit || !secondTokenMaxDetails.formattedMaxAvailableAmount || !secondToken?.address) {
       return;
     }
 
-    if (secondToken?.balance === undefined) {
-      return;
-    }
-
-    let maxAvailableAmount = secondToken.isNative
-      ? secondToken.balance - (minResidualAmount ?? 0n)
-      : secondToken.balance;
-
-    if (maxAvailableAmount < 0) {
-      maxAvailableAmount = 0n;
-    }
-
-    const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
-    const finalAmount = isMetamaskMobile
-      ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
-      : formattedMaxAvailableAmount;
-    setSecondTokenInputValue(finalAmount);
+    setSecondTokenInputValue(secondTokenMaxDetails.formattedMaxAvailableAmount);
     onFocusedCollateralInputChange(secondToken.address);
   }, [
     isDeposit,
-    isMetamaskMobile,
-    minResidualAmount,
     onFocusedCollateralInputChange,
     secondToken?.address,
-    secondToken?.balance,
-    secondToken?.decimals,
-    secondToken?.isNative,
+    secondTokenMaxDetails.formattedMaxAvailableAmount,
     setSecondTokenInputValue,
   ]);
 
@@ -590,32 +543,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
 
   const marketTokenInputClickMax = useCallback(() => {
-    let formattedTokenAmount;
-
-    if (glvInfo && glvToken?.balance) {
-      formattedTokenAmount = formatAmountFree(glvToken.balance, glvToken.decimals);
-    } else if (marketToken?.balance) {
-      formattedTokenAmount = formatAmountFree(marketToken.balance, marketToken.decimals);
-    }
-
-    if (!formattedTokenAmount) {
+    if (!marketTokenMaxDetails.formattedMaxAvailableAmount) {
       return;
     }
 
-    const finalAmount = isMetamaskMobile
-      ? limitDecimals(formattedTokenAmount, MAX_METAMASK_MOBILE_DECIMALS)
-      : formattedTokenAmount;
-    setMarketOrGlvTokenInputValue(finalAmount);
+    setMarketOrGlvTokenInputValue(marketTokenMaxDetails.formattedMaxAvailableAmount);
     setFocusedInput("market");
-  }, [
-    isMetamaskMobile,
-    marketToken?.balance,
-    marketToken?.decimals,
-    setFocusedInput,
-    setMarketOrGlvTokenInputValue,
-    glvInfo,
-    glvToken,
-  ]);
+  }, [setMarketOrGlvTokenInputValue, marketTokenMaxDetails.formattedMaxAvailableAmount, setFocusedInput]);
 
   const marketTokenInputClickTopRightLabel = useCallback(() => {
     if (!isWithdrawal) {
@@ -794,22 +728,20 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   return (
     <>
       <form>
-        <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
+        <div className={cx("mb-12 flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-            topLeftValue={formatUsd(firstTokenUsd)}
-            topRightLabel={t`Balance`}
-            topRightValue={
+            bottomLeftValue={formatUsd(firstTokenUsd)}
+            bottomRightLabel={t`Balance`}
+            bottomRightValue={
               firstToken && firstToken.balance !== undefined
                 ? formatBalanceAmount(firstToken.balance, firstToken.decimals)
                 : undefined
             }
-            preventFocusOnLabelClick="right"
             onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
-            showMaxButton={firstTokenShowMaxButton}
             inputValue={firstTokenInputValue}
             onInputValueChange={handleFirstTokenInputValueChange}
-            onClickMax={onMaxClickFirstToken}
+            onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
           >
             {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
               <TokenSelector
@@ -834,19 +766,17 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           {isPair && secondTokenAddress && (
             <BuyInputSection
               topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-              topLeftValue={formatUsd(secondTokenUsd)}
-              topRightLabel={t`Balance`}
-              topRightValue={
+              bottomLeftValue={formatUsd(secondTokenUsd)}
+              bottomRightLabel={t`Balance`}
+              bottomRightValue={
                 secondToken && secondToken.balance !== undefined
                   ? formatBalanceAmount(secondToken.balance, secondToken.decimals)
                   : undefined
               }
-              preventFocusOnLabelClick="right"
               inputValue={secondTokenInputValue}
-              showMaxButton={secondTokenShowMaxButton}
               onInputValueChange={secondTokenInputValueChange}
               onClickTopRightLabel={onMaxClickSecondToken}
-              onClickMax={onMaxClickSecondToken}
+              onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
             >
               <div className="selected-token">
                 <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
@@ -854,36 +784,36 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             </BuyInputSection>
           )}
 
-          <Swap />
+          <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
+            <Swap />
 
-          <BuyInputSection
-            topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-            topLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
-            topRightLabel={t`Balance`}
-            topRightValue={receiveTokenFormatted}
-            preventFocusOnLabelClick="right"
-            showMaxButton={marketTokenInputShowMaxButton}
-            inputValue={marketOrGlvTokenInputValue}
-            onInputValueChange={marketOrGlvTokenInputValueChange}
-            onClickTopRightLabel={marketTokenInputClickTopRightLabel}
-            onClickMax={marketTokenInputClickMax}
-          >
-            <PoolSelector
-              chainId={chainId}
-              size="l"
-              label={t`Pool`}
-              selectedIndexName={indexName}
-              selectedMarketAddress={marketAddress}
-              markets={sortedMarketsInfoByIndexToken}
-              marketTokensData={marketTokensData}
-              isSideMenu
-              showAllPools
-              showBalances
-              showIndexIcon
-              onSelectMarket={marketTokenSelectMarket}
-              favoriteKey="gm-token-receive-pay-selector"
-            />
-          </BuyInputSection>
+            <BuyInputSection
+              topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
+              bottomLeftValue={receiveTokenUsd ? formatUsd(receiveTokenUsd) : ""}
+              bottomRightLabel={t`Balance`}
+              bottomRightValue={receiveTokenFormatted}
+              inputValue={marketOrGlvTokenInputValue}
+              onInputValueChange={marketOrGlvTokenInputValueChange}
+              onClickTopRightLabel={marketTokenInputClickTopRightLabel}
+              onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
+            >
+              <PoolSelector
+                chainId={chainId}
+                size="l"
+                label={t`Pool`}
+                selectedIndexName={indexName}
+                selectedMarketAddress={marketAddress}
+                markets={sortedMarketsInfoByIndexToken}
+                marketTokensData={marketTokensData}
+                isSideMenu
+                showAllPools
+                showBalances
+                showIndexIcon
+                onSelectMarket={marketTokenSelectMarket}
+                favoriteKey="gm-token-receive-pay-selector"
+              />
+            </BuyInputSection>
+          </div>
         </div>
 
         <InfoRows

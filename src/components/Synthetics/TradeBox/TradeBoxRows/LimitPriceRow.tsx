@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import {
   selectTradeboxFromToken,
@@ -49,5 +49,5 @@ export function LimitPriceRow() {
     return null;
   }
 
-  return <ExchangeInfoRow label={t`Limit Price`} value={value} />;
+  return <SyntheticsInfoRow label={t`Limit Price`} value={value} />;
 }

@@ -16,8 +16,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
 import { useCollateralInTooltipContent } from "../hooks/useCollateralInTooltipContent";
@@ -41,13 +41,12 @@ export function CollateralSelectorRow(p: Props) {
 
   return (
     <>
-      <ExchangeInfoRow
+      <SyntheticsInfoRow
         label={
-          <TooltipWithPortal position="top-start" content={collateralInTooltipContent}>
+          <TooltipWithPortal position="left-start" content={collateralInTooltipContent}>
             <Trans>Collateral In</Trans>
           </TooltipWithPortal>
         }
-        className="SwapBox-info-row"
         value={
           <CollateralSelector
             onSelect={onSelectCollateralAddress}
@@ -96,7 +95,7 @@ function useCollateralWarnings() {
     if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
         messages.push(
-          <AlertInfo key="showHasExistingPositionWithDifferentCollateral_1" type="info" compact>
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1">
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
               apply for that position.{" "}
@@ -110,11 +109,11 @@ function useCollateralWarnings() {
               </span>
               .
             </Trans>
-          </AlertInfo>
+          </AlertInfoCard>
         );
       } else {
         messages.push(
-          <AlertInfo key="showHasExistingPositionWithDifferentCollateral_2" type="info" compact>
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
               valid for that Position.{" "}
@@ -128,7 +127,7 @@ function useCollateralWarnings() {
               </span>
               .
             </Trans>
-          </AlertInfo>
+          </AlertInfoCard>
         );
       }
     }
@@ -138,7 +137,7 @@ function useCollateralWarnings() {
       const symbol = collateralWithOrder.symbol;
 
       messages.push(
-        <AlertInfo key="showHasExistingOrderWithDifferentCollateral" type="info" compact>
+        <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
           <Trans>
             You have an existing limit order with {symbol} as collateral.{" "}
             <span
@@ -151,7 +150,7 @@ function useCollateralWarnings() {
             </span>
             .
           </Trans>
-        </AlertInfo>
+        </AlertInfoCard>
       );
     }
 
