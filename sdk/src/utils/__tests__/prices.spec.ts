@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getMarkPrice, getShouldUseMaxPrice, getTriggerThresholdType } from "../prices";
+import { getMarkPrice, getOrderThresholdType, getShouldUseMaxPrice } from "../prices";
 import { OrderType } from "types/orders";
 import { TokenPrices } from "types/tokens";
 import { TriggerThresholdType } from "types/trade";
@@ -37,37 +37,47 @@ describe("getShouldUseMaxPrice", () => {
 
 describe("getTriggerThresholdType", () => {
   it("returns Below for LimitIncrease when isLong=true", () => {
-    const result = getTriggerThresholdType(OrderType.LimitIncrease, true);
+    const result = getOrderThresholdType(OrderType.LimitIncrease, true);
     expect(result).toBe(TriggerThresholdType.Below);
   });
 
   it("returns Above for LimitIncrease when isLong=false", () => {
-    const result = getTriggerThresholdType(OrderType.LimitIncrease, false);
+    const result = getOrderThresholdType(OrderType.LimitIncrease, false);
     expect(result).toBe(TriggerThresholdType.Above);
   });
 
   it("returns Above for LimitDecrease when isLong=true", () => {
-    const result = getTriggerThresholdType(OrderType.LimitDecrease, true);
+    const result = getOrderThresholdType(OrderType.LimitDecrease, true);
     expect(result).toBe(TriggerThresholdType.Above);
   });
 
   it("returns Below for LimitDecrease when isLong=false", () => {
-    const result = getTriggerThresholdType(OrderType.LimitDecrease, false);
+    const result = getOrderThresholdType(OrderType.LimitDecrease, false);
     expect(result).toBe(TriggerThresholdType.Below);
   });
 
   it("returns Below for StopLossDecrease when isLong=true", () => {
-    const result = getTriggerThresholdType(OrderType.StopLossDecrease, true);
+    const result = getOrderThresholdType(OrderType.StopLossDecrease, true);
     expect(result).toBe(TriggerThresholdType.Below);
   });
 
   it("returns Above for StopLossDecrease when isLong=false", () => {
-    const result = getTriggerThresholdType(OrderType.StopLossDecrease, false);
+    const result = getOrderThresholdType(OrderType.StopLossDecrease, false);
     expect(result).toBe(TriggerThresholdType.Above);
   });
 
+  it("returns Above for StopMarketIncrease when isLong=true", () => {
+    const result = getOrderThresholdType(OrderType.StopIncrease, true);
+    expect(result).toBe(TriggerThresholdType.Above);
+  });
+
+  it("returns Below for StopMarketIncrease when isLong=false", () => {
+    const result = getOrderThresholdType(OrderType.StopIncrease, false);
+    expect(result).toBe(TriggerThresholdType.Below);
+  });
+
   it("throws error for invalid order type", () => {
-    expect(() => getTriggerThresholdType("SomeInvalidType" as unknown as OrderType, true)).toThrow(
+    expect(() => getOrderThresholdType("SomeInvalidType" as unknown as OrderType, true)).toThrow(
       "Invalid trigger order type"
     );
   });

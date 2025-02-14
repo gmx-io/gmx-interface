@@ -291,13 +291,12 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   }
 });
 
-export const selectTradeboxTradeFlags = createSelectorDeprecated(
-  [selectTradeboxTradeType, selectTradeboxTradeMode],
-  (tradeType, tradeMode) => {
-    const tradeFlags = createTradeFlags(tradeType, tradeMode);
-    return tradeFlags;
-  }
-);
+export const selectTradeboxTradeFlags = createSelector((q) => {
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  return tradeFlags;
+});
 
 export const selectTradeboxLeverage = createSelectorDeprecated([selectTradeboxLeverageOption], (leverageOption) =>
   BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))

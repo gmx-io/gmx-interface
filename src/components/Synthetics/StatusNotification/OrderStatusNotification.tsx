@@ -5,7 +5,6 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
-  isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
@@ -21,7 +20,7 @@ import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
-import { getTriggerNameByOrderType } from "domain/synthetics/positions";
+import { getNameByOrderType } from "domain/synthetics/positions";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import useWallet from "lib/wallets/useWallet";
@@ -143,11 +142,10 @@ export function OrderStatusNotification({
             update: t`Update`,
           }[txnType];
 
-          if (isLimitOrderType(orderType)) {
-            orderTypeText = t`${txnTypeText} limit order for`;
-          } else if (isDecreaseOrderType(orderType)) {
-            orderTypeText = t`${txnTypeText} ${getTriggerNameByOrderType(orderType, true)} order for`;
-          }
+          orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, {
+            abbr: true,
+            lower: true,
+          })} order for`;
         }
 
         const sign = isIncreaseOrderType(orderType) ? "+" : "-";
