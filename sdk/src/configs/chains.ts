@@ -3,8 +3,12 @@ import { arbitrum, avalanche, avalancheFuji, Chain } from "viem/chains";
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
+export const BSС_MAINNET = 56;
+export const BSС_TESTNET = 97;
+export const ETH_MAINNET = 1;
 
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS_DEV = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD
@@ -12,6 +16,9 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [AVALANCHE_FUJI]: 5, // 5 USD
 };
 
+// added to maxPriorityFeePerGas
+// applied to EIP-1559 transactions only
+// is not applied to execution fee calculation
 export const MAX_FEE_PER_GAS_MAP = {
   [AVALANCHE]: 200000000000n, // 200 gwei
 };
@@ -78,8 +85,8 @@ export function getExcessiveExecutionFee(chainId) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
-export function isSupportedChain(chainId: number) {
-  return SUPPORTED_CHAIN_IDS.includes(chainId);
+export function isSupportedChain(chainId: number, dev = false) {
+  return (dev ? SUPPORTED_CHAIN_IDS_DEV : SUPPORTED_CHAIN_IDS).includes(chainId);
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {

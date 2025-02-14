@@ -3,7 +3,7 @@ import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { formatAmountForMetrics, formatPercentageForMetrics, metrics } from "lib/metrics";
-import { prepareErrorMetricData } from "lib/metrics/errorReporting";
+import { parseError } from "lib/parseError";
 import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
@@ -16,6 +16,10 @@ import {
   TradeBoxResultEvent,
 } from "lib/userAnalytics/types";
 import debounce from "lodash/debounce";
+
+export function getTradeInteractionKey(pair: string) {
+  return `trade-${pair}`;
+}
 
 export function sendUserAnalyticsConnectWalletClickEvent(position: ConnectWalletClickEvent["data"]["position"]) {
   userAnalytics.pushEvent<ConnectWalletClickEvent>({
@@ -51,6 +55,8 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
       amountUsd,
     } = p;
 
+    const interactionId = userAnalytics.createInteractionId(getTradeInteractionKey(pair));
+
     userAnalytics.pushEvent<TradeBoxInteractionStartedEvent>(
       {
         event: "TradeBoxAction",
@@ -66,12 +72,13 @@ export const sendTradeBoxInteractionStartedEvent = debounce(
           openInterestPercent: openInterestPercent !== undefined ? Number(openInterestPercent) : 0,
           tradeType,
           tradeMode,
+          interactionId,
         },
       },
       { dedupKey: pair }
     );
   },
-  400
+  500
 );
 
 export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricId: OrderMetricId) {
@@ -96,9 +103,15 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           sizeDeltaUsd: metricData.sizeDeltaUsd,
           leverage: metricData.leverage || "",
           is1CT: metricData.is1ct,
+          slCount: metricData.slCount,
+          tpCount: metricData.tpCount,
           isTPSLCreated: metricData.isTPSLCreated ?? false,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -119,6 +132,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
           isFirstOrder: false,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -137,6 +154,10 @@ export function sendUserAnalyticsOrderConfirmClickEvent(chainId: number, metricI
           is1CT: metricData.is1ct,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
+          interactionId: undefined,
+          priceImpactDeltaUsd: undefined,
+          priceImpactPercentage: undefined,
+          netRate1h: undefined,
         },
       });
       break;
@@ -184,7 +205,7 @@ export function sendUserAnalyticsOrderResultEvent(
     return;
   }
 
-  const isUserError = Boolean(prepareErrorMetricData(error)?.isUserError);
+  const isUserError = Boolean(parseError(error)?.isUserError);
 
   switch (metricData.metricType) {
     case "increasePosition":
@@ -201,10 +222,16 @@ export function sendUserAnalyticsOrderResultEvent(
           leverage: metricData.leverage || "",
           is1CT: metricData.is1ct,
           isTPSLCreated: metricData.isTPSLCreated ?? false,
+          slCount: metricData.slCount,
+          tpCount: metricData.tpCount,
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
           isLeverageEnabled: Boolean(metricData.isLeverageEnabled),
           isUserError,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -226,6 +253,10 @@ export function sendUserAnalyticsOrderResultEvent(
           chain: getChainName(chainId),
           isFirstOrder: false,
           isUserError,
+          interactionId: metricData.interactionId,
+          priceImpactDeltaUsd: metricData.priceImpactDeltaUsd,
+          priceImpactPercentage: metricData.priceImpactPercentage,
+          netRate1h: metricData.netRate1h,
         },
       });
       break;
@@ -245,6 +276,10 @@ export function sendUserAnalyticsOrderResultEvent(
           chain: getChainName(chainId),
           isFirstOrder: metricData.isFirstOrder ?? false,
           isUserError,
+          interactionId: undefined,
+          priceImpactDeltaUsd: undefined,
+          priceImpactPercentage: undefined,
+          netRate1h: undefined,
         },
       });
       break;

@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { convertTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
-import { callContract, GasPriceData } from "lib/contracts";
+import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { OrderMetricId } from "lib/metrics/types";
 import { SwapPricingType } from "../orders";
@@ -13,7 +13,8 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateWithdrawalParams = {
   account: string;
@@ -26,12 +27,12 @@ export type CreateWithdrawalParams = {
   shortTokenSwapPath: string[];
   minShortTokenAmount: bigint;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
-  blockTimestampData: BlockTimestampData | undefined;
-  gasPriceData: GasPriceData | undefined;
   metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
@@ -41,6 +42,8 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
   const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
+
+  await validateSignerAddress(signer, p.account);
 
   const wntAmount = p.executionFee;
 
@@ -95,7 +98,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
       })
     : undefined;
 
-  const txnParams = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -111,9 +114,13 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Cr
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit: txnParams.gasLimit,
-    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingWithdrawal({
       account: p.account,

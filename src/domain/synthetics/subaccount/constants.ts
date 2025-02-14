@@ -1,4 +1,4 @@
-import { hashString } from "lib/hash";
+import { hashString } from "sdk/utils/hash";
 
 export const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");

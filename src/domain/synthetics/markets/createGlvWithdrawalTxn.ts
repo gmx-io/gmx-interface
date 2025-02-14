@@ -10,6 +10,7 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 import { CreateWithdrawalParams } from "./createWithdrawalTxn";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenAmount" | "marketTokenAddress"> {
   glv: string;
@@ -25,6 +26,8 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
   const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
 
   const wntAmount = p.executionFee;
+
+  await validateSignerAddress(signer, p.account);
 
   const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
   const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
@@ -72,7 +75,7 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
       })
     : undefined;
 
-  const txnParams = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -88,9 +91,13 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit: txnParams.gasLimit,
-    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingWithdrawal({
       account: p.account,

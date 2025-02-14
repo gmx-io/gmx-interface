@@ -1,5 +1,5 @@
 import noop from "lodash/noop";
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -16,6 +16,7 @@ import {
   getExecutionFeeBufferBpsKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
+  getLeverageEnabledKey as getLeverageSliderEnabledKey,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
@@ -44,6 +45,8 @@ export type SettingsContextType = {
   setShouldShowPositionLines: (val: boolean) => void;
   isAutoCancelTPSL: boolean;
   setIsAutoCancelTPSL: (val: boolean) => void;
+  isLeverageSliderEnabled: boolean;
+  setIsLeverageSliderEnabled: (val: boolean) => void;
 
   tenderlyAccountSlug: string | undefined;
   setTenderlyAccountSlug: (val: string | undefined) => void;
@@ -53,6 +56,9 @@ export type SettingsContextType = {
   setTenderlyAccessKey: (val: string | undefined) => void;
   tenderlySimulationEnabled: boolean | undefined;
   setTenderlySimulationEnabled: (val: boolean | undefined) => void;
+
+  isSettingsVisible: boolean;
+  setIsSettingsVisible: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -63,6 +69,7 @@ export function useSettings() {
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
     getAllowedSlippageKey(chainId),
@@ -106,6 +113,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedIsAutoCancelTPSL, setIsAutoCancelTPSL] = useLocalStorageSerializeKey(
     [chainId, IS_AUTO_CANCEL_TPSL_KEY],
+    true
+  );
+
+  const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey(
+    getLeverageSliderEnabledKey(chainId),
     true
   );
 
@@ -177,6 +189,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
       isAutoCancelTPSL: savedIsAutoCancelTPSL!,
       setIsAutoCancelTPSL: setIsAutoCancelTPSL,
+      isLeverageSliderEnabled: isLeverageSliderEnabled!,
+      setIsLeverageSliderEnabled: setIsLeverageSliderEnabled,
 
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
@@ -186,6 +200,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       tenderlyAccountSlug,
       tenderlyProjectSlug,
       tenderlySimulationEnabled,
+
+      isSettingsVisible,
+      setIsSettingsVisible,
     };
   }, [
     showDebugValues,
@@ -207,6 +224,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableValidationForTesting,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
+    savedIsAutoCancelTPSL,
+    setIsAutoCancelTPSL,
+    isLeverageSliderEnabled,
+    setIsLeverageSliderEnabled,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,
@@ -215,8 +236,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyAccountSlug,
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
-    savedIsAutoCancelTPSL,
-    setIsAutoCancelTPSL,
+    isSettingsVisible,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

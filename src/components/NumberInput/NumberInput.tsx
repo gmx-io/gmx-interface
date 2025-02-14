@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, RefObject } from "react";
 
 function escapeSpecialRegExpChars(string: string): string {
@@ -12,7 +13,7 @@ type Props = {
   onValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onBlur?: () => void;
-  onKeyDown?: (e: KeyboardEvent) => void;
+  onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
   className?: string;
   placeholder?: string;
   qa?: string;
@@ -48,7 +49,7 @@ function NumberInput({
       type="text"
       inputMode="decimal"
       placeholder={placeholder}
-      className={className}
+      className={cx(className, "text-white placeholder:text-slate-100")}
       value={value}
       ref={inputRef}
       onChange={onChange}

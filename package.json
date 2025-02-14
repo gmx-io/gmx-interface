@@ -14,7 +14,8 @@
     "test:ci": "vitest run",
     "lint": "node node_modules/.bin/eslint src",
     "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
-    "pre-commit": "vitest run && yarn run lint",
+    "pre-commit": "yarn run lint",
+    "pre-push": "vitest run",
     "prepare": "husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
@@ -24,7 +25,7 @@
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
     "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './sdk/src/abis/*.json'",
     "postinstall": "yarn typechain && cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
-    "prebuild": "yarn tsx scripts/prebuild"
+    "prebuild": "cd ./sdk && yarn tsx scripts/prebuild"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",

@@ -8,9 +8,10 @@ import {
   getOpenInterestUsd,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
-import { Token, getIsEquivalentTokens } from "domain/tokens";
+import { Token } from "domain/tokens";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { ethers } from "ethers";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
 import {
   applyFactor,
@@ -26,25 +27,7 @@ import { OrderType } from "../orders/types";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo, PositionInfoLoaded } from "./types";
 
-export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
-  return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
-}
-
-export function parsePositionKey(positionKey: string) {
-  const [account, marketAddress, collateralAddress, isLong] = positionKey.split(":");
-
-  return { account, marketAddress, collateralAddress, isLong: isLong === "true" };
-}
-
-export function getEntryPrice(p: { sizeInUsd: bigint; sizeInTokens: bigint; indexToken: Token }) {
-  const { sizeInUsd, sizeInTokens, indexToken } = p;
-
-  if (sizeInTokens <= 0) {
-    return undefined;
-  }
-
-  return bigMath.mulDiv(sizeInUsd, expandDecimals(1, indexToken.decimals), sizeInTokens);
-}
+export * from "sdk/utils/positions";
 
 export function getPositionValueUsd(p: { indexToken: Token; sizeInTokens: bigint; markPrice: bigint }) {
   const { indexToken, sizeInTokens, markPrice } = p;
@@ -237,10 +220,7 @@ export function formatLiquidationPrice(
   });
 }
 
-export function formatAcceptablePrice(
-  acceptablePrice?: bigint,
-  opts: { displayDecimals?: number; visualMultiplier?: number } = {}
-) {
+export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { visualMultiplier?: number } = {}) {
   if (acceptablePrice !== undefined && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
     return "NA";
   }
@@ -336,8 +316,8 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
 
 export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr = false) {
   const triggerStr = abbr ? t`T` : t`Trigger`;
-  const takeProfitStr = abbr ? t`TP` : t`Take-Profit`;
-  const stopLossStr = abbr ? t`SL` : t`Stop-Loss`;
+  const takeProfitStr = abbr ? t`TP` : t`Take Profit`;
+  const stopLossStr = abbr ? t`SL` : t`Stop Loss`;
 
   if (orderType === OrderType.LimitDecrease) {
     return takeProfitStr;

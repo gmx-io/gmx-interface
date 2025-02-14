@@ -1,36 +1,12 @@
 import { USD_DECIMALS } from "config/factors";
-import { bigintToNumber, numberToBigint, formatUsdPrice, PRECISION, formatAmountHuman } from "./numbers";
 import { describe, expect, it } from "vitest";
-
-describe("numbers.ts", () => {
-  it("bigintToNumber", () => {
-    expect(bigintToNumber(0n, 30)).toEqual(0);
-    expect(bigintToNumber(1n, 30)).toEqual(1e-30);
-    expect(bigintToNumber(PRECISION, 30)).toEqual(1);
-    expect(bigintToNumber(PRECISION * 100n, 30)).toEqual(100);
-    expect(bigintToNumber(PRECISION * 2n, 30)).toEqual(2);
-    expect(bigintToNumber(PRECISION / 2n, 30)).toEqual(0.5);
-
-    expect(bigintToNumber(1123456n, 6)).toEqual(1.123456);
-    expect(bigintToNumber(-1123456n, 6)).toEqual(-1.123456);
-  });
-
-  it("numberToBigint", () => {
-    expect(numberToBigint(0, 30)).toEqual(0n);
-    expect(numberToBigint(1e-30, 30)).toEqual(1n);
-    expect(numberToBigint(-1e-30, 30)).toEqual(-1n);
-    expect(numberToBigint(1, 30)).toEqual(PRECISION);
-    expect(numberToBigint(100, 30)).toEqual(PRECISION * 100n);
-    expect(numberToBigint(2, 30)).toEqual(PRECISION * 2n);
-    expect(numberToBigint(0.5, 30)).toEqual(PRECISION / 2n);
-    expect(numberToBigint(-0.5, 30)).toEqual(-PRECISION / 2n);
-
-    expect(numberToBigint(1.1234567, 6)).toEqual(1123456n);
-    expect(numberToBigint(1.12345678, 6)).toEqual(1123456n);
-    expect(numberToBigint(1.123456789, 6)).toEqual(1123456n);
-    expect(numberToBigint(-1.123456789, 6)).toEqual(-1123456n);
-  });
-});
+import {
+  formatAmountHuman,
+  formatBalanceAmount,
+  formatBalanceAmountWithUsd,
+  formatFactor,
+  formatUsdPrice,
+} from "./numbers";
 
 const ONE_USD = 1000000000000000000000000000000n;
 
@@ -84,5 +60,58 @@ describe("formatAmountHuman", () => {
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 2)).toBe("1.50M");
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1K");
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2M");
+  });
+});
+
+describe("formatBalanceAmount", () => {
+  it("should display balance amount", () =>
+    // prettier-ignore
+    {
+    expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe(         "1,000.0000");
+    expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe(                          "-");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, true)).toBe(         "0.0000");
+    expect(formatBalanceAmount(ONE_USD * 1n, USD_DECIMALS)).toBe(                "1.0000");
+    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS)).toBe(               "0.10000");
+    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS)).toBe(              "0.010000");
+    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS)).toBe(            "0.0010000");
+    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS)).toBe(           "0.00010000");
+    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS)).toBe(          "0.00001000");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS)).toBe(        "0.00000100");
+    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS)).toBe(       "0.00000010");
+    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe(      "0.00000001");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS)).toBe(    "1.00e-9");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000_000_000n, USD_DECIMALS)).toBe("1.00e-12");
+    expect(formatBalanceAmount(ONE_USD * -1n, USD_DECIMALS)).toBe(              "-1.0000");
+
+  });
+
+  it("should display balance amount with symbol", () => {
+    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, "USDC", true)).toBe("0.0000 USDC");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, "USDC", false)).toBe("-");
+  });
+
+  it("should display balance amount with usd", () => {
+    expect(formatBalanceAmountWithUsd(ONE_USD, ONE_USD, USD_DECIMALS)).toBe("1.0000 ($1.00)");
+    expect(formatBalanceAmountWithUsd(ONE_USD, ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC ($1.00)");
+    expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC")).toBe("-");
+    expect(formatBalanceAmountWithUsd(0n, 0n, USD_DECIMALS, "USDC", true)).toBe("0.0000 USDC ($0.00)");
+  });
+});
+
+describe("formatFactor", () => {
+  it("should format factor", () => {
+    expect(formatFactor(0n)).toBe("0");
+    expect(formatFactor(1n)).toBe("0.000000000000000000000000000001");
+    expect(formatFactor(1000n)).toBe("0.000000000000000000000000001");
+    expect(formatFactor(1000000n)).toBe("0.000000000000000000000001");
+    expect(formatFactor(1000000000n)).toBe("0.000000000000000000001");
+    expect(formatFactor(1000000000000n)).toBe("0.000000000000000001");
+    expect(formatFactor(1000000000000000n)).toBe("0.000000000000001");
+    expect(formatFactor(1000000000000000000n)).toBe("0.000000000001");
+    expect(formatFactor(1000000000000000000000n)).toBe("0.000000001");
+    expect(formatFactor(1000000000000000000000000n)).toBe("0.000001");
+    expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
+    expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
   });
 });

@@ -45,27 +45,26 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
 
   removeChart(id: string) {
     if (!this.charts) return Promise.reject();
-    for (let i = 0; i < this.charts.length; ++i) {
-      if (this.charts[i].id === id) {
-        this.charts.splice(i, 1);
-        this.setTvCharts(this.charts);
-        return Promise.resolve();
-      }
-    }
 
-    return Promise.reject();
+    this.charts = this.charts.filter((chart) => chart.id !== id);
+    this.setTvCharts(this.charts);
+
+    return Promise.resolve();
   }
 
   saveChart(chartData) {
-    if (!chartData.id || !chartData.appVersion) {
-      chartData.id = Math.random().toString();
+    if (!chartData.id) {
+      chartData.id = `gmx-chart-v${this.currentAppVersion}`;
+    }
+
+    if (!chartData.appVersion) {
       chartData.appVersion = this.currentAppVersion;
-    } else {
-      this.removeChart(chartData.id);
     }
 
     if (this.charts) {
+      this.charts = this.charts.filter((chart) => chart.id !== chartData.id);
       this.charts.push(chartData);
+
       this.setTvCharts(this.charts);
     }
 

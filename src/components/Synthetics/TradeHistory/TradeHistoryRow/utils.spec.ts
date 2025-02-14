@@ -101,7 +101,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
         "acceptablePrice": ">  $29,700.00",
-        "action": "Create Take-Profit",
+        "action": "Create Take Profit",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
@@ -285,100 +285,100 @@ describe("TradeHistoryRow helpers", () => {
 `);
 
     expect(formatPositionMessage(liquidated, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "action": "Liquidated",
-  "executionPrice": "$6.1062",
-  "fullMarket": "LINK/USD [LINK-USDC]",
-  "indexName": "LINK/USD",
-  "indexTokenSymbol": "LINK",
-  "isActionError": true,
-  "isLong": false,
-  "market": "Short LINK/USD",
-  "marketPrice": "$6.0906",
-  "pnl": "-$126.31",
-  "pnlState": "error",
-  "poolName": "LINK-USDC",
-  "price": "$6.0906",
-  "priceComment": [
-    "Mark price for the liquidation.",
-    "",
-    "This position was liquidated as the max. leverage of 100.0x was exceeded when taking into account fees.",
-    "",
-    {
-      "key": "Order Execution Price",
-      "value": "$6.1062",
-    },
-    "",
-    "Order execution price takes into account price impact.",
-    "",
-    {
-      "key": "Initial Collateral",
-      "value": "214.779 USDC ($214.77)",
-    },
-    {
-      "key": "PnL",
-      "value": {
-        "state": "error",
-        "text": "-$126.31",
-      },
-    },
-    {
-      "key": "Borrow Fee",
-      "value": {
-        "state": "error",
-        "text": "$0.00",
-      },
-    },
-    {
-      "key": "Funding Fee",
-      "value": {
-        "state": "error",
-        "text": "$0.00",
-      },
-    },
-    {
-      "key": "Close Fee",
-      "value": {
-        "state": "error",
-        "text": "-$4.50",
-      },
-    },
-    "",
-    {
-      "key": "Collateral at Liquidation",
-      "value": "$83.95",
-    },
-    {
-      "key": "Min. Required Collateral",
-      "value": "$64.41",
-    },
-    "",
-    {
-      "key": "Price Impact",
-      "value": {
-        "state": "error",
-        "text": "-$16.82",
-      },
-    },
-    {
-      "key": "Liquidation Fee",
-      "value": {
-        "state": "error",
-        "text": "-$1.04",
-      },
-    },
-    "",
-    {
-      "key": "Returned Collateral",
-      "value": "$66.08",
-    },
-  ],
-  "priceImpact": "-$16.82",
-  "size": "-$6,441.90",
-  "timestamp": "04 Sep 2023, 06:38",
-  "timestampISO": "2023-09-04T06:38:49+04:00",
-}
-`);
+      {
+        "action": "Liquidated",
+        "executionPrice": "$6.1062",
+        "fullMarket": "LINK/USD [LINK-USDC]",
+        "indexName": "LINK/USD",
+        "indexTokenSymbol": "LINK",
+        "isActionError": true,
+        "isLong": false,
+        "market": "Short LINK/USD",
+        "marketPrice": "$6.0906",
+        "pnl": "-$126.31",
+        "pnlState": "error",
+        "poolName": "LINK-USDC",
+        "price": "$6.0906",
+        "priceComment": [
+          "Mark price for the liquidation.",
+          "",
+          "This position was liquidated as the max. leverage of 100.0x was exceeded when taking into account fees.",
+          "",
+          {
+            "key": "Order Execution Price",
+            "value": "$6.1062",
+          },
+          "",
+          "Order execution price takes into account price impact.",
+          "",
+          {
+            "key": "Initial Collateral",
+            "value": "214.779 USDC ($214.77)",
+          },
+          {
+            "key": "PnL",
+            "value": {
+              "state": "error",
+              "text": "-$126.31",
+            },
+          },
+          {
+            "key": "Borrow Fee",
+            "value": {
+              "state": "error",
+              "text": "$0.00",
+            },
+          },
+          {
+            "key": "Funding Fee",
+            "value": {
+              "state": "error",
+              "text": "$0.00",
+            },
+          },
+          {
+            "key": "Close Fee",
+            "value": {
+              "state": "error",
+              "text": "-$4.50",
+            },
+          },
+          "",
+          {
+            "key": "Min. Required Collateral",
+            "value": "$64.41",
+          },
+          {
+            "key": "Collateral at Liquidation",
+            "value": "$83.95",
+          },
+          "",
+          {
+            "key": "Price Impact",
+            "value": {
+              "state": "error",
+              "text": "-$16.82",
+            },
+          },
+          {
+            "key": "Liquidation Fee",
+            "value": {
+              "state": "error",
+              "text": "-$1.04",
+            },
+          },
+          "",
+          {
+            "key": "Returned Collateral",
+            "value": "$66.08",
+          },
+        ],
+        "priceImpact": "-$16.82",
+        "size": "-$6,441.90",
+        "timestamp": "04 Sep 2023, 06:38",
+        "timestampISO": "2023-09-04T06:38:49+04:00",
+      }
+    `);
 
     expect(formatPositionMessage(increaseLongETH, minCollateralUsd)).toMatchInlineSnapshot(`
 {
@@ -425,111 +425,111 @@ describe("TradeHistoryRow helpers", () => {
   it("formatSwapMessage", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": ">  3,327.54 USDC / WETH",
-  "action": "Request Market Swap",
-  "executionPrice": "...",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "market": "...",
-  "price": ">  3,327.54 USDC / WETH",
-  "priceComment": [
-    "Acceptable price for the order.",
-  ],
-  "size": "0.0119 WETH to 39.8800 USDC",
-  "swapFromTokenAmount": "0.0119",
-  "swapFromTokenSymbol": "WETH",
-  "swapToTokenAmount": "39.8800",
-  "swapToTokenSymbol": "USDC",
-  "timestamp": "02 Oct 2023, 18:35",
-  "timestampISO": "2023-10-02T18:35:16+04:00",
-}
-`);
+      {
+        "acceptablePrice": ">  3,327.54 USDC / WETH",
+        "action": "Request Market Swap",
+        "executionPrice": "...",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "market": "...",
+        "price": ">  3,327.54 USDC / WETH",
+        "priceComment": [
+          "Acceptable price for the order.",
+        ],
+        "size": "0.011984 WETH to 39.8800 USDC",
+        "swapFromTokenAmount": "0.011984",
+        "swapFromTokenSymbol": "WETH",
+        "swapToTokenAmount": "39.8800",
+        "swapToTokenSymbol": "USDC",
+        "timestamp": "02 Oct 2023, 18:35",
+        "timestampISO": "2023-10-02T18:35:16+04:00",
+      }
+    `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  968.043 USDC / ETH",
-  "action": "Execute Market Swap",
-  "executionPrice": "965.184 USDC / ETH",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "market": "...",
-  "price": "965.184 USDC / ETH",
-  "priceComment": [
-    "Execution price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  968.043 USDC / ETH",
-    },
-  ],
-  "size": "1,080.6325 USDC to 1.1196 ETH",
-  "swapFromTokenAmount": "1,080.6325",
-  "swapFromTokenSymbol": "USDC",
-  "swapToTokenAmount": "1.1196",
-  "swapToTokenSymbol": "ETH",
-  "timestamp": "02 Oct 2023, 06:08",
-  "timestampISO": "2023-10-02T06:08:40+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  968.043 USDC / ETH",
+        "action": "Execute Market Swap",
+        "executionPrice": "965.184 USDC / ETH",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "market": "...",
+        "price": "965.184 USDC / ETH",
+        "priceComment": [
+          "Execution price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  968.043 USDC / ETH",
+          },
+        ],
+        "size": "1,080.6325 USDC to 1.1196 ETH",
+        "swapFromTokenAmount": "1,080.6325",
+        "swapFromTokenSymbol": "USDC",
+        "swapToTokenAmount": "1.1196",
+        "swapToTokenSymbol": "ETH",
+        "timestamp": "02 Oct 2023, 06:08",
+        "timestampISO": "2023-10-02T06:08:40+04:00",
+      }
+    `);
     // LIMIT SWAPS
     expect(formatSwapMessage(executeOrderSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  2.2613 WETH / BTC",
-  "action": "Execute Limit Swap",
-  "executionPrice": "0.81109 WETH / BTC",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "market": "...",
-  "price": "0.81109 WETH / BTC",
-  "priceComment": [
-    "Execution price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  2.2613 WETH / BTC",
-    },
-  ],
-  "size": "0.3000 WETH to 0.3698 BTC",
-  "swapFromTokenAmount": "0.3000",
-  "swapFromTokenSymbol": "WETH",
-  "swapToTokenAmount": "0.3698",
-  "swapToTokenSymbol": "BTC",
-  "timestamp": "29 Sep 2023, 10:46",
-  "timestampISO": "2023-09-29T10:46:39+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  2.2613 WETH / BTC",
+        "action": "Execute Limit Swap",
+        "executionPrice": "0.81109 WETH / BTC",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "market": "...",
+        "price": "0.81109 WETH / BTC",
+        "priceComment": [
+          "Execution price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  2.2613 WETH / BTC",
+          },
+        ],
+        "size": "0.30000 WETH to 0.36987 BTC",
+        "swapFromTokenAmount": "0.30000",
+        "swapFromTokenSymbol": "WETH",
+        "swapToTokenAmount": "0.36987",
+        "swapToTokenSymbol": "BTC",
+        "timestamp": "29 Sep 2023, 10:46",
+        "timestampISO": "2023-09-29T10:46:39+04:00",
+      }
+    `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  2,054.58 USDC / ETH",
-  "action": "Failed Limit Swap",
-  "actionComment": [
-    {
-      "state": "error",
-      "text": "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.",
-    },
-  ],
-  "executionPrice": "...",
-  "fullMarket": "...",
-  "fullMarketNames": undefined,
-  "isActionError": true,
-  "market": "...",
-  "price": "2,056.13 USDC / ETH",
-  "priceComment": [
-    "Execution price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  2,054.58 USDC / ETH",
-    },
-  ],
-  "size": "1.0000 USDC to 0.0004 ETH",
-  "swapFromTokenAmount": "1.0000",
-  "swapFromTokenSymbol": "USDC",
-  "swapToTokenAmount": "0.0004",
-  "swapToTokenSymbol": "ETH",
-  "timestamp": "14 Feb 2024, 13:33",
-  "timestampISO": "2024-02-14T13:33:19+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  2,054.58 USDC / ETH",
+        "action": "Failed Limit Swap",
+        "actionComment": [
+          {
+            "state": "error",
+            "text": "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.",
+          },
+        ],
+        "executionPrice": "...",
+        "fullMarket": "...",
+        "fullMarketNames": undefined,
+        "isActionError": true,
+        "market": "...",
+        "price": "2,056.13 USDC / ETH",
+        "priceComment": [
+          "Execution price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  2,054.58 USDC / ETH",
+          },
+        ],
+        "size": "1.0000 USDC to 0.00048634 ETH",
+        "swapFromTokenAmount": "1.0000",
+        "swapFromTokenSymbol": "USDC",
+        "swapToTokenAmount": "0.00048634",
+        "swapToTokenSymbol": "ETH",
+        "timestamp": "14 Feb 2024, 13:33",
+        "timestampISO": "2024-02-14T13:33:19+04:00",
+      }
+    `);
   });
 });

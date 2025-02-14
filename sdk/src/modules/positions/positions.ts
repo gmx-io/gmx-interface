@@ -15,7 +15,12 @@ import {
 import { ContractMarketPrices, MarketsData, MarketsInfoData } from "types/markets";
 import { Position, PositionsData, PositionsInfoData } from "types/positions";
 import { TokensData } from "types/tokens";
-import { getContractMarketPrices, getMaxAllowedLeverageByMinCollateralFactor } from "utils/markets";
+import {
+  getContractMarketPrices,
+  getMarketIndexName,
+  getMarketPoolName,
+  getMaxAllowedLeverageByMinCollateralFactor,
+} from "utils/markets";
 import { getByKey } from "utils/objects";
 import {
   getEntryPrice,
@@ -52,8 +57,8 @@ type PositionsConstantsResult = {
 export class Positions extends Module {
   static MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
-  private getKeysAndPricesParams(p: { marketsInfoData: MarketsData | undefined; tokensData: TokensData | undefined }) {
-    const { marketsInfoData, tokensData } = p;
+  private getKeysAndPricesParams(p: { marketsData: MarketsData | undefined; tokensData: TokensData | undefined }) {
+    const { marketsData, tokensData } = p;
     const account = this.account;
 
     const values = {
@@ -62,11 +67,11 @@ export class Positions extends Module {
       marketsKeys: [] as string[],
     };
 
-    if (!account || !marketsInfoData || !tokensData) {
+    if (!account || !marketsData || !tokensData) {
       return values;
     }
 
-    const markets = Object.values(marketsInfoData);
+    const markets = Object.values(marketsData);
 
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(tokensData, market);
@@ -121,8 +126,8 @@ export class Positions extends Module {
   }
 
   async getPositions(p: {
-    marketsInfoData: MarketsData | undefined;
-    tokensData: TokensData | undefined;
+    marketsData: MarketsData;
+    tokensData: TokensData;
     start?: number;
     end?: number;
   }): Promise<PositionsResult> {
@@ -157,12 +162,12 @@ export class Positions extends Module {
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
-        const { position, fees } = positionInfo;
+        const { position, fees, basePnlUsd } = positionInfo;
         const { addresses, numbers, flags, data } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
-        if (BigInt(numbers.increasedAtTime) == 0n) {
+        if (numbers.increasedAtTime == 0n) {
           return positionsMap;
         }
 
@@ -185,6 +190,10 @@ export class Positions extends Module {
           fundingFeeAmount: fees.funding.fundingFeeAmount,
           claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
           claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
+          pnl: basePnlUsd,
+          positionFeeAmount: fees.positionFeeAmount,
+          traderDiscountAmount: fees.referral.traderDiscountAmount,
+          uiFeeAmount: fees.ui.uiFeeAmount,
           data,
         };
 
@@ -479,7 +488,7 @@ export class Positions extends Module {
   }): Promise<PositionsInfoData> {
     const { showPnlInLeverage, marketsInfoData, tokensData } = p;
     const { positionsData } = await this.getPositions({
-      marketsInfoData,
+      marketsData: marketsInfoData,
       tokensData,
     });
     const { minCollateralUsd } = await this.getPositionsConstants();
@@ -495,10 +504,13 @@ export class Positions extends Module {
 
       const marketInfo = getByKey(marketsInfoData, position.marketAddress);
       const indexToken = marketInfo?.indexToken;
+      const longToken = getByKey(tokensData, marketInfo?.longTokenAddress);
+      const shortToken = getByKey(tokensData, marketInfo?.shortTokenAddress);
+
       const pnlToken = position.isLong ? marketInfo?.longToken : marketInfo?.shortToken;
       const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
 
-      if (!marketInfo || !indexToken || !pnlToken || !collateralToken) {
+      if (!marketInfo || !indexToken || !pnlToken || !collateralToken || !longToken || !shortToken) {
         return acc;
       }
 
@@ -621,12 +633,20 @@ export class Positions extends Module {
         isLong: position.isLong,
       });
 
+      const indexName = getMarketIndexName({ indexToken, isSpotOnly: false });
+      const poolName = getMarketPoolName({ longToken, shortToken });
+
       acc[positionKey] = {
         ...position,
+        market: marketInfo,
         marketInfo,
+        indexName,
+        poolName,
         indexToken,
         collateralToken,
         pnlToken,
+        longToken,
+        shortToken,
         markPrice,
         entryPrice,
         liquidationPrice,

@@ -12,29 +12,26 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getFeeItem } from "domain/synthetics/fees/utils";
+import { getFeeItem } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { BN_ZERO, formatPercentage } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { getChainName } from "config/chains";
+import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
+import { formatAmountForMetrics } from "lib/metrics";
 import { userAnalytics } from "lib/userAnalytics";
 import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
-import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { formatAmountForMetrics } from "lib/metrics";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
 const SPACE = " ";
 
-export const useTradeboxPoolWarnings = (
-  withActions = true,
-  textColor: "text-yellow-500" | "text-gray-300" = "text-gray-300"
-) => {
+export const useTradeboxPoolWarnings = (withActions = true) => {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
@@ -219,7 +216,7 @@ export const useTradeboxPoolWarnings = (
 
   if (showHasExistingPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingPositionWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasExistingPositionWarning">
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
           <WithActon>
@@ -235,32 +232,32 @@ export const useTradeboxPoolWarnings = (
             .
           </WithActon>
         </Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 
   if (showHasExistingPositionButNotEnoughLiquidityWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingPositionButNotEnoughLiquidityWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasExistingPositionButNotEnoughLiquidityWarning">
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool, but it lacks
           liquidity for this order.
         </Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
-      <AlertInfo key="showHasNoSufficientLiquidityInAnyMarketWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasNoSufficientLiquidityInAnyMarketWarning">
         <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.</Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 
   if (showHasInsufficientLiquidityAndNoPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasInsufficientLiquidityAndNoPositionWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasInsufficientLiquidityAndNoPositionWarning">
         <Trans>
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market.
@@ -276,13 +273,13 @@ export const useTradeboxPoolWarnings = (
             </WithActon>
           )}
         </Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 
   if (showHasInsufficientLiquidityAndPositionWarning) {
     warning.push(
-      <AlertInfo key="showHasInsufficientLiquidityAndPositionWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasInsufficientLiquidityAndPositionWarning">
         <Trans>
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market. Choosing a different pool would open a new position different from the
@@ -297,7 +294,7 @@ export const useTradeboxPoolWarnings = (
             .
           </WithActon>
         </Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 
@@ -305,7 +302,7 @@ export const useTradeboxPoolWarnings = (
     const address = marketsOptions.collateralWithOrder!.address;
 
     warning.push(
-      <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasExistingOrderWarning">
         <Trans>
           You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool.
           <WithActon>
@@ -321,24 +318,24 @@ export const useTradeboxPoolWarnings = (
             .
           </WithActon>
         </Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 
   if (showHasExistingOrderButNoLiquidityWarning) {
     warning.push(
-      <AlertInfo key="showHasExistingOrderWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasExistingOrderWarning">
         <Trans>
           You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool but it lacks
           liquidity for this order.
         </Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 
   if (showHasBetterOpenFeesWarning) {
     warning.push(
-      <AlertInfo key="showHasBetterOpenFeesWarning" type="info" compact textColor={textColor}>
+      <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
           You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost in the{" "}
           {getMarketPoolName(minOpenFeesMarket)} market pool.
@@ -352,7 +349,7 @@ export const useTradeboxPoolWarnings = (
             .
           </WithActon>
         </Trans>
-      </AlertInfo>
+      </AlertInfoCard>
     );
   }
 

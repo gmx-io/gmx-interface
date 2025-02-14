@@ -7,7 +7,10 @@ import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketListingDate } from "config/markets";
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
+import {
+  TokenFavoritesTabOption,
+  useTokensFavorites,
+} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvAndGmMarketsInfoData,
   GlvOrMarketInfo,
@@ -23,20 +26,21 @@ import {
 } from "domain/synthetics/markets";
 import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AprInfo } from "components/AprInfo/AprInfo";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
-import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import type { SortDirection } from "context/SorterContext/types";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
@@ -109,11 +113,11 @@ export default function MarketTokenSelector(props: Props) {
                   ) : (
                     <span>GM{indexName && `: ${indexName}`}</span>
                   )}
-                  <span className="ml-3 text-12 text-gray-300 group-hover/selector-base:text-[color:inherit]">
+                  <span className="ml-3 text-12 text-slate-100 group-hover/selector-base:text-[color:inherit]">
                     {poolName && `[${poolName}]`}
                   </span>
                 </div>
-                <div className="text-12 text-gray-400 group-hover/selector-base:text-[color:inherit]">
+                <div className="text-12 text-slate-100 group-hover/selector-base:text-[color:inherit]">
                   {isGlv
                     ? getGlvMarketSubtitle(chainId, getGlvOrMarketAddress(currentMarketInfo))
                     : "GMX Market Tokens"}
@@ -157,7 +161,7 @@ function MarketTokenSelectorInternal(props: Props) {
     glvTokensApyData,
   } = props;
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-token-selector");
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
 
@@ -199,7 +203,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("h-50 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isMobile ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8") : "px-16";
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400 last-of-type:text-right",
+    "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100 last-of-type:text-right",
     isMobile ? "first-of-type:!pl-32" : "first-of-type:!pl-40",
     rowVerticalPadding,
     rowHorizontalPadding
@@ -218,7 +222,7 @@ function MarketTokenSelectorInternal(props: Props) {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col gap-8">
+        <div className="flex flex-col gap-8">
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -297,7 +301,7 @@ function MarketTokenSelectorInternal(props: Props) {
               ))}
               {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
                 <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={6} className="text-body-medium text-gray-400">
+                  <TableTd colSpan={6} className="text-body-medium text-slate-100">
                     <Trans>No pools matched.</Trans>
                   </TableTd>
                 </TableTr>
@@ -371,6 +375,10 @@ function useFilterSortTokensInfo({
         const marketInfo = getByKey(marketsInfoData, item?.address)!;
 
         if (isGlvInfo(marketInfo)) {
+          return false;
+        }
+
+        if (marketInfo.isSpotOnly) {
           return false;
         }
 
@@ -507,7 +515,7 @@ function MarketTokenListItem({
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
             <div className="inline-flex flex-wrap items-center gap-x-3 whitespace-nowrap">
               <span className="text-body-medium text-white">{indexName && indexName}</span>
-              <span className="text-body-small leading-1 text-gray-300">{poolName && `[${poolName}]`}</span>
+              <span className="text-body-small leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
             </div>
           </div>
         )}

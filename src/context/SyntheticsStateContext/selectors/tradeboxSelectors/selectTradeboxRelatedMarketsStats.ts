@@ -10,7 +10,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees/utils";
+import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import {
   MarketStat,

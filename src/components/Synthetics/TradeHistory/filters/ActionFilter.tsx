@@ -4,7 +4,8 @@ import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
 import { OrderType } from "domain/synthetics/orders/types";
-import { TradeActionType } from "domain/synthetics/tradeHistory/types";
+import { TradeActionType } from "sdk/types/tradeHistory";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 
@@ -15,6 +16,7 @@ type Item = {
   isDepositOrWithdraw?: boolean;
   text?: MessageDescriptor;
   eventName: TradeActionType;
+  debug?: boolean;
 };
 
 type Group = {
@@ -71,22 +73,26 @@ const GROUPS: Groups = [
       {
         orderType: OrderType.MarketIncrease,
         eventName: TradeActionType.OrderCreated,
+        debug: true,
       },
       {
         orderType: OrderType.MarketDecrease,
         eventName: TradeActionType.OrderCreated,
+        debug: true,
       },
       {
         orderType: OrderType.MarketIncrease,
         eventName: TradeActionType.OrderCreated,
         isDepositOrWithdraw: true,
         text: actionTextMap["Deposit-OrderCreated"],
+        debug: true,
       },
       {
         orderType: OrderType.MarketDecrease,
         eventName: TradeActionType.OrderCreated,
         isDepositOrWithdraw: true,
         text: actionTextMap["Withdraw-OrderCreated"],
+        debug: true,
       },
     ],
   },
@@ -139,6 +145,7 @@ const GROUPS: Groups = [
       {
         orderType: OrderType.MarketSwap,
         eventName: TradeActionType.OrderCreated,
+        debug: true,
       },
     ],
   },
@@ -164,23 +171,27 @@ type Props = {
 
 export function ActionFilter({ value, onChange }: Props) {
   const { _ } = useLingui();
+  const { showDebugValues } = useSettings();
+
   const localizedGroups = useMemo(() => {
     return GROUPS.map((group) => {
       return {
         groupName: _(group.groupName),
-        items: group.items.map((item) => {
-          return {
-            data: {
-              orderType: item.orderType,
-              eventName: item.eventName,
-              isDepositOrWithdraw: Boolean(item.isDepositOrWithdraw),
-            },
-            text: item.text ? _(item.text) : getActionTitle(item.orderType, item.eventName),
-          };
-        }),
+        items: group.items
+          .filter((item) => !item.debug || showDebugValues)
+          .map((item) => {
+            return {
+              data: {
+                orderType: item.orderType,
+                eventName: item.eventName,
+                isDepositOrWithdraw: Boolean(item.isDepositOrWithdraw),
+              },
+              text: item.text ? _(item.text) : getActionTitle(item.orderType, item.eventName),
+            };
+          }),
       };
     });
-  }, [_]);
+  }, [_, showDebugValues]);
 
   return (
     <TableOptionsFilter<Props["value"][number]>

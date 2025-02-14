@@ -8,12 +8,11 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { formatTokenAmountWithUsd } from "lib/numbers";
+import { formatBalanceAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import {
   formatTradeActionTimestamp,
   formatTradeActionTimestampISO,
@@ -146,50 +145,46 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       return "-";
     }
 
-    const amounts = claimAction.claimItems.map(
-      ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }) => {
-        const indexName = getMarketIndexName(market);
-        const poolName = getMarketPoolName(market);
+    const amounts = (
+      <div className="flex flex-col gap-16">
+        {claimAction.claimItems.map(
+          ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }) => {
+            const indexName = getMarketIndexName(market);
+            const poolName = getMarketPoolName(market);
 
-        return (
-          <StatsTooltipRow
-            textClassName="mb-5 whitespace-nowrap"
-            key={market.marketTokenAddress}
-            label={
-              <div className="flex items-start text-white">
-                <span>{indexName}</span>
-                <span className="subtext leading-1">[{poolName}]</span>
+            return (
+              <div key={market.indexTokenAddress} className="flex flex-col gap-4">
+                <div className="flex items-baseline text-white">
+                  <span>{indexName}</span>
+                  <span className="subtext">[{poolName}]</span>
+                </div>
+                <div>
+                  {longTokenAmount > 0 && (
+                    <div>
+                      {formatBalanceAmountWithUsd(
+                        longTokenAmount,
+                        longTokenAmountUsd,
+                        market.longToken.decimals,
+                        market.longToken.symbol
+                      )}
+                    </div>
+                  )}
+                  {shortTokenAmount > 0 && (
+                    <div>
+                      {formatBalanceAmountWithUsd(
+                        shortTokenAmount,
+                        shortTokenAmountUsd,
+                        market.shortToken.decimals,
+                        market.shortToken.symbol
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            }
-            showDollar={false}
-            value={
-              <>
-                {longTokenAmount > 0 && (
-                  <div>
-                    {formatTokenAmountWithUsd(
-                      longTokenAmount,
-                      longTokenAmountUsd,
-                      market.longToken.symbol,
-                      market.longToken.decimals
-                    )}
-                  </div>
-                )}
-
-                {shortTokenAmount > 0 && (
-                  <div>
-                    {formatTokenAmountWithUsd(
-                      shortTokenAmount,
-                      shortTokenAmountUsd,
-                      market.shortToken.symbol,
-                      market.shortToken.decimals
-                    )}
-                  </div>
-                )}
-              </>
-            }
-          />
-        );
-      }
+            );
+          }
+        )}
+      </div>
     );
 
     const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
@@ -197,7 +192,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     return (
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
-        renderContent={() => <>{amounts}</>}
+        content={amounts}
         handle={formattedTotalUsd}
       />
     );

@@ -7,10 +7,14 @@ import { selectSelectedMarketPriceDecimals } from "context/SyntheticsStateContex
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { USD_DECIMALS } from "config/factors";
-import { getToken } from "config/tokens";
-import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { getToken } from "sdk/configs/tokens";
+import {
+  selectTradeboxMarketInfo,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { use24hPriceDeltaMap } from "domain/synthetics/tokens";
-import { bigMath } from "lib/bigmath";
+import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   formatAmountHuman,
   formatPercentageDisplay,
@@ -21,10 +25,8 @@ import {
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
-import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { use24hVolume } from "domain/synthetics/tokens/use24Volume";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
@@ -35,6 +37,7 @@ export function useChartHeaderFormattedValues() {
   const { chartToken } = useSelector(selectChartToken);
   const chartTokenAddress = chartToken?.address as Address;
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const visualMultiplier = isSwap ? 1 : selectedTokenOption?.visualMultiplier ?? 1;
@@ -47,7 +50,10 @@ export function useChartHeaderFormattedValues() {
     return selectedTokenOption?.address;
   }, [selectedTokenOption]);
 
-  const dailyVolumeValue = use24hVolume();
+  const dailyVolumes = use24hVolumes();
+  const dailyVolumesValue = marketInfo?.marketTokenAddress
+    ? dailyVolumes?.byMarketToken?.[marketInfo?.marketTokenAddress]
+    : undefined;
   const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, [priceTokenAddress as Address]);
   const dayPriceDeltaData = chartTokenAddress ? dayPriceDeltaMap?.[chartTokenAddress] : undefined;
 
@@ -182,22 +188,15 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <TooltipWithPortal
-        disableHandleStyle
-        handle={
-          <span
-            className={cx("flex flex-row items-center gap-4", {
-              positive: netRate >= 0n,
-              negative: netRate < 0n,
-            })}
-          >
-            <LongIcon width={12} className="relative top-1" />
-            {formatRatePercentage(netRate)}
-          </span>
-        }
-        position="bottom-end"
-        content={<NetRate1hTooltip isLong info={info} />}
-      />
+      <span
+        className={cx("flex flex-row items-center gap-4", {
+          positive: netRate >= 0n,
+          negative: netRate < 0n,
+        })}
+      >
+        <LongIcon width={12} className="relative top-1" />
+        {formatRatePercentage(netRate)}
+      </span>
     );
   }, [info]);
 
@@ -209,26 +208,21 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <TooltipWithPortal
-        disableHandleStyle
-        handle={
-          <span
-            className={cx("flex flex-row items-center gap-4", {
-              positive: netRate >= 0n,
-              negative: netRate < 0n,
-            })}
-          >
-            <ShortIcon width={12} />
-            {formatRatePercentage(netRate)}
-          </span>
-        }
-        position="bottom-end"
-        content={<NetRate1hTooltip isLong={false} info={info} />}
-      />
+      <span
+        className={cx("flex flex-row items-center gap-4", {
+          positive: netRate >= 0n,
+          negative: netRate < 0n,
+        })}
+      >
+        <ShortIcon width={12} />
+        {formatRatePercentage(netRate)}
+      </span>
     );
   }, [info]);
 
-  const dailyVolume = dailyVolumeValue !== undefined ? `$${formatAmountHuman(dailyVolumeValue, USD_DECIMALS)}` : "...";
+  const dailyVolume = useMemo(() => {
+    return dailyVolumesValue !== undefined ? `$${formatAmountHuman(dailyVolumesValue, USD_DECIMALS)}` : "...";
+  }, [dailyVolumesValue]);
 
   return {
     avgPrice,

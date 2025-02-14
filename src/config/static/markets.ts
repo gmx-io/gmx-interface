@@ -326,6 +326,56 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("12 Dec 2024"),
     },
+    // DYDX/USD [WBTC-USDC]
+    "0x467C4A46287F6C4918dDF780D4fd7b46419c2291": {
+      enabled: true,
+      listingDate: p("26 Dec 2024"),
+    },
+    // INJ/USD [WBTC-USDC]
+    "0x16466a03449CB9218EB6A980Aa4a44aaCEd27C25": {
+      enabled: true,
+      listingDate: p("26 Dec 2024"),
+    },
+    // TRUMP/USD [ETH-USDC]
+    "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636": {
+      enabled: true,
+      listingDate: p("20 Jan 2025"),
+    },
+    // MELANIA/USD [WETH-USDC]
+    "0x12fD1A4BdB96219E637180Ff5293409502b2951D": {
+      enabled: true,
+      listingDate: p("23 Jan 2025"),
+    },
+    // ENA/USD [WETH-USDC]
+    "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C": {
+      enabled: true,
+      listingDate: p("23 Jan 2025"),
+    },
+    // AI16Z/USD [WBTC.e-USDC]
+    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // ANIME/USD [ANIME-USDC]
+    "0x5707673D95a8fD317e2745C4217aCD64ca021B68": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // FARTCOIN/USD [WBTC.e-USDC]
+    "0xe2730Ffe2136aA549327EBce93D58160df7821CB": {
+      enabled: true,
+      listingDate: p("30 Jan 2025"),
+    },
+    // BERA/USD [WETH-USDC]
+    "0x876Ff160d63809674e03f82DC4D3C3Ae8B0acF28": {
+      enabled: true,
+      listingDate: p("7 Feb 2025"),
+    },
+    // LDO/USD [WETH-USDC]
+    "0xE61e608Ba010fF48A7dcE8eDd8B906744263d33E": {
+      enabled: true,
+      listingDate: p("7 Feb 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -397,6 +447,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0x08b25A2a89036d298D6dB8A74ace9d1ce6Db15E5": {
       enabled: true,
       listingDate: DEFAULT_LISTING,
+    },
+    // TRUMP/USD [WAVAX-USDC]
+    "0xfB626c4e3E153947A6A94041814c25E449064dAD": {
+      enabled: true,
+      listingDate: p("3 Feb 2025"),
+    },
+    // MELANIA/USD [WAVAX-USDC]
+    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
+      enabled: true,
+      listingDate: p("3 Feb 2025"),
     },
   },
   [AVALANCHE_FUJI]: {

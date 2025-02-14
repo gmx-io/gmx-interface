@@ -10,7 +10,7 @@ npm install --save @gmx-io/sdk
 ## Usage
 
 ```typescript
-import { GmxSdk } from "@gmx/sdk";
+import { GmxSdk } from "@gmx-io/sdk";
 import { useWallet } from "wagmi";
 
 const sdk = new GmxSdk({
@@ -18,7 +18,7 @@ const sdk = new GmxSdk({
   rpcUrl: "https://arb1.arbitrum.io/rpc",
   oracleUrl: "https://arbitrum-api.gmxinfra.io",
   walletClient: useWallet().walletClient,
-  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum/graphql",
+  subsquidUrl: "https://gmx.squids.live/gmx-synthetics-arbitrum:live/api/graphql",
   subgraphUrl: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
 });
 
@@ -26,9 +26,16 @@ const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
 
 sdk.setAccount("0x1234567890abcdef1234567890abcdef12345678");
 
-sdk.positions.getPositions().then((positions) => {
-  console.log(positions);
-});
+sdk.positions
+  .getPositions({
+    marketsInfoData,
+    tokensData,
+    start: 0,
+    end: 1000,
+  })
+  .then((positions) => {
+    console.log(positions);
+  });
 ```
 
 ## Documentation
@@ -86,6 +93,25 @@ interface GmxSdkConfig {
   >;
 }
 ```
+
+### Custom Viem clients
+
+When using custom Viem clients, pass batching configuration to the client.
+
+```typescript
+import { BATCH_CONFIGS } from "@gmx-io/sdk/configs/batch";
+
+const publicClient = createPublicClient({
+  ...your_config,
+  batch: BATCH_CONFIGS[chainId].client,
+});
+```
+
+### Urls
+
+- RPC URLs - use preferred RPC URL
+- [Actual Oracle URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/oracleKeeper.ts#L5-L11)
+- [Actual Subsquid/Subgraph URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/subgraph.ts#L5) (subgraph url is `synthetics-stats` field)
 
 ### Tokens customization
 

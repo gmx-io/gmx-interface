@@ -3,26 +3,21 @@ import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { getEntryPrice, getPositionPnlUsd } from "sdk/utils/positions";
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import {
+  MarketsData,
+  MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
   getMaxAllowedLeverageByMinCollateralFactor,
-  MarketsData,
-  MarketsInfoData,
 } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsData, PositionsInfoData } from "./types";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
-import {
-  getEntryPrice,
-  getLeverage,
-  getLiquidationPrice,
-  getPositionNetValue,
-  getPositionPendingFeesUsd,
-} from "./utils";
-import { convertTokenAddress } from "config/tokens";
+import { getLeverage, getLiquidationPrice, getPositionNetValue, getPositionPendingFeesUsd } from "./utils";
 
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -142,7 +137,15 @@ export function usePositionsInfoRequest(
         collateralMinPrice
       )!;
 
-      const pnl = position.pnl;
+      const pnl = marketInfo
+        ? getPositionPnlUsd({
+            marketInfo: marketInfo,
+            sizeInUsd: position.sizeInUsd,
+            isLong: position.isLong,
+            markPrice: getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false }),
+            sizeInTokens: position.sizeInTokens,
+          })
+        : position.pnl;
 
       const pnlPercentage =
         collateralUsd !== undefined && collateralUsd != 0n ? getBasisPoints(pnl, collateralUsd) : 0n;

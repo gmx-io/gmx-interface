@@ -1,7 +1,11 @@
 import camelCase from "lodash/camelCase";
 import entries from "lodash/entries";
-import upperFirst from "lodash/upperFirst";
 import mapKeys from "lodash/mapKeys";
+import upperFirst from "lodash/upperFirst";
+
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
+import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
+import { TokenCategory } from "sdk/types/tokens";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -115,6 +119,7 @@ export default function UiPage() {
   return (
     <main className="mx-auto max-w-prose p-20">
       <h1 className="text-34 font-bold">UI Page</h1>
+
       <p>This page demonstrates the use of the UI components in the app.</p>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Fill colors</h2>
@@ -241,6 +246,26 @@ export default function UiPage() {
         handle={"Lorem ipsum dolor."}
         closeDelay={100000000000}
       />
+
+      <h2 className="mb-16 mt-24 text-24 font-bold">Token categories</h2>
+
+      <div className="flex flex-col gap-16">
+        {[ARBITRUM, AVALANCHE, AVALANCHE_FUJI].map((chainId) => (
+          <div key={chainId}>
+            <h3 className="text-h3">{getChainName(chainId)}</h3>
+            {["meme", "layer1", "layer2", "defi"].map((category) => (
+              <div key={category}>
+                <h3 className="text-h3">{category}</h3>
+                <div className="flex flex-wrap gap-4">
+                  {getCategoryTokenAddresses(chainId, category as TokenCategory).map((tokenAddress) => (
+                    <div key={tokenAddress}>{getToken(chainId, tokenAddress)?.symbol}</div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
 
       <h2 className="mb-16 mt-24 text-24 font-bold">Icons</h2>
       <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>

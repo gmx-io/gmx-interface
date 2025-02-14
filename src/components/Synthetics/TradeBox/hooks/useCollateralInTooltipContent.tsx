@@ -9,7 +9,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
-import { TradeType } from "../../../../domain/synthetics/trade/types";
+import { TradeType } from "sdk/types/trade";
 
 export function useCollateralInTooltipContent() {
   const collateralToken = useSelector(selectTradeboxCollateralToken);

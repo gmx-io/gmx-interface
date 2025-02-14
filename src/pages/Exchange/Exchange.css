@@ -31,6 +31,7 @@
 
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.5rem;
+  color: var(--color-slate-100);
 }
 
 .Exchange-empty-positions-list-note.small {
@@ -44,10 +45,6 @@
   color: var(--color-blue-600);
   vertical-align: middle;
   margin-top: -0.31rem;
-}
-
-.Exchange-settings-row {
-  margin-bottom: 0.8rem;
 }
 
 .Exchange-settings .App-cta {
@@ -277,9 +274,9 @@
 }
 
 .ExchangeChart-info-label {
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
-  opacity: 0.7;
   white-space: nowrap;
 }
 
@@ -581,7 +578,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-label {
-  color: var(--color-gray-300);
+  color: var(--color-slate-100);
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
@@ -693,13 +690,6 @@ table.Position-list .Exchange-list-item-active {
   margin-top: 1.5rem;
 }
 
-.Exchange-swap-option-tabs.Tab.Tab__block .Tab-option-icon {
-  margin-top: -0.155rem;
-  transform: scale(0.75);
-  vertical-align: middle;
-  margin-right: 0.8rem;
-}
-
 .Exchange-swap-section-top {
   display: grid;
   grid-template-columns: auto auto;
@@ -730,26 +720,17 @@ table.Position-list .Exchange-list-item-active {
   z-index: 1;
   cursor: pointer;
   font-size: var(--font-size-body-medium);
-  background: var(--primary-btn-bg);
+  background: var(--color-cold-blue-500);
   border: none;
 }
 
 .Exchange-swap-max:hover {
   color: var(--color-white);
-  background: var(--primary-btn-hover);
+  background: #484e92;
 }
 
 .Exchange-swap-max:active {
-  background: var(--primary-btn-active);
-}
-
-.Exchange-swap-section-bottom .TokenSelector-box {
-  font-size: 2.1rem;
-}
-
-.Exchange-leverage-box .TokenSelector-caret {
-  font-size: var(--font-size-body-medium);
-  margin-left: 0.31rem;
+  background: #505699;
 }
 
 input.Exchange-swap-input {
@@ -782,7 +763,6 @@ input.Exchange-swap-input.small {
   display: block;
   transform: rotate(90deg);
   font-size: 2rem;
-  opacity: 0.8;
 }
 
 .Exchange-swap-ball {
@@ -795,7 +775,7 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: var(--primary-btn-bg);
+  background: var(--color-cold-blue-500);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -804,25 +784,16 @@ input.Exchange-swap-input.small {
 }
 
 .Exchange-swap-ball:hover {
-  background: var(--primary-btn-hover);
+  background: #484e92;
 }
 
 .Exchange-swap-ball:active {
-  background: var(--primary-btn-active);
-}
-
-.Exchange-swap-ball:hover .Exchange-swap-ball-icon {
-  opacity: 1;
+  background: #505699;
 }
 
 .Exchange-swap-ball[disabled] {
-  background: var(--primary-btn-bg);
-  opacity: 0.8;
+  background-color: var(--color-slate-700);
   cursor: not-allowed;
-}
-
-.Exchange-swap-ball[disabled] .Exchange-swap-ball-icon {
-  opacity: 1;
 }
 
 table.Exchange-list-small {
@@ -935,12 +906,8 @@ table.Exchange-list-small td {
 }
 
 .chart-positions:hover {
-  opacity: 0.8;
+  color: var(--color-white);
 }
-.chart-positions.span:hover {
-  opacity: 1;
-}
-
 .position-list-collateral {
   display: flex;
   align-items: flex-end;

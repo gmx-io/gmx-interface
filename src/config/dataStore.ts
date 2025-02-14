@@ -1,4 +1,4 @@
-import { hashData, hashString } from "lib/hash";
+import { hashData, hashString } from "sdk/utils/hash";
 
 export const POSITION_IMPACT_FACTOR_KEY = hashString("POSITION_IMPACT_FACTOR");
 export const MAX_POSITION_IMPACT_FACTOR_KEY = hashString("MAX_POSITION_IMPACT_FACTOR");
@@ -90,6 +90,9 @@ export const GLV_DEPOSIT_GAS_LIMIT = hashString("GLV_DEPOSIT_GAS_LIMIT");
 export const GLV_WITHDRAWAL_GAS_LIMIT = hashString("GLV_WITHDRAWAL_GAS_LIMIT");
 export const GLV_PER_MARKET_GAS_LIMIT = hashString("GLV_PER_MARKET_GAS_LIMIT");
 export const MAX_AUTO_CANCEL_ORDERS_KEY = hashString("MAX_AUTO_CANCEL_ORDERS");
+export const OPTIMAL_USAGE_FACTOR = hashString("OPTIMAL_USAGE_FACTOR");
+export const BASE_BORROWING_FACTOR = hashString("BASE_BORROWING_FACTOR");
+export const ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR = hashString("ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR");
 
 export function glvShiftLastExecutedAtKey(glvAddress: string) {
   return hashData(["bytes32", "address"], [GLV_SHIFT_LAST_EXECUTED_AT, glvAddress]);

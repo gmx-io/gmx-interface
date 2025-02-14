@@ -4,7 +4,11 @@ const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
 const defaultConfig = require("tailwindcss/defaultConfig");
+const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
 
+/**
+ * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
+ */
 const colors = {
   blue: {
     300: "#7885ff",
@@ -15,7 +19,7 @@ const colors = {
   },
   "cold-blue": {
     500: "#3a3f79",
-    700: "#3a3f798f",
+    700: "#282b54",
     900: "#1e203e",
   },
   "pale-blue": {
@@ -27,19 +31,20 @@ const colors = {
     500: "#3e4361",
     600: "#373c58",
     700: "#23263b",
+    750: "#17182c",
     800: "#16182e",
     900: "#101124",
     950: "#08091b",
   },
   gray: {
     50: "rgba(255, 255, 255, 0.95)",
-    100: "rgba(255, 255, 255, 0.9)",
-    200: "rgba(255, 255, 255, 0.8)",
-    300: "rgba(255, 255, 255, 0.7)",
-    400: "rgba(255, 255, 255, 0.6)",
-    500: "rgba(255, 255, 255, 0.5)",
-    600: "rgba(255, 255, 255, 0.4)",
-    700: "rgba(255, 255, 255, 0.3)",
+    100: "#e7e7e9",
+    200: "#cfcfd3",
+    300: "#b7b8bd",
+    400: "#9fa0a7",
+    500: "#878891",
+    600: "#70707c",
+    700: "#585866",
     800: "rgba(255, 255, 255, 0.2)",
     900: "rgba(255, 255, 255, 0.1)",
     950: "rgba(255, 255, 255, 0.05)",
@@ -50,14 +55,18 @@ const colors = {
   },
   red: {
     400: "#ff637a",
-    500: "#ff506a",
+    500: "#FF506A",
   },
   green: {
     300: "#56dba8",
-    500: "#0ecc83",
+    400: "#8CF3CB",
+    500: "#0FDE8D",
   },
   white: "#ffffff",
   black: "#000000",
+  stroke: {
+    primary: "#252A47",
+  },
 };
 
 /**
@@ -87,7 +96,7 @@ function injectColorsPlugin({ addBase, theme }) {
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
  */
-function customUtilsPlugin({ addUtilities, theme }) {
+function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVariant, theme }) {
   addUtilities({
     ".scrollbar-hide": {
       "scrollbar-width": "none",
@@ -97,6 +106,13 @@ function customUtilsPlugin({ addUtilities, theme }) {
       },
     },
   });
+
+  addVariant("desktop-hover", [`@media (hover: hover) {&:not(:active):hover}`]);
+  addVariant("gmx-hover", [`@media (hover: hover) {&:hover}`, `@media (hover: none) {&:active}`]);
+  addVariant("group-gmx-hover", [
+    `@media (hover: hover) {:merge(.group):hover &}`,
+    `@media (hover: none) {:merge(.group):active &}`,
+  ]);
 }
 
 /**
@@ -106,45 +122,46 @@ function customUtilsPlugin({ addUtilities, theme }) {
 function fontComponentsPlugin({ addComponents, addBase }) {
   addBase({
     ":root": {
-      "--font-size-h1": '3.4rem',
-      "--font-size-h2": '2.4rem',
-      "--font-size-body-large": '1.6rem',
-      "--font-size-body-medium": '1.4rem',
-      "--font-size-body-small": '1.2rem',
-      "--font-size-caption": '1rem',
+      "--font-size-h1": "3.4rem",
+      "--font-size-h2": "2.4rem",
+      "--font-size-body-large": "1.6rem",
+      "--font-size-body-medium": "1.4rem",
+      "--font-size-body-small": "1.2rem",
+      "--font-size-caption": "1rem",
 
-      "--line-height-h1": '34px',
-      "--line-height-h2": '24px',
-      "--line-height-body-large": '2.1rem',
-      "--line-height-body-medium": '1.8rem',
-      "--line-height-body-small": '1.6rem',
-      "--line-height-caption": '1.4rem',
+      "--line-height-h1": "34px",
+      "--line-height-h2": "24px",
+      "--line-height-body-large": "2.1rem",
+      "--line-height-body-medium": "1.8rem",
+      "--line-height-body-small": "1.6rem",
+      "--line-height-caption": "1.4rem",
     },
   });
+
   addComponents({
     ".text-h1": {
-      fontSize: '3.4rem',
-      lineHeight: 'auto',
+      fontSize: "3.4rem",
+      lineHeight: "auto",
     },
     ".text-h2": {
-      fontSize: '2.4rem',
-      lineHeight: 'auto',
+      fontSize: "2.4rem",
+      lineHeight: "auto",
     },
     ".text-body-large": {
-      fontSize: '1.6rem',
-      lineHeight: '2.1rem',
+      fontSize: "1.6rem",
+      lineHeight: "2.1rem",
     },
     ".text-body-medium": {
-      fontSize: '1.4rem',
-      lineHeight: '1.8rem',
+      fontSize: "1.4rem",
+      lineHeight: "1.8rem",
     },
-    '.text-body-small': {
-      fontSize: '1.2rem',
-      lineHeight: '1.6rem',
+    ".text-body-small": {
+      fontSize: "1.2rem",
+      lineHeight: "1.6rem",
     },
-    '.text-caption': {
-      fontSize: '1rem',
-      lineHeight: '1.4rem',
+    ".text-caption": {
+      fontSize: "1rem",
+      lineHeight: "1.4rem",
     },
   });
 }
@@ -164,7 +181,7 @@ module.exports = {
       15: "1.5rem",
       16: "1.6rem",
       24: "2.4rem",
-      34: "3.4rem",      
+      34: "3.4rem",
     },
     lineHeight: {
       1: "1",

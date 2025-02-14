@@ -8,7 +8,7 @@ import { createPortal } from "react-dom";
 import { BiChevronDown } from "react-icons/bi";
 import { useMedia } from "react-use";
 
-import Modal from "components/Modal/Modal";
+import { SlideModal } from "components/Modal/SlideModal";
 import { TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -97,7 +97,7 @@ export function SelectorBaseDesktopRow(
         as={TableTr}
         className={cx("SelectorBaseUtils-row SelectorBaseUtils-row-disabled", props.className)}
         content={props.disabledMessage}
-        position="bottom-end"
+        position="left-start"
         bordered={false}
         hoverable={false}
       >
@@ -111,7 +111,7 @@ export function SelectorBaseDesktopRow(
       <TooltipWithPortal
         as={TableTr}
         className={cx(
-          "SelectorBaseUtils-row underline decoration-dashed decoration-1 underline-offset-2",
+          "SelectorBaseUtils-row underline decoration-gray-400 decoration-dashed decoration-1 underline-offset-4",
           props.className
         )}
         content={props.message}
@@ -158,7 +158,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [
       offset({
-        mainAxis: props.popoverYOffset ?? 0,
+        mainAxis: props.popoverYOffset ?? 4,
         crossAxis: props.popoverXOffset ?? 0,
       }),
       flip(),
@@ -248,12 +248,13 @@ function SelectorBaseMobile(props: Props) {
           <BiChevronDown className={cx("-my-5 -mr-4 inline-block align-middle text-24", props.chevronClassName)} />
         )}
       </div>
-      <Modal
+
+      <SlideModal
         setIsVisible={setIsVisible}
         isVisible={isVisible}
         label={props.modalLabel}
-        className="SelectorBase-mobile-modal"
-        headerContent={<div ref={headerContentRef} />}
+        qa={props.qa}
+        headerRef={headerContentRef}
         contentPadding={props.mobileModalContentPadding}
         noDivider
         footerContent={props.footerContent}
@@ -261,7 +262,7 @@ function SelectorBaseMobile(props: Props) {
         <SelectorContextProvider close={toggleVisibility} mobileHeader={headerContent}>
           {props.children}
         </SelectorContextProvider>
-      </Modal>
+      </SlideModal>
     </>
   );
 }

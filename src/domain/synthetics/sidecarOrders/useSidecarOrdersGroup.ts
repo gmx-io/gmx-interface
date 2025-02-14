@@ -10,7 +10,7 @@ import {
   selectTradeboxSidecarOrdersTotalSizeUsd,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { usePrevious } from "lib/usePrevious";
 import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
 import { MAX_PERCENTAGE, PERCENTAGE_DECIMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
@@ -271,6 +271,6 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     deleteEntry,
     reset,
     canAddEntry,
-    allowAddEntry: canAddEntry && totalPercentage <= MAX_PERCENTAGE,
+    allowAddEntry: canAddEntry && totalPercentage < MAX_PERCENTAGE,
   };
 }

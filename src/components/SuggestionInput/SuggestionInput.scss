@@ -23,11 +23,12 @@
     }
   }
   .Suggestion-input {
-    border: 1px solid var(--color-slate-700);
+    border: 1px solid var(--color-stroke-primary);
     border-radius: var(--border-radius-sm);
-    padding-right: 0.5rem;
+    padding-right: 3px;
     line-height: 1;
-    background: var(--color-slate-700);
+    color: var(--color-gray-400);
+    background: var(--color-cold-blue-900);
 
     label {
       cursor: pointer;
@@ -46,14 +47,15 @@
     }
 
     input {
-      padding: 0.2rem 0.5rem 0.35rem;
+      padding: 2px 4px 2px 3px;
       font-size: var(--font-size-body-medium);
       line-height: var(--line-height-body-medium);
       border-radius: 4px;
       max-width: 7rem;
-    }
-    span {
-      opacity: 0.7;
+      color: var(--color-white);
+      &::placeholder {
+        color: var(--color-slate-100);
+      }
     }
   }
 }

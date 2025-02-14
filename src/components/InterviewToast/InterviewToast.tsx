@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 type Props = {
   onButtonClick?: () => void;
@@ -14,7 +14,7 @@ export function InterviewToast({ onButtonClick }: Props) {
       </Trans>
       <br />
       <br />
-      <div onClick={onButtonClick} className="text-xl cursor-pointer text-gray-300 underline">
+      <div onClick={onButtonClick} className="text-xl cursor-pointer text-slate-100 underline">
         <Trans>Give us your feedback on GMX.</Trans>
       </div>
       <br />

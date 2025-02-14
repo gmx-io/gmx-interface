@@ -1,21 +1,22 @@
 import { t } from "@lingui/macro";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
-import { callContract, GasPriceData } from "lib/contracts";
+import { callContract } from "lib/contracts";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType } from "./utils";
+import { isMarketOrderType } from "sdk/utils/orders";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "./prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 const { ZeroAddress } = ethers;
 
@@ -31,13 +32,13 @@ export type SwapOrderParams = {
   minOutputAmount: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
+  setPendingTxns: (txns: any) => void;
+  setPendingOrder: SetPendingOrder;
   skipSimulation: boolean;
   metricId: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  gasPriceData: GasPriceData | undefined;
-  setPendingTxns: (txns: any) => void;
-  setPendingOrder: SetPendingOrder;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
@@ -46,6 +47,9 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
+
+  await validateSignerAddress(signer, p.account);
+
   const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(router, signer, subaccount, chainId, p);
   const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(
     exchangeRouter,
@@ -90,7 +94,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
         })
       : undefined;
 
-  const txnParams = await prepareOrderTxn(
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -106,13 +110,17 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits: txnParams.customSignersGasLimits,
-    customSignersGasPrices: txnParams.customSignersGasPrices,
-    bestNonce: subaccount?.bestNonce,
+    customSignersGasLimits,
+    customSignersGasPrices,
+    bestNonce,
     setPendingTxns: p.setPendingTxns,
     metricId: p.metricId,
-    gasLimit: txnParams.gasLimit,
-    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
+    gasLimit,
+    gasPriceData,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   });
 
   if (!subaccount) {

@@ -1,36 +1,40 @@
+import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
-import { ethers } from "ethers";
-import { expandDecimals, formatAmount, formatUsd, PRECISION } from "lib/numbers";
+import { expandDecimals, formatAmount, formatFactor, formatUsd, PRECISION } from "lib/numbers";
 
 import cx from "classnames";
+import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
+import { format } from "date-fns";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
-  MarketInfo,
-  getUsedLiquidity,
   getAvailableUsdLiquidityForCollateral,
+  getCappedPoolPnl,
   getMarketIndexName,
-  getMarketPoolName,
-  getMaxOpenInterestUsd,
-  getMaxReservedUsd,
-  getReservedUsd,
-  useMarketsInfoRequest,
   getMarketNetPnl,
   getMarketPnl,
-  getCappedPoolPnl,
+  getMarketPoolName,
+  getMaxOpenInterestUsd,
+  getMaxPoolUsdForSwap,
+  getMaxReservedUsd,
   getPoolUsdWithoutPnl,
+  getReservedUsd,
+  getStrictestMaxPoolUsdForDeposit,
+  getUsedLiquidity,
+  MarketInfo,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
+import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import "./SyntheticsStats.scss";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
-import { format } from "date-fns";
-import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatAmountHuman } from "lib/numbers";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import "./SyntheticsStats.scss";
 
 function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation
@@ -38,24 +42,6 @@ function pow(bn: bigint, exponent: bigint) {
   const e = Number(exponent.toString()) / 1e30;
   const afterExponent = Math.pow(n, e);
   return expandDecimals(afterExponent.toFixed(0), 30);
-}
-
-function formatFactor(factor: bigint) {
-  if (factor == 0n) {
-    return "0";
-  }
-
-  if (bigMath.abs(factor) > PRECISION * 1000n) {
-    return (factor / PRECISION).toString();
-  }
-
-  const trailingZeroes =
-    bigMath
-      .abs(factor)
-      .toString()
-      .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
-  const factorDecimals = 30 - trailingZeroes;
-  return formatAmount(factor, 30, factorDecimals);
 }
 
 const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = [
@@ -70,6 +56,7 @@ export function SyntheticsStats() {
   const { chainId } = useChainId();
 
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
   const {
     positionsConstants: { minCollateralUsd, minPositionSizeUsd },
   } = usePositionsConstantsRequest(chainId);
@@ -216,6 +203,8 @@ export function SyntheticsStats() {
               const fundingAprLong = getFundingFactorPerPeriod(market, true, CHART_PERIODS["1h"]) * 100n;
               const fundingAprShort = getFundingFactorPerPeriod(market, false, CHART_PERIODS["1h"]) * 100n;
 
+              const marketKinkModelBorrowingData = kinkMarketsBorrowingRatesData[market.marketTokenAddress];
+
               function renderMarketCell() {
                 return (
                   <div className="cell">
@@ -361,17 +350,48 @@ export function SyntheticsStats() {
 
               function renderPoolCapCell(isLong: boolean) {
                 const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
+                const maxPoolUsdForSwap = getMaxPoolUsdForSwap(market, isLong);
                 const maxPoolUsdForDeposit = isLong
                   ? market.maxLongPoolUsdForDeposit
                   : market.maxShortPoolUsdForDeposit;
+                const maxPoolAmount = isLong ? market.maxLongPoolAmount : market.maxShortPoolAmount;
+                const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(market, isLong);
                 const token = isLong ? market.longToken : market.shortToken;
                 const poolUsd = convertToUsd(poolAmount, token.decimals, getMidPrice(token.prices));
 
                 return (
-                  <div className="cell">
-                    {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsdForDeposit)}{" "}
-                    <ShareBar share={poolUsd} total={maxPoolUsdForDeposit} warningThreshold={90} />
-                  </div>
+                  <TooltipWithPortal
+                    handle={
+                      <div className="cell">
+                        {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsd)}{" "}
+                        <ShareBar share={poolUsd} total={maxPoolUsd} warningThreshold={90} />
+                      </div>
+                    }
+                    renderContent={() => (
+                      <>
+                        <StatsTooltipRow
+                          label="Pool Amount Capacity"
+                          showDollar={false}
+                          value={`${formatAmountHuman(poolAmount, token.decimals)} ${token.symbol} / ${formatAmountHuman(maxPoolAmount, token.decimals)} ${token.symbol}`}
+                        />
+                        <StatsTooltipRow
+                          label="Pool USD Capacity (Swap)"
+                          showDollar={false}
+                          value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForSwap)}`}
+                        />
+                        <StatsTooltipRow
+                          label="Deposit USD Capacity"
+                          showDollar={false}
+                          value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForDeposit)}`}
+                        />
+                        <StatsTooltipRow
+                          label="Strictest Deposit USD Capacity"
+                          showDollar={false}
+                          value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsd)}`}
+                        />
+                      </>
+                    )}
+                  />
                 );
               }
 
@@ -414,44 +434,95 @@ export function SyntheticsStats() {
                         }
                         renderContent={() => (
                           <>
-                            <StatsTooltipRow
-                              label="Pending borrowing fee"
-                              value={formatAmountHuman(market.totalBorrowingFees, 30)}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Factor Long"
-                              value={formatFactor(market.borrowingFactorLong)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Factor Short"
-                              value={formatFactor(market.borrowingFactorShort)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Exponent Long"
-                              value={formatFactor(market.borrowingExponentFactorLong)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Borrowing Exponent Short"
-                              value={formatFactor(market.borrowingExponentFactorShort)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Max Rate Long"
-                              value={
-                                maxBorrowingRateLong ? `-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h` : "N/A"
-                              }
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Max Rate Short"
-                              value={
-                                maxBorrowingRateShort ? `-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h` : "N/A"
-                              }
-                              showDollar={false}
-                            />
+                            {marketKinkModelBorrowingData ? (
+                              <>
+                                <StatsTooltipRow
+                                  label="Pending borrowing fee"
+                                  value={formatAmountHuman(market.totalBorrowingFees, 30)}
+                                />
+                                <StatsTooltipRow
+                                  label="Optimal Usage Factor Long"
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorLong * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Optimal Usage Factor Short"
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorShort * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Base Borrowing Factor Long"
+                                  value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorLong, 30, 11)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Base Borrowing Factor Short"
+                                  value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorShort, 30, 11)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Long"
+                                  value={
+                                    marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong
+                                      ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong * 3600n * 100n, 30, 5)}% / 1h`
+                                      : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Short"
+                                  value={
+                                    marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort
+                                      ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort * 3600n * 100n, 30, 5)}% / 1h`
+                                      : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <StatsTooltipRow
+                                  label="Pending borrowing fee"
+                                  value={formatAmountHuman(market.totalBorrowingFees, 30)}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Factor Long"
+                                  value={formatFactor(market.borrowingFactorLong)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Factor Short"
+                                  value={formatFactor(market.borrowingFactorShort)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Exponent Long"
+                                  value={formatFactor(market.borrowingExponentFactorLong)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Borrowing Exponent Short"
+                                  value={formatFactor(market.borrowingExponentFactorShort)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Long"
+                                  value={
+                                    maxBorrowingRateLong ? `-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h` : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label="Max Rate Short"
+                                  value={
+                                    maxBorrowingRateShort
+                                      ? `-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h`
+                                      : "N/A"
+                                  }
+                                  showDollar={false}
+                                />
+                              </>
+                            )}
                           </>
                         )}
                       />

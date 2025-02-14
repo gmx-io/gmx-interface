@@ -14,6 +14,9 @@ export type MarketsInfoResult = {
   pricesUpdatedAt?: number;
 };
 
+/**
+ * Updates frequently
+ */
 export type MarketValues = Pick<
   MarketInfo,
   | "longInterestUsd"
@@ -28,12 +31,6 @@ export type MarketValues = Pick<
   | "positionImpactPoolAmount"
   | "swapImpactPoolAmountLong"
   | "swapImpactPoolAmountShort"
-  | "pnlLongMax"
-  | "pnlLongMin"
-  | "pnlShortMax"
-  | "pnlShortMin"
-  | "netPnlMax"
-  | "netPnlMin"
   | "borrowingFactorPerSecondForLongs"
   | "borrowingFactorPerSecondForShorts"
   | "fundingFactorPerSecond"
@@ -182,6 +179,23 @@ export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
       | "virtualMarketId"
       | "virtualLongTokenId"
       | "virtualShortTokenId",
+      {
+        methodName: string;
+        params: any[];
+      }
+    >;
+  };
+}>;
+
+export type KinkModelMarketRateMulticallRequestConfig = MulticallRequestConfig<{
+  [key: `${string}-dataStore`]: {
+    calls: Record<
+      | "optimalUsageFactorLong"
+      | "optimalUsageFactorShort"
+      | "baseBorrowingFactorLong"
+      | "baseBorrowingFactorShort"
+      | "aboveOptimalUsageBorrowingFactorLong"
+      | "aboveOptimalUsageBorrowingFactorShort",
       {
         methodName: string;
         params: any[];

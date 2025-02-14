@@ -4,13 +4,9 @@ import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
-import {
-  selectBlockTimestampData,
-  selectChainId,
-  selectGasPriceData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import {
@@ -47,9 +43,8 @@ export function useShiftTransactions({
   const chainId = useSelector(selectChainId);
   const { signer, account } = useWallet();
   const { setPendingShift } = useSyntheticsEvents();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
-  const gasPriceData = useSelector(selectGasPriceData);
 
   const onCreateShift = useCallback(
     function onCreateShift() {
@@ -82,11 +77,11 @@ export function useShiftTransactions({
         toMarketTokenAddress: marketToken.address,
         minToMarketTokenAmount: marketTokenAmount,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
         tokensData,
         blockTimestampData,
-        gasPriceData,
         setPendingTxns,
         setPendingShift,
       })
@@ -105,7 +100,6 @@ export function useShiftTransactions({
       chainId,
       shouldDisableValidation,
       blockTimestampData,
-      gasPriceData,
       setPendingTxns,
       setPendingShift,
     ]

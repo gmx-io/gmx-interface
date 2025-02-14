@@ -13,13 +13,12 @@ import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import NetValueTooltip from "./NetValueTooltip";
-import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
-import { getPriceDecimals } from "config/tokens";
+import { getPriceDecimals } from "sdk/configs/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Button from "components/Button/Button";
 import { FaAngleRight } from "react-icons/fa";
@@ -119,8 +118,6 @@ export default function PositionsList(props) {
 
   const onPositionClick = (position) => {
     if (hideActions) return;
-    const longOrShortText = position.isLong ? t`Long` : t`Short`;
-    helperToast.success(t`${longOrShortText} ${position.indexToken.symbol} market selected`);
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
   };
   const positivePercentage = positionToShare?.hasProfitAfterFees;
@@ -554,7 +551,7 @@ export default function PositionsList(props) {
                               <br />
                               <br />
                               <Trans>
-                                Use the "Close" button to reduce your Position Size, or to set Take-Profit / Stop-Loss
+                                Use the "Close" button to reduce your Position Size, or to set Take Profit / Stop Loss
                                 Orders.
                               </Trans>
                             </div>

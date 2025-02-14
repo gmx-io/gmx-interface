@@ -24,9 +24,9 @@ import {
   MAX_LEVERAGE,
 } from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
+import { createDecreaseOrder } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
@@ -69,8 +69,9 @@ import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useKey } from "react-use";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -308,7 +309,7 @@ export default function PositionSeller(props) {
       // only Stop orders can't be executed without corresponding opened position
       if (order.type !== DECREASE) continue;
 
-      // if user creates Stop-Loss we need only Stop-Loss orders and vice versa
+      // if user creates Stop Loss we need only Stop Loss orders and vice versa
       if (orderOption === STOP) {
         const triggerAboveThreshold = triggerPriceUsd > position.markPrice;
         if (triggerAboveThreshold !== order.triggerAboveThreshold) continue;
@@ -331,7 +332,7 @@ export default function PositionSeller(props) {
 
   const isSwapAllowed = orderOption === MARKET;
 
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   let receiveToken;
   let maxAmount;
@@ -497,6 +498,9 @@ export default function PositionSeller(props) {
         expandDecimals(1, collateralToken.decimals),
         collateralToken.maxPrice
       );
+      convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
+    } else {
+      convertedAmount = 0n;
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
@@ -1099,19 +1103,18 @@ export default function PositionSeller(props) {
               onChange={onOrderOptionChange}
             />
           )}
-          <div className="relative">
+          <div className="mb-12 flex flex-col gap-4">
             <BuyInputSection
               inputValue={fromValue}
               onInputValueChange={(e) => setFromValue(e.target.value)}
               topLeftLabel={t`Close`}
-              topLeftValue={
+              bottomLeftValue={
                 convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
               }
+              isBottomLeftValueMuted={convertedAmount === 0n}
               topRightLabel={t`Max`}
               topRightValue={maxAmount && maxAmountFormatted}
-              onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
-              onClickMax={() => setFromValue(maxAmountFormattedFree)}
-              showMaxButton={fromValue !== maxAmountFormattedFree}
+              onClickMax={fromValue !== maxAmountFormattedFree ? () => setFromValue(maxAmountFormattedFree) : undefined}
               showPercentSelector={true}
               onPercentChange={(percentage) => {
                 setFromValue(formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2));
@@ -1119,23 +1122,23 @@ export default function PositionSeller(props) {
             >
               USD
             </BuyInputSection>
+            {orderOption === STOP && (
+              <BuyInputSection
+                inputValue={triggerPriceValue}
+                onInputValueChange={onTriggerPriceChange}
+                topLeftLabel={t`Price`}
+                topRightLabel={t`Mark`}
+                topRightValue={
+                  position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
+                }
+                onClickTopRightLabel={() => {
+                  setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
+                }}
+              >
+                USD
+              </BuyInputSection>
+            )}
           </div>
-          {orderOption === STOP && (
-            <BuyInputSection
-              inputValue={triggerPriceValue}
-              onInputValueChange={onTriggerPriceChange}
-              topLeftLabel={t`Price`}
-              topRightLabel={t`Mark`}
-              topRightValue={
-                position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
-              }
-              onClickTopRightLabel={() => {
-                setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
-              }}
-            >
-              USD
-            </BuyInputSection>
-          )}
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
@@ -1145,13 +1148,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="text-gray-300">Forfeit profit</span>
+                  <span className="text-slate-100">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
-              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="text-gray-300">
+              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage} className="mb-10">
+                <span className="text-slate-100">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>
@@ -1358,8 +1361,9 @@ export default function PositionSeller(props) {
               {isSwapAllowed && receiveToken && (
                 <div className="align-right">
                   <TokenSelector
-                    className={cx("PositionSeller-token-selector", {
-                      warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
+                    className={cx({
+                      "*:!text-yellow-500 hover:!text-yellow-500":
+                        isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
                     label={t`Receive`}
                     showBalances={false}

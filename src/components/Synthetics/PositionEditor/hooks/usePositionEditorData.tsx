@@ -1,24 +1,22 @@
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
-import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { Operation } from "../types";
 
+import {
+  selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorSelectedCollateralToken,
+} from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Options, usePositionEditorFees } from "./usePositionEditorFees";
 
-export function usePositionEditorData({ selectedCollateralAddress, collateralInputValue, operation }: Options) {
+export function usePositionEditorData({ operation }: Options) {
   const { isPnlInLeverage } = useSettings();
-  const tokensData = useTokensData();
 
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -27,16 +25,12 @@ export function usePositionEditorData({ selectedCollateralAddress, collateralInp
 
   const isDeposit = operation === Operation.Deposit;
 
-  const collateralToken = getByKey(tokensData, selectedCollateralAddress);
+  const collateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
+  const { collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
 
   const collateralPrice = collateralToken?.prices.minPrice;
 
-  const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
-  const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
-
   const { fees } = usePositionEditorFees({
-    selectedCollateralAddress,
-    collateralInputValue,
     operation,
   });
 

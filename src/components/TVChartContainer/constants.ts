@@ -5,8 +5,8 @@ import { lightFormat, parse } from "date-fns";
 import { formatTVDate, formatTVTime } from "lib/dates";
 import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
-const RED = "#fa3c58";
-const GREEN = "#0ecc83";
+export const RED = "#fa3c58";
+export const GREEN = "#0ecc83";
 export const DEFAULT_PERIOD = "4h";
 
 const chartStyleOverrides: Partial<WidgetOverrides> = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce(
@@ -36,6 +36,7 @@ const chartOverrides: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "#3a3e5e",
   "scalesProperties.textColor": "#fff",
   "scalesProperties.lineColor": "#16182e",
+  "mainSeriesProperties.statusViewStyle.showExchange": false,
   ...chartStyleOverrides,
 };
 

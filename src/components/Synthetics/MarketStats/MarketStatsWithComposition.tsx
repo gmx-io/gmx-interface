@@ -10,12 +10,12 @@ import {
   getMarketIndexName,
   getGlvOrMarketAddress,
   getMarketPoolName,
-  getMaxPoolUsd,
+  getStrictestMaxPoolUsdForDeposit,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmountWithUsd, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -118,7 +118,7 @@ export function MarketStatsWithComposition(p: Props) {
               longToken?.decimals
             ),
             marketInfo
-              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, true))})`
+              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(marketInfo, true))})`
               : "",
           ],
     [
@@ -142,7 +142,7 @@ export function MarketStatsWithComposition(p: Props) {
               shortToken?.decimals
             ),
             marketInfo
-              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getMaxPoolUsd(marketInfo, false))})`
+              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(marketInfo, false))})`
               : "",
           ],
     [
@@ -419,11 +419,12 @@ export function MarketStatsWithComposition(p: Props) {
             label={t`Wallet`}
             value={
               marketToken
-                ? formatTokenAmountWithUsd(
+                ? formatBalanceAmountWithUsd(
                     marketBalance ?? 0n,
                     marketBalanceUsd ?? 0n,
+                    marketToken?.decimals ?? 18,
                     isGlv ? "GLV" : "GM",
-                    marketToken?.decimals ?? 18
+                    true
                   )
                 : "..."
             }

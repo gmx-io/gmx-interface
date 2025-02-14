@@ -1,10 +1,10 @@
 import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { applyFactor, getBasisPoints, PRECISION } from "lib/numbers";
-import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
+import { SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
-export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
+export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): TradeFlags {
   const isLong = tradeType === TradeType.Long;
   const isShort = tradeType === TradeType.Short;
   const isSwap = tradeType === TradeType.Swap;
@@ -47,6 +47,19 @@ export function getTradeFlagsForOrder(order: OrderInfo) {
   }
 
   return getTradeFlags(tradeType, tradeMode);
+}
+
+export function getTradeFlagsForCollateralEdit(isLong: boolean | undefined, isIncrease: boolean): TradeFlags {
+  return {
+    isMarket: true,
+    isIncrease,
+    isLimit: false,
+    isLong: Boolean(isLong),
+    isShort: !isLong,
+    isSwap: false,
+    isPosition: true,
+    isTrigger: false,
+  };
 }
 
 export function getTradeFees(p: {
@@ -128,6 +141,7 @@ export function getTradeFees(p: {
     uiSwapFee,
   ]);
 
+  // TODO: this is the same as totalFees, we should remove this
   const payTotalFees = getTotalFeeItem([
     ...(swapFees || []),
     swapProfitFee,

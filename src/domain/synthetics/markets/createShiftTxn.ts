@@ -4,7 +4,7 @@ import { Signer, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { SetPendingShift } from "context/SyntheticsEvents";
-import { callContract, GasPriceData } from "lib/contracts";
+import { callContract } from "lib/contracts";
 
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
@@ -13,7 +13,8 @@ import { applySlippageToMinOut } from "../trade";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { OrderMetricId } from "lib/metrics/types";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 type Params = {
   account: string;
@@ -22,12 +23,12 @@ type Params = {
   toMarketTokenAddress: string;
   minToMarketTokenAmount: bigint;
   executionFee: bigint;
+  executionGasLimit: bigint;
   allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
-  blockTimestampData: BlockTimestampData | undefined;
   metricId?: OrderMetricId;
-  gasPriceData: GasPriceData | undefined;
+  blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingShift: SetPendingShift;
 };
@@ -37,6 +38,8 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
   const shiftVaultAddress = getContract(chainId, "ShiftVault");
 
   const minToMarketTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minToMarketTokenAmount);
+
+  await validateSignerAddress(signer, p.account);
 
   const multicall = [
     { method: "sendWnt", params: [shiftVaultAddress, p.executionFee] },
@@ -74,7 +77,7 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
       })
     : undefined;
 
-  const txnParams = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -90,9 +93,13 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit: txnParams.gasLimit,
-    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingShift({
       account: p.account,

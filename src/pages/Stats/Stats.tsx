@@ -1,5 +1,5 @@
 import { getContract } from "config/contracts";
-import { getWhitelistedV1Tokens } from "config/tokens";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
@@ -16,7 +16,7 @@ import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import "./Stats.css";
 import Tooltip from "components/Tooltip/Tooltip";
 import useWallet from "lib/wallets/useWallet";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatAmountHuman } from "lib/numbers";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {

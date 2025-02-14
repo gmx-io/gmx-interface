@@ -2,18 +2,14 @@ import { useCallback, useState } from "react";
 
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import {
-  selectBlockTimestampData,
-  selectChainId,
-  selectGasPriceData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { createDepositTxn, createWithdrawalTxn, GlvInfo, MarketInfo } from "domain/synthetics/markets";
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
-import { usePendingTxns } from "lib/usePendingTxns";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
 
 import { t } from "@lingui/macro";
@@ -81,9 +77,8 @@ export const useDepositWithdrawalTransactions = ({
   const chainId = useSelector(selectChainId);
   const { signer, account } = useWallet();
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
-  const [, setPendingTxns] = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
-  const gasPriceData = useSelector(selectGasPriceData);
 
   const onCreateDeposit = useCallback(
     function onCreateDeposit() {
@@ -157,13 +152,13 @@ export const useDepositWithdrawalTransactions = ({
           marketTokenAmount: marketTokenAmount ?? 0n,
           allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           skipSimulation: shouldDisableValidation,
           tokensData,
           blockTimestampData,
+          isMarketTokenDeposit: isMarketTokenDeposit ?? false,
           setPendingTxns,
           setPendingDeposit,
-          isMarketTokenDeposit: isMarketTokenDeposit ?? false,
-          gasPriceData,
         })
           .then(makeTxnSentMetricsHandler(metricData.metricId))
           .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -181,6 +176,7 @@ export const useDepositWithdrawalTransactions = ({
         marketTokenAddress: marketToken.address,
         minMarketTokens: marketTokenAmount,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         skipSimulation: shouldDisableValidation,
         tokensData,
@@ -188,7 +184,6 @@ export const useDepositWithdrawalTransactions = ({
         blockTimestampData,
         setPendingTxns,
         setPendingDeposit,
-        gasPriceData,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
@@ -218,7 +213,6 @@ export const useDepositWithdrawalTransactions = ({
       blockTimestampData,
       setPendingTxns,
       setPendingDeposit,
-      gasPriceData,
       isMarketTokenDeposit,
     ]
   );
@@ -284,6 +278,7 @@ export const useDepositWithdrawalTransactions = ({
           minLongTokenAmount: longTokenAmount,
           minShortTokenAmount: shortTokenAmount,
           executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
           allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           skipSimulation: shouldDisableValidation,
           tokensData,
@@ -292,7 +287,6 @@ export const useDepositWithdrawalTransactions = ({
           selectedGmMarket: selectedMarketForGlv,
           glv: glvInfo.glvTokenAddress,
           blockTimestampData,
-          gasPriceData,
         })
           .then(makeTxnSentMetricsHandler(metricData.metricId))
           .catch(makeTxnErrorMetricsHandler(metricData.metricId));
@@ -309,13 +303,13 @@ export const useDepositWithdrawalTransactions = ({
         minShortTokenAmount: shortTokenAmount,
         marketTokenAddress: marketToken.address,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         tokensData,
         skipSimulation: shouldDisableValidation,
-        blockTimestampData,
-        gasPriceData,
         setPendingTxns,
         setPendingWithdrawal,
+        blockTimestampData,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
@@ -341,10 +335,9 @@ export const useDepositWithdrawalTransactions = ({
       signer,
       chainId,
       shouldDisableValidation,
-      blockTimestampData,
-      gasPriceData,
       setPendingTxns,
       setPendingWithdrawal,
+      blockTimestampData,
     ]
   );
 

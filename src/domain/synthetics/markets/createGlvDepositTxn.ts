@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
@@ -8,8 +8,9 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 
 import GlvRouter from "sdk/abis/GlvRouter.json";
-import { CreateDepositParams } from "./createDepositTxn";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { CreateDepositParams } from "./createDepositTxn";
 
 interface CreateGlvDepositParams extends CreateDepositParams {
   glvAddress: string;
@@ -27,6 +28,8 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
   const isNativeShortDeposit = Boolean(
     p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
   );
+
+  await validateSignerAddress(signer, p.account);
 
   let wntDeposit = 0n;
 
@@ -103,7 +106,7 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       })
     : undefined;
 
-  const txnParams = await prepareOrderTxn(
+  const { gasLimit, gasPriceData } = await prepareOrderTxn(
     chainId,
     contract,
     "multicall",
@@ -119,9 +122,13 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
-    gasLimit: txnParams.gasLimit,
-    gasPriceData: p.gasPriceData ?? txnParams.gasPriceData,
+    gasLimit,
+    gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    pendingTransactionData: {
+      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionGasLimit: p.executionGasLimit,
+    },
   }).then(() => {
     p.setPendingDeposit({
       account: p.account,

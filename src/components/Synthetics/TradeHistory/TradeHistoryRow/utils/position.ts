@@ -6,17 +6,18 @@ import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
-import { PositionTradeAction, TradeActionType } from "domain/synthetics/tradeHistory/types";
+import { PositionTradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   BN_NEGATIVE_ONE,
   BN_ONE,
+  PRECISION,
   applyFactor,
   calculateDisplayDecimals,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
-  PRECISION,
 } from "lib/numbers";
 
 import { actionTextMap, getActionTitle } from "../../keys";
@@ -584,23 +585,32 @@ export const formatPositionMessage = (
       ) ?? 0n;
 
     const formattedLiquidationFee = formatDeltaUsd(liquidationFeeUsd ? liquidationFeeUsd * -1n : 0n);
-    const returnedCollateralUsd =
+
+    let returnedCollateralUsd = 0n;
+
+    if (
       initialCollateralUsd !== undefined &&
       tradeAction.basePnlUsd !== undefined &&
       borrowingFeeUsd !== undefined &&
       fundingFeeUsd !== undefined &&
       positionFeeUsd !== undefined &&
       liquidationFeeUsd !== undefined &&
-      tradeAction.priceImpactUsd !== undefined &&
-      initialCollateralUsd +
-        tradeAction.basePnlUsd -
-        borrowingFeeUsd -
-        fundingFeeUsd -
-        positionFeeUsd -
-        liquidationFeeUsd +
-        tradeAction.priceImpactUsd;
+      tradeAction.priceImpactUsd !== undefined
+    ) {
+      returnedCollateralUsd = bigMath.max(
+        0n,
+        initialCollateralUsd +
+          tradeAction.basePnlUsd -
+          borrowingFeeUsd -
+          fundingFeeUsd -
+          positionFeeUsd -
+          liquidationFeeUsd +
+          tradeAction.priceImpactUsd
+      );
+    }
 
-    const formattedReturnedCollateral = returnedCollateralUsd ? formatUsd(returnedCollateralUsd) : undefined;
+    const formattedReturnedCollateral =
+      returnedCollateralUsd !== undefined ? formatUsd(returnedCollateralUsd) : undefined;
 
     result = {
       priceComment: lines(
@@ -630,8 +640,8 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Collateral at Liquidation`, formattedLeftoverCollateral),
         infoRow(t`Min. Required Collateral`, formattedMinCollateral),
+        infoRow(t`Collateral at Liquidation`, formattedLeftoverCollateral),
         "",
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,

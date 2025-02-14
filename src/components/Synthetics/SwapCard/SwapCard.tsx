@@ -1,14 +1,13 @@
 import { Trans, t } from "@lingui/macro";
+import { useMemo } from "react";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
-import { formatUsdPrice, calculateDisplayDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "config/factors";
-import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
-import { useMemo } from "react";
+import { calculateDisplayDecimals, formatAmount, formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 
 export type Props = {
   maxLiquidityUsd?: bigint;
@@ -52,44 +51,42 @@ export function SwapCard(p: Props) {
   );
 
   return (
-    <div className="Exchange-swap-market-box App-box App-box-border">
-      <div className="App-card-title">
+    <div className="text-body-medium relative rounded-4 bg-slate-800 p-15 max-[1100px]:mt-0">
+      <div className="text-[15px]">
         <Trans>Swap</Trans>
       </div>
-      <div className="App-card-divider" />
+      <div className="my-15 h-1 bg-stroke-primary" />
 
-      <div>
-        <ExchangeInfoRow
+      <div className="flex flex-col gap-14">
+        <SyntheticsInfoRow
           label={t`${fromToken?.symbol} Price`}
           value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
         />
 
-        <ExchangeInfoRow
+        <SyntheticsInfoRow
           label={t`${toToken?.symbol} Price`}
           value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
         />
 
-        <ExchangeInfoRow
+        <SyntheticsInfoRow
           label={t`Available Liquidity`}
           value={
             <Tooltip
               handle={formatUsd(maxLiquidityUsd) || "..."}
-              position="bottom-end"
-              renderContent={() => (
-                <div>
-                  <StatsTooltipRow
-                    textClassName="al-swap"
-                    label={t`Max ${toToken?.symbol} out`}
-                    value={maxOutValue}
-                    showDollar={false}
-                  />
-                </div>
-              )}
+              position="left-start"
+              content={
+                <StatsTooltipRow
+                  textClassName="al-swap"
+                  label={t`Max ${toToken?.symbol} out`}
+                  value={maxOutValue}
+                  showDollar={false}
+                />
+              }
             />
           }
         />
 
-        <ExchangeInfoRow label={t`Price`} value={ratioStr} />
+        <SyntheticsInfoRow label={t`Price`} value={ratioStr} />
       </div>
     </div>
   );

@@ -1,8 +1,11 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
-import { bigMath } from "./bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { getPlusOrMinusSymbol } from "./utils";
+import { bigintToNumber } from "sdk/utils/numbers";
+
+export * from "sdk/utils/numbers";
 
 const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
@@ -355,31 +358,6 @@ export function roundUpDivision(a: bigint, b: bigint) {
   return (a + b - 1n) / b;
 }
 
-export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
-  if (a < 0n) {
-    return (a - b + 1n) / b;
-  }
-
-  return (a + b - 1n) / b;
-}
-
-export function applyFactor(value: bigint, factor: bigint) {
-  return (value * factor) / PRECISION;
-}
-
-export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRoundUp = false) {
-  const result = (numerator * BASIS_POINTS_DIVISOR_BIGINT) / denominator;
-
-  if (shouldRoundUp) {
-    const remainder = (numerator * BASIS_POINTS_DIVISOR_BIGINT) % denominator;
-    if (remainder !== 0n) {
-      return result < 0n ? result - 1n : result + 1n;
-    }
-  }
-
-  return result;
-}
-
 /**
  *
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
@@ -394,10 +372,6 @@ export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: n
 
   const amount = bigMath.abs(rate * 100n);
   return `${plurOrMinus}${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
-}
-
-export function basisPointsToFloat(basisPoints: bigint) {
-  return (basisPoints * PRECISION) / BASIS_POINTS_DIVISOR_BIGINT;
 }
 
 export function roundToTwoDecimals(n: number) {
@@ -485,39 +459,6 @@ export function deserializeBigIntsInObject<T extends object>(obj: T): Deserializ
   return result;
 }
 
-export function bigintToNumber(value: bigint, decimals: number) {
-  const negative = value < 0;
-  if (negative) value *= -1n;
-  const precision = 10n ** BigInt(decimals);
-  const int = value / precision;
-  const frac = value % precision;
-
-  const num = parseFloat(`${int}.${frac.toString().padStart(decimals, "0")}`);
-  return negative ? -num : num;
-}
-
-export function numberToBigint(value: number, decimals: number) {
-  const negative = value < 0;
-  if (negative) value *= -1;
-
-  const int = Math.trunc(value);
-  let frac = value - int;
-
-  let res = BigInt(int);
-
-  for (let i = 0; i < decimals; i++) {
-    res *= 10n;
-    if (frac !== 0) {
-      frac *= 10;
-      const fracInt = Math.trunc(frac);
-      res += BigInt(fracInt);
-      frac -= fracInt;
-    }
-  }
-
-  return negative ? -res : res;
-}
-
 export function calculateDisplayDecimals(price?: bigint, decimals = USD_DECIMALS, visualMultiplier = 1) {
   if (price === undefined || price === 0n) return 2;
   const priceNumber = bigintToNumber(bigMath.abs(price) * BigInt(visualMultiplier), decimals);
@@ -579,4 +520,103 @@ export function formatAmountHuman(
   }
 
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
+}
+
+export function formatBalanceAmount(
+  amount: bigint,
+  tokenDecimals: number,
+  tokenSymbol?: string,
+  showZero = false,
+  toExponential = true
+): string {
+  if (amount === undefined) return "-";
+
+  if (amount === 0n) {
+    if (showZero === true) {
+      if (tokenSymbol) {
+        return `0.0000 ${tokenSymbol}`;
+      }
+      return "0.0000";
+    }
+
+    return "-";
+  }
+
+  const absAmount = bigMath.abs(amount);
+  const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);
+
+  let value = "";
+
+  if (absAmountFloat >= 1.0) value = formatAmount(amount, tokenDecimals, 4, true);
+  else if (absAmountFloat >= 0.1) value = formatAmount(amount, tokenDecimals, 5, true);
+  else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, 6, true);
+  else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, 7, true);
+  else if (absAmountFloat >= 0.00000001) value = formatAmount(amount, tokenDecimals, 8, true);
+  else {
+    if (toExponential) {
+      value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+    } else {
+      value = bigintToNumber(amount, tokenDecimals).toFixed(8);
+    }
+  }
+
+  if (tokenSymbol) {
+    // Non-breaking space
+    return `${value} ${tokenSymbol}`;
+  }
+
+  return value;
+}
+
+export function formatBalanceAmountWithUsd(
+  amount: bigint,
+  amountUsd: bigint,
+  tokenDecimals: number,
+  tokenSymbol?: string,
+  showZero = false
+) {
+  if (showZero === false && amount === 0n) {
+    return "-";
+  }
+
+  const value = formatBalanceAmount(amount, tokenDecimals, tokenSymbol, showZero);
+
+  const usd = formatUsd(amountUsd);
+
+  // Regular space
+  return `${value} (${usd})`;
+}
+
+export function formatFactor(factor: bigint) {
+  if (factor == 0n) {
+    return "0";
+  }
+
+  if (bigMath.abs(factor) > PRECISION * 1000n) {
+    return (factor / PRECISION).toString();
+  }
+
+  const trailingZeroes =
+    bigMath
+      .abs(factor)
+      .toString()
+      .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
+  const factorDecimals = 30 - trailingZeroes;
+  return formatAmount(factor, 30, factorDecimals);
+}
+
+export function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(value, max));
+}
+
+export function absDiffBps(value: bigint, base: bigint) {
+  if ((value === 0n && base !== 0n) || (value !== 0n && base === 0n)) {
+    return BASIS_POINTS_DIVISOR_BIGINT;
+  }
+
+  if (value === 0n && base === 0n) {
+    return 0n;
+  }
+
+  return bigMath.mulDiv(bigMath.abs(value - base), BASIS_POINTS_DIVISOR_BIGINT, base);
 }

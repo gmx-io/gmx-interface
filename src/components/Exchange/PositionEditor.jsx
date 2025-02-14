@@ -1,3 +1,4 @@
+// @ts-check
 import { useKey } from "react-use";
 import { useEffect, useState, useMemo, useRef } from "react";
 import { Trans, msg, t } from "@lingui/macro";
@@ -32,12 +33,12 @@ import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
-import { getPriceDecimals } from "config/tokens";
+import { getPriceDecimals } from "sdk/configs/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 
@@ -94,6 +95,9 @@ export default function PositionEditor(props) {
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
+  /**
+   * @type {React.RefObject<HTMLButtonElement>}
+   */
   const submitButtonRef = useRef(null);
   const { _ } = useLingui();
   const localizedEditOptionLabels = useLocalizedMap(EDIT_OPTIONS_LABELS);
@@ -119,8 +123,8 @@ export default function PositionEditor(props) {
   let fromAmount;
   let needApproval;
 
-  let convertedAmount;
-  let convertedAmountFormatted;
+  let convertedAmount = 0n;
+  let convertedAmountFormatted = formatAmount(convertedAmount, USD_DECIMALS, 2);
 
   let nextLeverage;
   let nextLeverageExcludingPnl;
@@ -578,47 +582,51 @@ export default function PositionEditor(props) {
             />
             {(isDeposit || isWithdrawal) && (
               <div>
-                <BuyInputSection
-                  inputValue={fromValue}
-                  onInputValueChange={(e) => setFromValue(e.target.value)}
-                  topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
-                  topLeftValue={
-                    convertedAmountFormatted
-                      ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`
-                      : ""
-                  }
-                  topRightLabel={t`Max`}
-                  topRightValue={maxAmount && maxAmountFormatted}
-                  onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
-                  onClick={() => {
-                    const finalMaxAmount = isMetamaskMobile
-                      ? limitDecimals(maxAmountFormattedFree, MAX_METAMASK_MOBILE_DECIMALS)
-                      : maxAmountFormattedFree;
-                    setFromValue(finalMaxAmount);
-                  }}
-                  showMaxButton={fromValue !== maxAmountFormattedFree}
-                  onClickMax={() => setFromValue(maxAmountFormattedFree)}
-                  showPercentSelector={!isDeposit}
-                  onPercentChange={(percentage) => {
-                    setFromValue(
-                      formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2)
-                    );
-                  }}
-                >
-                  {isDeposit ? (
-                    <>
-                      <TokenIcon
-                        className="mr-5"
-                        symbol={position.collateralToken.symbol}
-                        displaySize={20}
-                        importSize={24}
-                      />
-                      {position.collateralToken.symbol}
-                    </>
-                  ) : (
-                    "USD"
-                  )}
-                </BuyInputSection>
+                <div className="mb-12">
+                  <BuyInputSection
+                    inputValue={fromValue}
+                    onInputValueChange={(e) => setFromValue(e.target.value)}
+                    topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
+                    isBottomLeftValueMuted={convertedAmount === 0n}
+                    bottomLeftValue={
+                      convertedAmountFormatted
+                        ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`
+                        : ""
+                    }
+                    topRightLabel={t`Max`}
+                    topRightValue={maxAmount && maxAmountFormatted}
+                    onClickMax={
+                      fromValue !== maxAmountFormattedFree
+                        ? () => {
+                            const finalMaxAmount = isMetamaskMobile
+                              ? limitDecimals(maxAmountFormattedFree, MAX_METAMASK_MOBILE_DECIMALS)
+                              : maxAmountFormattedFree;
+                            setFromValue(finalMaxAmount);
+                          }
+                        : undefined
+                    }
+                    showPercentSelector={!isDeposit}
+                    onPercentChange={(percentage) => {
+                      setFromValue(
+                        formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2)
+                      );
+                    }}
+                  >
+                    {isDeposit ? (
+                      <>
+                        <TokenIcon
+                          className="mr-5"
+                          symbol={position.collateralToken.symbol}
+                          displaySize={20}
+                          importSize={24}
+                        />
+                        {position.collateralToken.symbol}
+                      </>
+                    ) : (
+                      "USD"
+                    )}
+                  </BuyInputSection>
+                </div>
                 <div className="PositionEditor-info-box">
                   {minExecutionFeeErrorMessage && (
                     <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>
@@ -705,7 +713,7 @@ export default function PositionEditor(props) {
                     </div>
                   </div>
 
-                  {fromAmount > 0 && fundingFee > 0 && (
+                  {fromAmount !== undefined && fundingFee !== undefined && fromAmount > 0 && fundingFee > 0 && (
                     <div className="Exchange-info-row">
                       <div className="Exchange-info-label">
                         <Trans>Borrow Fee</Trans>

@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "config/tokens";
+import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -14,6 +14,7 @@ import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStat
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvInfo,
   MarketInfo,
@@ -24,10 +25,9 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 
-import Modal from "../Modal/Modal";
+import { SlideModal } from "components/Modal/SlideModal";
 import { PoolListItem } from "./PoolListItem";
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
@@ -39,6 +39,30 @@ type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   onSelectMarket?: (market: MarketInfo) => void;
   disablePoolSelector?: boolean;
 };
+
+function PoolLabel({
+  marketInfo,
+  disablePoolSelector,
+  onClick,
+}: {
+  marketInfo: MarketInfo | undefined;
+  disablePoolSelector?: boolean;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}) {
+  if (!marketInfo) return "...";
+
+  return (
+    <div
+      className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+        "pointer-events-none": disablePoolSelector,
+      })}
+      onClick={!disablePoolSelector ? onClick : undefined}
+    >
+      {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
+      {!disablePoolSelector && <BiChevronDown className="text-body-large" />}
+    </div>
+  );
+}
 
 export function GmPoolsSelectorForGlvMarket({
   chainId,
@@ -140,6 +164,10 @@ export function GmPoolsSelectorForGlvMarket({
           return false;
         }
 
+        if (item.marketInfo.isSpotOnly) {
+          return false;
+        }
+
         return categoryTokenAddresses.includes(item.marketInfo.indexTokenAddress);
       });
     }
@@ -168,28 +196,18 @@ export function GmPoolsSelectorForGlvMarket({
     [onSelectGmPool, filteredOptions]
   );
 
-  function displayPoolLabel(marketInfo: MarketInfo | undefined) {
-    if (!marketInfo) return "...";
-
-    return (
-      <div
-        className={cx("TokenSelector-box", {
-          "pointer-events-none": disablePoolSelector,
-        })}
-        onClick={!disablePoolSelector ? () => setIsModalVisible(true) : undefined}
-      >
-        {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-        {!disablePoolSelector && <BiChevronDown className="TokenSelector-caret" />}
-      </div>
-    );
-  }
+  const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setIsModalVisible(true);
+  }, []);
 
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
-      <Modal
+      <SlideModal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
+        className="TokenSelector-modal"
         headerContent={
           <div className="mt-16">
             <SearchInput
@@ -221,11 +239,11 @@ export function GmPoolsSelectorForGlvMarket({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-gray-400">
+          <div className="text-body-medium text-slate-100">
             <Trans>No pools matched.</Trans>
           </div>
         )}
-      </Modal>
+      </SlideModal>
 
       {marketInfo && (
         <div className="inline-flex items-center">
@@ -242,7 +260,7 @@ export function GmPoolsSelectorForGlvMarket({
               displaySize={20}
             />
           )}
-          {displayPoolLabel(marketInfo)}
+          <PoolLabel marketInfo={marketInfo} disablePoolSelector={disablePoolSelector} onClick={handleClick} />
         </div>
       )}
     </div>

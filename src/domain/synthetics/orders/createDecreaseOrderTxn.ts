@@ -1,23 +1,25 @@
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { Signer, ethers } from "ethers";
-import { callContract, GasPriceData } from "lib/contracts";
+import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { OrderMetricId } from "lib/metrics";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { getPositionKey } from "../positions";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
+import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType, getPendingOrderFromParams } from "./utils";
-import { t } from "@lingui/macro";
-import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { OrderMetricId } from "lib/metrics";
-import { prepareOrderTxn } from "./prepareOrderTxn";
-import { BlockTimestampData } from "lib/useBlockTimestamp";
+import { getPendingOrderFromParams } from "./utils";
+import { isMarketOrderType } from "sdk/utils/orders";
 
 const { ZeroAddress } = ethers;
 
@@ -37,6 +39,7 @@ export type DecreaseOrderParams = {
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
   executionFee: bigint;
+  executionGasLimit: bigint | undefined;
   allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode?: string;
@@ -59,7 +62,6 @@ export async function createDecreaseOrderTxn(
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks,
   blockTimestampData: BlockTimestampData | undefined,
-  gasPriceData: GasPriceData | undefined,
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
@@ -69,6 +71,11 @@ export async function createDecreaseOrderTxn(
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const totalWntAmount = ps.reduce((acc, p) => acc + p.executionFee, 0n);
   const account = ps[0].account;
+
+  for (const p of ps) {
+    await validateSignerAddress(signer, p.account);
+  }
+
   const encodedPayload = createDecreaseEncodedPayload({
     router,
     orderVaultAddress,
@@ -114,7 +121,7 @@ export async function createDecreaseOrderTxn(
     })
   );
 
-  const txnParams = await prepareOrderTxn(
+  const { gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce } = await prepareOrderTxn(
     chainId,
     router,
     "multicall",
@@ -126,6 +133,13 @@ export async function createDecreaseOrderTxn(
   );
 
   const txnCreatedAt = Date.now();
+  const pendingTransactionData =
+    ps[0].executionFee !== undefined && ps[0].executionGasLimit !== undefined
+      ? {
+          estimatedExecutionFee: ps[0].executionFee,
+          estimatedExecutionGasLimit: ps[0].executionGasLimit,
+        }
+      : undefined;
 
   if (!signer.provider) throw new Error("No provider found");
 
@@ -134,12 +148,13 @@ export async function createDecreaseOrderTxn(
     hideSentMsg: true,
     hideSuccessMsg: true,
     customSigners: subaccount?.customSigners,
-    customSignersGasLimits: txnParams.customSignersGasLimits,
-    customSignersGasPrices: txnParams.customSignersGasPrices,
-    gasLimit: txnParams.gasLimit,
-    gasPriceData: gasPriceData ?? txnParams.gasPriceData,
+    customSignersGasLimits,
+    customSignersGasPrices,
+    gasLimit,
+    gasPriceData,
     metricId,
-    bestNonce: subaccount?.bestNonce,
+    bestNonce,
+    pendingTransactionData,
     setPendingTxns: callbacks.setPendingTxns,
   });
 

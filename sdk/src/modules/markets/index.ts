@@ -97,9 +97,10 @@ export class Markets extends Module {
           // Skip invalid market
           if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
             // eslint-disable-next-line no-console
-            console.log("market info error", marketAddress, readerErrors, dataStoreErrors, readerValues);
+            console.warn(`No market found ${marketAddress} in getMarketsValues`);
             return acc;
           }
+
           const market = getByKey(marketsData, marketAddress)!;
           const marketDivisor = market.isSameCollaterals ? 2n : 1n;
 
@@ -158,12 +159,6 @@ export class Markets extends Module {
             positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
             swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
             swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
-            pnlLongMax: poolValueInfoMax.longPnl,
-            pnlLongMin: poolValueInfoMin.longPnl,
-            pnlShortMax: poolValueInfoMax.shortPnl,
-            pnlShortMin: poolValueInfoMin.shortPnl,
-            netPnlMax: poolValueInfoMax.netPnl,
-            netPnlMin: poolValueInfoMin.netPnl,
 
             borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
             borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
@@ -461,7 +456,7 @@ export class Markets extends Module {
         return data?.positionsVolume.length
           ? data?.positionsVolume.reduce((acc, { market, volume }) => {
               return { ...acc, [market]: BigInt(volume) };
-            })
+            }, {})
           : {};
       }
     );

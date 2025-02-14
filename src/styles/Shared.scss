@@ -43,28 +43,37 @@ input {
   font-family: "RelativeNumber";
 }
 
-::-webkit-scrollbar {
-  width: 0.6rem;
-  height: 0.6rem;
+@supports (scrollbar-width: auto) {
+  :root {
+    scrollbar-color: #a0a3c4 #16182e;
+  }
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: var(--color-slate-800);
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background-color: #16182e;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background-color: #a0a3c4;
+    border-radius: 15px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #b3b4c2;
+  }
 }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: var(--color-slate-100);
-  border-radius: 1.5rem;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #b3b4c2;
-}
 :root {
-  --main-bg-color: var(--color-slate-900);
+  --main-bg-color: var(--color-slate-950);
   --dark-blue: var(--color-slate-800);
   --dark-blue-bg: var(--color-slate-800);
   --dark-blue-accent: var(--color-slate-100);
@@ -107,8 +116,9 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+// TODO: remove this
 input {
-  font-size: 2rem;
+  font-size: var(--font-size-body-medium);
   color: var(--color-white);
   outline: none;
   background: none;
@@ -147,7 +157,7 @@ tr {
 }
 
 .muted {
-  opacity: 0.7;
+  color: var(--color-slate-100);
 }
 
 .strong {
@@ -165,7 +175,7 @@ tr {
 
 .label,
 .label a {
-  color: var(--color-gray-300);
+  color: var(--color-slate-100);
 }
 
 ul {
@@ -383,7 +393,7 @@ button.btn-link:hover .logout-icon {
 
 .subtext {
   font-size: 1.2rem;
-  color: var(--color-gray-300);
+  color: var(--color-slate-100);
   margin-left: 0.25rem;
 }
 

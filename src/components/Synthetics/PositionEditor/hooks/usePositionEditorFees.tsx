@@ -2,31 +2,28 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
-  getExecutionFee,
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
-import { convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
-import { parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { Operation } from "../types";
 
 export type Options = {
-  selectedCollateralAddress?: string;
-  collateralInputValue: string;
   operation: Operation;
 };
 
-export function usePositionEditorFees({ selectedCollateralAddress, collateralInputValue, operation }: Options) {
+// todo make it a selector
+export function usePositionEditorFees({ operation }: Options) {
   const { chainId } = useChainId();
   const tokensData = useTokensData();
 
@@ -34,12 +31,7 @@ export function usePositionEditorFees({ selectedCollateralAddress, collateralInp
 
   const isDeposit = operation === Operation.Deposit;
 
-  const collateralToken = getByKey(tokensData, selectedCollateralAddress);
-
-  const collateralPrice = collateralToken?.prices.minPrice;
-
-  const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
-  const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
+  const { collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
 
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);

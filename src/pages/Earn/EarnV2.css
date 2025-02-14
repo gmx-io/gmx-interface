@@ -1,0 +1,107 @@
+.StakeV2 .Page-title-section {
+  position: relative;
+  z-index: 2;
+}
+
+.CompoundModal-menu {
+  margin-bottom: 0.8rem;
+}
+
+.CompoundModal-menu .Checkbox {
+  margin-bottom: 0.465rem;
+}
+
+.StakeV2-address-input {
+  padding: 1.5rem 3.41rem;
+  padding-bottom: 0;
+}
+
+.StakeV2-buy-gmx-modal .Modal-content {
+  max-width: 46.5rem;
+}
+
+.StakeV2-address-input input {
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 1.7rem;
+}
+
+.StakeV2-boost-bar {
+  overflow: hidden;
+  vertical-align: middle;
+  margin-left: 0.31rem;
+  border-radius: 2px;
+  width: 1.5rem;
+  height: 0.8rem;
+  border: 1px solid var(--color-gray-500);
+  display: inline-block;
+  position: relative;
+}
+
+.StakeV2-boost-icon {
+  font-size: 1.085rem;
+  z-index: 2;
+}
+
+.StakeV2-boost-bar-fill {
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--color-gray-300);
+}
+
+.StakeV2-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1.5rem;
+}
+
+.App-card-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.App-card-buttons.glp-buttons {
+  padding-top: 0.8rem;
+}
+
+.App-card-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 1.5rem 1.5rem;
+}
+.App-card-footer .App-card-divider {
+  margin-bottom: 1.8rem;
+}
+
+.Stake-modal-icons {
+  display: inline-flex;
+  line-height: 1;
+}
+
+.Stake-modal-icons .icon {
+  vertical-align: bottom;
+}
+
+@media (max-width: 900px) {
+  .StakeV2-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .StakeV2-content {
+    min-height: 100vh;
+  }
+
+  .StakeV2-total-rewards-card {
+    grid-row: 4;
+  }
+  .App-card-footer {
+    position: relative;
+    padding: 0;
+  }
+}

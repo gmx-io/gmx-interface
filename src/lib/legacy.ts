@@ -12,9 +12,9 @@ import { getServerBaseUrl } from "config/backend";
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { isValidToken } from "config/tokens";
 import { getMostAbundantStableToken, TokenInfo } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
+import { isValidToken } from "sdk/configs/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import {
@@ -27,7 +27,6 @@ import {
 } from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
-import { getIsFlagEnabled } from "config/ab";
 
 const { ZeroAddress } = ethers;
 
@@ -76,6 +75,21 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
+export const SWAP_OPTIONS_CLASSNAMES = {
+  [LONG]: {
+    active: "!bg-[#1E3445] border-b border-b-green-500",
+    regular: "border-b border-b-[transparent]",
+  },
+  [SHORT]: {
+    active: "!bg-[#392A46] border-b border-b-red-500",
+    regular: "border-b border-b-[transparent]",
+  },
+  [SWAP]: {
+    active: "!bg-[#252B57] border-b border-b-blue-300",
+    regular: "border-b border-b-[transparent]",
+  },
+};
+
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
@@ -1007,9 +1021,12 @@ export function getTotalVolumeSum(volumes) {
   return volume;
 }
 
-export function getBalanceAndSupplyData(balances) {
+export function getBalanceAndSupplyData(balances: bigint[] | undefined): {
+  balanceData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>>;
+  supplyData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>>;
+} {
   if (!balances || balances.length === 0) {
-    return {};
+    return { balanceData: {}, supplyData: {} };
   }
 
   const keys = ["gmx", "esGmx", "glp", "stakedGmxTracker"];
@@ -1026,7 +1043,19 @@ export function getBalanceAndSupplyData(balances) {
   return { balanceData, supplyData };
 }
 
-export function getDepositBalanceData(depositBalances) {
+export function getDepositBalanceData(
+  depositBalances: bigint[] | undefined
+):
+  | Record<
+      | "gmxInStakedGmx"
+      | "esGmxInStakedGmx"
+      | "stakedGmxInBonusGmx"
+      | "bonusGmxInFeeGmx"
+      | "bnGmxInFeeGmx"
+      | "glpInStakedGlp",
+      bigint
+    >
+  | undefined {
   if (!depositBalances || depositBalances.length === 0) {
     return;
   }
@@ -1046,7 +1075,7 @@ export function getDepositBalanceData(depositBalances) {
     data[key] = depositBalances[i];
   }
 
-  return data;
+  return data as any;
 }
 
 type RawVestingData = {
@@ -1133,7 +1162,23 @@ export function getVestingData(vestingInfo): RawVestingData | undefined {
   return data as RawVestingData;
 }
 
-export function getStakingData(stakingInfo) {
+export function getStakingData(stakingInfo: bigint[] | undefined):
+  | undefined
+  | Record<
+      | "stakedGmxTracker"
+      | "bonusGmxTracker"
+      | "feeGmxTracker"
+      | "stakedGlpTracker"
+      | "feeGlpTracker"
+      | "extendedGmxTracker",
+      {
+        claimable: bigint;
+        tokensPerInterval: bigint;
+        averageStakedAmounts: bigint;
+        cumulativeRewards: bigint;
+        totalSupply: bigint;
+      }
+    > {
   if (!stakingInfo || stakingInfo.length === 0) {
     return;
   }
@@ -1160,7 +1205,7 @@ export function getStakingData(stakingInfo) {
     };
   }
 
-  return data;
+  return data as any;
 }
 
 export type ProcessedData = Partial<{
@@ -1227,16 +1272,42 @@ export type ProcessedData = Partial<{
 };
 
 export function getProcessedData(
-  balanceData,
-  supplyData,
-  depositBalanceData,
-  stakingData,
-  vestingData,
-  aum,
-  nativeTokenPrice,
-  stakedGmxSupply,
-  gmxPrice,
-  gmxSupply
+  balanceData: Partial<Record<"glp" | "gmx" | "esGmx" | "stakedGmxTracker", bigint>> | undefined,
+  supplyData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>> | undefined,
+  depositBalanceData:
+    | Record<
+        | "gmxInStakedGmx"
+        | "esGmxInStakedGmx"
+        | "stakedGmxInBonusGmx"
+        | "bonusGmxInFeeGmx"
+        | "bnGmxInFeeGmx"
+        | "glpInStakedGlp",
+        bigint
+      >
+    | undefined,
+  stakingData:
+    | Record<
+        | "stakedGmxTracker"
+        | "bonusGmxTracker"
+        | "feeGmxTracker"
+        | "stakedGlpTracker"
+        | "feeGlpTracker"
+        | "extendedGmxTracker",
+        {
+          claimable: bigint;
+          tokensPerInterval: bigint;
+          averageStakedAmounts: bigint;
+          cumulativeRewards: bigint;
+          totalSupply: bigint;
+        }
+      >
+    | undefined,
+  vestingData: RawVestingData | undefined,
+  aum: bigint | undefined,
+  nativeTokenPrice: bigint | undefined,
+  stakedGmxSupply: bigint | undefined,
+  gmxPrice: bigint | undefined,
+  gmxSupply: string | undefined
 ): ProcessedData | undefined {
   if (
     !balanceData ||
@@ -1244,10 +1315,10 @@ export function getProcessedData(
     !depositBalanceData ||
     !stakingData ||
     !vestingData ||
-    !aum ||
-    !nativeTokenPrice ||
-    !stakedGmxSupply ||
-    !gmxPrice ||
+    aum === undefined ||
+    nativeTokenPrice === undefined ||
+    stakedGmxSupply === undefined ||
+    gmxPrice === undefined ||
     !gmxSupply
   ) {
     return undefined;
@@ -1484,10 +1555,6 @@ export function getOrderError(account, order, positionsMap, position) {
 }
 
 export function shouldShowRedirectModal(timestamp?: number): boolean {
-  if (getIsFlagEnabled("testRemoveConfirmationModal")) {
-    return false;
-  }
-
   if (!timestamp) {
     return true;
   }

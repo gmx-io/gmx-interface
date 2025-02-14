@@ -14,14 +14,13 @@ import {
 } from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "domain/tokens";
 import { ethers } from "ethers";
-import { bigMath } from "lib/bigmath";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
-import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
-import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
 export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
@@ -59,7 +58,6 @@ export function getSwapError(p: {
   markRatio: TokensRatio | undefined;
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
-  priceImpactWarning: PriceImpactWarningState;
   isWrapOrUnwrap: boolean;
   swapLiquidity: bigint | undefined;
 }): ValidationResult {
@@ -74,7 +72,6 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
-    priceImpactWarning,
     swapLiquidity,
     swapPathStats,
   } = p;
@@ -126,7 +123,7 @@ export function getSwapError(p: {
       !isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio < triggerRatio.ratio)
     ) {
-      return [t`Price above Mark Price`];
+      return [t`Limit price above mark price`];
     }
 
     if (
@@ -134,12 +131,8 @@ export function getSwapError(p: {
       isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio > triggerRatio.ratio)
     ) {
-      return [t`Price below Mark Price`];
+      return [t`Limit price below mark price`];
     }
-  }
-
-  if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
   }
 
   return [undefined];
@@ -158,7 +151,6 @@ export function getIncreaseError(p: {
   existingPosition: PositionInfo | undefined;
   fees: TradeFees | undefined;
   markPrice: bigint | undefined;
-  priceImpactWarning: PriceImpactWarningState;
   triggerPrice: bigint | undefined;
   swapPathStats: SwapPathStats | undefined;
   collateralLiquidity: bigint | undefined;
@@ -176,7 +168,6 @@ export function getIncreaseError(p: {
     initialCollateralAmount,
     initialCollateralUsd,
     targetCollateralToken,
-    priceImpactWarning,
     collateralUsd,
     sizeDeltaUsd,
     existingPosition,
@@ -282,11 +273,11 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && markPrice < triggerPrice) {
-      return [t`Price above Mark Price`];
+      return [t`Limit price above mark price`];
     }
 
     if (!isLong && markPrice > triggerPrice) {
-      return [t`Price below Mark Price`];
+      return [t`Limit price below mark price`];
     }
   }
 
@@ -294,10 +285,6 @@ export function getIncreaseError(p: {
 
   if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
-  }
-
-  if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
   }
 
   if (nextLeverageWithoutPnl !== undefined) {
@@ -360,7 +347,6 @@ export function getDecreaseError(p: {
   isLong: boolean;
   isContractAccount: boolean;
   minCollateralUsd: bigint | undefined;
-  priceImpactWarning: PriceImpactWarningState;
   isNotEnoughReceiveTokenLiquidity: boolean;
   triggerThresholdType: TriggerThresholdType | undefined;
 }): ValidationResult {
@@ -378,7 +364,6 @@ export function getDecreaseError(p: {
     isLong,
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
-    priceImpactWarning,
     triggerThresholdType,
   } = p;
 
@@ -401,20 +386,20 @@ export function getDecreaseError(p: {
 
     if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== ethers.MaxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
-        return [t`Price below Liq. Price`];
+        return [t`Trigger price below liq. price`];
       }
 
       if (!isLong && triggerPrice >= existingPosition.liquidationPrice) {
-        return [t`Price above Liq. Price`];
+        return [t`Trigger price above liq. price`];
       }
     }
 
     if (triggerThresholdType === TriggerThresholdType.Above && triggerPrice < (markPrice ?? 0n)) {
-      return [t`Price below Mark Price`];
+      return [t`Trigger price below mark price`];
     }
 
     if (triggerThresholdType === TriggerThresholdType.Below && triggerPrice > (markPrice ?? 0n)) {
-      return [t`Price above Mark Price`];
+      return [t`Trigger price above mark price`];
     }
   }
 
@@ -441,10 +426,6 @@ export function getDecreaseError(p: {
 
   if (isNotEnoughReceiveTokenLiquidity) {
     return [t`Insufficient receive token liquidity`];
-  }
-
-  if (priceImpactWarning.validationError) {
-    return [t`Price Impact not yet acknowledged`];
   }
 
   return [undefined];
@@ -550,8 +531,7 @@ export function getGmSwapError(p: {
   longTokenLiquidityUsd: bigint | undefined;
   shortTokenLiquidityUsd: bigint | undefined;
   fees: GmSwapFees | undefined;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
+  consentError: boolean;
   priceImpactUsd: bigint | undefined;
   glvInfo?: GlvInfo;
   marketTokensData?: TokensData;
@@ -574,8 +554,7 @@ export function getGmSwapError(p: {
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,
     fees,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
+    consentError,
     priceImpactUsd,
     glvInfo,
     marketTokensData,
@@ -586,8 +565,8 @@ export function getGmSwapError(p: {
     return [t`Loading...`];
   }
 
-  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-    return [t`Price Impact not yet acknowledged`];
+  if (consentError) {
+    return [t`Acknowledgment Required`];
   }
 
   const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
@@ -662,7 +641,11 @@ export function getGmSwapError(p: {
     return [t`Amount should be greater than zero`];
   }
 
-  if (marketTokenAmount === undefined || marketTokenAmount < 0) {
+  if (
+    marketTokenAmount === undefined ||
+    marketTokenAmount < 0 ||
+    (marketTokenAmount === 0n && longTokenAmount === 0n && shortTokenAmount === 0n)
+  ) {
     return [t`Enter an amount`];
   }
 
@@ -760,8 +743,7 @@ export function getGmShiftError({
   toToken,
   toTokenAmount,
   fees,
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
+  consentError,
   priceImpactUsd,
 }: {
   fromMarketInfo: MarketInfo | undefined;
@@ -774,8 +756,7 @@ export function getGmShiftError({
   toToken: TokenData | undefined;
   toTokenAmount: bigint | undefined;
   fees: GmSwapFees | undefined;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
+  consentError: boolean;
   priceImpactUsd: bigint | undefined;
 }) {
   const isGlv = isGlvInfo(toMarketInfo);
@@ -784,8 +765,8 @@ export function getGmShiftError({
     return [t`Loading...`];
   }
 
-  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-    return [t`Price Impact not yet acknowledged`];
+  if (consentError) {
+    return [t`Acknowledgment Required`];
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
@@ -829,7 +810,7 @@ export function getGmShiftError({
     return [t`Amount should be greater than zero`];
   }
 
-  if (fromTokenAmount === undefined || fromTokenAmount < 0 || toTokenAmount === undefined || toTokenAmount < 0) {
+  if (fromTokenAmount === undefined || fromTokenAmount <= 0n || toTokenAmount === undefined || toTokenAmount <= 0n) {
     return [t`Enter an amount`];
   }
 

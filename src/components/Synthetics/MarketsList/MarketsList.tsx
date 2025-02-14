@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { getIcon } from "config/icons";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -42,7 +42,7 @@ export function MarketsList() {
 function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; indexTokensStats: IndexTokenStat[] }) {
   const { orderBy, direction, getSorterProps } = useSorterHandlers<
     "price" | "tvl" | "liquidity" | "utilization" | "unspecified"
-  >();
+  >("dashboard-markets-list");
   const [searchText, setSearchText] = useState("");
 
   const filteredMarkets = useFilterSortMarkets({ searchText, indexTokensStats, orderBy, direction });
@@ -109,7 +109,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
 
             {indexTokensStats.length > 0 && !currentData.length && (
               <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
-                <TableTd colSpan={6} className="text-body-medium align-top text-gray-400">
+                <TableTd colSpan={6} className="text-body-medium align-top text-slate-100">
                   <Trans>No markets found.</Trans>
                 </TableTd>
               </TableTr>

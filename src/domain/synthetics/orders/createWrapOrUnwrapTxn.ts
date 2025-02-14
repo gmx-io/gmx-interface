@@ -1,4 +1,4 @@
-import { NATIVE_TOKEN_ADDRESS, getToken, getWrappedToken } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getToken, getWrappedToken } from "sdk/configs/tokens";
 import { callContract } from "lib/contracts";
 import WETH from "sdk/abis/WETH.json";
 import { Signer, ethers } from "ethers";

@@ -7,12 +7,7 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  getExecutionFee,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
+import { estimateExecuteDecreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { useChainId } from "lib/chains";
@@ -26,10 +21,11 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 import { shouldPreSelectPosition } from "./utils";
 
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees/utils/estimateOraclePriceCount";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import "./SettleAccruedFundingFeeModal.scss";
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectBlockTimestampData, selectGasPriceData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 type Props = {
   allowedSlippage: number;
@@ -46,10 +42,10 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
-  const blockTimestampData = useSelector(selectBlockTimestampData);
   const [isUntouched, setIsUntouched] = useState(true);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
 
-  const { executionFee, feeUsd } = useMemo(() => {
+  const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
       decreaseSwapType: DecreasePositionSwapType.NoSwap,
@@ -58,6 +54,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     const oraclePriceCount = estimateOrderOraclePriceCount(0);
     const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
     return {
+      gasLimit: fees?.gasLimit,
       executionFee: fees?.feeTokenAmount,
       feeUsd: fees?.feeUsd,
     };
@@ -114,7 +111,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
 
   const { setPendingFundingFeeSettlement } = useSyntheticsEvents();
-  const gasPriceData = useSelector(selectGasPriceData);
 
   const onSubmit = useCallback(() => {
     if (!account || !signer || !chainId || executionFee === undefined || !tokensData) return;
@@ -142,6 +138,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           isLong: position.isLong,
           minOutputUsd: 0n,
           executionFee,
+          executionGasLimit: gasLimit,
           allowedSlippage,
           referralCode: userReferralInfo?.referralCodeForTxn,
           indexToken: position.indexToken,
@@ -154,8 +151,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         setPendingTxns,
         setPendingFundingFeeSettlement,
       },
-      blockTimestampData,
-      gasPriceData
+      blockTimestampData
     )
       .then(handleOnClose)
       .finally(() => {
@@ -167,7 +163,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     blockTimestampData,
     chainId,
     executionFee,
-    gasPriceData,
+    gasLimit,
     handleOnClose,
     selectedPositions,
     setPendingFundingFeeSettlement,

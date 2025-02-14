@@ -6,14 +6,11 @@ import { useKey, useLatest } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { USD_DECIMALS } from "config/factors";
-import { convertTokenAddress, getTokenVisualMultiplier } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
@@ -22,13 +19,15 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { useHasOutdatedUi } from "domain/legacy";
+import {
+  usePositionSeller,
+  usePositionSellerKeepLeverage,
+  usePositionSellerLeverageDisabledByCollateral,
+} from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
-import { applySlippageToPrice } from "domain/synthetics/trade";
+import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
@@ -43,14 +42,14 @@ import {
 } from "lib/numbers";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
-import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
-  selectPositionSellerExecutionPrice,
   selectPositionSellerFees,
   selectPositionSellerMarkPrice,
   selectPositionSellerMaxLiquidityPath,
@@ -68,9 +67,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
-import { bigMath } from "lib/bigmath";
 import { useLocalizedMap } from "lib/i18n";
-import { ExecutionPriceRow } from "../ExecutionPriceRow";
+import { bigMath } from "sdk/utils/bigmath";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -78,15 +76,17 @@ import { helperToast } from "lib/helperToast";
 import {
   initDecreaseOrderMetricData,
   makeTxnErrorMetricsHandler,
+  makeTxnSentMetricsHandler,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { makeTxnSentMetricsHandler } from "lib/metrics/utils";
-import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./PositionSeller.scss";
-import { selectBlockTimestampData, selectGasPriceData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -112,7 +112,7 @@ export function PositionSeller(p: Props) {
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
-  const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const hasOutdatedUi = useHasOutdatedUi();
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -144,6 +144,7 @@ export function PositionSeller(p: Props) {
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
     setIsReceiveTokenChanged,
+    setKeepLeverage,
   } = usePositionSeller();
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
@@ -157,11 +158,6 @@ export function PositionSeller(p: Props) {
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isTrigger = orderOption === OrderOption.Trigger;
-
-  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
-    positionKey: position?.key,
-    isCreatingNewAutoCancel: isTrigger,
-  });
 
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
@@ -207,29 +203,24 @@ export function PositionSeller(p: Props) {
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
-  const executionPrice = useSelector(selectPositionSellerExecutionPrice);
-
-  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
-    executionFee?.feeUsd
-  );
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    positionPriceImpact: fees?.positionCollateralPriceImpact,
+    collateralImpact: fees?.positionCollateralPriceImpact,
+    positionImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    place: "positionSeller",
+    swapProfitFee: fees?.swapProfitFee,
+    executionFeeUsd: executionFee?.feeUsd,
     tradeFlags,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
-  const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
-  const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+  const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   useEffect(() => {
     if (isVisible) {
-      setIsHighPositionImpactAcceptedLatestRef.current(false);
-      setIsHighSwapImpactAcceptedLatestRef.current(false);
+      setIsDismissedLatestRef.current(false);
     }
-  }, [setIsHighPositionImpactAcceptedLatestRef, setIsHighSwapImpactAcceptedLatestRef, isVisible, orderOption]);
+  }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
   const error = useMemo(() => {
     if (!position) {
@@ -256,16 +247,11 @@ export function PositionSeller(p: Props) {
       isLong: position.isLong,
       isContractAccount: false,
       minCollateralUsd,
-      priceImpactWarning: priceImpactWarningState,
       isNotEnoughReceiveTokenLiquidity,
     });
 
     if (commonError[0] || decreaseError[0]) {
       return commonError[0] || decreaseError[0];
-    }
-
-    if (isHighFeeConsentError) {
-      return [t`High Network Fee not yet acknowledged`];
     }
 
     if (isSubmitting) {
@@ -277,7 +263,6 @@ export function PositionSeller(p: Props) {
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
     hasOutdatedUi,
-    isHighFeeConsentError,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
     isTrigger,
@@ -285,7 +270,6 @@ export function PositionSeller(p: Props) {
     minCollateralUsd,
     nextPositionValues,
     position,
-    priceImpactWarningState,
     receiveToken,
     triggerPrice,
   ]);
@@ -293,7 +277,6 @@ export function PositionSeller(p: Props) {
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
-  const gasPriceData = useSelector(selectGasPriceData);
 
   function onSubmit() {
     if (!account) {
@@ -322,6 +305,10 @@ export function PositionSeller(p: Props) {
       allowedSlippage,
       isLong: position?.isLong,
       place: "positionSeller",
+      interactionId: undefined,
+      priceImpactDeltaUsd: undefined,
+      priceImpactPercentage: undefined,
+      netRate1h: undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -364,6 +351,7 @@ export function PositionSeller(p: Props) {
         orderType,
         referralCode: userReferralInfo?.referralCodeForTxn,
         executionFee: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
         allowedSlippage,
         indexToken: position.indexToken,
         tokensData,
@@ -376,7 +364,6 @@ export function PositionSeller(p: Props) {
         setPendingPosition,
       },
       blockTimestampData,
-      gasPriceData,
       metricData.metricId
     )
       .then(makeTxnSentMetricsHandler(metricData.metricId))
@@ -435,53 +422,8 @@ export function PositionSeller(p: Props) {
     setSelectedTriggerAcceptablePriceImpactBps,
   ]);
 
-  const executionPriceFlags = useMemo(
-    () => ({
-      isLimit: false,
-      isMarket: orderOption === OrderOption.Market,
-      isIncrease: false,
-      isLong: !!position?.isLong,
-      isShort: !position?.isLong,
-      isSwap: false,
-      isPosition: true,
-      isTrigger: orderOption === OrderOption.Trigger,
-    }),
-    [position?.isLong, orderOption]
-  );
-
-  const shouldApplySlippage = orderOption === OrderOption.Market;
-  const acceptablePrice =
-    shouldApplySlippage && decreaseAmounts?.acceptablePrice && position
-      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong)
-      : decreaseAmounts?.acceptablePrice;
-
-  const limitPriceRow = (
-    <ExecutionPriceRow
-      tradeFlags={executionPriceFlags}
-      fees={fees}
-      executionPrice={executionPrice ?? undefined}
-      acceptablePrice={acceptablePrice}
-      triggerOrderType={decreaseAmounts?.triggerOrderType}
-      visualMultiplier={toToken?.visualMultiplier}
-    />
-  );
-
-  let formattedTriggerPrice = "-";
-
-  if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
-    formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
-      displayDecimals: marketDecimals ?? toToken?.priceDecimals,
-      visualMultiplier: toToken?.visualMultiplier,
-    })}`;
-  }
-
-  const triggerPriceRow = (
-    <ExchangeInfoRow className="SwapBox-info-row" label={t`Trigger Price`} value={formattedTriggerPrice} />
-  );
-
   const liqPriceRow = position && (
-    <ExchangeInfoRow
-      className="SwapBox-info-row"
+    <SyntheticsInfoRow
       label={t`Liq. Price`}
       value={
         <ValueTransition
@@ -507,7 +449,7 @@ export function PositionSeller(p: Props) {
   );
 
   const receiveTokenRow = isTrigger ? (
-    <ExchangeInfoRow
+    <SyntheticsInfoRow
       className="SwapBox-info-row"
       label={t`Receive`}
       value={formatTokenAmountWithUsd(
@@ -518,15 +460,15 @@ export function PositionSeller(p: Props) {
       )}
     />
   ) : (
-    <ExchangeInfoRow
+    <SyntheticsInfoRow
       label={t`Receive`}
-      className="Exchange-info-row PositionSeller-receive-row "
+      className=""
       value={
         receiveToken && (
           <TokenSelector
             label={t`Receive`}
-            className={cx("PositionSeller-token-selector", {
-              warning: isNotEnoughReceiveTokenLiquidity,
+            className={cx({
+              "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
             })}
             chainId={chainId}
             showBalances={false}
@@ -555,10 +497,47 @@ export function PositionSeller(p: Props) {
     />
   );
 
+  let formattedTriggerPrice = "-";
+
+  if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
+    formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
+      displayDecimals: marketDecimals ?? toToken?.priceDecimals,
+      visualMultiplier: toToken?.visualMultiplier,
+    })}`;
+  }
+
+  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
+    positionKey: position?.key,
+    isCreatingNewAutoCancel: isTrigger,
+  });
+  const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
+  const keepLeverage = usePositionSellerKeepLeverage();
+  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
+
+  let keepLeverageAtValue: string | undefined = "...";
+  if (position?.leverage && !decreaseAmounts?.isFullClose) {
+    keepLeverageAtValue = formatLeverage(position.leverage);
+  }
+
+  const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
+
+  const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
+    <TooltipWithPortal
+      handle={keepLeverageText}
+      content={
+        <Trans>
+          Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+        </Trans>
+      }
+    />
+  ) : (
+    keepLeverageText
+  );
+
   return (
-    <div className="PositionEditor PositionSeller">
+    <div className="text-body-medium">
       <Modal
-        className="PositionSeller-modal"
         isVisible={isVisible}
         setIsVisible={onClose}
         label={
@@ -569,10 +548,13 @@ export function PositionSeller(p: Props) {
           </Trans>
         }
         qa="position-close-modal"
+        contentClassName="w-[380px]"
       >
         <Tab
+          className="mb-[10.5px]"
           options={Object.values(OrderOption)}
           option={orderOption}
+          type="inline"
           optionLabels={localizedOrderOptionLabels}
           onChange={handleSetOrderOption}
           qa="operation-tabs"
@@ -580,15 +562,18 @@ export function PositionSeller(p: Props) {
 
         {position && (
           <>
-            <div className="relative">
+            <div className="flex flex-col gap-2">
               <BuyInputSection
                 topLeftLabel={t`Close`}
                 topRightLabel={t`Max`}
                 topRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                showMaxButton={maxCloseSize > 0 && closeSizeUsd !== maxCloseSize}
-                onClickMax={() => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))}
+                onClickMax={
+                  maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
+                    ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
+                    : undefined
+                }
                 showPercentSelector={true}
                 onPercentChange={(percentage) => {
                   const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
@@ -598,70 +583,56 @@ export function PositionSeller(p: Props) {
               >
                 USD
               </BuyInputSection>
-            </div>
-            {isTrigger && (
-              <BuyInputSection
-                topLeftLabel={t`Price`}
-                topRightLabel={t`Mark`}
-                topRightValue={formatUsd(markPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: toToken?.visualMultiplier,
-                })}
-                onClickTopRightLabel={() => {
-                  setTriggerPriceInputValueRaw(
-                    formatAmount(
-                      markPrice,
-                      USD_DECIMALS,
-                      calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
-                      undefined,
-                      undefined,
-                      toToken?.visualMultiplier
-                    )
-                  );
-                }}
-                inputValue={triggerPriceInputValue}
-                onInputValueChange={(e) => {
-                  setTriggerPriceInputValue(e.target.value);
-                }}
-                qa="trigger-input"
-              >
-                USD
-              </BuyInputSection>
-            )}
-
-            <ExchangeInfo className="PositionEditor-info-box" dividerClassName="my-15 -mx-15 h-1 bg-slate-700">
-              <ExchangeInfo.Group>{isTrigger && maxAutoCancelOrdersWarning}</ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                {isTrigger && triggerPriceRow}
-                {limitPriceRow}
-                {liqPriceRow}
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                <PositionSellerAdvancedRows triggerPriceInputValue={triggerPriceInputValue} />
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>
-                <TradeFeesRow {...fees} feesType="decrease" />
-                <NetworkFeeRow executionFee={executionFee} />
-              </ExchangeInfo.Group>
-
-              <ExchangeInfo.Group>{receiveTokenRow}</ExchangeInfo.Group>
-
-              {(priceImpactWarningState.shouldShowWarning || highExecutionFeeAcknowledgement) && (
-                <ExchangeInfo.Group>
-                  <div className="PositionSeller-price-impact-warning">
-                    {priceImpactWarningState.shouldShowWarning && (
-                      <HighPriceImpactWarning priceImpactWarningState={priceImpactWarningState} />
-                    )}
-
-                    {highExecutionFeeAcknowledgement}
-                  </div>
-                </ExchangeInfo.Group>
+              {isTrigger && (
+                <BuyInputSection
+                  topLeftLabel={t`Trigger Price`}
+                  topRightLabel={t`Mark`}
+                  topRightValue={formatUsd(markPrice, {
+                    displayDecimals: marketDecimals,
+                    visualMultiplier: toToken?.visualMultiplier,
+                  })}
+                  onClickTopRightLabel={() => {
+                    setTriggerPriceInputValueRaw(
+                      formatAmount(
+                        markPrice,
+                        USD_DECIMALS,
+                        calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
+                        undefined,
+                        undefined,
+                        toToken?.visualMultiplier
+                      )
+                    );
+                  }}
+                  inputValue={triggerPriceInputValue}
+                  onInputValueChange={(e) => {
+                    setTriggerPriceInputValue(e.target.value);
+                  }}
+                  qa="trigger-input"
+                >
+                  USD
+                </BuyInputSection>
               )}
-            </ExchangeInfo>
-            <div className="Exchange-swap-button-container">
+            </div>
+
+            <div className="flex flex-col gap-14 pt-14">
+              {isTrigger && maxAutoCancelOrdersWarning}
+              <HighPriceImpactOrFeesWarningCard
+                priceImpactWarningState={priceImpactWarningState}
+                collateralImpact={fees?.positionCollateralPriceImpact}
+                positionImpact={fees?.positionPriceImpact}
+                swapPriceImpact={fees?.swapPriceImpact}
+                swapProfitFee={fees?.swapProfitFee}
+                executionFeeUsd={executionFee?.feeUsd}
+              />
+              <ToggleSwitch
+                textClassName="text-slate-100"
+                isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                setIsChecked={setKeepLeverage}
+                disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
+              >
+                {keepLeverageTextElem}
+              </ToggleSwitch>
+
               <Button
                 className="w-full"
                 variant="primary-action"
@@ -675,6 +646,13 @@ export function PositionSeller(p: Props) {
                     ? t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`
                     : t`Close`)}
               </Button>
+
+              <div className="h-1 bg-stroke-primary" />
+              {receiveTokenRow}
+              {liqPriceRow}
+              {isTrigger && <SyntheticsInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />}
+
+              <PositionSellerAdvancedRows triggerPriceInputValue={triggerPriceInputValue} />
             </div>
           </>
         )}

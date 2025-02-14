@@ -1,108 +1,181 @@
-import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
-import { bigMath } from "lib/bigmath";
-import { mustNeverExist } from "lib/types";
+import shallowEqual from "shallowequal";
+
+import { getExcessiveExecutionFee } from "config/chains";
+import {
+  HIGH_COLLATERAL_IMPACT_BPS,
+  HIGH_POSITION_IMPACT_BPS,
+  HIGH_SWAP_PROFIT_FEE_BPS,
+  USD_DECIMALS,
+} from "config/factors";
+import { useChainId } from "lib/chains";
+import { expandDecimals } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
-import shallowEqual from "shallowequal";
-import { FeeItem } from "../fees";
-import { TradeFlags } from "./types";
+import type { TradeFlags } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
+import type { FeeItem } from "../fees";
+import { getIsHighSwapImpact } from "./utils/getIsHighSwapImpact";
 
-export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
+export type WarningState = {
+  shouldShowWarningForPosition: boolean;
+  shouldShowWarningForCollateral: boolean;
+  shouldShowWarningForSwap: boolean;
+  shouldShowWarningForSwapProfitFee: boolean;
+  shouldShowWarningForExecutionFee: boolean;
+  shouldShowWarningForTriggerOrders: boolean;
+  isDismissed: boolean;
+  setIsDismissed: (isDismissed: boolean) => void;
+  shouldShowWarning: boolean;
+};
 
 export function usePriceImpactWarningState({
-  positionPriceImpact,
+  collateralImpact,
+  positionImpact,
   swapPriceImpact,
-  place,
+  swapProfitFee,
+  executionFeeUsd,
+  willDecreaseOrdersBeExecuted,
   tradeFlags,
 }: {
-  positionPriceImpact?: FeeItem;
+  collateralImpact?: FeeItem;
+  positionImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
-  place: "tradeBox" | "positionSeller";
+  swapProfitFee?: FeeItem;
+  executionFeeUsd?: bigint;
+  willDecreaseOrdersBeExecuted?: boolean;
   tradeFlags: TradeFlags;
-}) {
-  const [isHighPositionImpactAccepted, setIsHighPositionImpactAccepted] = useState(false);
-  const [isHighSwapImpactAccepted, setIsHighSwapImpactAccepted] = useState(false);
+}): WarningState {
+  const { chainId } = useChainId();
+  const veryHighExecutionFeeUsd = useMemo(
+    () => expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS),
+    [chainId]
+  );
+  const isHightExecutionPrice = executionFeeUsd === undefined ? false : executionFeeUsd >= veryHighExecutionFeeUsd;
+  const prevIsHightExecutionPrice = usePrevious(isHightExecutionPrice);
 
+  const [isDismissed, setIsDismissed] = useState(false);
   const prevFlags = usePrevious(tradeFlags);
 
   useEffect(() => {
     if (!shallowEqual(prevFlags, tradeFlags)) {
-      setIsHighPositionImpactAccepted(false);
-      setIsHighSwapImpactAccepted(false);
+      setIsDismissed(false);
       return;
     }
   }, [prevFlags, tradeFlags]);
 
   const isHighPositionImpact = Boolean(
-    positionPriceImpact &&
-      positionPriceImpact.deltaUsd < 0 &&
-      bigMath.abs(positionPriceImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
+    positionImpact && positionImpact.deltaUsd < 0 && bigMath.abs(positionImpact.bps) >= HIGH_POSITION_IMPACT_BPS
   );
+  const prevIsHighPositionImpact = usePrevious(isHighPositionImpact);
 
-  const isHighSwapImpact = Boolean(
-    swapPriceImpact && swapPriceImpact.deltaUsd < 0 && bigMath.abs(swapPriceImpact.bps) >= HIGH_SWAP_IMPACT_BPS
+  const isHighCollateralImpact = Boolean(
+    collateralImpact && collateralImpact.deltaUsd < 0 && bigMath.abs(collateralImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
   );
+  const prevIsHighCollateralImpact = usePrevious(isHighCollateralImpact);
+
+  const isHighSwapImpact = getIsHighSwapImpact(swapPriceImpact);
+  const prevIsHighSwapImpact = usePrevious(isHighSwapImpact);
+
+  const isHightSwapProfitFee = Boolean(
+    swapProfitFee && swapProfitFee.deltaUsd < 0 && bigMath.abs(swapProfitFee.bps) >= HIGH_SWAP_PROFIT_FEE_BPS
+  );
+  const prevIsHightSwapProfitFee = usePrevious(isHightSwapProfitFee);
+
+  const prevWillDecreaseOrdersBeExecuted = usePrevious(willDecreaseOrdersBeExecuted);
 
   useEffect(
-    function resetPositionImactWarning() {
-      if (!isHighPositionImpact && isHighPositionImpactAccepted) {
-        setIsHighPositionImpactAccepted(false);
+    function resetWarning() {
+      if (
+        !isDismissed ||
+        prevIsHighCollateralImpact === undefined ||
+        prevIsHighPositionImpact === undefined ||
+        prevIsHighSwapImpact === undefined ||
+        prevIsHightSwapProfitFee === undefined ||
+        prevIsHightExecutionPrice === undefined ||
+        prevWillDecreaseOrdersBeExecuted === undefined
+      ) {
+        return;
+      }
+
+      if (
+        prevIsHighPositionImpact !== isHighPositionImpact ||
+        prevIsHighCollateralImpact !== isHighCollateralImpact ||
+        prevIsHighSwapImpact !== isHighSwapImpact ||
+        prevIsHightSwapProfitFee !== isHightSwapProfitFee ||
+        prevIsHightExecutionPrice !== isHightExecutionPrice ||
+        prevWillDecreaseOrdersBeExecuted !== willDecreaseOrdersBeExecuted
+      ) {
+        setIsDismissed(false);
       }
     },
-    [isHighPositionImpact, isHighPositionImpactAccepted]
+    [
+      isDismissed,
+      isHighCollateralImpact,
+      isHighPositionImpact,
+      isHighSwapImpact,
+      isHightExecutionPrice,
+      isHightSwapProfitFee,
+      prevIsHighCollateralImpact,
+      prevIsHighPositionImpact,
+      prevIsHighSwapImpact,
+      prevIsHightExecutionPrice,
+      prevIsHightSwapProfitFee,
+      prevWillDecreaseOrdersBeExecuted,
+      willDecreaseOrdersBeExecuted,
+    ]
   );
 
-  useEffect(
-    function resetSwapImpactWarning() {
-      if (!isHighSwapImpact && isHighSwapImpactAccepted) {
-        setIsHighSwapImpactAccepted(false);
-      }
-    },
-    [isHighSwapImpact, isHighSwapImpactAccepted]
-  );
+  let validationError = false;
+  let shouldShowWarning = false;
+  let shouldShowWarningForSwap = false;
+  let shouldShowWarningForPosition = false;
+  let shouldShowWarningForCollateral = false;
+  let shouldShowWarningForSwapProfitFee = false;
+  let shouldShowWarningForExecutionFee = false;
+  let shouldShowWarningForTriggerOrders = false;
 
-  return useMemo(() => {
-    let validationError = false;
-    let shouldShowWarning = false;
-    let shouldShowWarningForSwap = false;
-    let shouldShowWarningForPosition = false;
+  shouldShowWarningForSwap = isHighSwapImpact;
+  shouldShowWarningForPosition = isHighPositionImpact;
+  shouldShowWarningForSwapProfitFee = isHightSwapProfitFee;
+  shouldShowWarningForExecutionFee = isHightExecutionPrice;
+  shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted ?? false;
 
-    if (place === "tradeBox") {
-      validationError = isHighSwapImpact && !isHighSwapImpactAccepted;
-      shouldShowWarningForSwap = isHighSwapImpact;
+  if (!shouldShowWarningForPosition) {
+    shouldShowWarningForCollateral = isHighCollateralImpact;
+  }
 
-      if (!tradeFlags.isSwap) {
-        validationError = validationError || (isHighPositionImpact && !isHighPositionImpactAccepted);
-        shouldShowWarningForPosition = isHighPositionImpact;
-      }
+  shouldShowWarning =
+    shouldShowWarningForPosition ||
+    shouldShowWarningForCollateral ||
+    shouldShowWarningForSwap ||
+    shouldShowWarningForSwapProfitFee ||
+    shouldShowWarningForExecutionFee ||
+    shouldShowWarningForTriggerOrders;
 
-      shouldShowWarning = isHighSwapImpact || isHighPositionImpact;
-    } else if (place === "positionSeller") {
-      validationError =
-        (isHighPositionImpact && !isHighPositionImpactAccepted) || (isHighSwapImpact && !isHighSwapImpactAccepted);
-      shouldShowWarning = isHighPositionImpact || isHighSwapImpact;
-      shouldShowWarningForPosition = isHighPositionImpact;
-      shouldShowWarningForSwap = isHighSwapImpact;
-    } else {
-      throw mustNeverExist(place);
-    }
-
+  const stableWarningState = useMemo<WarningState>(() => {
     return {
-      isHighPositionImpactAccepted,
-      isHighSwapImpactAccepted,
-      validationError,
-      setIsHighSwapImpactAccepted,
-      setIsHighPositionImpactAccepted,
-      shouldShowWarningForSwap,
       shouldShowWarningForPosition,
+      shouldShowWarningForCollateral,
+      shouldShowWarningForSwap,
+      shouldShowWarningForSwapProfitFee,
+      shouldShowWarningForExecutionFee,
+      shouldShowWarningForTriggerOrders,
+      validationError,
+      isDismissed,
+      setIsDismissed,
       shouldShowWarning,
     };
   }, [
-    isHighPositionImpact,
-    isHighPositionImpactAccepted,
-    isHighSwapImpact,
-    isHighSwapImpactAccepted,
-    place,
-    tradeFlags.isSwap,
+    shouldShowWarningForPosition,
+    shouldShowWarningForCollateral,
+    shouldShowWarningForSwap,
+    shouldShowWarningForSwapProfitFee,
+    shouldShowWarningForExecutionFee,
+    shouldShowWarningForTriggerOrders,
+    validationError,
+    isDismissed,
+    shouldShowWarning,
   ]);
+
+  return stableWarningState;
 }

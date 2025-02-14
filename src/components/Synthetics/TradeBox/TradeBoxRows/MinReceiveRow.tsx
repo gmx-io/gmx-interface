@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import {
   selectTradeboxSwapAmounts,
   selectTradeboxToToken,
@@ -7,7 +7,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { applySlippageToMinOut } from "domain/synthetics/trade";
-import { formatTokenAmount } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 
 export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) {
   const { isMarket, isSwap } = useSelector(selectTradeboxTradeFlags);
@@ -15,19 +15,19 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
 
   const toToken = useSelector(selectTradeboxToToken);
 
-  if (!isSwap) {
+  if (!isSwap || swapAmounts?.minOutputAmount === undefined || !toToken) {
     return null;
   }
 
   return (
-    <ExchangeInfo.Row label={<Trans>Min. Receive</Trans>}>
-      {isMarket && swapAmounts?.minOutputAmount
-        ? formatTokenAmount(
+    <SyntheticsInfoRow label={<Trans>Min. Receive</Trans>}>
+      {isMarket
+        ? formatBalanceAmount(
             applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
-            toToken?.decimals,
-            toToken?.symbol
+            toToken.decimals,
+            toToken.symbol
           )
-        : formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
-    </ExchangeInfo.Row>
+        : formatBalanceAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol)}
+    </SyntheticsInfoRow>
   );
 }

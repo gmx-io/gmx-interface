@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { PropsWithChildren, useCallback, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useEffectOnce, useMeasure, useWindowSize } from "react-use";
 
@@ -31,15 +31,31 @@ function useScrollFade(getSnapChildren: (scrollable: HTMLDivElement) => HTMLElem
     }
   }, [scrollableRef]);
 
-  useEffectOnce(() => {
-    setScrolls();
+  const setScrollableRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      scrollableRef.current = node;
+      if (node) {
+        setScrolls();
+      }
+    },
+    [setScrolls]
+  );
 
+  useEffectOnce(() => {
+    if (!scrollableRef.current) {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(setScrolls);
+
+    resizeObserver.observe(scrollableRef.current);
     window.addEventListener("resize", setScrolls);
     scrollableRef.current?.addEventListener("scroll", setScrolls);
 
     return () => {
       window.removeEventListener("resize", setScrolls);
       scrollableRef.current?.removeEventListener("scroll", setScrolls);
+      resizeObserver.disconnect();
     };
   });
 
@@ -86,24 +102,30 @@ function useScrollFade(getSnapChildren: (scrollable: HTMLDivElement) => HTMLElem
         return;
       }
 
-      let proposedScrollLeft = dir * nextNonVisibleElement.getBoundingClientRect().width;
-      const nextLeftScroll = scrollableRef.current.scrollLeft + proposedScrollLeft;
+      const scrollableRect = scrollableRef.current.getBoundingClientRect();
+      const nextNonVisibleRect = nextNonVisibleElement.getBoundingClientRect();
+      let scrollAmount =
+        nextNonVisibleRect.left + nextNonVisibleRect.width / 2 - scrollableRect.left - scrollableRect.width / 2;
+      let nextScrollLeft = scrollableRef.current.scrollLeft + scrollAmount;
+
+      nextScrollLeft = Math.max(nextScrollLeft, 0);
+      nextScrollLeft = Math.min(nextScrollLeft, scrollableRef.current.scrollWidth - scrollableRef.current.clientWidth);
 
       /**
        * This part is to prevent scrolling to visible area of element but leaving a small margin to the end (MAX_SCROLL_LEFT_TO_END_AREA),
        * it's better to scroll to the end in such cases
        */
-      if (
-        (dir === 1 && containerWidth - nextLeftScroll < MAX_SCROLL_LEFT_TO_END_AREA) ||
-        (dir === -1 && nextLeftScroll < MAX_SCROLL_LEFT_TO_END_AREA)
+      if (dir === -1 && nextScrollLeft < MAX_SCROLL_LEFT_TO_END_AREA) {
+        nextScrollLeft = 0;
+      } else if (
+        dir === 1 &&
+        scrollableRef.current.scrollWidth - scrollableRef.current.clientWidth - nextScrollLeft <
+          MAX_SCROLL_LEFT_TO_END_AREA
       ) {
-        proposedScrollLeft = dir * containerWidth;
+        nextScrollLeft = scrollableRef.current.scrollWidth - scrollableRef.current.clientWidth;
       }
 
-      scrollableRef.current.scrollBy({
-        left: proposedScrollLeft,
-        behavior: "smooth",
-      });
+      scrollableRef.current.scrollTo({ left: nextScrollLeft, behavior: "smooth" });
       setScrolls();
     },
     [getSnapChildren, setScrolls]
@@ -114,6 +136,7 @@ function useScrollFade(getSnapChildren: (scrollable: HTMLDivElement) => HTMLElem
 
   return {
     scrollableRef,
+    setScrollableRef,
     scrollLeft,
     scrollRight,
     leftStyles,
@@ -149,7 +172,28 @@ function useButtonRowScrollFade() {
     return Array.from(buttons);
   }, []);
 
-  return useScrollFade(getSnapChildren);
+  const controls = useScrollFade(getSnapChildren);
+
+  useEffect(() => {
+    const container = controls.scrollableRef.current;
+    if (!container) {
+      return;
+    }
+
+    const snapChildren = getSnapChildren(container);
+
+    const selectedButton = snapChildren.find((child) => child.dataset.selected === "true");
+    if (selectedButton) {
+      // scroll that selected button is in the center of the container
+      const containerRect = container.getBoundingClientRect();
+      const selectedButtonRect = selectedButton.getBoundingClientRect();
+      const scrollAmount =
+        selectedButtonRect.left + selectedButtonRect.width / 2 - containerRect.left - containerRect.width / 2;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  }, [controls.scrollableRef, getSnapChildren]);
+
+  return controls;
 }
 
 function ScrollFadeControls({
@@ -233,7 +277,7 @@ export function TableScrollFadeContainer({ children }: PropsWithChildren<{}>) {
   return (
     <div className="relative">
       <ScrollFadeControls {...tableScrollFade} />
-      <div className="overflow-x-auto scrollbar-hide" ref={tableScrollFade.scrollableRef}>
+      <div className="overflow-x-auto scrollbar-hide" ref={tableScrollFade.setScrollableRef}>
         {children}
       </div>
     </div>
@@ -246,7 +290,7 @@ export function BodyScrollFadeContainer({ children, className }: PropsWithChildr
   return (
     <div className="relative">
       <ScrollFadeControls {...scrollFade} gradientColor="slate-900" />
-      <div className={cx("overflow-x-auto scrollbar-hide", className)} ref={scrollFade.scrollableRef}>
+      <div className={cx("overflow-x-auto scrollbar-hide", className)} ref={scrollFade.setScrollableRef}>
         {children}
       </div>
     </div>
@@ -259,7 +303,7 @@ export function ButtonRowScrollFadeContainer({ children }: PropsWithChildren<{}>
   return (
     <div className="relative">
       <ScrollFadeControls {...scrollFade} />
-      <div className="overflow-x-auto scrollbar-hide" ref={scrollFade.scrollableRef}>
+      <div className="overflow-x-auto scrollbar-hide" ref={scrollFade.setScrollableRef}>
         {children}
       </div>
     </div>

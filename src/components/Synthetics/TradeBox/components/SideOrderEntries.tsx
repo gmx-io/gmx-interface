@@ -3,7 +3,7 @@ import NumberInput from "components/NumberInput/NumberInput";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenVisualMultiplier } from "config/tokens";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
@@ -13,6 +13,7 @@ import { formatUsd, formatUsdPrice } from "lib/numbers";
 import { useCallback, useMemo, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import { useMedia } from "react-use";
+import { EntryButton } from "./EntryButton";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
@@ -26,9 +27,6 @@ interface SidecarEntryProps {
   displayMode: "sizeUsd" | "percentage";
   updateEntry: (id: string, field: "sizeUsd" | "percentage" | "price", value: string) => void;
   deleteEntry: (id: string) => void;
-  canAddEntry: boolean;
-  allowAddEntry: boolean;
-  handleAddEntry: () => void;
   entriesCount: number;
 }
 
@@ -40,9 +38,6 @@ function SideOrderEntry({
   entriesCount,
   updateEntry,
   deleteEntry,
-  canAddEntry,
-  allowAddEntry,
-  handleAddEntry,
 }: SidecarEntryProps) {
   const percentageError = commonError?.percentage || entry.percentage?.error;
   const priceError = commonError?.price || entry.price?.error;
@@ -105,14 +100,15 @@ function SideOrderEntry({
 
   const isSmallMobile = useMedia("(max-width: 375px)");
 
+  const handleIgnoreEnterKey = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, []);
+
   return (
-    <div
-      className={cx("flex flex-row", {
-        "gap-10": !isSmallMobile,
-        "gap-4": isSmallMobile,
-      })}
-      key={entry.id}
-    >
+    <div className="flex flex-row gap-4" key={entry.id}>
       <TooltipWithPortal
         disabled={!priceError}
         content={priceError}
@@ -121,21 +117,22 @@ function SideOrderEntry({
         disableHandleStyle
       >
         <div
-          className={cx("group relative rounded-4 border border-solid bg-slate-700 pl-5 leading-1 ", {
+          className={cx("group relative rounded-4 border border-solid bg-cold-blue-900 pl-5 leading-1 ", {
             "border-red-500": !!priceError,
-            "border-slate-700": !priceError,
+            "border-stroke-primary": !priceError,
             "focus-within:border-cold-blue-500": !priceError,
             "hover:border-cold-blue-700": !priceError,
             "hover:focus-within:border-cold-blue-500": !priceError,
           })}
         >
-          <span className="cursor-pointer opacity-70">$</span>
+          <span className="cursor-pointer text-slate-100">$</span>
 
           <NumberInput
             value={entry.price.input}
             onValueChange={onPriceValueChange}
+            onKeyDown={handleIgnoreEnterKey}
             placeholder="Price"
-            className={cx("SideOrderInput rounded-4 py-2 pr-5 text-right text-14", {
+            className={cx("SideOrderInput text-body-medium rounded-4 py-2 pr-5 text-right", {
               "max-w-60": isSmallMobile,
               "max-w-90": !isSmallMobile,
             })}
@@ -153,7 +150,7 @@ function SideOrderEntry({
           >
             <SuggestionInput
               isError={!!percentageError}
-              inputClassName="w-48"
+              className="w-64"
               value={entry.percentage?.input ?? ""}
               setValue={onPercentageSetValue}
               placeholder="Size"
@@ -165,15 +162,15 @@ function SideOrderEntry({
       )}
       {displayMode === "sizeUsd" && (
         <div
-          className={cx("group relative rounded-4 border border-solid bg-slate-700 pl-5 leading-1 ", {
+          className={cx("group relative rounded-4 border border-solid bg-cold-blue-900 pl-5 leading-1 ", {
             "border-red-500": !!sizeError,
-            "border-slate-700": !sizeError,
+            "border-stroke-primary": !sizeError,
             "focus-within:border-cold-blue-500": !sizeError,
             "hover:border-cold-blue-700": !sizeError,
             "hover:focus-within:border-cold-blue-500": !sizeError,
           })}
         >
-          <span className="cursor-pointer opacity-70">$</span>
+          <span className="cursor-pointer text-slate-100">$</span>
           <TooltipWithPortal
             disabled={!sizeTooltipMsg}
             content={sizeTooltipMsg}
@@ -191,36 +188,14 @@ function SideOrderEntry({
         </div>
       )}
 
-      <div className="flex h-full items-center gap-5">
-        {canAddEntry && (
-          <EntryButton onClick={handleAddEntry} disabled={!allowAddEntry} className="bg-green-500/15">
-            <FaPlus color="#5EC989" />
-          </EntryButton>
-        )}
-        <EntryButton
-          onClick={onDeleteEntry}
-          disabled={entriesCount === 1 && !entry.percentage && !entry.price}
-          className="bg-red-500/15"
-        >
-          <FaPlus color="#E74E5D" className="rotate-45" />
-        </EntryButton>
-      </div>
+      <EntryButton
+        onClick={onDeleteEntry}
+        disabled={entriesCount === 1 && !entry.percentage && !entry.price}
+        theme="red"
+      >
+        <FaPlus className="rotate-45" />
+      </EntryButton>
     </div>
-  );
-}
-
-function EntryButton({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      type="button"
-      className={cx(
-        "inline-flex items-center justify-center rounded-4 border-none p-5 opacity-70",
-        "hover:opacity-100 disabled:hover:opacity-70",
-        "disabled:cursor-not-allowed",
-        className
-      )}
-      {...props}
-    />
   );
 }
 
@@ -231,16 +206,8 @@ type SidecarEntriesProps = {
 
 export function SideOrderEntries({ entriesInfo, displayMode }: SidecarEntriesProps) {
   const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const { addEntry, updateEntry, canAddEntry, allowAddEntry, deleteEntry } = entriesInfo;
+  const { updateEntry, deleteEntry } = entriesInfo;
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const handleAddEntry = useCallback(() => {
-    addEntry();
-    requestAnimationFrame(() => {
-      const inputs = containerRef.current?.querySelectorAll(".SideOrderInput");
-      (inputs && (inputs[inputs.length - 1] as HTMLInputElement))?.focus();
-    });
-  }, [addEntry, containerRef]);
 
   const displayableEntries = useMemo(
     () => entriesInfo.entries.filter((entry) => entry.txnType !== "cancel"),
@@ -259,9 +226,6 @@ export function SideOrderEntries({ entriesInfo, displayMode }: SidecarEntriesPro
           displayMode={displayMode}
           updateEntry={updateEntry}
           deleteEntry={deleteEntry}
-          canAddEntry={canAddEntry}
-          allowAddEntry={allowAddEntry}
-          handleAddEntry={handleAddEntry}
         />
       ))}
     </div>

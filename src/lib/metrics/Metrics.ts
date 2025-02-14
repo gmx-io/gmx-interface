@@ -16,7 +16,7 @@ import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
-import { prepareErrorMetricData } from "./errorReporting";
+import { ErrorLike, parseError } from "../parseError";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 
@@ -32,7 +32,7 @@ export type MetricEventParams = {
 const MAX_METRICS_STORE_TIME = 1000 * 60; // 1 min
 const MAX_QUEUE_LENGTH = 500;
 const MAX_BATCH_LENGTH = 100;
-const BATCH_INTERVAL_MS = 1000;
+const BATCH_INTERVAL_MS = 3000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
 const BAD_REQUEST_ERROR = "BadRequest";
 
@@ -170,8 +170,8 @@ export class Metrics {
     });
   }
 
-  pushError = (error: unknown, errorSource: string) => {
-    const errorData = prepareErrorMetricData(error);
+  pushError = (error: ErrorLike | string, errorSource: string) => {
+    const errorData = parseError(error);
 
     if (!errorData) {
       return;
@@ -194,15 +194,18 @@ export class Metrics {
     this.pushEvent(event);
   };
 
-  _processQueue = async () => {
+  _processQueue = async (retryNumber = 0) => {
     this.isProcessing = true;
+
+    // Calculate delay with exponential backoff
+    const RETRY_DELAY = BATCH_INTERVAL_MS * Math.pow(2, retryNumber);
 
     if (!this.fetcher) {
       if (this.debug) {
         // eslint-disable-next-line no-console
         console.log("Metrics: fetcher is not initialized");
       }
-      return sleep(BATCH_INTERVAL_MS).then(this._processQueue);
+      return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
     }
 
     if (this.queue.length === 0) {
@@ -210,7 +213,7 @@ export class Metrics {
         // eslint-disable-next-line no-console
         console.log("Metrics: queue is empty");
       }
-      return sleep(BATCH_INTERVAL_MS).then(this._processQueue);
+      return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
     }
 
     if (!this.getIsGlobalPropsInited() && this.initGlobalPropsRetries > 0) {
@@ -219,7 +222,7 @@ export class Metrics {
         console.log("Metrics: global properties are not inited");
       }
       this.initGlobalPropsRetries--;
-      return sleep(BATCH_INTERVAL_MS).then(this._processQueue);
+      return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
     }
 
     // Avoid infinite queue growth
@@ -257,6 +260,8 @@ export class Metrics {
         if (!res.ok) {
           throw new Error(res.statusText);
         }
+
+        return sleep(BATCH_INTERVAL_MS).then(() => this._processQueue());
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -267,8 +272,9 @@ export class Metrics {
         } else {
           this.queue.push(...items);
         }
-      })
-      .finally(() => sleep(BATCH_INTERVAL_MS).then(this._processQueue));
+
+        return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
+      });
   };
 
   subscribeToEvents = () => {
@@ -291,7 +297,7 @@ export class Metrics {
 
   subscribeToLongTasks = () => {
     if (typeof PerformanceObserver === "undefined") {
-      this.pushError("PerformanceObserver is not supported, skip", "subscribeToLongTasks");
+      this.pushError(new Error("PerformanceObserver is not supported, skip"), "subscribeToLongTasks");
       return;
     }
 

@@ -17,7 +17,7 @@ import {
   USD_DECIMALS,
 } from "config/factors";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getToken, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getToken, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import {
   DECREASE,
@@ -44,7 +44,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 
 import "./ConfirmationBox.css";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 
 function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo?.spread && toTokenInfo?.spread) {

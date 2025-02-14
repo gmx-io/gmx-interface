@@ -6,13 +6,6 @@ import { useMedia } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
-import {
-  convertTokenAddress,
-  getCategoryTokenAddresses,
-  getTokenVisualMultiplier,
-  isChartAvailableForToken,
-} from "config/tokens";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -25,30 +18,39 @@ import {
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  TokenFavoritesTabOption,
+  useTokensFavorites,
+} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { IndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { PriceDelta, PriceDeltaMap, TokenData, TokensData, use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
-import { TokenFavoritesTabOption, useTokensFavorites } from "domain/synthetics/tokens/useTokensFavorites";
 import { TradeType } from "domain/synthetics/trade";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
+import {
+  convertTokenAddress,
+  getCategoryTokenAddresses,
+  getTokenVisualMultiplier,
+  isChartAvailableForToken,
+} from "sdk/configs/tokens";
 
-import { helperToast } from "lib/helperToast";
 import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
-import { SortDirection, Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import type { SortDirection } from "context/SorterContext/types";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
@@ -102,7 +104,7 @@ export default function ChartTokenSelector(props: Props) {
               </span>
               {poolName && (
                 <span
-                  className={cx("text-body-small font-normal text-gray-300", {
+                  className={cx("text-body-small font-normal text-slate-100", {
                     "ml-8": oneRowLabels,
                   })}
                 >
@@ -153,7 +155,8 @@ function MarketsList() {
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("chart-token-selector");
 
   const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, availableChartTokenAddresses);
-  const dayVolumes = use24hVolumes();
+  const dayVolumesData = use24hVolumes();
+  const dayVolumes = dayVolumesData?.byIndexToken;
   const indexTokenStatsMap = useSelector(selectIndexTokenStatsMap).indexMap;
 
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
@@ -161,7 +164,7 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>();
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("chart-token-selector");
   const [searchKeyword, setSearchKeyword] = useState("");
   const isSwap = tradeType === TradeType.Swap;
 
@@ -206,36 +209,14 @@ function MarketsList() {
     place: MissedCoinsPlace.marketDropdown,
   });
 
-  const marketsInfoData = useMarketsInfoData();
-
   const handleMarketSelect = useCallback(
     (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => {
       setSearchKeyword("");
       close();
 
-      const chosenMarket = chooseSuitableMarket(tokenAddress, preferredTradeType, tradeType);
-
-      if (chosenMarket?.marketTokenAddress && chosenMarket.tradeType !== TradeType.Swap) {
-        const marketInfo = getByKey(marketsInfoData, chosenMarket.marketTokenAddress);
-        const nextTradeType = chosenMarket.tradeType;
-        if (marketInfo) {
-          const indexName = getMarketIndexName(marketInfo);
-          const poolName = getMarketPoolName(marketInfo);
-
-          helperToast.success(
-            <Trans>
-              <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
-              <div className="inline-flex">
-                <span>{indexName}</span>
-                <span className="subtext gm-toast leading-1">[{poolName}]</span>
-              </div>{" "}
-              <span>market selected</span>
-            </Trans>
-          );
-        }
-      }
+      chooseSuitableMarket(tokenAddress, preferredTradeType, tradeType);
     },
-    [chooseSuitableMarket, close, marketsInfoData, tradeType]
+    [chooseSuitableMarket, close, tradeType]
   );
 
   const rowVerticalPadding = cx({
@@ -248,7 +229,7 @@ function MarketsList() {
     ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8")
     : cx("px-5 first-of-type:pl-16 last-of-type:pr-16");
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-gray-400",
+    "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100",
     "first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
     isMobile ? "first-of-type:!pl-40" : "first-of-type:!pl-37",
     rowVerticalPadding,
@@ -277,7 +258,7 @@ function MarketsList() {
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="mt-16 flex flex-col gap-8">
+        <div className="flex flex-col gap-8">
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -290,102 +271,103 @@ function MarketsList() {
           </ButtonRowScrollFadeContainer>
         </div>
       </SelectorBaseMobileHeaderContent>
-      <div className="Synths-ChartTokenSelector">
-        {!isMobile && (
-          <>
-            <div className="m-16 flex justify-between gap-16">
-              <SearchInput
-                className="w-full *:!text-body-medium"
-                value={searchKeyword}
-                setValue={setSearchKeyword}
-                onKeyDown={handleKeyDown}
-                placeholder={placeholder}
-              />
+
+      {!isMobile && (
+        <>
+          <div className="m-16 flex justify-between gap-16">
+            <SearchInput
+              className="w-full *:!text-body-medium"
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+            />
+            <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="chart-token-selector" />
-            </div>
-          </>
-        )}
+            </ButtonRowScrollFadeContainer>
+          </div>
+        </>
+      )}
 
-        <div
-          className={cx({
-            "max-h-[444px] overflow-x-auto": !isMobile,
-          })}
-        >
-          <table className="text-sm w-full border-separate border-spacing-0">
-            <thead className="bg-slate-800">
-              <tr>
-                <th className={thClassName} colSpan={2}>
-                  <Trans>Market</Trans>
-                </th>
-                {!isSwap && (
-                  <>
-                    <th className={thClassName}>
-                      <Sorter {...getSorterProps("lastPrice")}>
-                        {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
-                      </Sorter>
-                    </th>
-                    {!isMobile && (
-                      <>
-                        <th className={thClassName}>
-                          <Sorter {...getSorterProps("24hChange")}>
-                            <Trans>24H%</Trans>
-                          </Sorter>
-                        </th>
-                        <th className={thClassName}>
-                          <Sorter {...getSorterProps("24hVolume")}>
-                            <Trans>24H VOL.</Trans>
-                          </Sorter>
-                        </th>
-                        <th className={thClassName} colSpan={2}>
-                          <Sorter {...getSorterProps("combinedOpenInterest")}>
-                            <Trans>OPEN INTEREST</Trans>
-                          </Sorter>
-                        </th>
-                      </>
-                    )}
-                    <th className={thClassName} colSpan={2}>
-                      <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
-                        {isSmallMobile ? <Trans>AVAIL. LIQ.</Trans> : <Trans>AVAILABLE LIQ.</Trans>}
-                      </Sorter>
-                    </th>
-                  </>
-                )}
-              </tr>
-            </thead>
+      <div
+        className={cx({
+          "max-h-[444px] overflow-x-auto": !isMobile,
+        })}
+      >
+        <table className="text-sm w-full border-separate border-spacing-0">
+          <thead className="bg-slate-800">
+            <tr>
+              <th className={thClassName} colSpan={2}>
+                <Trans>Market</Trans>
+              </th>
+              {!isSwap && (
+                <>
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("lastPrice")}>
+                      {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
+                    </Sorter>
+                  </th>
+                  {!isMobile && (
+                    <>
+                      <th className={thClassName}>
+                        <Sorter {...getSorterProps("24hChange")}>
+                          <Trans>24H%</Trans>
+                        </Sorter>
+                      </th>
+                      <th className={thClassName}>
+                        <Sorter {...getSorterProps("24hVolume")}>
+                          <Trans>24H VOL.</Trans>
+                        </Sorter>
+                      </th>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedOpenInterest")}>
+                          <Trans>OPEN INTEREST</Trans>
+                        </Sorter>
+                      </th>
+                    </>
+                  )}
+                  <th className={thClassName} colSpan={2}>
+                    <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
+                      {isSmallMobile ? <Trans>AVAIL. LIQ.</Trans> : <Trans>AVAILABLE LIQ.</Trans>}
+                    </Sorter>
+                  </th>
+                </>
+              )}
+            </tr>
+          </thead>
 
-            <tbody>
-              {sortedDetails?.map(
-                ({ token, tokenData, dayPriceDelta, dayVolume, openInterestLong, openInterestShort, maxLeverage }) => (
-                  <MarketListItem
-                    key={token.address}
-                    token={token}
-                    tokenData={tokenData}
-                    dayPriceDelta={dayPriceDelta}
-                    dayVolume={dayVolume}
-                    openInterestLong={openInterestLong}
-                    openInterestShort={openInterestShort}
-                    maxLeverage={maxLeverage}
-                    isSwap={isSwap}
-                    isMobile={isMobile}
-                    isFavorite={favoriteTokens?.includes(token.address)}
-                    onFavorite={toggleFavoriteToken}
-                    rowVerticalPadding={rowVerticalPadding}
-                    rowHorizontalPadding={rowHorizontalPadding}
-                    tdClassName={tdClassName}
-                    onMarketSelect={handleMarketSelect}
-                  />
-                )
-              )}
-              {options && options.length > 0 && !sortedTokens?.length && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-gray-400">
-                    <Trans>No markets matched.</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
-            </tbody>
-          </table>
-        </div>
+          <tbody>
+            {sortedDetails?.map(
+              ({ token, tokenData, dayPriceDelta, dayVolume, openInterestLong, openInterestShort, maxLeverage }) => (
+                <MarketListItem
+                  key={token.address}
+                  token={token}
+                  tokenData={tokenData}
+                  dayPriceDelta={dayPriceDelta}
+                  dayVolume={dayVolume}
+                  openInterestLong={openInterestLong}
+                  openInterestShort={openInterestShort}
+                  maxLeverage={maxLeverage}
+                  isSwap={isSwap}
+                  isMobile={isMobile}
+                  isFavorite={favoriteTokens?.includes(token.address)}
+                  onFavorite={toggleFavoriteToken}
+                  rowVerticalPadding={rowVerticalPadding}
+                  rowHorizontalPadding={rowHorizontalPadding}
+                  tdClassName={tdClassName}
+                  onMarketSelect={handleMarketSelect}
+                />
+              )
+            )}
+            {options && options.length > 0 && !sortedTokens?.length && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-slate-100">
+                  <Trans>No markets matched.</Trans>
+                </TableTd>
+              </TableTr>
+            )}
+          </tbody>
+        </table>
       </div>
     </>
   );

@@ -5,6 +5,8 @@ import { SwapStats } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
 
+export * from "./estimateOraclePriceCount";
+export * from "./executionFee";
 export * from "./priceImpact";
 
 export function getSwapFee(marketInfo: MarketInfo, swapAmount: bigint, forPositiveImpact: boolean) {
@@ -49,22 +51,27 @@ export function getPositionFee(
 export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
   const { fundingFactorPerSecond, longsPayShorts, longInterestUsd, shortInterestUsd } = marketInfo;
 
-  const isLargerSide = isLong ? longsPayShorts : !longsPayShorts;
+  const largerInterestUsd = bigMath.max(longInterestUsd, shortInterestUsd);
 
-  let factorPerSecond: bigint;
+  const payingInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
+  const receivingInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
 
-  if (isLargerSide) {
-    factorPerSecond = fundingFactorPerSecond * -1n;
-  } else {
-    const largerInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
-    const smallerInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
-
-    const ratio = smallerInterestUsd > 0 ? bigMath.mulDiv(largerInterestUsd, PRECISION, smallerInterestUsd) : 0n;
-
-    factorPerSecond = applyFactor(ratio, fundingFactorPerSecond);
+  let fundingForPayingSide = 0n;
+  if (payingInterestUsd !== 0n) {
+    fundingForPayingSide = bigMath.mulDiv(fundingFactorPerSecond, largerInterestUsd, payingInterestUsd);
+  }
+  let fundingForReceivingSide = 0n;
+  if (receivingInterestUsd !== 0n) {
+    fundingForReceivingSide = bigMath.mulDiv(fundingForPayingSide, payingInterestUsd, receivingInterestUsd);
   }
 
-  return factorPerSecond * BigInt(periodInSeconds);
+  if ((longsPayShorts && isLong) || (!longsPayShorts && !isLong)) {
+    // paying side
+    return fundingForPayingSide * BigInt(periodInSeconds) * -1n;
+  } else {
+    // receiving side
+    return fundingForReceivingSide * BigInt(periodInSeconds);
+  }
 }
 
 export function getFundingFeeRateUsd(
@@ -113,6 +120,7 @@ export function getFeeItem(
   return {
     deltaUsd: feeDeltaUsd,
     bps: basis !== undefined && basis > 0 ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : 0n,
+    precisePercentage: basis !== undefined && basis > 0 ? bigMath.mulDiv(feeDeltaUsd, PRECISION, basis) : 0n,
   };
 }
 
@@ -120,11 +128,13 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   const totalFeeItem: FeeItem = {
     deltaUsd: 0n,
     bps: 0n,
+    precisePercentage: 0n,
   };
 
   (feeItems.filter(Boolean) as FeeItem[]).forEach((feeItem) => {
     totalFeeItem.deltaUsd = totalFeeItem.deltaUsd + feeItem.deltaUsd;
     totalFeeItem.bps = totalFeeItem.bps + feeItem.bps;
+    totalFeeItem.precisePercentage = totalFeeItem.precisePercentage + feeItem.precisePercentage;
   });
 
   return totalFeeItem;

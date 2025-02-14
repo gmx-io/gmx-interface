@@ -8,13 +8,8 @@ import values from "lodash/values";
 import { produce } from "immer";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  getKeepLeverageKey,
-  getLeverageEnabledKey,
-  getLeverageKey,
-  getSyntheticsTradeOptionsKey,
-} from "config/localStorage";
-import { getToken, isSimilarToken } from "config/tokens";
+import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -29,7 +24,7 @@ import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrdersInfoData } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
-import { TradeMode, TradeType } from "./types";
+import { TradeMode, TradeType } from "sdk/types/trade";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
@@ -259,11 +254,11 @@ export function useTradeboxState(
   const tradeMode = storedOptions?.tradeMode;
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
-  const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey(getLeverageEnabledKey(chainId), true);
+  // const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey(getLeverageEnabledKey(chainId), true);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [leverageInputValue, setLeverageInputValue] = useState<string>(() => leverageOption?.toString() ?? "");
 
-  const avaialbleTradeModes = useMemo(() => {
+  const availableTradeModes = useMemo(() => {
     if (!tradeType) {
       return [];
     }
@@ -625,11 +620,11 @@ export function useTradeboxState(
         return;
       }
 
-      if (tradeType && tradeMode && !avaialbleTradeModes.includes(tradeMode)) {
-        setTradeMode(avaialbleTradeModes[0]);
+      if (tradeType && tradeMode && !availableTradeModes.includes(tradeMode)) {
+        setTradeMode(availableTradeModes[0]);
       }
     },
-    [tradeType, tradeMode, avaialbleTradeModes, setTradeMode, enabled]
+    [tradeType, tradeMode, availableTradeModes, setTradeMode, enabled]
   );
 
   useEffect(
@@ -685,7 +680,7 @@ export function useTradeboxState(
     collateralAddress,
     collateralToken,
     availableTokensOptions,
-    avaialbleTradeModes,
+    availableTradeModes,
     sidecarOrders,
     isSwitchTokensAllowed,
     setActivePosition,
@@ -723,8 +718,8 @@ export function useTradeboxState(
     setLeverageInputValue: handleLeverageInputChange,
     leverageOption,
     setLeverageOption: handleLeverageSliderChange,
-    isLeverageEnabled,
-    setIsLeverageEnabled,
+    // isLeverageEnabled,
+    // setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
     advancedOptions,
