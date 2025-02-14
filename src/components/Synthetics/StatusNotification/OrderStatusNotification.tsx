@@ -74,8 +74,8 @@ export function OrderStatusNotification({
     });
     const targetCollateralToken = getByKey(tokensData, outTokenAddress);
 
-    const externalSwapFromToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.fromTokenAddress);
-    const externalSwapToToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.toTokenAddress);
+    const externalSwapFromToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.inTokenAddress);
+    const externalSwapToToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.outTokenAddress);
 
     return {
       ...pendingOrderData,
@@ -171,11 +171,11 @@ export function OrderStatusNotification({
 
     let status: TransactionStatusType = "loading";
     let text = t`Swap ${formatTokenAmount(
-      orderData.externalSwapQuote.fromTokenAmount,
+      orderData.externalSwapQuote.amountIn,
       orderData.externalSwapFromToken?.decimals,
       orderData.externalSwapFromToken?.symbol
     )} for ${formatTokenAmount(
-      orderData.externalSwapQuote.outputAmount,
+      orderData.externalSwapQuote.amountOut,
       orderData.externalSwapToToken?.decimals,
       orderData.externalSwapToToken?.symbol
     )}`;

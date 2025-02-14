@@ -2,7 +2,6 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
-import { OrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   getEntryPrice,
@@ -12,16 +11,11 @@ import {
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
+import { ExternalSwapQuote } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
-import {
-  getAcceptablePriceInfo,
-  getDefaultAcceptablePriceImpactBps,
-  getMarkPrice,
-  getTriggerThresholdType,
-} from "./prices";
+import { getAcceptablePriceInfo, getDefaultAcceptablePriceImpactBps, getMarkPrice } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
-import { ExternalSwapQuote } from "sdk/types/trade";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;
@@ -99,24 +93,17 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
   const isLimit = Boolean(triggerPrice !== undefined && triggerPrice > 0);
 
-  if (isLimit && triggerPrice !== undefined) {
-    values.triggerPrice = triggerPrice;
-    values.triggerThresholdType = getTriggerThresholdType(OrderType.LimitIncrease, isLong);
+  const prices = getIncreasePositionPrices({
+    triggerPrice,
+    indexToken,
+    initialCollateralToken,
+    collateralToken,
+    isLong,
+  });
 
-    values.indexPrice = triggerPrice;
-
-    values.initialCollateralPrice = getIsEquivalentTokens(indexToken, initialCollateralToken)
-      ? triggerPrice
-      : initialCollateralToken.prices.minPrice;
-
-    values.collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
-      ? triggerPrice
-      : collateralToken.prices.minPrice;
-  } else {
-    values.indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: true, isLong });
-    values.initialCollateralPrice = initialCollateralToken.prices.minPrice;
-    values.collateralPrice = collateralToken.prices.minPrice;
-  }
+  values.indexPrice = prices.indexPrice;
+  values.initialCollateralPrice = prices.initialCollateralPrice;
+  values.collateralPrice = prices.collateralPrice;
 
   values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || 0n;
   values.fundingFeeUsd = position?.pendingFundingFeesUsd || 0n;
@@ -152,7 +139,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     });
     values.swapPathStats = swapAmounts.swapPathStats;
 
-    const swapAmountOut = values.externalSwapQuote?.outputAmount ?? swapAmounts.amountOut;
+    const swapAmountOut = values.externalSwapQuote?.amountOut ?? swapAmounts.amountOut;
     const baseCollateralUsd = convertToUsd(swapAmountOut, collateralToken.decimals, values.collateralPrice)!;
     const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
     const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, baseSizeDeltaUsd, isLong);
@@ -249,7 +236,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       uiFeeFactor,
     });
     values.swapPathStats = swapAmounts.swapPathStats;
-    const swapAmountIn = values.externalSwapQuote?.fromTokenAmount ?? swapAmounts.amountIn;
+    const swapAmountIn = values.externalSwapQuote?.amountIn ?? swapAmounts.amountIn;
 
     values.initialCollateralAmount = swapAmountIn;
     values.initialCollateralUsd = convertToUsd(
@@ -296,7 +283,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       });
 
       values.swapPathStats = swapAmounts.swapPathStats;
-      const swapAmountIn = values.externalSwapQuote?.fromTokenAmount ?? swapAmounts.amountIn;
+      const swapAmountIn = values.externalSwapQuote?.amountIn ?? swapAmounts.amountIn;
       const baseCollateralUsd = convertToUsd(swapAmountIn, collateralToken.decimals, values.collateralPrice)!;
 
       values.collateralDeltaUsd =
@@ -380,6 +367,47 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   }
 
   return values;
+}
+
+export function getIncreasePositionPrices({
+  triggerPrice,
+  indexToken,
+  initialCollateralToken,
+  collateralToken,
+  isLong,
+}: {
+  triggerPrice?: bigint;
+  indexToken: TokenData;
+  initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  isLong: boolean;
+}) {
+  let indexPrice;
+  let initialCollateralPrice;
+  let collateralPrice;
+
+  const isLimit = Boolean(triggerPrice !== undefined && triggerPrice > 0);
+
+  if (isLimit && triggerPrice !== undefined) {
+    indexPrice = triggerPrice;
+    initialCollateralPrice = getIsEquivalentTokens(indexToken, initialCollateralToken)
+      ? triggerPrice
+      : initialCollateralToken.prices.minPrice;
+
+    collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
+      ? triggerPrice
+      : collateralToken.prices.minPrice;
+  } else {
+    indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: true, isLong });
+    initialCollateralPrice = initialCollateralToken.prices.minPrice;
+    collateralPrice = collateralToken.prices.minPrice;
+  }
+
+  return {
+    indexPrice,
+    initialCollateralPrice,
+    collateralPrice,
+  };
 }
 
 export function leverageBySizeValues({

@@ -240,7 +240,7 @@ export function getIncreaseError(p: {
     }
 
     if (!isLimit) {
-      if (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n)) {
+      if (noExternalSwap && (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n))) {
         return [t`Insufficient liquidity to swap collateral`];
       }
     }

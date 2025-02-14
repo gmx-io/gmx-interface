@@ -62,6 +62,14 @@ export function setSwapDebugSetting<K extends keyof typeof swapDebugSettings>(
   localStorage.setItem(DEBUG_SWAP_SETTINGS_KEY, JSON.stringify(swapDebugSettings));
 }
 
+export function getSwapPriceImpactForExternalSwapThresholdBps() {
+  const swapDebugSettings = getSwapDebugSettings();
+
+  return (
+    swapDebugSettings?.swapPriceImpactForExternalSwapThresholdBps || SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS
+  );
+}
+
 export function getSwapDebugSettings() {
   if (!isDevelopment()) {
     return undefined;

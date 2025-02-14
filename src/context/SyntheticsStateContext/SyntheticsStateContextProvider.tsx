@@ -8,7 +8,8 @@ import {
   useAccountStats,
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
+import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -103,12 +104,7 @@ export type SyntheticsState = {
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeboxState;
-  externalSwap: {
-    quote: ExternalSwapQuote | undefined;
-    setQuote: (quote: ExternalSwapQuote | undefined) => void;
-    fails: number;
-    setFails: (fails: number | ((fails: number) => number)) => void;
-  };
+  externalSwap: ExternalSwapState;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
@@ -220,9 +216,6 @@ export function SyntheticsStateContextProvider({
     ordersInfoData: ordersInfo.ordersInfoData,
   });
 
-  const [externalSwapQuote, setExternalSwapQuote] = useState<ExternalSwapQuote>();
-  const [externalSwapFails, setExternalSwapFails] = useState(0);
-
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
 
   const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
@@ -269,6 +262,8 @@ export function SyntheticsStateContextProvider({
     pageType,
   });
 
+  const externalSwapState = useInitExternalSwapState();
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -312,12 +307,7 @@ export function SyntheticsStateContextProvider({
       leaderboard,
       settings,
       tradebox: tradeboxState,
-      externalSwap: {
-        quote: externalSwapQuote,
-        setQuote: setExternalSwapQuote,
-        fails: externalSwapFails,
-        setFails: setExternalSwapFails,
-      },
+      externalSwap: externalSwapState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
@@ -357,8 +347,7 @@ export function SyntheticsStateContextProvider({
     leaderboard,
     settings,
     tradeboxState,
-    externalSwapQuote,
-    externalSwapFails,
+    externalSwapState,
     orderEditor,
     positionSellerState,
     positionEditorState,

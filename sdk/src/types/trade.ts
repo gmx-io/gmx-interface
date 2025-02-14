@@ -228,10 +228,11 @@ export enum ExternalSwapAggregator {
 
 export type ExternalSwapOutput = {
   aggregator: ExternalSwapAggregator;
-  fromTokenAddress: string;
-  toTokenAddress: string;
-  fromTokenAmount: bigint;
-  outputAmount: bigint;
+  inTokenAddress: string;
+  outTokenAddress: string;
+  amountIn: bigint;
+  amountOut: bigint;
+  needSpenderApproval?: boolean;
   txnData?: {
     to: string;
     data: string;
@@ -241,11 +242,23 @@ export type ExternalSwapOutput = {
 };
 
 export type ExternalSwapQuote = ExternalSwapOutput & {
-  fromTokenUsd: bigint;
-  outputUsd: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
   feesUsd: bigint;
-  slippage: number;
-  needSpenderApproval?: boolean;
+};
+
+export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
+
+export type ExternalSwapInputs = {
+  amountIn: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  strategy: ExternalSwapCalculationStrategy;
+  internalSwapTotalFeesDeltaUsd?: bigint;
+  internalSwapPriceImpactFeeItem?: FeeItem;
+  internalSwapAmounts: SwapAmounts;
 };
 
 export type TradeFees = {

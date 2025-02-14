@@ -2,7 +2,6 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/
 import { OrderType } from "domain/synthetics/orders";
 import {
   FindSwapPath,
-  TradeFlags,
   TradeMode,
   TradeType,
   createSwapEstimator,
@@ -32,6 +31,7 @@ import {
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { ExternalSwapQuote } from "sdk/types/trade";
+import { createTradeFlags } from "sdk/utils/trade";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -265,30 +265,6 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
       }
     )
 );
-
-export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): TradeFlags => {
-  const isLong = tradeType === TradeType.Long;
-  const isShort = tradeType === TradeType.Short;
-  const isSwap = tradeType === TradeType.Swap;
-  const isPosition = isLong || isShort;
-  const isMarket = tradeMode === TradeMode.Market;
-  const isLimit = tradeMode === TradeMode.Limit;
-  const isTrigger = tradeMode === TradeMode.Trigger;
-  const isIncrease = isPosition && (isMarket || isLimit);
-
-  const tradeFlags: TradeFlags = {
-    isLong,
-    isShort,
-    isSwap,
-    isPosition,
-    isIncrease,
-    isMarket,
-    isLimit,
-    isTrigger,
-  };
-
-  return tradeFlags;
-};
 
 export const makeSelectDecreasePositionAmounts = createSelectorFactory(
   ({

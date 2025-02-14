@@ -15,7 +15,7 @@ import {
   getSyntheticsTradeOptionsKey,
 } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import { createTradeFlags } from "sdk/utils/trade";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";

@@ -335,8 +335,7 @@ async function createEncodedPayload({
     isNativePayment,
   });
 
-  const externalSwapWntAmount =
-    isNativePayment && p.externalSwapQuote?.txnData ? p.externalSwapQuote.fromTokenAmount : 0n;
+  const externalSwapWntAmount = isNativePayment && p.externalSwapQuote?.txnData ? p.externalSwapQuote.amountIn : 0n;
   const orderVaultWntAmount = totalWntAmount - externalSwapWntAmount;
 
   const externalHandlerAddress = getContract(chainId, "ExternalHandler");
@@ -363,7 +362,7 @@ async function createEncodedPayload({
     p.externalSwapQuote?.txnData
       ? {
           method: "makeExternalCalls",
-          params: getExternalCallsParams(chainId, subaccount?.address ?? p.account, p.externalSwapQuote),
+          params: getExternalCallsParams(chainId, p.account, p.externalSwapQuote),
         }
       : undefined,
 

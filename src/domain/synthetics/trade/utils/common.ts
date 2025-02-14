@@ -118,12 +118,11 @@ export function getTradeFees(p: {
     initialCollateralUsd > 0 && externalSwapQuotas.length
       ? externalSwapQuotas.map((quote) => ({
           aggregator: quote.aggregator,
-          tokenInAddress: quote.fromTokenAddress,
-          tokenOutAddress: quote.toTokenAddress,
+          tokenInAddress: quote.inTokenAddress,
+          tokenOutAddress: quote.outTokenAddress,
           deltaUsd: quote.feesUsd * -1n,
-          bps: quote.fromTokenUsd != 0n ? getBasisPoints(quote.feesUsd * -1n, quote.fromTokenUsd) : 0n,
-          precisePercentage:
-            quote.fromTokenUsd != 0n ? bigMath.mulDiv(quote.feesUsd * -1n, PRECISION, quote.fromTokenUsd) : 0n,
+          bps: quote.usdIn != 0n ? getBasisPoints(quote.feesUsd * -1n, quote.usdIn) : 0n,
+          precisePercentage: quote.usdIn != 0n ? bigMath.mulDiv(quote.feesUsd * -1n, PRECISION, quote.usdIn) : 0n,
         }))
       : undefined;
 
@@ -156,6 +155,7 @@ export function getTradeFees(p: {
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
+    ...(externalSwapFees || []),
     swapProfitFee,
     swapPriceImpact,
     positionFeeAfterDiscount,

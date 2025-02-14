@@ -1,7 +1,14 @@
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { getShouldUseMaxPrice } from "./prices";
 import { bigMath } from "./bigmath";
-import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "types/trade";
+import {
+  DecreasePositionAmounts,
+  IncreasePositionAmounts,
+  SwapAmounts,
+  TradeFlags,
+  TradeMode,
+  TradeType,
+} from "types/trade";
 import { DecreasePositionSwapType } from "types/orders";
 
 export function applySlippageToPrice(allowedSlippage: number, price: bigint, isIncrease: boolean, isLong: boolean) {
@@ -44,3 +51,27 @@ export function getSwapCount({
     return decreaseAmounts.decreaseSwapType !== DecreasePositionSwapType.NoSwap ? 1 : 0;
   }
 }
+
+export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): TradeFlags => {
+  const isLong = tradeType === TradeType.Long;
+  const isShort = tradeType === TradeType.Short;
+  const isSwap = tradeType === TradeType.Swap;
+  const isPosition = isLong || isShort;
+  const isMarket = tradeMode === TradeMode.Market;
+  const isLimit = tradeMode === TradeMode.Limit;
+  const isTrigger = tradeMode === TradeMode.Trigger;
+  const isIncrease = isPosition && (isMarket || isLimit);
+
+  const tradeFlags: TradeFlags = {
+    isLong,
+    isShort,
+    isSwap,
+    isPosition,
+    isIncrease,
+    isMarket,
+    isLimit,
+    isTrigger,
+  };
+
+  return tradeFlags;
+};

@@ -14,7 +14,13 @@ import {
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { TokenData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import {
+  TokenData,
+  TokensRatio,
+  convertToUsd,
+  getIsEquivalentTokens,
+  getTokensRatioByPrice,
+} from "domain/synthetics/tokens";
 import {
   SwapAmounts,
   TradeFeesType,
@@ -46,7 +52,6 @@ import { selectExternalSwapQuote } from "../externalSwapSelectors";
 import { selectIsPnlInLeverage } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../statsSelectors";
 import {
-  createTradeFlags,
   makeSelectDecreasePositionAmounts,
   makeSelectFindSwapPath,
   makeSelectIncreasePositionAmounts,
@@ -54,6 +59,7 @@ import {
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
 } from "../tradeSelectors";
+import { createTradeFlags } from "sdk/utils/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
 export * from "./selectTradeboxAvailableAndDisabledTokensForCollateral";
@@ -927,4 +933,37 @@ export const selectTradeboxFromToken = createSelector((q) => {
   const tokenData = q(selectTokensData);
 
   return getByKey(tokenData, fromToken);
+});
+
+export const selectTradeboxSwapToTokenAddress = createSelector((q) => {
+  const { isSwap } = q(selectTradeboxTradeFlags);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+
+  if (isSwap) {
+    return toTokenAddress;
+  }
+
+  return collateralTokenAddress;
+});
+
+export const selectTradeboxSelectSwapToToken = createSelector((q) => {
+  const tokenAddress = q(selectTradeboxSwapToTokenAddress);
+  const tokensData = q(selectTokensData);
+
+  return getByKey(tokensData, tokenAddress);
+});
+
+export const selectTradeboxIsNeedSwap = createSelector((q) => {
+  const fromToken = q(selectTradeboxFromToken);
+  const collateralToken = q(selectTradeboxCollateralToken);
+
+  return fromToken && collateralToken && !getIsEquivalentTokens(fromToken, collateralToken);
+});
+
+export const selectTradeboxExistingPosition = createSelector((q) => {
+  const selectedPositionKey = q(selectTradeboxSelectedPositionKey);
+  const positionsInfoData = q(selectPositionsInfoData);
+
+  return getByKey(positionsInfoData, selectedPositionKey);
 });
