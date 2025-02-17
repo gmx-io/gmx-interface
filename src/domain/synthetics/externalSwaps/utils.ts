@@ -7,6 +7,7 @@ import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
 import { TokenData } from "sdk/types/tokens";
+import { ExternalSwapInputs } from "sdk/types/trade";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import {
@@ -17,7 +18,6 @@ import {
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
-import { ExternalSwapInputs } from "sdk/types/trade";
 
 const tokenContract = new ethers.Contract(ethers.ZeroAddress, Token.abi);
 

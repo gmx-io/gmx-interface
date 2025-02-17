@@ -97,6 +97,7 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams,
   cancelOrderParams,
   updateOrderParams,
+  additinalErrorContent,
 }: {
   chainId: number;
   signer: Signer;
@@ -107,6 +108,7 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
   updateOrderParams?: SecondaryUpdateOrderParams[];
+  additinalErrorContent?: React.ReactNode;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
@@ -244,6 +246,7 @@ export async function createIncreaseOrderTxn({
         createMulticallPayload: simulationEncodedPayload,
         value: totalWntAmount,
         errorTitle: t`Order error.`,
+        additinalErrorContent,
         metricId,
         blockTimestampData,
       })
@@ -257,7 +260,8 @@ export async function createIncreaseOrderTxn({
     totalWntAmount,
     subaccount?.customSigners,
     simulationPromise,
-    metricId
+    metricId,
+    additinalErrorContent
   );
 
   const txnCreatedAt = Date.now();

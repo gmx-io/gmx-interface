@@ -1,8 +1,9 @@
 import { getContract } from "config/contracts";
 import { DISABLED_OPEN_OCEAN_DEXES, getOpenOceanUrl, OPEN_OCEAN_REFERRER } from "config/externalSwaps";
+import { USD_DECIMALS } from "config/factors";
 import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
-import { formatTokenAmount } from "lib/numbers";
+import { formatTokenAmount, numberToBigint } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
 
 type OpenOceanTxnResponse = {
@@ -15,7 +16,7 @@ type OpenOceanTxnResponse = {
       symbol: string;
       name: string;
       usd: string;
-      volume: number;
+      volume: string;
     };
     outToken: {
       address: string;
@@ -23,7 +24,7 @@ type OpenOceanTxnResponse = {
       symbol: string;
       name: string;
       usd: string;
-      volume: number;
+      volume: string;
     };
     inAmount: string;
     outAmount: string;
@@ -95,6 +96,10 @@ export async function getOpenOceanTxnData({
       data: parsed.data.data as string,
       value: BigInt(parsed.data.value),
       estimatedGas: BigInt(parsed.data.estimatedGas),
+      usdIn: numberToBigint(parseFloat(parsed.data.inToken.volume), USD_DECIMALS),
+      usdOut: numberToBigint(parseFloat(parsed.data.outToken.volume), USD_DECIMALS),
+      priceIn: numberToBigint(parseFloat(parsed.data.inToken.usd), USD_DECIMALS),
+      priceOut: numberToBigint(parseFloat(parsed.data.outToken.usd), USD_DECIMALS),
       gasPrice: BigInt(parsed.data.gasPrice),
       outputAmount: BigInt(parsed.data.minOutAmount),
     };

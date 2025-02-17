@@ -226,12 +226,17 @@ export enum ExternalSwapAggregator {
   OpenOcean = "openOcean",
 }
 
-export type ExternalSwapOutput = {
+export type ExternalSwapQuote = {
   aggregator: ExternalSwapAggregator;
   inTokenAddress: string;
   outTokenAddress: string;
   amountIn: bigint;
   amountOut: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  feesUsd: bigint;
   needSpenderApproval?: boolean;
   txnData?: {
     to: string;
@@ -239,12 +244,6 @@ export type ExternalSwapOutput = {
     value: bigint;
     estimatedGas: bigint;
   };
-};
-
-export type ExternalSwapQuote = ExternalSwapOutput & {
-  usdIn: bigint;
-  usdOut: bigint;
-  feesUsd: bigint;
 };
 
 export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";

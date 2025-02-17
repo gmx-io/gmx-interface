@@ -2283,7 +2283,7 @@ msgstr "Réduisez les popups de signature de portefeuille avec le trading en un 
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
-#: src/domain/synthetics/externalSwaps/useExternalSwapHandler.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Switch to internal swap"
 msgstr ""
 

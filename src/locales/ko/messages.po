@@ -2283,7 +2283,7 @@ msgstr "원클릭 트레이딩으로 지갑 서명 팝업을 줄이세요. 이 �
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
-#: src/domain/synthetics/externalSwaps/useExternalSwapHandler.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Switch to internal swap"
 msgstr ""
 

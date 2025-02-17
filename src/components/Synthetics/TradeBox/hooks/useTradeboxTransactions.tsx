@@ -1,11 +1,14 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectSetExternalSwapFails } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
+import {
+  selectSetExternalSwapFails,
+  selectSetShouldFallbackToInternalSwap,
+} from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -57,6 +60,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { toast } from "react-toastify";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -84,6 +88,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
 
   const setExternalSwapFails = useSelector(selectSetExternalSwapFails);
+  const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
   const { shouldDisableValidationForTesting } = useSettings();
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
@@ -257,12 +262,29 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+      const additinalErrorContent = increaseAmounts.externalSwapQuote ? (
+        <>
+          <br />
+          <br />
+          <span
+            className="inline-block cursor-pointer border-b border-dashed"
+            onClick={() => {
+              toast.dismiss();
+              setShouldFallbackToInternalSwap(true);
+            }}
+          >
+            <Trans>Switch to internal swap</Trans>
+          </span>
+        </>
+      ) : undefined;
+
       return createIncreaseOrderTxn({
         chainId,
         signer,
         subaccount,
         metricId: metricData.metricId,
         blockTimestampData,
+        additinalErrorContent,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -372,6 +394,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
+      setShouldFallbackToInternalSwap,
       cancelSltpEntries,
       updateSltpEntries,
       getExecutionFeeAmountForEntry,

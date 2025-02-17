@@ -2283,7 +2283,7 @@ msgstr "Reduce wallet signing popups with One-Click Trading. This option is also
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 
-#: src/domain/synthetics/externalSwaps/useExternalSwapHandler.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Switch to internal swap"
 msgstr "Switch to internal swap"
 

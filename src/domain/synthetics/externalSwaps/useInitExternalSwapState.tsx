@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { ExternalSwapQuote } from "sdk/types/trade";
 import { ExternalSwapState } from "./types";
-import { ExternalSwapOutput } from "../trade";
 
 export function useInitExternalSwapState(): ExternalSwapState {
-  const [baseOutput, setBaseOutput] = useState<ExternalSwapOutput>();
+  const [baseOutput, setBaseOutput] = useState<ExternalSwapQuote>();
   const [fails, setFails] = useState(0);
   const [shouldFallbackToInternalSwap, setShouldFallbackToInternalSwap] = useState(false);
 

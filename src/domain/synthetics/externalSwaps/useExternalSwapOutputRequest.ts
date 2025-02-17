@@ -1,12 +1,12 @@
 import { useDebounce } from "lib/useDebounce";
 import { useMemo } from "react";
 import { getContract } from "sdk/configs/contracts";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
-import { ExternalSwapAggregator, ExternalSwapOutput } from "sdk/types/trade";
+import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
 import useSWR from "swr";
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getOpenOceanTxnData } from "./openOcean";
-import { convertTokenAddress } from "sdk/configs/tokens";
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -70,12 +70,17 @@ export function useExternalSwapOutputRequest({
           throw new Error("Failed to fetch open ocean txn data");
         }
 
-        const quote: ExternalSwapOutput = {
+        const quote: ExternalSwapQuote = {
           aggregator: ExternalSwapAggregator.OpenOcean,
           inTokenAddress: tokenInAddress,
           outTokenAddress: tokenOutAddress,
           amountIn,
           amountOut: result.outputAmount,
+          usdIn: result.usdIn,
+          usdOut: result.usdOut,
+          priceIn: result.priceIn,
+          priceOut: result.priceOut,
+          feesUsd: result.usdIn - result.usdOut,
           txnData: {
             to: result.to,
             data: result.data,
@@ -109,7 +114,7 @@ export function useExternalSwapOutputRequest({
       amountIn
     );
 
-    const externalSwapOutput: ExternalSwapOutput = {
+    const externalSwapOutput: ExternalSwapQuote = {
       ...data,
       needSpenderApproval,
     };

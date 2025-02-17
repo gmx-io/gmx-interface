@@ -21,7 +21,12 @@ const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
   { msg: "execution reverted" },
 ];
 
-export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: string) {
+export function getErrorMessage(
+  chainId: number,
+  ex: TxError,
+  txnMessage?: string,
+  additionalContent?: React.ReactNode
+) {
   const [message, type, errorData] = extractError(ex);
   const nativeToken = getNativeToken(chainId);
 
@@ -80,6 +85,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
       failMsg = (
         <div>
           {txnMessage || t`Transaction failed`}
+          {additionalContent}
           <br />
           <br />
           {message && <ToastifyDebug error={message} />}

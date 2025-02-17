@@ -1,3 +1,4 @@
+import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import {
   selectTokensData,
   selectUiFeeFactor,
@@ -21,19 +22,16 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
-  estimateExternalSwapFeesUsd,
   getExternalSwapInputsByFromValue,
   getExternalSwapInputsByLeverageSize,
 } from "domain/synthetics/externalSwaps/utils";
-import { mustNeverExist } from "lib/types";
-import { createTradeFlags } from "sdk/utils/trade";
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
-import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
+import { mustNeverExist } from "lib/types";
 import { ExternalSwapQuote } from "sdk/types/trade";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import { createTradeFlags } from "sdk/utils/trade";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
 
 export const selectBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.baseOutput;
 export const selectSetBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.setBaseOutput;
@@ -61,26 +59,18 @@ export const selectExternalSwapQuote = createSelector((q) => {
     return undefined;
   }
 
-  const priceIn = tokenIn.prices.minPrice;
-  const priceOut = tokenOut.prices.maxPrice;
+  let usdIn = baseOutput.usdIn;
+  let amountIn = baseOutput.amountIn;
 
-  let usdIn = convertToUsd(inputs.amountIn, tokenIn.decimals, priceIn)!;
-  let amountIn = inputs.amountIn;
-
-  const usdOut = convertToUsd(baseOutput.amountOut, tokenOut.decimals, priceOut)!;
+  const usdOut = baseOutput.usdOut;
   const amountOut = baseOutput.amountOut;
 
   if (inputs?.strategy === "leverageBySize") {
     usdIn = bigMath.mulDiv(usdIn, inputs.usdOut, usdOut);
-    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
+    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, baseOutput.priceIn)!;
   }
 
-  const feesUsd = estimateExternalSwapFeesUsd({
-    tokenIn,
-    tokenOut,
-    amountIn,
-    amountOut,
-  });
+  const feesUsd = baseOutput.usdIn - baseOutput.usdOut;
 
   const quote: ExternalSwapQuote = {
     ...baseOutput,
@@ -94,7 +84,11 @@ export const selectExternalSwapQuote = createSelector((q) => {
   const isInternalSwapBetter =
     inputs?.internalSwapTotalFeesDeltaUsd !== undefined && inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
 
-  if (!debugForceExternalSwaps && (isInternalSwapBetter || shouldFallbackToInternalSwap)) {
+  if (shouldFallbackToInternalSwap) {
+    return undefined;
+  }
+
+  if (isInternalSwapBetter && !debugForceExternalSwaps) {
     return undefined;
   }
 

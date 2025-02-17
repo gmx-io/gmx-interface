@@ -2283,7 +2283,7 @@ msgstr "通过一键交易减少钱包签名弹出窗口。此选项也可通过
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
-#: src/domain/synthetics/externalSwaps/useExternalSwapHandler.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Switch to internal swap"
 msgstr ""
 

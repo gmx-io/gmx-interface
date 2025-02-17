@@ -1,10 +1,10 @@
-import { ExternalSwapOutput } from "../trade";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type ExternalSwapState = {
-  baseOutput: ExternalSwapOutput | undefined;
+  baseOutput: ExternalSwapQuote | undefined;
   fails: number;
   shouldFallbackToInternalSwap: boolean;
-  setBaseOutput: (output: ExternalSwapOutput | undefined) => void;
+  setBaseOutput: (output: ExternalSwapQuote | undefined) => void;
   setFails: (fails: number | ((fails: number) => number)) => void;
   setShouldFallbackToInternalSwap: (shouldFallback: boolean) => void;
 };

@@ -1,10 +1,9 @@
-import { Trans } from "@lingui/macro";
 import { isDevelopment } from "config/env";
 import { AUTO_SWAP_FALLBACK_MAX_FEES_BPS, DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT } from "config/externalSwaps";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
-  selectBaseExternalSwapOutput,
   selectExternalSwapFails,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
@@ -22,12 +21,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
-import { helperToast } from "lib/helperToast";
 import { throttleLog } from "lib/logging";
+import { formatUsd } from "lib/numbers";
 import { useEffect } from "react";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
-import { formatUsd } from "lib/numbers";
-import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -92,31 +89,14 @@ export function useExternalSwapHandler() {
   );
 
   useEffect(() => {
-    if (externalSwapFails > 0 && shouldFallbackToInternalSwap) {
+    if (externalSwapFails > 0 && !shouldFallbackToInternalSwap) {
       if (
         externalSwapInputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
         externalSwapQuote &&
         externalSwapInputs.internalSwapTotalFeesDeltaUsd - -externalSwapQuote.feesUsd > AUTO_SWAP_FALLBACK_MAX_FEES_BPS
       ) {
         setShouldFallbackToInternalSwap(true);
-      } else {
-        helperToast.error(
-          <div>
-            <div>External swap failed. Fallback to internal swap.</div>
-            <span
-              className="inline-block cursor-pointer border-b border-dashed"
-              onClick={() => setShouldFallbackToInternalSwap(true)}
-            >
-              <Trans>Switch to internal swap</Trans>
-            </span>
-          </div>
-        );
       }
-    }
-
-    if (externalSwapFails >= DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT && settings.externalSwapsEnabled) {
-      setExternalSwapFails(0);
-      settings.setExternalSwapsEnabled(false);
     }
   }, [
     externalSwapQuote,
@@ -124,13 +104,33 @@ export function useExternalSwapHandler() {
     setExternalSwapFails,
     settings,
     shouldFallbackToInternalSwap,
-    externalSwapInputs?.internalSwapTotalFeesDeltaUsd,
+    externalSwapInputs,
     setShouldFallbackToInternalSwap,
   ]);
 
   useEffect(
+    function disableExternalSwapByFails() {
+      if (externalSwapFails >= DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT && settings.externalSwapsEnabled) {
+        setExternalSwapFails(0);
+        setShouldFallbackToInternalSwap(false);
+        settings.setExternalSwapsEnabled(false);
+      }
+    },
+    [
+      externalSwapFails,
+      settings.externalSwapsEnabled,
+      shouldFallbackToInternalSwap,
+      setExternalSwapFails,
+      setShouldFallbackToInternalSwap,
+      settings,
+    ]
+  );
+
+  useEffect(
     function resetExternalSwapFallbackEff() {
-      const isLastOrderExecuted = Object.values(orderStatuses).every((os) => os.executedTxnHash);
+      const orderStatusesValues = Object.values(orderStatuses);
+      const isLastOrderExecuted =
+        orderStatusesValues.length > 0 && orderStatusesValues.every((os) => os.executedTxnHash);
 
       if (isLastOrderExecuted && shouldFallbackToInternalSwap) {
         setShouldFallbackToInternalSwap(false);
