@@ -337,8 +337,8 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     warning.push(
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
-          You can get {formatPercentage(improvedOpenFeesDeltaBps)} better open cost in the{" "}
-          {getMarketPoolName(minOpenFeesMarket)} market pool.
+          You can save {formatPercentage(improvedOpenFeesDeltaBps)} in the {getMarketPoolName(minOpenFeesMarket)} market
+          pool.
           <WithActon>
             <span
               className="clickable muted underline"
