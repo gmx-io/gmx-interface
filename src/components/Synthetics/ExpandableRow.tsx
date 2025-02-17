@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { useMedia } from "react-use";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, AnimationProps, MotionStyle } from "framer-motion";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { usePrevious } from "lib/usePrevious";
@@ -8,10 +8,11 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
-const EXPAND_ANIMATION_INITIAL = { height: 0, opacity: 0 };
-const EXPAND_ANIMATION_ANIMATE = { height: "auto", opacity: 1 };
-const EXPAND_ANIMATION_EXIT = { height: 0, opacity: 0 };
-const EXPAND_ANIMATION_TRANSITION = { duration: 0.2, ease: "easeInOut" };
+const EXPAND_ANIMATION_INITIAL: AnimationProps["initial"] = { height: 0, opacity: 0 };
+const EXPAND_ANIMATION_ANIMATE: AnimationProps["animate"] = { height: "auto", opacity: 1 };
+const EXPAND_ANIMATION_EXIT: AnimationProps["exit"] = { height: 0, opacity: 0 };
+const EXPAND_ANIMATION_TRANSITION: AnimationProps["transition"] = { duration: 0.2, ease: "easeInOut" };
+const EXPAND_ANIMATION_STYLE: MotionStyle = { overflow: "hidden" } as const;
 
 interface Props {
   title: ReactNode;
@@ -107,6 +108,7 @@ export function ExpandableRow({
             animate={EXPAND_ANIMATION_ANIMATE}
             exit={EXPAND_ANIMATION_EXIT}
             transition={EXPAND_ANIMATION_TRANSITION}
+            style={EXPAND_ANIMATION_STYLE}
           >
             {children}
           </motion.div>

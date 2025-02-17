@@ -4,7 +4,7 @@ import { memo, useMemo } from "react";
 import { OrderType } from "domain/synthetics/orders/types";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { TradeFees, TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
-import { getIsHighCollateralImpact } from "domain/synthetics/trade/utils/getIsHighCollateralImpact";
+import { getIsHighPositionImpact } from "domain/synthetics/trade/utils/getIsHighPositionImpact";
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
@@ -103,12 +103,12 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
       return "text-green-500 !decoration-green-500/50";
     }
 
-    if (getIsHighCollateralImpact(fees?.positionCollateralPriceImpact)) {
+    if (getIsHighPositionImpact(fees?.positionPriceImpact)) {
       return "text-yellow-500 !decoration-yellow-500/50";
     }
 
     return "";
-  }, [uncappedPositionPriceImpactDeltaUsd, fees?.positionCollateralPriceImpact]);
+  }, [uncappedPositionPriceImpactDeltaUsd, fees?.positionPriceImpact]);
 
   return (
     <SyntheticsInfoRow label={t`Execution Price`}>
