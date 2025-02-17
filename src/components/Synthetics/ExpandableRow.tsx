@@ -1,6 +1,6 @@
 import cx from "classnames";
+import { AnimatePresence, Variants, motion } from "framer-motion";
 import { useMedia } from "react-use";
-import { motion, AnimatePresence, AnimationProps, MotionStyle } from "framer-motion";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { usePrevious } from "lib/usePrevious";
@@ -8,11 +8,34 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
-const EXPAND_ANIMATION_INITIAL: AnimationProps["initial"] = { height: 0, opacity: 0 };
-const EXPAND_ANIMATION_ANIMATE: AnimationProps["animate"] = { height: "auto", opacity: 1 };
-const EXPAND_ANIMATION_EXIT: AnimationProps["exit"] = { height: 0, opacity: 0 };
-const EXPAND_ANIMATION_TRANSITION: AnimationProps["transition"] = { duration: 0.2, ease: "easeInOut" };
-const EXPAND_ANIMATION_STYLE: MotionStyle = { overflow: "hidden" } as const;
+const ANIMATION_DURATION = 0.2;
+
+const EXPAND_ANIMATION_VARIANTS: Variants = {
+  collapsed: {
+    height: 0,
+    opacity: 0,
+    overflow: "hidden",
+  },
+  expanded: {
+    height: "auto",
+    opacity: 1,
+    overflow: "visible",
+    transition: {
+      height: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+      opacity: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+      overflow: { delay: ANIMATION_DURATION },
+    },
+  },
+  exit: {
+    height: 0,
+    opacity: 0,
+    overflow: "hidden",
+    transition: {
+      height: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+      opacity: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+    },
+  },
+};
 
 interface Props {
   title: ReactNode;
@@ -53,6 +76,17 @@ export function ExpandableRow({
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const isMobile = useMedia(`(max-width: 1100px)`, false);
+
+  const handleAnimationComplete = useCallback(
+    (definition: string) => {
+      if (definition === "expanded" && scrollIntoViewOnMobile && isMobile && contentRef.current) {
+        contentRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    [scrollIntoViewOnMobile, isMobile]
+  );
+
   useEffect(() => {
     if (autoExpandOnError && hasError && !previousHasError) {
       onToggle(true);
@@ -72,13 +106,6 @@ export function ExpandableRow({
   }, [hasError, disableCollapseOnError, title, errorMessage]);
 
   const disabled = disableCollapseOnError && hasError;
-
-  const isMobile = useMedia(`(max-width: 1100px)`, false);
-  useEffect(() => {
-    if (open && scrollIntoViewOnMobile && isMobile && contentRef.current) {
-      contentRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [scrollIntoViewOnMobile, open, isMobile]);
 
   return (
     <div className={className}>
@@ -104,11 +131,11 @@ export function ExpandableRow({
           <motion.div
             ref={contentRef}
             className={contentClassName}
-            initial={EXPAND_ANIMATION_INITIAL}
-            animate={EXPAND_ANIMATION_ANIMATE}
-            exit={EXPAND_ANIMATION_EXIT}
-            transition={EXPAND_ANIMATION_TRANSITION}
-            style={EXPAND_ANIMATION_STYLE}
+            variants={EXPAND_ANIMATION_VARIANTS}
+            initial="collapsed"
+            animate="expanded"
+            exit="exit"
+            onAnimationComplete={handleAnimationComplete}
           >
             {children}
           </motion.div>

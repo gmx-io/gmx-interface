@@ -271,7 +271,7 @@ export function TradeBoxAdvancedGroups() {
             priceImpactFeeBps={fees?.positionPriceImpact?.bps}
             setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
           />
-          <div className="h-1 bg-stroke-primary" />
+          <div className="h-1 shrink-0 bg-stroke-primary" />
         </>
       )}
 
@@ -280,7 +280,7 @@ export function TradeBoxAdvancedGroups() {
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow executionFee={executionFee} />
 
-      {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 bg-stroke-primary" />}
+      {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
 
       {/* only when isSwap */}
       {isSwap && <SwapSpreadRow />}
@@ -292,7 +292,7 @@ export function TradeBoxAdvancedGroups() {
       {isMarket && <AllowedSlippageRow />}
 
       {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
-        <div className="h-1 bg-stroke-primary" />
+        <div className="h-1 shrink-0 bg-stroke-primary" />
       )}
 
       <LeverageInfoRows />
