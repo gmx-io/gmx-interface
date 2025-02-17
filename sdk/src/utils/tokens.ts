@@ -103,3 +103,23 @@ export function getTokensRatioByAmounts(p: {
 
   return { ratio, largestToken, smallestToken };
 }
+
+export function getAmountByRatio(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromTokenAmount: bigint;
+  ratio: bigint;
+  shouldInvertRatio?: boolean;
+}) {
+  const { fromToken, toToken, fromTokenAmount, ratio, shouldInvertRatio } = p;
+
+  if (getIsEquivalentTokens(fromToken, toToken) || fromTokenAmount === 0n) {
+    return p.fromTokenAmount;
+  }
+
+  const _ratio = shouldInvertRatio ? (PRECISION * PRECISION) / ratio : ratio;
+
+  const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
+
+  return (p.fromTokenAmount * adjustedDecimalsRatio) / PRECISION;
+}

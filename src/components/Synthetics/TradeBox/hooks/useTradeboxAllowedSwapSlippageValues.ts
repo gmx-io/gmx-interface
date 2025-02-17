@@ -11,7 +11,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "config/factors";
-import { bigMath } from "lib/bigmath";
+import { bigMath } from "sdk/utils/bigmath";
 import { useTradeboxChanges } from "./useTradeboxChanges";
 
 export function useTradeboxAllowedSwapSlippageValues() {
