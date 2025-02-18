@@ -6,6 +6,7 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { LRUCache } from "sdk/utils/LruCache";
 
 import { SyntheticsState } from "./SyntheticsStateContextProvider";
+import { ExternalSwapQuote } from "sdk/types/trade";
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
 
 /**
@@ -16,7 +17,17 @@ const context = createSelectionContext<SyntheticsState>();
 
 export const createSelector = context.makeSelector;
 
-type Arg = boolean | string | undefined | null | number | TradeMode | TradeType | OrderOption | bigint;
+type Arg =
+  | boolean
+  | string
+  | undefined
+  | null
+  | number
+  | TradeMode
+  | TradeType
+  | OrderOption
+  | bigint
+  | ExternalSwapQuote;
 type SupportedArg = Arg | Record<string, Arg>;
 
 type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;

@@ -186,6 +186,7 @@ export function useSidecarOrders() {
         indexTokenAmount: size,
         triggerPrice: price.value,
         position: mockPositionInfo,
+        externalSwapQuote: undefined,
         findSwapPath,
         userReferralInfo,
         uiFeeFactor,

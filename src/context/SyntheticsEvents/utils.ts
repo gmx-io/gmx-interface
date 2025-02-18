@@ -10,7 +10,6 @@ export function getPendingOrderKey(data: Omit<PendingOrderData, "txnType">) {
     data.isLong,
     data.orderType,
     data.sizeDeltaUsd.toString(),
-    data.initialCollateralDeltaAmount.toString(),
   ].join(":");
 }
 

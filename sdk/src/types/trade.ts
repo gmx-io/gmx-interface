@@ -1,5 +1,5 @@
 import { MarketInfo } from "types/markets";
-import { FeeItem, SwapFeeItem } from "./fees";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
 
 export enum TradeType {
@@ -222,6 +222,44 @@ export type FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => S
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
+export enum ExternalSwapAggregator {
+  OpenOcean = "openOcean",
+}
+
+export type ExternalSwapQuote = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+  amountIn: bigint;
+  amountOut: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  feesUsd: bigint;
+  needSpenderApproval?: boolean;
+  txnData?: {
+    to: string;
+    data: string;
+    value: bigint;
+    estimatedGas: bigint;
+  };
+};
+
+export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
+
+export type ExternalSwapInputs = {
+  amountIn: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  strategy: ExternalSwapCalculationStrategy;
+  internalSwapTotalFeesDeltaUsd?: bigint;
+  internalSwapPriceImpactFeeItem?: FeeItem;
+  internalSwapAmounts: SwapAmounts;
+};
+
 export type TradeFees = {
   totalFees?: FeeItem;
   payTotalFees?: FeeItem;
@@ -239,6 +277,7 @@ export type TradeFees = {
   uiSwapFee?: FeeItem;
   feeDiscountUsd?: bigint;
   swapProfitFee?: FeeItem;
+  externalSwapFees?: ExternalSwapFeeItem[];
 };
 
 export type GmSwapFees = {

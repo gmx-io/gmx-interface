@@ -17,7 +17,8 @@ export async function prepareOrderTxn(
   value: bigint,
   customSigners?: Wallet[],
   simulationPromise?: Promise<any>,
-  metricId?: OrderMetricId
+  metricId?: OrderMetricId,
+  additinalErrorContent?: React.ReactNode
 ) {
   if (!contract.runner?.provider) {
     helperToast.error(t`Error preparing transaction. Provider is not defined`);
@@ -27,22 +28,30 @@ export async function prepareOrderTxn(
   const customSignerContracts = customSigners?.map((signer) => contract.connect(signer)) || [];
 
   const [gasLimit, gasPriceData, customSignersGasLimits, customSignersGasPrices, bestNonce] = await Promise.all([
-    getGasLimit(contract, method, params, value).catch(makeCatchTransactionError(chainId, metricId, "gasLimit")),
-    getGasPrice(contract.runner.provider, chainId).catch(makeCatchTransactionError(chainId, metricId, "gasPrice")),
+    getGasLimit(contract, method, params, value).catch(
+      makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
+    ),
+    getGasPrice(contract.runner.provider, chainId).catch(
+      makeCatchTransactionError(chainId, metricId, "gasPrice", additinalErrorContent)
+    ),
     // subaccount
     Promise.all(
       customSignerContracts.map((cntrct) =>
-        getGasLimit(cntrct, method, params, value).catch(makeCatchTransactionError(chainId, metricId, "gasLimit"))
+        getGasLimit(cntrct, method, params, value).catch(
+          makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
+        )
       )
     ),
     Promise.all(
       customSignerContracts.map((cntrct) =>
-        getGasPrice(cntrct.runner!.provider!, chainId).catch(makeCatchTransactionError(chainId, metricId, "gasPrice"))
+        getGasPrice(cntrct.runner!.provider!, chainId).catch(
+          makeCatchTransactionError(chainId, metricId, "gasPrice", additinalErrorContent)
+        )
       )
     ),
     customSigners?.length
       ? getBestNonce([contract.runner as Wallet, ...customSigners]).catch(
-          makeCatchTransactionError(chainId, metricId, "bestNonce")
+          makeCatchTransactionError(chainId, metricId, "bestNonce", additinalErrorContent)
         )
       : undefined,
     // simulation
@@ -53,12 +62,18 @@ export async function prepareOrderTxn(
 }
 
 export const makeCatchTransactionError =
-  (chainId: number, metricId: OrderMetricId | undefined, errorContext: OrderErrorContext) => (e: Error) => {
+  (
+    chainId: number,
+    metricId: OrderMetricId | undefined,
+    errorContext: OrderErrorContext,
+    additinalErrorContent?: React.ReactNode
+  ) =>
+  (e: Error) => {
     if (metricId) {
       sendTxnErrorMetric(metricId, e, errorContext);
     }
 
-    const { failMsg, autoCloseToast } = getErrorMessage(chainId, e);
+    const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, undefined, additinalErrorContent);
     helperToast.error(failMsg, { autoClose: autoCloseToast });
 
     throw e;
