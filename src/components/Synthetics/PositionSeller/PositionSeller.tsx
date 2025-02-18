@@ -565,16 +565,18 @@ export function PositionSeller(p: Props) {
             <div className="flex flex-col gap-2">
               <BuyInputSection
                 topLeftLabel={t`Close`}
-                topRightLabel={t`Max`}
-                topRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                bottomLeftValue={formatUsd(closeSizeUsd)}
+                isBottomLeftValueMuted={closeSizeUsd === 0n}
+                bottomRightLabel={t`Max`}
+                bottomRightValue={formatUsd(maxCloseSize)}
                 onClickMax={
                   maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
                     ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
                     : undefined
                 }
-                showPercentSelector={true}
+                showPercentSelector
                 onPercentChange={(percentage) => {
                   const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
                   setCloseUsdInputValueRaw(formattedAmount);
