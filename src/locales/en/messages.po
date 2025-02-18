@@ -3472,6 +3472,10 @@ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. U
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Fail External Swaps"
+msgstr "Fail External Swaps"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr "Swap {fromTokenText} for {toTokenText}"
