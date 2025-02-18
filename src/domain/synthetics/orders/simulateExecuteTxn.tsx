@@ -24,6 +24,8 @@ import { isGlvEnabled } from "../markets/glv";
 import { adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { extractError } from "sdk/utils/contracts";
+import { ExternalSwapQuote } from "sdk/types/trade";
+import { getSwapDebugSettings } from "config/externalSwaps";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -47,6 +49,7 @@ type SimulateExecuteParams = {
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   additinalErrorContent?: React.ReactNode;
+  externalSwapQuote?: ExternalSwapQuote;
 };
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
@@ -139,6 +142,10 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 
   try {
+    if (p.externalSwapQuote && getSwapDebugSettings()?.failExternalSwaps) {
+      throw new Error("Debug fail external swap");
+    }
+
     await withRetry(
       () => {
         return router.multicall.staticCall(simulationPayloadData, {

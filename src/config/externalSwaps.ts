@@ -7,16 +7,18 @@ import { DEBUG_SWAP_SETTINGS_KEY } from "./localStorage";
 export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -1500n;
 
 // Enable auto swap fallback if fees difference of internal and external swap are less than this threshold
-export const AUTO_SWAP_FALLBACK_MAX_FEES_BPS = -10n;
+export const AUTO_SWAP_FALLBACK_MAX_FEES_BPS = -1000n;
 
 // Disable external swap aggregator if this number of build transactions fail
 export const DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT = 3;
 
 let isSwapDebugSettingsInited = false;
+
 let swapDebugSettings = {
   swapPriceImpactForExternalSwapThresholdBps: SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS,
   autoSwapFallbackMaxFeesBps: AUTO_SWAP_FALLBACK_MAX_FEES_BPS,
   forceExternalSwaps: false,
+  failExternalSwaps: false,
 };
 
 const OPEN_OCEAN_BASE_URL = "https://open-api.openocean.finance/v3";

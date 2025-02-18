@@ -39,6 +39,16 @@ export function DebugSwapsSettings() {
               <Trans>Force External Swaps</Trans>
             </ToggleSwitch>
             <br />
+            <ToggleSwitch
+              isChecked={debugSettings.failExternalSwaps}
+              setIsChecked={(checked) => {
+                setSwapDebugSetting("failExternalSwaps", checked);
+                updateDebugSettings();
+              }}
+            >
+              <Trans>Fail External Swaps</Trans>
+            </ToggleSwitch>
+            <br />
             <div className="mb-8">
               <div>
                 <Trans>Swap Price Impact for External Swap Threshold</Trans>

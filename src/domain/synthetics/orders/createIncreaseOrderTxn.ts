@@ -249,6 +249,7 @@ export async function createIncreaseOrderTxn({
         additinalErrorContent,
         metricId,
         blockTimestampData,
+        externalSwapQuote: p.externalSwapQuote,
       })
     : undefined;
 
