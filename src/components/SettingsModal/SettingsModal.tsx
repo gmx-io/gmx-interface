@@ -21,8 +21,6 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import Checkbox from "components/Checkbox/Checkbox";
-
 const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
 
 export function SettingsModal({
@@ -238,9 +236,9 @@ export function SettingsModal({
         </div>
 
         <div className="Exchange-settings-row">
-          <Checkbox isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+          <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
             <Trans>Enable external swaps</Trans>
-          </Checkbox>
+          </ToggleSwitch>
         </div>
 
         {isDevelopment() && (

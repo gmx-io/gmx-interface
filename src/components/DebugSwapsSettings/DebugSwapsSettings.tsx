@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
-import Checkbox from "components/Checkbox/Checkbox";
 import NumberInput from "components/NumberInput/NumberInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { getSwapDebugSettings, setSwapDebugSetting } from "config/externalSwaps";
 import { useState } from "react";
 
@@ -29,7 +29,7 @@ export function DebugSwapsSettings() {
         <div className="mt-8">
           <div className="divider"></div>
           <div className="max-h-180 mb-16 flex flex-col overflow-auto py-8">
-            <Checkbox
+            <ToggleSwitch
               isChecked={debugSettings.forceExternalSwaps}
               setIsChecked={(checked) => {
                 setSwapDebugSetting("forceExternalSwaps", checked);
@@ -37,16 +37,16 @@ export function DebugSwapsSettings() {
               }}
             >
               <Trans>Force External Swaps</Trans>
-            </Checkbox>
+            </ToggleSwitch>
             <br />
-            <div className="App-settings-row">
+            <div className="mb-8">
               <div>
                 <Trans>Swap Price Impact for External Swap Threshold</Trans>
               </div>
-              <div className="App-slippage-tolerance-input-container">
-                <div className="App-slippage-tolerance-input-minus">-</div>
+              <div className="relative">
+                <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-100">-</div>
                 <NumberInput
-                  className="App-slippage-tolerance-input with-minus"
+                  className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
                   value={(-debugSettings.swapPriceImpactForExternalSwapThresholdBps).toString()}
                   onValueChange={(e) => {
                     const value = -BigInt(e.target.value);
@@ -55,17 +55,17 @@ export function DebugSwapsSettings() {
                   }}
                   placeholder="15"
                 />
-                <div className="App-slippage-tolerance-input-percent">bps</div>
+                <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">bps</div>
               </div>
             </div>
-            <div className="App-settings-row">
+            <div className="mb-8">
               <div>
                 <Trans>Auto Swap Fallback Max Fees</Trans>
               </div>
-              <div className="App-slippage-tolerance-input-container">
-                <div className="App-slippage-tolerance-input-minus">-</div>
+              <div className="relative">
+                <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-100">-</div>
                 <NumberInput
-                  className="App-slippage-tolerance-input with-minus"
+                  className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
                   value={(-debugSettings.autoSwapFallbackMaxFeesBps).toString()}
                   onValueChange={(e) => {
                     const value = -BigInt(e.target.value);
@@ -74,7 +74,7 @@ export function DebugSwapsSettings() {
                   }}
                   placeholder="15"
                 />
-                <div className="App-slippage-tolerance-input-percent">bps</div>
+                <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">bps</div>
               </div>
             </div>
             <div className="divider"></div>
