@@ -1,7 +1,8 @@
-import "./SuggestionInput.scss";
 import { ChangeEvent, KeyboardEvent, useCallback, useRef, useState } from "react";
 import cx from "classnames";
 import NumberInput from "components/NumberInput/NumberInput";
+
+import "./SuggestionInput.scss";
 
 type Props = {
   value?: string;

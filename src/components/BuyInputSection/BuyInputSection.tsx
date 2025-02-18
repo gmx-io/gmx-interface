@@ -190,7 +190,25 @@ export default function BuyInputSection(props: Props) {
               placeholder="0.0"
               qa={qa ? qa + "-input" : undefined}
             />
-            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-cold-blue-900"></div>
+            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-cold-blue-900" />
+
+            {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
+              <ul className="PercentSelector">
+                {PERCENTAGE_SUGGESTIONS.map((percentage) => (
+                  <li
+                    className="PercentSelector-item"
+                    key={percentage}
+                    onMouseDown={() => {
+                      onPercentChange?.(percentage);
+                      handleOnBlur();
+                    }}
+                    data-qa={`${qa}-percent-selector-${percentage}`}
+                  >
+                    {percentage}%
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="shrink-0 text-24 leading-[24px]">{children}</div>
@@ -230,24 +248,6 @@ export default function BuyInputSection(props: Props) {
           </div>
         )}
       </div>
-
-      {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
-        <ul className="PercentSelector">
-          {PERCENTAGE_SUGGESTIONS.map((percentage) => (
-            <li
-              className="PercentSelector-item"
-              key={percentage}
-              onMouseDown={() => {
-                onPercentChange?.(percentage);
-                handleOnBlur();
-              }}
-              data-qa={`${qa}-percent-selector-${percentage}`}
-            >
-              {percentage}%
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }
