@@ -424,7 +424,7 @@ export function PositionSeller(p: Props) {
 
   const liqPriceRow = position && (
     <SyntheticsInfoRow
-      label={t`Liq. Price`}
+      label={t`Liquidation Price`}
       value={
         <ValueTransition
           from={
