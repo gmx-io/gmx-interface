@@ -121,7 +121,7 @@ export async function createIncreaseOrderTxn({
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
 
-  const { initialCollateralTokenAddress, swapPath } = getCollateralAndSwapAddresses(chainId, p);
+  const { initialCollateralTokenAddress, swapPath, tokenToSendAddress } = getCollateralAndSwapAddresses(chainId, p);
 
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
@@ -159,6 +159,7 @@ export async function createIncreaseOrderTxn({
     subaccount,
     isNativePayment,
     initialCollateralTokenAddress,
+    tokenToSendAddress,
     swapPath,
     signer,
   });
@@ -184,6 +185,7 @@ export async function createIncreaseOrderTxn({
     subaccount: null,
     isNativePayment,
     initialCollateralTokenAddress,
+    tokenToSendAddress,
     swapPath,
     signer,
   });
@@ -316,6 +318,7 @@ async function createEncodedPayload({
   subaccount,
   isNativePayment,
   initialCollateralTokenAddress,
+  tokenToSendAddress,
   swapPath,
   signer,
 }: {
@@ -328,6 +331,7 @@ async function createEncodedPayload({
   subaccount: Subaccount;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
+  tokenToSendAddress;
   swapPath: string[];
   signer: Signer;
 }) {
@@ -360,7 +364,7 @@ async function createEncodedPayload({
     !isNativePayment && !subaccount
       ? {
           method: "sendTokens",
-          params: [initialCollateralTokenAddress, tokensDestination, p.initialCollateralAmount],
+          params: [tokenToSendAddress, tokensDestination, p.initialCollateralAmount],
         }
       : undefined,
 
@@ -431,6 +435,7 @@ function createOrderParams({
 function getCollateralAndSwapAddresses(chainId: number, p: IncreaseOrderParams) {
   let swapPath = p.swapPath;
   let initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+  const tokenToSendAddress = initialCollateralTokenAddress;
 
   if (p.externalSwapQuote?.txnData) {
     swapPath = [];
@@ -440,5 +445,6 @@ function getCollateralAndSwapAddresses(chainId: number, p: IncreaseOrderParams) 
   return {
     swapPath,
     initialCollateralTokenAddress,
+    tokenToSendAddress,
   };
 }

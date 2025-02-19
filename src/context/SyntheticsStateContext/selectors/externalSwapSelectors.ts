@@ -25,7 +25,7 @@ import {
   getExternalSwapInputsByFromValue,
   getExternalSwapInputsByLeverageSize,
 } from "domain/synthetics/externalSwaps/utils";
-import { convertToTokenAmount } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { ExternalSwapQuote } from "sdk/types/trade";
@@ -59,25 +59,29 @@ export const selectExternalSwapQuote = createSelector((q) => {
     return undefined;
   }
 
-  let usdIn = baseOutput.usdIn;
   let amountIn = baseOutput.amountIn;
+  let priceIn = baseOutput.priceIn ?? tokenIn.prices.minPrice;
+  let usdIn = baseOutput.usdIn ?? convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
 
-  const usdOut = baseOutput.usdOut;
   const amountOut = baseOutput.amountOut;
+  const priceOut = baseOutput.priceOut ?? tokenOut.prices.maxPrice;
+  const usdOut = baseOutput.usdOut ?? convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
 
   if (inputs?.strategy === "leverageBySize") {
     usdIn = bigMath.mulDiv(usdIn, inputs.usdOut, usdOut);
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, baseOutput.priceIn)!;
   }
 
-  const feesUsd = baseOutput.usdIn - baseOutput.usdOut;
+  const feesUsd = usdIn - usdOut;
 
   const quote: ExternalSwapQuote = {
     ...baseOutput,
     amountIn,
     usdIn,
+    priceIn,
     amountOut,
     usdOut,
+    priceOut,
     feesUsd,
   };
 

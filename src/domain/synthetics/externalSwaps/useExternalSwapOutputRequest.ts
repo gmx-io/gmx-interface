@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
-import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
+import { ExternalSwapAggregator, ExternalSwapOutput, ExternalSwapQuote } from "sdk/types/trade";
 import useSWR from "swr";
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getOpenOceanTxnData } from "./openOcean";
@@ -70,7 +70,7 @@ export function useExternalSwapOutputRequest({
           throw new Error("Failed to fetch open ocean txn data");
         }
 
-        const quote: ExternalSwapQuote = {
+        const quote: ExternalSwapOutput = {
           aggregator: ExternalSwapAggregator.OpenOcean,
           inTokenAddress: tokenInAddress,
           outTokenAddress: tokenOutAddress,
@@ -80,7 +80,6 @@ export function useExternalSwapOutputRequest({
           usdOut: result.usdOut,
           priceIn: result.priceIn,
           priceOut: result.priceOut,
-          feesUsd: result.usdIn - result.usdOut,
           txnData: {
             to: result.to,
             data: result.data,

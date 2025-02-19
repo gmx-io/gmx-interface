@@ -226,6 +226,25 @@ export enum ExternalSwapAggregator {
   OpenOcean = "openOcean",
 }
 
+export type ExternalSwapOutput = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+  amountIn: bigint;
+  amountOut: bigint;
+  usdIn: bigint | undefined;
+  usdOut: bigint | undefined;
+  priceIn: bigint | undefined;
+  priceOut: bigint | undefined;
+  needSpenderApproval?: boolean;
+  txnData?: {
+    to: string;
+    data: string;
+    value: bigint;
+    estimatedGas: bigint;
+  };
+};
+
 export type ExternalSwapQuote = {
   aggregator: ExternalSwapAggregator;
   inTokenAddress: string;
