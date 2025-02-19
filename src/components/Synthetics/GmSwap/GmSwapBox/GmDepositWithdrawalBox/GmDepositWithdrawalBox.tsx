@@ -732,6 +732,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
             bottomLeftValue={formatUsd(firstTokenUsd)}
+            isBottomLeftValueMuted={firstTokenUsd === undefined || firstTokenUsd === 0n}
             bottomRightLabel={t`Balance`}
             bottomRightValue={
               firstToken && firstToken.balance !== undefined
@@ -767,6 +768,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             <BuyInputSection
               topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
               bottomLeftValue={formatUsd(secondTokenUsd)}
+              isBottomLeftValueMuted={secondTokenUsd === undefined || secondTokenUsd === 0n}
               bottomRightLabel={t`Balance`}
               bottomRightValue={
                 secondToken && secondToken.balance !== undefined

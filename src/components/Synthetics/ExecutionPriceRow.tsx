@@ -1,15 +1,17 @@
 import { Trans, t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { HIGH_COLLATERAL_IMPACT_BPS } from "config/factors";
+import { memo, useMemo } from "react";
+
 import { OrderType } from "domain/synthetics/orders/types";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { TradeFees, TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
-import { bigMath } from "sdk/utils/bigmath";
+import { getIsHighPositionImpact } from "domain/synthetics/trade/utils/getIsHighPositionImpact";
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { memo, useMemo } from "react";
+import { bigMath } from "sdk/utils/bigmath";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
 interface Props {
@@ -44,23 +46,12 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     }
   }, [isIncrease, isLong, triggerOrderType]);
 
-  const fullPositionPriceImpactPercentage =
+  const uncappedPositionPriceImpactPercentage =
     fees?.positionPriceImpact?.precisePercentage !== undefined && fees?.priceImpactDiff?.precisePercentage !== undefined
       ? fees.positionPriceImpact.precisePercentage - fees.priceImpactDiff.precisePercentage
       : undefined;
 
-  const fullCollateralPriceImpactBps =
-    fees?.positionCollateralPriceImpact?.bps !== undefined && fees?.collateralPriceImpactDiff?.bps !== undefined
-      ? fees.positionCollateralPriceImpact.bps - fees.collateralPriceImpactDiff.bps
-      : undefined;
-
-  const fullCollateralPriceImpactPercentage =
-    fees?.positionCollateralPriceImpact?.precisePercentage !== undefined &&
-    fees?.collateralPriceImpactDiff?.precisePercentage !== undefined
-      ? fees.positionCollateralPriceImpact.precisePercentage - fees.collateralPriceImpactDiff.precisePercentage
-      : undefined;
-
-  const positionPriceImpactDeltaUsd =
+  const uncappedPositionPriceImpactDeltaUsd =
     fees?.positionPriceImpact?.deltaUsd !== undefined && fees?.priceImpactDiff?.deltaUsd !== undefined
       ? fees.positionPriceImpact.deltaUsd - fees.priceImpactDiff.deltaUsd
       : undefined;
@@ -108,20 +99,16 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
   });
 
   const handleClassName = useMemo(() => {
-    if (positionPriceImpactDeltaUsd !== undefined && positionPriceImpactDeltaUsd >= 0n) {
+    if (uncappedPositionPriceImpactDeltaUsd !== undefined && uncappedPositionPriceImpactDeltaUsd >= 0n) {
       return "text-green-500 !decoration-green-500/50";
     }
 
-    if (
-      fullCollateralPriceImpactBps !== undefined &&
-      fullCollateralPriceImpactBps < 0n &&
-      bigMath.abs(fullCollateralPriceImpactBps) >= HIGH_COLLATERAL_IMPACT_BPS
-    ) {
+    if (getIsHighPositionImpact(fees?.positionPriceImpact)) {
       return "text-yellow-500 !decoration-yellow-500/50";
     }
 
     return "";
-  }, [positionPriceImpactDeltaUsd, fullCollateralPriceImpactBps]);
+  }, [uncappedPositionPriceImpactDeltaUsd, fees?.positionPriceImpact]);
 
   return (
     <SyntheticsInfoRow label={t`Execution Price`}>
@@ -140,17 +127,16 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                 : t`Expected execution price for the order, including the current price impact.`}
               <br />
               <br />
-              {fullPositionPriceImpactPercentage !== undefined &&
-                positionPriceImpactDeltaUsd !== undefined &&
-                fullCollateralPriceImpactPercentage !== undefined && (
+              {uncappedPositionPriceImpactPercentage !== undefined &&
+                uncappedPositionPriceImpactDeltaUsd !== undefined && (
                   <StatsTooltipRow
-                    textClassName={getPositiveOrNegativeClass(positionPriceImpactDeltaUsd, "text-green-500")}
+                    textClassName={getPositiveOrNegativeClass(uncappedPositionPriceImpactDeltaUsd, "text-green-500")}
                     label={
                       <>
                         <div className="text-white">{t`Price Impact`}:</div>
                         <div>
                           (
-                          {formatPercentage(bigMath.abs(fullPositionPriceImpactPercentage), {
+                          {formatPercentage(bigMath.abs(uncappedPositionPriceImpactPercentage), {
                             displayDecimals: 3,
                             bps: false,
                           })}{" "}
@@ -158,7 +144,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                         </div>
                       </>
                     }
-                    value={formatDeltaUsd(positionPriceImpactDeltaUsd)}
+                    value={formatDeltaUsd(uncappedPositionPriceImpactDeltaUsd)}
                     showDollar={false}
                   />
                 )}
