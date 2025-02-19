@@ -1,7 +1,7 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 
 import Button from "components/Button/Button";
@@ -155,6 +155,9 @@ export function PositionSeller(p: Props) {
     triggerPriceInputValueRaw,
     setTriggerPriceInputValueRaw
   );
+
+  const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
+
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isTrigger = orderOption === OrderOption.Trigger;
@@ -382,17 +385,49 @@ export function PositionSeller(p: Props) {
     });
   }
 
+  const latestOnSubmit = useLatest(onSubmit);
+
   useKey(
     "Enter",
     () => {
       if (isVisible && !error) {
         submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        onSubmit();
+        if (closeUsdInputValue === closeUsdInputValueRaw && triggerPriceInputValue === triggerPriceInputValueRaw) {
+          latestOnSubmit.current();
+        } else {
+          setIsWaitingForDebounceBeforeSubmit(true);
+        }
       }
     },
     {},
-    [isVisible, error]
+    [
+      isVisible,
+      error,
+      closeUsdInputValue,
+      triggerPriceInputValue,
+      closeUsdInputValueRaw,
+      triggerPriceInputValueRaw,
+      latestOnSubmit,
+    ]
   );
+
+  useEffect(() => {
+    if (
+      isWaitingForDebounceBeforeSubmit &&
+      closeUsdInputValue === closeUsdInputValueRaw &&
+      triggerPriceInputValue === triggerPriceInputValueRaw
+    ) {
+      setIsWaitingForDebounceBeforeSubmit(false);
+      latestOnSubmit.current();
+    }
+  }, [
+    isWaitingForDebounceBeforeSubmit,
+    latestOnSubmit,
+    closeUsdInputValue,
+    triggerPriceInputValue,
+    closeUsdInputValueRaw,
+    triggerPriceInputValueRaw,
+  ]);
 
   useEffect(
     function initReceiveToken() {
