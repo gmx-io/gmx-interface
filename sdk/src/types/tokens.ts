@@ -31,6 +31,7 @@ export type Token = {
   isV1Available?: boolean;
   isPlatformToken?: boolean;
   isPlatformTradingToken?: boolean;
+  shouldResetAllowance?: boolean;
 };
 
 export type TokenInfo = Token & {

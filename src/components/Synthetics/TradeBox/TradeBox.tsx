@@ -7,7 +7,7 @@ import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -48,7 +48,6 @@ import {
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
-  formatDeltaUsd,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -110,14 +109,13 @@ export function TradeBox() {
 
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = avaialbleTokenOptions;
   const tokensData = useTokensData();
-  const marketsInfoData = useMarketsInfoData();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
-  const { showDebugValues, shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
+  const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -399,19 +397,6 @@ export function TradeBox() {
   ]);
 
   const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);
-
-  if (showDebugValues) {
-    const swapPathStats = swapAmounts?.swapPathStats || increaseAmounts?.swapPathStats;
-
-    if (swapPathStats) {
-      // eslint-disable-next-line no-console
-      console.log("Swap Path", {
-        path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
-        priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),
-        usdOut: swapPathStats.swapSteps.map((step) => formatUsd(step.usdOut)).join(" -> "),
-      });
-    }
-  }
 
   const onMaxClick = useCallback(() => {
     if (formattedMaxAvailableAmount) {

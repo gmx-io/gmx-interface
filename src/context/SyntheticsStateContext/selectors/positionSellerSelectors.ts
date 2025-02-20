@@ -237,6 +237,7 @@ export const selectPositionSellerFees = createSelector((q) => {
       collateralDeltaUsd,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
+      externalSwapQuotas: [],
       positionFeeUsd: decreaseAmounts.positionFeeUsd,
       swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
       positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,

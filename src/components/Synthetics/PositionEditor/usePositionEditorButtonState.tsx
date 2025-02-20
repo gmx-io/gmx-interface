@@ -348,6 +348,7 @@ export function usePositionEditorButtonState(operation: Operation): {
           targetCollateralAddress: position.collateralTokenAddress,
           collateralDeltaAmount,
           swapPath: [],
+          externalSwapQuote: undefined,
           sizeDeltaUsd: 0n,
           sizeDeltaInTokens: 0n,
           acceptablePrice: markPrice,

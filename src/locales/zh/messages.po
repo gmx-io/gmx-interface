@@ -398,6 +398,10 @@ msgstr "仓位"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Auto Swap Fallback Max Fees"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr ""
@@ -2279,6 +2283,10 @@ msgstr "通过一键交易减少钱包签名弹出窗口。此选项也可通过
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+msgid "Switch to internal swap"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
 msgstr ""
@@ -3466,6 +3474,10 @@ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
+msgstr ""
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Fail External Swaps"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -4835,6 +4847,10 @@ msgstr ""
 msgid "Affiliate Rewards Claimed"
 msgstr ""
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Swap Price Impact for External Swap Threshold"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Limit / Take Profit / Stop Loss"
 msgstr ""
@@ -5262,6 +5278,10 @@ msgstr ""
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "实用链接"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Enable external swaps"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
@@ -6717,6 +6737,10 @@ msgstr "下载"
 msgid "{col1}"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Swap {0} for {1}"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
 msgstr ""
@@ -7055,6 +7079,10 @@ msgstr "<0>池子容量已到达 {0}.请使用其他代币购买GLP.</0><1>查�
 msgid "GMX dashboards and analytics."
 msgstr "GMX信息板和分析"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "External Swap {0} to {1}"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7242,6 +7270,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled"
+msgstr ""
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Force External Swaps"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
