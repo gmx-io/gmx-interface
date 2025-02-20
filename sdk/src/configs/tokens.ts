@@ -788,7 +788,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Artificial Superintelligence Alliance",
       symbol: "FET",
-      address: "0xEcFB4718aD19b626A77491895a2f99ea0cedEd08",
+      address: "0x83D5944E7f5EF1d8432002d3cb062e1012f6F8e6",
       decimals: 18,
       priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/5681/standard/ASI.png?1719827289",
@@ -798,7 +798,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Ondo",
       symbol: "ONDO",
-      address: "0x83D5944E7f5EF1d8432002d3cb062e1012f6F8e6",
+      address: "0xEcFB4718aD19b626A77491895a2f99ea0cedEd08",
       decimals: 18,
       priceDecimals: 4,
       categories: ["defi"],

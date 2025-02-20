@@ -521,14 +521,14 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
-    // FET/USD [WETH-USDC]
+    // ONDO/USD [WETH-USDC]
     "0xa8A455Ed94b315460CfF7d96966d91330f6A3bA0": {
       marketTokenAddress: "0xa8A455Ed94b315460CfF7d96966d91330f6A3bA0",
       indexTokenAddress: "0xEcFB4718aD19b626A77491895a2f99ea0cedEd08",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
-    // ONDO/USD [WETH-USDC]
+    // FET/USD [WETH-USDC]
     "0x970e578fF01589Bb470CE38a2f1753152A009366": {
       marketTokenAddress: "0x970e578fF01589Bb470CE38a2f1753152A009366",
       indexTokenAddress: "0x83D5944E7f5EF1d8432002d3cb062e1012f6F8e6",
