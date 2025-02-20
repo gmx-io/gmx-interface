@@ -33,6 +33,24 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "fet-ondo-listing",
+    title: "FET and ONDO markets added on Arbitrum",
+    isActive: true,
+    startDate: "20 Feb 2025, 16:00",
+    endDate: "26 Feb 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="FET" />
+        /USD and <TokenSymbolWithIcon symbol="ONDO" />
+        /USD, or provide liquidity to these pools using <TokenSymbolWithIcon symbol="WETH" />,{" "}
+        <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WETH-USDC]
+        </span>
+      </>
+    ),
+  },
+  {
     id: "pengu-virtual-listing",
     title: "PENGU and VIRTUAL markets added on Arbitrum",
     isActive: true,

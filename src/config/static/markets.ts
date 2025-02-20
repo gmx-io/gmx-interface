@@ -386,6 +386,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("13 Feb 2025"),
     },
+    // FET/USD [WETH-USDC]
+    "0xa8A455Ed94b315460CfF7d96966d91330f6A3bA0": {
+      enabled: true,
+      listingDate: p("20 Feb 2025"),
+    },
+    // ONDO/USD [WETH-USDC]
+    "0x970e578fF01589Bb470CE38a2f1753152A009366": {
+      enabled: true,
+      listingDate: p("20 Feb 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
