@@ -1,9 +1,5 @@
 import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
-import {
-  selectTokensData,
-  selectUiFeeFactor,
-  selectUserReferralInfo,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectUiFeeFactor, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralToken,
   selectTradeboxExistingPosition,
@@ -26,7 +22,6 @@ import {
   getExternalSwapInputsByLeverageSize,
 } from "domain/synthetics/externalSwaps/utils";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
@@ -44,18 +39,23 @@ export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
   s.externalSwap.setShouldFallbackToInternalSwap;
 
 export const selectExternalSwapQuote = createSelector((q) => {
-  const tokensData = q(selectTokensData);
-
   const inputs = q(selectExternalSwapInputs);
   const baseOutput = q(selectBaseExternalSwapOutput);
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
   const shouldFallbackToInternalSwap = q(selectShouldFallbackToInternalSwap);
 
-  const tokenIn = getByKey(tokensData, baseOutput?.inTokenAddress);
-  const tokenOut = getByKey(tokensData, baseOutput?.outTokenAddress);
+  const tokenIn = q(selectTradeboxFromToken);
+  const tokenOut = q(selectTradeboxSelectSwapToToken);
 
-  if (!inputs || !baseOutput || !tokenIn || !tokenOut) {
+  if (
+    !inputs ||
+    !baseOutput ||
+    !tokenIn ||
+    !tokenOut ||
+    tokenIn.address !== baseOutput.inTokenAddress ||
+    tokenOut.address !== baseOutput.outTokenAddress
+  ) {
     return undefined;
   }
 

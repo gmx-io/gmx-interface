@@ -61,6 +61,7 @@ import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { toast } from "react-toastify";
+import { parseError } from "lib/parseError";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -357,7 +358,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((e) => {
-          if (increaseAmounts.externalSwapQuote) {
+          const errorData = parseError(e);
+          if (!errorData?.isUserError && increaseAmounts.externalSwapQuote) {
             setExternalSwapFails((old) => old + 1);
           }
 

@@ -192,7 +192,6 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const triggerPrice = q(selectTradeboxTriggerPrice);
-  const externalSwapQuote = q(selectExternalSwapQuote);
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
@@ -204,7 +203,6 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
     fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
-    externalSwapQuote,
     indexTokenAddress: toTokenAddress,
     indexTokenAmount: toTokenAmount,
     initialCollateralAmount: fromTokenAmount,

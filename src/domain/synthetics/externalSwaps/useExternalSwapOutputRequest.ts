@@ -41,8 +41,6 @@ export function useExternalSwapOutputRequest({
   const debouncedKey = useDebounce(swapKey, 300);
 
   const { data } = useSWR(debouncedKey, {
-    keepPreviousData: true,
-
     fetcher: async () => {
       try {
         if (

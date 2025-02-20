@@ -4,6 +4,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
+  selectBaseExternalSwapOutput,
   selectExternalSwapFails,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
@@ -22,7 +23,6 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
-import { formatUsd } from "lib/numbers";
 import { useEffect } from "react";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
 
@@ -34,6 +34,7 @@ export function useExternalSwapHandler() {
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const slippage = useSelector(selectTradeboxAllowedSlippage);
   const setBaseExternalSwapOutput = useSelector(selectSetBaseExternalSwapOutput);
+  const storedBaseExternalSwapOutput = useSelector(selectBaseExternalSwapOutput);
   const gasPrice = useSelector(selectGasPrice);
 
   const externalSwapFails = useSelector(selectExternalSwapFails);
@@ -64,28 +65,19 @@ export function useExternalSwapHandler() {
 
   if (isDevelopment() && settings.showDebugValues) {
     throttleLog("external swaps", {
-      baseOutput: externalSwapOutput
-        ? {
-            amountIn: externalSwapOutput.amountIn,
-            amountOut: externalSwapOutput.amountOut,
-          }
-        : undefined,
+      baseOutput: externalSwapOutput,
       externalSwapQuote,
-      inputs: externalSwapInputs
-        ? {
-            ...externalSwapInputs,
-            usdIn: formatUsd(externalSwapInputs.usdIn),
-            usdOut: formatUsd(externalSwapInputs.usdOut),
-          }
-        : undefined,
+      inputs: externalSwapInputs,
     });
   }
 
   useEffect(
     function setBaseExternalSwapOutputEff() {
-      setBaseExternalSwapOutput(externalSwapOutput);
+      if (storedBaseExternalSwapOutput?.txnData?.data !== externalSwapOutput?.txnData?.data) {
+        setBaseExternalSwapOutput(externalSwapOutput);
+      }
     },
-    [externalSwapOutput, setBaseExternalSwapOutput]
+    [externalSwapOutput, setBaseExternalSwapOutput, storedBaseExternalSwapOutput]
   );
 
   useEffect(() => {
