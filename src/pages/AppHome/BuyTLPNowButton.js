@@ -26,6 +26,7 @@ export const BuyTLPNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...
 
   return (
     <HeaderLink
+      data-umami-event="BuyTLPNowButton.click"
       className="btn text-white orange-cta"
       to="/buy_tlp"
       redirectPopupTimestamp={redirectPopupTimestamp}
@@ -45,6 +46,14 @@ export const BuyTLPNowButton = ({ showRedirectModal, redirectPopupTimestamp, ...
         borderRadius: "4rem",
         backdropFilter: "blur(5px)",
         ...(props?.style || {}),
+      }}
+      onClick={() => {
+        try {
+          window.umami.track("BuyTLPNowButton.click");
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("Error tracking BuyTLPNowButton.click", error);
+        }
       }}
     >
       <Trans>Buy TLP Now</Trans>
