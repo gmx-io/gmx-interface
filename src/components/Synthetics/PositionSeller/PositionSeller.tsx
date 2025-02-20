@@ -429,6 +429,12 @@ export function PositionSeller(p: Props) {
     triggerPriceInputValueRaw,
   ]);
 
+  useEffect(() => {
+    if (!isVisible) {
+      setIsWaitingForDebounceBeforeSubmit(false);
+    }
+  }, [isVisible]);
+
   useEffect(
     function initReceiveToken() {
       if (!receiveTokenAddress && position?.collateralToken?.address) {
