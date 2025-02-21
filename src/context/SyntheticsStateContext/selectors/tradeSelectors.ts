@@ -198,68 +198,65 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     strategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
   }) =>
-    createSelectorDeprecated(
-      [
-        selectTokensData,
-        selectMarketsInfoData,
-        selectPositionsInfoData,
-        selectSavedAcceptablePriceImpactBuffer,
+    createSelector((q) => {
+      const indexToken = q((state) => getByKey(selectTokensData(state), indexTokenAddress));
+      const initialCollateralToken = q((state) => getByKey(selectTokensData(state), initialCollateralTokenAddress));
+      const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
+      const marketInfo = q((state) => getByKey(selectMarketsInfoData(state), marketAddress));
+      const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
+
+      const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
+      const findSwapPath = q(
         makeSelectFindSwapPath(
           initialCollateralTokenAddress,
           tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
-        ),
-        selectUserReferralInfo,
-        selectUiFeeFactor,
-      ],
-      (
-        tokensData,
-        marketsInfoData,
-        positionsInfoData,
+        )
+      );
+      const userReferralInfo = q(selectUserReferralInfo);
+      const uiFeeFactor = q(selectUiFeeFactor);
+
+      const tradeFlags = createTradeFlags(tradeType, tradeMode);
+
+      let limitOrderType: OrderType | undefined = undefined;
+      if (tradeFlags.isLimit) {
+        if (tradeMode === TradeMode.Limit) {
+          limitOrderType = OrderType.LimitIncrease;
+        } else if (tradeMode === TradeMode.StopMarket) {
+          limitOrderType = OrderType.StopIncrease;
+        }
+      }
+
+      if (
+        indexTokenAmount === undefined ||
+        !tradeFlags.isIncrease ||
+        !indexToken ||
+        !initialCollateralToken ||
+        !collateralToken ||
+        !marketInfo
+      ) {
+        return undefined;
+      }
+
+      return getIncreasePositionAmounts({
+        position,
+        marketInfo,
+        indexToken,
+        initialCollateralToken,
+        collateralToken,
+        isLong: tradeFlags.isLong,
+        initialCollateralAmount,
+        indexTokenAmount,
+        leverage,
+        triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
+        limitOrderType,
+        fixedAcceptablePriceImpactBps,
         acceptablePriceImpactBuffer,
         findSwapPath,
         userReferralInfo,
-        uiFeeFactor
-      ) => {
-        const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
-        const tradeFlags = createTradeFlags(tradeType, tradeMode);
-        const indexToken = indexTokenAddress ? getByKey(tokensData, indexTokenAddress) : undefined;
-        const initialCollateralToken = initialCollateralTokenAddress
-          ? getByKey(tokensData, initialCollateralTokenAddress)
-          : undefined;
-        const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
-        const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
-
-        if (
-          indexTokenAmount === undefined ||
-          !tradeFlags.isIncrease ||
-          !indexToken ||
-          !initialCollateralToken ||
-          !collateralToken ||
-          !marketInfo
-        ) {
-          return undefined;
-        }
-
-        return getIncreasePositionAmounts({
-          marketInfo,
-          indexToken,
-          initialCollateralToken,
-          collateralToken,
-          isLong: tradeFlags.isLong,
-          initialCollateralAmount,
-          indexTokenAmount,
-          leverage,
-          triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
-          position,
-          fixedAcceptablePriceImpactBps,
-          acceptablePriceImpactBuffer,
-          findSwapPath,
-          userReferralInfo,
-          uiFeeFactor,
-          strategy,
-        });
-      }
-    )
+        uiFeeFactor,
+        strategy,
+      });
+    })
 );
 
 export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): TradeFlags => {
@@ -268,7 +265,7 @@ export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): Tr
   const isSwap = tradeType === TradeType.Swap;
   const isPosition = isLong || isShort;
   const isMarket = tradeMode === TradeMode.Market;
-  const isLimit = tradeMode === TradeMode.Limit;
+  const isLimit = tradeMode === TradeMode.Limit || tradeMode === TradeMode.StopMarket;
   const isTrigger = tradeMode === TradeMode.Trigger;
   const isIncrease = isPosition && (isMarket || isLimit);
 

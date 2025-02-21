@@ -19,16 +19,16 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { OrderErrors, PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import { OrderErrors, PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
-  getTriggerNameByOrderType,
+  getNameByOrderType,
 } from "domain/synthetics/positions";
-import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
+import { TradeMode, TradeType, getOrderThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import {
   calculateDisplayDecimals,
@@ -516,6 +516,7 @@ export function PositionItem(p: Props) {
                     handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
                     handleShare={p.onShareClick}
                     handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
                     handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
                   />
                 </TableTd>
@@ -689,6 +690,7 @@ export function PositionItem(p: Props) {
                       handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
                       handleShare={p.onShareClick}
                       handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
+                      handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
                     />
                   )}
                 </div>
@@ -851,13 +853,12 @@ function PositionItemOrder({
 }
 
 function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
-  const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+  const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);
   const isIncrease = isIncreaseOrderType(order.orderType);
 
   return (
     <div key={order.key} className="text-start">
-      {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
-      {triggerThresholdType}{" "}
+      {getNameByOrderType(order.orderType, { abbr: true })}: {triggerThresholdType}{" "}
       {formatUsd(order.triggerPrice, {
         displayDecimals: calculateDisplayDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier),
         visualMultiplier: order.indexToken?.visualMultiplier,

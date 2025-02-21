@@ -21,6 +21,8 @@ export enum OrderType {
   StopLossDecrease = 6,
   // @dev Liquidation: allows liquidation of positions if the criteria for liquidation are met
   Liquidation = 7,
+  // @dev StopIncrease: increase position if the triggerPrice is reached and the acceptablePrice can be fulfilled
+  StopIncrease = 8,
 }
 
 export enum SwapPricingType {

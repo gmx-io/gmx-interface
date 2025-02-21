@@ -16,6 +16,7 @@ export const tradeModeLabels = {
   [TradeMode.Market]: msg`Market`,
   [TradeMode.Limit]: msg`Limit`,
   [TradeMode.Trigger]: msg`TP/SL`,
+  [TradeMode.StopMarket]: msg`Stop Market`,
 };
 
 export const tradeTypeLabels = {

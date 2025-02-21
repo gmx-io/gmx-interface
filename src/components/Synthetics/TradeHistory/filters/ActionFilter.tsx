@@ -105,10 +105,12 @@ const GROUPS: Groups = [
       TradeActionType.OrderCancelled,
       TradeActionType.OrderFrozen,
     ].flatMap((eventName) =>
-      [OrderType.LimitIncrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].map((orderType) => ({
-        orderType,
-        eventName,
-      }))
+      [OrderType.LimitIncrease, OrderType.StopIncrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].map(
+        (orderType) => ({
+          orderType,
+          eventName,
+        })
+      )
     ),
   },
   {

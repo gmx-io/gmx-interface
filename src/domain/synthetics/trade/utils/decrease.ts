@@ -22,7 +22,7 @@ import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
-  getTriggerThresholdType,
+  getOrderThresholdType,
 } from "./prices";
 import { getSwapStats } from "./swapStats";
 
@@ -123,7 +123,7 @@ export function getDecreasePositionAmounts(p: {
       ? triggerPrice ?? markPrice
       : collateralToken.prices.minPrice;
 
-    values.triggerThresholdType = getTriggerThresholdType(orderType, isLong);
+    values.triggerThresholdType = getOrderThresholdType(orderType, isLong);
   } else {
     values.indexPrice = markPrice;
     values.collateralPrice = collateralToken.prices.minPrice;
