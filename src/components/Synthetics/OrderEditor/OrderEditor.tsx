@@ -1,59 +1,20 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import { useKey } from "react-use";
 
-import { USD_DECIMALS } from "config/factors";
-import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
-import {
-  OrderInfo,
-  OrderType,
-  PositionOrderInfo,
-  SwapOrderInfo,
-  isLimitOrderType,
-  isSwapOrderType,
-  isTriggerDecreaseOrderType,
-} from "domain/synthetics/orders";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
-  getTriggerNameByOrderType,
-  substractMaxLeverageSlippage,
-} from "domain/synthetics/positions";
-import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import {
-  calculateDisplayDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatBalanceAmount,
-  formatDeltaUsd,
-  formatTokenAmountWithUsd,
-  formatUsdPrice,
-} from "lib/numbers";
-
-import Button from "components/Button/Button";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
-import useWallet from "lib/wallets/useWallet";
-
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Modal from "components/Modal/Modal";
-import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
+  useOrderEditorIsSubmittingState,
   useOrderEditorSizeInputValueState,
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
@@ -81,28 +42,69 @@ import {
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import {
+  OrderInfo,
+  OrderType,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
+import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import {
+  formatAcceptablePrice,
+  formatLeverage,
+  formatLiquidationPrice,
+  getTriggerNameByOrderType,
+  substractMaxLeverageSlippage,
+} from "domain/synthetics/positions";
+import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+
 import { numericBinarySearch } from "lib/binarySearch";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { useKey } from "react-use";
+import {
+  calculateDisplayDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatBalanceAmount,
+  formatDeltaUsd,
+  formatTokenAmountWithUsd,
+  formatUsdPrice,
+} from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Modal from "components/Modal/Modal";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
 import "./OrderEditor.scss";
 
 type Props = {
   order: OrderInfo;
   onClose: () => void;
-  setPendingTxns: (txns: any) => void;
 };
 
 export function OrderEditor(p: Props) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const tokensData = useTokensData();
+  const { setPendingTxns } = usePendingTxns();
+  const { setPendingOrderUpdate } = useSyntheticsEvents();
 
   const [isInited, setIsInited] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useOrderEditorTriggerPriceInputValueState();
@@ -426,17 +428,25 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
-      orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
-      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-      executionFee: additionalExecutionFee?.feeTokenAmount,
-      indexToken: indexToken,
-      autoCancel: positionOrder.autoCancel,
-      setPendingTxns: p.setPendingTxns,
-    });
+    const txnPromise = updateOrderTxn(
+      chainId,
+      signer,
+      subaccount,
+      {
+        orderKey: p.order.key,
+        sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+        triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
+        acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+        minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+        executionFee: additionalExecutionFee?.feeTokenAmount,
+        indexToken: indexToken,
+        autoCancel: positionOrder.autoCancel,
+      },
+      {
+        setPendingTxns,
+        setPendingOrderUpdate,
+      }
+    );
 
     if (subaccount) {
       p.onClose();
@@ -481,9 +491,11 @@ export function OrderEditor(p: Props) {
         const price = positionOrder.triggerPrice ?? 0n;
         const decimals = calculateDisplayDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
 
-        setTriggerPriceInputValue(
-          formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
-        );
+        if (triggerPriceInputValue === "") {
+          setTriggerPriceInputValue(
+            formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
+          );
+        }
       }
 
       setIsInited(true);
@@ -495,6 +507,7 @@ export function OrderEditor(p: Props) {
       setSizeInputValue,
       setTriggerPriceInputValue,
       setTriggerRatioInputValue,
+      triggerPriceInputValue,
     ]
   );
 

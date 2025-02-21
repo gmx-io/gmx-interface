@@ -26,7 +26,7 @@ export type PendingTransactionData = {
 export type PendingTransaction = {
   hash: string;
   message: string;
-  messageDetails?: string;
+  messageDetails?: ReactNode;
   metricId?: OrderMetricId;
   data?: PendingTransactionData;
 };

@@ -9,6 +9,8 @@ import {
   selectOrderEditorSizeInputValue,
   selectOrderEditorTriggerPriceInputValue,
   selectOrderEditorTriggerRatioInputValue,
+  selectOrderEditorIsSubmitting,
+  selectOrderEditorSetIsSubmitting,
 } from "../selectors/orderEditorSelectors";
 import { useSelector } from "../utils";
 
@@ -22,6 +24,12 @@ export const useEditingOrderKeyState = () => {
   const editingOrderKey = useSelector(selectEditingOrderKey);
   const setEditingOrderKey = useSelector(selectSetEditingOrderKey);
   return [editingOrderKey, setEditingOrderKey] as const;
+};
+
+export const useOrderEditorIsSubmittingState = () => {
+  const isSubmitting = useSelector(selectOrderEditorIsSubmitting);
+  const setIsSubmitting = useSelector(selectOrderEditorSetIsSubmitting);
+  return [isSubmitting, setIsSubmitting] as const;
 };
 
 export const useOrderEditorSizeInputValueState = () => {

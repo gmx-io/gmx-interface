@@ -13,3 +13,9 @@ export function getByKey<T>(obj?: { [key: string]: T }, key?: string): T | undef
 
   return obj[key];
 }
+
+export function deleteByKey<T>(obj: { [key: string]: T }, key: string) {
+  const newObj = { ...obj };
+  delete newObj[key];
+  return newObj;
+}

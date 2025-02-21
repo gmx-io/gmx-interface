@@ -4,15 +4,15 @@ import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { CHART_PERIODS } from "lib/legacy";
-import { createSelector } from "../utils";
-import { selectChainId, selectTokensData } from "./globalSelectors";
+import { createSelector } from "../../utils";
+import { selectChainId, selectTokensData } from "../globalSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxFromTokenAddress,
   selectTradeboxMarketInfo,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
-} from "./tradeboxSelectors";
+} from "../tradeboxSelectors";
 
 export const selectChartToken = createSelector(function selectChartToken(q) {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
