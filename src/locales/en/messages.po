@@ -729,6 +729,10 @@ msgstr "What did you like the most about our service?"
 msgid "Paraswap"
 msgstr "Paraswap"
 
+#: src/components/TVChartContainer/constants.ts
+msgid "TP - Long Dec."
+msgstr "TP - Long Dec."
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
@@ -826,6 +830,10 @@ msgstr "Closing..."
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Code already taken"
 msgstr "Code already taken"
+
+#: src/components/TVChartContainer/constants.ts
+msgid "SL - Short Dec."
+msgstr "SL - Short Dec."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
@@ -1428,6 +1436,10 @@ msgstr "Swap Order creation failed."
 msgid "Chart positions"
 msgstr "Chart positions"
 
+#: src/components/TVChartContainer/DynamicLineComponent.tsx
+msgid "Unknown Order"
+msgstr "Unknown Order"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "The order will only execute if the price conditions are met and there is sufficient liquidity"
@@ -1817,7 +1829,7 @@ msgstr "GMX Alerts"
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
-#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
 msgstr "Open {longOrShortText} {prefix}{tokenSymbol}"
 
@@ -2943,7 +2955,7 @@ msgstr "{col2}"
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 
-#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
 msgstr "Liq. {longOrShortText} {prefix}{tokenSymbol}"
 
@@ -3241,6 +3253,10 @@ msgstr "The Max Network Fee is set to a higher value to handle potential increas
 msgid "Start Unrealized PnL"
 msgstr "Start Unrealized PnL"
 
+#: src/components/TVChartContainer/constants.ts
+msgid "Limit - Short Inc."
+msgstr "Limit - Short Inc."
+
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "AMOUNT"
 msgstr "AMOUNT"
@@ -3510,6 +3526,10 @@ msgstr "No claims yet"
 msgid "Select a GLV Vault"
 msgstr "Select a GLV Vault"
 
+#: src/components/TVChartContainer/DynamicLineComponent.tsx
+msgid "Cancel Order"
+msgstr "Cancel Order"
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -3701,6 +3721,10 @@ msgstr "Buy GLV"
 msgid "Impact+Fees"
 msgstr "Impact+Fees"
 
+#: src/components/TVChartContainer/constants.ts
+msgid "TP - Short Dec."
+msgstr "TP - Short Dec."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM Token Dashboard"
 msgstr "Compass Labs GM Token Dashboard"
@@ -3887,10 +3911,9 @@ msgstr "Trigger price for the order."
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -4330,6 +4353,10 @@ msgstr "Take Profit / Stop Loss"
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 
+#: src/components/TVChartContainer/constants.ts
+msgid "SL - Long Dec."
+msgstr "SL - Long Dec."
+
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Airdrop"
 msgstr "Airdrop"
@@ -4529,7 +4556,6 @@ msgid "Max slippage precision is -0.01%"
 msgstr "Max slippage precision is -0.01%"
 
 #: src/components/Exchange/ExchangeTVChart.jsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Dec."
 msgstr "Dec."
 
@@ -5244,6 +5270,10 @@ msgstr "Last 90d"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 msgstr "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
+
+#: src/components/TVChartContainer/DynamicLineComponent.tsx
+msgid "Edit Order"
+msgstr "Edit Order"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
@@ -6221,7 +6251,6 @@ msgstr ""
 "{2} Price: {3} USD"
 
 #: src/components/Exchange/ExchangeTVChart.jsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "Inc."
 
@@ -7019,10 +7048,9 @@ msgstr "Shift error."
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -7764,6 +7792,10 @@ msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders ({ordersCount})"
 msgstr "Orders ({ordersCount})"
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Limit - Long Inc."
+msgstr "Limit - Long Inc."
 
 #: src/pages/Earn/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."

@@ -729,6 +729,10 @@ msgstr ""
 msgid "Paraswap"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
+msgid "TP - Long Dec."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
@@ -825,6 +829,10 @@ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Code already taken"
+msgstr ""
+
+#: src/components/TVChartContainer/constants.ts
+msgid "SL - Short Dec."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -1428,6 +1436,10 @@ msgstr ""
 msgid "Chart positions"
 msgstr ""
 
+#: src/components/TVChartContainer/DynamicLineComponent.tsx
+msgid "Unknown Order"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr ""
@@ -1817,7 +1829,7 @@ msgstr ""
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Open {longOrShortText} {prefix}{tokenSymbol}"
 msgstr ""
 
@@ -2943,7 +2955,7 @@ msgstr ""
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr ""
 
-#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} {prefix}{tokenSymbol}"
 msgstr ""
 
@@ -3241,6 +3253,10 @@ msgstr ""
 msgid "Start Unrealized PnL"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
+msgid "Limit - Short Inc."
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "AMOUNT"
 msgstr ""
@@ -3510,6 +3526,10 @@ msgstr ""
 msgid "Select a GLV Vault"
 msgstr ""
 
+#: src/components/TVChartContainer/DynamicLineComponent.tsx
+msgid "Cancel Order"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -3701,6 +3721,10 @@ msgstr ""
 msgid "Impact+Fees"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
+msgid "TP - Short Dec."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM Token Dashboard"
 msgstr ""
@@ -3884,10 +3908,9 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -4327,6 +4350,10 @@ msgstr ""
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
+msgid "SL - Long Dec."
+msgstr ""
+
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Airdrop"
 msgstr ""
@@ -4526,7 +4553,6 @@ msgid "Max slippage precision is -0.01%"
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Dec."
 msgstr ""
 
@@ -5240,6 +5266,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
+msgstr ""
+
+#: src/components/TVChartContainer/DynamicLineComponent.tsx
+msgid "Edit Order"
 msgstr ""
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
@@ -6215,7 +6245,6 @@ msgid ""
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.jsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr ""
 
@@ -7013,10 +7042,9 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
-#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -7757,6 +7785,10 @@ msgstr ""
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders ({ordersCount})"
+msgstr ""
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Limit - Long Inc."
 msgstr ""
 
 #: src/pages/Earn/ClaimModal.tsx
