@@ -34,53 +34,61 @@ export function DynamicLineComponent({
   const prevIsEdited = usePrevious(isEdited);
 
   useEffect(() => {
-    if (!tvWidgetRef.current?.activeChart?.().dataReady()) {
+    if (!tvWidgetRef.current?.activeChart().dataReady()) {
       return;
     }
-
     const chart = tvWidgetRef.current.activeChart();
 
-    const orderLine = chart.createOrderLine({ disableUndo: true });
-    const predefinedKey = dynamicKeys[`${orderType}-${isLong ? "long" : "short"}`];
-    const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
+    const range = chart.getVisibleRange();
 
-    const orderLineApi = orderLine
-      .setText(title)
-      .setPrice(price)
-      .setQuantity("\u270E")
-      .setModifyTooltip(t`Edit Order`)
-      .onModify(() => {
-        latestOnEdit.current(id);
-      })
-      .setCancelTooltip(t`Cancel Order`)
-      .onCancel(() => {
-        latestOnCancel.current(id);
-      })
-      .onMove(() => {
-        latestOnEdit.current(id, orderLineApi.getPrice());
-      })
-      .setEditable(true)
-      .setLineStyle(LineStyle.Dashed)
-      .setLineLength(-200, "pixel")
-      .setLineColor("#3a3e5e")
+    if (range.from === 0 && range.to === 0) {
+      chart.onVisibleRangeChanged().subscribe(null, init, true);
+    } else {
+      init();
+    }
 
-      .setBodyFont(`normal 12pt "Relative", sans-serif`)
-      .setBodyTextColor("#fff")
-      .setBodyBackgroundColor("#3a3e5e")
-      .setBodyBorderColor("#252a47")
+    function init() {
+      const predefinedKey = dynamicKeys[`${orderType}-${isLong ? "long" : "short"}`];
+      const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
 
-      .setQuantityBackgroundColor("#16182e")
-      .setQuantityFont(`normal 16pt "Relative", sans-serif`)
-      .setQuantityBorderColor("#252a47")
+      lineApi.current = chart
+        .createOrderLine({ disableUndo: true })
+        .setText(title)
+        .setPrice(price)
+        .setQuantity("\u270E")
+        .setModifyTooltip(t`Edit Order`)
+        .onModify(() => {
+          latestOnEdit.current(id);
+        })
+        .setCancelTooltip(t`Cancel Order`)
+        .onCancel(() => {
+          latestOnCancel.current(id);
+        })
+        .onMove(() => {
+          latestOnEdit.current(id, lineApi.current!.getPrice());
+        })
+        .setEditable(true)
+        .setLineStyle(LineStyle.Dashed)
+        .setLineLength(-200, "pixel")
+        .setLineColor("#3a3e5e")
 
-      .setCancelButtonBackgroundColor("#16182e")
-      .setCancelButtonBorderColor("#252a47")
-      .setCancelButtonIconColor("#fff");
+        .setBodyFont(`normal 12pt "Relative", sans-serif`)
+        .setBodyTextColor("#fff")
+        .setBodyBackgroundColor("#3a3e5e")
+        .setBodyBorderColor("#252a47")
 
-    lineApi.current = orderLineApi;
+        .setQuantityBackgroundColor("#16182e")
+        .setQuantityFont(`normal 16pt "Relative", sans-serif`)
+        .setQuantityBorderColor("#252a47")
+
+        .setCancelButtonBackgroundColor("#16182e")
+        .setCancelButtonBorderColor("#252a47")
+        .setCancelButtonIconColor("#fff");
+    }
 
     return () => {
-      orderLineApi.remove();
+      lineApi.current?.remove();
+      lineApi.current = undefined;
     };
   }, [_, id, isLong, latestOnCancel, latestOnEdit, orderType, price, tvWidgetRef]);
 
