@@ -113,11 +113,11 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   const isExternalSwapsEnabled = q(selectExternalSwapsEnabled);
   const externalSwapInputs = q(selectExternalSwapInputs);
 
-  const internalSwapPriceImpactFeeItem = externalSwapInputs?.internalSwapPriceImpactFeeItem;
+  const internalSwapTotalFeeItem = externalSwapInputs?.internalSwapTotalFeeItem;
   const swapPriceImpactForExternalSwapThresholdBps = getSwapPriceImpactForExternalSwapThresholdBps();
 
   const isExternalSwapConditionMet =
-    !internalSwapPriceImpactFeeItem || internalSwapPriceImpactFeeItem.bps < swapPriceImpactForExternalSwapThresholdBps;
+    !internalSwapTotalFeeItem || internalSwapTotalFeeItem.bps < swapPriceImpactForExternalSwapThresholdBps;
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
 

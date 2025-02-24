@@ -73,6 +73,7 @@ export function useExternalSwapHandler() {
 
   useEffect(
     function setBaseExternalSwapOutputEff() {
+      // Update quote only if actual txn data has changed
       if (storedBaseExternalSwapOutput?.txnData?.data !== externalSwapOutput?.txnData?.data) {
         setBaseExternalSwapOutput(externalSwapOutput);
       }

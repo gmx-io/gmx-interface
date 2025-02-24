@@ -275,7 +275,7 @@ export type ExternalSwapInputs = {
   usdOut: bigint;
   strategy: ExternalSwapCalculationStrategy;
   internalSwapTotalFeesDeltaUsd?: bigint;
-  internalSwapPriceImpactFeeItem?: FeeItem;
+  internalSwapTotalFeeItem?: FeeItem;
   internalSwapAmounts: SwapAmounts;
 };
 

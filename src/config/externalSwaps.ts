@@ -2,6 +2,7 @@ import { AVALANCHE } from "sdk/configs/chains";
 import { ARBITRUM } from "./chains";
 import { isDevelopment } from "./env";
 import { DEBUG_SWAP_SETTINGS_KEY } from "./localStorage";
+import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 
 // Enable external swap if price impact delta is less than this threshold
 export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -1500n;
@@ -82,9 +83,9 @@ export function getSwapDebugSettings() {
 
     // use stored or store defaults
     if (stored) {
-      swapDebugSettings = JSON.parse(stored);
+      swapDebugSettings = deserializeBigIntsInObject(JSON.parse(stored)) as typeof swapDebugSettings;
     } else {
-      localStorage.setItem(DEBUG_SWAP_SETTINGS_KEY, JSON.stringify(swapDebugSettings));
+      localStorage.setItem(DEBUG_SWAP_SETTINGS_KEY, JSON.stringify(serializeBigIntsInObject(swapDebugSettings)));
     }
 
     isSwapDebugSettingsInited = true;

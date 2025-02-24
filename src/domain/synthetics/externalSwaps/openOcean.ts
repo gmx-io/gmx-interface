@@ -105,7 +105,7 @@ export async function getOpenOceanTxnData({
     };
   } catch (e) {
     e.message += ` URL: ${url}`;
-    metrics.pushError(e, "openOceanBuildTx");
+    metrics.pushError(e, "openOceanBuildTxn");
     return undefined;
   }
 }

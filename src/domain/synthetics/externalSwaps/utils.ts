@@ -67,14 +67,11 @@ export function getExternalSwapInputsByFromValue({
     uiFeeFactor,
   });
 
-  const internalSwapPriceImpactFeeItem = getFeeItem(
-    swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-    swapAmounts.usdIn
-  );
-
   const internalSwapTotalFeesDeltaUsd = swapAmounts.swapPathStats
-    ? -swapAmounts.swapPathStats.totalSwapFeeUsd + swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd
-    : 0n;
+    ? swapAmounts.swapPathStats.totalFeesDeltaUsd
+    : undefined;
+
+  const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
 
   return {
     amountIn,
@@ -83,7 +80,7 @@ export function getExternalSwapInputsByFromValue({
     usdIn: swapAmounts.usdIn,
     usdOut: swapAmounts.usdOut,
     strategy: "byFromValue",
-    internalSwapPriceImpactFeeItem,
+    internalSwapTotalFeeItem,
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
   };
@@ -155,14 +152,11 @@ export function getExternalSwapInputsByLeverageSize({
     uiFeeFactor,
   });
 
-  const internalSwapPriceImpactFeeItem = getFeeItem(
-    swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-    swapAmounts.usdIn
-  );
-
   const internalSwapTotalFeesDeltaUsd = swapAmounts.swapPathStats
-    ? -swapAmounts.swapPathStats.totalSwapFeeUsd + swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd
-    : 0n;
+    ? swapAmounts.swapPathStats.totalFeesDeltaUsd
+    : undefined;
+
+  const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
 
   return {
     amountIn: baseAmountIn,
@@ -171,27 +165,8 @@ export function getExternalSwapInputsByLeverageSize({
     usdIn: baseUsdIn,
     usdOut: swapAmounts.usdOut,
     strategy: "leverageBySize",
-    internalSwapPriceImpactFeeItem,
+    internalSwapTotalFeeItem,
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
   };
-}
-
-export function estimateExternalSwapFeesUsd({
-  tokenIn,
-  tokenOut,
-  amountIn,
-  amountOut,
-}: {
-  tokenIn: TokenData;
-  tokenOut: TokenData;
-  amountIn: bigint;
-  amountOut: bigint;
-}) {
-  const fromTokenUsd = convertToUsd(amountIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
-  const toTokenUsd = convertToUsd(amountOut, tokenOut.decimals, tokenOut.prices.minPrice)!;
-
-  const feesUsd = fromTokenUsd - toTokenUsd;
-
-  return feesUsd;
 }

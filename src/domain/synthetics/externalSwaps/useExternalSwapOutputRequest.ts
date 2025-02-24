@@ -1,4 +1,5 @@
 import { useDebounce } from "lib/useDebounce";
+import { usePrevious } from "lib/usePrevious";
 import { useMemo } from "react";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
@@ -39,8 +40,12 @@ export function useExternalSwapOutputRequest({
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
+  const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
+  const prevTokensKey = usePrevious(tokensKey);
 
   const { data } = useSWR(debouncedKey, {
+    // keep previous data if the tokens have not changed to avoid flickering
+    keepPreviousData: tokensKey === prevTokensKey,
     fetcher: async () => {
       try {
         if (
