@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -947,23 +946,16 @@ export function TradeBox() {
                 )}
               </>
             )}
-            {(priceImpactWarningState.shouldShowWarning || (!isTrigger && !isSwap)) && (
-              <div
-                className={cx("flex flex-col justify-between gap-14", {
-                  "min-[1101px]:min-h-[167px]": !isTrigger && !isSwap,
-                })}
-              >
-                <LimitAndTPSLGroup />
-
-                <HighPriceImpactOrFeesWarningCard
-                  priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.positionCollateralPriceImpact}
-                  positionImpact={fees?.positionPriceImpact}
-                  swapPriceImpact={fees?.swapPriceImpact}
-                  swapProfitFee={fees?.swapProfitFee}
-                  executionFeeUsd={executionFee?.feeUsd}
-                />
-              </div>
+            {!isTrigger && !isSwap && <LimitAndTPSLGroup />}
+            {priceImpactWarningState.shouldShowWarning && (
+              <HighPriceImpactOrFeesWarningCard
+                priceImpactWarningState={priceImpactWarningState}
+                collateralImpact={fees?.positionCollateralPriceImpact}
+                positionImpact={fees?.positionPriceImpact}
+                swapPriceImpact={fees?.swapPriceImpact}
+                swapProfitFee={fees?.swapProfitFee}
+                executionFeeUsd={executionFee?.feeUsd}
+              />
             )}
           </div>
         )}

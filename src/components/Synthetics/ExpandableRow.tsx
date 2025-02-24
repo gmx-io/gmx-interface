@@ -76,7 +76,7 @@ export function ExpandableRow({
   return (
     <div className={className}>
       <SyntheticsInfoRow
-        className={cx("group !items-center gmx-hover:text-blue-300", {
+        className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
           "cursor-not-allowed": disabled,
         })}
         onClick={disabled ? undefined : handleOnClick}
