@@ -32,6 +32,7 @@ export function useInterviewNotification() {
 
       helperToast.error(
         <InterviewToast
+          type="trader"
           onButtonClick={() => {
             setIsInterviewModalVisible(true);
             toast.dismiss(toastTimestamp);
