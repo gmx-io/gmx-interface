@@ -144,4 +144,7 @@ export const dynamicKeys: Partial<Record<`${OrderType}-${"long" | "short"}`, Mes
 
   [`${OrderType.StopLossDecrease}-long`]: msg`SL - Long Dec.`,
   [`${OrderType.StopLossDecrease}-short`]: msg`SL - Short Dec.`,
+
+  [`${OrderType.StopIncrease}-short`]: msg`Stop Market - Short Inc.`,
+  [`${OrderType.StopIncrease}-long`]: msg`Stop Market - Long Inc.`,
 };

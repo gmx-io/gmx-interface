@@ -9,6 +9,11 @@ import { dynamicKeys } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
 import { helperToast } from "lib/helperToast";
 
+const BODY_BACKGROUND_COLOR = "#3a3e5e";
+const BUTTON_BACKGROUND_COLOR = "#16182e";
+const BORDER_COLOR = "#252a47";
+const BODY_ERROR_BACKGROUND_COLOR = "#831e2d";
+
 export function DynamicLineComponent({
   orderType,
   isLong,
@@ -82,7 +87,7 @@ export function DynamicLineComponent({
           if (error) {
             helperToast.error(error);
             lineApi.current?.setPrice(latestPrice.current);
-            lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+            lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
             lineApi.current?.setText(title);
             return;
           }
@@ -92,19 +97,19 @@ export function DynamicLineComponent({
         .setEditable(true)
         .setLineStyle(LineStyle.Dashed)
         .setLineLength(-200, "pixel")
-        .setLineColor("#3a3e5e")
+        .setLineColor(BODY_BACKGROUND_COLOR)
 
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
         .setBodyTextColor("#fff")
-        .setBodyBackgroundColor("#3a3e5e")
-        .setBodyBorderColor("#252a47")
+        .setBodyBackgroundColor(BODY_BACKGROUND_COLOR)
+        .setBodyBorderColor(BORDER_COLOR)
 
-        .setQuantityBackgroundColor("#16182e")
+        .setQuantityBackgroundColor(BUTTON_BACKGROUND_COLOR)
         .setQuantityFont(`normal 16pt "Relative", sans-serif`)
-        .setQuantityBorderColor("#252a47")
+        .setQuantityBorderColor(BORDER_COLOR)
 
-        .setCancelButtonBackgroundColor("#16182e")
-        .setCancelButtonBorderColor("#252a47")
+        .setCancelButtonBackgroundColor(BUTTON_BACKGROUND_COLOR)
+        .setCancelButtonBorderColor(BORDER_COLOR)
         .setCancelButtonIconColor("#fff");
     }
 
@@ -130,7 +135,7 @@ export function DynamicLineComponent({
 
       if (prevIsEdited && !isEdited && !(isPending || prevIsPending)) {
         lineApi.current.setPrice(price);
-        lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+        lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
         lineApi.current?.setText(title);
       }
     },
@@ -155,7 +160,7 @@ export function DynamicLineComponent({
           clearInterval(interval);
           lineApi.current?.setQuantity("\u270E");
           lineApi.current?.setPrice(latestPrice.current);
-          lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+          lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
           lineApi.current?.setText(title);
         }, FREQUENT_UPDATE_INTERVAL);
       }
@@ -165,10 +170,10 @@ export function DynamicLineComponent({
 
   useEffect(() => {
     if (error) {
-      lineApi.current?.setBodyBackgroundColor("#831e2d");
+      lineApi.current?.setBodyBackgroundColor(BODY_ERROR_BACKGROUND_COLOR);
       lineApi.current?.setText(error);
     } else {
-      lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+      lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
       lineApi.current?.setText(title);
     }
   }, [error, title]);
