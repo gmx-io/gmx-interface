@@ -137,6 +137,9 @@ function useAcceptablePrice(
     } else if (order.orderType === OrderType.StopLossDecrease) {
       // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
       acceptablePrice = (order as PositionOrderInfo).acceptablePrice;
+    } else if (order.orderType === OrderType.StopIncrease) {
+      // For Stop Market orders Acceptable Price is not applicable and set to 0 or MaxUnit256
+      acceptablePrice = (order as PositionOrderInfo).acceptablePrice;
     } else {
       const initialTriggerPrice = (order as PositionOrderInfo).triggerPrice;
       acceptablePrice = applySlippageToPrice(

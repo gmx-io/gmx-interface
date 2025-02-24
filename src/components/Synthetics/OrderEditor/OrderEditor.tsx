@@ -58,7 +58,7 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
-  getTriggerNameByOrderType,
+  getNameByOrderType,
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
@@ -146,6 +146,7 @@ export function OrderEditor(p: Props) {
   const subaccount = useSubaccount(additionalExecutionFee?.feeTokenAmount ?? null);
 
   const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
+  const isStopIncreaseOrder = p.order.orderType === OrderType.StopIncrease;
 
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;
@@ -332,8 +333,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    const orderTypeName =
-      p.order.orderType === OrderType.LimitIncrease ? t`Limit` : getTriggerNameByOrderType(p.order.orderType);
+    const orderTypeName = getNameByOrderType(p.order.orderType);
 
     return {
       text: `Update ${orderTypeName} Order`,
@@ -455,6 +455,12 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
+  const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
+    ? t`Trigger Price`
+    : isStopIncreaseOrder
+      ? t`Stop Price`
+      : t`Limit Price`;
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -475,7 +481,7 @@ export function OrderEditor(p: Props) {
               </BuyInputSection>
 
               <BuyInputSection
-                topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Trigger Price` : t`Limit Price`}
+                topLeftLabel={priceLabel}
                 topRightLabel={t`Mark`}
                 topRightValue={formatUsdPrice(markPrice, {
                   visualMultiplier: indexToken?.visualMultiplier,
@@ -525,7 +531,7 @@ export function OrderEditor(p: Props) {
         <div className="flex flex-col gap-14">
           {button}
 
-          {isLimitIncreaseOrder && (
+          {(isLimitIncreaseOrder || isStopIncreaseOrder) && (
             <SyntheticsInfoRow
               label={t`Leverage`}
               value={
@@ -537,15 +543,17 @@ export function OrderEditor(p: Props) {
             />
           )}
 
-          {!isSwapOrderType(p.order.orderType) && p.order.orderType !== OrderType.StopLossDecrease && (
-            <AcceptablePriceImpactInputRow
-              acceptablePriceImpactBps={acceptablePriceImpactBps}
-              initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
-              recommendedAcceptablePriceImpactBps={recommendedAcceptablePriceImpactBps}
-              setAcceptablePriceImpactBps={setAcceptablePriceImpactBps}
-              priceImpactFeeBps={priceImpactFeeBps}
-            />
-          )}
+          {!isSwapOrderType(p.order.orderType) &&
+            p.order.orderType !== OrderType.StopLossDecrease &&
+            !isStopIncreaseOrder && (
+              <AcceptablePriceImpactInputRow
+                acceptablePriceImpactBps={acceptablePriceImpactBps}
+                initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
+                recommendedAcceptablePriceImpactBps={recommendedAcceptablePriceImpactBps}
+                setAcceptablePriceImpactBps={setAcceptablePriceImpactBps}
+                priceImpactFeeBps={priceImpactFeeBps}
+              />
+            )}
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <SyntheticsInfoRow

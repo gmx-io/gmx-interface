@@ -25,7 +25,7 @@ import {
   usePositionSellerLeverageDisabledByCollateral,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -685,9 +685,7 @@ export function PositionSeller(p: Props) {
                 qa="confirm-button"
               >
                 {error ||
-                  (isTrigger
-                    ? t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`
-                    : t`Close`)}
+                  (isTrigger ? t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order` : t`Close`)}
               </Button>
 
               <div className="h-1 bg-stroke-primary" />
