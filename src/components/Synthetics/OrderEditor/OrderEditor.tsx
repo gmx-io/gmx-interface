@@ -7,6 +7,7 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   usePositionsConstants,
   useTokensData,
@@ -35,6 +36,7 @@ import {
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
+  selectOrderEditorPositionOrderError,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
@@ -48,7 +50,6 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
-  isLimitOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
@@ -109,6 +110,8 @@ export function OrderEditor(p: Props) {
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useOrderEditorTriggerPriceInputValueState();
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useOrderEditorTriggerRatioInputValueState();
+
+  const calcSelector = useCalcSelector();
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
@@ -203,90 +206,7 @@ export function OrderEditor(p: Props) {
       return;
     }
 
-    const positionOrder = p.order as PositionOrderInfo;
-
-    if (markPrice === undefined) {
-      return t`Loading...`;
-    }
-
-    if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
-      return t`Enter an amount`;
-    }
-
-    if (triggerPrice === undefined || triggerPrice < 0) {
-      return t`Enter a price`;
-    }
-
-    if (
-      sizeDeltaUsd === positionOrder.sizeDeltaUsd &&
-      triggerPrice === positionOrder.triggerPrice! &&
-      acceptablePrice === positionOrder.acceptablePrice
-    ) {
-      return t`Enter new amount or price`;
-    }
-
-    if (isLimitOrderType(p.order.orderType)) {
-      if (p.order.isLong) {
-        if (triggerPrice >= markPrice) {
-          return t`Limit price above mark price`;
-        }
-      } else {
-        if (triggerPrice <= markPrice) {
-          return t`Limit price below mark price`;
-        }
-      }
-    }
-
-    if (isTriggerDecreaseOrderType(p.order.orderType)) {
-      if (markPrice === undefined) {
-        return t`Loading...`;
-      }
-
-      if (
-        sizeDeltaUsd === (p.order.sizeDeltaUsd ?? 0n) &&
-        triggerPrice === (positionOrder.triggerPrice ?? 0n) &&
-        acceptablePrice === positionOrder.acceptablePrice
-      ) {
-        return t`Enter a new size or price`;
-      }
-
-      if (existingPosition?.liquidationPrice) {
-        if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
-          return t`Trigger price below liq. price`;
-        }
-
-        if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
-          return t`Trigger price above liq. price`;
-        }
-      }
-
-      if (p.order.isLong) {
-        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
-          return t`Trigger price below mark price`;
-        }
-
-        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice >= markPrice) {
-          return t`Trigger price above mark price`;
-        }
-      } else {
-        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice >= markPrice) {
-          return t`Trigger price above mark price`;
-        }
-
-        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice <= markPrice) {
-          return t`Trigger price below mark price`;
-        }
-      }
-    }
-
-    if (isLimitIncreaseOrder) {
-      if (
-        nextPositionValuesForIncrease?.nextLeverage !== undefined &&
-        nextPositionValuesForIncrease?.nextLeverage > maxAllowedLeverage
-      ) {
-        return t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
-      }
-    }
+    return calcSelector(selectOrderEditorPositionOrderError);
   }
 
   function getIsMaxLeverageError() {

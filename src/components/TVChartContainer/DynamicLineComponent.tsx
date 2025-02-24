@@ -1,12 +1,13 @@
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 import { dynamicKeys } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
+import { helperToast } from "lib/helperToast";
 
 export function DynamicLineComponent({
   orderType,
@@ -18,12 +19,14 @@ export function DynamicLineComponent({
   tvWidgetRef,
   isEdited,
   isPending,
+  getError,
 }: {
   isEdited: boolean;
   isPending: boolean;
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
   onEdit: (id: string, price?: number) => void;
   onCancel: (id: string) => void;
+  getError: (id: string, price: number) => string | undefined;
 } & DynamicChartLine) {
   const { _ } = useLingui();
   const lineApi = useRef<IOrderLineAdapter | undefined>(undefined);
@@ -32,6 +35,14 @@ export function DynamicLineComponent({
   const latestPrice = useLatest(price);
   const prevIsPending = usePrevious(isPending);
   const prevIsEdited = usePrevious(isEdited);
+
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const title = useMemo(() => {
+    const predefinedKey = dynamicKeys[`${orderType}-${isLong ? "long" : "short"}`];
+    const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
+    return title;
+  }, [_, isLong, orderType]);
 
   useEffect(() => {
     if (!tvWidgetRef.current?.activeChart().dataReady()) {
@@ -48,9 +59,6 @@ export function DynamicLineComponent({
     }
 
     function init() {
-      const predefinedKey = dynamicKeys[`${orderType}-${isLong ? "long" : "short"}`];
-      const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
-
       lineApi.current = chart
         .createOrderLine({ disableUndo: true })
         .setText(title)
@@ -64,7 +72,21 @@ export function DynamicLineComponent({
         .onCancel(() => {
           latestOnCancel.current(id);
         })
+        .onMoving(() => {
+          const error = getError(id, lineApi.current!.getPrice());
+          setError(error);
+        })
         .onMove(() => {
+          const error = getError(id, lineApi.current!.getPrice());
+
+          if (error) {
+            helperToast.error(error);
+            lineApi.current?.setPrice(latestPrice.current);
+            lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+            lineApi.current?.setText(title);
+            return;
+          }
+
           latestOnEdit.current(id, lineApi.current!.getPrice());
         })
         .setEditable(true)
@@ -90,7 +112,7 @@ export function DynamicLineComponent({
       lineApi.current?.remove();
       lineApi.current = undefined;
     };
-  }, [_, id, isLong, latestOnCancel, latestOnEdit, orderType, price, tvWidgetRef]);
+  }, [_, getError, id, isLong, latestOnCancel, latestOnEdit, latestPrice, orderType, price, title, tvWidgetRef]);
 
   useEffect(() => {
     if (!lineApi.current || lineApi.current.getPrice() === price) {
@@ -108,9 +130,11 @@ export function DynamicLineComponent({
 
       if (prevIsEdited && !isEdited && !(isPending || prevIsPending)) {
         lineApi.current.setPrice(price);
+        lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+        lineApi.current?.setText(title);
       }
     },
-    [isEdited, isPending, prevIsEdited, prevIsPending, price]
+    [isEdited, isPending, prevIsEdited, prevIsPending, price, title]
   );
 
   useEffect(
@@ -131,11 +155,23 @@ export function DynamicLineComponent({
           clearInterval(interval);
           lineApi.current?.setQuantity("\u270E");
           lineApi.current?.setPrice(latestPrice.current);
+          lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+          lineApi.current?.setText(title);
         }, FREQUENT_UPDATE_INTERVAL);
       }
     },
-    [isPending, latestPrice, prevIsPending]
+    [isPending, latestPrice, prevIsPending, title]
   );
+
+  useEffect(() => {
+    if (error) {
+      lineApi.current?.setBodyBackgroundColor("#831e2d");
+      lineApi.current?.setText(error);
+    } else {
+      lineApi.current?.setBodyBackgroundColor("#3a3e5e");
+      lineApi.current?.setText(title);
+    }
+  }, [error, title]);
 
   return null;
 }

@@ -5,18 +5,26 @@ import { USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   useCancellingOrdersKeysState,
   useEditingOrderKeyState,
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
-import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectOrderEditorSetTriggerPriceInputValue } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectOrdersInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  makeSelectOrderEditorPositionOrderError,
+  selectOrderEditorSetTriggerPriceInputValue,
+} from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarkets } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
@@ -61,6 +69,33 @@ export function OrderLinesContainer({
     [cancelOrdersDetailsMessage, chainId, setCancellingOrdersKeys, setPendingTxns, signer, subaccount]
   );
 
+  const calcSelector = useCalcSelector();
+
+  const getError = useCallback(
+    (id: string, price: number): string | undefined => {
+      let triggerPrice = numberToBigint(price, USD_DECIMALS);
+
+      return calcSelector((state) => {
+        const order = getByKey(selectOrdersInfoData(state), id) as PositionOrderInfo;
+        const chainId = selectChainId(state);
+        const marketsData = selectMarketsInfoData(state);
+
+        if (!order) return undefined;
+
+        const indexTokenAddress = getByKey(marketsData, order.marketAddress)?.indexTokenAddress;
+        if (!indexTokenAddress) return undefined;
+
+        const indexToken = getToken(chainId, indexTokenAddress);
+        if (!indexToken) return undefined;
+
+        triggerPrice = triggerPrice / BigInt(indexToken?.visualMultiplier ?? 1);
+
+        return makeSelectOrderEditorPositionOrderError(id, triggerPrice)(state);
+      });
+    },
+    [calcSelector]
+  );
+
   const onEditOrder = useCallback(
     (id: string, price?: number) => {
       setEditingOrderKey(id);
@@ -95,6 +130,7 @@ export function OrderLinesContainer({
       key={line.id}
       onEdit={onEditOrder}
       onCancel={onCancelOrder}
+      getError={getError}
       tvWidgetRef={tvWidgetRef}
       isEdited={editingOrderKey === line.id}
       isPending={(isSubmitting && editingOrderKey === line.id) || line.id in pendingOrdersUpdates}
