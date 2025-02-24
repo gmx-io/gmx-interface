@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { AnimatePresence, Variants, motion } from "framer-motion";
 import { useMedia } from "react-use";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -6,6 +7,35 @@ import { usePrevious } from "lib/usePrevious";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
+
+const ANIMATION_DURATION = 0.2;
+
+const EXPAND_ANIMATION_VARIANTS: Variants = {
+  collapsed: {
+    height: 0,
+    opacity: 0,
+    overflow: "hidden",
+  },
+  expanded: {
+    height: "auto",
+    opacity: 1,
+    overflow: "visible",
+    transition: {
+      height: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+      opacity: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+      overflow: { delay: ANIMATION_DURATION },
+    },
+  },
+  exit: {
+    height: 0,
+    opacity: 0,
+    overflow: "hidden",
+    transition: {
+      height: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+      opacity: { duration: ANIMATION_DURATION, ease: "easeInOut" },
+    },
+  },
+};
 
 interface Props {
   title: ReactNode;
@@ -46,6 +76,17 @@ export function ExpandableRow({
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const isMobile = useMedia(`(max-width: 1100px)`, false);
+
+  const handleAnimationComplete = useCallback(
+    (definition: string) => {
+      if (definition === "expanded" && scrollIntoViewOnMobile && isMobile && contentRef.current) {
+        contentRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    [scrollIntoViewOnMobile, isMobile]
+  );
+
   useEffect(() => {
     if (autoExpandOnError && hasError && !previousHasError) {
       onToggle(true);
@@ -66,17 +107,10 @@ export function ExpandableRow({
 
   const disabled = disableCollapseOnError && hasError;
 
-  const isMobile = useMedia(`(max-width: 1100px)`, false);
-  useEffect(() => {
-    if (open && scrollIntoViewOnMobile && isMobile && contentRef.current) {
-      contentRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [scrollIntoViewOnMobile, open, isMobile]);
-
   return (
     <div className={className}>
       <SyntheticsInfoRow
-        className={cx("group !items-center gmx-hover:text-blue-300", {
+        className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
           "cursor-not-allowed": disabled,
         })}
         onClick={disabled ? undefined : handleOnClick}
@@ -92,14 +126,21 @@ export function ExpandableRow({
         }
       />
 
-      <div
-        ref={contentRef}
-        className={cx(contentClassName, {
-          hidden: !open,
-        })}
-      >
-        {children}
-      </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            ref={contentRef}
+            className={contentClassName}
+            variants={EXPAND_ANIMATION_VARIANTS}
+            initial="collapsed"
+            animate="expanded"
+            exit="exit"
+            onAnimationComplete={handleAnimationComplete}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -252,8 +252,9 @@ export function PositionEditor() {
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
               bottomLeftValue={formatUsd(collateralDeltaUsd)}
-              topRightLabel={t`Max`}
-              topRightValue={
+              isBottomLeftValueMuted={collateralDeltaUsd === 0n}
+              bottomRightLabel={t`Max`}
+              bottomRightValue={
                 isDeposit
                   ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals, "", {
                       useCommas: true,
@@ -321,7 +322,7 @@ export function PositionEditor() {
               )}
 
               <SyntheticsInfoRow
-                label={t`Liq. Price`}
+                label={t`Liquidation Price`}
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, {

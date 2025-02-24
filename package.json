@@ -101,6 +101,7 @@
   },
   "resolutions": {
     "react-error-overlay": "6.0.9",
+    "@coinbase/wallet-sdk": "4.3.0",
     "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
     "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8"
   },

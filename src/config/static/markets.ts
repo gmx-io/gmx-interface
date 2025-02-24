@@ -376,6 +376,26 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("7 Feb 2025"),
     },
+    // VIRTUAL/USD [WBTC-USDC]
+    "0x75F190E0Be6E8B933A01423EFE398c6C721A5CfF": {
+      enabled: true,
+      listingDate: p("13 Feb 2025"),
+    },
+    // PENGU/USD [WBTC-USDC]
+    "0x0c11Ed89889Fd03394E8d9d685cC5b85be569C99": {
+      enabled: true,
+      listingDate: p("13 Feb 2025"),
+    },
+    // FET/USD [WETH-USDC]
+    "0xa8A455Ed94b315460CfF7d96966d91330f6A3bA0": {
+      enabled: true,
+      listingDate: p("20 Feb 2025"),
+    },
+    // ONDO/USD [WETH-USDC]
+    "0x970e578fF01589Bb470CE38a2f1753152A009366": {
+      enabled: true,
+      listingDate: p("20 Feb 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

@@ -911,7 +911,12 @@ export const selectTradeboxCloseSizeUsd = createSelector((q) => {
 export const selectTradeboxSwapFeesPercentage = createSelector((q) => {
   const swapAmounts = q(selectTradeboxSwapAmounts);
 
-  if (swapAmounts?.swapPathStats?.totalSwapFeeUsd === undefined || swapAmounts?.usdIn === undefined) {
+  if (
+    swapAmounts === undefined ||
+    swapAmounts.swapPathStats?.totalSwapFeeUsd === undefined ||
+    swapAmounts.usdIn === undefined ||
+    swapAmounts.usdIn === 0n
+  ) {
     return 0n;
   }
 

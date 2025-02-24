@@ -1,7 +1,7 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 
 import Button from "components/Button/Button";
@@ -155,6 +155,9 @@ export function PositionSeller(p: Props) {
     triggerPriceInputValueRaw,
     setTriggerPriceInputValueRaw
   );
+
+  const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
+
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isTrigger = orderOption === OrderOption.Trigger;
@@ -382,17 +385,55 @@ export function PositionSeller(p: Props) {
     });
   }
 
+  const latestOnSubmit = useLatest(onSubmit);
+
   useKey(
     "Enter",
     () => {
       if (isVisible && !error) {
         submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        onSubmit();
+        if (closeUsdInputValue === closeUsdInputValueRaw && triggerPriceInputValue === triggerPriceInputValueRaw) {
+          latestOnSubmit.current();
+        } else {
+          setIsWaitingForDebounceBeforeSubmit(true);
+        }
       }
     },
     {},
-    [isVisible, error]
+    [
+      isVisible,
+      error,
+      closeUsdInputValue,
+      triggerPriceInputValue,
+      closeUsdInputValueRaw,
+      triggerPriceInputValueRaw,
+      latestOnSubmit,
+    ]
   );
+
+  useEffect(() => {
+    if (
+      isWaitingForDebounceBeforeSubmit &&
+      closeUsdInputValue === closeUsdInputValueRaw &&
+      triggerPriceInputValue === triggerPriceInputValueRaw
+    ) {
+      setIsWaitingForDebounceBeforeSubmit(false);
+      latestOnSubmit.current();
+    }
+  }, [
+    isWaitingForDebounceBeforeSubmit,
+    latestOnSubmit,
+    closeUsdInputValue,
+    triggerPriceInputValue,
+    closeUsdInputValueRaw,
+    triggerPriceInputValueRaw,
+  ]);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setIsWaitingForDebounceBeforeSubmit(false);
+    }
+  }, [isVisible]);
 
   useEffect(
     function initReceiveToken() {
@@ -424,7 +465,7 @@ export function PositionSeller(p: Props) {
 
   const liqPriceRow = position && (
     <SyntheticsInfoRow
-      label={t`Liq. Price`}
+      label={t`Liquidation Price`}
       value={
         <ValueTransition
           from={
@@ -565,16 +606,18 @@ export function PositionSeller(p: Props) {
             <div className="flex flex-col gap-2">
               <BuyInputSection
                 topLeftLabel={t`Close`}
-                topRightLabel={t`Max`}
-                topRightValue={formatUsd(maxCloseSize)}
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                bottomLeftValue={formatUsd(closeSizeUsd)}
+                isBottomLeftValueMuted={closeSizeUsd === 0n}
+                bottomRightLabel={t`Max`}
+                bottomRightValue={formatUsd(maxCloseSize)}
                 onClickMax={
                   maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
                     ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
                     : undefined
                 }
-                showPercentSelector={true}
+                showPercentSelector
                 onPercentChange={(percentage) => {
                   const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
                   setCloseUsdInputValueRaw(formattedAmount);
@@ -647,8 +690,8 @@ export function PositionSeller(p: Props) {
 
               <div className="h-1 bg-stroke-primary" />
               {receiveTokenRow}
-              {liqPriceRow}
               {isTrigger && <SyntheticsInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />}
+              {liqPriceRow}
 
               <PositionSellerAdvancedRows triggerPriceInputValue={triggerPriceInputValue} />
             </div>

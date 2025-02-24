@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -445,9 +444,12 @@ export function TradeBox() {
     [onSelectToTokenAddress]
   );
   const handleCloseInputChange = useCallback((e) => setCloseSizeInputValue(e.target.value), [setCloseSizeInputValue]);
+
+  const formattedMaxCloseSize = formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2);
+
   const setMaxCloseSize = useCallback(
-    () => setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2)),
-    [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
+    () => setCloseSizeInputValue(formattedMaxCloseSize),
+    [formattedMaxCloseSize, setCloseSizeInputValue]
   );
   const handleClosePercentageChange = useCallback(
     (percent: number) =>
@@ -666,17 +668,18 @@ export function TradeBox() {
 
   function renderDecreaseSizeInput() {
     const showMaxButton = Boolean(
-      selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeUsd != selectedPosition.sizeInUsd
+      selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeInputValue !== formattedMaxCloseSize
     );
 
     return (
       <BuyInputSection
         topLeftLabel={t`Close`}
-        topRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
+        bottomRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
+        isBottomLeftValueMuted={closeSizeUsd === 0n}
+        bottomLeftValue={formatUsd(closeSizeUsd)}
         inputValue={closeSizeInputValue}
         onInputValueChange={handleCloseInputChange}
         onClickBottomRightLabel={setMaxCloseSize}
-        maxButtonPosition="top-right"
         onClickMax={showMaxButton ? setMaxCloseSize : undefined}
         showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
@@ -888,6 +891,7 @@ export function TradeBox() {
                     />
                     <SuggestionInput
                       className="w-48"
+                      inputClassName="text-clip"
                       value={leverageInputValue}
                       setValue={setLeverageInputValue}
                       onBlur={handleLeverageInputBlur}
@@ -937,23 +941,16 @@ export function TradeBox() {
                 )}
               </>
             )}
-            {(priceImpactWarningState.shouldShowWarning || (!isTrigger && !isSwap)) && (
-              <div
-                className={cx("flex flex-col justify-between gap-14", {
-                  "min-[1101px]:min-h-[167px]": !isTrigger && !isSwap,
-                })}
-              >
-                <LimitAndTPSLGroup />
-
-                <HighPriceImpactOrFeesWarningCard
-                  priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.positionCollateralPriceImpact}
-                  positionImpact={fees?.positionPriceImpact}
-                  swapPriceImpact={fees?.swapPriceImpact}
-                  swapProfitFee={fees?.swapProfitFee}
-                  executionFeeUsd={executionFee?.feeUsd}
-                />
-              </div>
+            {!isTrigger && !isSwap && <LimitAndTPSLGroup />}
+            {priceImpactWarningState.shouldShowWarning && (
+              <HighPriceImpactOrFeesWarningCard
+                priceImpactWarningState={priceImpactWarningState}
+                collateralImpact={fees?.positionCollateralPriceImpact}
+                positionImpact={fees?.positionPriceImpact}
+                swapPriceImpact={fees?.swapPriceImpact}
+                swapProfitFee={fees?.swapProfitFee}
+                executionFeeUsd={executionFee?.feeUsd}
+              />
             )}
           </div>
         )}
