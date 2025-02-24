@@ -256,7 +256,7 @@ export const formatPositionMessage = (
       price: customPrice,
       priceComment: priceComment,
       triggerPrice: customPrice,
-      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
     };
   } else if (
     (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderExecuted) ||
@@ -280,7 +280,7 @@ export const formatPositionMessage = (
         "",
         t`Order execution price takes into account price impact.`
       ),
-      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
     };
   } else if (
     (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderFrozen) ||
@@ -312,7 +312,7 @@ export const formatPositionMessage = (
             })
           )
       ),
-      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
       isActionError: true,
     };
     //#endregion LimitIncrease and StopIncrease

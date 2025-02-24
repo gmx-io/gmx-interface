@@ -6,8 +6,10 @@ import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
+  createOrderStopMarketLong,
   deposit1Usd,
   executeOrderIncreaseLong,
+  executeOrderStopMarketLong,
   executeOrderSwap,
   executeSwap,
   failedSwap,
@@ -420,6 +422,72 @@ describe("TradeHistoryRow helpers", () => {
   "timestampISO": "2023-09-21T19:32:40+04:00",
 }
 `);
+
+    expect(formatPositionMessage(createOrderStopMarketLong, minCollateralUsd)).toMatchInlineSnapshot(`
+      {
+        "acceptablePrice": undefined,
+        "action": "Create Stop Market",
+        "executionPrice": undefined,
+        "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
+        "indexTokenSymbol": "BTC",
+        "isLong": true,
+        "market": "Long BTC/USD",
+        "marketPrice": undefined,
+        "poolName": "BTC-USDC",
+        "price": ">  $95,600.00",
+        "priceComment": [
+          "Trigger price for the order.",
+        ],
+        "priceImpact": undefined,
+        "size": "+$3.62",
+        "timestamp": "18 Sep 2023, 16:43",
+        "timestampISO": "2023-09-18T16:43:18+04:00",
+        "triggerPrice": ">  $95,600.00",
+      }
+    `);
+
+    expect(formatPositionMessage(executeOrderStopMarketLong, minCollateralUsd)).toMatchInlineSnapshot(`
+      {
+        "acceptablePrice": undefined,
+        "action": "Execute Stop Market",
+        "executionPrice": "$95,754.57",
+        "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
+        "indexTokenSymbol": "BTC",
+        "isLong": true,
+        "market": "Long BTC/USD",
+        "marketPrice": "$95,754.20",
+        "poolName": "BTC-USDC",
+        "price": "$95,754.20",
+        "priceComment": [
+          "Mark price for the order.",
+          "",
+          {
+            "key": "Order Trigger Price",
+            "value": ">  $95,600.00",
+          },
+          undefined,
+          {
+            "key": "Order Execution Price",
+            "value": "$95,754.57",
+          },
+          {
+            "key": "Price Impact",
+            "value": {
+              "state": "success",
+              "text": "< +$0.01",
+            },
+          },
+          "",
+          "Order execution price takes into account price impact.",
+        ],
+        "priceImpact": "< +$0.01",
+        "size": "+$3.62",
+        "timestamp": "18 Sep 2023, 16:43",
+        "timestampISO": "2023-09-18T16:43:18+04:00",
+      }
+    `);
   });
 
   it("formatSwapMessage", () => {
