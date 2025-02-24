@@ -321,6 +321,10 @@ msgstr "Enter NFT Address"
 msgid "AVAILABLE"
 msgstr "AVAILABLE"
 
+#: src/components/TVChartContainer/constants.ts
+msgid "Stop Market - Short Inc."
+msgstr "Stop Market - Short Inc."
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take Profit"
 msgstr "Failed Take Profit"
@@ -2673,6 +2677,10 @@ msgstr "The Bonus Rebate is an estimate and will be airdropped as ARB tokens whe
 #: src/components/Glp/GlpSwap.jsx
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLP sold for {1} {2}!"
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Stop Market - Long Inc."
+msgstr "Stop Market - Long Inc."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
