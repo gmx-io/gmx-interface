@@ -3960,7 +3960,7 @@ msgstr ""
 msgid "GMX Market Tokens"
 msgstr ""
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price is above mark price"
 msgstr ""
 
@@ -5754,7 +5754,7 @@ msgstr "Одобрить {0}"
 msgid "Max {0} long exceeded"
 msgstr "Максимальное {0} превышение лонга"
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price is below mark price"
 msgstr ""
 
