@@ -1,12 +1,7 @@
 import shallowEqual from "shallowequal";
 
 import { getExcessiveExecutionFee } from "config/chains";
-import {
-  HIGH_COLLATERAL_IMPACT_BPS,
-  HIGH_POSITION_IMPACT_BPS,
-  HIGH_SWAP_PROFIT_FEE_BPS,
-  USD_DECIMALS,
-} from "config/factors";
+import { HIGH_SWAP_PROFIT_FEE_BPS, USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
@@ -15,6 +10,8 @@ import type { FeeItem } from "sdk/types/fees";
 import type { TradeFlags } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { getIsHighSwapImpact } from "./utils/getIsHighSwapImpact";
+import { getIsHighCollateralImpact } from "./utils/getIsHighCollateralImpact";
+import { getIsHighPositionImpact } from "./utils/getIsHighPositionImpact";
 
 export type WarningState = {
   shouldShowWarningForPosition: boolean;
@@ -63,14 +60,10 @@ export function usePriceImpactWarningState({
     }
   }, [prevFlags, tradeFlags]);
 
-  const isHighPositionImpact = Boolean(
-    positionImpact && positionImpact.deltaUsd < 0 && bigMath.abs(positionImpact.bps) >= HIGH_POSITION_IMPACT_BPS
-  );
+  const isHighPositionImpact = getIsHighPositionImpact(positionImpact);
   const prevIsHighPositionImpact = usePrevious(isHighPositionImpact);
 
-  const isHighCollateralImpact = Boolean(
-    collateralImpact && collateralImpact.deltaUsd < 0 && bigMath.abs(collateralImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
-  );
+  const isHighCollateralImpact = getIsHighCollateralImpact(collateralImpact);
   const prevIsHighCollateralImpact = usePrevious(isHighCollateralImpact);
 
   const isHighSwapImpact = getIsHighSwapImpact(swapPriceImpact);

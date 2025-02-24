@@ -17,12 +17,12 @@ export type LogEntry = {
 };
 
 export interface LogEntryComponentProps extends LogEntry {
-  tokensData: TokensData;
-  marketsInfoData: MarketsInfoData;
+  tokensData?: TokensData;
+  marketsInfoData?: MarketsInfoData;
   chainId: number;
-  glvData: GlvInfoData;
+  glvData?: GlvInfoData;
   entries: LogEntry[]; // eslint-disable-line react/no-unused-prop-types
-  marketTokensData: TokensData; // eslint-disable-line react/no-unused-prop-types
+  marketTokensData?: TokensData; // eslint-disable-line react/no-unused-prop-types
   name: string; // eslint-disable-line react/no-unused-prop-types
   copyToClipboard: (str: string) => void;
   allEvents: Event[];

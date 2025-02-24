@@ -363,6 +363,12 @@ export function TradeFeesRow(p: Props) {
   }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives, estimatedRebatesPercentage]);
 
   const title = useMemo(() => {
+    let text = t`Fees`;
+
+    if (p.feesType !== "swap" && p.swapFees && p.swapFees.length > 0) {
+      text = t`Fees (Incl. Swap)`;
+    }
+
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
       const rebatedTextWithSparkle = (
         <span className="relative">
@@ -371,11 +377,15 @@ export function TradeFeesRow(p: Props) {
         </span>
       );
 
-      return <Trans>Fees {rebatedTextWithSparkle}</Trans>;
+      return (
+        <>
+          {text} {rebatedTextWithSparkle}
+        </>
+      );
     } else {
-      return t`Fees`;
+      return text;
     }
-  }, [p.feesType, shouldShowRebate, tradingIncentives]);
+  }, [p.feesType, p.swapFees, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
     if (!incentivesTokenTitle || !rebateIsApplicable) {
