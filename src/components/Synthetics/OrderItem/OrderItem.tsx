@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
-import { USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -321,9 +321,14 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
           <Tooltip
             position="bottom-end"
             handle={swapRatioText}
-            renderContent={() =>
-              t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`
-            }
+            renderContent={() => (
+              <>
+                <p>
+                  <Trans>Acceptable Price:</Trans> {formatAmount(order.contractAcceptablePrice, USD_DECIMALS, 2, true)}
+                </p>
+                {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
+              </>
+            )}
           />
         ) : (
           swapRatioText
@@ -650,15 +655,39 @@ function getSwapRatioText(order: OrderInfo) {
   const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
   const triggerRatio = (order as SwapOrderInfo).triggerRatio;
+  let triggerPrice = (order as SwapOrderInfo).contractTriggerPrice;
+
+  if (triggerPrice === 0n) {
+    debugger;
+    const minOutputAmountWithSlippage =
+      order.minOutputAmount + (order.minOutputAmount * 100n) / BASIS_POINTS_DIVISOR_BIGINT;
+
+    const minTokenUsd = convertToUsd(minOutputAmountWithSlippage, toToken.decimals, toToken.prices.maxPrice);
+
+    const minOutputAmountWithSlippageTokenAmount = convertToTokenAmount(
+      minTokenUsd,
+      fromToken.decimals,
+      fromToken.prices.maxPrice
+    );
+
+    if (minOutputAmountWithSlippageTokenAmount === 0n || minOutputAmountWithSlippageTokenAmount === undefined) {
+      triggerPrice = 0n;
+    } else {
+      triggerPrice = order.initialCollateralDeltaAmount / minOutputAmountWithSlippageTokenAmount;
+    }
+  }
 
   const markExchangeRate =
     fromToken && toToken
       ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
       : undefined;
 
-  const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
-  const swapRatioText = `${formatAmount(
-    triggerRatio?.ratio,
+  const ratioDecimals = calculateDisplayDecimals(triggerPrice);
+
+  const dte = triggerRatio?.smallestToken.address === fromToken.address ? "<" : ">";
+
+  const swapRatioText = `${dte} ${formatAmount(
+    triggerPrice,
     USD_DECIMALS,
     ratioDecimals,
     true

@@ -1,8 +1,7 @@
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { adjustForDecimals } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
-import { formatAmount, PRECISION } from "lib/numbers";
+import { formatAmount, PRECISION, adjustForDecimals } from "lib/numbers";
 import { TokenData, TokensAllowanceData, TokensData, TokensRatio } from "./types";
 import { getIsEquivalentTokens, getTokenData } from "sdk/utils/tokens";
 

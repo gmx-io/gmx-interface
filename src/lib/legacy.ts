@@ -29,6 +29,8 @@ import {
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
 
+export { adjustForDecimals } from "./numbers";
+
 const { ZeroAddress } = ethers;
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens

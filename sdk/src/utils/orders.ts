@@ -102,13 +102,14 @@ export function getOrderInfo(p: {
       targetCollateralToken.prices.minPrice
     );
 
-    const toAmount = order.minOutputAmount - (priceImpactAmount ?? 0n) + (swapFeeAmount ?? 0n);
+    let toAmount = order.minOutputAmount - (priceImpactAmount ?? 0n) + (swapFeeAmount ?? 0n);
 
     const triggerRatio = getTokensRatioByAmounts({
       fromToken: initialCollateralToken,
       toToken: targetCollateralToken,
       fromTokenAmount: order.initialCollateralDeltaAmount,
       toTokenAmount: toAmount,
+      allowedSlippage: 100n,
     });
 
     const orderInfo: SwapOrderInfo = {

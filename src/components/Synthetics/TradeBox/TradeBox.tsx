@@ -877,8 +877,8 @@ export function TradeBox() {
             {isSwap && isLimit && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                 <Trans>
-                  The execution price will constantly vary based on fees and price impact to guarantee that you receive
-                  the minimum receive amount.
+                  The actual trigger price at which order gets filled will depend on fees and price impact at the time
+                  of execution to guarantee that you receive the minimum receive amount.
                 </Trans>
               </AlertInfoCard>
             )}

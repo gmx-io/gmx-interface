@@ -1,6 +1,7 @@
 import { Token, TokenPrices, TokensData, TokensRatio } from "types/tokens";
-import { expandDecimals, PRECISION } from "./numbers";
+import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 
 export function parseContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);
@@ -88,11 +89,14 @@ export function getTokensRatioByAmounts(p: {
   toToken: Token;
   fromTokenAmount: bigint;
   toTokenAmount: bigint;
+  allowedSlippage: bigint;
 }): TokensRatio {
   const { fromToken, toToken, fromTokenAmount, toTokenAmount } = p;
 
+  let toTokenAmountWithSlippage = toTokenAmount + (toTokenAmount * p.allowedSlippage) / BASIS_POINTS_DIVISOR_BIGINT;
+
   const adjustedFromAmount = (fromTokenAmount * PRECISION) / expandDecimals(1, fromToken.decimals);
-  const adjustedToAmount = (toTokenAmount * PRECISION) / expandDecimals(1, toToken.decimals);
+  const adjustedToAmount = (toTokenAmountWithSlippage * PRECISION) / expandDecimals(1, toToken.decimals);
 
   const [smallestToken, largestToken, largestAmount, smallestAmount] =
     adjustedFromAmount > adjustedToAmount

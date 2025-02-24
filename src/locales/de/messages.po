@@ -185,8 +185,8 @@ msgid "Failed Limit"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
-msgstr ""
+#~ msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
+#~ msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Decentralized<0/>Perpetual Exchange"
@@ -3808,6 +3808,10 @@ msgstr ""
 
 #: src/pages/Earn/EarnV2.tsx
 msgid "Unstake esGMX"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.tsx
@@ -7767,6 +7771,10 @@ msgstr ""
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Net Rate"
 msgstr "Netto-Rate"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Acceptable Price:"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx

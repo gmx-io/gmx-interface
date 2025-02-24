@@ -20,6 +20,7 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -56,11 +57,16 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { getTokensRatioByAmounts } from "sdk/utils/tokens";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
 }
+
+const EMPTY_TRIGGER_RATIO = {
+  ratio: 0n,
+  largestToken: undefined,
+  smallestToken: undefined,
+};
 
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
@@ -87,6 +93,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const { triggerRatio = EMPTY_TRIGGER_RATIO } = useSelector(selectTradeboxTradeRatios);
   const { account, signer } = useWallet();
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
@@ -145,12 +152,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-      const { ratio: triggerRatio } = getTokensRatioByAmounts({
-        fromToken: fromToken,
-        toToken: toToken,
-        fromTokenAmount: swapAmounts.amountIn,
-        toTokenAmount: swapAmounts.minOutputAmount,
-      });
+      console.log("--------> triggerRatio", triggerRatio);
 
       return createSwapOrderTxn(chainId, signer, subaccount, {
         account,
@@ -160,7 +162,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         toTokenAddress: toToken.address,
         orderType,
         minOutputAmount: swapAmounts.minOutputAmount,
-        triggerRatio,
+        triggerRatio: triggerRatio?.ratio ?? 0n,
         referralCode: referralCodeForTxn,
         executionFee: executionFee.feeTokenAmount,
         executionGasLimit: executionFee.gasLimit,

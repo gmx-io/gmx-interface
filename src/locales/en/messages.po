@@ -185,8 +185,8 @@ msgid "Failed Limit"
 msgstr "Failed Limit"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
-msgstr "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
+#~ msgid "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
+#~ msgstr "The execution price will constantly vary based on fees and price impact to guarantee that you receive the minimum receive amount."
 
 #: src/pages/Home/Home.tsx
 msgid "Decentralized<0/>Perpetual Exchange"
@@ -3812,6 +3812,10 @@ msgstr "Negative funding fees are automatically settled against the collateral a
 #: src/pages/Earn/EarnV2.tsx
 msgid "Unstake esGMX"
 msgstr "Unstake esGMX"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
+msgstr "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
@@ -7769,6 +7773,10 @@ msgstr "Expected Available Actions"
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Net Rate"
 msgstr "Net Rate"
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Acceptable Price:"
+msgstr "Acceptable Price:"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
