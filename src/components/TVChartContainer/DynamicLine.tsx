@@ -79,32 +79,6 @@ export function DynamicLine({
         .onCancel(() => {
           latestOnCancel.current(id);
         })
-        .onMoving(() => {
-          const error = getError(id, lineApi.current!.getPrice());
-          setError(error);
-        })
-        .onMove(() => {
-          const error = getError(id, lineApi.current!.getPrice());
-
-          if (error) {
-            helperToast.error(
-              <>
-                <span className="text-body-large font-bold">
-                  <Trans>Order could not be updated</Trans>
-                </span>
-                <br />
-                <br />
-                {error}
-              </>
-            );
-            lineApi.current?.setPrice(latestPrice.current);
-            lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
-            lineApi.current?.setText(title);
-            return;
-          }
-
-          latestOnEdit.current(id, lineApi.current!.getPrice());
-        })
         .setEditable(true)
         .setLineStyle(LineStyle.Dashed)
         .setLineColor(BODY_BACKGROUND_COLOR)
@@ -123,7 +97,34 @@ export function DynamicLine({
         .setCancelButtonIconColor("#fff");
 
       if (!isMobile) {
-        lineApi.current.setLineLength(-200, "pixel");
+        lineApi.current
+          .setLineLength(-200, "pixel")
+          .onMoving(() => {
+            const error = getError(id, lineApi.current!.getPrice());
+            setError(error);
+          })
+          .onMove(() => {
+            const error = getError(id, lineApi.current!.getPrice());
+
+            if (error) {
+              helperToast.error(
+                <>
+                  <span className="text-body-large font-bold">
+                    <Trans>Order could not be updated</Trans>
+                  </span>
+                  <br />
+                  <br />
+                  {error}
+                </>
+              );
+              lineApi.current!.setPrice(latestPrice.current);
+              lineApi.current!.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
+              lineApi.current!.setText(title);
+              return;
+            }
+
+            latestOnEdit.current(id, lineApi.current!.getPrice());
+          });
       } else {
         lineApi.current.setLineLength(-1, "pixel");
       }
