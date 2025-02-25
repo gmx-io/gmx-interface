@@ -103,6 +103,8 @@ describe("getTokensRatioByAmounts", () => {
       toToken,
       fromTokenAmount: 1000n,
       toTokenAmount: 500n,
+      minOutputAmount: 100n,
+      triggerPrice: 0n,
     });
     expect(result.largestToken).toEqual(fromToken);
     expect(result.ratio).toBe(

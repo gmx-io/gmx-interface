@@ -152,8 +152,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-      console.log("--------> triggerRatio", triggerRatio);
-
       return createSwapOrderTxn(chainId, signer, subaccount, {
         account,
         fromTokenAddress: fromToken.address,
@@ -197,6 +195,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingOrder,
       shouldDisableValidationForTesting,
       blockTimestampData,
+      triggerRatio,
     ]
   );
 

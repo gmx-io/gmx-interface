@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
-import { USD_DECIMALS } from "config/factors";
+import { DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   OrderInfo,
@@ -9,6 +9,7 @@ import {
   PositionOrderInfo,
   SwapOrderInfo,
   isLimitOrderType,
+  isLimitSwapOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
@@ -75,10 +76,15 @@ import {
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPriceImpactFeeBps,
+  selectOrderEditorSelectedAllowedSwapSlippageBps,
+  selectOrderEditorSetSelectedAllowedSwapSlippageBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSizeDeltaUsd,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
+  selectOrderEditorDefaultAllowedSwapSlippageBps,
+  selectOrderEditorSetDefaultAllowedSwapSlippageBps,
+  selectOrderEditorTotalSwapImpactBps,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
@@ -89,6 +95,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./OrderEditor.scss";
+import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 
 type Props = {
   order: OrderInfo;
@@ -163,6 +170,12 @@ export function OrderEditor(p: Props) {
   const setAcceptablePriceImpactBps = useSelector(selectOrderEditorSetAcceptablePriceImpactBps);
   const increaseAmounts = useSelector(selectOrderEditorIncreaseAmounts);
   const maxAllowedLeverage = useSelector(selectOrderEditorMaxAllowedLeverage);
+
+  const defaultAllowedSwapSlippageBps = useSelector(selectOrderEditorDefaultAllowedSwapSlippageBps);
+  const setDefaultAllowedSwapSlippageBps = useSelector(selectOrderEditorSetDefaultAllowedSwapSlippageBps);
+  const selectedAllowedSwapSlippageBps = useSelector(selectOrderEditorSelectedAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectOrderEditorSetSelectedAllowedSwapSlippageBps);
+  const swapImpactBps = useSelector(selectOrderEditorTotalSwapImpactBps);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants();
@@ -426,10 +439,14 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
+    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
+      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
+      : triggerPrice ?? positionOrder.triggerPrice;
+
     const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
+      triggerPrice: orderTriggerPrice,
       acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
       minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
       executionFee: additionalExecutionFee?.feeTokenAmount,
@@ -474,6 +491,14 @@ export function OrderEditor(p: Props) {
         if (ratio) {
           setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
         }
+
+        if (isLimitSwapOrderType(p.order.orderType)) {
+          const totalSwapImpactBps = swapImpactBps >= 0n ? 0n : bigMath.abs(swapImpactBps);
+          const defaultSwapImpactBuffer = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS + totalSwapImpactBps;
+
+          setDefaultAllowedSwapSlippageBps(bigMath.abs(defaultSwapImpactBuffer));
+          setSelectedAllowedSwapSlippageBps(ratio?.allowedSwapSlippageBps);
+        }
       } else {
         const positionOrder = p.order as PositionOrderInfo;
 
@@ -495,6 +520,12 @@ export function OrderEditor(p: Props) {
       setSizeInputValue,
       setTriggerPriceInputValue,
       setTriggerRatioInputValue,
+
+      defaultAllowedSwapSlippageBps,
+      setDefaultAllowedSwapSlippageBps,
+      selectedAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
+      swapImpactBps,
     ]
   );
 
@@ -671,6 +702,15 @@ export function OrderEditor(p: Props) {
 
           {isSwapOrderType(p.order.orderType) && (
             <>
+              <AllowedSwapSlippageInputRow
+                className="!mb-0 mt-8"
+                notAvailable={false}
+                totalSwapImpactBps={swapImpactBps}
+                allowedSwapSlippageBps={selectedAllowedSwapSlippageBps}
+                recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
+                setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
+              />
+              <div className="h-1 bg-stroke-primary" />
               <SyntheticsInfoRow
                 label={t`Min. Receive`}
                 value={formatBalanceAmount(

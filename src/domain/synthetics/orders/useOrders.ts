@@ -95,8 +95,6 @@ export function useOrders(
     parseResponse: parseResponse,
   });
 
-  console.log("--------> data.orders", data?.orders);
-
   const ordersData: OrdersData | undefined = useMemo(() => {
     const filteredOrders = data?.orders.filter((order) => {
       if (!isVisibleOrder(order.orderType)) {

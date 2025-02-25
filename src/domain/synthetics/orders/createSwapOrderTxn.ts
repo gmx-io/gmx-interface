@@ -150,7 +150,7 @@ async function getParams(
     : p.minOutputAmount;
 
   const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : 0n;
-  console.log("--------> p.triggerRatio", p.triggerRatio);
+
   const createOrderParams = {
     addresses: {
       receiver: p.account,

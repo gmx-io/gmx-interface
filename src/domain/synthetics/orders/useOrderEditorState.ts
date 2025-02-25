@@ -15,6 +15,8 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
   const [sizeInputValue, setSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const [defaultAllowedSwapSlippageBps, setDefaultAllowedSwapSlippageBps] = useState<bigint>();
+  const [selectedAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps] = useState<bigint>();
 
   useEffect(
     function resetOrderEditorState() {
@@ -69,6 +71,11 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       triggerRatioInputValue,
       setTriggerRatioInputValue,
 
+      defaultAllowedSwapSlippageBps,
+      setDefaultAllowedSwapSlippageBps,
+      selectedAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
+
       acceptablePrice,
       acceptablePriceImpactBps,
       initialAcceptablePriceImpactBps,
@@ -84,6 +91,11 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       sizeInputValue,
       triggerPriceInputValue,
       triggerRatioInputValue,
+
+      defaultAllowedSwapSlippageBps,
+      setDefaultAllowedSwapSlippageBps,
+      selectedAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
     ]
   );
 }

@@ -1,9 +1,10 @@
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { formatAmount, PRECISION, adjustForDecimals } from "lib/numbers";
 import { TokenData, TokensAllowanceData, TokensData, TokensRatio } from "./types";
 import { getIsEquivalentTokens, getTokenData } from "sdk/utils/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 export * from "sdk/utils/tokens";
 
@@ -56,8 +57,9 @@ export function getAmountByRatio(p: {
   fromTokenAmount: bigint;
   ratio: bigint;
   shouldInvertRatio?: boolean;
+  allowedSwapSlippageBps?: bigint;
 }) {
-  const { fromToken, toToken, fromTokenAmount, ratio, shouldInvertRatio } = p;
+  const { fromToken, toToken, fromTokenAmount, ratio, shouldInvertRatio, allowedSwapSlippageBps } = p;
 
   if (getIsEquivalentTokens(fromToken, toToken) || fromTokenAmount === 0n) {
     return p.fromTokenAmount;
@@ -66,8 +68,9 @@ export function getAmountByRatio(p: {
   const _ratio = shouldInvertRatio ? (PRECISION * PRECISION) / ratio : ratio;
 
   const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
+  const amount = (p.fromTokenAmount * adjustedDecimalsRatio) / PRECISION;
 
-  return (p.fromTokenAmount * adjustedDecimalsRatio) / PRECISION;
+  return amount - bigMath.mulDiv(amount, allowedSwapSlippageBps ?? 100n, BASIS_POINTS_DIVISOR_BIGINT);
 }
 
 /**

@@ -6,6 +6,8 @@ import { getSwapPathOutputAddresses, getSwapPathStats } from "./swapStats";
 import { convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "./tokens";
 import { getTriggerThresholdType } from "./prices";
 import { parsePositionKey } from "./positions";
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
+import { bigMath } from "./bigmath";
 
 export function isMarketOrderType(orderType: OrderType) {
   return [OrderType.MarketDecrease, OrderType.MarketIncrease, OrderType.MarketSwap].includes(orderType);
@@ -102,14 +104,24 @@ export function getOrderInfo(p: {
       targetCollateralToken.prices.minPrice
     );
 
-    let toAmount = order.minOutputAmount - (priceImpactAmount ?? 0n) + (swapFeeAmount ?? 0n);
+    let toAmount;
+
+    if (isLimitSwapOrderType(order.orderType)) {
+      toAmount =
+        order.contractTriggerPrice === 0n
+          ? bigMath.mulDiv(order.minOutputAmount, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, BASIS_POINTS_DIVISOR_BIGINT)
+          : order.minOutputAmount;
+    } else {
+      toAmount = order.minOutputAmount - (priceImpactAmount ?? 0n) + (swapFeeAmount ?? 0n);
+    }
 
     const triggerRatio = getTokensRatioByAmounts({
       fromToken: initialCollateralToken,
       toToken: targetCollateralToken,
       fromTokenAmount: order.initialCollateralDeltaAmount,
       toTokenAmount: toAmount,
-      allowedSlippage: 100n,
+      triggerPrice: order.contractTriggerPrice,
+      minOutputAmount: order.minOutputAmount,
     });
 
     const orderInfo: SwapOrderInfo = {

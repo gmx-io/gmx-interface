@@ -4,8 +4,7 @@ import { useCallback, useMemo } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdClose } from "react-icons/md";
 
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { getWrappedToken } from "sdk/configs/tokens";
+import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -28,6 +27,7 @@ import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/s
 import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";
@@ -313,7 +313,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     const toAmount = swapOrder.minOutputAmount;
     const toToken = order.targetCollateralToken;
     const toAmountText = formatBalanceAmount(toAmount, toToken.decimals, toToken.symbol);
-    const { swapRatioText } = getSwapRatioText(order);
+    const { swapRatioText, acceptablePriceText } = getSwapRatioText(order);
 
     return (
       <>
@@ -324,7 +324,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
             renderContent={() => (
               <>
                 <p>
-                  <Trans>Acceptable Price:</Trans> {formatAmount(order.contractAcceptablePrice, USD_DECIMALS, 2, true)}
+                  <Trans>Acceptable Price:</Trans> {acceptablePriceText}
                 </p>
                 {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
               </>
@@ -655,39 +655,18 @@ function getSwapRatioText(order: OrderInfo) {
   const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
   const triggerRatio = (order as SwapOrderInfo).triggerRatio;
-  let triggerPrice = (order as SwapOrderInfo).contractTriggerPrice;
-
-  if (triggerPrice === 0n) {
-    debugger;
-    const minOutputAmountWithSlippage =
-      order.minOutputAmount + (order.minOutputAmount * 100n) / BASIS_POINTS_DIVISOR_BIGINT;
-
-    const minTokenUsd = convertToUsd(minOutputAmountWithSlippage, toToken.decimals, toToken.prices.maxPrice);
-
-    const minOutputAmountWithSlippageTokenAmount = convertToTokenAmount(
-      minTokenUsd,
-      fromToken.decimals,
-      fromToken.prices.maxPrice
-    );
-
-    if (minOutputAmountWithSlippageTokenAmount === 0n || minOutputAmountWithSlippageTokenAmount === undefined) {
-      triggerPrice = 0n;
-    } else {
-      triggerPrice = order.initialCollateralDeltaAmount / minOutputAmountWithSlippageTokenAmount;
-    }
-  }
 
   const markExchangeRate =
     fromToken && toToken
       ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
       : undefined;
 
-  const ratioDecimals = calculateDisplayDecimals(triggerPrice);
+  const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
 
-  const dte = triggerRatio?.smallestToken.address === fromToken.address ? "<" : ">";
+  const sign = triggerRatio?.smallestToken.address === fromToken.address ? "<" : ">";
 
-  const swapRatioText = `${dte} ${formatAmount(
-    triggerPrice,
+  const swapRatioText = `${sign} ${formatAmount(
+    triggerRatio?.ratio,
     USD_DECIMALS,
     ratioDecimals,
     true
@@ -695,7 +674,9 @@ function getSwapRatioText(order: OrderInfo) {
 
   const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
-  return { swapRatioText, markSwapRatioText };
+  const acceptablePriceText = `${sign} ${formatAmount(triggerRatio?.acceptablePrice, USD_DECIMALS, 2, true)}`;
+
+  return { swapRatioText, markSwapRatioText, acceptablePriceText };
 }
 
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
