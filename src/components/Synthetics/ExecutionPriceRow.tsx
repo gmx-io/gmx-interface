@@ -8,6 +8,7 @@ import { getIsHighPositionImpact } from "domain/synthetics/trade/utils/getIsHigh
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
+import { isStopIncreaseOrderType } from "sdk/utils/orders";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -66,7 +67,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     }
 
     if (isLimit) {
-      if (triggerOrderType === OrderType.StopIncrease) {
+      if (triggerOrderType && isStopIncreaseOrderType(triggerOrderType)) {
         return t`Once the mark price hits the stop price, the order will attempt to execute.`;
       }
 
@@ -131,7 +132,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
           content={
             <>
               {isLimit
-                ? triggerOrderType === OrderType.StopIncrease
+                ? triggerOrderType && isStopIncreaseOrderType(triggerOrderType)
                   ? t`Expected execution price for the order, including the current price impact, once the stop market order executes.`
                   : t`Expected execution price for the order, including the current price impact, once the limit order executes.`
                 : t`Expected execution price for the order, including the current price impact.`}

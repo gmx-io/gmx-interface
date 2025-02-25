@@ -139,7 +139,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.resolve();
+        return Promise.reject();
       }
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
@@ -193,7 +193,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     function onSubmitIncreaseOrder() {
       if (!increaseAmounts) {
         helperToast.error(t`Error submitting order`);
-        return Promise.resolve();
+        return Promise.reject();
       }
 
       const orderType = isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease;
@@ -243,7 +243,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.resolve();
+        return Promise.reject();
       }
 
       const commonSecondaryOrderParams = {
@@ -412,7 +412,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.resolve();
+        return Promise.reject();
       }
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
@@ -487,7 +487,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   function onSubmitWrapOrUnwrap() {
     if (!account || !swapAmounts || !fromToken || !signer) {
-      return Promise.resolve();
+      return Promise.reject();
     }
 
     return createWrapOrUnwrapTxn(chainId, signer, {

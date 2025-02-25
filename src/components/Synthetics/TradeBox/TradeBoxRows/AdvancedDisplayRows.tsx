@@ -29,6 +29,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+import { isStopIncreaseOrderType } from "sdk/utils/orders";
 
 import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
@@ -224,7 +225,7 @@ export function TradeBoxAdvancedGroups() {
 
   const isInputDisabled = useMemo(() => {
     if (isLimit && increaseAmounts) {
-      if (increaseAmounts.limitOrderType === OrderType.StopIncrease) {
+      if (increaseAmounts.limitOrderType && isStopIncreaseOrderType(increaseAmounts.limitOrderType)) {
         return true;
       }
 

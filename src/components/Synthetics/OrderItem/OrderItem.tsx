@@ -13,13 +13,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
-  OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
 } from "domain/synthetics/orders";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -348,8 +349,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
             <StatsTooltipRow
               label={t`Acceptable Price`}
               value={
-                positionOrder.orderType === OrderType.StopLossDecrease ||
-                positionOrder.orderType === OrderType.StopIncrease
+                isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
                   ? "NA"
                   : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                       displayDecimals: priceDecimals,

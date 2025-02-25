@@ -51,6 +51,10 @@ export function isLimitIncreaseOrderType(orderType: OrderType) {
   return orderType === OrderType.LimitIncrease;
 }
 
+export function isStopIncreaseOrderType(orderType: OrderType) {
+  return orderType === OrderType.StopIncrease;
+}
+
 export function getOrderInfo(p: {
   marketsInfoData: MarketsInfoData;
   tokensData: TokensData;
