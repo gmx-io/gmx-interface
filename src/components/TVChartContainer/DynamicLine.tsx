@@ -14,7 +14,7 @@ const BUTTON_BACKGROUND_COLOR = "#16182e";
 const BORDER_COLOR = "#252a47";
 const BODY_ERROR_BACKGROUND_COLOR = "#831e2d";
 
-export function DynamicLineComponent({
+export function DynamicLine({
   orderType,
   isLong,
   price,
@@ -22,10 +22,12 @@ export function DynamicLineComponent({
   onEdit,
   onCancel,
   tvWidgetRef,
+  isMobile,
   isEdited,
   isPending,
   getError,
 }: {
+  isMobile: boolean;
   isEdited: boolean;
   isPending: boolean;
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
@@ -96,7 +98,6 @@ export function DynamicLineComponent({
         })
         .setEditable(true)
         .setLineStyle(LineStyle.Dashed)
-        .setLineLength(-200, "pixel")
         .setLineColor(BODY_BACKGROUND_COLOR)
 
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
@@ -111,13 +112,32 @@ export function DynamicLineComponent({
         .setCancelButtonBackgroundColor(BUTTON_BACKGROUND_COLOR)
         .setCancelButtonBorderColor(BORDER_COLOR)
         .setCancelButtonIconColor("#fff");
+
+      if (!isMobile) {
+        lineApi.current.setLineLength(-200, "pixel");
+      } else {
+        lineApi.current.setLineLength(-1, "pixel");
+      }
     }
 
     return () => {
       lineApi.current?.remove();
       lineApi.current = undefined;
     };
-  }, [_, getError, id, isLong, latestOnCancel, latestOnEdit, latestPrice, orderType, price, title, tvWidgetRef]);
+  }, [
+    _,
+    getError,
+    id,
+    isLong,
+    isMobile,
+    latestOnCancel,
+    latestOnEdit,
+    latestPrice,
+    orderType,
+    price,
+    title,
+    tvWidgetRef,
+  ]);
 
   useEffect(() => {
     if (!lineApi.current || lineApi.current.getPrice() === price) {

@@ -1458,7 +1458,7 @@ msgstr "Falló la creación de la Orden de Intercambio."
 msgid "Chart positions"
 msgstr "Posiciones en gráfca"
 
-#: src/components/TVChartContainer/DynamicLineComponent.tsx
+#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown Order"
 msgstr ""
 
@@ -3556,7 +3556,7 @@ msgstr ""
 msgid "Select a GLV Vault"
 msgstr ""
 
-#: src/components/TVChartContainer/DynamicLineComponent.tsx
+#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel Order"
 msgstr ""
 
@@ -5311,7 +5311,7 @@ msgstr ""
 msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 msgstr ""
 
-#: src/components/TVChartContainer/DynamicLineComponent.tsx
+#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit Order"
 msgstr ""
 

@@ -30,14 +30,14 @@ import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
 
-import { DynamicLineComponent } from "./DynamicLineComponent";
+import { DynamicLine } from "./DynamicLine";
 
-export function OrderLinesContainer({
+export function DynamicLines({
   tvWidgetRef,
-  chartReady,
+  isMobile,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
-  chartReady: boolean;
+  isMobile: boolean;
 }) {
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
@@ -122,16 +122,15 @@ export function OrderLinesContainer({
     [chainId, marketsData, ordersInfoData, setEditingOrderKey, setTriggerPriceInputValue]
   );
 
-  if (!chartReady) return null;
-
   return dynamicChartLines.map((line) => (
-    <DynamicLineComponent
+    <DynamicLine
       {...line}
       key={line.id}
       onEdit={onEditOrder}
       onCancel={onCancelOrder}
       getError={getError}
       tvWidgetRef={tvWidgetRef}
+      isMobile={isMobile}
       isEdited={editingOrderKey === line.id}
       isPending={(isSubmitting && editingOrderKey === line.id) || line.id in pendingOrdersUpdates}
     />

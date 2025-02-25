@@ -1458,7 +1458,7 @@ msgstr "Swap Order creation failed."
 msgid "Chart positions"
 msgstr "Chart positions"
 
-#: src/components/TVChartContainer/DynamicLineComponent.tsx
+#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown Order"
 msgstr "Unknown Order"
 
@@ -3556,7 +3556,7 @@ msgstr "No claims yet"
 msgid "Select a GLV Vault"
 msgstr "Select a GLV Vault"
 
-#: src/components/TVChartContainer/DynamicLineComponent.tsx
+#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel Order"
 msgstr "Cancel Order"
 
@@ -5314,7 +5314,7 @@ msgstr "Last 90d"
 msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 msgstr "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 
-#: src/components/TVChartContainer/DynamicLineComponent.tsx
+#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit Order"
 msgstr "Edit Order"
 

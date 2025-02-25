@@ -1,4 +1,5 @@
-import Loader from "components/Common/Loader";
+import { useLatest, useLocalStorage, useMedia } from "react-use";
+
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -7,20 +8,21 @@ import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { useTradePageVersion } from "lib/useTradePageVersion";
-import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useLatest, useLocalStorage, useMedia } from "react-use";
+import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
   IChartingLibraryWidget,
-  IPositionLineAdapter,
   ResolutionString,
 } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
-import { OrderLinesContainer } from "./OrderLinesContainer";
-import { StaticChartLine } from "./types";
+import type { StaticChartLine } from "./types";
+
+import Loader from "components/Common/Loader";
+import { DynamicLines } from "./DynamicLines";
+import { StaticLines } from "./StaticLines";
 
 type Props = {
   chainId: number;
@@ -78,45 +80,8 @@ export default function TVChartContainer({
     });
   }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, tradePageVersion]);
 
-  const isMobile = useMedia("(max-width: 550px)");
+  const isMobile = useMedia("(max-width: 550px)", false);
   const symbolRef = useRef(chartToken.symbol);
-
-  const drawLineOnChart = useCallback(
-    ({ title, price }: StaticChartLine) => {
-      if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
-        const chart = tvWidgetRef.current.activeChart();
-        const positionLine = chart.createPositionLine({ disableUndo: true });
-
-        return positionLine
-          .setText(title)
-          .setPrice(price)
-          .setQuantity("")
-          .setLineStyle(1)
-          .setLineLength(1)
-          .setBodyFont(`normal 12pt "Relative", sans-serif`)
-          .setBodyTextColor("#fff")
-          .setLineColor("#3a3e5e")
-          .setBodyBackgroundColor("#3a3e5e")
-          .setBodyBorderColor("#3a3e5e");
-      }
-    },
-    [chartReady]
-  );
-
-  useEffect(
-    function updateLines() {
-      const lines: (IPositionLineAdapter | undefined)[] = [];
-      if (shouldShowPositionLines) {
-        chartLines.forEach((line) => {
-          lines.push(drawLineOnChart(line));
-        });
-      }
-      return () => {
-        lines.forEach((lineApi) => lineApi?.remove());
-      };
-    },
-    [chartLines, shouldShowPositionLines, drawLineOnChart]
-  );
 
   useEffect(() => {
     if (
@@ -241,7 +206,12 @@ export default function TVChartContainer({
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
       <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
-      <OrderLinesContainer tvWidgetRef={tvWidgetRef} chartReady={chartReady} />
+      {shouldShowPositionLines && chartReady && (
+        <>
+          <StaticLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
+          {tradePageVersion === 2 && <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />}
+        </>
+      )}
     </div>
   );
 }
