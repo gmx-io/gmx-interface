@@ -228,12 +228,9 @@ export const formatPositionMessage = (
     //#endregion MarketIncrease
     //#region LimitIncrease and StopIncrease
   } else if (
-    (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderCreated) ||
-    (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderUpdated) ||
-    (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderCancelled) ||
-    (ot === OrderType.StopIncrease && ev === TradeActionType.OrderCreated) ||
-    (ot === OrderType.StopIncrease && ev === TradeActionType.OrderUpdated) ||
-    (ot === OrderType.StopIncrease && ev === TradeActionType.OrderCancelled)
+    ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCreated) ||
+    ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderUpdated) ||
+    ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCancelled)
   ) {
     const customPrice =
       triggerPriceInequality +

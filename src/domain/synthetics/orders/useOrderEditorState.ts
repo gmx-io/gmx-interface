@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { OrderInfo, OrderType, OrdersInfoData, PositionOrderInfo } from "./types";
-import { isIncreaseOrderType, isSwapOrderType } from "sdk/utils/orders";
-import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
-import { applySlippageToPrice } from "sdk/utils/trade";
+
 import { USD_DECIMALS } from "config/factors";
+import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
+import { isIncreaseOrderType, isStopIncreaseOrderType, isStopLossOrderType, isSwapOrderType } from "sdk/utils/orders";
+import { applySlippageToPrice } from "sdk/utils/trade";
+import { OrderInfo, OrdersInfoData, PositionOrderInfo } from "./types";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
 
@@ -134,11 +135,8 @@ function useAcceptablePrice(
   if (order) {
     if (isSwapOrder) {
       acceptablePrice = BN_ZERO;
-    } else if (order.orderType === OrderType.StopLossDecrease) {
-      // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
-      acceptablePrice = (order as PositionOrderInfo).acceptablePrice;
-    } else if (order.orderType === OrderType.StopIncrease) {
-      // For Stop Market orders Acceptable Price is not applicable and set to 0 or MaxUnit256
+    } else if (isStopLossOrderType(order.orderType) || isStopIncreaseOrderType(order.orderType)) {
+      // For Stop Loss and Stop Market orders Acceptable Price is not applicable and set to 0 or MaxUnit256
       acceptablePrice = (order as PositionOrderInfo).acceptablePrice;
     } else {
       const initialTriggerPrice = (order as PositionOrderInfo).triggerPrice;

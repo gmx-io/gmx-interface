@@ -4,6 +4,41 @@ import { useKey } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import {
+  OrderInfo,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  isLimitIncreaseOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
+import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import {
+  formatAcceptablePrice,
+  formatLeverage,
+  formatLiquidationPrice,
+  getNameByOrderType,
+  substractMaxLeverageSlippage,
+} from "domain/synthetics/positions";
+import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
+import {
+  calculateDisplayDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatBalanceAmount,
+  formatDeltaUsd,
+  formatTokenAmountWithUsd,
+  formatUsdPrice,
+} from "lib/numbers";
+
+import Button from "components/Button/Button";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -44,50 +79,18 @@ import {
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
-import {
-  OrderInfo,
-  OrderType,
-  PositionOrderInfo,
-  SwapOrderInfo,
-  isSwapOrderType,
-  isTriggerDecreaseOrderType,
-} from "domain/synthetics/orders";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
-  getNameByOrderType,
-  substractMaxLeverageSlippage,
-} from "domain/synthetics/positions";
-import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 
 import { numericBinarySearch } from "lib/binarySearch";
-import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import {
-  calculateDisplayDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatBalanceAmount,
-  formatDeltaUsd,
-  formatTokenAmountWithUsd,
-  formatUsdPrice,
-} from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
-import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 import "./OrderEditor.scss";
@@ -145,9 +148,6 @@ export function OrderEditor(p: Props) {
 
   const subaccount = useSubaccount(additionalExecutionFee?.feeTokenAmount ?? null);
 
-  const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
-  const isStopIncreaseOrder = p.order.orderType === OrderType.StopIncrease;
-
   const positionOrder = p.order as PositionOrderInfo | undefined;
   const positionIndexToken = positionOrder?.indexToken;
   const indexTokenAmount = useMemo(
@@ -174,7 +174,7 @@ export function OrderEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
-    isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
+    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice
       ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
         ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
@@ -211,7 +211,7 @@ export function OrderEditor(p: Props) {
   }
 
   function getIsMaxLeverageError() {
-    if (isLimitIncreaseOrder && sizeDeltaUsd !== undefined) {
+    if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
       if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
         return false;
       }
@@ -457,7 +457,7 @@ export function OrderEditor(p: Props) {
 
   const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
     ? t`Trigger Price`
-    : isStopIncreaseOrder
+    : isStopIncreaseOrderType(p.order.orderType)
       ? t`Stop Price`
       : t`Limit Price`;
 
@@ -531,7 +531,7 @@ export function OrderEditor(p: Props) {
         <div className="flex flex-col gap-14">
           {button}
 
-          {(isLimitIncreaseOrder || isStopIncreaseOrder) && (
+          {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}
               value={
@@ -544,8 +544,8 @@ export function OrderEditor(p: Props) {
           )}
 
           {!isSwapOrderType(p.order.orderType) &&
-            p.order.orderType !== OrderType.StopLossDecrease &&
-            !isStopIncreaseOrder && (
+            !isStopLossOrderType(p.order.orderType) &&
+            !isStopIncreaseOrderType(p.order.orderType) && (
               <AcceptablePriceImpactInputRow
                 acceptablePriceImpactBps={acceptablePriceImpactBps}
                 initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}

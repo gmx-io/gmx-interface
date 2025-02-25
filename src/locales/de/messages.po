@@ -498,10 +498,6 @@ msgstr ""
 msgid "Realized PnL"
 msgstr ""
 
-#: src/components/InterviewModal/InterviewModal.tsx
-msgid "Discord account: <0>@gmx_feedback</0>"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Data Analytics within Telegram"
 msgstr ""
@@ -993,6 +989,10 @@ msgstr ""
 #: src/pages/Earn/EscrowedGmxCard.tsx
 #: src/pages/Earn/TotalRewardsCard.tsx
 msgid "Escrowed GMX"
+msgstr ""
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -3712,6 +3712,10 @@ msgstr ""
 msgid "Swap amount exceeds Available Liquidity."
 msgstr ""
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "We value your experience as GMX Liquidity Provider and invite you to participate in an anonymous one-on-one chat."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease the leverage to match the max. allowed leverage."
 msgstr ""
@@ -5894,6 +5898,10 @@ msgstr "Wallet noch nicht verbunden"
 msgid "Liquidation Confirmations"
 msgstr ""
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Expected execution price for the order, including the current price impact, once the stop market order executes."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
@@ -6128,6 +6136,10 @@ msgstr "Einen Betrag eingeben"
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
 msgstr "Verbinden"
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Click here to give us your feedback on GMX."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -6891,6 +6903,7 @@ msgid "Vest with GLP on Arbitrum"
 msgstr "Vesting mit GLP auf Arbitrum"
 
 #: src/components/InterviewModal/InterviewModal.tsx
+#: src/components/InterviewModal/InterviewModal.tsx
 msgid "Telegram account"
 msgstr ""
 
@@ -6974,6 +6987,7 @@ msgstr "Partnerschaften und Integrationen"
 msgid "Leftover Collateral not enough to cover fees"
 msgstr ""
 
+#: src/components/InterviewToast/InterviewToast.tsx
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 msgstr ""
@@ -7630,6 +7644,10 @@ msgstr "Wallet"
 msgid "You have a pending transfer from {sender}."
 msgstr "Du hast eine ausstehende Überweisung von {sender}."
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the stop price, the order will attempt to execute."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr ""
@@ -8167,6 +8185,10 @@ msgstr ""
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr ""
 
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "Anonymous chat with GMX team"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Market Token Price Chart"
 msgstr ""
@@ -8321,6 +8343,10 @@ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
+msgstr ""
+
+#: src/components/InterviewModal/InterviewModal.tsx
+msgid "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx

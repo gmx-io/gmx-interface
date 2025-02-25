@@ -5,6 +5,7 @@ import {
   OrderType,
   PositionOrderInfo,
   isLimitIncreaseOrderType,
+  isStopIncreaseOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { PositionInfoLoaded } from "domain/synthetics/positions";
@@ -59,7 +60,7 @@ export function getPositionOrderError({
         return t`Limit price below mark price`;
       }
     }
-  } else if (positionOrder.orderType === OrderType.StopIncrease) {
+  } else if (isStopIncreaseOrderType(positionOrder.orderType)) {
     if (positionOrder.isLong && triggerPrice <= markPrice) {
       return t`Stop Market price is below mark price`;
     } else if (!positionOrder.isLong && triggerPrice >= markPrice) {
