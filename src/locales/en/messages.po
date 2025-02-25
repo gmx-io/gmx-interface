@@ -70,6 +70,10 @@ msgstr "receive"
 msgid "GMX Referrals Dashboard"
 msgstr "GMX Referrals Dashboard"
 
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Order could not be updated"
+msgstr "Order could not be updated"
+
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Stake GMX Rewards"
 msgstr "Stake GMX Rewards"

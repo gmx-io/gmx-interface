@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
@@ -87,7 +87,16 @@ export function DynamicLine({
           const error = getError(id, lineApi.current!.getPrice());
 
           if (error) {
-            helperToast.error(error);
+            helperToast.error(
+              <>
+                <span className="text-body-large font-bold">
+                  <Trans>Order could not be updated</Trans>
+                </span>
+                <br />
+                <br />
+                {error}
+              </>
+            );
             lineApi.current?.setPrice(latestPrice.current);
             lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
             lineApi.current?.setText(title);
