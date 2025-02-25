@@ -208,7 +208,7 @@ export default function TVChartContainer({
       <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
       {shouldShowPositionLines && chartReady && (
         <>
-          <StaticLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
+          <StaticLines tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
           {tradePageVersion === 2 && <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />}
         </>
       )}

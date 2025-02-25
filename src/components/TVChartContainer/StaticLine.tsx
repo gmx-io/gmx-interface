@@ -4,12 +4,10 @@ import type { IChartingLibraryWidget, IPositionLineAdapter } from "../../chartin
 import { LineStyle, StaticChartLine } from "./types";
 
 export function StaticLine({
-  isMobile,
   title,
   price,
   tvWidgetRef,
 }: {
-  isMobile: boolean;
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
 } & StaticChartLine) {
   const lineApi = useRef<IPositionLineAdapter | undefined>(undefined);
@@ -33,17 +31,12 @@ export function StaticLine({
 
       lineApi.current = positionLine;
 
-      if (isMobile) {
-        positionLine.setLineLength(-1, "pixel");
-      } else {
-        positionLine.setLineLength(1);
-      }
-
       return positionLine
         .setText(title)
         .setPrice(price)
         .setQuantity("")
         .setLineStyle(LineStyle.Dotted)
+        .setLineLength(1)
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
         .setBodyTextColor("#fff")
         .setLineColor("#3a3e5e")
@@ -55,7 +48,7 @@ export function StaticLine({
       lineApi.current?.remove();
       lineApi.current = undefined;
     };
-  }, [isMobile, price, title, tvWidgetRef]);
+  }, [price, title, tvWidgetRef]);
 
   return null;
 }
