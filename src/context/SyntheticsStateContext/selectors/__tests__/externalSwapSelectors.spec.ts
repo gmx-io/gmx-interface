@@ -52,9 +52,9 @@ describe("externalSwapSelectors", () => {
       swapSteps: [],
       tokenInAddress: tokensData.ETH.address,
       tokenOutAddress: tokensData.USDC.address,
-      totalSwapFeeUsd: expandDecimals(2, 30),
-      totalSwapPriceImpactDeltaUsd: expandDecimals(-1, 30),
-      totalFeesDeltaUsd: expandDecimals(-3, 30),
+      totalSwapFeeUsd: expandDecimals(-1, 30),
+      totalSwapPriceImpactDeltaUsd: expandDecimals(-1, 29),
+      totalFeesDeltaUsd: expandDecimals(-11, 29),
       usdOut: expandDecimals(1795, 30),
       amountOut: expandDecimals(1795, 6),
     };
