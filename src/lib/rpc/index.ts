@@ -1,16 +1,8 @@
-import { JsonRpcProvider, Network, WebSocketProvider } from "ethers";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  FALLBACK_PROVIDERS,
-  getAlchemyArbitrumWsUrl,
-  getFallbackRpcUrl,
-} from "config/chains";
-import { Signer, ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getAlchemyArbitrumWsUrl, getRandomPrivateRpcUrl } from "config/chains";
 import { isDevelopment } from "config/env";
+import { JsonRpcProvider, Network, Signer, WebSocketProvider, ethers } from "ethers";
 import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { useEffect, useState } from "react";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
@@ -50,11 +42,11 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
 }
 
 export function getFallbackProvider(chainId: number) {
-  if (!FALLBACK_PROVIDERS[chainId]) {
+  const providerUrl = getRandomPrivateRpcUrl(chainId);
+
+  if (!providerUrl) {
     return;
   }
-
-  const providerUrl = getFallbackRpcUrl(chainId);
 
   return new ethers.JsonRpcProvider(providerUrl, chainId, {
     staticNetwork: Network.from(chainId),

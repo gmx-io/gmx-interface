@@ -20,6 +20,7 @@ import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher
 import { serializeMulticallErrors } from "./utils";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { markFailedRpcProvider } from "lib/rpc/bestRpcTracker";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -339,6 +340,8 @@ export class Multicall {
             rpcProvider: fallbackProviderName,
           });
 
+          markFailedRpcProvider(this.chainId, fallbackProviderUrl);
+
           throw e;
         });
     };
@@ -365,6 +368,9 @@ export class Multicall {
       })
       .catch((_viemError) => {
         const e = new Error(_viemError.message.slice(0, 150));
+
+        // Mark the RPC as failed to trigger recalculation
+        markFailedRpcProvider(this.chainId, providerUrl);
 
         emitMetricEvent<MulticallTimeoutEvent>({
           event: "multicall.timeout",

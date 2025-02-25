@@ -125,7 +125,7 @@ export const RPC_PROVIDERS = {
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
-    // "https://arbitrum-one.public.blastapi.io",
+    "https://arbitrum-one.public.blastapi.io",
     // "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
@@ -142,14 +142,8 @@ export const RPC_PROVIDERS = {
   ],
 };
 
-export const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS
-    ? JSON.parse(ENV_ARBITRUM_RPC_URLS)
-    : [
-        "https://arb1.arbitrum.io/rpc",
-        "https://arbitrum-one-rpc.publicnode.com",
-        // getAlchemyArbitrumHttpUrl()
-      ],
+export const PRIVATE_PROVIDERS = {
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
@@ -232,8 +226,51 @@ export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
 }
 
-export function getFallbackRpcUrl(chainId: number): string {
-  return sample(FALLBACK_PROVIDERS[chainId]);
+export function getRandomRpcUrl(chainId: number, blackListedUrls: string[] = []): string | undefined {
+  const urls = RPC_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
+
+  if (!urls.length) {
+    return undefined;
+  }
+
+  return sample(urls);
+}
+
+export function getRandomPrivateRpcUrl(chainId: number, blackListedUrls: string[] = []): string | undefined {
+  const urls = PRIVATE_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
+
+  if (!urls.length) {
+    return undefined;
+  }
+
+  return sample(urls);
+}
+
+export function getRandomAnyRpcUrl(
+  chainId: number,
+  priority: "public" | "private",
+  blackListedUrls: string[] = []
+): string {
+  let url: string;
+
+  const filteredPublicUrls = RPC_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
+  const filteredPrivateUrls = PRIVATE_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
+
+  const [urls1, urls2] =
+    priority === "public" ? [filteredPublicUrls, filteredPrivateUrls] : [filteredPrivateUrls, filteredPublicUrls];
+
+  url = sample(urls1);
+
+  if (!url) {
+    url = sample(urls2);
+  }
+
+  if (!url) {
+    // sample without filtering
+    url = sample(RPC_PROVIDERS[chainId]);
+  }
+
+  return url;
 }
 
 function getAlchemyKey() {
