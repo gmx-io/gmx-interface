@@ -5855,6 +5855,10 @@ msgstr "Wallet not yet connected"
 msgid "Liquidation Confirmations"
 msgstr "Liquidation Confirmations"
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Expected execution price for the order, including the current price impact, once the stop market order executes."
+msgstr "Expected execution price for the order, including the current price impact, once the stop market order executes."
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Acknowledge epoch is ending in {minutes} minutes"
@@ -7595,6 +7599,10 @@ msgstr "Wallet"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "You have a pending transfer from {sender}."
 msgstr "You have a pending transfer from {sender}."
+
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the stop price, the order will attempt to execute."
+msgstr "Once the mark price hits the stop price, the order will attempt to execute."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"

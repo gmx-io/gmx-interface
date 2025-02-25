@@ -171,6 +171,7 @@ function IncreaseOrderRow() {
       acceptablePrice={acceptablePrice}
       executionPrice={executionPrice ?? undefined}
       visualMultiplier={toToken?.visualMultiplier}
+      triggerOrderType={increaseAmounts?.limitOrderType}
     />
   );
 }
