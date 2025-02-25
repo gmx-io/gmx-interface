@@ -2143,6 +2143,10 @@ msgstr ""
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle}"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
 msgstr "Index"
@@ -2491,8 +2495,8 @@ msgid "APRs are updated weekly on Wednesday and will depend on the fees collecte
 msgstr "APRs werden wöchentlich am Mittwoch aktualisiert und hängen von den in der Woche erhobenen Gebühren ab."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees (Incl. Swap)"
-msgstr ""
+#~ msgid "Fees (Incl. Swap)"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Generate & Activate Subaccount"

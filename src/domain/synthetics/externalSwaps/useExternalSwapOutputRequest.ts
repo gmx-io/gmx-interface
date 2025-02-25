@@ -83,6 +83,7 @@ export function useExternalSwapOutputRequest({
           usdOut: result.usdOut,
           priceIn: result.priceIn,
           priceOut: result.priceOut,
+          feesUsd: result.usdIn !== undefined && result.usdOut !== undefined ? result.usdIn - result.usdOut : undefined,
           txnData: {
             to: result.to,
             data: result.data,

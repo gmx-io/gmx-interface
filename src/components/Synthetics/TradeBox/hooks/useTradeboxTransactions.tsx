@@ -230,6 +230,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         interactionId: marketInfo?.name
           ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name))
           : undefined,
+        externalSwapQuote: increaseAmounts?.externalSwapQuote,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);

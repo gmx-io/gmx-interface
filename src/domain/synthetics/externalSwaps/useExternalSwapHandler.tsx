@@ -25,6 +25,7 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { useEffect } from "react";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
+import { getIsFlagEnabled } from "config/ab";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -60,7 +61,7 @@ export function useExternalSwapHandler() {
     amountIn: externalSwapInputs?.amountIn,
     slippage,
     gasPrice,
-    enabled: !subaccount && shouldRequestExternalSwapQuote,
+    enabled: getIsFlagEnabled("testExternalSwap") && !subaccount && shouldRequestExternalSwapQuote,
   });
 
   if (isDevelopment() && settings.showDebugValues) {

@@ -236,6 +236,7 @@ export type ExternalSwapOutput = {
   usdOut: bigint | undefined;
   priceIn: bigint | undefined;
   priceOut: bigint | undefined;
+  feesUsd: bigint | undefined;
   needSpenderApproval?: boolean;
   txnData?: {
     to: string;
