@@ -58,6 +58,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { TradeMode } from "sdk/types/trade";
 
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
@@ -101,14 +102,14 @@ export function TradeBox() {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
-  const avaialbleTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
+  const availableTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
-  const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = avaialbleTokenOptions;
+  const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
   const marketsInfoData = useMarketsInfoData();
 
@@ -690,9 +691,11 @@ export function TradeBox() {
   }
 
   function renderTriggerPriceInput() {
+    const priceLabel = isLimit ? (tradeMode === TradeMode.Limit ? t`Limit Price` : t`Stop Price`) : t`Trigger Price`;
+
     return (
       <BuyInputSection
-        topLeftLabel={isLimit ? t`Limit Price` : t`Trigger Price`}
+        topLeftLabel={priceLabel}
         topRightLabel={t`Mark`}
         topRightValue={formatUsdPrice(markPrice, {
           visualMultiplier: toToken?.visualMultiplier,

@@ -146,6 +146,10 @@ msgstr "Orders ({0})"
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "stop loss"
+msgstr "stop loss"
+
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -337,6 +341,10 @@ msgstr "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{updateOrdersCount} TP/SL order(s) updated"
 msgstr "{updateOrdersCount} TP/SL order(s) updated"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Stop market price above mark price"
+msgstr "Stop market price above mark price"
 
 #: src/pages/Earn/StakeModal.tsx
 msgid "Pending {stakingTokenSymbol} approval"
@@ -877,6 +885,12 @@ msgstr "GMX Governance Page"
 msgid "Decentralized Money Market"
 msgstr "Decentralized Money Market"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/LimitPriceRow.tsx
+msgid "Stop Price"
+msgstr "Stop Price"
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Positions ({positionsCount})"
 msgstr "Positions ({positionsCount})"
@@ -1086,6 +1100,10 @@ msgstr "Avalanche Max. APY: {0}"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Collateral"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Stop Market"
+msgstr "Cancel Stop Market"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit"
@@ -3235,6 +3253,10 @@ msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claimi
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "stop market"
+msgstr "stop market"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -3521,6 +3543,10 @@ msgstr "Select a GLV Vault"
 #: src/pages/Earn/Vesting.tsx
 msgid "Withdraw"
 msgstr "Withdraw"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Update Stop Market"
+msgstr "Update Stop Market"
 
 #: src/pages/Earn/TotalRewardsCard.tsx
 msgid "Vested Claimable GMX"
@@ -3852,6 +3878,7 @@ msgstr "You have an existing position with {0} as collateral. This action will n
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Trigger price for the order."
 msgstr "Trigger price for the order."
 
@@ -3916,6 +3943,10 @@ msgstr "PnL ($)"
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "GMX Market Tokens"
 msgstr "GMX Market Tokens"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Stop Market price is above mark price"
+msgstr "Stop Market price is above mark price"
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Txn failed. <0>View</0>."
@@ -4187,6 +4218,10 @@ msgstr "Decentralized Options Strategies"
 msgid "GMX Technical Announcements"
 msgstr "GMX Technical Announcements"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Failed Stop Market"
+msgstr "Failed Stop Market"
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Address copied to your clipboard"
@@ -4436,10 +4471,6 @@ msgstr "Switch to:"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
-
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{txnTypeText} limit order for"
-msgstr "{txnTypeText} limit order for"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
@@ -4723,6 +4754,10 @@ msgstr "The bonus rebate is an estimate and can be up to {0}% of the open fee. I
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
 msgstr "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Create Stop Market"
+msgstr "Create Stop Market"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Swap submitted!"
@@ -5620,6 +5655,10 @@ msgstr "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Bridge {tokenSymbol} to {chainName} with"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Stop market price below mark price"
+msgstr "Stop market price below mark price"
+
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -5691,6 +5730,10 @@ msgstr "Approve {0}"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "Max {0} long exceeded"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Stop Market price is below mark price"
+msgstr "Stop Market price is below mark price"
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5816,6 +5859,10 @@ msgstr "Wallet not yet connected"
 msgid "Liquidation Confirmations"
 msgstr "Liquidation Confirmations"
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Expected execution price for the order, including the current price impact, once the stop market order executes."
+msgstr "Expected execution price for the order, including the current price impact, once the stop market order executes."
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Acknowledge epoch is ending in {minutes} minutes"
@@ -5873,10 +5920,6 @@ msgstr "{fromText} to {toExecutionText}"
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Create {0} Order"
 msgstr "Create {0} Order"
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create Limit order"
-msgstr "Create Limit order"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -5960,6 +6003,10 @@ msgstr "Amount"
 #: src/components/Exchange/SwapBox.jsx
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 msgstr "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Create {0} order"
+msgstr "Create {0} order"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}{2}"
@@ -6284,6 +6331,10 @@ msgstr "One-Click Trading is not available using network's native token {0}. Con
 msgid "View"
 msgstr "View"
 
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Execute Stop Market"
+msgstr "Execute Stop Market"
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "Volume traded by this account with an active referral code."
@@ -6509,6 +6560,7 @@ msgstr "Meme"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
@@ -6865,6 +6917,11 @@ msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim completed!"
 msgstr "Claim completed!"
+
+#: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/positions/utils.ts
+msgid "Stop Market"
+msgstr "Stop Market"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
@@ -7260,6 +7317,10 @@ msgstr "Traders"
 msgid "{ordersText} cancelled"
 msgstr "{ordersText} cancelled"
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "take profit"
+msgstr "take profit"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
@@ -7549,6 +7610,10 @@ msgstr "Wallet"
 msgid "You have a pending transfer from {sender}."
 msgstr "You have a pending transfer from {sender}."
 
+#: src/components/Synthetics/ExecutionPriceRow.tsx
+msgid "Once the mark price hits the stop price, the order will attempt to execute."
+msgstr "Once the mark price hits the stop price, the order will attempt to execute."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "Enter a trigger price"
@@ -7625,6 +7690,10 @@ msgstr "You have {0} esGMX (IOU) tokens."
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There is currently a high swap price impact for the order swap path."
 msgstr "There is currently a high swap price impact for the order swap path."
+
+#: src/components/Exchange/PositionDropdown.tsx
+msgid "Increase Size (Stop Market)"
+msgstr "Increase Size (Stop Market)"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Stop Loss PnL"
@@ -7964,6 +8033,10 @@ msgstr "Dashboards"
 msgid "Leftover collateral below {0} USD"
 msgstr "Leftover collateral below {0} USD"
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "trigger"
+msgstr "trigger"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
@@ -8218,13 +8291,11 @@ msgstr "Anonymous chat with GMX"
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/tradeboxConstants.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
+#: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -8243,6 +8314,10 @@ msgstr "We'll then schedule a chat or interview with you. As a thank you, you'll
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "limit"
+msgstr "limit"
 
 #: src/components/Exchange/OrdersToa.jsx
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
