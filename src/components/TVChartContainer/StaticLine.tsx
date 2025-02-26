@@ -13,10 +13,10 @@ export function StaticLine({
   const lineApi = useRef<IPositionLineAdapter | undefined>(undefined);
 
   useEffect(() => {
-    if (!tvWidgetRef.current?.activeChart().dataReady()) {
+    const chart = tvWidgetRef.current?.activeChart();
+    if (!chart || !chart.dataReady()) {
       return;
     }
-    const chart = tvWidgetRef.current.activeChart();
 
     const range = chart.getVisibleRange();
 
@@ -27,7 +27,7 @@ export function StaticLine({
     }
 
     function init() {
-      const positionLine = chart.createPositionLine({ disableUndo: true });
+      const positionLine = chart!.createPositionLine({ disableUndo: true });
 
       lineApi.current = positionLine;
 

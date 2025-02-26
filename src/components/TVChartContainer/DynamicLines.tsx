@@ -78,11 +78,11 @@ export function DynamicLines({
       return calcSelector((state) => {
         const order = getByKey(selectOrdersInfoData(state), id) as PositionOrderInfo;
         const chainId = selectChainId(state);
-        const marketsData = selectMarketsInfoData(state);
+        const marketsInfoData = selectMarketsInfoData(state);
 
         if (!order) return undefined;
 
-        const indexTokenAddress = getByKey(marketsData, order.marketAddress)?.indexTokenAddress;
+        const indexTokenAddress = getByKey(marketsInfoData, order.marketAddress)?.indexTokenAddress;
         if (!indexTokenAddress) return undefined;
 
         const indexToken = getToken(chainId, indexTokenAddress);

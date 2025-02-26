@@ -43,10 +43,10 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
       const positionOrder = order as PositionOrderInfo;
       const priceDecimal = getPriceDecimals(chainId, positionOrder.indexToken.symbol);
 
-      const token = q((state) =>
-        getTokenData(selectTokensData(state), positionOrder.marketInfo.indexTokenAddress, "native")
+      const tokenVisualMultiplier = q(
+        (state) =>
+          getTokenData(selectTokensData(state), positionOrder.marketInfo.indexTokenAddress, "native")?.visualMultiplier
       );
-      const tokenVisualMultiplier = token?.visualMultiplier;
 
       return {
         id: positionOrder.key,

@@ -25,47 +25,48 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
     return EMPTY_ARRAY;
   }
 
-  const positionLines = Object.values(positionsInfo || {}).reduce((acc, position) => {
-    const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
-    if (
+  const filteredPositions = Object.values(positionsInfo || {}).filter(
+    (position) =>
       position.marketInfo &&
       convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") ===
         convertTokenAddress(chainId, chartTokenAddress, "wrapped")
-    ) {
-      const longOrShortText = position.isLong ? t`Long` : t`Short`;
-      const token = q((state) =>
-        getTokenData(selectTokensData(state), position.marketInfo?.indexTokenAddress, "native")
-      );
-      const tokenSymbol = token?.symbol;
-      const prefix = token ? getTokenVisualMultiplier(token) : "";
-      const tokenVisualMultiplier = token?.visualMultiplier;
+  );
 
-      const liquidationPrice = formatAmount(
-        position?.liquidationPrice,
-        USD_DECIMALS,
-        priceDecimal,
-        undefined,
-        undefined,
-        tokenVisualMultiplier
-      );
+  const positionLines = filteredPositions.flatMap((position) => {
+    const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
+    const longOrShortText = position.isLong ? t`Long` : t`Short`;
+    const token = q((state) => getTokenData(selectTokensData(state), position.marketInfo?.indexTokenAddress, "native"));
+    const tokenSymbol = token?.symbol;
+    const prefix = token ? getTokenVisualMultiplier(token) : "";
+    const tokenVisualMultiplier = token?.visualMultiplier;
 
-      acc.push({
+    const liquidationPrice = formatAmount(
+      position?.liquidationPrice,
+      USD_DECIMALS,
+      priceDecimal,
+      undefined,
+      undefined,
+      tokenVisualMultiplier
+    );
+
+    const lines: StaticChartLine[] = [
+      {
         title: t`Open ${longOrShortText} ${prefix}${tokenSymbol}`,
-
         price: parseFloat(
           formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
         ),
+      },
+    ];
+
+    if (liquidationPrice && liquidationPrice !== "NA") {
+      lines.push({
+        title: t`Liq. ${longOrShortText} ${prefix}${tokenSymbol}`,
+        price: parseFloat(liquidationPrice),
       });
-      if (liquidationPrice && liquidationPrice !== "NA") {
-        acc.push({
-          title: t`Liq. ${longOrShortText} ${prefix}${tokenSymbol}`,
-          price: parseFloat(liquidationPrice),
-        });
-      }
     }
 
-    return acc;
-  }, [] as StaticChartLine[]);
+    return lines;
+  });
 
   return positionLines;
 });

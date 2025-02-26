@@ -135,7 +135,7 @@ export const defaultChartProps = {
 
 export const availableNetworksForChart = [ARBITRUM, AVALANCHE];
 
-export const dynamicKeys: Partial<Record<`${OrderType}-${"long" | "short"}`, MessageDescriptor>> = {
+export const orderTypeToTitle: Partial<Record<`${OrderType}-${"long" | "short"}`, MessageDescriptor>> = {
   [`${OrderType.LimitIncrease}-short`]: msg`Limit - Short Inc.`,
   [`${OrderType.LimitIncrease}-long`]: msg`Limit - Long Inc.`,
 

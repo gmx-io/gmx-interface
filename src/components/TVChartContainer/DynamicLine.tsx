@@ -5,7 +5,7 @@ import { useLatest, usePrevious } from "react-use";
 
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
-import { dynamicKeys } from "./constants";
+import { orderTypeToTitle } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
 import { helperToast } from "lib/helperToast";
 
@@ -13,6 +13,7 @@ const BODY_BACKGROUND_COLOR = "#3a3e5e";
 const BUTTON_BACKGROUND_COLOR = "#16182e";
 const BORDER_COLOR = "#252a47";
 const BODY_ERROR_BACKGROUND_COLOR = "#831e2d";
+const LOADER_ANIMATION_STEP_MS = 1000;
 
 export function DynamicLine({
   orderType,
@@ -46,16 +47,16 @@ export function DynamicLine({
   const [error, setError] = useState<string | undefined>(undefined);
 
   const title = useMemo(() => {
-    const predefinedKey = dynamicKeys[`${orderType}-${isLong ? "long" : "short"}`];
+    const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
     const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
     return title;
   }, [_, isLong, orderType]);
 
   useEffect(() => {
-    if (!tvWidgetRef.current?.activeChart().dataReady()) {
+    const chart = tvWidgetRef.current?.activeChart();
+    if (!chart || !chart.dataReady()) {
       return;
     }
-    const chart = tvWidgetRef.current.activeChart();
 
     const range = chart.getVisibleRange();
 
@@ -66,7 +67,7 @@ export function DynamicLine({
     }
 
     function init() {
-      lineApi.current = chart
+      lineApi.current = chart!
         .createOrderLine({ disableUndo: true })
         .setText(title)
         .setPrice(price)
@@ -184,7 +185,7 @@ export function DynamicLine({
           const text = ".".repeat((counter % 3) + 1);
           lineApi.current?.setQuantity(text);
           counter++;
-        }, 1000);
+        }, LOADER_ANIMATION_STEP_MS);
 
         setTimeout(() => {
           clearInterval(interval);

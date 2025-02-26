@@ -80,7 +80,7 @@ export default function TVChartContainer({
     });
   }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, tradePageVersion]);
 
-  const isMobile = useMedia("(max-width: 550px)", false);
+  const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
 
   useEffect(() => {
