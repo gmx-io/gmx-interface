@@ -650,38 +650,45 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
   });
 });
 
-export const makeSelectOrderEditorPositionOrderError = createSelectorFactory((orderKey: string, triggerPrice: bigint) =>
-  createSelector((q) => {
-    const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
-
-    if (!order || isSwapOrderType(order.orderType)) {
-      return;
-    }
-
-    const positionOrder = order as PositionOrderInfo;
-
-    const indexToken = q((state) => getByKey(selectMarketsInfoData(state), order.marketAddress)?.indexToken);
-    const markPrice = positionOrder.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
-
-    const sizeDeltaUsd = order.sizeDeltaUsd;
-
-    const acceptablePrice = undefined;
-
-    const existingPosition = q((state) => makeSelectOrderEditorExistingPosition(order.key)(state));
-    const nextPositionValuesForIncrease = q((state) =>
-      makeSelectOrderEditorNextPositionValuesForIncrease(order.key, triggerPrice)(state)
+export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
+  (orderKey: string, triggerPrice: bigint) => {
+    const selectExistingPosition = makeSelectOrderEditorExistingPosition(orderKey);
+    const selectNextPositionValuesForIncrease = makeSelectOrderEditorNextPositionValuesForIncrease(
+      orderKey,
+      triggerPrice
     );
-    const maxAllowedLeverage = q((state) => makeSelectOrderEditorMaxAllowedLeverage(order.key)(state));
+    const selectMaxAllowedLeverage = makeSelectOrderEditorMaxAllowedLeverage(orderKey);
 
-    return getPositionOrderError({
-      positionOrder,
-      markPrice,
-      sizeDeltaUsd,
-      triggerPrice,
-      acceptablePrice,
-      existingPosition,
-      nextPositionValuesForIncrease,
-      maxAllowedLeverage,
+    return createSelector((q) => {
+      const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
+
+      if (!order || isSwapOrderType(order.orderType)) {
+        return;
+      }
+
+      const positionOrder = order as PositionOrderInfo;
+
+      const indexToken = q((state) => getByKey(selectMarketsInfoData(state), order.marketAddress)?.indexToken);
+      const markPrice = positionOrder.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
+
+      const sizeDeltaUsd = order.sizeDeltaUsd;
+
+      const acceptablePrice = undefined;
+
+      const existingPosition = q(selectExistingPosition);
+      const nextPositionValuesForIncrease = q(selectNextPositionValuesForIncrease);
+      const maxAllowedLeverage = q(selectMaxAllowedLeverage);
+
+      return getPositionOrderError({
+        positionOrder,
+        markPrice,
+        sizeDeltaUsd,
+        triggerPrice,
+        acceptablePrice,
+        existingPosition,
+        nextPositionValuesForIncrease,
+        maxAllowedLeverage,
+      });
     });
-  })
+  }
 );
