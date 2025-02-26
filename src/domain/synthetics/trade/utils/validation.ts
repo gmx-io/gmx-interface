@@ -84,11 +84,11 @@ export function getSwapError(p: {
     return [t`Select different tokens`];
   }
 
-  if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount <= 0 || fromUsd <= 0) {
+  if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount <= 0n || fromUsd <= 0n) {
     return [t`Enter an amount`];
   }
 
-  if (isLimit && (triggerRatio?.ratio === undefined || triggerRatio.ratio < 0)) {
+  if (isLimit && (triggerRatio?.ratio === undefined || triggerRatio.ratio < 0n)) {
     return [t`Enter a  price`];
   }
 
@@ -110,7 +110,7 @@ export function getSwapError(p: {
 
   if (
     !fees?.payTotalFees ||
-    (fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
+    (fees.payTotalFees.deltaUsd < 0n && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
   ) {
     return [t`Fees exceed Pay amount`];
   }
@@ -201,8 +201,8 @@ export function getIncreaseError(p: {
   if (
     initialCollateralAmount === undefined ||
     initialCollateralUsd === undefined ||
-    initialCollateralAmount <= 0 ||
-    initialCollateralUsd <= 0 ||
+    initialCollateralAmount <= 0n ||
+    initialCollateralUsd <= 0n ||
     sizeDeltaUsd === undefined ||
     !fees?.payTotalFees
   ) {
@@ -230,7 +230,7 @@ export function getIncreaseError(p: {
   if (
     !existingPosition &&
     fees.payTotalFees?.deltaUsd &&
-    fees.payTotalFees?.deltaUsd < 0 &&
+    fees.payTotalFees?.deltaUsd < 0n &&
     bigMath.abs(fees?.payTotalFees?.deltaUsd) > (initialCollateralUsd ?? 0n)
   ) {
     return [t`Fees exceed amount`];
@@ -251,7 +251,7 @@ export function getIncreaseError(p: {
     return [t`Min collateral: ${formatUsd(_minCollateralUsd)}`];
   }
 
-  if (sizeDeltaUsd <= 0) {
+  if (sizeDeltaUsd <= 0n) {
     return [t`Enter an amount`];
   }
 
@@ -270,7 +270,7 @@ export function getIncreaseError(p: {
       return [t`Loading...`];
     }
 
-    if (triggerPrice === undefined || triggerPrice < 0) {
+    if (triggerPrice === undefined || triggerPrice < 0n) {
       return [t`Enter a price`];
     }
 
@@ -293,7 +293,7 @@ export function getIncreaseError(p: {
 
   const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
 
-  if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
+  if (nextLeverageWithoutPnl !== undefined && Number(nextLeverageWithoutPnl) > maxAllowedLeverage) {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
@@ -385,12 +385,12 @@ export function getDecreaseError(p: {
     return [t`Select a market`];
   }
 
-  if (sizeDeltaUsd === undefined || sizeDeltaUsd <= 0) {
+  if (sizeDeltaUsd === undefined || sizeDeltaUsd <= 0n) {
     return [t`Enter an amount`];
   }
 
   if (isTrigger) {
-    if (triggerPrice === undefined || triggerPrice <= 0) {
+    if (triggerPrice === undefined || triggerPrice <= 0n) {
       return [t`Enter a trigger price`];
     }
 
@@ -415,7 +415,7 @@ export function getDecreaseError(p: {
 
   const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
 
-  if (nextPositionValues?.nextLeverage !== undefined && nextPositionValues?.nextLeverage > maxAllowedLeverage) {
+  if (nextPositionValues?.nextLeverage !== undefined && Number(nextPositionValues.nextLeverage) > maxAllowedLeverage) {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
@@ -489,7 +489,7 @@ export function getEditCollateralError(p: {
 
   const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
 
-  if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
+  if (nextLeverage !== undefined && Number(nextLeverage) > maxAllowedLeverage) {
     return [t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
@@ -582,7 +582,7 @@ export function getGmSwapError(p: {
   const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
 
   if (isDeposit) {
-    if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
+    if (priceImpactUsd !== undefined && priceImpactUsd > 0n) {
       const { impactAmount } = applySwapImpactWithCap(marketInfo, priceImpactUsd);
       const newPoolAmount = applyDeltaToPoolAmount(marketInfo, impactAmount);
 
@@ -606,7 +606,7 @@ export function getGmSwapError(p: {
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
     if (
-      (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0) &&
+      (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0n) &&
       bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd
     ) {
       return [t`Fees exceed Pay amount`];
@@ -641,19 +641,19 @@ export function getGmSwapError(p: {
       }
     }
   } else if (
-    (fees?.totalFees?.deltaUsd ?? 0n) < 0 &&
+    (fees?.totalFees?.deltaUsd ?? 0n) < 0n &&
     bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > (marketTokenUsd ?? 0n)
   ) {
     return [t`Fees exceed Pay amount`];
   }
 
-  if ((longTokenAmount ?? 0n) < 0 || (shortTokenAmount ?? 0n) < 0 || (marketTokenAmount ?? 0n) < 0) {
+  if ((longTokenAmount ?? 0n) < 0n || (shortTokenAmount ?? 0n) < 0n || (marketTokenAmount ?? 0n) < 0n) {
     return [t`Amount should be greater than zero`];
   }
 
   if (
     marketTokenAmount === undefined ||
-    marketTokenAmount < 0 ||
+    marketTokenAmount < 0n ||
     (marketTokenAmount === 0n && longTokenAmount === 0n && shortTokenAmount === 0n)
   ) {
     return [t`Enter an amount`];
@@ -779,7 +779,7 @@ export function getGmShiftError({
     return [t`Acknowledgment Required`];
   }
 
-  if (priceImpactUsd !== undefined && priceImpactUsd > 0) {
+  if (priceImpactUsd !== undefined && priceImpactUsd > 0n) {
     const { impactAmount } = applySwapImpactWithCap(toMarketInfo, priceImpactUsd);
     const newPoolAmount = applyDeltaToPoolAmount(toMarketInfo, impactAmount);
 
@@ -811,12 +811,12 @@ export function getGmShiftError({
 
   const totalCollateralUsd = fromTokenUsd ?? 0n;
 
-  const feesExistAndNegative = fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0;
+  const feesExistAndNegative = fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0n;
   if (feesExistAndNegative && bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd) {
     return [t`Fees exceed Pay amount`];
   }
 
-  if ((fromTokenAmount ?? 0n) < 0 || (toTokenAmount ?? 0n) < 0) {
+  if ((fromTokenAmount ?? 0n) < 0n || (toTokenAmount ?? 0n) < 0n) {
     return [t`Amount should be greater than zero`];
   }
 
@@ -855,7 +855,7 @@ function getSwapImpactAmountWithCap(marketInfo: MarketInfo, priceImpactUsd: bigi
   const token = getTokenOut(marketInfo);
   let impactAmount = 0n;
 
-  if (priceImpactUsd > 0) {
+  if (priceImpactUsd > 0n) {
     // positive impact: minimize impactAmount, use tokenPrice.max
     // round positive impactAmount down, this will be deducted from the swap impact pool for the user
     impactAmount = priceImpactUsd / token.prices.maxPrice;
@@ -874,7 +874,7 @@ function getSwapImpactAmountWithCap(marketInfo: MarketInfo, priceImpactUsd: bigi
 }
 
 function roundUpMagnitudeDivision(a: bigint, b: bigint): bigint {
-  if (a < 0) {
+  if (a < 0n) {
     return (a - b + 1n) / b;
   }
 
@@ -884,7 +884,7 @@ function roundUpMagnitudeDivision(a: bigint, b: bigint): bigint {
 function applyDeltaToSwapImpactPool(marketInfo: MarketInfo, delta: bigint) {
   const maxImpactAmount = getSwapImpactPoolAmount(marketInfo);
 
-  if (delta < 0 && -delta > maxImpactAmount) {
+  if (delta < 0n && -delta > maxImpactAmount) {
     return 0n;
   }
 

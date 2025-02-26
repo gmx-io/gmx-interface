@@ -162,7 +162,11 @@ export const formatArrayAmount = (
   return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas);
 };
 
-export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, displayDecimals?: number) => {
+export const formatAmountFree = (
+  amount: BigNumberish | undefined | null,
+  tokenDecimals: number,
+  displayDecimals?: number
+) => {
   if (amount === undefined || amount === null) {
     return "...";
   }

@@ -135,7 +135,7 @@ export default function EarnV2() {
   if (processedData?.glpBalance !== undefined) {
     totalRewardAndLpTokens = totalRewardAndLpTokens + processedData.glpBalance;
   }
-  if ((userTotalGmInfo?.balance ?? 0n) > 0) {
+  if ((userTotalGmInfo?.balance ?? 0n) > 0n) {
     totalRewardAndLpTokens = totalRewardAndLpTokens + (userTotalGmInfo?.balance ?? 0n);
   }
 
@@ -167,19 +167,19 @@ export default function EarnV2() {
   let earnMsg;
   if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
     let gmxAmountStr;
-    if (processedData?.gmxInStakedGmx && processedData.gmxInStakedGmx > 0) {
+    if (processedData?.gmxInStakedGmx && processedData.gmxInStakedGmx > 0n) {
       gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX";
     }
     let esGmxAmountStr;
-    if (processedData?.esGmxInStakedGmx && processedData.esGmxInStakedGmx > 0) {
+    if (processedData?.esGmxInStakedGmx && processedData.esGmxInStakedGmx > 0n) {
       esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
     }
     let glpStr;
-    if (processedData?.glpBalance && processedData.glpBalance > 0) {
+    if (processedData?.glpBalance && processedData.glpBalance > 0n) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
     }
     let gmStr;
-    if (userTotalGmInfo?.balance && userTotalGmInfo.balance > 0) {
+    if (userTotalGmInfo?.balance && userTotalGmInfo.balance > 0n) {
       gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
     const amountStr = [gmxAmountStr, esGmxAmountStr, gmStr, glpStr].filter((s) => s).join(", ");

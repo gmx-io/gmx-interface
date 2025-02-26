@@ -105,7 +105,7 @@ export function getPoolUsdWithoutPnl(
 export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; poolPnl: bigint; isLong: boolean }) {
   const { marketInfo, poolUsd, poolPnl, isLong } = p;
 
-  if (poolPnl < 0) {
+  if (poolPnl < 0n) {
     return poolPnl;
   }
 

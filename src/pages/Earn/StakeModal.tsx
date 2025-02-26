@@ -93,7 +93,7 @@ export function StakeModal(props: {
     if (
       processedData &&
       amount !== undefined &&
-      amount > 0 &&
+      amount > 0n &&
       processedData.esGmxInStakedGmx !== undefined &&
       processedData.gmxInStakedGmx !== undefined
     ) {
@@ -217,7 +217,7 @@ export function StakeModal(props: {
         )}
 
         {stakeBonusPercentage !== undefined &&
-          stakeBonusPercentage > 0 &&
+          stakeBonusPercentage > 0n &&
           amount !== undefined &&
           maxAmount !== undefined &&
           amount <= maxAmount && (

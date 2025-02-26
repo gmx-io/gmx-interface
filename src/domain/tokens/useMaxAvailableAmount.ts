@@ -28,7 +28,7 @@ export function useMaxAvailableAmount({
 
   let maxAvailableAmount = fromToken.isNative ? fromToken.balance - BigInt(minResidualAmount ?? 0n) : fromToken.balance;
 
-  if (maxAvailableAmount < 0) {
+  if (maxAvailableAmount < 0n) {
     maxAvailableAmount = 0n;
   }
 

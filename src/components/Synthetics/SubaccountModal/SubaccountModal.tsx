@@ -739,7 +739,7 @@ const MainView = memo(() => {
             placeholder="0.0000"
             inputTooltip={
               (topUp !== null &&
-                topUp > 0 &&
+                topUp > 0n &&
                 nativeTokenData &&
                 formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
               null
@@ -755,7 +755,7 @@ const MainView = memo(() => {
             placeholder="0.0000"
             inputTooltip={
               (wntForAutoTopUps !== null &&
-                wntForAutoTopUps > 0 &&
+                wntForAutoTopUps > 0n &&
                 nativeTokenData &&
                 formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))) ||
               null
@@ -770,7 +770,7 @@ const MainView = memo(() => {
             placeholder="0.0000"
             inputTooltip={
               (maxAutoTopUpAmount !== null &&
-                maxAutoTopUpAmount > 0 &&
+                maxAutoTopUpAmount > 0n &&
                 wrappedTokenData &&
                 formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))) ||
               null

@@ -275,7 +275,7 @@ function AffiliatesStats({
         >
           <div className="AffiliateStats-claimable-rewards-container">
             ${getUSDValue(totalClaimableRewardsUsd, 4)}
-            {(totalClaimableRewardsUsd > 0 && (
+            {(totalClaimableRewardsUsd > 0n && (
               <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
                 Claim
               </div>

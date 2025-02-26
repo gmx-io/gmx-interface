@@ -119,7 +119,7 @@ export function GmPoolsSelectorForGlvMarket({
     const marketsWithoutBalance: MarketOption[] = [];
 
     for (const market of allMarkets) {
-      if (market.balance > 0) {
+      if (market.balance > 0n) {
         marketsWithBalance.push(market);
       } else {
         marketsWithoutBalance.push(market);

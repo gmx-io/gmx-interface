@@ -133,7 +133,7 @@ function getInfoTokens(
       token.maxAvailableShort = 0n;
 
       token.hasMaxAvailableShort = false;
-      if (token.maxGlobalShortSize > 0) {
+      if (token.maxGlobalShortSize > 0n) {
         token.hasMaxAvailableShort = true;
         if (token.maxGlobalShortSize > token.globalShortSize) {
           token.maxAvailableShort = token.maxGlobalShortSize - token.globalShortSize;
@@ -150,7 +150,7 @@ function getInfoTokens(
 
       token.maxAvailableLong = 0n;
       token.hasMaxAvailableLong = false;
-      if (token.maxGlobalLongSize > 0) {
+      if (token.maxGlobalLongSize > 0n) {
         token.hasMaxAvailableLong = true;
 
         if (token.maxGlobalLongSize > token.guaranteedUsd) {
@@ -162,7 +162,7 @@ function getInfoTokens(
       }
 
       token.maxLongCapacity =
-        token.maxGlobalLongSize > 0 && token.maxGlobalLongSize < token.availableUsd + token.guaranteedUsd
+        token.maxGlobalLongSize > 0n && token.maxGlobalLongSize < token.availableUsd + token.guaranteedUsd
           ? token.maxGlobalLongSize
           : token.availableUsd + token.guaranteedUsd;
 
@@ -213,7 +213,7 @@ function setTokenUsingIndexPrices(
   const spread = token.maxPrice! - token.minPrice!;
   const spreadBps = bigMath.mulDiv(spread, BASIS_POINTS_DIVISOR_BIGINT, (token.maxPrice! + token.minPrice!) / 2n);
 
-  if (spreadBps > MAX_PRICE_DEVIATION_BASIS_POINTS - 50) {
+  if (spreadBps > BigInt(MAX_PRICE_DEVIATION_BASIS_POINTS - 50)) {
     // only set one of the values as there will be a spread between the index price and the Chainlink price
     if (indexPriceBn > token.minPrimaryPrice!) {
       token.maxPrice = indexPriceBn;

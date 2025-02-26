@@ -338,6 +338,9 @@ export default function PositionSeller(props) {
   let maxAmount;
   let maxAmountFormatted;
   let maxAmountFormattedFree;
+  /**
+   * @type {bigint | undefined}
+   */
   let fromAmount;
 
   let convertedAmount;
@@ -555,7 +558,7 @@ export default function PositionSeller(props) {
 
       if (
         collateralInfo.maxUsdgAmount !== undefined &&
-        collateralInfo.maxUsdgAmount > 0 &&
+        collateralInfo.maxUsdgAmount > 0n &&
         collateralInfo.usdgAmount !== undefined &&
         collateralInfo.maxPrice !== undefined
       ) {
@@ -646,7 +649,7 @@ export default function PositionSeller(props) {
     if (hasOutdatedUi) {
       return [t`Page outdated, please refresh`];
     }
-    if (!fromAmount) {
+    if (fromAmount === undefined || fromAmount === 0n) {
       return [t`Enter an amount`];
     }
     if (nextLeverage && nextLeverage == 0n) {
@@ -688,7 +691,7 @@ export default function PositionSeller(props) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
     }
 
-    if (!isClosing && position && position.size && fromAmount) {
+    if (!isClosing && position && position.size && fromAmount !== undefined && fromAmount !== 0n) {
       if (position.size - fromAmount < expandDecimals(10, USD_DECIMALS)) {
         return [t`Leftover position below 10 USD`];
       }
@@ -822,7 +825,7 @@ export default function PositionSeller(props) {
       isHigh: spread > HIGH_SPREAD_THRESHOLD,
     };
   }, [swapToToken, infoTokens, collateralTokenInfo]);
-  const showReceiveSpread = receiveSpreadInfo && receiveSpreadInfo.value > 0;
+  const showReceiveSpread = receiveSpreadInfo && receiveSpreadInfo.value > 0n;
 
   const renderReceiveSpreadWarning = useCallback(() => {
     if (receiveSpreadInfo && receiveSpreadInfo.isHigh) {

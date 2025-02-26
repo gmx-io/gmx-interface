@@ -123,7 +123,7 @@ export function getIncreasePositionAmounts(p: {
   values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || 0n;
   values.fundingFeeUsd = position?.pendingFundingFeesUsd || 0n;
 
-  if (values.indexPrice <= 0 || values.initialCollateralPrice <= 0 || values.collateralPrice <= 0) {
+  if (values.indexPrice <= 0n || values.initialCollateralPrice <= 0n || values.collateralPrice <= 0n) {
     return values;
   }
 
@@ -132,7 +132,7 @@ export function getIncreasePositionAmounts(p: {
     strategy === "leverageByCollateral" &&
     leverage !== undefined &&
     initialCollateralAmount !== undefined &&
-    initialCollateralAmount > 0
+    initialCollateralAmount > 0n
   ) {
     values.estimatedLeverage = leverage;
 
@@ -161,7 +161,7 @@ export function getIncreasePositionAmounts(p: {
     const basePositionFeeInfo = getPositionFee(
       marketInfo,
       baseSizeDeltaUsd,
-      basePriceImpactDeltaUsd > 0,
+      basePriceImpactDeltaUsd > 0n,
       userReferralInfo
     );
     const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
@@ -179,7 +179,7 @@ export function getIncreasePositionAmounts(p: {
     const positionFeeInfo = getPositionFee(
       marketInfo,
       values.sizeDeltaUsd,
-      basePriceImpactDeltaUsd > 0,
+      basePriceImpactDeltaUsd > 0n,
       userReferralInfo
     );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
@@ -203,7 +203,7 @@ export function getIncreasePositionAmounts(p: {
     strategy === "leverageBySize" &&
     leverage !== undefined &&
     indexTokenAmount !== undefined &&
-    indexTokenAmount > 0
+    indexTokenAmount > 0n
   ) {
     values.estimatedLeverage = leverage;
     values.indexTokenAmount = indexTokenAmount;
@@ -214,7 +214,7 @@ export function getIncreasePositionAmounts(p: {
     const positionFeeInfo = getPositionFee(
       marketInfo,
       values.sizeDeltaUsd,
-      basePriceImpactDeltaUsd > 0,
+      basePriceImpactDeltaUsd > 0n,
       userReferralInfo
     );
 
@@ -262,7 +262,7 @@ export function getIncreasePositionAmounts(p: {
       values.initialCollateralPrice
     )!;
   } else if (strategy === "independent") {
-    if (indexTokenAmount !== undefined && indexTokenAmount > 0) {
+    if (indexTokenAmount !== undefined && indexTokenAmount > 0n) {
       values.indexTokenAmount = indexTokenAmount;
       values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
@@ -271,7 +271,7 @@ export function getIncreasePositionAmounts(p: {
       const positionFeeInfo = getPositionFee(
         marketInfo,
         values.sizeDeltaUsd,
-        basePriceImpactDeltaUsd > 0,
+        basePriceImpactDeltaUsd > 0n,
         userReferralInfo
       );
 
@@ -280,7 +280,7 @@ export function getIncreasePositionAmounts(p: {
       values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
     }
 
-    if (initialCollateralAmount !== undefined && initialCollateralAmount > 0) {
+    if (initialCollateralAmount !== undefined && initialCollateralAmount > 0n) {
       values.initialCollateralAmount = initialCollateralAmount;
       values.initialCollateralUsd = convertToUsd(
         initialCollateralAmount,
@@ -375,11 +375,11 @@ export function getIncreasePositionAmounts(p: {
 
   let priceImpactAmount = 0n;
 
-  if (values.positionPriceImpactDeltaUsd > 0) {
-    const price = triggerPrice !== undefined && triggerPrice > 0 ? triggerPrice : indexToken.prices.maxPrice;
+  if (values.positionPriceImpactDeltaUsd > 0n) {
+    const price = triggerPrice !== undefined && triggerPrice > 0n ? triggerPrice : indexToken.prices.maxPrice;
     priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
   } else {
-    const price = triggerPrice !== undefined && triggerPrice > 0 ? triggerPrice : indexToken.prices.minPrice;
+    const price = triggerPrice !== undefined && triggerPrice > 0n ? triggerPrice : indexToken.prices.minPrice;
     priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
   }
 

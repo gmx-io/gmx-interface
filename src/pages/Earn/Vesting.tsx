@@ -81,7 +81,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   }
 
   function showAffiliateVesterWithdrawModal() {
-    if (vestingData?.affiliateVesterVestedAmount === undefined || vestingData.affiliateVesterVestedAmount <= 0) {
+    if (vestingData?.affiliateVesterVestedAmount === undefined || vestingData.affiliateVesterVestedAmount <= 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
       return;
     }
@@ -183,7 +183,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   }
 
   function showAffiliateVesterClaimModal() {
-    if (vestingData?.affiliateVesterClaimable === undefined || vestingData?.affiliateVesterClaimable <= 0) {
+    if (vestingData?.affiliateVesterClaimable === undefined || vestingData?.affiliateVesterClaimable <= 0n) {
       helperToast.error(t`You have no GMX tokens to claim.`);
       return;
     }
@@ -456,7 +456,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                 </div>
               </div>
             </div>
-            {(vestingData?.affiliateVesterMaxVestableAmount && vestingData?.affiliateVesterMaxVestableAmount > 0 && (
+            {(vestingData?.affiliateVesterMaxVestableAmount && vestingData?.affiliateVesterMaxVestableAmount > 0n && (
               <div className="App-card StakeV2-gmx-card">
                 <div className="App-card-title">
                   <div className="inline-flex items-center">

@@ -183,7 +183,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (isSwapOrderType(p.order.orderType)) {
-      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0 || minOutputAmount <= 0) {
+      if (triggerRatio?.ratio === undefined || triggerRatio?.ratio < 0n || minOutputAmount <= 0n) {
         return t`Enter a ratio`;
       }
 
@@ -208,11 +208,11 @@ export function OrderEditor(p: Props) {
       return t`Loading...`;
     }
 
-    if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
+    if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0n) {
       return t`Enter an amount`;
     }
 
-    if (triggerPrice === undefined || triggerPrice < 0) {
+    if (triggerPrice === undefined || triggerPrice < 0n) {
       return t`Enter a price`;
     }
 
@@ -287,7 +287,7 @@ export function OrderEditor(p: Props) {
     if (isLimitIncreaseOrderType(p.order.orderType)) {
       if (
         nextPositionValuesForIncrease?.nextLeverage !== undefined &&
-        nextPositionValuesForIncrease?.nextLeverage > maxAllowedLeverage
+        Number(nextPositionValuesForIncrease.nextLeverage) > maxAllowedLeverage
       ) {
         return t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
       }

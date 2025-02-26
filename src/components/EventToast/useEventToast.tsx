@@ -19,14 +19,14 @@ function useEventToast() {
 
   const isAdaptiveFundingActiveSomeMarkets = useMemo(() => {
     if (!marketsInfoData) return;
-    return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond > 0);
+    return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond > 0n);
   }, [marketsInfoData]);
 
   const isAdaptiveFundingActiveAllMarkets = useMemo(() => {
     if (!marketsInfoData) return;
     return Object.values(marketsInfoData)
       .filter((market) => !market.isSpotOnly)
-      .every((market) => market.fundingIncreaseFactorPerSecond > 0);
+      .every((market) => market.fundingIncreaseFactorPerSecond > 0n);
   }, [marketsInfoData]);
 
   useEffect(() => {

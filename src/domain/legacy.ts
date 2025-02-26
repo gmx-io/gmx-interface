@@ -181,7 +181,7 @@ export function useAllPositions(chainId, signer) {
 
           const THRESHOLD = 5000;
           const collateralDiffPercent = bigMath.mulDiv(position.fee, 10000n, position.collateral);
-          position.danger = collateralDiffPercent > THRESHOLD;
+          position.danger = collateralDiffPercent > BigInt(THRESHOLD);
 
           return position;
         } catch (ex) {

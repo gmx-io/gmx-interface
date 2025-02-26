@@ -335,7 +335,7 @@ export const selectOrderEditorTriggerRatio = createSelector((q) => {
 
   const ratio = parseValue(q(selectOrderEditorTriggerRatioInputValue), USD_DECIMALS);
   const tokensRatio: TokensRatio = {
-    ratio: ratio != undefined && ratio > 0 ? ratio : markRatio.ratio,
+    ratio: ratio != undefined && ratio > 0n ? ratio : markRatio.ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };

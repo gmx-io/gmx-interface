@@ -248,12 +248,12 @@ export function TradeBox() {
       if (isSwap && swapAmounts) {
         if (focusedInput === "from") {
           setToTokenInputValue(
-            swapAmounts.amountOut > 0 ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "",
+            swapAmounts.amountOut > 0n ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "",
             false
           );
         } else {
           setFromTokenInputValue(
-            swapAmounts.amountIn > 0 ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "",
+            swapAmounts.amountIn > 0n ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "",
             false
           );
         }
@@ -263,14 +263,14 @@ export function TradeBox() {
         const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
         if (focusedInput === "from") {
           setToTokenInputValue(
-            increaseAmounts.indexTokenAmount > 0
+            increaseAmounts.indexTokenAmount > 0n
               ? formatAmountFree(increaseAmounts.indexTokenAmount / visualMultiplier, toToken.decimals)
               : "",
             false
           );
         } else {
           setFromTokenInputValue(
-            increaseAmounts.initialCollateralAmount > 0
+            increaseAmounts.initialCollateralAmount > 0n
               ? formatAmountFree(increaseAmounts.initialCollateralAmount, fromToken.decimals)
               : "",
             false
@@ -664,7 +664,7 @@ export function TradeBox() {
 
   function renderDecreaseSizeInput() {
     const showMaxButton = Boolean(
-      selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeInputValue !== formattedMaxCloseSize
+      selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0n && closeSizeInputValue !== formattedMaxCloseSize
     );
 
     return (
@@ -677,7 +677,7 @@ export function TradeBox() {
         onInputValueChange={handleCloseInputChange}
         onClickBottomRightLabel={setMaxCloseSize}
         onClickMax={showMaxButton ? setMaxCloseSize : undefined}
-        showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
+        showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0n : false}
         onPercentChange={handleClosePercentageChange}
         qa="close"
       >
@@ -948,7 +948,7 @@ export function TradeBox() {
                     </>
                   }
                   to={
-                    decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
+                    decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0n ? (
                       <>
                         {formatDeltaUsd(nextPositionValues?.nextPnl)} (
                         {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})

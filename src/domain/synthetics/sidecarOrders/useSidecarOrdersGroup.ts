@@ -39,7 +39,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         sizeUsd === undefined ||
         sizeUsd === null ||
         totalPositionSizeUsd === undefined ||
-        totalPositionSizeUsd <= 0
+        totalPositionSizeUsd <= 0n
       ) {
         return null;
       }
@@ -56,7 +56,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
         percentage === null ||
         percentage === 0n ||
         totalPositionSizeUsd === undefined ||
-        totalPositionSizeUsd <= 0
+        totalPositionSizeUsd <= 0n
       ) {
         return null;
       }
@@ -147,7 +147,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const addEntry = useCallback(() => {
     const leftPercentage = MAX_PERCENTAGE - totalPercentage;
 
-    if (leftPercentage > 0) {
+    if (leftPercentage > 0n) {
       setIsUntouched(prefix, false);
       setEntries((prevEntries) => [
         ...prevEntries,

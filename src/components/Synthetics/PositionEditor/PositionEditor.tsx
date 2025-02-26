@@ -330,7 +330,7 @@ export function PositionEditor() {
                       visualMultiplier: position.indexToken?.visualMultiplier,
                     })}
                     to={
-                      collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
+                      collateralDeltaAmount !== undefined && collateralDeltaAmount > 0n
                         ? formatLiquidationPrice(nextLiqPrice, {
                             displayDecimals: marketDecimals,
                             visualMultiplier: position.indexToken?.visualMultiplier,

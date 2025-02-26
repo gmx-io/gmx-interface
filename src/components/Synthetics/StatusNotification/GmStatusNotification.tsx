@@ -126,7 +126,7 @@ export function GmStatusNotification({
       let longToken: TokenData | undefined;
       let shortToken: TokenData | undefined;
 
-      if (pendingDepositData.initialLongTokenAmount > 0) {
+      if (pendingDepositData.initialLongTokenAmount > 0n) {
         longToken = getByKey(
           tokensData,
           convertTokenAddress(
@@ -137,7 +137,7 @@ export function GmStatusNotification({
         );
       }
 
-      if (pendingDepositData.initialShortTokenAmount > 0) {
+      if (pendingDepositData.initialShortTokenAmount > 0n) {
         shortToken = getByKey(
           tokensData,
           convertTokenAddress(

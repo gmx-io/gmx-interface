@@ -331,7 +331,7 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
       !walletClient ||
       insufficientFunds ||
       remaining === undefined ||
-      remaining < Math.max(1, requiredActions)
+      remaining < BigInt(Math.max(1, requiredActions))
     )
       return null;
 

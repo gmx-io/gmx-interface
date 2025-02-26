@@ -23,7 +23,7 @@ export async function withdrawFromSubaccount({
   const gasLimit = 21000n;
   const approxAmountToSend = value - gasPrice * gasLimit;
 
-  if (approxAmountToSend < 0) {
+  if (approxAmountToSend < 0n) {
     throw new Error("Insufficient funds to cover gas cost.");
   }
 
@@ -39,7 +39,7 @@ export async function withdrawFromSubaccount({
   const gasCost = estimatedGas * gasPrice;
   const amountToSend = value - gasCost;
 
-  if (amountToSend < 0) {
+  if (amountToSend < 0n) {
     throw new Error("Insufficient funds to cover gas cost.");
   }
 

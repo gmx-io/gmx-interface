@@ -40,12 +40,12 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData,
   }
 
   const isLongCollateral = tokenPoolType === "long";
-  const price = priceImpactDeltaUsd > 0 ? token.prices.maxPrice : token.prices.minPrice;
+  const price = priceImpactDeltaUsd > 0n ? token.prices.maxPrice : token.prices.minPrice;
 
   let impactDeltaAmount: bigint;
   let cappedDiffUsd = 0n;
 
-  if (priceImpactDeltaUsd > 0) {
+  if (priceImpactDeltaUsd > 0n) {
     // round positive impactAmount down, this will be deducted from the swap impact pool for the user
     impactDeltaAmount = convertToTokenAmount(priceImpactDeltaUsd, token.decimals, price)!;
 
@@ -73,7 +73,7 @@ export function getCappedPositionImpactUsd(
 ) {
   const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong, opts);
 
-  if (priceImpactDeltaUsd < 0) {
+  if (priceImpactDeltaUsd < 0n) {
     return priceImpactDeltaUsd;
   }
 
@@ -129,7 +129,7 @@ export function getPriceImpactForPosition(
     fallbackToZero: opts.fallbackToZero,
   });
 
-  if (priceImpactUsd > 0) {
+  if (priceImpactUsd > 0n) {
     return priceImpactUsd;
   }
 
@@ -201,14 +201,14 @@ export function getPriceImpactForSwap(
     fallbackToZero: opts.fallbackToZero,
   });
 
-  if (priceImpactUsd > 0) {
+  if (priceImpactUsd > 0n) {
     return priceImpactUsd;
   }
 
   const virtualInventoryLong = marketInfo.virtualPoolAmountForLongToken;
   const virtualInventoryShort = marketInfo.virtualPoolAmountForShortToken;
 
-  if (virtualInventoryLong <= 0 || virtualInventoryShort <= 0) {
+  if (virtualInventoryLong <= 0n || virtualInventoryShort <= 0n) {
     return priceImpactUsd;
   }
 
@@ -242,13 +242,13 @@ function getNextOpenInterestForVirtualInventory(p: { virtualInventory: bigint; u
   let currentLongUsd = 0n;
   let currentShortUsd = 0n;
 
-  if (virtualInventory > 0) {
+  if (virtualInventory > 0n) {
     currentShortUsd = virtualInventory;
   } else {
     currentLongUsd = virtualInventory * -1n;
   }
 
-  if (usdDelta < 0) {
+  if (usdDelta < 0n) {
     const offset = bigMath.abs(usdDelta);
     currentLongUsd = currentLongUsd + offset;
     currentShortUsd = currentShortUsd + offset;
@@ -333,7 +333,7 @@ export function getPriceImpactUsd(p: {
 }) {
   const { nextLongUsd, nextShortUsd } = p;
 
-  if (nextLongUsd < 0 || nextShortUsd < 0) {
+  if (nextLongUsd < 0n || nextShortUsd < 0n) {
     if (p.fallbackToZero) {
       return 0n;
     } else {

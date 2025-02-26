@@ -50,7 +50,7 @@ function AcceptablePriceImpactInputRowImpl({
       return undefined;
     }
 
-    if (priceImpactFeeBps <= 0) {
+    if (priceImpactFeeBps <= 0n) {
       return HIGH_ACCEPTABLE_POSITION_IMPACT_BPS + Number(bigMath.abs(priceImpactFeeBps));
     } else {
       return HIGH_ACCEPTABLE_POSITION_IMPACT_BPS;
@@ -79,7 +79,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   const lowValueWarningText =
-    priceImpactFeeBps >= 0 ? (
+    priceImpactFeeBps >= 0n ? (
       <p>
         <Trans>
           The current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider using -0.30%

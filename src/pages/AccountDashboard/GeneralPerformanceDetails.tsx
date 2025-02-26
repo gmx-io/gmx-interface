@@ -100,8 +100,8 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           disableHandleStyle
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-            "text-green-500 decoration-green-500/50": row.pnlUsd > 0,
-            "text-red-500 decoration-red-500/50": row.pnlUsd < 0,
+            "text-green-500 decoration-green-500/50": row.pnlUsd > 0n,
+            "text-red-500 decoration-red-500/50": row.pnlUsd < 0n,
             "decoration-gray-400": row.pnlUsd === 0n,
           })}
           content={

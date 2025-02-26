@@ -86,7 +86,7 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
         id: rawRebateInfo.id,
       };
 
-      if (factor > 0 && valueByFactor == 0n) {
+      if (factor > 0n && valueByFactor == 0n) {
         // this is claimable entity but factor is too small
         // skipping to avoid CollateralAlreadyClaimed error
         return;

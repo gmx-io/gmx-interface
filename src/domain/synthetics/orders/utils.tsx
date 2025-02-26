@@ -176,7 +176,7 @@ export function getOrderErrors(p: {
       acceptablePrice: positionOrder.acceptablePrice,
     });
 
-    if (currentAcceptablePriceDeltaBps < 0 && currentAcceptablePriceDeltaBps < orderAcceptablePriceDeltaBps) {
+    if (currentAcceptablePriceDeltaBps < 0n && currentAcceptablePriceDeltaBps < orderAcceptablePriceDeltaBps) {
       const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit price` : t`trigger price`;
       const formattedCurrentAcceptablePriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, { signed: true });
       const formattedOrderAcceptablePriceImpact = formatPercentage(orderAcceptablePriceDeltaBps, {
@@ -342,14 +342,14 @@ export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?:
 
     // Compare by trigger price
     const triggerPriceComparison = a.triggerPrice - b.triggerPrice;
-    if (triggerPriceComparison !== 0n) return triggerPriceComparison < 0 ? -1 : 1;
+    if (triggerPriceComparison !== 0n) return triggerPriceComparison < 0n ? -1 : 1;
 
     // Compare by order type
     const orderTypeComparison = a.orderType - b.orderType;
     if (orderTypeComparison) return orderTypeComparison;
 
     // Finally, sort by size delta USD
-    return b.sizeDeltaUsd - a.sizeDeltaUsd < 0 ? -1 : 1;
+    return b.sizeDeltaUsd - a.sizeDeltaUsd < 0n ? -1 : 1;
   });
 }
 
@@ -364,7 +364,7 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
       if (collateralComparison) return collateralComparison;
     }
 
-    return a.minOutputAmount - b.minOutputAmount < 0 ? -1 : 1;
+    return a.minOutputAmount - b.minOutputAmount < 0n ? -1 : 1;
   });
 }
 

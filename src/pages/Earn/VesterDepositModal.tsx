@@ -77,7 +77,7 @@ export function VesterDepositModal(props: {
       nextDepositAmount !== undefined &&
       averageStakedAmount !== undefined &&
       maxVestableAmount !== undefined &&
-      maxVestableAmount > 0 &&
+      maxVestableAmount > 0n &&
       nextReserveAmount !== undefined
     ) {
       nextReserveAmount = bigMath.mulDiv(nextDepositAmount, averageStakedAmount, maxVestableAmount);

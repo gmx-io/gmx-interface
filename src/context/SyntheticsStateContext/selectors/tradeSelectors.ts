@@ -83,7 +83,7 @@ const makeSelectAllPaths = (fromTokenAddress: string | undefined, toTokenAddress
     }
 
     return findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)?.sort((a, b) =>
-      b.liquidity - a.liquidity > 0 ? 1 : -1
+      b.liquidity - a.liquidity > 0n ? 1 : -1
     );
   });
 };
@@ -454,7 +454,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
           return undefined;
         }
 
-        if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount > 0) {
+        if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount > 0n) {
           return getNextPositionValuesForIncreaseTrade({
             marketInfo,
             collateralToken,
@@ -533,7 +533,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
       if (closeSizeUsd === undefined)
         throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
 
-      if (decreaseAmounts?.acceptablePrice !== undefined && closeSizeUsd > 0) {
+      if (decreaseAmounts?.acceptablePrice !== undefined && closeSizeUsd > 0n) {
         return getNextPositionValuesForDecreaseTrade({
           existingPosition: position,
           marketInfo,

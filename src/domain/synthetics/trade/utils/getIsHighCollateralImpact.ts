@@ -4,6 +4,8 @@ import type { FeeItem } from "../../fees";
 
 export function getIsHighCollateralImpact(collateralImpact?: FeeItem) {
   return Boolean(
-    collateralImpact && collateralImpact.deltaUsd < 0 && bigMath.abs(collateralImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
+    collateralImpact &&
+      collateralImpact.deltaUsd < 0n &&
+      bigMath.abs(collateralImpact.bps) >= BigInt(HIGH_COLLATERAL_IMPACT_BPS)
   );
 }

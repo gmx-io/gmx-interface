@@ -301,7 +301,7 @@ function MarketListItem(props: {
       <div className="Token-balance">
         {showBalances && balance !== undefined && (
           <div className="Token-text">
-            {balance > 0
+            {balance > 0n
               ? formatTokenAmount(balance, marketToken?.decimals, "", {
                   useCommas: true,
                 })
@@ -309,7 +309,7 @@ function MarketListItem(props: {
           </div>
         )}
         <span className="text-accent">
-          {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) || null}
+          {(showBalances && balanceUsd !== undefined && balanceUsd > 0n && <div>{formatUsd(balanceUsd)}</div>) || null}
         </span>
       </div>
       <div

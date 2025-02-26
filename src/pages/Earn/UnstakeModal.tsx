@@ -61,7 +61,7 @@ export function UnstakeModal(props: {
     if (
       processedData &&
       amount !== undefined &&
-      amount > 0 &&
+      amount > 0n &&
       processedData.esGmxInStakedGmx !== undefined &&
       processedData.gmxInStakedGmx !== undefined
     ) {
@@ -142,13 +142,13 @@ export function UnstakeModal(props: {
             </div>
           </BuyInputSection>
         </div>
-        {reservedAmount !== undefined && reservedAmount > 0 && (
+        {reservedAmount !== undefined && reservedAmount > 0n && (
           <AlertInfo type="info">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
           </AlertInfo>
         )}
         {unstakeBonusLostPercentage !== undefined &&
-          unstakeBonusLostPercentage > 0 &&
+          unstakeBonusLostPercentage > 0n &&
           amount !== undefined &&
           maxAmount !== undefined &&
           amount <= maxAmount && (

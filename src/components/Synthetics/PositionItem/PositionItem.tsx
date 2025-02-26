@@ -88,7 +88,7 @@ export function PositionItem(p: Props) {
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
-            {p.position.uiFeeUsd > 0
+            {p.position.uiFeeUsd > 0n
               ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee`
               : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
@@ -126,7 +126,7 @@ export function PositionItem(p: Props) {
               value={formatUsd(-p.position.closingFeeUsd) || "..."}
               textClassName="text-red-500"
             />
-            {p.position.uiFeeUsd > 0 && (
+            {p.position.uiFeeUsd > 0n && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
@@ -228,7 +228,7 @@ export function PositionItem(p: Props) {
                   showDollar={false}
                   value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
                   textClassName={cx({
-                    "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
+                    "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0n,
                   })}
                 />
                 <br />
@@ -237,7 +237,7 @@ export function PositionItem(p: Props) {
                   label={t`Current Borrow Fee / Day`}
                   value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
                   textClassName={cx({
-                    "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
+                    "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0n,
                   })}
                 />
                 <StatsTooltipRow
@@ -459,8 +459,8 @@ export function PositionItem(p: Props) {
                 <div
                   onClick={p.openSettings}
                   className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
-                    positive: displayedPnl > 0,
-                    negative: displayedPnl < 0,
+                    positive: displayedPnl > 0n,
+                    negative: displayedPnl < 0n,
                     muted: displayedPnl == 0n,
                   })}
                 >
@@ -604,8 +604,8 @@ export function PositionItem(p: Props) {
                 <div>
                   <span
                     className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
-                      positive: displayedPnl > 0,
-                      negative: displayedPnl < 0,
+                      positive: displayedPnl > 0n,
+                      negative: displayedPnl < 0n,
                       muted: displayedPnl == 0n,
                     })}
                     onClick={p.openSettings}

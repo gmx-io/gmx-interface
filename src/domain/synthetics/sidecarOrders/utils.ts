@@ -77,8 +77,8 @@ export function prepareInitialEntries({
     .sort((a, b) => {
       const [first, second] = sort === "desc" ? [a, b] : [b, a];
       const diff = first.triggerPrice - second.triggerPrice;
-      if (diff > 0) return -1;
-      if (diff < 0) return 1;
+      if (diff > 0n) return -1;
+      if (diff < 0n) return 1;
       return 0;
     })
     .map((order) => {
@@ -123,7 +123,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
 
   const inputPrice = entry.price.value;
 
-  if (inputPrice !== undefined && inputPrice !== null && inputPrice > 0) {
+  if (inputPrice !== undefined && inputPrice !== null && inputPrice > 0n) {
     if (markPrice !== undefined) {
       if (type === "limit") {
         const nextError = isLong
@@ -213,7 +213,10 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       sizeError = t`Limit size is required`;
     }
 
-    if (entry?.increaseAmounts?.estimatedLeverage && entry?.increaseAmounts?.estimatedLeverage > MAX_ALLOWED_LEVERAGE) {
+    if (
+      entry?.increaseAmounts?.estimatedLeverage &&
+      entry.increaseAmounts.estimatedLeverage > BigInt(MAX_ALLOWED_LEVERAGE)
+    ) {
       sizeError = t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
   } else {

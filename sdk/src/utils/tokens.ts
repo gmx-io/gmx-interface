@@ -22,7 +22,7 @@ export function convertToTokenAmount(
   tokenDecimals: number | undefined,
   price: bigint | undefined
 ) {
-  if (usd === undefined || typeof tokenDecimals !== "number" || price === undefined || price <= 0) {
+  if (usd === undefined || typeof tokenDecimals !== "number" || price === undefined || price <= 0n) {
     return undefined;
   }
 
@@ -99,7 +99,7 @@ export function getTokensRatioByAmounts(p: {
       ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
       : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
 
-  const ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
+  const ratio = smallestAmount > 0n ? (largestAmount * PRECISION) / smallestAmount : 0n;
 
   return { ratio, largestToken, smallestToken };
 }

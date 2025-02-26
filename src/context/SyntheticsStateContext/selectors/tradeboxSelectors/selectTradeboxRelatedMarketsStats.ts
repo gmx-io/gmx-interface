@@ -60,7 +60,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   const defaultMarketsEnoughLiquidity = fromPairs(
     availableMarkets.map((market) => {
       const liquidity = getAvailableUsdLiquidityForPosition(market, isLong);
-      return [market.marketTokenAddress, { isEnoughLiquidity: liquidity > 0, liquidity, openFees: undefined }];
+      return [market.marketTokenAddress, { isEnoughLiquidity: liquidity > 0n, liquidity, openFees: undefined }];
     })
   );
 
@@ -69,7 +69,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
     relatedMarketStats: relatedMarketStats,
   };
 
-  if (increaseSizeUsd !== undefined && increaseSizeUsd > 0) {
+  if (increaseSizeUsd !== undefined && increaseSizeUsd > 0n) {
     for (const relatedMarket of availableMarkets) {
       const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, relatedMarket.marketTokenAddress);
       if (!marketIncreasePositionAmounts) {

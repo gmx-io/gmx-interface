@@ -100,7 +100,7 @@ export function getWithdrawalAmounts(p: {
       shortToken.prices.maxPrice
     )!;
   } else {
-    if (strategy === "byLongCollateral" && longPoolUsd > 0) {
+    if (strategy === "byLongCollateral" && longPoolUsd > 0n) {
       values.longTokenAmount = longTokenAmount;
       values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
       values.shortTokenUsd = bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, longPoolUsd);
@@ -109,7 +109,7 @@ export function getWithdrawalAmounts(p: {
         shortToken.decimals,
         shortToken.prices.maxPrice
       )!;
-    } else if (strategy === "byShortCollateral" && shortPoolUsd > 0) {
+    } else if (strategy === "byShortCollateral" && shortPoolUsd > 0n) {
       values.shortTokenAmount = shortTokenAmount;
       values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
       values.longTokenUsd = bigMath.mulDiv(values.shortTokenUsd, longPoolUsd, shortPoolUsd);

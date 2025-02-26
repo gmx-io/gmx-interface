@@ -92,7 +92,7 @@ export async function getGasLimit(
     throw error;
   }
 
-  if (gasLimit < 22000) {
+  if (gasLimit < 22000n) {
     gasLimit = 22000n;
   }
 

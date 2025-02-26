@@ -94,7 +94,7 @@ export function getTradeFees(p: {
   } = p;
 
   const swapFees: SwapFeeItem[] | undefined =
-    initialCollateralUsd > 0
+    initialCollateralUsd > 0n
       ? swapSteps.map((step) => ({
           tokenInAddress: step.tokenInAddress,
           tokenOutAddress: step.tokenOutAddress,

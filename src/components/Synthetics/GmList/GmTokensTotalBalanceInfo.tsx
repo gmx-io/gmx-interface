@@ -127,7 +127,7 @@ export const GmTokensTotalBalanceInfo = ({
               value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
               showDollar={false}
             />
-            {userEarnings.allMarkets.expected365d > 0 && (
+            {userEarnings.allMarkets.expected365d > 0n && (
               <>
                 <StatsTooltipRow
                   label={t`Wallet 365d expected Fees`}

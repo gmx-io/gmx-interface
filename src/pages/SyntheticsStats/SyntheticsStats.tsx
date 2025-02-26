@@ -397,7 +397,7 @@ export function SyntheticsStats() {
 
               function renderBorrowingRateCell() {
                 const maxBorrowingRateLong =
-                  longPoolUsd! > 0
+                  longPoolUsd! > 0n
                     ? bigMath.mulDiv(
                         pow(maxLiquidityLong, market.borrowingExponentFactorLong),
                         market.borrowingFactorLong,
@@ -406,7 +406,7 @@ export function SyntheticsStats() {
                       (3600n * 100n)
                     : undefined;
                 const maxBorrowingRateShort =
-                  shortPoolUsd! > 0
+                  shortPoolUsd! > 0n
                     ? bigMath.mulDiv(
                         pow(maxLiquidityShort, market.borrowingExponentFactorShort),
                         market.borrowingFactorShort,
@@ -553,7 +553,7 @@ export function SyntheticsStats() {
                         }
                         renderContent={() =>
                           market.fundingIncreaseFactorPerSecond !== undefined &&
-                          market.fundingIncreaseFactorPerSecond > 0 ? (
+                          market.fundingIncreaseFactorPerSecond > 0n ? (
                             <>
                               <StatsTooltipRow
                                 label="Funding increase factor"
@@ -705,7 +705,7 @@ export function SyntheticsStats() {
 
                 const isLongLabel = isLong ? "Long" : "Short";
                 let availableLiquidity = maxLiquidity - liquidity;
-                if (availableLiquidity < 0) {
+                if (availableLiquidity < 0n) {
                   availableLiquidity = 0n;
                 }
 
@@ -896,7 +896,7 @@ export function SyntheticsStats() {
                       ) : (
                         <TooltipWithPortal
                           handle={
-                            <span className={cx({ positive: netPnlMax > 0, negative: netPnlMax < 0 })}>
+                            <span className={cx({ positive: netPnlMax > 0n, negative: netPnlMax < 0n })}>
                               {getPlusOrMinusSymbol(netPnlMax)}${formatAmountHuman(bigMath.abs(netPnlMax), 30)}
                             </span>
                           }
@@ -943,7 +943,7 @@ export function SyntheticsStats() {
                           handle={
                             <>
                               <div>
-                                {virtualInventoryPositions > 0 ? "Short" : "Long"}{" "}
+                                {virtualInventoryPositions > 0n ? "Short" : "Long"}{" "}
                                 {formatAmountHuman(bigMath.abs(virtualInventoryPositions), 30) || "$0.00"}
                               </div>
                             </>
@@ -951,7 +951,7 @@ export function SyntheticsStats() {
                           renderContent={() => {
                             return (
                               <StatsTooltipRow
-                                label={virtualInventoryPositions > 0 ? "Short" : "Long"}
+                                label={virtualInventoryPositions > 0n ? "Short" : "Long"}
                                 value={formatUsd(bigMath.abs(virtualInventoryPositions)) || "$0.00"}
                                 showDollar={false}
                               />
@@ -1150,7 +1150,7 @@ export function SyntheticsStats() {
                             <StatsTooltipRow
                               label="Max Leverage"
                               value={
-                                market.minCollateralFactor > 0
+                                market.minCollateralFactor > 0n
                                   ? formatAmount((PRECISION / market.minCollateralFactor) * 100n, 2, 2)
                                   : "..."
                               }

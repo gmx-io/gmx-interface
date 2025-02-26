@@ -39,7 +39,7 @@ export function useShowOneClickTradingInfo() {
   const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
 
   const shouldShowAllowedActionsWarning =
-    isSubaccountActive && (remaining === 0n || remaining < requiredActions) && !isNativeToken;
+    isSubaccountActive && (remaining === 0n || remaining < BigInt(requiredActions)) && !isNativeToken;
   const shouldShowWrapOrUnwrapWarning =
     !tradeFlags?.isTrigger && isSubaccountActive && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap;
   const shouldShowNativeTokenWarning =

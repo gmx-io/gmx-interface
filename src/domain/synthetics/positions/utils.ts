@@ -69,7 +69,7 @@ export function getPositionPnlUsd(p: {
 
   let totalPnl = isLong ? positionValueUsd - sizeInUsd : sizeInUsd - positionValueUsd;
 
-  if (totalPnl <= 0) {
+  if (totalPnl <= 0n) {
     return totalPnl;
   }
 
@@ -85,7 +85,7 @@ export function getPositionPnlUsd(p: {
 
   const WEI_PRECISION = expandDecimals(1, 18);
 
-  if (cappedPnl !== poolPnl && cappedPnl > 0 && poolPnl > 0) {
+  if (cappedPnl !== poolPnl && cappedPnl > 0n && poolPnl > 0n) {
     totalPnl = bigMath.mulDiv(totalPnl, cappedPnl / WEI_PRECISION, poolPnl / WEI_PRECISION);
   }
 
@@ -121,7 +121,7 @@ export function getLiquidationPrice(p: {
     useMaxPriceImpact,
   } = p;
 
-  if (sizeInUsd <= 0 || sizeInTokens <= 0 || !marketInfo) {
+  if (sizeInUsd <= 0n || sizeInTokens <= 0n || !marketInfo) {
     return undefined;
   }
 
@@ -145,7 +145,7 @@ export function getLiquidationPrice(p: {
     }
 
     // Ignore positive price impact
-    if (priceImpactDeltaUsd > 0) {
+    if (priceImpactDeltaUsd > 0n) {
       priceImpactDeltaUsd = 0n;
     }
   }
@@ -197,7 +197,7 @@ export function getLiquidationPrice(p: {
     }
   }
 
-  if (liquidationPrice <= 0) {
+  if (liquidationPrice <= 0n) {
     return undefined;
   }
 
@@ -208,7 +208,7 @@ export function formatLiquidationPrice(
   liquidationPrice?: bigint,
   opts: { displayDecimals?: number; visualMultiplier?: number } = {}
 ) {
-  if (liquidationPrice === undefined || liquidationPrice < 0) {
+  if (liquidationPrice === undefined || liquidationPrice < 0n) {
     return "NA";
   }
   const priceDecimalPlaces = calculateDisplayDecimals(liquidationPrice, undefined, opts.visualMultiplier);
@@ -243,7 +243,7 @@ export function getLeverage(p: {
 
   const remainingCollateralUsd = collateralUsd + (pnl ?? 0n) - totalPendingFeesUsd;
 
-  if (remainingCollateralUsd <= 0) {
+  if (remainingCollateralUsd <= 0n) {
     return undefined;
   }
 
@@ -280,12 +280,12 @@ export function getEstimatedLiquidationTimeInHours(
   }
 
   // Ignore positive price impact
-  if (priceImpactDeltaUsd > 0) {
+  if (priceImpactDeltaUsd > 0n) {
     priceImpactDeltaUsd = 0n;
   }
 
   const totalFeesPerHour =
-    bigMath.abs(borrowFeePerHour) + (fundingFeePerHour < 0 ? bigMath.abs(fundingFeePerHour) : 0n);
+    bigMath.abs(borrowFeePerHour) + (fundingFeePerHour < 0n ? bigMath.abs(fundingFeePerHour) : 0n);
 
   if (totalFeesPerHour == 0n) return;
 
@@ -383,11 +383,11 @@ function willPositionCollateralBeSufficient(
     expandDecimals(1, collateralTokenDecimals)
   );
 
-  if (realizedPnlUsd < 0) {
+  if (realizedPnlUsd < 0n) {
     remainingCollateralUsd = remainingCollateralUsd + realizedPnlUsd;
   }
 
-  if (remainingCollateralUsd < 0) {
+  if (remainingCollateralUsd < 0n) {
     return false;
   }
 

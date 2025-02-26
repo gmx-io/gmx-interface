@@ -150,8 +150,8 @@ export function useMarketTokensDataRequest(
           ...tokenConfig,
           address: marketAddress,
           prices: {
-            minPrice: minPrice !== undefined && minPrice > 0 ? minPrice : expandDecimals(1, USD_DECIMALS),
-            maxPrice: maxPrice !== undefined && maxPrice > 0 ? maxPrice : expandDecimals(1, USD_DECIMALS),
+            minPrice: minPrice !== undefined && minPrice > 0n ? minPrice : expandDecimals(1, USD_DECIMALS),
+            maxPrice: maxPrice !== undefined && maxPrice > 0n ? maxPrice : expandDecimals(1, USD_DECIMALS),
           },
           totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
           balance: account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined,

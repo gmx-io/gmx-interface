@@ -106,7 +106,7 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
       ? availableLiquidityBasedOnMaxReserve
       : availableLiquidityBasedOnMaxOpenInterest;
 
-  return result < 0 ? 0n : result;
+  return result < 0n ? 0n : result;
 }
 
 export function getUsedLiquidity(marketInfo: MarketInfo, isLong: boolean): [bigint, bigint] {
@@ -351,7 +351,7 @@ export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: Toke
   // if the supply is zero and the poolValue is more than zero,
   // then include the poolValue for the amount of tokens minted so that
   // the market token price after mint would be 1 USD
-  if (supply == 0n && poolValue > 0) {
+  if (supply == 0n && poolValue > 0n) {
     return convertToTokenAmount(usdValue + poolValue, marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
   }
 

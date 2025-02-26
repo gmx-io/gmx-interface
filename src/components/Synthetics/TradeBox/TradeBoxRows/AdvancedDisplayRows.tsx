@@ -54,7 +54,7 @@ function LeverageInfoRows() {
       <SyntheticsInfoRow
         label={t`Leverage`}
         value={
-          nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0 ? (
+          nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0n ? (
             <ValueTransition
               from={formatLeverage(selectedPosition?.leverage)}
               to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
@@ -102,7 +102,7 @@ function ExistingPositionInfoRows() {
 
   return (
     <>
-      {selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && (
+      {selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0n && (
         <SyntheticsInfoRow
           label={t`Size`}
           value={

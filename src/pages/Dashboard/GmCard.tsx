@@ -39,7 +39,7 @@ export function GmCard() {
   );
 
   const chartData = useMemo(() => {
-    if (totalGMSupply?.amount === undefined || totalGMSupply?.amount <= 0 || !marketsInfoData) return [];
+    if (totalGMSupply?.amount === undefined || totalGMSupply?.amount <= 0n || !marketsInfoData) return [];
 
     const poolsByIndexToken = groupBy(
       Object.values(marketsInfoData || EMPTY_OBJECT),

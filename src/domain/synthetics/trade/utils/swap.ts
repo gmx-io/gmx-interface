@@ -36,7 +36,7 @@ export function getSwapAmountsByFromValue(p: {
     swapPathStats: undefined,
   };
 
-  if (amountIn <= 0) {
+  if (amountIn <= 0n) {
     return defaultAmounts;
   }
 
@@ -90,7 +90,7 @@ export function getSwapAmountsByFromValue(p: {
     minOutputAmount = amountOut;
   }
 
-  if (amountOut < 0) {
+  if (amountOut < 0n) {
     amountOut = 0n;
     usdOut = 0n;
     minOutputAmount = 0n;
@@ -141,7 +141,7 @@ export function getSwapAmountsByToValue(p: {
     swapPathStats: undefined,
   };
 
-  if (amountOut <= 0) {
+  if (amountOut <= 0n) {
     return defaultAmounts;
   }
 
@@ -185,13 +185,13 @@ export function getSwapAmountsByToValue(p: {
     usdIn = usdIn + swapPathStats.totalSwapFeeUsd + uiFeeUsd - swapPathStats.totalSwapPriceImpactDeltaUsd;
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {
-    const adjustedUsdIn = swapPathStats.usdOut > 0 ? bigMath.mulDiv(baseUsdIn, usdOut, swapPathStats.usdOut) : 0n;
+    const adjustedUsdIn = swapPathStats.usdOut > 0n ? bigMath.mulDiv(baseUsdIn, usdOut, swapPathStats.usdOut) : 0n;
 
     usdIn = adjustedUsdIn + uiFeeUsd;
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   }
 
-  if (amountIn < 0) {
+  if (amountIn < 0n) {
     amountIn = 0n;
     usdIn = 0n;
   }

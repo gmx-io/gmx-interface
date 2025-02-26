@@ -113,7 +113,7 @@ export function AprInfo({
   ]);
 
   const aprNode = useMemo(() => {
-    const isIncentiveApr = incentiveApr !== undefined && incentiveApr > 0;
+    const isIncentiveApr = incentiveApr !== undefined && incentiveApr > 0n;
     const node =
       isBaseAprReadyToBeShown || isIncentiveApr ? (
         <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>

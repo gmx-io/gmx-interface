@@ -23,10 +23,10 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
   const depositVaultAddress = getContract(chainId, "GlvVault");
 
   const isNativeLongDeposit = Boolean(
-    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
+    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0n
   );
   const isNativeShortDeposit = Boolean(
-    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
+    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0n
   );
 
   await validateSignerAddress(signer, p.account);
@@ -52,11 +52,11 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
-    !isNativeLongDeposit && p.longTokenAmount > 0 && !p.isMarketTokenDeposit
+    !isNativeLongDeposit && p.longTokenAmount > 0n && !p.isMarketTokenDeposit
       ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
       : undefined,
 
-    !isNativeShortDeposit && p.shortTokenAmount > 0 && !p.isMarketTokenDeposit
+    !isNativeShortDeposit && p.shortTokenAmount > 0n && !p.isMarketTokenDeposit
       ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
       : undefined,
     p.isMarketTokenDeposit
