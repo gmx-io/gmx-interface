@@ -369,7 +369,6 @@ export class Multicall {
       .catch((_viemError) => {
         const e = new Error(_viemError.message.slice(0, 150));
 
-        // Mark the RPC as failed to trigger recalculation
         markFailedRpcProvider(this.chainId, providerUrl);
 
         emitMetricEvent<MulticallTimeoutEvent>({

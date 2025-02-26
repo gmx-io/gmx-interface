@@ -460,7 +460,6 @@ export type RpcTrackerRankingCounter = {
   };
 };
 
-// Add RpcFailureMetric type to the existing types
 export type RpcFailureCounter = {
   event: "rpcTracker.provider.failed";
   data: {
