@@ -1,4 +1,5 @@
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { AVALANCHE } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
 import {
   MarketInfo,
   MarketsData,
@@ -10,14 +11,13 @@ import {
 import type { TokenData, TokensData } from "domain/synthetics/tokens";
 import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens/utils";
 import { expandDecimals } from "lib/numbers";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { PositionInfo } from "sdk/types/positions";
+import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
 import { zeroAddress } from "viem";
 import { getPositionKey } from "../positions";
-import { expect } from "vitest";
 import { ExternalSwapAggregator, ExternalSwapQuote, getMarkPrice } from "../trade";
-import { getTokenBySymbol } from "sdk/configs/tokens";
-import { AVALANCHE } from "config/chains";
 
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, 30), token.decimals, token.prices?.minPrice)!;
@@ -410,8 +410,12 @@ export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}
   };
 }
 
-export function expectBigNumberClose(actual: bigint, expected: bigint, maxDiffBps = 1n) {
-  const diff = actual > expected ? actual - expected : expected - actual;
-  const diffBps = (diff * BASIS_POINTS_DIVISOR_BIGINT) / expected;
-  expect(diffBps).toBeLessThanOrEqual(maxDiffBps);
+export function getBigintDiffError(
+  actual: bigint,
+  expected: bigint,
+  precision = 1_000_000n // default precision is 0.0000001
+) {
+  const diff = bigMath.abs(actual - expected);
+  const diffBps = (diff * precision) / expected;
+  return diffBps;
 }

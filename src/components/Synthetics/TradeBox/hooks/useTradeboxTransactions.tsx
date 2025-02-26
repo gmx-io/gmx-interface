@@ -264,7 +264,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-      const additinalErrorContent = increaseAmounts.externalSwapQuote ? (
+      const additionalErrorContent = increaseAmounts.externalSwapQuote ? (
         <>
           <br />
           <br />
@@ -286,7 +286,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         subaccount,
         metricId: metricData.metricId,
         blockTimestampData,
-        additinalErrorContent,
+        additionalErrorContent,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,

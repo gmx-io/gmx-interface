@@ -48,7 +48,7 @@ type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  additinalErrorContent?: React.ReactNode;
+  additionalErrorContent?: React.ReactNode;
   externalSwapQuote?: ExternalSwapQuote;
 };
 
@@ -203,7 +203,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       msg = (
         <div>
           {errorTitle}
-          {p.additinalErrorContent}
+          {p.additionalErrorContent}
           <br />
           <br />
           <ToastifyDebug
@@ -215,7 +215,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       // eslint-disable-next-line no-console
       console.error(parsingError);
 
-      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additinalErrorContent);
+      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorContent);
       msg = commonError.failMsg;
     }
 

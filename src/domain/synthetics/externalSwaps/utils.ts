@@ -19,7 +19,7 @@ import {
   leverageBySizeValues,
 } from "../trade";
 
-const tokenContract = new ethers.Contract(ethers.ZeroAddress, Token.abi);
+const tokenContract = new ethers.Interface(Token.abi);
 
 export function getExternalCallsParams(chainId: number, account: string, quote: ExternalSwapQuote) {
   if (!quote.txnData) {
@@ -33,7 +33,7 @@ export function getExternalCallsParams(chainId: number, account: string, quote: 
 
   if (quote.needSpenderApproval) {
     addresses.push(inTokenAddress);
-    callData.push(tokenContract.interface.encodeFunctionData("approve", [quote.txnData.to, ethers.MaxUint256]));
+    callData.push(tokenContract.encodeFunctionData("approve", [quote.txnData.to, ethers.MaxUint256]));
   }
 
   addresses.push(quote.txnData.to);

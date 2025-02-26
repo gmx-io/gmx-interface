@@ -1,9 +1,11 @@
 import { AVALANCHE } from "config/chains";
+import { getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { mockExternalSwapQuote, mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
 import { FindSwapPath } from "domain/synthetics/trade";
 import { expandDecimals } from "lib/numbers";
 import { DeepPartial } from "lib/types";
 import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SyntheticsState } from "../../SyntheticsStateContextProvider";
 import {
@@ -12,8 +14,6 @@ import {
   selectShouldRequestExternalSwapQuote,
 } from "../externalSwapSelectors";
 import * as tradeSelectors from "../tradeSelectors";
-import { bigMath } from "sdk/utils/bigmath";
-import { getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 
 const marketKey = "ETH-ETH-USDC";
 const tokensData = mockTokensData();
@@ -141,6 +141,7 @@ describe("externalSwapSelectors", () => {
       const result = selectExternalSwapQuote(state as SyntheticsState);
 
       expect(inputs?.internalSwapTotalFeesDeltaUsd).toBeLessThan(mockBaseSwapQuote.feesUsd);
+      expect(inputs?.internalSwapTotalFeesDeltaUsd).toEqual(mockSwapPathStats.totalFeesDeltaUsd);
       expect(result).toEqual(undefined);
     });
 
@@ -183,6 +184,7 @@ describe("externalSwapSelectors", () => {
       const inputs = selectExternalSwapInputs(state);
       // negative bps should be greater than threshold
       expect(inputs?.internalSwapTotalFeeItem?.bps).toBeGreaterThan(swapPriceImpactForExternalSwapThresholdBps);
+      expect(inputs?.internalSwapTotalFeeItem?.bps).toEqual(-9n);
       expect(result).toBe(false);
     });
 
@@ -199,13 +201,14 @@ describe("externalSwapSelectors", () => {
 
     it("should return true when external swaps are enabled and conditions are met", () => {
       const state = createMockState();
-      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(1000, 30);
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
 
       const result = selectShouldRequestExternalSwapQuote(state);
       const inputs = selectExternalSwapInputs(state);
 
       // negative bps should be less than threshold
       expect(inputs?.internalSwapTotalFeeItem?.bps).toBeLessThan(swapPriceImpactForExternalSwapThresholdBps);
+      expect(inputs?.internalSwapTotalFeeItem?.bps).toEqual(-83n);
       expect(result).toBe(true);
     });
   });
