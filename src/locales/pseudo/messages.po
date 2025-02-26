@@ -70,10 +70,6 @@ msgstr ""
 msgid "GMX Referrals Dashboard"
 msgstr ""
 
-#: src/components/TVChartContainer/DynamicLine.tsx
-msgid "Order could not be updated"
-msgstr ""
-
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Stake GMX Rewards"
 msgstr ""
@@ -789,6 +785,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order."
+msgstr ""
+
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "The order could not be updated"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

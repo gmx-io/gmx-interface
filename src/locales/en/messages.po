@@ -70,10 +70,6 @@ msgstr "receive"
 msgid "GMX Referrals Dashboard"
 msgstr "GMX Referrals Dashboard"
 
-#: src/components/TVChartContainer/DynamicLine.tsx
-msgid "Order could not be updated"
-msgstr "Order could not be updated"
-
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Stake GMX Rewards"
 msgstr "Stake GMX Rewards"
@@ -790,6 +786,10 @@ msgstr "Claimable positive funding fees.<0/><1/>They become available after modi
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order."
 msgstr "Acceptable price for the order."
+
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "The order could not be updated"
+msgstr "The order could not be updated"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
