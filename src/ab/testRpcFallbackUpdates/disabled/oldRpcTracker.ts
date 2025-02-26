@@ -1,33 +1,29 @@
+import { Provider, ethers } from "ethers";
 import {
+  RPC_PROVIDERS,
+  PRIVATE_PROVIDERS,
+  SUPPORTED_CHAIN_IDS,
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
-  PRIVATE_PROVIDERS,
-  RPC_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
-  getRandomAnyRpcUrl,
+  getRandomPrivateRpcUrl,
 } from "config/chains";
-import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
-import { differenceInMilliseconds } from "date-fns";
-import { Provider, ethers } from "ethers";
 import { isDebugMode } from "lib/localStorage";
-import { sleep } from "lib/sleep";
-import maxBy from "lodash/maxBy";
-import minBy from "lodash/minBy";
 import orderBy from "lodash/orderBy";
-import { useEffect, useState } from "react";
+import minBy from "lodash/minBy";
+import maxBy from "lodash/maxBy";
+import { differenceInMilliseconds } from "date-fns";
+import { getMulticallContract, getDataStoreContract } from "config/contracts";
+import { getContract } from "config/contracts";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
-import {
-  useCurrentRpcUrls as old_useCurrentRpcUrls,
-  getCurrentRpcUrls as old_getCurrentRpcUrls,
-} from "ab/testRpcFallbackUpdates/disabled/oldRpcTracker";
+import { sleep } from "lib/sleep";
+import { useEffect, useState } from "react";
 
-import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { RpcTrackerRankingCounter } from "lib/metrics";
-import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
-import { RpcFailureCounter } from "lib/metrics/types";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
+import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+import { RpcTrackerRankingCounter } from "lib/metrics";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { getIsFlagEnabled } from "config/ab";
 
 const PROBE_TIMEOUT = 10 * 1000; // 10 seconds / Frequency of RPC probing
@@ -56,7 +52,6 @@ type ProbeData = {
   blockNumber: number | null;
   timestamp: Date;
   isPublic: boolean;
-  isValid?: boolean;
 };
 
 type ProviderData = {
@@ -74,11 +69,6 @@ type RpcTrackerState = {
     providers: {
       [providerUrl: string]: ProviderData;
     };
-    lastProbeStats?: {
-      timestamp: number;
-      probeStats: ProbeData[];
-      validProbesStats: ProbeData[];
-    };
   };
 };
 
@@ -86,7 +76,7 @@ let trackerTimeoutId: number | null = null;
 
 const trackerState = initTrackerState();
 
-if (getIsFlagEnabled("testRpcFallbackUpdates")) {
+if (!getIsFlagEnabled("testRpcFallbackUpdates")) {
   trackRpcProviders({ warmUp: true });
 }
 
@@ -103,8 +93,23 @@ function trackRpcProviders({ warmUp = false } = {}) {
         return;
       }
 
-      const nextProviderUrls = await getBestRpcProvidersForChain(chainTrackerState);
-      setCurrentProviders(chainId, nextProviderUrls);
+      await getBestRpcProvidersForChain(chainTrackerState)
+        .catch((e) => {
+          if (e.message !== "no-success-probes") {
+            // eslint-disable-next-line no-console
+            console.error(e);
+          }
+
+          // Use fallback provider both as primary and secondary if no successful probes received
+          const fallbackRpcUrl = getRandomPrivateRpcUrl(chainId);
+
+          return {
+            primaryUrl: fallbackRpcUrl,
+            secondaryUrl: fallbackRpcUrl,
+            bestBestBlockGap: undefined,
+          };
+        })
+        .then((nextProviderUrls) => setCurrentProviders(chainId, nextProviderUrls));
     })
   ).finally(() => {
     if (trackerTimeoutId) {
@@ -115,15 +120,16 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function probeProviders(chainId: number, providers: ProviderData[]) {
-  const providersToProbe = getIsLargeAccount() ? providers : providers.filter(({ isPublic }) => isPublic);
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[number]) {
+  const providersList = Object.values(providers);
 
-  const probeResults = await Promise.all(
-    providersToProbe.map((providerInfo) =>
-      probeRpc(chainId, providerInfo.provider, providerInfo.url, providerInfo.isPublic)
-    )
-  );
+  const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
 
+  const probePromises = providersToProbe.map((providerInfo) => {
+    return probeRpc(chainId, providerInfo.provider, providerInfo.url, providerInfo.isPublic);
+  });
+
+  const probeResults = await Promise.all(probePromises);
   const successProbeResults = probeResults.filter((probe) => probe.isSuccess);
 
   if (!successProbeResults.length) {
@@ -134,6 +140,7 @@ async function probeProviders(chainId: number, providers: ProviderData[]) {
   let bestBlockNumberProbe = probeResultsByBlockNumber[0];
   const secondBlockNumberProbe = probeResultsByBlockNumber[1];
 
+  // Rare case when RPC returned a block number from the future
   if (
     bestBlockNumberProbe?.blockNumber &&
     secondBlockNumberProbe?.blockNumber &&
@@ -145,9 +152,11 @@ async function probeProviders(chainId: number, providers: ProviderData[]) {
 
   const probeStats = probeResultsByBlockNumber.map((probe) => {
     let isValid = probe.isSuccess;
+
     const bestBlockNumber = bestBlockNumberProbe.blockNumber;
     const currProbeBlockNumber = probe.blockNumber;
 
+    // If the block number is lagging behind the best one
     if (bestBlockNumber && currProbeBlockNumber && bestBlockNumber - currProbeBlockNumber > BLOCK_LAGGING_THRESHOLD) {
       isValid = false;
     }
@@ -160,139 +169,59 @@ async function probeProviders(chainId: number, providers: ProviderData[]) {
 
   const validProbesStats = probeStats.filter((probe) => probe.isValid);
 
-  return {
-    probeStats,
-    validProbesStats,
-  };
-}
+  const bestResponseTimeValidProbe = minBy(validProbesStats, "responseTime");
+  const bestBlockNumberValidProbe = maxBy(validProbesStats, "blockNumber");
 
-type ProbeResults = {
-  probeStats: ProbeData[];
-  validProbesStats: ProbeData[];
-};
-
-function setLastProbeStats(chainId: number, probeResults: ProbeResults) {
-  trackerState[chainId].lastProbeStats = {
-    probeStats: probeResults.probeStats,
-    validProbesStats: probeResults.validProbesStats,
-    timestamp: Date.now(),
-  };
-}
-
-async function getBestRpcProvidersForChain(
-  { providers, chainId, lastProbeStats }: RpcTrackerState[number],
-  blackListedUrls: string[] = []
-) {
-  try {
-    let probeResults: ProbeResults | undefined = undefined;
-
-    // Try to use cached probe results
-    if (lastProbeStats && Date.now() - lastProbeStats.timestamp < PROBE_TIMEOUT) {
-      const validProbesStats = lastProbeStats.validProbesStats.filter((probe) => !blackListedUrls.includes(probe.url));
-
-      if (validProbesStats.length > 0) {
-        probeResults = {
-          probeStats: lastProbeStats.probeStats,
-          validProbesStats,
-        };
-      }
-    }
-
-    // Do new probe if can't use cached results
-    if (!probeResults) {
-      const filteredProviders = Object.values(providers).filter(({ url }) => !blackListedUrls.includes(url));
-      const providersList = getIsLargeAccount()
-        ? filteredProviders
-        : filteredProviders.filter(({ isPublic }) => isPublic);
-
-      probeResults = await probeProviders(chainId, providersList);
-
-      // Cache results
-      setLastProbeStats(chainId, probeResults);
-    }
-
-    const { probeStats, validProbesStats } = probeResults;
-
-    // Calculate best probes every time
-    const bestResponseTimeValidProbe = minBy(validProbesStats, "responseTime");
-    const bestBlockNumberValidProbe = maxBy(validProbesStats, "blockNumber");
-
-    if (!bestResponseTimeValidProbe?.url) {
-      throw new Error("no-success-probes");
-    }
-
-    // Select providers
-    let nextPrimaryRpc = bestResponseTimeValidProbe;
-    let nextSecondaryRpc = {
-      url: getRandomAnyRpcUrl(chainId, "private", blackListedUrls.concat(nextPrimaryRpc.url)),
-    };
-
-    if (getIsLargeAccount()) {
-      const privateRpcResult = validProbesStats.find((probe) => !probe.isPublic);
-      if (privateRpcResult) {
-        nextPrimaryRpc = privateRpcResult;
-      }
-
-      if (bestResponseTimeValidProbe.url !== nextPrimaryRpc.url) {
-        nextSecondaryRpc = { url: bestResponseTimeValidProbe.url };
-      } else {
-        nextSecondaryRpc = { url: getRandomAnyRpcUrl(chainId, "private", blackListedUrls.concat(nextPrimaryRpc.url)) };
-      }
-    }
-
-    if (isDebugMode()) {
-      // eslint-disable-next-line no-console
-      console.table(
-        orderBy(
-          probeStats.map((probe) => ({
-            url: probe.url,
-            isPrimary: probe.url === nextPrimaryRpc.url ? "✅" : "",
-            isValid: probe.isValid ? "✅" : "❌",
-            responseTime: probe.responseTime,
-            blockNumber: probe.blockNumber,
-            isPublic: probe.isPublic ? "yes" : "no",
-            isBlackListed: blackListedUrls.includes(probe.url) ? "yes" : "no",
-          })),
-          ["responseTime"],
-          ["asc"]
-        )
-      );
-    }
-
-    const bestBestBlockGap =
-      bestBlockNumberValidProbe?.blockNumber && nextPrimaryRpc.blockNumber
-        ? bestBlockNumberValidProbe.blockNumber - nextPrimaryRpc.blockNumber
-        : undefined;
-
-    return {
-      primaryUrl: nextPrimaryRpc.url,
-      secondaryUrl: nextSecondaryRpc.url,
-      bestBestBlockGap,
-    };
-  } catch (e) {
-    if (e.message !== "no-success-probes") {
-      // eslint-disable-next-line no-console
-      console.error(e);
-    }
-
-    const primaryUrl = getRandomAnyRpcUrl(chainId, "public", blackListedUrls);
-    const secondaryUrl = getRandomAnyRpcUrl(chainId, "private", blackListedUrls.concat(primaryUrl ?? []));
-
-    return {
-      primaryUrl,
-      secondaryUrl,
-    };
+  if (!bestResponseTimeValidProbe?.url) {
+    throw new Error("no-success-probes");
   }
+
+  let nextPrimaryRpc = bestResponseTimeValidProbe;
+  let nextSecondaryRpc = {
+    url: getRandomPrivateRpcUrl(chainId),
+  };
+
+  if (getIsLargeAccount()) {
+    const privateRpcResult = validProbesStats.find((probe) => !probe.isPublic);
+
+    if (privateRpcResult) {
+      nextPrimaryRpc = privateRpcResult;
+    }
+
+    nextSecondaryRpc = bestResponseTimeValidProbe;
+  }
+
+  if (isDebugMode()) {
+    // eslint-disable-next-line no-console
+    console.table(
+      orderBy(
+        probeStats.map((probe) => ({
+          url: probe.url,
+          isPrimary: probe.url === nextPrimaryRpc.url ? "✅" : "",
+          isValid: probe.isValid ? "✅" : "❌",
+          responseTime: probe.responseTime,
+          blockNumber: probe.blockNumber,
+          isPublic: probe.isPublic ? "yes" : "no",
+        })),
+        ["responseTime"],
+        ["asc"]
+      )
+    );
+  }
+
+  const bestBestBlockGap =
+    bestBlockNumberValidProbe?.blockNumber && nextPrimaryRpc.blockNumber
+      ? bestBlockNumberValidProbe.blockNumber - nextPrimaryRpc.blockNumber
+      : undefined;
+
+  return {
+    primaryUrl: nextPrimaryRpc.url,
+    secondaryUrl: nextSecondaryRpc.url,
+    bestBestBlockGap,
+  };
 }
 
-function setCurrentProviders(
-  chainId: number,
-  {
-    primaryUrl,
-    secondaryUrl,
-    bestBestBlockGap,
-  }: { primaryUrl: string; secondaryUrl: string; bestBestBlockGap?: number }
-) {
+function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBestBlockGap }) {
   trackerState[chainId].currentPrimaryUrl = primaryUrl;
   trackerState[chainId].currentSecondaryUrl = secondaryUrl;
 
@@ -482,7 +411,7 @@ function initTrackerState() {
   }, {});
 }
 
-function _getCurrentRpcUrls(chainId: number) {
+export function getCurrentRpcUrls(chainId: number) {
   if (!RPC_PROVIDERS[chainId]?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }
@@ -497,7 +426,7 @@ function _getCurrentRpcUrls(chainId: number) {
   return { primary, secondary };
 }
 
-function _useCurrentRpcUrls(chainId: number) {
+export function useCurrentRpcUrls(chainId: number) {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
     primary: string;
     secondary?: string;
@@ -524,33 +453,3 @@ function _useCurrentRpcUrls(chainId: number) {
 
   return bestRpcUrls;
 }
-
-async function _markFailedRpcProvider(chainId: number, rpcUrl: string) {
-  const chainState = trackerState[chainId];
-
-  if (!chainState) return;
-
-  emitMetricCounter<RpcFailureCounter>({
-    event: "rpcTracker.provider.failed",
-    data: {
-      rpcProvider: getProviderNameFromUrl(rpcUrl),
-    },
-  });
-
-  // Recalculate best providers with failed RPC blacklisted
-  const nextProviderUrls = await getBestRpcProvidersForChain(chainState, [rpcUrl]);
-
-  setCurrentProviders(chainId, nextProviderUrls);
-}
-
-export const useCurrentRpcUrls = getIsFlagEnabled("testRpcFallbackUpdates")
-  ? _useCurrentRpcUrls
-  : old_useCurrentRpcUrls;
-
-export const getCurrentRpcUrls = getIsFlagEnabled("testRpcFallbackUpdates")
-  ? _getCurrentRpcUrls
-  : old_getCurrentRpcUrls;
-
-export const markFailedRpcProvider = getIsFlagEnabled("testRpcFallbackUpdates")
-  ? _markFailedRpcProvider
-  : async () => null;
