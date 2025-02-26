@@ -52,7 +52,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
         setTimeout(reset, 100);
       }
     },
-    [editingOrderKey]
+    [editingOrderKey, setShouldCalculateMinOutputAmount, setTriggerRatioInputValue]
   );
 
   const order = getByKey(ordersInfoData, editingOrderKey);

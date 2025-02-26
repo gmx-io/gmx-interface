@@ -1,4 +1,4 @@
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -61,7 +61,6 @@ import {
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
-import { bigMath } from "sdk/utils/bigmath";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -439,10 +438,6 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
   let minOutputAmount = order.minOutputAmount;
 
   if (!shouldCalculateMinOutputAmount && isLimitSwapOrder) {
-    if (order.contractTriggerPrice === 0n) {
-      minOutputAmount -= bigMath.mulDiv(minOutputAmount, allowedSwapSlippageBps ?? 100n, BASIS_POINTS_DIVISOR_BIGINT);
-    }
-
     return minOutputAmount;
   }
 
@@ -455,6 +450,22 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
       shouldInvertRatio: !isRatioInverted,
       allowedSwapSlippageBps,
     });
+
+    const priceImpactAmount = convertToTokenAmount(
+      order.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+      order.targetCollateralToken.decimals,
+      order.targetCollateralToken.prices.minPrice
+    );
+
+    const swapFeeAmount = convertToTokenAmount(
+      order.swapPathStats?.totalSwapFeeUsd,
+      order.targetCollateralToken.decimals,
+      order.targetCollateralToken.prices.minPrice
+    );
+
+    if (!isLimitSwapOrder) {
+      minOutputAmount = minOutputAmount + (priceImpactAmount ?? 0n) - (swapFeeAmount ?? 0n);
+    }
   }
 
   return minOutputAmount;
