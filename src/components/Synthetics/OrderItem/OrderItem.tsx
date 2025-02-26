@@ -40,6 +40,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./OrderItem.scss";
+import { TokensRatioAndSlippage } from "domain/tokens";
 
 type Props = {
   order: OrderInfo;
@@ -654,7 +655,7 @@ function getSwapRatioText(order: OrderInfo) {
   const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
   const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
-  const triggerRatio = (order as SwapOrderInfo).triggerRatio;
+  const triggerRatio = (order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
   const markExchangeRate =
     fromToken && toToken

@@ -56,8 +56,6 @@ export const formatSwapMessage = (
           toToken: tokenOut,
           fromTokenAmount: amountIn,
           toTokenAmount: tradeAction.executionAmountOut,
-          triggerPrice: 0n,
-          minOutputAmount: tradeAction.minOutputAmount,
         })
       : undefined;
 
@@ -68,8 +66,6 @@ export const formatSwapMessage = (
           toToken: tokenOut,
           fromTokenAmount: amountIn,
           toTokenAmount: tradeAction.minOutputAmount,
-          triggerPrice: 0n,
-          minOutputAmount: tradeAction.minOutputAmount,
         })
       : undefined;
 
