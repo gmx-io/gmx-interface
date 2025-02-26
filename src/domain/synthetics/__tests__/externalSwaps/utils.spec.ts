@@ -2,7 +2,7 @@ import { AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getPositionFee } from "domain/synthetics/fees";
 import {
-  getBigintDiffError,
+  expectEqualWithPrecision,
   MOCK_TXN_DATA,
   mockExternalSwapQuote,
   mockMarketsInfoData,
@@ -242,8 +242,8 @@ describe("getExternalSwapInputsByLeverageSize", () => {
       uiFeeFactor,
     });
 
-    expect(getBigintDiffError(reverseResult.usdIn, result.usdIn)).toBeLessThanOrEqual(1n);
-    expect(getBigintDiffError(reverseResult.usdOut, result.usdOut)).toBeLessThanOrEqual(1n);
+    expectEqualWithPrecision(reverseResult.usdIn, result.usdIn);
+    expectEqualWithPrecision(reverseResult.usdOut, result.usdOut);
 
     // expect fees to be the same
     expect(reverseResult.internalSwapTotalFeesDeltaUsd).toBe(result.internalSwapTotalFeesDeltaUsd);
@@ -331,12 +331,10 @@ describe("getExternalSwapInputsByLeverageSize", () => {
 
     // check fees
     expect(result.internalSwapTotalFeeItem?.deltaUsd).toBe(mockSwapPathStats.totalFeesDeltaUsd);
-    expect(
-      getBigintDiffError(
-        result.internalSwapTotalFeeItem?.bps || 0n,
-        getBasisPoints(mockSwapPathStats.totalFeesDeltaUsd, expectedBaseCollateralUsd)
-      )
-    ).toBeLessThanOrEqual(1n);
+    expectEqualWithPrecision(
+      result.internalSwapTotalFeeItem?.bps || 0n,
+      getBasisPoints(mockSwapPathStats.totalFeesDeltaUsd, expectedBaseCollateralUsd)
+    );
 
     // Verify reverse swap gives same results
     const reverseResult = getExternalSwapInputsByFromValue({
@@ -347,15 +345,16 @@ describe("getExternalSwapInputsByLeverageSize", () => {
       uiFeeFactor,
     });
 
-    expect(getBigintDiffError(reverseResult.usdIn, result.usdIn)).toBeLessThanOrEqual(1n);
-    expect(getBigintDiffError(reverseResult.usdOut, result.usdOut)).toBeLessThanOrEqual(1n);
+    expectEqualWithPrecision(reverseResult.usdIn, result.usdIn);
+    expectEqualWithPrecision(reverseResult.usdOut, result.usdOut);
 
     // expect fees to be the same
     expect(reverseResult.internalSwapTotalFeesDeltaUsd).toBe(result.internalSwapTotalFeesDeltaUsd);
     expect(reverseResult.internalSwapTotalFeeItem?.deltaUsd).toBe(result.internalSwapTotalFeeItem?.deltaUsd);
-    expect(
-      getBigintDiffError(reverseResult.internalSwapTotalFeeItem!.bps, result.internalSwapTotalFeeItem!.bps)
-    ).toBeLessThanOrEqual(1n);
+    expectEqualWithPrecision(
+      reverseResult.internalSwapTotalFeeItem?.bps || 0n,
+      result.internalSwapTotalFeeItem?.bps || 0n
+    );
   });
 
   it("handles undefined swapPathStats", () => {
@@ -373,8 +372,8 @@ describe("getExternalSwapInputsByLeverageSize", () => {
       userReferralInfo: undefined,
     });
 
-    expect(getBigintDiffError(result.amountIn, baseAmountIn)).toBeLessThanOrEqual(1n);
-    expect(getBigintDiffError(result.usdIn, baseCollateralUsd)).toBeLessThanOrEqual(1n);
+    expectEqualWithPrecision(result.amountIn, baseAmountIn);
+    expectEqualWithPrecision(result.usdIn, baseCollateralUsd);
     expect(result.internalSwapTotalFeeItem).toEqual(undefined);
     expect(result.internalSwapTotalFeesDeltaUsd).toBe(undefined);
   });

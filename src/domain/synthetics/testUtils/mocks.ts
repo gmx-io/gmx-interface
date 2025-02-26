@@ -15,6 +15,7 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import { PositionInfo } from "sdk/types/positions";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
+import { expect } from "vitest";
 import { zeroAddress } from "viem";
 import { getPositionKey } from "../positions";
 import { ExternalSwapAggregator, ExternalSwapQuote, getMarkPrice } from "../trade";
@@ -410,12 +411,18 @@ export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}
   };
 }
 
-export function getBigintDiffError(
-  actual: bigint,
+export function expectEqualWithPrecision(
   expected: bigint,
-  precision = 1_000_000n // default precision is 0.0000001
+  actual: bigint,
+  precision = 1_000_000n // min significant diff is 0.0000001% of expected value
 ) {
   const diff = bigMath.abs(actual - expected);
-  const diffBps = (diff * precision) / expected;
-  return diffBps;
+
+  if (diff === 0n) {
+    return;
+  }
+
+  const diffPrecision = (diff * (precision * 1000n)) / expected;
+
+  expect(diffPrecision).toBeLessThanOrEqual(1n);
 }
