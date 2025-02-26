@@ -1,4 +1,4 @@
-import { Token, TokenPrices, TokensData, TokensRatio } from "types/tokens";
+import { Token, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "types/tokens";
 import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
@@ -89,10 +89,31 @@ export function getTokensRatioByAmounts(p: {
   toToken: Token;
   fromTokenAmount: bigint;
   toTokenAmount: bigint;
+}): TokensRatio {
+  const { fromToken, toToken, fromTokenAmount, toTokenAmount } = p;
+
+  const adjustedFromAmount = (fromTokenAmount * PRECISION) / expandDecimals(1, fromToken.decimals);
+  const adjustedToAmount = (toTokenAmount * PRECISION) / expandDecimals(1, toToken.decimals);
+
+  const [smallestToken, largestToken, largestAmount, smallestAmount] =
+    adjustedFromAmount > adjustedToAmount
+      ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
+      : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
+
+  const ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
+
+  return { ratio, largestToken, smallestToken };
+}
+
+export function getTokensRatioByMinOutputAmountAndTriggerPrice(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromTokenAmount: bigint;
+  toTokenAmount: bigint;
   triggerPrice: bigint;
   minOutputAmount: bigint;
-}): TokensRatio {
-  const { fromToken, toToken, fromTokenAmount, toTokenAmount, minOutputAmount } = p;
+}): TokensRatioAndSlippage {
+  const { fromToken, toToken, fromTokenAmount, toTokenAmount, triggerPrice, minOutputAmount } = p;
 
   let allowedSwapSlippageBps = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS;
   let smallestToken = fromToken;
@@ -110,17 +131,21 @@ export function getTokensRatioByAmounts(p: {
     adjustedFromAmount > adjustedToAmount
       ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
       : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
+  ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
 
-  if (p.triggerPrice === 0n) {
-    ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
+  if (triggerPrice === 0n) {
     allowedSwapSlippageBps = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS;
     acceptablePrice = ratio;
   } else {
-    const outputAtTriggerPrice = (largestAmount * PRECISION) / p.triggerPrice;
+    const outputAtTriggerPrice =
+      adjustedFromAmount > adjustedToAmount
+        ? (adjustedFromAmount * PRECISION) / triggerPrice
+        : (adjustedFromAmount * triggerPrice) / PRECISION;
+
     allowedSwapSlippageBps =
       ((outputAtTriggerPrice - adjustedMinOutputAmount) * BASIS_POINTS_DIVISOR_BIGINT) / outputAtTriggerPrice;
-    ratio = p.triggerPrice;
-    acceptablePrice = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
+    acceptablePrice = ratio;
+    ratio = triggerPrice;
   }
 
   return { ratio, largestToken, smallestToken, allowedSwapSlippageBps, acceptablePrice };

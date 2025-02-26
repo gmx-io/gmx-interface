@@ -2485,8 +2485,8 @@ msgid "Job openings at GMX."
 msgstr "Offres d'emploi chez GMX."
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Enter a new ratio"
-msgstr ""
+#~ msgid "Enter a new ratio"
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -3133,6 +3133,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Buying..."
 msgstr "Achat..."
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter a new ratio or allowed slippage"
+msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI Fee"

@@ -98,6 +98,9 @@ export type TokensRatio = {
   ratio: bigint;
   largestToken: Token;
   smallestToken: Token;
+};
+
+export type TokensRatioAndSlippage = TokensRatio & {
   allowedSwapSlippageBps: bigint;
   acceptablePrice: bigint;
 };

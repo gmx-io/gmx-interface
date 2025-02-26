@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { OrderInfo, OrderType, OrdersInfoData, PositionOrderInfo } from "./types";
 import { isIncreaseOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
@@ -14,9 +14,30 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
   const [sizeInputValue, setSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
-  const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+
+  /* eslint-disable react/hook-use-state */
+  const [triggerRatioInputValue, _setTriggerRatioInputValue] = useState<string>("");
+  const [selectedAllowedSwapSlippageBps, _setSelectedAllowedSwapSlippageBps] = useState<bigint>();
+  /* eslint-enable react/hook-use-state */
+
   const [defaultAllowedSwapSlippageBps, setDefaultAllowedSwapSlippageBps] = useState<bigint>();
-  const [selectedAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps] = useState<bigint>();
+  const [shouldCalculateMinOutputAmount, setShouldCalculateMinOutputAmount] = useState(false);
+
+  const setTriggerRatioInputValue = useCallback(
+    (value: string) => {
+      _setTriggerRatioInputValue(value);
+      setShouldCalculateMinOutputAmount(true);
+    },
+    [_setTriggerRatioInputValue]
+  );
+
+  const setSelectedAllowedSwapSlippageBps = useCallback(
+    (value: bigint, shouldCalculateMinOutputAmount = true) => {
+      _setSelectedAllowedSwapSlippageBps(value);
+      setShouldCalculateMinOutputAmount(shouldCalculateMinOutputAmount);
+    },
+    [_setSelectedAllowedSwapSlippageBps]
+  );
 
   useEffect(
     function resetOrderEditorState() {
@@ -24,6 +45,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
         setSizeInputValue("");
         setTriggerPriceInputValue("");
         setTriggerRatioInputValue("");
+        setShouldCalculateMinOutputAmount(false);
       };
 
       if (!editingOrderKey) {
@@ -32,6 +54,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     },
     [editingOrderKey]
   );
+
   const order = getByKey(ordersInfoData, editingOrderKey);
 
   const triggerPrice = useMemo(() => {
@@ -80,6 +103,9 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       acceptablePriceImpactBps,
       initialAcceptablePriceImpactBps,
       setAcceptablePriceImpactBps,
+
+      shouldCalculateMinOutputAmount,
+      setShouldCalculateMinOutputAmount,
     }),
     [
       acceptablePrice,
@@ -96,6 +122,11 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       setDefaultAllowedSwapSlippageBps,
       selectedAllowedSwapSlippageBps,
       setSelectedAllowedSwapSlippageBps,
+
+      shouldCalculateMinOutputAmount,
+      setShouldCalculateMinOutputAmount,
+
+      setTriggerRatioInputValue,
     ]
   );
 }

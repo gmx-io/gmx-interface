@@ -96,6 +96,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./OrderEditor.scss";
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
+import { TokensRatioAndSlippage } from "domain/tokens";
 
 type Props = {
   order: OrderInfo;
@@ -200,7 +201,7 @@ export function OrderEditor(p: Props) {
       }
 
       if (minOutputAmount === p.order.minOutputAmount) {
-        return t`Enter a new ratio`;
+        return t`Enter a new ratio or allowed slippage`;
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
@@ -486,7 +487,7 @@ export function OrderEditor(p: Props) {
       if (isInited) return;
 
       if (isSwapOrderType(p.order.orderType)) {
-        const ratio = (p.order as SwapOrderInfo).triggerRatio;
+        const ratio = (p.order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
         if (ratio) {
           setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
@@ -497,7 +498,7 @@ export function OrderEditor(p: Props) {
           const defaultSwapImpactBuffer = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS + totalSwapImpactBps;
 
           setDefaultAllowedSwapSlippageBps(bigMath.abs(defaultSwapImpactBuffer));
-          setSelectedAllowedSwapSlippageBps(ratio?.allowedSwapSlippageBps);
+          setSelectedAllowedSwapSlippageBps(ratio?.allowedSwapSlippageBps, false);
         }
       } else {
         const positionOrder = p.order as PositionOrderInfo;
