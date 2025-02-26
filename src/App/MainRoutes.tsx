@@ -35,6 +35,7 @@ import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
+import RpcDebug from "pages/RpcDebug/RpcDebug";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Earn from "pages/Earn/Earn";
@@ -232,6 +233,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {isDevelopment() && (
         <Route exact path="/ui">
           <UiPage />
+        </Route>
+      )}
+      {isDevelopment() && (
+        <Route exact path="/rpc">
+          <RpcDebug />
         </Route>
       )}
       <Route path="/parsetx/:network/:tx">

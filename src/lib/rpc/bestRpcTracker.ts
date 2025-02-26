@@ -247,6 +247,7 @@ async function getBestRpcProvidersForChain(
           probeStats.map((probe) => ({
             url: probe.url,
             isPrimary: probe.url === nextPrimaryRpc.url ? "✅" : "",
+            isSecondary: probe.url === nextSecondaryRpc.url ? "✅" : "",
             isValid: probe.isValid ? "✅" : "❌",
             responseTime: probe.responseTime,
             blockNumber: probe.blockNumber,
