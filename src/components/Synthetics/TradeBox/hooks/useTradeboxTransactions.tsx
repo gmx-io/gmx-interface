@@ -147,7 +147,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.resolve();
+        return Promise.reject();
       }
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
@@ -201,13 +201,18 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   const onSubmitIncreaseOrder = useCallback(
     function onSubmitIncreaseOrder() {
-      const orderType = isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
+      if (!increaseAmounts) {
+        helperToast.error(t`Error submitting order`);
+        return Promise.reject();
+      }
+
+      const orderType = isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease;
 
       const metricData = initIncreaseOrderMetricData({
         fromToken,
         increaseAmounts,
         hasExistingPosition: Boolean(selectedPosition),
-        leverage: formatLeverage(increaseAmounts?.estimatedLeverage) ?? "",
+        leverage: formatLeverage(increaseAmounts.estimatedLeverage) ?? "",
         executionFee,
         orderType,
         hasReferralCode: Boolean(referralCodeForTxn),
@@ -225,7 +230,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         ).length,
         tpCount: createSltpEntries.filter((entry) => entry.decreaseAmounts.triggerOrderType === OrderType.LimitDecrease)
           .length,
-        priceImpactDeltaUsd: increaseAmounts?.positionPriceImpactDeltaUsd,
+        priceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
         priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
         netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
         interactionId: marketInfo?.name
@@ -240,7 +245,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         !account ||
         !fromToken ||
         !collateralToken ||
-        increaseAmounts?.acceptablePrice === undefined ||
+        increaseAmounts.acceptablePrice === undefined ||
         !executionFee ||
         !marketInfo ||
         !signer ||
@@ -248,7 +253,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.resolve();
+        return Promise.reject();
       }
 
       const commonSecondaryOrderParams = {
@@ -283,7 +288,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           triggerPrice: isLimit ? triggerPrice : undefined,
           acceptablePrice: increaseAmounts.acceptablePrice,
           isLong,
-          orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+          orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
           executionFee: executionFee.feeTokenAmount,
           executionGasLimit: executionFee.gasLimit,
           allowedSlippage,
@@ -417,7 +422,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.resolve();
+        return Promise.reject();
       }
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
@@ -492,7 +497,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
   function onSubmitWrapOrUnwrap() {
     if (!account || !swapAmounts || !fromToken || !signer) {
-      return Promise.resolve();
+      return Promise.reject();
     }
 
     return createWrapOrUnwrapTxn(chainId, signer, {

@@ -16,6 +16,7 @@ type Props = {
   handleMarketSelect?: () => void;
   handleMarketIncreaseSize?: () => void;
   handleLimitIncreaseSize?: () => void;
+  handleStopMarketIncreaseSize?: () => void;
   handleTriggerClose?: () => void;
 };
 
@@ -25,6 +26,7 @@ export default function PositionDropdown({
   handleMarketSelect,
   handleMarketIncreaseSize,
   handleLimitIncreaseSize,
+  handleStopMarketIncreaseSize,
   handleTriggerClose,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
@@ -70,7 +72,7 @@ export default function PositionDropdown({
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
-                <img src={increaseMarket} alt="Increase Limit" height={16} />
+                <img src={increaseMarket} className="size-16" alt="Increase Limit" height={16} />
                 <p>
                   <Trans>Increase Size (Market)</Trans>
                 </p>
@@ -80,9 +82,19 @@ export default function PositionDropdown({
           {handleLimitIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
-                <img src={increaseLimit} alt="Increase Limit" height={16} />
+                <img src={increaseLimit} className="size-16" alt="Increase Limit" height={16} />
                 <p>
                   <Trans>Increase Size (Limit)</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleStopMarketIncreaseSize && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleStopMarketIncreaseSize}>
+                <img src={increaseMarket} className="size-16" alt="Increase Stop Market" height={16} />
+                <p>
+                  <Trans>Increase Size (Stop Market)</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -90,7 +102,7 @@ export default function PositionDropdown({
           {handleTriggerClose && (
             <Menu.Item>
               <div className="menu-item" onClick={handleTriggerClose}>
-                <img src={triggerClose} alt="Increase Limit" height={16} />
+                <img src={triggerClose} className="size-16" alt="Increase Limit" height={16} />
                 <p>
                   <Trans>Set TP/SL</Trans>
                 </p>

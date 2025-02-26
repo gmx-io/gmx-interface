@@ -13,16 +13,16 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
-  OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
-  isLimitIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, getTriggerNameByOrderType } from "domain/synthetics/positions";
+import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
@@ -229,7 +229,7 @@ export function TitleWithIcon({ order, bordered }: { order: OrderInfo; bordered?
   }
 
   const { sizeDeltaUsd } = order;
-  const sizeText = formatUsd(sizeDeltaUsd * (isLimitIncreaseOrderType(order.orderType) ? 1n : -1n), {
+  const sizeText = formatUsd(sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n), {
     displayPlus: true,
   });
 
@@ -355,7 +355,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
             <StatsTooltipRow
               label={t`Acceptable Price`}
               value={
-                positionOrder.orderType === OrderType.StopLossDecrease
+                isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
                   ? "NA"
                   : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                       displayDecimals: priceDecimals,
@@ -683,7 +683,7 @@ function getSwapRatioText(order: OrderInfo) {
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
   const { errors, level } = useOrderErrors(order.key);
 
-  const handle = isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType) : t`Limit`;
+  const handle = getNameByOrderType(order.orderType);
 
   if (errors.length === 0) {
     return <>{handle}</>;

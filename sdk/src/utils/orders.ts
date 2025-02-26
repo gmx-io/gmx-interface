@@ -1,9 +1,11 @@
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 import { MarketsInfoData } from "types/markets";
 import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "types/orders";
 import { Token, TokensData } from "types/tokens";
+import { bigMath } from "./bigmath";
 import { getByKey } from "./objects";
 import { parsePositionKey } from "./positions";
-import { getTriggerThresholdType } from "./prices";
+import { getOrderThresholdType } from "./prices";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "./swapStats";
 import {
   convertToTokenAmount,
@@ -12,16 +14,13 @@ import {
   getTokensRatioByMinOutputAmountAndTriggerPrice,
   parseContractPrice,
 } from "./tokens";
-import { bigMath } from "./bigmath";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import { DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 
 export function isMarketOrderType(orderType: OrderType) {
   return [OrderType.MarketDecrease, OrderType.MarketIncrease, OrderType.MarketSwap].includes(orderType);
 }
 
 export function isLimitOrderType(orderType: OrderType) {
-  return [OrderType.LimitIncrease, OrderType.LimitSwap].includes(orderType);
+  return [OrderType.LimitIncrease, OrderType.LimitSwap, OrderType.StopIncrease].includes(orderType);
 }
 
 export function isTriggerDecreaseOrderType(orderType: OrderType) {
@@ -33,7 +32,7 @@ export function isDecreaseOrderType(orderType: OrderType) {
 }
 
 export function isIncreaseOrderType(orderType: OrderType) {
-  return [OrderType.MarketIncrease, OrderType.LimitIncrease].includes(orderType);
+  return [OrderType.MarketIncrease, OrderType.LimitIncrease, OrderType.StopIncrease].includes(orderType);
 }
 
 export function isSwapOrderType(orderType: OrderType) {
@@ -58,6 +57,10 @@ export function isLimitDecreaseOrderType(orderType: OrderType) {
 
 export function isLimitIncreaseOrderType(orderType: OrderType) {
   return orderType === OrderType.LimitIncrease;
+}
+
+export function isStopIncreaseOrderType(orderType: OrderType) {
+  return orderType === OrderType.StopIncrease;
 }
 
 export function getOrderInfo(p: {
@@ -190,7 +193,7 @@ export function getOrderInfo(p: {
       shouldApplyPriceImpact: true,
     });
 
-    const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+    const triggerThresholdType = getOrderThresholdType(order.orderType, order.isLong);
 
     const orderInfo: PositionOrderInfo = {
       ...order,

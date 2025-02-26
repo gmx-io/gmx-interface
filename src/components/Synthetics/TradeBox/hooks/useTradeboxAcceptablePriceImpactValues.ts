@@ -44,7 +44,7 @@ export function useTradeboxAcceptablePriceImpactValues() {
   }, [isAnyValueChanged, setDefaultTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImpactBps]);
 
   /**
-   * Set initial value for limit orders
+   * Set initial value for limit / stop market orders
    */
   useEffect(() => {
     if (

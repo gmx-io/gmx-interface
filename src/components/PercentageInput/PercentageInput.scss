@@ -10,7 +10,7 @@
     margin-top: 1.5px;
     top: 100%;
     z-index: 2;
-    background: var(--color-slate-700);
+    background-color: var(--color-slate-600);
 
     li {
       padding: 0.5rem 0.75rem;
@@ -19,7 +19,7 @@
       width: 4.5rem;
       text-align: center;
       &:hover {
-        background: rgba(58, 63, 121, 0.5607843137254902);
+        background: var(--color-slate-500);
       }
     }
   }

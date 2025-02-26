@@ -264,8 +264,8 @@ export function useTradeboxState(
     }
 
     return {
-      [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
-      [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
+      [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger, TradeMode.StopMarket],
+      [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger, TradeMode.StopMarket],
       [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit],
     }[tradeType];
   }, [tradeType]);
