@@ -28,7 +28,7 @@ export const MAX_FEE_PER_GAS_MAP = {
 // is also applied to the execution fee calculation
 export const GAS_PRICE_PREMIUM_MAP = {
   [ARBITRUM]: 0n,
-  [AVALANCHE]: 3000000000n, // 3 gwei
+  [AVALANCHE]: 6000000000n, // 6 gwei
 };
 
 /*
