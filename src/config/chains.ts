@@ -226,48 +226,17 @@ export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
 }
 
-export function getRandomRpcUrl(chainId: number, blackListedUrls: string[] = []): string | undefined {
-  const urls = RPC_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
-
-  if (!urls.length) {
-    return undefined;
-  }
-
-  return sample(urls);
-}
-
-export function getRandomPrivateRpcUrl(chainId: number, blackListedUrls: string[] = []): string | undefined {
-  const urls = PRIVATE_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
-
-  if (!urls.length) {
-    return undefined;
-  }
-
-  return sample(urls);
-}
-
-export function getRandomAnyRpcUrl(
+export function getRandomOrDefaultRpcUrl(
   chainId: number,
-  priority: "public" | "private",
-  blackListedUrls: string[] = []
+  { isPublic, bannedUrls = [] }: { isPublic: boolean; bannedUrls?: string[] }
 ): string {
-  let url: string;
+  const providers = isPublic ? RPC_PROVIDERS[chainId] : PRIVATE_PROVIDERS[chainId];
+  const filteredProviders = providers.filter((url) => !bannedUrls.includes(url));
 
-  const filteredPublicUrls = RPC_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
-  const filteredPrivateUrls = PRIVATE_PROVIDERS[chainId].filter((url) => !blackListedUrls.includes(url));
-
-  const [urls1, urls2] =
-    priority === "public" ? [filteredPublicUrls, filteredPrivateUrls] : [filteredPrivateUrls, filteredPublicUrls];
-
-  url = sample(urls1);
+  let url = sample(filteredProviders);
 
   if (!url) {
-    url = sample(urls2);
-  }
-
-  if (!url) {
-    // sample without filtering
-    url = sample(RPC_PROVIDERS[chainId]);
+    url = providers[0];
   }
 
   return url;

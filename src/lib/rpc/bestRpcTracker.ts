@@ -5,7 +5,7 @@ import {
   PRIVATE_PROVIDERS,
   RPC_PROVIDERS,
   SUPPORTED_CHAIN_IDS,
-  getRandomAnyRpcUrl,
+  getRandomOrDefaultRpcUrl,
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
@@ -14,7 +14,6 @@ import { Provider, ethers } from "ethers";
 import { isDebugMode } from "lib/localStorage";
 import { sleep } from "lib/sleep";
 import maxBy from "lodash/maxBy";
-import minBy from "lodash/minBy";
 import orderBy from "lodash/orderBy";
 import { useEffect, useState } from "react";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
@@ -37,6 +36,7 @@ const DISABLE_UNUSED_TRACKING_TIMEOUT = 1 * 60 * 1000; // 1 minute / Pause probi
 
 const BLOCK_FROM_FUTURE_THRESHOLD = 1000; // Omit RPC if block number is higher than average on this value
 const BLOCK_LAGGING_THRESHOLD = 50; // Omit RPC if block number is lower than highest valid on this value
+const BAN_TIMEOUT = 30 * 1000; // 30 seconds - time after which banned RPC can be used again
 
 const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
 
@@ -57,6 +57,7 @@ type ProbeData = {
   timestamp: Date;
   isPublic: boolean;
   isValid?: boolean;
+  banTimestamp?: number;
 };
 
 type ProviderData = {
@@ -79,12 +80,59 @@ type RpcTrackerState = {
       probeStats: ProbeData[];
       validProbesStats: ProbeData[];
     };
+    bannedProviderUrls: {
+      [providerUrl: string]: {
+        banTimestamp: number;
+      };
+    };
   };
 };
 
-let trackerTimeoutId: number | null = null;
+type ProbeResults = {
+  probeStats: ProbeData[];
+  validProbesStats: ProbeData[];
+};
 
+let trackerTimeoutId: number | null = null;
 const trackerState = initTrackerState();
+
+function setLastProbeStats(chainId: number, probeResults: ProbeResults) {
+  trackerState[chainId].lastProbeStats = {
+    probeStats: probeResults.probeStats,
+    validProbesStats: probeResults.validProbesStats,
+    timestamp: Date.now(),
+  };
+}
+
+function getBannedRpcUrls(chainId: number): string[] {
+  if (!trackerState?.[chainId]) {
+    return [];
+  }
+
+  return Object.keys(trackerState[chainId].bannedProviderUrls).filter((url) => {
+    const banTimestamp = trackerState[chainId].bannedProviderUrls[url].banTimestamp;
+    return banTimestamp && Date.now() - banTimestamp <= BAN_TIMEOUT;
+  });
+}
+
+function setBannedRpcUrl(chainId: number, url: string) {
+  trackerState[chainId].bannedProviderUrls[url] = {
+    banTimestamp: Date.now(),
+  };
+}
+
+function sortProbes(chainId: number, probes: ProbeData[]): ProbeData[] {
+  return orderBy(
+    probes,
+    [
+      // Sort by ban timestamp (undefined/expired bans first)
+      (probe) => trackerState[chainId].bannedProviderUrls[probe.url]?.banTimestamp ?? 0,
+      // Then by response time
+      "responseTime",
+    ],
+    ["asc", "asc"]
+  );
+}
 
 if (getIsFlagEnabled("testRpcFallbackUpdates")) {
   trackRpcProviders({ warmUp: true });
@@ -166,93 +214,71 @@ async function probeProviders(chainId: number, providers: ProviderData[]) {
   };
 }
 
-type ProbeResults = {
-  probeStats: ProbeData[];
-  validProbesStats: ProbeData[];
-};
+function getBestProbeUrl(
+  chainId: number,
+  { probes, preferPublic, excludeUrl }: { probes: ProbeData[]; preferPublic: boolean; excludeUrl?: string }
+): string {
+  const filteredProbes = probes
+    .filter((probe) => probe.url !== excludeUrl)
+    .filter((probe) => probe.isPublic === preferPublic);
 
-function setLastProbeStats(chainId: number, probeResults: ProbeResults) {
-  trackerState[chainId].lastProbeStats = {
-    probeStats: probeResults.probeStats,
-    validProbesStats: probeResults.validProbesStats,
-    timestamp: Date.now(),
-  };
+  return filteredProbes[0]?.url ?? getRandomOrDefaultRpcUrl(chainId, { isPublic: preferPublic });
 }
 
-async function getBestRpcProvidersForChain(
-  { providers, chainId, lastProbeStats }: RpcTrackerState[number],
-  blackListedUrls: string[] = []
-) {
+async function getBestRpcProvidersForChain({ providers, chainId, lastProbeStats }: RpcTrackerState[number]) {
   try {
     let probeResults: ProbeResults | undefined = undefined;
 
     // Try to use cached probe results
-    if (lastProbeStats && Date.now() - lastProbeStats.timestamp < PROBE_TIMEOUT) {
-      const validProbesStats = lastProbeStats.validProbesStats.filter((probe) => !blackListedUrls.includes(probe.url));
-
-      if (validProbesStats.length > 0) {
-        probeResults = {
-          probeStats: lastProbeStats.probeStats,
-          validProbesStats,
-        };
-      }
-    }
-
-    // Do new probe if can't use cached results
-    if (!probeResults) {
-      const filteredProviders = Object.values(providers).filter(({ url }) => !blackListedUrls.includes(url));
-      const providersList = getIsLargeAccount()
-        ? filteredProviders
-        : filteredProviders.filter(({ isPublic }) => isPublic);
-
+    if (
+      lastProbeStats &&
+      Date.now() - lastProbeStats.timestamp < PROBE_TIMEOUT &&
+      lastProbeStats.validProbesStats.length > 0
+    ) {
+      probeResults = lastProbeStats;
+    } else {
+      // Do new probe if can't use cached results
+      const providersArray = Object.values(providers);
+      const providersList = getIsLargeAccount() ? providersArray : providersArray.filter(({ isPublic }) => isPublic);
       probeResults = await probeProviders(chainId, providersList);
 
-      // Cache results
       setLastProbeStats(chainId, probeResults);
     }
 
-    const { probeStats, validProbesStats } = probeResults;
-
-    // Calculate best probes every time
-    const bestResponseTimeValidProbe = minBy(validProbesStats, "responseTime");
-    const bestBlockNumberValidProbe = maxBy(validProbesStats, "blockNumber");
-
-    if (!bestResponseTimeValidProbe?.url) {
-      throw new Error("no-success-probes");
+    if (!probeResults) {
+      throw new Error("error-getting-probe-results");
     }
 
-    // Select providers
-    let nextPrimaryRpc = bestResponseTimeValidProbe;
-    let nextSecondaryRpc = {
-      url: getRandomAnyRpcUrl(chainId, "private", blackListedUrls.concat(nextPrimaryRpc.url)),
-    };
+    // Sort all valid probes by ban status and response time
+    const sortedProbes = sortProbes(chainId, probeResults.validProbesStats);
 
-    if (getIsLargeAccount()) {
-      const privateRpcResult = validProbesStats.find((probe) => !probe.isPublic);
-      if (privateRpcResult) {
-        nextPrimaryRpc = privateRpcResult;
-      }
+    // For primary URL: prefer private for large accounts, public for others
+    const preferPublic = !getIsLargeAccount();
+    const primaryUrl = getBestProbeUrl(chainId, {
+      probes: sortedProbes,
+      preferPublic,
+    });
 
-      if (bestResponseTimeValidProbe.url !== nextPrimaryRpc.url) {
-        nextSecondaryRpc = { url: bestResponseTimeValidProbe.url };
-      } else {
-        nextSecondaryRpc = { url: getRandomAnyRpcUrl(chainId, "private", blackListedUrls.concat(nextPrimaryRpc.url)) };
-      }
-    }
+    // For secondary URL: opposite preference of primary
+    const secondaryUrl = getBestProbeUrl(chainId, {
+      probes: sortedProbes,
+      preferPublic: !preferPublic,
+      excludeUrl: primaryUrl,
+    });
 
     if (isDebugMode()) {
       // eslint-disable-next-line no-console
       console.table(
         orderBy(
-          probeStats.map((probe) => ({
+          probeResults.probeStats.map((probe) => ({
             url: probe.url,
-            isPrimary: probe.url === nextPrimaryRpc.url ? "✅" : "",
-            isSecondary: probe.url === nextSecondaryRpc.url ? "✅" : "",
+            isPrimary: probe.url === primaryUrl ? "✅" : "",
+            isSecondary: probe.url === secondaryUrl ? "✅" : "",
             isValid: probe.isValid ? "✅" : "❌",
             responseTime: probe.responseTime,
             blockNumber: probe.blockNumber,
             isPublic: probe.isPublic ? "yes" : "no",
-            isBlackListed: blackListedUrls.includes(probe.url) ? "yes" : "no",
+            bannedUntil: probe.banTimestamp ? new Date(probe.banTimestamp + BAN_TIMEOUT).toLocaleString() : "no",
           })),
           ["responseTime"],
           ["asc"]
@@ -260,14 +286,15 @@ async function getBestRpcProvidersForChain(
       );
     }
 
+    const bestBlockNumberProbe = maxBy(sortedProbes, "blockNumber");
     const bestBestBlockGap =
-      bestBlockNumberValidProbe?.blockNumber && nextPrimaryRpc.blockNumber
-        ? bestBlockNumberValidProbe.blockNumber - nextPrimaryRpc.blockNumber
+      bestBlockNumberProbe?.blockNumber && sortedProbes[0]?.blockNumber
+        ? bestBlockNumberProbe.blockNumber - sortedProbes[0].blockNumber
         : undefined;
 
     return {
-      primaryUrl: nextPrimaryRpc.url,
-      secondaryUrl: nextSecondaryRpc.url,
+      primaryUrl,
+      secondaryUrl,
       bestBestBlockGap,
     };
   } catch (e) {
@@ -276,8 +303,11 @@ async function getBestRpcProvidersForChain(
       console.error(e);
     }
 
-    const primaryUrl = getRandomAnyRpcUrl(chainId, "public", blackListedUrls);
-    const secondaryUrl = getRandomAnyRpcUrl(chainId, "private", blackListedUrls.concat(primaryUrl ?? []));
+    const preferPublic = !getIsLargeAccount();
+    const bannedUrls = getBannedRpcUrls(chainId);
+
+    const primaryUrl = getRandomOrDefaultRpcUrl(chainId, { isPublic: preferPublic, bannedUrls });
+    const secondaryUrl = getRandomOrDefaultRpcUrl(chainId, { isPublic: !preferPublic, bannedUrls });
 
     return {
       primaryUrl,
@@ -477,6 +507,7 @@ function initTrackerState() {
       currentPrimaryUrl,
       currentSecondaryUrl,
       providers,
+      bannedProviderUrls: {},
     };
 
     return acc;
@@ -527,6 +558,8 @@ function _useCurrentRpcUrls(chainId: number) {
 }
 
 async function _markFailedRpcProvider(chainId: number, rpcUrl: string) {
+  setBannedRpcUrl(chainId, rpcUrl);
+
   const chainState = trackerState[chainId];
 
   if (!chainState) return;
@@ -538,8 +571,8 @@ async function _markFailedRpcProvider(chainId: number, rpcUrl: string) {
     },
   });
 
-  // Recalculate best providers with failed RPC blacklisted
-  const nextProviderUrls = await getBestRpcProvidersForChain(chainState, [rpcUrl]);
+  // Recalculate best providers
+  const nextProviderUrls = await getBestRpcProvidersForChain(chainState);
 
   setCurrentProviders(chainId, nextProviderUrls);
 }

@@ -6,7 +6,7 @@ import {
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
-  getRandomPrivateRpcUrl,
+  getRandomOrDefaultRpcUrl,
 } from "config/chains";
 import { getRpcProviderKey } from "config/localStorage";
 import { isDebugMode } from "lib/localStorage";
@@ -101,7 +101,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
           }
 
           // Use fallback provider both as primary and secondary if no successful probes received
-          const fallbackRpcUrl = getRandomPrivateRpcUrl(chainId);
+          const fallbackRpcUrl = getRandomOrDefaultRpcUrl(chainId, { isPublic: false });
 
           return {
             primaryUrl: fallbackRpcUrl,
@@ -178,7 +178,7 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
 
   let nextPrimaryRpc = bestResponseTimeValidProbe;
   let nextSecondaryRpc = {
-    url: getRandomPrivateRpcUrl(chainId),
+    url: getRandomOrDefaultRpcUrl(chainId, { isPublic: false }),
   };
 
   if (getIsLargeAccount()) {

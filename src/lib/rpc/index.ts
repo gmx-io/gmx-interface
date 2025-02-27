@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getAlchemyArbitrumWsUrl, getRandomPrivateRpcUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getAlchemyArbitrumWsUrl, getRandomOrDefaultRpcUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { JsonRpcProvider, Network, Signer, WebSocketProvider, ethers } from "ethers";
 import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
@@ -42,7 +42,7 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
 }
 
 export function getFallbackProvider(chainId: number) {
-  const providerUrl = getRandomPrivateRpcUrl(chainId);
+  const providerUrl = getRandomOrDefaultRpcUrl(chainId, { isPublic: false });
 
   if (!providerUrl) {
     return;

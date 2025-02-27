@@ -1,20 +1,22 @@
-import React, { useState } from "react";
-import { useCurrentRpcUrls, markFailedRpcProvider } from "lib/rpc/bestRpcTracker";
 import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
-import { useChainId } from "lib/chains";
-import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import Card from "components/Common/Card";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
+import { useChainId } from "lib/chains";
+import { formatUsd } from "lib/numbers";
+import { markFailedRpcProvider, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { getMarkPrice } from "sdk/utils/prices";
 
 export default function RpcDebug() {
   const { chainId } = useChainId();
   const { primary: primaryRpc, secondary: secondaryRpc } = useCurrentRpcUrls(chainId);
-  const [simulateError, setSimulateError] = useState(false);
-  const { marketsInfoData, isBalancesLoaded } = useMarketsInfoRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const handleForceFailure = () => {
-    if (primaryRpc) {
+  const handleForceFailure = (isPrimary: boolean) => {
+    if (isPrimary && primaryRpc) {
       markFailedRpcProvider(chainId, primaryRpc);
+    } else if (secondaryRpc) {
+      markFailedRpcProvider(chainId, secondaryRpc);
     }
   };
 
@@ -22,37 +24,41 @@ export default function RpcDebug() {
     <div className="default-container page-layout">
       <Card title="RPC Debug">
         <div className="App-card-content">
-          <div className="mb-base">
-            <h3>Current RPC Information</h3>
-            <div>Primary RPC: {primaryRpc}</div>
+          <div className="mb-base mb-12 ">
+            <h3 className="mb-12">is Large Account: {getIsLargeAccount().toString()}</h3>
+            <h3 className="text-xl mb-12 font-bold">Current RPC</h3>
+            <div className="mb-12">Primary RPC: {primaryRpc}</div>
             <div>Secondary RPC: {secondaryRpc}</div>
           </div>
 
-          <div className="mb-base">
-            <h3>Debug Controls</h3>
-            <div className="mb-sm">
-              <Checkbox isChecked={simulateError} setIsChecked={setSimulateError}>
-                Simulate RPC Error
-              </Checkbox>
-            </div>
-            <Button variant="primary-action" onClick={handleForceFailure}>
+          <div className="mb-base mb-12 ">
+            <h3 className="text-xl mb-12 font-bold">Debug Controls</h3>
+
+            <Button variant="secondary" onClick={() => handleForceFailure(true)}>
               Force RPC Failure (Current Primary)
+            </Button>
+            <div className="mb-12"></div>
+            <Button variant="secondary" onClick={() => handleForceFailure(false)}>
+              Force RPC Failure (Current Secondary)
             </Button>
           </div>
 
           <div>
-            <h3>Markets Info</h3>
-            {!isBalancesLoaded ? (
+            <h1 className="text-xl mb-12 font-bold">Markets Info</h1>
+            {!marketsInfoData ? (
               <div>Loading markets data...</div>
             ) : (
               <div>
-                <div>Total Markets: {Object.keys(marketsInfoData || {}).length}</div>
-                {marketsInfoData && Object.keys(marketsInfoData).length > 0 && (
-                  <div>
-                    <div>Sample Market:</div>
-                    <pre>{JSON.stringify(Object.values(marketsInfoData)[0], null, 2)}</pre>
+                {Object.values(marketsInfoData || {}).map((marketInfo) => (
+                  <div key={marketInfo.name}>
+                    <div>
+                      {marketInfo.name};{" "}
+                      {formatUsd(
+                        getMarkPrice({ prices: marketInfo.indexToken.prices, isIncrease: true, isLong: true })
+                      )}
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
             )}
           </div>
