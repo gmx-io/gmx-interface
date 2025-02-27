@@ -1,4 +1,4 @@
-import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "../configs/factors";
 
 export const PRECISION = expandDecimals(1, 30);
 

@@ -460,6 +460,13 @@ export type RpcTrackerRankingCounter = {
   };
 };
 
+export type RpcFailureCounter = {
+  event: "rpcTracker.provider.failed";
+  data: {
+    rpcProvider: string;
+  };
+};
+
 export type GetFeeDataBlockError = {
   event: "error.getFeeData.value.hash";
 };

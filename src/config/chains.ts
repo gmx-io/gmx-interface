@@ -125,7 +125,7 @@ export const RPC_PROVIDERS = {
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
     "https://1rpc.io/arb",
-    // "https://arbitrum-one.public.blastapi.io",
+    "https://arbitrum-one.public.blastapi.io",
     // "https://arbitrum.drpc.org",
     "https://rpc.ankr.com/arbitrum",
   ],
@@ -142,14 +142,8 @@ export const RPC_PROVIDERS = {
   ],
 };
 
-export const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS
-    ? JSON.parse(ENV_ARBITRUM_RPC_URLS)
-    : [
-        "https://arb1.arbitrum.io/rpc",
-        "https://arbitrum-one-rpc.publicnode.com",
-        // getAlchemyArbitrumHttpUrl()
-      ],
+export const PRIVATE_PROVIDERS = {
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
@@ -232,8 +226,20 @@ export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
 }
 
-export function getFallbackRpcUrl(chainId: number): string {
-  return sample(FALLBACK_PROVIDERS[chainId]);
+export function getRandomOrDefaultRpcUrl(
+  chainId: number,
+  { isPublic, bannedUrls = [] }: { isPublic: boolean; bannedUrls?: string[] }
+): string {
+  const providers = isPublic ? RPC_PROVIDERS[chainId] : PRIVATE_PROVIDERS[chainId];
+  const filteredProviders = providers.filter((url) => !bannedUrls.includes(url));
+
+  let url = sample(filteredProviders);
+
+  if (!url) {
+    url = providers[0];
+  }
+
+  return url;
 }
 
 function getAlchemyKey() {
