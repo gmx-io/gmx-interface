@@ -7,7 +7,7 @@ import { usePositionSeller } from "context/SyntheticsStateContext/hooks/position
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
@@ -74,42 +74,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
       value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
     />
   );
-
-  const pnlRow =
-    position &&
-    (isTrigger ? (
-      <SyntheticsInfoRow
-        label={t`PnL`}
-        value={
-          <ValueTransition
-            from={
-              <>
-                {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-              </>
-            }
-            to={
-              decreaseAmounts?.sizeDeltaUsd ? (
-                <>
-                  {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                  {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                </>
-              ) : undefined
-            }
-          />
-        }
-      />
-    ) : (
-      <SyntheticsInfoRow
-        label={t`PnL`}
-        value={
-          <ValueTransition
-            from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
-            to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
-          />
-        }
-      />
-    ));
 
   let leverageValue: React.ReactNode = "-";
 
@@ -180,7 +144,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue }: Props) {
       <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
 
       {sizeRow}
-      {pnlRow}
 
       <SyntheticsInfoRow
         label={
