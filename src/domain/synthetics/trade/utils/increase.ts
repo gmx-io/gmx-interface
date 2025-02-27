@@ -1,3 +1,5 @@
+import { maxUint256 } from "viem";
+
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
@@ -11,17 +13,17 @@ import {
   getPositionPnlUsd,
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
+import { applyFactor } from "lib/numbers";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
-  getTriggerThresholdType,
+  getOrderThresholdType,
 } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
-import { applyFactor } from "lib/numbers";
-import { bigMath } from "sdk/utils/bigmath";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -34,6 +36,7 @@ export function getIncreasePositionAmounts(p: {
   indexTokenAmount: bigint | undefined;
   leverage?: bigint;
   triggerPrice?: bigint;
+  limitOrderType?: IncreasePositionAmounts["limitOrderType"];
   fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
@@ -51,6 +54,7 @@ export function getIncreasePositionAmounts(p: {
     isLong,
     leverage,
     triggerPrice,
+    limitOrderType,
     position,
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
@@ -90,13 +94,16 @@ export function getIncreasePositionAmounts(p: {
     borrowingFeeUsd: 0n,
     fundingFeeUsd: 0n,
     positionPriceImpactDeltaUsd: 0n,
+
+    limitOrderType: limitOrderType,
+    triggerThresholdType: undefined,
   };
 
-  const isLimit = Boolean(triggerPrice !== undefined && triggerPrice > 0);
+  const isLimit = limitOrderType !== undefined;
 
   if (isLimit && triggerPrice !== undefined) {
     values.triggerPrice = triggerPrice;
-    values.triggerThresholdType = getTriggerThresholdType(OrderType.LimitIncrease, isLong);
+    values.triggerThresholdType = getOrderThresholdType(limitOrderType, isLong);
 
     values.indexPrice = triggerPrice;
 
@@ -333,29 +340,37 @@ export function getIncreasePositionAmounts(p: {
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
   if (isLimit) {
-    let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
-    if (maxNegativePriceImpactBps === undefined) {
-      maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
+    if (limitOrderType === OrderType.StopIncrease) {
+      if (isLong) {
+        values.acceptablePrice = maxUint256;
+      } else {
+        values.acceptablePrice = 0n;
+      }
+    } else {
+      let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
+      if (maxNegativePriceImpactBps === undefined) {
+        maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
+          isIncrease: true,
+          isLong,
+          indexPrice: values.indexPrice,
+          sizeDeltaUsd: values.sizeDeltaUsd,
+          priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+          acceptablePriceImapctBuffer: acceptablePriceImpactBuffer,
+        });
+      }
+
+      const limitAcceptablePriceInfo = getAcceptablePriceInfo({
+        marketInfo,
         isIncrease: true,
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
-        priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
-        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer,
+        maxNegativePriceImpactBps,
       });
+
+      values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
+      values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
     }
-
-    const limitAcceptablePriceInfo = getAcceptablePriceInfo({
-      marketInfo,
-      isIncrease: true,
-      isLong,
-      indexPrice: values.indexPrice,
-      sizeDeltaUsd: values.sizeDeltaUsd,
-      maxNegativePriceImpactBps,
-    });
-
-    values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
-    values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
   }
 
   let priceImpactAmount = 0n;

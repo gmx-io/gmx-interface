@@ -25,7 +25,7 @@ import {
   usePositionSellerLeverageDisabledByCollateral,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { formatLeverage, formatLiquidationPrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -36,7 +36,9 @@ import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
-  formatTokenAmountWithUsd,
+  formatBalanceAmountWithUsd,
+  formatDeltaUsd,
+  formatPercentage,
   formatUsd,
   parseValue,
 } from "lib/numbers";
@@ -82,11 +84,11 @@ import {
 } from "lib/metrics/utils";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import "./PositionSeller.scss";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import "./PositionSeller.scss";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -493,12 +495,17 @@ export function PositionSeller(p: Props) {
     <SyntheticsInfoRow
       className="SwapBox-info-row"
       label={t`Receive`}
-      value={formatTokenAmountWithUsd(
-        decreaseAmounts?.receiveTokenAmount,
-        decreaseAmounts?.receiveUsd,
-        position?.collateralToken?.symbol,
-        position?.collateralToken?.decimals
-      )}
+      value={
+        decreaseAmounts?.receiveTokenAmount !== undefined && position !== undefined
+          ? formatBalanceAmountWithUsd(
+              decreaseAmounts.receiveTokenAmount,
+              decreaseAmounts.receiveUsd,
+              position.collateralToken.decimals,
+              position.collateralToken.symbol,
+              true
+            )
+          : "..."
+      }
     />
   ) : (
     <SyntheticsInfoRow
@@ -520,15 +527,15 @@ export function PositionSeller(p: Props) {
             showTokenImgInDropdown={true}
             selectedTokenLabel={
               <span className="PositionSelector-selected-receive-token">
-                {formatTokenAmountWithUsd(
-                  receiveTokenAmount,
-                  receiveUsd,
-                  receiveToken?.symbol,
-                  receiveToken?.decimals,
-                  {
-                    fallbackToZero: true,
-                  }
-                )}
+                {receiveTokenAmount !== undefined && receiveUsd !== undefined
+                  ? formatBalanceAmountWithUsd(
+                      receiveTokenAmount,
+                      receiveUsd,
+                      receiveToken.decimals,
+                      receiveToken.symbol,
+                      true
+                    )
+                  : "..."}
               </span>
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
@@ -537,15 +544,6 @@ export function PositionSeller(p: Props) {
       }
     />
   );
-
-  let formattedTriggerPrice = "-";
-
-  if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
-    formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsd(decreaseAmounts.triggerPrice, {
-      displayDecimals: marketDecimals ?? toToken?.priceDecimals,
-      visualMultiplier: toToken?.visualMultiplier,
-    })}`;
-  }
 
   const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
     positionKey: position?.key,
@@ -575,6 +573,42 @@ export function PositionSeller(p: Props) {
   ) : (
     keepLeverageText
   );
+
+  const pnlRow =
+    position &&
+    (isTrigger ? (
+      <SyntheticsInfoRow
+        label={t`PnL`}
+        value={
+          <ValueTransition
+            from={
+              <>
+                {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+              </>
+            }
+            to={
+              decreaseAmounts?.sizeDeltaUsd ? (
+                <>
+                  {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                  {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
+                </>
+              ) : undefined
+            }
+          />
+        }
+      />
+    ) : (
+      <SyntheticsInfoRow
+        label={t`PnL`}
+        value={
+          <ValueTransition
+            from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
+            to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
+          />
+        }
+      />
+    ));
 
   return (
     <div className="text-body-medium">
@@ -671,7 +705,7 @@ export function PositionSeller(p: Props) {
                 textClassName="text-slate-100"
                 isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
                 setIsChecked={setKeepLeverage}
-                disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
+                disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
               >
                 {keepLeverageTextElem}
               </ToggleSwitch>
@@ -685,15 +719,13 @@ export function PositionSeller(p: Props) {
                 qa="confirm-button"
               >
                 {error ||
-                  (isTrigger
-                    ? t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`
-                    : t`Close`)}
+                  (isTrigger ? t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType)} Order` : t`Close`)}
               </Button>
 
               <div className="h-1 bg-stroke-primary" />
               {receiveTokenRow}
-              {isTrigger && <SyntheticsInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />}
               {liqPriceRow}
+              {pnlRow}
 
               <PositionSellerAdvancedRows triggerPriceInputValue={triggerPriceInputValue} />
             </div>
