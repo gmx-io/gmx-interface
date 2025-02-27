@@ -21,7 +21,7 @@ export function parsePositionKey(positionKey: string) {
 export function getEntryPrice(p: { sizeInUsd: bigint; sizeInTokens: bigint; indexToken: Token }) {
   const { sizeInUsd, sizeInTokens, indexToken } = p;
 
-  if (sizeInTokens <= 0) {
+  if (sizeInTokens <= 0n) {
     return undefined;
   }
 
@@ -41,7 +41,7 @@ export function getPositionPnlUsd(p: {
 
   let totalPnl = isLong ? positionValueUsd - sizeInUsd : sizeInUsd - positionValueUsd;
 
-  if (totalPnl <= 0) {
+  if (totalPnl <= 0n) {
     return totalPnl;
   }
 
@@ -57,7 +57,7 @@ export function getPositionPnlUsd(p: {
 
   const WEI_PRECISION = expandDecimals(1, 18);
 
-  if (cappedPnl !== poolPnl && cappedPnl > 0 && poolPnl > 0) {
+  if (cappedPnl !== poolPnl && cappedPnl > 0n && poolPnl > 0n) {
     totalPnl = bigMath.mulDiv(totalPnl, cappedPnl / WEI_PRECISION, poolPnl / WEI_PRECISION);
   }
 
@@ -104,7 +104,7 @@ export function getLeverage(p: {
 
   const remainingCollateralUsd = collateralUsd + (pnl ?? 0n) - totalPendingFeesUsd;
 
-  if (remainingCollateralUsd <= 0) {
+  if (remainingCollateralUsd <= 0n) {
     return undefined;
   }
 
@@ -140,7 +140,7 @@ export function getLiquidationPrice(p: {
     useMaxPriceImpact,
   } = p;
 
-  if (sizeInUsd <= 0 || sizeInTokens <= 0) {
+  if (sizeInUsd <= 0n || sizeInTokens <= 0n) {
     return undefined;
   }
 
@@ -164,7 +164,7 @@ export function getLiquidationPrice(p: {
     }
 
     // Ignore positive price impact
-    if (priceImpactDeltaUsd > 0) {
+    if (priceImpactDeltaUsd > 0n) {
       priceImpactDeltaUsd = 0n;
     }
   }
@@ -216,7 +216,7 @@ export function getLiquidationPrice(p: {
     }
   }
 
-  if (liquidationPrice <= 0) {
+  if (liquidationPrice <= 0n) {
     return undefined;
   }
 

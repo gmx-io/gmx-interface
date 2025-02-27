@@ -235,8 +235,8 @@ export function getSwapStats(p: {
     };
   }
 
-  const swapFeeAmount = getSwapFee(marketInfo, amountIn, priceImpactDeltaUsd > 0);
-  const swapFeeUsd = getSwapFee(marketInfo, usdIn, priceImpactDeltaUsd > 0);
+  const swapFeeAmount = getSwapFee(marketInfo, amountIn, priceImpactDeltaUsd > 0n);
+  const swapFeeUsd = getSwapFee(marketInfo, usdIn, priceImpactDeltaUsd > 0n);
 
   const amountInAfterFees = amountIn - swapFeeAmount;
   const usdInAfterFees = usdIn - swapFeeUsd;
@@ -246,7 +246,7 @@ export function getSwapStats(p: {
 
   let cappedImpactDeltaUsd: bigint;
 
-  if (priceImpactDeltaUsd > 0) {
+  if (priceImpactDeltaUsd > 0n) {
     const { impactDeltaAmount: positiveImpactAmountTokenOut, cappedDiffUsd } = applySwapImpactWithCap(
       marketInfo,
       tokenOut,
@@ -255,13 +255,13 @@ export function getSwapStats(p: {
     cappedImpactDeltaUsd = convertToUsd(positiveImpactAmountTokenOut, tokenOut.decimals, priceOut)!;
 
     // https://github.com/gmx-io/gmx-synthetics/blob/3df10f1eab2734cf1b5f0a5dff12b79cbb19907d/contracts/swap/SwapUtils.sol#L290-L291
-    if (cappedDiffUsd > 0) {
+    if (cappedDiffUsd > 0n) {
       const { impactDeltaAmount: positiveImpactAmountTokenIn } = applySwapImpactWithCap(
         marketInfo,
         tokenIn,
         cappedDiffUsd
       );
-      if (positiveImpactAmountTokenIn > 0) {
+      if (positiveImpactAmountTokenIn > 0n) {
         cappedImpactDeltaUsd += convertToUsd(positiveImpactAmountTokenIn, tokenIn.decimals, priceIn)!;
       }
     }
@@ -278,7 +278,7 @@ export function getSwapStats(p: {
     usdOut = usdOut + cappedImpactDeltaUsd;
   }
 
-  if (usdOut < 0) {
+  if (usdOut < 0n) {
     usdOut = 0n;
   }
 

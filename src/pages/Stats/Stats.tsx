@@ -189,7 +189,7 @@ export default function Stats() {
           .filter((t: TokenInfo) => !t.isNative)
           .map((tokenInfo: TokenInfo) => {
             let maxPoolUsd;
-            if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
+            if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0n) {
               maxPoolUsd = expandDecimals(tokenInfo.maxUsdgAmount, 12);
             }
 
@@ -205,11 +205,11 @@ export default function Stats() {
             let weightDiffBps: bigint | undefined = undefined;
             if (
               tokenInfo.usdgAmount !== undefined &&
-              tokenInfo.usdgAmount > 0 &&
+              tokenInfo.usdgAmount > 0n &&
               adjustedUsdgSupply !== undefined &&
-              adjustedUsdgSupply > 0 &&
+              adjustedUsdgSupply > 0n &&
               tokenInfo.weight !== undefined &&
-              tokenInfo.weight > 0
+              tokenInfo.weight > 0n
             ) {
               currentWeightBps = bigMath.mulDiv(tokenInfo.usdgAmount, BASIS_POINTS_DIVISOR_BIGINT, adjustedUsdgSupply);
               // use add(1).div(10).mul(10) to round numbers up

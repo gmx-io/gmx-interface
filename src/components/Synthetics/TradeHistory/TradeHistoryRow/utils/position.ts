@@ -156,8 +156,8 @@ export const formatPositionMessage = (
 
   //#region MarketIncrease
   if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCreated) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderCreated"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customAction = sizeDeltaUsd > 0n ? action : i18n._(actionTextMap["Deposit-OrderCreated"]!);
+    const customSize = sizeDeltaUsd > 0n ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const priceComment = lines(t`Acceptable price for the order.`);
 
@@ -169,10 +169,10 @@ export const formatPositionMessage = (
       acceptablePrice: customPrice,
     };
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderExecuted) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderExecuted"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customAction = sizeDeltaUsd > 0n ? action : i18n._(actionTextMap["Deposit-OrderExecuted"]!);
+    const customSize = sizeDeltaUsd > 0n ? sizeDeltaText : formattedCollateralDelta;
     const priceComment =
-      sizeDeltaUsd > 0
+      sizeDeltaUsd > 0n
         ? lines(
             t`Mark price for the order.`,
             "",
@@ -194,8 +194,8 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCancelled) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderCancelled"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customAction = sizeDeltaUsd > 0n ? action : i18n._(actionTextMap["Deposit-OrderCancelled"]!);
+    const customSize = sizeDeltaUsd > 0n ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
     const priceComment = lines(
@@ -315,8 +315,8 @@ export const formatPositionMessage = (
     //#endregion LimitIncrease and StopIncrease
     //#region MarketDecrease
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCreated) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customAction = sizeDeltaUsd > 0n ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
+    const customSize = sizeDeltaUsd > 0n ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const priceComment = lines(t`Acceptable price for the order.`);
 
@@ -328,8 +328,8 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCancelled) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customAction = sizeDeltaUsd > 0n ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
+    const customSize = sizeDeltaUsd > 0n ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
     const priceComment = lines(
@@ -360,8 +360,8 @@ export const formatPositionMessage = (
       isActionError: true,
     };
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderExecuted) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customAction = sizeDeltaUsd > 0n ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
+    const customSize = sizeDeltaUsd > 0n ? sizeDeltaText : formattedCollateralDelta;
 
     const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
 

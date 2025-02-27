@@ -112,7 +112,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                 <span className="subtext">[{poolName}]</span>
               </div>
               <div>
-                {longTokenAmount > 0 && (
+                {longTokenAmount > 0n && (
                   <div>
                     {formatBalanceAmountWithUsd(
                       longTokenAmount,
@@ -122,7 +122,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                     )}
                   </div>
                 )}
-                {shortTokenAmount > 0 && (
+                {shortTokenAmount > 0n && (
                   <div>
                     {formatBalanceAmountWithUsd(
                       shortTokenAmount,

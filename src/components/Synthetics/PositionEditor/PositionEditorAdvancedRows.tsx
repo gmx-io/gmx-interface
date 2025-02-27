@@ -67,7 +67,7 @@ export function PositionEditorAdvancedRows({ operation }: Options) {
         value={
           <ValueTransition
             from={formatUsd(position?.collateralUsd)!}
-            to={collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsd(nextCollateralUsd) : undefined}
+            to={collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n ? formatUsd(nextCollateralUsd) : undefined}
           />
         }
       />

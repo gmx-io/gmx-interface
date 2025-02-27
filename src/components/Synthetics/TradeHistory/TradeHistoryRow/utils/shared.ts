@@ -55,10 +55,10 @@ export function numberToState(value: bigint | undefined): TooltipState {
     return undefined;
   }
 
-  if (value > 0) {
+  if (value > 0n) {
     return "success";
   }
-  if (value < 0) {
+  if (value < 0n) {
     return "error";
   }
 

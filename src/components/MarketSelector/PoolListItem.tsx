@@ -137,7 +137,7 @@ export function PoolListItem(props: {
           <div className="Token-balance">
             {(showBalances && balance !== undefined && (
               <div className="Token-text">
-                {balance > 0
+                {balance > 0n
                   ? formatTokenAmount(balance, marketToken?.decimals, "GM", {
                       useCommas: true,
                     })
@@ -146,7 +146,7 @@ export function PoolListItem(props: {
             )) ||
               null}
             <span className="text-accent">
-              {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) ||
+              {(showBalances && balanceUsd !== undefined && balanceUsd > 0n && <div>{formatUsd(balanceUsd)}</div>) ||
                 null}
             </span>
           </div>

@@ -110,7 +110,7 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     const maxLiquidity = longMaxLiquidity + shortMaxLiquidity;
 
     const utilization =
-      maxLiquidity > 0 ? bigMath.mulDiv(usedLiquidity, BASIS_POINTS_DIVISOR_BIGINT, maxLiquidity) : 0n;
+      maxLiquidity > 0n ? bigMath.mulDiv(usedLiquidity, BASIS_POINTS_DIVISOR_BIGINT, maxLiquidity) : 0n;
 
     const netFeeLong = borrowingRateLong + fundingRateLong;
     const netFeeShort = borrowingRateShort + fundingRateShort;
@@ -145,7 +145,7 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
 
   for (const indexTokenStats of Object.values(indexMap)) {
     indexTokenStats.totalUtilization =
-      indexTokenStats.totalMaxLiquidity > 0
+      indexTokenStats.totalMaxLiquidity > 0n
         ? bigMath.mulDiv(
             indexTokenStats.totalUsedLiquidity,
             BASIS_POINTS_DIVISOR_BIGINT,

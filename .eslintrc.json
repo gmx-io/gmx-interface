@@ -52,6 +52,7 @@
     "react/display-name": "off",
     "local-rules/no-bigint-negation": "off",
     "local-rules/no-logical-bigint": "off",
+    "local-rules/no-mixed-bigint-number-comparison": "off",
 
     "es-x/no-bigint": "off",
     "es-x/no-optional-chaining": "off",
@@ -113,7 +114,8 @@
       "files": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.js", "./src/**/*.jsx"],
       "rules": {
         "local-rules/no-bigint-negation": "error",
-        "local-rules/no-logical-bigint": "error"
+        "local-rules/no-logical-bigint": "error",
+        "local-rules/no-mixed-bigint-number-comparison": "error"
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]

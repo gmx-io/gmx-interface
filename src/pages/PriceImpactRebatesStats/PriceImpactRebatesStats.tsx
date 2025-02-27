@@ -143,7 +143,7 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
         <div className="PriceImpactRebatesStatsPage-cell-market">{formatMarket(rebateGroup.marketInfo)}</div>
         <div className="PriceImpactRebatesStatsPage-cell-token">{rebateGroup.tokenData?.symbol}</div>
         <div className="PriceImpactRebatesStatsPage-cell-approved">
-          {rebateGroup.factor > 0 ? `${formatAmount(rebateGroup.factor, 28, 2)}%` : "-"}{" "}
+          {rebateGroup.factor > 0n ? `${formatAmount(rebateGroup.factor, 28, 2)}%` : "-"}{" "}
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">
           {formatTokenAmountWithUsd(total, usd, rebateGroup.tokenData?.symbol, rebateGroup.tokenData?.decimals)}
@@ -192,7 +192,7 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-token"></div>
             <div className="PriceImpactRebatesStatsPage-cell-approved">
-              {rebateItem.factor > 0 ? `${formatAmount(rebateItem.factor, 28, 2)}%` : "-"}{" "}
+              {rebateItem.factor > 0n ? `${formatAmount(rebateItem.factor, 28, 2)}%` : "-"}{" "}
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-usd">
               {formatTokenAmountWithUsd(

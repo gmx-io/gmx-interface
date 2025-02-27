@@ -42,10 +42,10 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
   await validateSignerAddress(signer, p.account);
 
   const isNativeLongDeposit = Boolean(
-    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
+    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0n
   );
   const isNativeShortDeposit = Boolean(
-    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
+    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0n
   );
 
   let wntDeposit = 0n;
@@ -70,11 +70,11 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
 
-    !isNativeLongDeposit && p.longTokenAmount > 0
+    !isNativeLongDeposit && p.longTokenAmount > 0n
       ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
       : undefined,
 
-    !isNativeShortDeposit && p.shortTokenAmount > 0
+    !isNativeShortDeposit && p.shortTokenAmount > 0n
       ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
       : undefined,
 

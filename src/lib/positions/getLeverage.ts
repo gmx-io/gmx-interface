@@ -18,7 +18,7 @@ export function getLeverage({ size, collateral, fundingFee, hasProfit, delta, in
 
   let remainingCollateral = collateral;
 
-  if (fundingFee !== undefined && fundingFee > 0) {
+  if (fundingFee !== undefined && fundingFee > 0n) {
     remainingCollateral = remainingCollateral - fundingFee;
   }
 
@@ -42,7 +42,7 @@ export function getLeverage({ size, collateral, fundingFee, hasProfit, delta, in
 
 export function getLeverageStr(leverage: bigint | undefined) {
   if (leverage !== undefined) {
-    if (leverage < 0) {
+    if (leverage < 0n) {
       return "> 100x";
     }
     return `${formatAmount(leverage, 4, 2, true)}x`;

@@ -26,7 +26,7 @@ export function PriceImpactFeesRow() {
   const tradingIncentives = useTradingIncentives(chainId);
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
-  const isPriceImpactPositive = priceImpactPercentage !== undefined && priceImpactPercentage > 0;
+  const isPriceImpactPositive = priceImpactPercentage !== undefined && priceImpactPercentage > 0n;
 
   const formattedPriceImpactPercentage =
     priceImpactPercentage === undefined
@@ -38,7 +38,7 @@ export function PriceImpactFeesRow() {
         });
 
   const rebateIsApplicable =
-    fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
+    fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0n && feesType !== "swap";
 
   const { formattedTotalFeePercentage, isTotalFeePositive } = useMemo(() => {
     if (feesPercentage === undefined) {
@@ -79,7 +79,7 @@ export function PriceImpactFeesRow() {
         signed: true,
         displayDecimals: 3,
       }),
-      isTotalFeePositive: adjustedFeesPercentage > 0,
+      isTotalFeePositive: adjustedFeesPercentage > 0n,
     };
   }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage]);
 

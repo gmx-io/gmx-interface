@@ -69,7 +69,7 @@ export const selectClosingPositionKeyState = createSelectorDeprecated(
 
 export const selectPositiveFeePositions = createSelector((q) => {
   const positionsInfoData = q(selectPositionsInfoData);
-  return Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd > 0);
+  return Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd > 0n);
 });
 
 export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {

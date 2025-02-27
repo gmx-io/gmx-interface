@@ -70,7 +70,7 @@ export function usePriceImpactWarningState({
   const prevIsHighSwapImpact = usePrevious(isHighSwapImpact);
 
   const isHightSwapProfitFee = Boolean(
-    swapProfitFee && swapProfitFee.deltaUsd < 0 && bigMath.abs(swapProfitFee.bps) >= HIGH_SWAP_PROFIT_FEE_BPS
+    swapProfitFee && swapProfitFee.deltaUsd < 0n && bigMath.abs(swapProfitFee.bps) >= BigInt(HIGH_SWAP_PROFIT_FEE_BPS)
   );
   const prevIsHightSwapProfitFee = usePrevious(isHightSwapProfitFee);
 

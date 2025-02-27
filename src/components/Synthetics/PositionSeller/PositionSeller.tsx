@@ -647,7 +647,7 @@ export function PositionSeller(p: Props) {
                 bottomRightLabel={t`Max`}
                 bottomRightValue={formatUsd(maxCloseSize)}
                 onClickMax={
-                  maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
+                  maxCloseSize > 0n && closeSizeUsd !== maxCloseSize
                     ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
                     : undefined
                 }

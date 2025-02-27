@@ -66,7 +66,7 @@ function renderRate(rate: bigint) {
 
 function NetFeeMessage(props: Props) {
   const { fundingRateHourly, borrowRateHourly, isLong } = props;
-  const fundingAction = fundingRateHourly >= 0 ? t`receive` : t`pay`;
+  const fundingAction = fundingRateHourly >= 0n ? t`receive` : t`pay`;
   const borrowAction = fundingAction === t`receive` ? t`pay` : "";
   const longOrShort = isLong ? t`Long` : t`Short`;
   const isFundingRateZero = fundingRateHourly === 0n;

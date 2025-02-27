@@ -79,8 +79,8 @@ export const selectClaimablesCount = createSelector(function selectClaimablesCou
 
   let total = 0;
 
-  if (totalPositionFees > 0) total++;
-  if (totalFundingFees > 0) total++;
+  if (totalPositionFees > 0n) total++;
+  if (totalFundingFees > 0n) total++;
 
   return total;
 });

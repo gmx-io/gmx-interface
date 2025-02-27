@@ -127,7 +127,7 @@ export default function TokenSelector(props: Props) {
     for (const token of filteredTokens) {
       const info = infoTokens?.[token.address];
       if (showBalances) {
-        if (info?.balance && info?.balance > 0) {
+        if (info?.balance && info?.balance > 0n) {
           tokensWithBalance.push(token);
         } else {
           tokensWithoutBalance.push(token);
@@ -147,7 +147,7 @@ export default function TokenSelector(props: Props) {
 
         if (bBalanceUsd === undefined) return -1;
 
-        return bBalanceUsd - (aBalanceUsd ?? 0n) > 0 ? 1 : -1;
+        return bBalanceUsd - (aBalanceUsd ?? 0n) > 0n ? 1 : -1;
       }
       return 0;
     });
@@ -282,13 +282,13 @@ export default function TokenSelector(props: Props) {
                 <div className="Token-balance">
                   {(showBalances && balance !== undefined && (
                     <div className="Token-text">
-                      {balance > 0 && formatBalanceAmount(balance, token.decimals)}
+                      {balance > 0n && formatBalanceAmount(balance, token.decimals)}
                       {balance == 0n && "-"}
                     </div>
                   )) ||
                     null}
                   <span className="text-accent">
-                    {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                    {showBalances && balanceUsd !== undefined && balanceUsd > 0n && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
                     )}
                   </span>

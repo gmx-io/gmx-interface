@@ -59,11 +59,11 @@ export function TradeFeesRow(p: Props) {
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
   const rebateIsApplicable =
-    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
+    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0n && p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
     const swapPriceImpactRow = (
-      p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact?.deltaUsd) > 0
+      p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact?.deltaUsd) > 0n
     )
       ? {
           id: "swapPriceImpact",
@@ -226,7 +226,7 @@ export function TradeFeesRow(p: Props) {
         : undefined;
 
     const fundingFeeRow =
-      p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
+      p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0n)
         ? {
             id: "fundingFee",
             label: <div className="text-white">{t`Funding Fee`}:</div>,
@@ -395,7 +395,7 @@ export function TradeFeesRow(p: Props) {
       return (
         <span
           className={cx({
-            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
+            "text-green-500": totalFeeUsd > 0n && !shouldShowWarning,
             "text-yellow-500": shouldShowWarning,
           })}
         >
@@ -407,7 +407,7 @@ export function TradeFeesRow(p: Props) {
         <TooltipWithPortal
           tooltipClassName="TradeFeesRow-tooltip"
           handleClassName={cx({
-            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
+            "text-green-500": totalFeeUsd > 0n && !shouldShowWarning,
             "text-yellow-500 !decoration-yellow-500/50": shouldShowWarning,
           })}
           handle={formatDeltaUsd(totalFeeUsd)}

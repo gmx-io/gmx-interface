@@ -4,6 +4,6 @@ import type { FeeItem } from "domain/synthetics/fees";
 
 export function getIsHighSwapImpact(swapPriceImpact?: FeeItem) {
   return Boolean(
-    swapPriceImpact && swapPriceImpact.deltaUsd < 0 && bigMath.abs(swapPriceImpact.bps) >= HIGH_SWAP_IMPACT_BPS
+    swapPriceImpact && swapPriceImpact.deltaUsd < 0n && bigMath.abs(swapPriceImpact.bps) >= BigInt(HIGH_SWAP_IMPACT_BPS)
   );
 }

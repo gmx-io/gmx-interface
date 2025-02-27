@@ -159,7 +159,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                   <span className="subtext">[{poolName}]</span>
                 </div>
                 <div>
-                  {longTokenAmount > 0 && (
+                  {longTokenAmount > 0n && (
                     <div>
                       {formatBalanceAmountWithUsd(
                         longTokenAmount,
@@ -169,7 +169,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                       )}
                     </div>
                   )}
-                  {shortTokenAmount > 0 && (
+                  {shortTokenAmount > 0n && (
                     <div>
                       {formatBalanceAmountWithUsd(
                         shortTokenAmount,

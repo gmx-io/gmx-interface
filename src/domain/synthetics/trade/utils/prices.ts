@@ -24,7 +24,7 @@ export function getDefaultAcceptablePriceImpactBps(p: {
     acceptablePriceImapctBuffer = DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
   } = p;
 
-  if (priceImpactDeltaUsd > 0) {
+  if (priceImpactDeltaUsd > 0n) {
     return BigInt(acceptablePriceImapctBuffer);
   }
 
@@ -36,7 +36,7 @@ export function getDefaultAcceptablePriceImpactBps(p: {
     priceImpactDeltaUsd,
   });
 
-  if (baseAcceptablePriceValues.acceptablePriceDeltaBps < 0) {
+  if (baseAcceptablePriceValues.acceptablePriceDeltaBps < 0n) {
     return bigMath.abs(baseAcceptablePriceValues.acceptablePriceDeltaBps) + BigInt(acceptablePriceImapctBuffer);
   }
 
@@ -52,7 +52,7 @@ export function getAcceptablePriceByPriceImpact(p: {
 }) {
   const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd } = p;
 
-  if (sizeDeltaUsd <= 0 || indexPrice == 0n) {
+  if (sizeDeltaUsd <= 0n || indexPrice == 0n) {
     return {
       acceptablePrice: indexPrice,
       acceptablePriceDeltaBps: 0n,
@@ -94,14 +94,14 @@ export function getAcceptablePriceInfo(p: {
     priceImpactDiffUsd: 0n,
   };
 
-  if (sizeDeltaUsd <= 0 || indexPrice == 0n) {
+  if (sizeDeltaUsd <= 0n || indexPrice == 0n) {
     return values;
   }
 
   const shouldFlipPriceImpact = getShouldUseMaxPrice(p.isIncrease, p.isLong);
 
   // For Limit / Trigger orders
-  if (maxNegativePriceImpactBps !== undefined && maxNegativePriceImpactBps > 0) {
+  if (maxNegativePriceImpactBps !== undefined && maxNegativePriceImpactBps > 0n) {
     let priceDelta = bigMath.mulDiv(indexPrice, maxNegativePriceImpactBps, BASIS_POINTS_DIVISOR_BIGINT);
     priceDelta = shouldFlipPriceImpact ? priceDelta * -1n : priceDelta;
 
@@ -131,7 +131,7 @@ export function getAcceptablePriceInfo(p: {
     }
   );
 
-  if (!isIncrease && values.priceImpactDeltaUsd < 0) {
+  if (!isIncrease && values.priceImpactDeltaUsd < 0n) {
     const minPriceImpactUsd = applyFactor(sizeDeltaUsd, marketInfo.maxPositionImpactFactorNegative) * -1n;
 
     if (values.priceImpactDeltaUsd < minPriceImpactUsd) {
@@ -140,7 +140,7 @@ export function getAcceptablePriceInfo(p: {
     }
   }
 
-  if (values.priceImpactDeltaUsd > 0) {
+  if (values.priceImpactDeltaUsd > 0n) {
     values.priceImpactDeltaAmount = convertToTokenAmount(
       values.priceImpactDeltaUsd,
       indexToken.decimals,

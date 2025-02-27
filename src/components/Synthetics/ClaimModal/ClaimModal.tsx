@@ -51,7 +51,7 @@ export function ClaimModal(p: Props) {
 
     const totalFundingUsd = (fundingLongUsd ?? 0n) + (fundingShortUsd ?? 0n);
 
-    if (totalFundingUsd <= 0) return null;
+    if (totalFundingUsd <= 0n) return null;
 
     const claimableAmountsItems: string[] = [];
 

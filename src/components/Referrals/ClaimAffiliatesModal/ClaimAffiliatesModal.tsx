@@ -59,17 +59,17 @@ export function ClaimAffiliatesModal(p: Props) {
       totalReward += shortRewardUsd;
     }
 
-    if (totalReward <= 0) {
+    if (totalReward <= 0n) {
       return null;
     }
 
     const claimableAmountsItems: string[] = [];
 
-    if (longTokenAmount > 0) {
+    if (longTokenAmount > 0n) {
       claimableAmountsItems.push(formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol)!);
     }
 
-    if (!isSameCollaterals && shortTokenAmount > 0) {
+    if (!isSameCollaterals && shortTokenAmount > 0n) {
       claimableAmountsItems.push(formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol)!);
     }
 
@@ -122,12 +122,12 @@ export function ClaimAffiliatesModal(p: Props) {
         continue;
       }
 
-      if (reward.longTokenAmount > 0) {
+      if (reward.longTokenAmount > 0n) {
         marketAddresses.push(market.marketTokenAddress);
         tokenAddresses.push(market.longTokenAddress);
       }
 
-      if (reward.shortTokenAmount > 0) {
+      if (reward.shortTokenAmount > 0n) {
         marketAddresses.push(market.marketTokenAddress);
         tokenAddresses.push(market.shortTokenAddress);
       }

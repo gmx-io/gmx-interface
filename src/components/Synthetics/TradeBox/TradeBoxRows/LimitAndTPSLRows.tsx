@@ -103,7 +103,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
               })})`}
               position="bottom-end"
               handleClassName={
-                entriesInfo.totalPnL !== undefined && entriesInfo.totalPnL < 0
+                entriesInfo.totalPnL !== undefined && entriesInfo.totalPnL < 0n
                   ? "text-red-500 !decoration-red-500/50"
                   : "text-green-500 !decoration-green-500/50"
               }
@@ -129,7 +129,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
 
                       <span
                         className={
-                          entry.decreaseAmounts?.realizedPnl && entry.decreaseAmounts?.realizedPnl < 0
+                          entry.decreaseAmounts?.realizedPnl && entry.decreaseAmounts?.realizedPnl < 0n
                             ? "text-red-500"
                             : "text-green-500"
                         }

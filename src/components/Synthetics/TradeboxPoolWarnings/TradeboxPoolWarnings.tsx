@@ -132,7 +132,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     minOpenFeesMarket &&
     !isSelectedMarket(minOpenFeesMarket) &&
     (improvedOpenFeesDeltaBps !== undefined
-      ? improvedOpenFeesDeltaBps >= SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS
+      ? improvedOpenFeesDeltaBps >= BigInt(SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS)
       : undefined);
 
   const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;

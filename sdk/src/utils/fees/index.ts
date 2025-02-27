@@ -106,7 +106,7 @@ export function getBorrowingFeeRateUsd(
 
 export function getIsHighPriceImpact(positionPriceImpact?: FeeItem, swapPriceImpact?: FeeItem) {
   const totalPriceImpact = getTotalFeeItem([positionPriceImpact, swapPriceImpact]);
-  return totalPriceImpact.deltaUsd < 0 && bigMath.abs(totalPriceImpact.bps) >= HIGH_PRICE_IMPACT_BPS;
+  return totalPriceImpact.deltaUsd < 0n && bigMath.abs(totalPriceImpact.bps) >= HIGH_PRICE_IMPACT_BPS;
 }
 
 export function getFeeItem(
@@ -119,8 +119,8 @@ export function getFeeItem(
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: basis !== undefined && basis > 0 ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : 0n,
-    precisePercentage: basis !== undefined && basis > 0 ? bigMath.mulDiv(feeDeltaUsd, PRECISION, basis) : 0n,
+    bps: basis !== undefined && basis > 0n ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : 0n,
+    precisePercentage: basis !== undefined && basis > 0n ? bigMath.mulDiv(feeDeltaUsd, PRECISION, basis) : 0n,
   };
 }
 

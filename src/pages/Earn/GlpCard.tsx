@@ -88,7 +88,7 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
                       showDollar={false}
                     />
 
-                    {processedData?.glpAprForEsGmx && processedData.glpAprForEsGmx > 0 && (
+                    {processedData?.glpAprForEsGmx && processedData.glpAprForEsGmx > 0n && (
                       <StatsTooltipRow
                         label="Escrowed GMX APR"
                         value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}

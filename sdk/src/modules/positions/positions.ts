@@ -117,7 +117,7 @@ export class Positions extends Module {
         return acc;
       }
 
-      if (position.sizeInUsd > 0) {
+      if (position.sizeInUsd > 0n) {
         acc[key] = position;
       }
 
@@ -296,7 +296,7 @@ export class Positions extends Module {
 
     const allowedAutoCancelOrders = Number(maxAutoCancelOrders) - 1;
     autoCancelOrdersLimit = allowedAutoCancelOrders - existingAutoCancelOrders.length;
-    const canAddAutoCancelOrder = autoCancelOrdersLimit - draftOrdersCount > 0;
+    const canAddAutoCancelOrder = autoCancelOrdersLimit - draftOrdersCount > 0n;
 
     if (!canAddAutoCancelOrder) {
       warning = true;
@@ -557,7 +557,7 @@ export class Positions extends Module {
       const positionFeeInfo = getPositionFee(
         marketInfo,
         position.sizeInUsd,
-        closingPriceImpactDeltaUsd > 0,
+        closingPriceImpactDeltaUsd > 0n,
         userReferralInfo,
         uiFeeFactor
       );

@@ -247,7 +247,7 @@ export function useOptimisticPositions(p: {
         position.pendingUpdate = pendingUpdate;
       }
 
-      if (position.sizeInUsd > 0) {
+      if (position.sizeInUsd > 0n) {
         acc[key] = position;
       }
 

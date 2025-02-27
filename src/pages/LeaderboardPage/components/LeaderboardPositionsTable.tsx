@@ -555,11 +555,11 @@ function formatDelta(
     postfix?: string;
   } = {}
 ) {
-  return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
+  return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0n ? "+" : "-") : ""}${
     p.prefix || ""
   }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {
-  return num === 0n ? "" : num < 0 ? "negative" : "positive";
+  return num === 0n ? "" : num < 0n ? "negative" : "positive";
 }

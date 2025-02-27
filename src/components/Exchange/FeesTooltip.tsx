@@ -36,7 +36,7 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
 }
 
 function getFeesStr(fees: bigint | undefined): string {
-  if (fees === undefined || (fees ?? 0n) <= 0) {
+  if (fees === undefined || (fees ?? 0n) <= 0n) {
     return "";
   }
   return `$${formatAmount(fees, USD_DECIMALS, 2, true)}`;
@@ -114,7 +114,7 @@ function FeesTooltip({
     <Tooltip
       position="top-end"
       className="PositionSeller-fees-tooltip"
-      handle={<div>{totalFees > 0 ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
+      handle={<div>{totalFees > 0n ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
       renderContent={() => (
         <div>
           {titleText && <p>{titleText}</p>}

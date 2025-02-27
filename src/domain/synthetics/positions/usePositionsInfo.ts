@@ -184,7 +184,7 @@ export function usePositionsInfoRequest(
         : undefined;
 
       const hasLowCollateral =
-        (leverage !== undefined && maxAllowedLeverage !== undefined && leverage > maxAllowedLeverage) || false;
+        (leverage !== undefined && maxAllowedLeverage !== undefined && Number(leverage) > maxAllowedLeverage) || false;
 
       const liquidationPrice = marketInfo
         ? getLiquidationPrice({

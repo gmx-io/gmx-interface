@@ -42,7 +42,7 @@ export function GlpCard({
     const glpPool = tokenList
       .map((token) => {
         const tokenInfo = infoTokens[token.address];
-        if (tokenInfo.usdgAmount !== undefined && adjustedUsdgSupply !== undefined && adjustedUsdgSupply > 0) {
+        if (tokenInfo.usdgAmount !== undefined && adjustedUsdgSupply !== undefined && adjustedUsdgSupply > 0n) {
           const currentWeightBps = bigMath.mulDiv(
             tokenInfo.usdgAmount,
             BASIS_POINTS_DIVISOR_BIGINT,

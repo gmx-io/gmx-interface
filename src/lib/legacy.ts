@@ -1548,7 +1548,7 @@ export function getOrderError(account, order, positionsMap, position) {
     if (positionForOrder.size - order.sizeDelta < positionForOrder.collateral - order.collateralDelta) {
       return t`Order cannot be executed as it would reduce the position's leverage below 1`;
     }
-    if (positionForOrder.size - order.sizeDelta < expandDecimals(5, USD_DECIMALS)) {
+    if ((positionForOrder.size as bigint) - (order.sizeDelta as bigint) < expandDecimals(5, USD_DECIMALS)) {
       return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }

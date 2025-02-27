@@ -233,9 +233,9 @@ export function getPositions(
 
     position.pendingDelta = position.delta;
 
-    if (position.collateral > 0) {
+    if (position.collateral > 0n) {
       position.hasLowCollateral =
-        position.collateralAfterFee < 0 || position.size / bigMath.abs(position.collateralAfterFee) > 50;
+        position.collateralAfterFee < 0n || position.size / bigMath.abs(position.collateralAfterFee) > BigInt(50);
 
       if (position.averagePrice !== undefined && position.markPrice !== undefined) {
         const priceDelta =
@@ -339,7 +339,7 @@ export function getPositions(
 
     applyPendingChanges(position, pendingPositions);
 
-    if (position.size > 0 || position.hasPendingChanges) {
+    if (position.size > 0n || position.hasPendingChanges) {
       positions.push(position);
     }
   }

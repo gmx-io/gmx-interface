@@ -117,9 +117,15 @@ export default function PositionEditor(props) {
   const needPositionRouterApproval = !positionRouterApproved;
 
   let collateralToken;
+  /**
+   * @type {bigint | undefined}
+   */
   let maxAmount;
   let maxAmountFormatted;
   let maxAmountFormattedFree;
+  /**
+   * @type {bigint | undefined}
+   */
   let fromAmount;
   let needApproval;
 
@@ -129,6 +135,9 @@ export default function PositionEditor(props) {
   let nextLeverage;
   let nextLeverageExcludingPnl;
   let liquidationPrice;
+  /**
+   * @type {bigint | undefined}
+   */
   let nextLiquidationPrice;
   let nextCollateral;
 
@@ -162,7 +171,7 @@ export default function PositionEditor(props) {
     } else {
       fromAmount = parseValue(fromValue, USD_DECIMALS);
 
-      maxAmount = position.collateralAfterFee - MIN_ORDER_USD > 0 ? position.collateralAfterFee - MIN_ORDER_USD : 0n;
+      maxAmount = position.collateralAfterFee - MIN_ORDER_USD > 0n ? position.collateralAfterFee - MIN_ORDER_USD : 0n;
 
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
@@ -226,21 +235,21 @@ export default function PositionEditor(props) {
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
-    if (!fromAmount) {
+    if (fromAmount === undefined) {
       return [t`Enter an amount`];
     }
 
-    if (fromAmount <= 0) {
+    if (fromAmount <= 0n) {
       return [t`Amount should be greater than zero`];
     }
 
-    if (!isDeposit && fromAmount) {
+    if (!isDeposit && Boolean(fromAmount)) {
       if (position.collateralAfterFee - fromAmount < MIN_ORDER_USD) {
         return [t`Min residual collateral: 10 USD`];
       }
     }
 
-    if (!isDeposit && fromAmount && nextLiquidationPrice) {
+    if (!isDeposit && Boolean(fromAmount) && nextLiquidationPrice !== undefined) {
       if (position.isLong && position.markPrice < nextLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
@@ -257,7 +266,7 @@ export default function PositionEditor(props) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (fromAmount && isDeposit && nextLiquidationPrice) {
+    if (Boolean(fromAmount) && isDeposit && nextLiquidationPrice !== undefined) {
       const isInvalidLiquidationPrice = position.isLong
         ? nextLiquidationPrice >= position.markPrice
         : nextLiquidationPrice <= position.markPrice;
@@ -594,7 +603,7 @@ export default function PositionEditor(props) {
                         : ""
                     }
                     topRightLabel={t`Max`}
-                    topRightValue={maxAmount && maxAmountFormatted}
+                    topRightValue={maxAmount !== undefined && maxAmount !== 0n ? maxAmountFormatted : undefined}
                     onClickMax={
                       fromValue !== maxAmountFormattedFree
                         ? () => {
@@ -607,6 +616,9 @@ export default function PositionEditor(props) {
                     }
                     showPercentSelector={!isDeposit}
                     onPercentChange={(percentage) => {
+                      if (maxAmount === undefined) {
+                        return;
+                      }
                       setFromValue(
                         formatAmountFree(bigMath.mulDiv(maxAmount, BigInt(percentage), 100n), USD_DECIMALS, 2)
                       );
@@ -713,7 +725,7 @@ export default function PositionEditor(props) {
                     </div>
                   </div>
 
-                  {fromAmount !== undefined && fundingFee !== undefined && fromAmount > 0 && fundingFee > 0 && (
+                  {fromAmount !== undefined && fundingFee !== undefined && fromAmount > 0n && fundingFee > 0n && (
                     <div className="Exchange-info-row">
                       <div className="Exchange-info-label">
                         <Trans>Borrow Fee</Trans>

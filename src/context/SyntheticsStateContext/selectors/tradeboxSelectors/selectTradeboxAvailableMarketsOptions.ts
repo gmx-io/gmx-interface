@@ -177,7 +177,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
       indexToken.address,
       isLong,
       isIncrease,
-      increaseSizeUsd > 0 ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
+      increaseSizeUsd > 0n ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
     );
 
     if (bestMarket && bestImpactDeltaUsd != undefined) {
@@ -194,7 +194,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     }
   }
 
-  if (increaseSizeUsd !== undefined && increaseSizeUsd > 0) {
+  if (increaseSizeUsd !== undefined && increaseSizeUsd > 0n) {
     for (const liquidMarket of liquidMarkets) {
       const marketIncreasePositionAmounts = getMarketIncreasePositionAmounts(q, liquidMarket.marketTokenAddress);
       if (!marketIncreasePositionAmounts) {

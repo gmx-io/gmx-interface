@@ -136,7 +136,7 @@ export function getApproxSubaccountActionsCountByBalance(
     return 0n;
   }
 
-  if (executionFee == undefined || executionFee <= 0) {
+  if (executionFee == undefined || executionFee <= 0n) {
     return null;
   }
 
@@ -144,9 +144,9 @@ export function getApproxSubaccountActionsCountByBalance(
   const reducedCost = executionFee - topUp;
 
   // execution fee is fully reduced, calculating sum(countByMainAccBalance, subAccNativeTokenBalance / executionFee)
-  if (reducedCost <= 0) {
+  if (reducedCost <= 0n) {
     // how many times we can transfer executionFee + how many times we can perform without topUp
-    const countByMainAccBalance = topUp <= 0 ? 0n : mainAccWrappedTokenBalance / topUp;
+    const countByMainAccBalance = topUp <= 0n ? 0n : mainAccWrappedTokenBalance / topUp;
     return countByMainAccBalance + subAccNativeTokenBalance / executionFee;
   }
 

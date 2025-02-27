@@ -20,20 +20,20 @@ export async function initSubaccount(
   const multicall = [
     wntForAutoTopUps !== undefined &&
       wntForAutoTopUps !== null &&
-      wntForAutoTopUps > 0 && { method: "sendWnt", params: [mainAccountAddress, wntForAutoTopUps] },
+      wntForAutoTopUps > 0n && { method: "sendWnt", params: [mainAccountAddress, wntForAutoTopUps] },
     topUp !== null &&
       topUp !== undefined &&
-      topUp > 0 && { method: "sendNativeToken", params: [subaccountAddress, topUp] },
+      topUp > 0n && { method: "sendNativeToken", params: [subaccountAddress, topUp] },
     !isAccountActive && { method: "addSubaccount", params: [subaccountAddress] },
     maxAllowedActions !== undefined &&
       maxAllowedActions !== null &&
-      maxAllowedActions >= 0 && {
+      maxAllowedActions >= 0n && {
         method: "setMaxAllowedSubaccountActionCount",
         params: [subaccountAddress, SUBACCOUNT_ORDER_ACTION, maxAllowedActions + (currentActionsCount ?? 0n)],
       },
     maxAutoTopUpAmount !== undefined &&
       maxAutoTopUpAmount !== null &&
-      maxAutoTopUpAmount >= 0 && {
+      maxAutoTopUpAmount >= 0n && {
         method: "setSubaccountAutoTopUpAmount",
         params: [subaccountAddress, maxAutoTopUpAmount],
       },

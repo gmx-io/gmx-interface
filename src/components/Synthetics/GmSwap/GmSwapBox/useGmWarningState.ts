@@ -22,7 +22,7 @@ export function useGmWarningState({
 
   const isHighPriceImpact =
     (fees?.swapPriceImpact?.deltaUsd ?? 0) < 0 &&
-    bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= HIGH_PRICE_IMPACT_BPS;
+    bigMath.abs(fees?.swapPriceImpact?.bps ?? 0n) >= BigInt(HIGH_PRICE_IMPACT_BPS);
 
   const prevIsHighPriceImpact = usePrevious(isHighPriceImpact);
 

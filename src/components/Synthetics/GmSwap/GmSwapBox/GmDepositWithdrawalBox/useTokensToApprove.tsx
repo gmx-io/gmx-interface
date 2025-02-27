@@ -51,14 +51,14 @@ export const useTokensToApprove = ({
       const addresses: string[] = [];
 
       if (operation === Operation.Deposit) {
-        if (longTokenAmount !== undefined && longTokenAmount > 0 && longToken) {
+        if (longTokenAmount !== undefined && longTokenAmount > 0n && longToken) {
           addresses.push(longToken.address);
         }
-        if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortToken) {
+        if (shortTokenAmount !== undefined && shortTokenAmount > 0n && shortToken) {
           addresses.push(shortToken.address);
         }
         if (glvInfo && isMarketTokenDeposit) {
-          if (marketTokenAmount !== undefined && marketTokenAmount > 0) {
+          if (marketTokenAmount !== undefined && marketTokenAmount > 0n) {
             addresses.push(marketToken.address);
           }
         }

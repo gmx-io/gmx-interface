@@ -62,7 +62,7 @@ export function numberToBigint(value: number, decimals: number) {
 }
 
 export function bigintToNumber(value: bigint, decimals: number) {
-  const negative = value < 0;
+  const negative = value < 0n;
   if (negative) value *= -1n;
   const precision = 10n ** BigInt(decimals);
   const int = value / precision;

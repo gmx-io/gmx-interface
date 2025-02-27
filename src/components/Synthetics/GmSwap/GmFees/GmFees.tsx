@@ -38,22 +38,22 @@ export function GmFees(p: Props) {
     if (p.totalFees?.deltaUsd === undefined) {
       return "-";
     } else if (
-      bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||
+      bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0n ||
       p.swapFee ||
-      bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0
+      bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0n
     ) {
       return (
         <Tooltip
           className="GmFees-tooltip"
           handle={
-            <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
+            <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0n })}>
               {formatDeltaUsd(totalFeesUsd)}
             </span>
           }
           position="top-end"
           renderContent={() => (
             <div>
-              {bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 && (
+              {bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0n && (
                 <StatsTooltipRow
                   label={
                     <div>
@@ -99,7 +99,7 @@ export function GmFees(p: Props) {
                 </>
               )}
 
-              {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0 && (
+              {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0n && (
                 <StatsTooltipRow
                   label={
                     <div>
@@ -145,7 +145,7 @@ export function GmFees(p: Props) {
       );
     }
     return (
-      <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
+      <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0n })}>
         {formatDeltaUsd(totalFeesUsd)}
       </span>
     );

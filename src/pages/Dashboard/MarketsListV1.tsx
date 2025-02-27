@@ -72,7 +72,7 @@ export function MarketsListV1({
                 tokenInfo &&
                 tokenInfo.reservedAmount !== undefined &&
                 tokenInfo.poolAmount !== undefined &&
-                tokenInfo.poolAmount > 0
+                tokenInfo.poolAmount > 0n
               ) {
                 utilization = bigMath.mulDiv(
                   tokenInfo.reservedAmount,
@@ -81,7 +81,7 @@ export function MarketsListV1({
                 );
               }
               let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-              if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
+              if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0n) {
                 maxUsdgAmount = tokenInfo.maxUsdgAmount;
               }
 
@@ -171,12 +171,12 @@ export function MarketsListV1({
             tokenInfo &&
             tokenInfo.reservedAmount !== undefined &&
             tokenInfo.poolAmount !== undefined &&
-            tokenInfo.poolAmount > 0
+            tokenInfo.poolAmount > 0n
           ) {
             utilization = bigMath.mulDiv(tokenInfo.reservedAmount, BASIS_POINTS_DIVISOR_BIGINT, tokenInfo.poolAmount);
           }
           let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-          if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0) {
+          if (tokenInfo.maxUsdgAmount !== undefined && tokenInfo.maxUsdgAmount > 0n) {
             maxUsdgAmount = tokenInfo.maxUsdgAmount;
           }
 

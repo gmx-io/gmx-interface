@@ -81,7 +81,7 @@ export function getTokenAmountFromUsd(
 
   const price = opts.overridePrice ?? (opts.max ? info.maxPrice : info.minPrice);
 
-  if (price === undefined || price <= 0) {
+  if (price === undefined || price <= 0n) {
     return;
   }
 
@@ -170,9 +170,9 @@ export function getLowestFeeTokenForBuyGlp(
 
     if (
       fromToken.maxUsdgAmount !== undefined &&
-      fromToken.maxUsdgAmount > 0 &&
+      fromToken.maxUsdgAmount > 0n &&
       fromToken.usdgAmount !== undefined &&
-      fromToken.usdgAmount > 0
+      fromToken.usdgAmount > 0n
     ) {
       amountLeftToDeposit =
         ((fromToken.maxUsdgAmount - fromToken.usdgAmount) * expandDecimals(1, USD_DECIMALS)) /

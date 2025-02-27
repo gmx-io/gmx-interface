@@ -38,7 +38,7 @@ export function usePositionEditorData({ operation }: Options) {
     if (
       !position ||
       collateralDeltaUsd === undefined ||
-      collateralDeltaUsd < 0 ||
+      collateralDeltaUsd < 0n ||
       minCollateralUsd === undefined ||
       !fees?.totalFees
     ) {

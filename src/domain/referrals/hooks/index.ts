@@ -45,7 +45,7 @@ export function useUserReferralInfoRequest(
     chainId,
     codeOwner
   );
-  const finalDiscountShare = (customDiscountShare ?? 0n) > 0 ? customDiscountShare : discountShare;
+  const finalDiscountShare = (customDiscountShare ?? 0n) > 0n ? customDiscountShare : discountShare;
 
   const error = codeOwnerError || tierError || tiersError || discountShareError;
 
