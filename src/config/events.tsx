@@ -33,6 +33,23 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "aixbt-cake-s-listing",
+    title: "AIXBT, CAKE and S markets added on Arbitrum",
+    isActive: true,
+    startDate: "27 Feb 2025, 17:00",
+    endDate: "05 Mar 2025, 17:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="AIXBT" />
+        /USD, <TokenSymbolWithIcon symbol="CAKE" />
+        /USD and <TokenSymbolWithIcon symbol="S" />
+        /USD, or provide liquidity to these pools using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="WETH" />, <TokenSymbolWithIcon symbol="USDC" />, or by purchasing{" "}
+        <TokenSymbolWithIcon symbol="GLV" />.
+      </>
+    ),
+  },
+  {
     id: "fet-ondo-listing",
     title: "FET and ONDO markets added on Arbitrum",
     isActive: true,

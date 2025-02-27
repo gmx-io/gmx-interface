@@ -535,6 +535,27 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // AIXBT/USD [WETH-USDC]
+    "0x04DecfB37e46075189324817df80a32D22b9eD8D": {
+      marketTokenAddress: "0x04DecfB37e46075189324817df80a32D22b9eD8D",
+      indexTokenAddress: "0xcA543Cb8bCC76e4E0A034F56EB40a1029bDFd70E",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // S/USD [WBTC-USDC]
+    "0x4d9bA415649c4B3c703562770C8ff3033478Cea1": {
+      marketTokenAddress: "0x4d9bA415649c4B3c703562770C8ff3033478Cea1",
+      indexTokenAddress: "0x8F6cCb99d4Fd0B4095915147b5ae3bbDb8075394",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // CAKE/USD [WBTC-USDC]
+    "0xdE967676db7b1ccdBA2bD94B01B5b19DE4b563e4": {
+      marketTokenAddress: "0xdE967676db7b1ccdBA2bD94B01B5b19DE4b563e4",
+      indexTokenAddress: "0x580b373Ac16803BB0133356F470f3c7EEF54151B",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
