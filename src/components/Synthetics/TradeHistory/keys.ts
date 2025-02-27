@@ -2,7 +2,7 @@ import { i18n, type MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 
 import { isLimitOrderType, OrderType } from "domain/synthetics/orders";
-import { getTriggerNameByOrderType } from "domain/synthetics/positions";
+import { getNameByOrderType } from "domain/synthetics/positions";
 import type { TradeActionType } from "domain/synthetics/tradeHistory";
 import { mustNeverExist } from "lib/types";
 
@@ -32,6 +32,12 @@ export const actionTextMapBase: Partial<
   "LimitIncrease-OrderCancelled": msg`Cancel Limit`,
   "LimitIncrease-OrderUpdated": msg`Update Limit`,
   "LimitIncrease-OrderFrozen": msg`Failed Limit`,
+
+  "StopIncrease-OrderCreated": msg`Create Stop Market`,
+  "StopIncrease-OrderExecuted": msg`Execute Stop Market`,
+  "StopIncrease-OrderCancelled": msg`Cancel Stop Market`,
+  "StopIncrease-OrderUpdated": msg`Update Stop Market`,
+  "StopIncrease-OrderFrozen": msg`Failed Stop Market`,
 
   "MarketDecrease-OrderCreated": msg`Request Market Decrease`,
   "MarketDecrease-OrderExecuted": msg`Market Decrease`,
@@ -76,6 +82,8 @@ export function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
       return "MarketIncrease";
     case OrderType.LimitIncrease:
       return "LimitIncrease";
+    case OrderType.StopIncrease:
+      return "StopIncrease";
     case OrderType.MarketDecrease:
       return "MarketDecrease";
     case OrderType.LimitDecrease:
@@ -96,7 +104,7 @@ export function getActionTitle(orderType: OrderType, eventName: TradeActionType)
     return i18n._(title);
   }
 
-  const fallbackOrderTypeName = isLimitOrderType(orderType) ? t`Limit` : getTriggerNameByOrderType(orderType);
+  const fallbackOrderTypeName = isLimitOrderType(orderType) ? t`Limit` : getNameByOrderType(orderType);
 
   return `${getOrderActionText(eventName)} ${fallbackOrderTypeName}`;
 }
