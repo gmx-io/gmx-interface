@@ -281,10 +281,10 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
     fetcher: async (): Promise<SwrResult> => {
       const marketFeesQuery = (marketAddress: string) => {
         return `
-            _${marketAddress}_lte_start_of_period_: collectedMarketFeesInfos(
+            _${marketAddress}_lte_start_of_period_: collectedFeesInfos(
                 orderBy:timestampGroup_DESC
                 where: {
-                  marketAddress_eq: "${marketAddress}"
+                  address: "${marketAddress}"
                   period_eq: "1h"
                   timestampGroup_lte: ${Math.floor(sub(new Date(), { days: daysConsidered }).valueOf() / 1000)}
                 },
@@ -294,10 +294,10 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
                 cumulativeBorrowingFeeUsdPerPoolValue
             }
 
-            _${marketAddress}_recent: collectedMarketFeesInfos(
+            _${marketAddress}_recent: collectedFeesInfos(
               orderBy:timestampGroup_DESC
               where: {
-                marketAddress_eq: "${marketAddress}"
+                address: "${marketAddress}"
                 period_eq: "1h"
               },
               limit: 1
@@ -306,7 +306,8 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
               cumulativeBorrowingFeeUsdPerPoolValue
           }
 
-          _${marketAddress}_poolValue: poolValues(where: { marketAddress_eq: "${marketAddress}" }) {
+          _${marketAddress}_marketInfo: marketInfos(where: { marketAddress_eq: "${marketAddress}" }) {
+            marketAddress
             poolValue
           }
         `;
@@ -335,7 +336,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`] as RawCollectedFee[];
         const recentFees = response[`_${marketAddress}_recent`] as RawCollectedFee[];
         const poolValue = BigInt(
-          (response[`_${marketAddress}_poolValue`][0] as RawPoolValue | undefined)?.poolValue ?? "0"
+          (response[`_${marketAddress}_marketInfo`][0] as RawPoolValue | undefined)?.poolValue ?? "0"
         );
 
         const marketInfo = getByKey(marketsInfoData, marketAddress);
