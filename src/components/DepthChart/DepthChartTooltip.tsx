@@ -1,12 +1,13 @@
 import { Trans, t } from "@lingui/macro";
-import { ReactNode, forwardRef, useImperativeHandle, useRef } from "react";
+import { ReactNode, forwardRef, useCallback, useImperativeHandle, useLayoutEffect, useRef } from "react";
+import { useLatest } from "react-use";
 import type { TooltipProps } from "recharts";
 import { useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 
 import { formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import type { DataPoint } from "./DepthChart";
 import { getFeeItem } from "sdk/utils/fees";
+import type { DataPoint } from "./DepthChart";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
@@ -52,8 +53,13 @@ export type ChartTooltipHandle = {
 
 export const ChartTooltip = forwardRef<
   ChartTooltipHandle,
-  TooltipProps<number | string, string> & { leftMin: bigint; rightMin: bigint; isZeroPriceImpact: boolean }
->(({ payload, leftMin, rightMin, isZeroPriceImpact, coordinate }, ref) => {
+  TooltipProps<number | string, string> & {
+    leftMin: bigint;
+    rightMin: bigint;
+    isZeroPriceImpact: boolean;
+    initialMousePositionRef: { current: { x: number; y: number } | undefined };
+  }
+>(({ payload, leftMin, rightMin, isZeroPriceImpact, coordinate, initialMousePositionRef }, ref) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const viewBox = useViewBox() as {
@@ -77,7 +83,7 @@ export const ChartTooltip = forwardRef<
   let isOpaqueCloser = true;
   let isLogicallyLeft = false;
 
-  if (isZeroPriceImpact && stats) {
+  if (isZeroPriceImpact && stats && coordinate?.x !== undefined && coordinate?.y !== undefined) {
     isLogicallyLeft = stats.leftTransparentSize !== null || stats.leftOpaqueSize !== null;
 
     const transparentSize: number | null = isLogicallyLeft ? stats.leftTransparentSize : stats.rightTransparentSize;
@@ -96,8 +102,8 @@ export const ChartTooltip = forwardRef<
       const transparentFloatY = viewBox.height - (transparentSize! / domainSpan) * viewBox.height + viewBox.y;
       const opaqueFloatY = viewBox.height - (opaqueSize! / domainSpan) * viewBox.height + viewBox.y;
 
-      const distanceToTransparent = Math.abs((coordinate?.y ?? 0) - viewBox.y - transparentFloatY);
-      const distanceToOpaque = Math.abs((coordinate?.y ?? 0) - viewBox.y - opaqueFloatY);
+      const distanceToTransparent = Math.abs(coordinate.y - viewBox.y - transparentFloatY);
+      const distanceToOpaque = Math.abs(coordinate.y - viewBox.y - opaqueFloatY);
 
       isOpaqueCloser = distanceToOpaque < distanceToTransparent;
 
@@ -108,14 +114,17 @@ export const ChartTooltip = forwardRef<
     sizeY = viewBox.y + viewBox.height - (stats.size / domainSpan) * viewBox.height;
   }
 
-  useImperativeHandle(ref, () => ({
-    setMouseRelativePosition: (x: number | undefined, y: number | undefined) => {
+  const setMouseRelativePosition = useCallback(
+    (x: number | undefined, y: number | undefined) => {
       if (!tooltipRef.current || x === undefined || y === undefined) {
         return;
       }
 
       if (isZeroPriceImpact) {
-        x = coordinate?.x ?? 0;
+        if (coordinate?.x === undefined) {
+          return;
+        }
+        x = coordinate.x;
       }
 
       // when small put the tooltip either fully on top or fully on bottom
@@ -152,11 +161,42 @@ export const ChartTooltip = forwardRef<
       const boundedTooltipX = Math.max(0, Math.min(tooltipX, viewBox.width + viewBox.x - tooltipWidth));
       const boundedTooltipY = Math.max(0, Math.min(tooltipY, viewBox.height + viewBox.y - tooltipHeight));
 
+      const initialTransform = !tooltipRef.current.style.transform;
+
+      let originalTransition = tooltipRef.current.style.transition;
+      if (initialTransform) {
+        tooltipRef.current.style.transition = "none";
+      }
+
       tooltipRef.current.style.transform = `translate(${boundedTooltipX}px, ${boundedTooltipY}px)`;
+
+      if (initialTransform) {
+        requestAnimationFrame(() => {
+          if (!tooltipRef.current) {
+            return;
+          }
+
+          tooltipRef.current.style.transition = originalTransition;
+        });
+      }
     },
+    [coordinate?.x, isLogicallyLeft, isZeroPriceImpact, sizeY, viewBox.height, viewBox.width, viewBox.x, viewBox.y]
+  );
+  const latestSetMouseRelativePositionRef = useLatest(setMouseRelativePosition);
+
+  const isRendered = !!stats && coordinate?.x !== undefined && coordinate?.y !== undefined;
+
+  useLayoutEffect(() => {
+    if (tooltipRef.current && initialMousePositionRef.current && isRendered) {
+      latestSetMouseRelativePositionRef.current(initialMousePositionRef.current.x, initialMousePositionRef.current.y);
+    }
+  }, [initialMousePositionRef, isRendered, latestSetMouseRelativePositionRef]);
+
+  useImperativeHandle(ref, () => ({
+    setMouseRelativePosition,
   }));
 
-  if (!stats) {
+  if (!isRendered) {
     return null;
   }
 
