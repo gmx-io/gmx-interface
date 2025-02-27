@@ -1,6 +1,7 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getMinimumExecutionFeeBufferBps, estimateExecutionGasPrice } from "../../fees/utils/executionFee";
 import { describe, expect, it } from "vitest";
+import { bigMath } from "sdk/utils/bigmath";
 
 const PREMIUM = 3000000000n / 30n;
 const BASE_GAS_PRICE = 1000000001n;
@@ -32,6 +33,7 @@ describe("getMinimumExecutionFeeBufferBps", () => {
         },
         gasParams: baseGasParams,
         expectedBufferBps: 5500n,
+        expectedExecutionFee: 24326800006100000n,
       },
       {
         minBufferParams: {
@@ -45,6 +47,7 @@ describe("getMinimumExecutionFeeBufferBps", () => {
           bufferBps: 200n,
         },
         expectedBufferBps: 1600n,
+        expectedExecutionFee: 18394550006100000n,
       },
       {
         minBufferParams: {
@@ -60,6 +63,7 @@ describe("getMinimumExecutionFeeBufferBps", () => {
           premium: 0n,
         },
         expectedBufferBps: 44500n,
+        expectedExecutionFee: 83112500030500000n,
       },
     ];
 
@@ -82,9 +86,9 @@ describe("getMinimumExecutionFeeBufferBps", () => {
         const newDeltaBps = (newDelta * BASIS_POINTS_DIVISOR_BIGINT) / params.minBufferParams.minExecutionFee;
 
         expect(requiredBufferBps / 100n).toBe(params.expectedBufferBps / 100n);
-        expect(newExecutionFee).toBeGreaterThanOrEqual(params.minBufferParams.minExecutionFee);
-        // Allow for 5% deviation
-        expect(newDeltaBps).toBeLessThan((BASIS_POINTS_DIVISOR_BIGINT / 100n) * 5n);
+        expect(newExecutionFee).toBe(params.expectedExecutionFee);
+        // <1% deviation
+        expect(bigMath.abs(newDeltaBps)).toBeLessThanOrEqual(100n);
       });
     });
   });
