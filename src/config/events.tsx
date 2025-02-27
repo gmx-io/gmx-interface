@@ -36,8 +36,8 @@ export const appEventsData: EventData[] = [
     id: "aixbt-cake-s-listing",
     title: "AIXBT, CAKE and S markets added on Arbitrum",
     isActive: true,
-    startDate: "27 Feb 2025, 16:00",
-    endDate: "05 Mar 2025, 16:00",
+    startDate: "27 Feb 2025, 17:00",
+    endDate: "05 Mar 2025, 17:00",
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="AIXBT" />
