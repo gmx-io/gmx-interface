@@ -88,7 +88,7 @@ describe("getMinimumExecutionFeeBufferBps", () => {
         expect(requiredBufferBps / 100n).toBe(params.expectedBufferBps / 100n);
         expect(newExecutionFee).toBe(params.expectedExecutionFee);
         // <1% deviation
-        expect(bigMath.abs(newDeltaBps)).toBeLessThanOrEqual(100n);
+        expect(bigMath.abs(newDeltaBps)).toBeLessThan(100n);
       });
     });
   });
