@@ -242,7 +242,7 @@ export type TradeFees = {
   uiSwapFee?: FeeItem;
   feeDiscountUsd?: bigint;
   swapProfitFee?: FeeItem;
-  externalSwapFees?: ExternalSwapFeeItem[];
+  externalSwapFees?: ExternalSwapFeeItem;
 };
 
 export type GmSwapFees = {

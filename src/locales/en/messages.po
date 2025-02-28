@@ -1666,6 +1666,10 @@ msgstr "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgid "High Swap Profit Fee"
 msgstr "High Swap Profit Fee"
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High External Swap Fee"
+msgstr "High External Swap Fee"
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."

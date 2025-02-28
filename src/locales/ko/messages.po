@@ -1666,6 +1666,10 @@ msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 msgid "High Swap Profit Fee"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High External Swap Fee"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""

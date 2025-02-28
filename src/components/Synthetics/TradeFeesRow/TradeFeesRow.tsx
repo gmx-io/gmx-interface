@@ -27,7 +27,7 @@ type Props = {
   totalFees?: FeeItem;
   shouldShowRebate?: boolean;
   swapFees?: SwapFeeItem[];
-  externalSwapFees?: ExternalSwapFeeItem[];
+  externalSwapFees?: ExternalSwapFeeItem;
   swapProfitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
@@ -86,30 +86,32 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    const externalSwapFeeRows: FeeRow[] =
-      p.externalSwapFees?.map((swap) => ({
-        id: `external-swap-${swap.tokenInAddress}-${swap.tokenOutAddress}`,
-        label: (
-          <>
-            <div className="text-white">
-              {t`External Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
-                getToken(chainId, swap.tokenOutAddress).symbol
-              }`}
-              :
-            </div>
-            <div>
-              (
-              {formatPercentage(bigMath.abs(swap.precisePercentage), {
-                displayDecimals: 3,
-                bps: false,
-              })}{" "}
-              of swap amount)
-            </div>
-          </>
-        ),
-        value: formatDeltaUsd(swap.deltaUsd),
-        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
-      })) || [];
+    const externalSwapFeeRow =
+      p.externalSwapFees && p.externalSwapFees.deltaUsd !== undefined && p.externalSwapFees.deltaUsd !== 0n
+        ? {
+            id: `external-swap-${p.externalSwapFees.tokenInAddress}-${p.externalSwapFees.tokenOutAddress}`,
+            label: (
+              <>
+                <div className="text-white">
+                  {t`External Swap ${getToken(chainId, p.externalSwapFees.tokenInAddress).symbol} to ${
+                    getToken(chainId, p.externalSwapFees.tokenOutAddress).symbol
+                  }`}
+                  :
+                </div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.externalSwapFees.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of swap amount)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.externalSwapFees.deltaUsd),
+            className: getPositiveOrNegativeClass(p.externalSwapFees.deltaUsd, "text-green-500"),
+          }
+        : undefined;
 
     const swapFeeRows: FeeRow[] =
       p.swapFees?.map((swap) => ({
@@ -307,13 +309,13 @@ export function TradeFeesRow(p: Props) {
         : undefined;
 
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...externalSwapFeeRows, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, externalSwapFeeRow, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
       return [
         swapPriceImpactRow,
-        ...externalSwapFeeRows,
+        externalSwapFeeRow,
         ...swapFeeRows,
         positionFeeRow,
         rebateRow,
@@ -338,7 +340,7 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         swapProfitFeeRow,
         swapPriceImpactRow,
-        ...externalSwapFeeRows,
+        externalSwapFeeRow,
         ...swapFeeRows,
       ].filter(Boolean) as FeeRow[];
     }

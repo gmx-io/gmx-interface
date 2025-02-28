@@ -20,6 +20,7 @@ import NumberInput from "components/NumberInput/NumberInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getIsFlagEnabled } from "config/ab";
 
 const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
 
@@ -235,11 +236,13 @@ export function SettingsModal({
           </ToggleSwitch>
         </div>
 
-        <div className="Exchange-settings-row">
-          <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-            <Trans>Enable external swaps</Trans>
-          </ToggleSwitch>
-        </div>
+        {getIsFlagEnabled("testExternalSwap") && (
+          <div className="Exchange-settings-row">
+            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+              <Trans>Enable external swaps</Trans>
+            </ToggleSwitch>
+          </div>
+        )}
 
         {isDevelopment() && (
           <ToggleSwitch

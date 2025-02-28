@@ -74,7 +74,7 @@ export function getTradeFees(p: {
   sizeDeltaUsd: bigint;
   collateralDeltaUsd: bigint;
   swapSteps: SwapStats[];
-  externalSwapQuotas: ExternalSwapQuote[];
+  externalSwapQuote: ExternalSwapQuote | undefined;
   positionFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;
   positionPriceImpactDeltaUsd: bigint;
@@ -93,7 +93,7 @@ export function getTradeFees(p: {
     positionFeeUsd,
     swapPriceImpactDeltaUsd,
     positionPriceImpactDeltaUsd,
-    externalSwapQuotas,
+    externalSwapQuote,
     priceImpactDiffUsd,
     borrowingFeeUsd,
     fundingFeeUsd,
@@ -103,7 +103,7 @@ export function getTradeFees(p: {
   } = p;
 
   const swapFees: SwapFeeItem[] | undefined =
-    !externalSwapQuotas.length && initialCollateralUsd > 0
+    !externalSwapQuote && initialCollateralUsd > 0
       ? swapSteps.map((step) => ({
           tokenInAddress: step.tokenInAddress,
           tokenOutAddress: step.tokenOutAddress,
@@ -114,16 +114,22 @@ export function getTradeFees(p: {
         }))
       : undefined;
 
-  const externalSwapFees: ExternalSwapFeeItem[] | undefined =
-    initialCollateralUsd > 0 && externalSwapQuotas.length
-      ? externalSwapQuotas.map((quote) => ({
-          aggregator: quote.aggregator,
-          tokenInAddress: quote.inTokenAddress,
-          tokenOutAddress: quote.outTokenAddress,
-          deltaUsd: quote.feesUsd * -1n,
-          bps: quote.usdIn != 0n ? getBasisPoints(quote.feesUsd * -1n, quote.usdIn) : 0n,
-          precisePercentage: quote.usdIn != 0n ? bigMath.mulDiv(quote.feesUsd * -1n, PRECISION, quote.usdIn) : 0n,
-        }))
+  const externalSwapFees: ExternalSwapFeeItem | undefined =
+    initialCollateralUsd > 0 && externalSwapQuote
+      ? {
+          aggregator: externalSwapQuote.aggregator,
+          tokenInAddress: externalSwapQuote.inTokenAddress,
+          tokenOutAddress: externalSwapQuote.outTokenAddress,
+          deltaUsd: externalSwapQuote.feesUsd * -1n,
+          bps:
+            externalSwapQuote.usdIn != 0n
+              ? getBasisPoints(externalSwapQuote.feesUsd * -1n, externalSwapQuote.usdIn)
+              : 0n,
+          precisePercentage:
+            externalSwapQuote.usdIn != 0n
+              ? bigMath.mulDiv(externalSwapQuote.feesUsd * -1n, PRECISION, externalSwapQuote.usdIn)
+              : 0n,
+        }
       : undefined;
 
   const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(swapSteps);
@@ -137,9 +143,7 @@ export function getTradeFees(p: {
 
   const swapProfitFee = getFeeItem(swapProfitFeeUsd * -1n, initialCollateralUsd);
 
-  const swapPriceImpact = !externalSwapQuotas.length
-    ? getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd)
-    : undefined;
+  const swapPriceImpact = !externalSwapQuote ? getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd) : undefined;
 
   const positionFeeBeforeDiscount = getFeeItem((positionFeeUsd + feeDiscountUsd) * -1n, sizeDeltaUsd);
   const positionFeeAfterDiscount = getFeeItem(positionFeeUsd * -1n, sizeDeltaUsd);
@@ -155,7 +159,7 @@ export function getTradeFees(p: {
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
-    ...(externalSwapFees || []),
+    externalSwapFees,
     swapProfitFee,
     swapPriceImpact,
     positionFeeAfterDiscount,

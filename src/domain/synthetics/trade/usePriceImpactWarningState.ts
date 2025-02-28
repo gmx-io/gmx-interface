@@ -9,9 +9,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { FeeItem } from "sdk/types/fees";
 import type { TradeFlags } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
-import { getIsHighSwapImpact } from "./utils/getIsHighSwapImpact";
-import { getIsHighCollateralImpact } from "./utils/getIsHighCollateralImpact";
-import { getIsHighPositionImpact } from "./utils/getIsHighPositionImpact";
+import {
+  getIsHighSwapImpact,
+  getIsHighCollateralImpact,
+  getIsHighPositionImpact,
+  getIsHighExternalSwapFees,
+} from "./utils/warnings";
 
 export type WarningState = {
   shouldShowWarningForPosition: boolean;
@@ -20,6 +23,7 @@ export type WarningState = {
   shouldShowWarningForSwapProfitFee: boolean;
   shouldShowWarningForExecutionFee: boolean;
   shouldShowWarningForTriggerOrders: boolean;
+  shouldShowWarningForExternalSwap: boolean;
   isDismissed: boolean;
   setIsDismissed: (isDismissed: boolean) => void;
   shouldShowWarning: boolean;
@@ -31,6 +35,7 @@ export function usePriceImpactWarningState({
   swapPriceImpact,
   swapProfitFee,
   executionFeeUsd,
+  externalSwapFeeItem,
   willDecreaseOrdersBeExecuted,
   tradeFlags,
 }: {
@@ -39,6 +44,7 @@ export function usePriceImpactWarningState({
   swapPriceImpact?: FeeItem;
   swapProfitFee?: FeeItem;
   executionFeeUsd?: bigint;
+  externalSwapFeeItem?: FeeItem;
   willDecreaseOrdersBeExecuted?: boolean;
   tradeFlags: TradeFlags;
 }): WarningState {
@@ -74,6 +80,9 @@ export function usePriceImpactWarningState({
   );
   const prevIsHightSwapProfitFee = usePrevious(isHightSwapProfitFee);
 
+  const isHighExternalSwapFees = getIsHighExternalSwapFees(externalSwapFeeItem);
+  const prevIsHighExternalSwapFees = usePrevious(isHighExternalSwapFees);
+
   const prevWillDecreaseOrdersBeExecuted = usePrevious(willDecreaseOrdersBeExecuted);
 
   useEffect(
@@ -85,7 +94,8 @@ export function usePriceImpactWarningState({
         prevIsHighSwapImpact === undefined ||
         prevIsHightSwapProfitFee === undefined ||
         prevIsHightExecutionPrice === undefined ||
-        prevWillDecreaseOrdersBeExecuted === undefined
+        prevWillDecreaseOrdersBeExecuted === undefined ||
+        prevIsHighExternalSwapFees === undefined
       ) {
         return;
       }
@@ -96,7 +106,8 @@ export function usePriceImpactWarningState({
         prevIsHighSwapImpact !== isHighSwapImpact ||
         prevIsHightSwapProfitFee !== isHightSwapProfitFee ||
         prevIsHightExecutionPrice !== isHightExecutionPrice ||
-        prevWillDecreaseOrdersBeExecuted !== willDecreaseOrdersBeExecuted
+        prevWillDecreaseOrdersBeExecuted !== willDecreaseOrdersBeExecuted ||
+        prevIsHighExternalSwapFees !== isHighExternalSwapFees
       ) {
         setIsDismissed(false);
       }
@@ -113,8 +124,10 @@ export function usePriceImpactWarningState({
       prevIsHighSwapImpact,
       prevIsHightExecutionPrice,
       prevIsHightSwapProfitFee,
+      prevIsHighExternalSwapFees,
       prevWillDecreaseOrdersBeExecuted,
       willDecreaseOrdersBeExecuted,
+      isHighExternalSwapFees,
     ]
   );
 
@@ -126,12 +139,14 @@ export function usePriceImpactWarningState({
   let shouldShowWarningForSwapProfitFee = false;
   let shouldShowWarningForExecutionFee = false;
   let shouldShowWarningForTriggerOrders = false;
+  let shouldShowWarningForExternalSwap = false;
 
   shouldShowWarningForSwap = isHighSwapImpact;
   shouldShowWarningForPosition = isHighPositionImpact;
   shouldShowWarningForSwapProfitFee = isHightSwapProfitFee;
   shouldShowWarningForExecutionFee = isHightExecutionPrice;
   shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted ?? false;
+  shouldShowWarningForExternalSwap = isHighExternalSwapFees;
 
   if (!shouldShowWarningForPosition) {
     shouldShowWarningForCollateral = isHighCollateralImpact;
@@ -143,7 +158,8 @@ export function usePriceImpactWarningState({
     shouldShowWarningForSwap ||
     shouldShowWarningForSwapProfitFee ||
     shouldShowWarningForExecutionFee ||
-    shouldShowWarningForTriggerOrders;
+    shouldShowWarningForTriggerOrders ||
+    shouldShowWarningForExternalSwap;
 
   const stableWarningState = useMemo<WarningState>(() => {
     return {
@@ -153,6 +169,7 @@ export function usePriceImpactWarningState({
       shouldShowWarningForSwapProfitFee,
       shouldShowWarningForExecutionFee,
       shouldShowWarningForTriggerOrders,
+      shouldShowWarningForExternalSwap,
       validationError,
       isDismissed,
       setIsDismissed,
@@ -165,6 +182,7 @@ export function usePriceImpactWarningState({
     shouldShowWarningForSwapProfitFee,
     shouldShowWarningForExecutionFee,
     shouldShowWarningForTriggerOrders,
+    shouldShowWarningForExternalSwap,
     validationError,
     isDismissed,
     shouldShowWarning,

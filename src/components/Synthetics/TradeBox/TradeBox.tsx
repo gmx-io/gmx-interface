@@ -193,6 +193,7 @@ export function TradeBox() {
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
     willDecreaseOrdersBeExecuted: decreaseOrdersThatWillBeExecuted.length > 0,
+    externalSwapFeeItem: fees?.externalSwapFees,
     tradeFlags,
   });
 
@@ -932,6 +933,7 @@ export function TradeBox() {
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
+                externalSwapFeeItem={fees?.externalSwapFees}
               />
             )}
           </div>

@@ -86,7 +86,9 @@ export const selectExternalSwapQuote = createSelector((q) => {
   };
 
   const isInternalSwapBetter =
-    inputs?.internalSwapTotalFeesDeltaUsd !== undefined && inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
+    inputs.internalSwapAmounts.amountOut > 0n &&
+    inputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
+    inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
 
   if (shouldFallbackToInternalSwap) {
     return undefined;
@@ -116,8 +118,14 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   const internalSwapTotalFeeItem = externalSwapInputs?.internalSwapTotalFeeItem;
   const swapPriceImpactForExternalSwapThresholdBps = getSwapPriceImpactForExternalSwapThresholdBps();
 
-  const isExternalSwapConditionMet =
-    !internalSwapTotalFeeItem || internalSwapTotalFeeItem.bps < swapPriceImpactForExternalSwapThresholdBps;
+  const thereIsNoInternalSwap =
+    !internalSwapTotalFeeItem ||
+    (externalSwapInputs && externalSwapInputs.amountIn > 0n && externalSwapInputs.internalSwapAmounts.amountOut === 0n);
+
+  const internalSwapFeesConditionMet =
+    internalSwapTotalFeeItem && internalSwapTotalFeeItem.bps < swapPriceImpactForExternalSwapThresholdBps;
+
+  const isExternalSwapConditionMet = thereIsNoInternalSwap || internalSwapFeesConditionMet;
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
 

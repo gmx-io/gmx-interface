@@ -4,7 +4,7 @@ import { memo, useMemo } from "react";
 import { OrderType } from "domain/synthetics/orders/types";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { TradeFees, TradeFlags, TriggerThresholdType } from "domain/synthetics/trade";
-import { getIsHighPositionImpact } from "domain/synthetics/trade/utils/getIsHighPositionImpact";
+import { getIsHighPositionImpact } from "domain/synthetics/trade/utils/warnings";
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
