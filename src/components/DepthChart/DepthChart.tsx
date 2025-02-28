@@ -16,6 +16,7 @@ import {
   TextProps,
   XAxis,
   YAxis,
+  YAxisProps,
 } from "recharts";
 import { useOffset, useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 import type { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
@@ -45,7 +46,7 @@ import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 const getYAxisLabel = (): LabelProps => ({
   value: t`Size, $`,
   position: "top",
-  offset: 10,
+  offset: 0,
   fill: "#ffffff",
   opacity: 0.7,
   dx: -3,
@@ -54,6 +55,7 @@ const getYAxisLabel = (): LabelProps => ({
 const Y_AXIS_DOMAIN: [AxisDomainItem, AxisDomainItem] = [0, "dataMax"];
 const Y_AXIS_DOMAIN_EMPTY: [AxisDomainItem, AxisDomainItem] = [0, 1];
 const Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT: [AxisDomainItem, AxisDomainItem] = [0, "auto"];
+const Y_AXIS_PADDING: YAxisProps["padding"] = { top: 10 };
 
 const getOraclePriceLabel = (): ImplicitLabelType => ({
   position: "bottom",
@@ -427,6 +429,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           tickMargin={2}
           tick={<YAxisTick />}
           label={yAxisLabel}
+          padding={Y_AXIS_PADDING}
           domain={
             isZeroPriceImpact
               ? Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT
