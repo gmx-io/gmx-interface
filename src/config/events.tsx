@@ -33,6 +33,19 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "stop-market-orders",
+    title: "Introducing Stop Market orders",
+    isActive: true,
+    startDate: "28 Feb 2025, 00:00",
+    endDate: "07 Mar 2025, 00:00",
+    bodyText: (
+      <>
+        Stop Market orders are now enabled on GMX.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2#stop-market-orders">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: "aixbt-cake-s-listing",
     title: "AIXBT, CAKE and S markets added on Arbitrum",
     isActive: true,
