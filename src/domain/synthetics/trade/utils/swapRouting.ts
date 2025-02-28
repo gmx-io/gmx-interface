@@ -1,11 +1,14 @@
+import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "config/markets";
 import { getAvailableUsdLiquidityForCollateral, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "sdk/types/trade";
-import { getMaxSwapPathLiquidity, getSwapCapacityUsd, getSwapStats } from "./swapStats";
-import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "config/markets";
 import { bigMath } from "sdk/utils/bigmath";
+import { getMaxSwapPathLiquidity, getSwapCapacityUsd, getSwapStats } from "./swapStats";
 
 // limit the number of markets to most N=SWAP_GRAPH_MAX_MARKETS_PER_TOKEN liquid markets for each collateral
-export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
+export function limitMarketsPerTokens(
+  markets: MarketInfo[],
+  limit: number = SWAP_GRAPH_MAX_MARKETS_PER_TOKEN
+): MarketInfo[] {
   const marketsByTokens: { [token: string]: MarketInfo[] } = {};
 
   for (const market of markets) {
@@ -46,12 +49,17 @@ export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
     let marketsPerTokenCount = 0;
 
     for (const market of sortedMarkets) {
-      if (marketsPerTokenCount > SWAP_GRAPH_MAX_MARKETS_PER_TOKEN || resultMarkets[market.marketTokenAddress]) {
+      if (marketsPerTokenCount >= limit) {
         break;
       }
 
-      resultMarkets[market.marketTokenAddress] = market;
+      if (resultMarkets[market.marketTokenAddress]) {
+        marketsPerTokenCount++;
+        continue;
+      }
+
       marketsPerTokenCount++;
+      resultMarkets[market.marketTokenAddress] = market;
     }
   }
 
