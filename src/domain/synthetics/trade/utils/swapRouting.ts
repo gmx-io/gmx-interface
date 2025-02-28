@@ -46,8 +46,12 @@ export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
     let marketsPerTokenCount = 0;
 
     for (const market of sortedMarkets) {
-      if (marketsPerTokenCount > SWAP_GRAPH_MAX_MARKETS_PER_TOKEN || resultMarkets[market.marketTokenAddress]) {
+      if (marketsPerTokenCount > SWAP_GRAPH_MAX_MARKETS_PER_TOKEN) {
         break;
+      }
+
+      if (resultMarkets[market.marketTokenAddress]) {
+        continue;
       }
 
       resultMarkets[market.marketTokenAddress] = market;
