@@ -9,4 +9,4 @@ export const HIGH_POSITION_IMPACT_BPS = 50; // 0.5%
 export const HIGH_COLLATERAL_IMPACT_BPS = 500; // 5%
 export const HIGH_SWAP_IMPACT_BPS = 50; // 0.5%
 export const DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER = 30; // 0.3%
-export const HIGH_EXTERNAL_SWAP_FEES_BPS = 500; // 5%
+export const HIGH_EXTERNAL_SWAP_FEES_BPS = 200; // 2%

@@ -1667,8 +1667,8 @@ msgid "High Swap Profit Fee"
 msgstr "High Swap Profit Fee"
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High External Swap Fee"
-msgstr "High External Swap Fee"
+#~ msgid "High External Swap Fee"
+#~ msgstr "High External Swap Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
@@ -3368,6 +3368,10 @@ msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Plea
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
+
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High External Swap Impact"
+msgstr "High External Swap Impact"
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx

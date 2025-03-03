@@ -77,12 +77,8 @@ export function HighPriceImpactOrFeesWarningCard({
     if (externalSwapFeeItem) {
       warnings.push({
         id: "high-external-swap-fee",
-        key: t`High External Swap Fee`,
-        value: formatPercentage(externalSwapFeeItem.precisePercentage, {
-          signed: true,
-          bps: false,
-          displayDecimals: 3,
-        }),
+        key: t`High External Swap Impact`,
+        value: formatUsd(externalSwapFeeItem.deltaUsd),
       });
     }
     return warnings;
