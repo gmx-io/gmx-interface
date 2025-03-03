@@ -6924,10 +6924,6 @@ msgstr "You can change this in the settings menu on the top right of the page.<0
 msgid "Request Settlement of Funding Fees"
 msgstr "Request Settlement of Funding Fees"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
-
 #: src/pages/Earn/EarnV1.jsx
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "Approving {stakingTokenSymbol}..."

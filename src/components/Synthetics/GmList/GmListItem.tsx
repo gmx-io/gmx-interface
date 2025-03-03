@@ -18,10 +18,11 @@ import { getMintableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
+import { formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
@@ -31,7 +32,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { MintableAmount } from "./MintableAmount";
-import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export const tokenAddressStyle = { fontSize: 5 };
 
@@ -192,13 +192,7 @@ export function GmListItem({
       </TableTd>
       <TableTd>{formatUsdPrice(token.prices?.minPrice)}</TableTd>
       <TableTd>
-        <TokenValuesInfoCell
-          token={formatTokenAmount(totalSupply, token.decimals, token.symbol, {
-            useCommas: true,
-            displayDecimals: 2,
-          })}
-          usd={formatUsd(totalSupplyUsd)}
-        />
+        <AmountWithUsdHuman multiline amount={totalSupply} decimals={token.decimals} usd={totalSupplyUsd} />
       </TableTd>
       <TableTd>
         {isGlv ? (

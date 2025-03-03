@@ -6918,10 +6918,6 @@ msgstr ""
 msgid "Request Settlement of Funding Fees"
 msgstr "要求结算资金费用"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
-
 #: src/pages/Earn/EarnV1.jsx
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "核准中"

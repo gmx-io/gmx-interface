@@ -8,7 +8,6 @@ import { getIcons } from "config/icons";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { ProcessedData, useENS } from "lib/legacy";
 import {
@@ -21,9 +20,11 @@ import {
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
@@ -187,7 +188,7 @@ export function GmxAndVotingPowerCard({
                   position="bottom-end"
                   className="nowrap"
                   handle={formatBalanceAmount(govTokenAmount, 18, "GMX DAO", true)}
-                  renderContent={() => (
+                  content={
                     <>
                       {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount > 0 ? (
                         <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
@@ -219,7 +220,7 @@ export function GmxAndVotingPowerCard({
                       <br />
                       <ExternalLink href={GMX_DAO_LINKS.DELEGATES}>Explore the list of delegates</ExternalLink>.
                     </>
-                  )}
+                  }
                 />
               ) : (
                 "..."
@@ -315,41 +316,19 @@ export function GmxAndVotingPowerCard({
             <Trans>Total Staked</Trans>
           </div>
           <div>
-            {totalGmxStaked === undefined && "..."}
-            {(totalGmxStaked !== undefined && (
-              <Tooltip
-                position="bottom-end"
-                className="whitespace-nowrap"
-                handle={
-                  formatAmount(totalGmxStaked, 18, 0, true) +
-                  " GMX" +
-                  ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
-                }
-                renderContent={() => (
-                  <ChainsStatsTooltipRow
-                    showDollar={false}
-                    decimalsForConversion={18}
-                    symbol="GMX"
-                    entries={stakedEntries}
-                  />
-                )}
-              />
-            )) ||
-              null}
+            <Tooltip
+              position="bottom-end"
+              className="whitespace-nowrap"
+              handle={<AmountWithUsdHuman amount={totalGmxStaked} decimals={18} usd={stakedGmxSupplyUsd} />}
+              content={<ChainsStatsTooltipRow showDollar={false} decimalsForConversion={18} entries={stakedEntries} />}
+            />
           </div>
         </div>
         <div className="App-card-row">
           <div className="label">
             <Trans>Total Supply</Trans>
           </div>
-          {totalGmxSupply === undefined ? (
-            "..."
-          ) : (
-            <div>
-              {formatAmount(totalGmxSupply, 18, 0, true)} GMX ($
-              {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
-            </div>
-          )}
+          <AmountWithUsdHuman amount={totalGmxSupply} decimals={18} usd={totalSupplyUsd} />
         </div>
         <div className="App-card-divider" />
         <div className="App-card-buttons m-0">

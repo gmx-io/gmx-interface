@@ -1,8 +1,10 @@
 import { Trans } from "@lingui/macro";
-import { USD_DECIMALS } from "config/factors";
-import "./StatsTooltip.css";
-import { formatAmount } from "lib/numbers";
 import { ReactNode } from "react";
+
+import { USD_DECIMALS } from "config/factors";
+import { formatAmount, formatAmountHuman } from "lib/numbers";
+
+import "./StatsTooltip.css";
 
 type Props = {
   entries: { [key: string]: bigint | string | undefined };
@@ -37,8 +39,9 @@ export default function ChainsStatsTooltipRow({
               <Trans>{title}</Trans>:{" "}
             </span>
             <span className="amount">
-              {showDollar && "$"}
-              {formatAmount(value, shouldFormat ? decimalsForConversion : 0, 0, true)}
+              {!shouldFormat
+                ? formatAmount(value, 0, 0, true)
+                : formatAmountHuman(value, decimalsForConversion, showDollar, 2)}
               {!showDollar && symbol && " " + symbol}
             </span>
           </p>
@@ -50,8 +53,9 @@ export default function ChainsStatsTooltipRow({
           <Trans>Total:</Trans>
         </span>
         <span className="amount">
-          {showDollar && "$"}
-          {formatAmount(total, shouldFormat ? decimalsForConversion : 0, 0, true)}
+          {!shouldFormat
+            ? formatAmount(total, 0, 0, true)
+            : formatAmountHuman(total, decimalsForConversion, showDollar, 2)}
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>
