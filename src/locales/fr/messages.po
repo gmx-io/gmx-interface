@@ -6472,6 +6472,7 @@ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Acceptable Price"
 msgstr "Prix acceptable"
@@ -7856,8 +7857,8 @@ msgid "Net Rate"
 msgstr "Taux net"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Acceptable Price:"
-msgstr ""
+#~ msgid "Acceptable Price:"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx

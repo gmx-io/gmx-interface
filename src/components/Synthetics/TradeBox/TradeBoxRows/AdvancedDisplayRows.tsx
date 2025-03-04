@@ -278,7 +278,18 @@ export function TradeBoxAdvancedGroups() {
           <div className="h-1 shrink-0 bg-stroke-primary" />
         </>
       )}
-      {isLimit && isSwap && (
+
+      {isIncrease && <IncreaseOrderRow />}
+      {isTrigger && <DecreaseOrderRow />}
+      <TradeFeesRow {...fees} feesType={feesType} />
+      <NetworkFeeRow executionFee={executionFee} />
+
+      {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
+
+      {/* only when isSwap */}
+      {isSwap && <SwapSpreadRow />}
+      {/* only when isLimit */}
+      {isSwap && isLimit && (
         <AllowedSwapSlippageInputRow
           className="!mb-0 mt-8"
           notAvailable={
@@ -292,17 +303,6 @@ export function TradeBoxAdvancedGroups() {
           setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
         />
       )}
-
-      {isIncrease && <IncreaseOrderRow />}
-      {isTrigger && <DecreaseOrderRow />}
-      <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow executionFee={executionFee} />
-
-      {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
-
-      {/* only when isSwap */}
-      {isSwap && <SwapSpreadRow />}
-      {/* only when isLimit */}
       {isLimit && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
       {isMarket && !isSwap && <CollateralSpreadRow />}

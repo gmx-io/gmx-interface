@@ -324,9 +324,9 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
             handle={swapRatioText}
             renderContent={() => (
               <>
-                <p>
-                  <Trans>Acceptable Price:</Trans> {acceptablePriceText}
-                </p>
+                <div className="pb-8">
+                  <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
+                </div>
                 {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
               </>
             )}
@@ -675,7 +675,7 @@ function getSwapRatioText(order: OrderInfo) {
 
   const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
-  const acceptablePriceText = `${sign} ${formatAmount(triggerRatio?.acceptablePrice, USD_DECIMALS, 2, true)}`;
+  const acceptablePriceText = `${sign} ${formatAmount(triggerRatio?.acceptablePrice, USD_DECIMALS, 2, true)} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 
   return { swapRatioText, markSwapRatioText, acceptablePriceText };
 }

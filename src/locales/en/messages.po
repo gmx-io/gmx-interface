@@ -6470,6 +6470,7 @@ msgstr "Trigger price below highest limit price"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Acceptable Price"
 msgstr "Acceptable Price"
@@ -7854,8 +7855,8 @@ msgid "Net Rate"
 msgstr "Net Rate"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Acceptable Price:"
-msgstr "Acceptable Price:"
+#~ msgid "Acceptable Price:"
+#~ msgstr "Acceptable Price:"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
