@@ -71,3 +71,7 @@ export function bigintToNumber(value: bigint, decimals: number) {
   const num = parseFloat(`${int}.${frac.toString().padStart(decimals, "0")}`);
   return negative ? -num : num;
 }
+
+export function adjustForDecimals(amount: bigint, divDecimals: number, mulDecimals: number) {
+  return (amount * expandDecimals(1, mulDecimals)) / expandDecimals(1, divDecimals);
+}

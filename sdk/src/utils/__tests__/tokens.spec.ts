@@ -10,6 +10,7 @@ import {
   getIsEquivalentTokens,
   getTokenData,
   getTokensRatioByAmounts,
+  getTokensRatioByMinOutputAmountAndTriggerPrice,
 } from "../tokens";
 import { expandDecimals, PRECISION } from "../numbers";
 import { TOKENS } from "configs/tokens";
@@ -108,5 +109,36 @@ describe("getTokensRatioByAmounts", () => {
     expect(result.ratio).toBe(
       (((1000n * PRECISION) / expandDecimals(1, 2)) * PRECISION) / ((500n * PRECISION) / expandDecimals(1, 2))
     );
+  });
+});
+
+describe("getTokensRatioByMinOutputAmountAndTriggerPrice", () => {
+  it("returns ratio of two token amounts in case if triggerPrice is 0n", () => {
+    const fromToken = { decimals: 2 } as Token;
+    const toToken = { decimals: 2 } as Token;
+    const result = getTokensRatioByMinOutputAmountAndTriggerPrice({
+      fromToken,
+      toToken,
+      fromTokenAmount: 1000n,
+      toTokenAmount: 500n,
+      triggerPrice: 0n,
+      minOutputAmount: 100n,
+    });
+    expect(result.ratio).toBe(10000000000000000000000000000000n);
+    expect(result.allowedSwapSlippageBps).toBe(100n);
+  });
+  it("returns ratio of two token amounts in case if triggerPrice is not 0n", () => {
+    const fromToken = { decimals: 2 } as Token;
+    const toToken = { decimals: 2 } as Token;
+    const result = getTokensRatioByMinOutputAmountAndTriggerPrice({
+      fromToken,
+      toToken,
+      fromTokenAmount: 1000n,
+      toTokenAmount: 500n,
+      triggerPrice: 100n,
+      minOutputAmount: 100n,
+    });
+    expect(result.ratio).toBe(100n);
+    expect(result.allowedSwapSlippageBps).toBe(9999n);
   });
 });

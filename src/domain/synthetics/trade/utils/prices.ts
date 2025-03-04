@@ -1,4 +1,4 @@
-import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
@@ -21,7 +21,7 @@ export function getDefaultAcceptablePriceImpactBps(p: {
     indexPrice,
     sizeDeltaUsd,
     priceImpactDeltaUsd,
-    acceptablePriceImapctBuffer = DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
+    acceptablePriceImapctBuffer = DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
   } = p;
 
   if (priceImpactDeltaUsd > 0) {
