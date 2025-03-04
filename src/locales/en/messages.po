@@ -5198,8 +5198,8 @@ msgid "buy"
 msgstr "buy"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-#~ msgid "AVAILABLE LIQ."
-#~ msgstr "AVAILABLE LIQ."
+msgid "AVAILABLE LIQ."
+msgstr "AVAILABLE LIQ."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
