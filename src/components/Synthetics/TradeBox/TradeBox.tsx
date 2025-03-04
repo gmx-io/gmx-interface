@@ -16,7 +16,6 @@ import {
   selectTradeboxChooseSuitableMarket,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
-  selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxKeepLeverage,
@@ -51,6 +50,7 @@ import {
   formatAmountFree,
   formatBalanceAmount,
   formatDeltaUsd,
+  formatPercentage,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -83,17 +83,14 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { OneClickTradingInfo } from "./OneClickTradingInfo";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
-import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
-
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
@@ -188,7 +185,6 @@ export function TradeBox() {
 
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
   const maxLeverage = useSelector(selectTradeboxMaxLeverage);
-  const executionPrice = useSelector(selectTradeboxExecutionPrice);
 
   const maxAllowedLeverage = maxLeverage / 2;
 
@@ -744,36 +740,6 @@ export function TradeBox() {
     );
   }
 
-  function renderTriggerOrderInfo() {
-    let formattedTriggerPrice = "-";
-
-    if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
-      formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsdPrice(
-        decreaseAmounts.triggerPrice,
-        {
-          visualMultiplier: toToken?.visualMultiplier,
-        }
-      )}`;
-    }
-
-    return (
-      <>
-        <SyntheticsInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />
-
-        {!isTrigger && (
-          <ExecutionPriceRow
-            tradeFlags={tradeFlags}
-            fees={fees}
-            executionPrice={executionPrice ?? undefined}
-            triggerOrderType={decreaseAmounts?.triggerOrderType}
-            acceptablePrice={decreaseAmounts?.acceptablePrice}
-            visualMultiplier={toToken?.visualMultiplier}
-          />
-        )}
-      </>
-    );
-  }
-
   useKey(
     "Enter",
     () => {
@@ -971,7 +937,6 @@ export function TradeBox() {
           <div>{button}</div>
           <div className="h-1 bg-stroke-primary" />
           {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
-          {!(isSwap && isLimit) && <LimitPriceRow />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
             <SyntheticsInfoRow
               label={t`Receive`}
@@ -984,7 +949,29 @@ export function TradeBox() {
             />
           )}
 
-          {isTrigger && renderTriggerOrderInfo()}
+          {isTrigger && (
+            <SyntheticsInfoRow
+              label={t`PnL`}
+              value={
+                <ValueTransition
+                  from={
+                    <>
+                      {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                      {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+                    </>
+                  }
+                  to={
+                    decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
+                      <>
+                        {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                        {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
+                      </>
+                    ) : undefined
+                  }
+                />
+              }
+            />
+          )}
           {!(isTrigger && !selectedPosition) && !isSwap && (
             <SyntheticsInfoRow
               label={t`Liquidation Price`}
