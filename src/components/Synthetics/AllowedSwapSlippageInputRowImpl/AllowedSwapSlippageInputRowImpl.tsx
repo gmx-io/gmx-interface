@@ -8,6 +8,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
 import "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.scss";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
 type Props = {
   allowedSwapSlippageBps?: bigint;
@@ -16,7 +17,6 @@ type Props = {
   setAllowedSwapSlippageBps: (value: bigint) => void;
   totalSwapImpactBps: bigint;
   notAvailable?: boolean;
-  className?: string;
 };
 
 const EMPTY_SUGGESTIONS: number[] = [];
@@ -28,7 +28,6 @@ function AllowedSwapSlippageInputRowImpl({
   setAllowedSwapSlippageBps,
   notAvailable = false,
   totalSwapImpactBps,
-  className,
 }: Props) {
   const setValue = useCallback(
     (value: number | undefined) => {
@@ -56,9 +55,9 @@ function AllowedSwapSlippageInputRowImpl({
 
   if (notAvailable || recommendedValue === undefined || initialValue === undefined) {
     return (
-      <ExchangeInfoRow label={t`Allowed Slippage`}>
+      <SyntheticsInfoRow label={t`Allowed Slippage`}>
         <span className="AllowedSwapSlippageInputRow-na">{t`NA`}</span>
-      </ExchangeInfoRow>
+      </SyntheticsInfoRow>
     );
   }
 
@@ -96,7 +95,7 @@ function AllowedSwapSlippageInputRowImpl({
   );
 
   return (
-    <ExchangeInfoRow className={className} label={t`Allowed Slippage`}>
+    <SyntheticsInfoRow label={t`Allowed Slippage`} valueClassName="-my-5">
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}
@@ -110,7 +109,7 @@ function AllowedSwapSlippageInputRowImpl({
         negativeSign
         tooltipPosition="bottom-end"
       />
-    </ExchangeInfoRow>
+    </SyntheticsInfoRow>
   );
 }
 

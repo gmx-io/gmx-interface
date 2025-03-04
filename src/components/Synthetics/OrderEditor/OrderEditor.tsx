@@ -717,7 +717,6 @@ export function OrderEditor(p: Props) {
           {isSwapOrderType(p.order.orderType) && (
             <>
               <AllowedSwapSlippageInputRow
-                className="!mb-0 mt-8"
                 notAvailable={false}
                 totalSwapImpactBps={swapImpactBps}
                 allowedSwapSlippageBps={selectedAllowedSwapSlippageBps}

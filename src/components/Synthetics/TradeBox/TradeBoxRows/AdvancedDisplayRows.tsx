@@ -291,7 +291,6 @@ export function TradeBoxAdvancedGroups() {
       {/* only when isLimit */}
       {isSwap && isLimit && (
         <AllowedSwapSlippageInputRow
-          className="!mb-0 mt-8"
           notAvailable={
             isSwapImpactInputDisabled ||
             defaultAllowedSwapSlippageBps === undefined ||
