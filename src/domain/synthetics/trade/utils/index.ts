@@ -6,4 +6,4 @@ export * from "./decrease";
 export * from "./prices";
 export * from "./common";
 
-export * from "sdk/utils/trade";
+export * from "sdk/utils/trade/index";

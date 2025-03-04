@@ -268,7 +268,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       };
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
-
+      debugger;
       return createIncreaseOrderTxn({
         chainId,
         signer,

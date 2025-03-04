@@ -1,8 +1,9 @@
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import { getShouldUseMaxPrice } from "./prices";
-import { bigMath } from "./bigmath";
-import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "types/trade";
+import { getShouldUseMaxPrice } from "../prices";
+import { bigMath } from "../bigmath";
+import { DecreasePositionAmounts, IncreasePositionAmounts, MarketsGraph, SwapAmounts } from "types/trade";
 import { DecreasePositionSwapType } from "types/orders";
+import { MarketInfo } from "types/markets";
 
 export function applySlippageToPrice(allowedSlippage: number, price: bigint, isIncrease: boolean, isLong: boolean) {
   const shouldIncreasePrice = getShouldUseMaxPrice(isIncrease, isLong);

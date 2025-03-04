@@ -19,6 +19,7 @@ import { Module } from "../base";
 import { createSwapOrderTxn } from "./transactions/createSwapOrderTxn";
 import { createWrapOrUnwrapTxn, WrapOrUnwrapParams } from "./transactions/createWrapOrUnwrapTxn";
 import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
+import { PositionIncreaseParams, increaseOrderHelper } from "./helpers";
 
 export class Orders extends Module {
   async getOrders({
@@ -409,5 +410,13 @@ export class Orders extends Module {
 
   async createWrapOrUnwrapOrder(p: WrapOrUnwrapParams) {
     return createWrapOrUnwrapTxn(this.sdk, p);
+  }
+
+  async long(params: PositionIncreaseParams) {
+    return increaseOrderHelper(this.sdk, { ...params, isLong: true });
+  }
+
+  async short(params: PositionIncreaseParams) {
+    return increaseOrderHelper(this.sdk, { ...params, isLong: false });
   }
 }
