@@ -40,6 +40,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./OrderItem.scss";
+import { TokensRatioAndSlippage } from "domain/tokens";
 
 type Props = {
   order: OrderInfo;
@@ -313,7 +314,7 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
     const toAmount = swapOrder.minOutputAmount;
     const toToken = order.targetCollateralToken;
     const toAmountText = formatBalanceAmount(toAmount, toToken.decimals, toToken.symbol);
-    const { swapRatioText } = getSwapRatioText(order);
+    const { swapRatioText, acceptablePriceText } = getSwapRatioText(order);
 
     return (
       <>
@@ -321,9 +322,14 @@ function TriggerPrice({ order, hideActions }: { order: OrderInfo; hideActions: b
           <Tooltip
             position="bottom-end"
             handle={swapRatioText}
-            renderContent={() =>
-              t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`
-            }
+            renderContent={() => (
+              <>
+                <div className="pb-8">
+                  <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
+                </div>
+                {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
+              </>
+            )}
           />
         ) : (
           swapRatioText
@@ -649,7 +655,7 @@ function getSwapRatioText(order: OrderInfo) {
   const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
   const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
-  const triggerRatio = (order as SwapOrderInfo).triggerRatio;
+  const triggerRatio = (order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
   const markExchangeRate =
     fromToken && toToken
@@ -657,7 +663,10 @@ function getSwapRatioText(order: OrderInfo) {
       : undefined;
 
   const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
-  const swapRatioText = `${formatAmount(
+
+  const sign = triggerRatio?.smallestToken.address === fromToken.address ? "<" : ">";
+
+  const swapRatioText = `${sign} ${formatAmount(
     triggerRatio?.ratio,
     USD_DECIMALS,
     ratioDecimals,
@@ -666,7 +675,9 @@ function getSwapRatioText(order: OrderInfo) {
 
   const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
-  return { swapRatioText, markSwapRatioText };
+  const acceptablePriceText = `${sign} ${formatAmount(triggerRatio?.acceptablePrice, USD_DECIMALS, 2, true)} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
+
+  return { swapRatioText, markSwapRatioText, acceptablePriceText };
 }
 
 function OrderItemTypeLabel({ order }: { order: OrderInfo }) {

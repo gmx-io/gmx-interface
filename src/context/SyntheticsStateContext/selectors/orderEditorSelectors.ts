@@ -1,3 +1,12 @@
+import { USD_DECIMALS } from "config/factors";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  estimateOrderOraclePriceCount,
+  getFeeItem,
+} from "domain/synthetics/fees";
+import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 import {
   OrderType,
   PositionOrderInfo,
@@ -5,14 +14,17 @@ import {
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
+  isLimitSwapOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
+import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
   TokensRatio,
   convertToTokenAmount,
+  convertToUsd,
   getAmountByRatio,
   getTokenData,
   getTokensRatioByPrice,
@@ -24,11 +36,13 @@ import {
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
+  getTradeFees,
   getTradeFlagsForOrder,
 } from "domain/synthetics/trade";
 import { getPositionKey } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { BN_ZERO, parseValue } from "lib/numbers";
+import { getWrappedToken } from "sdk/configs/tokens";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import {
@@ -47,17 +61,6 @@ import {
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
-import { getWrappedToken } from "sdk/configs/tokens";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getFeeItem,
-} from "domain/synthetics/fees";
-import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -79,6 +82,67 @@ export const selectOrderEditorInitialAcceptablePriceImpactBps = (s: SyntheticsSt
   s.orderEditor.initialAcceptablePriceImpactBps;
 export const selectOrderEditorSetAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.orderEditor.setAcceptablePriceImpactBps;
+
+export const selectOrderEditorDefaultAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.orderEditor.defaultAllowedSwapSlippageBps;
+export const selectOrderEditorSetDefaultAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.orderEditor.setDefaultAllowedSwapSlippageBps;
+export const selectOrderEditorSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.orderEditor.selectedAllowedSwapSlippageBps;
+export const selectOrderEditorSetSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.orderEditor.setSelectedAllowedSwapSlippageBps;
+export const selectOrderEditorShouldCalculateMinOutputAmount = (s: SyntheticsState) =>
+  s.orderEditor.shouldCalculateMinOutputAmount;
+
+export const selectOrderEditorSwapFees = createSelector((q) => {
+  const order = q(selectEditingOrder);
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  if (!order) return undefined;
+
+  if (!isSwapOrderType(order.orderType)) {
+    return undefined;
+  }
+
+  const initialCollateralUsd =
+    convertToUsd(
+      order.initialCollateralDeltaAmount,
+      order.initialCollateralToken.decimals,
+      order.initialCollateralToken.prices.minPrice
+    ) ?? 0n;
+
+  return getTradeFees({
+    initialCollateralUsd,
+    collateralDeltaUsd: 0n,
+    sizeDeltaUsd: 0n,
+    swapSteps: order.swapPathStats?.swapSteps ?? [],
+    positionFeeUsd: 0n,
+    swapPriceImpactDeltaUsd: order.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n,
+    positionPriceImpactDeltaUsd: 0n,
+    priceImpactDiffUsd: 0n,
+    borrowingFeeUsd: 0n,
+    fundingFeeUsd: 0n,
+    feeDiscountUsd: 0n,
+    swapProfitFeeUsd: 0n,
+    uiFeeFactor,
+  });
+});
+
+export const selectOrderEditorTotalSwapImpactBps = createSelector((q) => {
+  const fees = q(selectOrderEditorSwapFees);
+  let swapPriceImpact = fees?.swapPriceImpact?.bps ?? 0n;
+
+  const swapFees = fees?.swapFees ?? [];
+
+  return (
+    swapPriceImpact +
+    (swapFees.length
+      ? swapFees.reduce((acc, fee) => {
+          return acc + (fee.bps ?? 0n);
+        }, 0n)
+      : 0n)
+  );
+});
 
 export const selectOrderEditorSizeDeltaUsd = createSelector((q) => {
   return parseValue(q(selectOrderEditorSizeInputValue) || "0", USD_DECIMALS);
@@ -351,6 +415,7 @@ export const selectOrderEditorIsRatioInverted = createSelector((q) => {
 
 export const selectOrderEditorMinOutputAmount = createSelector((q) => {
   const order = q(selectEditingOrder);
+
   if (!order) return BN_ZERO;
 
   const fromToken = q(selectOrderEditorFromToken);
@@ -359,10 +424,22 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
   const toToken = q(selectOrderEditorToToken);
   if (!toToken) return BN_ZERO;
 
+  let allowedSwapSlippageBps = q(selectOrderEditorSelectedAllowedSwapSlippageBps);
+  const isLimitSwapOrder = isLimitSwapOrderType(order.orderType);
+  const shouldCalculateMinOutputAmount = q(selectOrderEditorShouldCalculateMinOutputAmount);
+
+  if (!isLimitSwapOrder) {
+    allowedSwapSlippageBps = 0n;
+  }
+
   const triggerRatio = q(selectOrderEditorTriggerRatio);
   const isRatioInverted = q(selectOrderEditorIsRatioInverted);
 
   let minOutputAmount = order.minOutputAmount;
+
+  if (!shouldCalculateMinOutputAmount && isLimitSwapOrder) {
+    return minOutputAmount;
+  }
 
   if (triggerRatio) {
     minOutputAmount = getAmountByRatio({
@@ -371,6 +448,7 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
       fromTokenAmount: order.initialCollateralDeltaAmount,
       ratio: triggerRatio?.ratio,
       shouldInvertRatio: !isRatioInverted,
+      allowedSwapSlippageBps,
     });
 
     const priceImpactAmount = convertToTokenAmount(
@@ -385,7 +463,9 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
       order.targetCollateralToken.prices.minPrice
     );
 
-    minOutputAmount = minOutputAmount + (priceImpactAmount ?? 0n) - (swapFeeAmount ?? 0n);
+    if (!isLimitSwapOrder) {
+      minOutputAmount = minOutputAmount + (priceImpactAmount ?? 0n) - (swapFeeAmount ?? 0n);
+    }
   }
 
   return minOutputAmount;

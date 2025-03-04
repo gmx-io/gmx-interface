@@ -15,6 +15,7 @@ import {
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
+  getSwapPathComparator,
   getSwapPathStats,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
@@ -133,15 +134,16 @@ export const makeSelectFindSwapPath = createSelectorFactory(
       const allPaths = q(selectAllPaths);
       const estimator = q(selectSwapEstimator);
 
-      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => {
+      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => {
         if (!allPaths?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
           return undefined;
         }
 
         let swapPath: string[] | undefined = undefined;
+        const sortedPaths = opts.order ? [...allPaths].sort(getSwapPathComparator(opts.order ?? [])) : allPaths;
 
-        if (opts.byLiquidity) {
-          swapPath = allPaths[0].path;
+        if (opts.order) {
+          swapPath = sortedPaths[0].path;
         } else {
           swapPath = getBestSwapPath(allPaths, usdIn, estimator);
         }
