@@ -3222,6 +3222,10 @@ msgstr "GM can be sold for {0} and {1} for this market up to the specified selli
 msgid "Order Acceptable Price"
 msgstr "Order Acceptable Price"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "VOL."
+msgstr "VOL."
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
@@ -4762,6 +4766,10 @@ msgstr "Harmonix"
 msgid "Invalid NFT Address"
 msgstr "Invalid NFT Address"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr "LIQ."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP and GMX autocompounding vaults"
@@ -5190,8 +5198,8 @@ msgid "buy"
 msgstr "buy"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAILABLE LIQ."
-msgstr "AVAILABLE LIQ."
+#~ msgid "AVAILABLE LIQ."
+#~ msgstr "AVAILABLE LIQ."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"

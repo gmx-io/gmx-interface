@@ -3222,6 +3222,10 @@ msgstr ""
 msgid "Order Acceptable Price"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "VOL."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Capacity for {0} Reached"
 msgstr ""
@@ -4759,6 +4763,10 @@ msgstr ""
 msgid "Invalid NFT Address"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr ""
@@ -5187,8 +5195,8 @@ msgid "buy"
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "AVAILABLE LIQ."
-msgstr ""
+#~ msgid "AVAILABLE LIQ."
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
