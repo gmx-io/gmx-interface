@@ -541,15 +541,6 @@ table.Position-list .Exchange-list-item-active {
   position: relative;
 }
 
-.Position-active-card::before {
-  content: "";
-  border-left: 2px solid var(--color-cold-blue-500);
-  position: absolute;
-  left: -10px;
-  bottom: -1px;
-  height: 21px;
-}
-
 .Exchange-leverage-box {
   margin-bottom: 1.05rem;
 }
