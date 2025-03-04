@@ -82,7 +82,7 @@ export default function ChartTokenSelector(props: Props) {
       popoverXOffset={-8}
       handleClassName={oneRowLabels === false ? "mr-24" : undefined}
       chevronClassName={chevronClassName}
-      desktopPanelClassName="w-[800px] max-w-[100vw]"
+      desktopPanelClassName="w-[840px] max-w-[100vw]"
       label={
         selectedToken ? (
           <span
@@ -261,6 +261,8 @@ function MarketsList() {
     return t`Search Market`;
   }, [isSwap]);
 
+  const availableLiquidityLabel = isMobile ? t`AVAIL. LIQ.` : t`AVAILABLE LIQ.`;
+
   return (
     <>
       <SelectorBaseMobileHeaderContent>
@@ -303,7 +305,7 @@ function MarketsList() {
         <table className="text-sm w-full border-separate border-spacing-0">
           <thead className="bg-slate-800">
             <tr>
-              <th className={cx(thClassName, "min-w-[18ch]")} colSpan={2}>
+              <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
                 <Trans>Market</Trans>
               </th>
               {!isSwap && (
@@ -334,7 +336,7 @@ function MarketsList() {
                   )}
                   <th className={thClassName} colSpan={2}>
                     <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
-                      {isSmallMobile ? <Trans>LIQ.</Trans> : <Trans>AVAIL. LIQ.</Trans>}
+                      {isSmallMobile ? <Trans>LIQ.</Trans> : availableLiquidityLabel}
                     </Sorter>
                   </th>
                 </>
@@ -557,7 +559,7 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-cold-blue-900">
-        <td className={cx("pl-16 pr-4 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
+        <td className={cx("pl-9 pr-9 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
           <FavoriteStar isFavorite={isFavorite} />
         </td>
         <td
@@ -585,7 +587,7 @@ function MarketListItem({
       onClick={handleSelectLargePosition}
     >
       <td
-        className={cx("pr-4 text-center", rowVerticalPadding, isMobile ? "pl-10 pt-6 align-top" : "pl-16 text-center")}
+        className={cx("text-center", rowVerticalPadding, isMobile ? "pl-10 pr-4 pt-6 align-top" : "px-9 text-center")}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} />
