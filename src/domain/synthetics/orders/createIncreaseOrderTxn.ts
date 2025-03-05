@@ -26,7 +26,7 @@ import { isMarketOrderType } from "sdk/utils/orders";
 
 const { ZeroAddress } = ethers;
 
-type IncreaseOrderParams = {
+export type IncreaseOrderParams = {
   account: string;
   marketAddress: string;
   initialCollateralAddress: string;
@@ -52,7 +52,7 @@ type IncreaseOrderParams = {
   setPendingPosition: SetPendingPosition;
 };
 
-type SecondaryOrderCommonParams = {
+export type SecondaryOrderCommonParams = {
   account: string;
   marketAddress: string;
   swapPath: string[];

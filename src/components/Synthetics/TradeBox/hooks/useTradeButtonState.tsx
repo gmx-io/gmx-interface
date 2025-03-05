@@ -286,7 +286,7 @@ export function useTradeboxButtonState({ account, setToTokenInputValue }: Tradeb
     } else if (isSwap) {
       txnPromise = onSubmitSwap();
     } else if (isIncrease) {
-      txnPromise = onSubmitIncreaseOrder();
+      txnPromise = Promise.resolve(onSubmitIncreaseOrder());
     } else {
       txnPromise = onSubmitDecreaseOrder();
     }

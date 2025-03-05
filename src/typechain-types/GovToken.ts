@@ -69,76 +69,193 @@ export interface GovTokenInterface extends Interface {
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "Approval" | "DelegateChanged" | "DelegateVotesChanged" | "EIP712DomainChanged" | "Transfer"
+    nameOrSignatureOrTopic:
+      | "Approval"
+      | "DelegateChanged"
+      | "DelegateVotesChanged"
+      | "EIP712DomainChanged"
+      | "Transfer"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "CLOCK_MODE", values?: undefined): string;
-  encodeFunctionData(functionFragment: "DOMAIN_SEPARATOR", values?: undefined): string;
-  encodeFunctionData(functionFragment: "allowance", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "approve", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "burn", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "checkpoints", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "CLOCK_MODE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allowance",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approve",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "balanceOf",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "burn",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkpoints",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "clock", values?: undefined): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
-  encodeFunctionData(functionFragment: "decreaseAllowance", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "delegate", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "decreaseAllowance",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "delegate",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "delegateBySig",
-    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, BytesLike, BytesLike]
+    values: [
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "delegates", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "eip712Domain", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getPastTotalSupply", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getPastVotes", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "getVotes", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "increaseAllowance", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "mint", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "delegates",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "eip712Domain",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPastTotalSupply",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPastVotes",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getVotes",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "increaseAllowance",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "numCheckpoints", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "numCheckpoints",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "permit",
-    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish, BytesLike, BytesLike]
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "totalSupply", values?: undefined): string;
-  encodeFunctionData(functionFragment: "transfer", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "transferFrom", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transfer",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferFrom",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
 
   decodeFunctionResult(functionFragment: "CLOCK_MODE", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "DOMAIN_SEPARATOR", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "checkpoints", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "checkpoints",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "clock", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "decreaseAllowance", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "delegate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "delegateBySig", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "delegateBySig",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "delegates", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "eip712Domain", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getPastTotalSupply", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getPastVotes", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "eip712Domain",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPastTotalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPastVotes",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getVotes", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "increaseAllowance", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "increaseAllowance",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "numCheckpoints", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "numCheckpoints",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "totalSupply", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "transferFrom", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferFrom",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace ApprovalEvent {
-  export type InputTuple = [owner: AddressLike, spender: AddressLike, value: BigNumberish];
+  export type InputTuple = [
+    owner: AddressLike,
+    spender: AddressLike,
+    value: BigNumberish
+  ];
   export type OutputTuple = [owner: string, spender: string, value: bigint];
   export interface OutputObject {
     owner: string;
@@ -152,8 +269,16 @@ export namespace ApprovalEvent {
 }
 
 export namespace DelegateChangedEvent {
-  export type InputTuple = [delegator: AddressLike, fromDelegate: AddressLike, toDelegate: AddressLike];
-  export type OutputTuple = [delegator: string, fromDelegate: string, toDelegate: string];
+  export type InputTuple = [
+    delegator: AddressLike,
+    fromDelegate: AddressLike,
+    toDelegate: AddressLike
+  ];
+  export type OutputTuple = [
+    delegator: string,
+    fromDelegate: string,
+    toDelegate: string
+  ];
   export interface OutputObject {
     delegator: string;
     fromDelegate: string;
@@ -166,8 +291,16 @@ export namespace DelegateChangedEvent {
 }
 
 export namespace DelegateVotesChangedEvent {
-  export type InputTuple = [delegate: AddressLike, previousBalance: BigNumberish, newBalance: BigNumberish];
-  export type OutputTuple = [delegate: string, previousBalance: bigint, newBalance: bigint];
+  export type InputTuple = [
+    delegate: AddressLike,
+    previousBalance: BigNumberish,
+    newBalance: BigNumberish
+  ];
+  export type OutputTuple = [
+    delegate: string,
+    previousBalance: bigint,
+    newBalance: bigint
+  ];
   export interface OutputObject {
     delegate: string;
     previousBalance: bigint;
@@ -190,7 +323,11 @@ export namespace EIP712DomainChangedEvent {
 }
 
 export namespace TransferEvent {
-  export type InputTuple = [from: AddressLike, to: AddressLike, value: BigNumberish];
+  export type InputTuple = [
+    from: AddressLike,
+    to: AddressLike,
+    value: BigNumberish
+  ];
   export type OutputTuple = [from: string, to: string, value: bigint];
   export interface OutputObject {
     from: string;
@@ -220,21 +357,31 @@ export interface GovToken extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   /**
    * Description of the clock
@@ -249,19 +396,31 @@ export interface GovToken extends BaseContract {
   /**
    * See {IERC20-allowance}.
    */
-  allowance: TypedContractMethod<[owner: AddressLike, spender: AddressLike], [bigint], "view">;
+  allowance: TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   /**
    * See {IERC20-approve}. NOTE: If `amount` is the maximum `uint256`, the allowance is not updated on `transferFrom`. This is semantically equivalent to an infinite approval. Requirements: - `spender` cannot be the zero address.
    */
-  approve: TypedContractMethod<[spender: AddressLike, amount: BigNumberish], [boolean], "nonpayable">;
+  approve: TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
 
   /**
    * See {IERC20-balanceOf}.
    */
   balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
-  burn: TypedContractMethod<[account: AddressLike, amount: BigNumberish], [void], "nonpayable">;
+  burn: TypedContractMethod<
+    [account: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   /**
    * Get the `pos`-th checkpoint for `account`.
@@ -300,7 +459,14 @@ export interface GovToken extends BaseContract {
    * Delegates votes from signer to `delegatee`
    */
   delegateBySig: TypedContractMethod<
-    [delegatee: AddressLike, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike],
+    [
+      delegatee: AddressLike,
+      nonce: BigNumberish,
+      expiry: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -324,7 +490,7 @@ export interface GovToken extends BaseContract {
         verifyingContract: string;
         salt: string;
         extensions: bigint[];
-      },
+      }
     ],
     "view"
   >;
@@ -332,12 +498,20 @@ export interface GovToken extends BaseContract {
   /**
    * Retrieve the `totalSupply` at the end of `timepoint`. Note, this value is the sum of all balances. It is NOT the sum of all the delegated votes! Requirements: - `timepoint` must be in the past
    */
-  getPastTotalSupply: TypedContractMethod<[timepoint: BigNumberish], [bigint], "view">;
+  getPastTotalSupply: TypedContractMethod<
+    [timepoint: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   /**
    * Retrieve the number of votes for `account` at the end of `timepoint`. Requirements: - `timepoint` must be in the past
    */
-  getPastVotes: TypedContractMethod<[account: AddressLike, timepoint: BigNumberish], [bigint], "view">;
+  getPastVotes: TypedContractMethod<
+    [account: AddressLike, timepoint: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   /**
    * Gets the current votes balance for `account`
@@ -347,9 +521,17 @@ export interface GovToken extends BaseContract {
   /**
    * Atomically increases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address.
    */
-  increaseAllowance: TypedContractMethod<[spender: AddressLike, addedValue: BigNumberish], [boolean], "nonpayable">;
+  increaseAllowance: TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
 
-  mint: TypedContractMethod<[account: AddressLike, amount: BigNumberish], [void], "nonpayable">;
+  mint: TypedContractMethod<
+    [account: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   /**
    * Returns the name of the token.
@@ -377,7 +559,7 @@ export interface GovToken extends BaseContract {
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
-      s: BytesLike,
+      s: BytesLike
     ],
     [void],
     "nonpayable"
@@ -398,7 +580,11 @@ export interface GovToken extends BaseContract {
   /**
    * See {IERC20-transfer}. Requirements: - `to` cannot be the zero address. - the caller must have a balance of at least `amount`.
    */
-  transfer: TypedContractMethod<[to: AddressLike, amount: BigNumberish], [boolean], "nonpayable">;
+  transfer: TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
 
   /**
    * See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. NOTE: Does not update the allowance if the current allowance is the maximum `uint256`. Requirements: - `from` and `to` cannot be the zero address. - `from` must have a balance of at least `amount`. - the caller must have allowance for ``from``'s tokens of at least `amount`.
@@ -409,38 +595,83 @@ export interface GovToken extends BaseContract {
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "CLOCK_MODE"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "DOMAIN_SEPARATOR"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "CLOCK_MODE"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "DOMAIN_SEPARATOR"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "allowance"
-  ): TypedContractMethod<[owner: AddressLike, spender: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "approve"
-  ): TypedContractMethod<[spender: AddressLike, amount: BigNumberish], [boolean], "nonpayable">;
-  getFunction(nameOrSignature: "balanceOf"): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "balanceOf"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "burn"
-  ): TypedContractMethod<[account: AddressLike, amount: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "checkpoints"
-  ): TypedContractMethod<[account: AddressLike, pos: BigNumberish], [ERC20Votes.CheckpointStructOutput], "view">;
-  getFunction(nameOrSignature: "clock"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "decimals"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "decreaseAllowance"
-  ): TypedContractMethod<[spender: AddressLike, subtractedValue: BigNumberish], [boolean], "nonpayable">;
-  getFunction(nameOrSignature: "delegate"): TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "delegateBySig"
   ): TypedContractMethod<
-    [delegatee: AddressLike, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike],
+    [account: AddressLike, amount: BigNumberish],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "delegates"): TypedContractMethod<[account: AddressLike], [string], "view">;
-  getFunction(nameOrSignature: "eip712Domain"): TypedContractMethod<
+  getFunction(
+    nameOrSignature: "checkpoints"
+  ): TypedContractMethod<
+    [account: AddressLike, pos: BigNumberish],
+    [ERC20Votes.CheckpointStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "clock"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "decimals"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "decreaseAllowance"
+  ): TypedContractMethod<
+    [spender: AddressLike, subtractedValue: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "delegate"
+  ): TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "delegateBySig"
+  ): TypedContractMethod<
+    [
+      delegatee: AddressLike,
+      nonce: BigNumberish,
+      expiry: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike
+    ],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "delegates"
+  ): TypedContractMethod<[account: AddressLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "eip712Domain"
+  ): TypedContractMethod<
     [],
     [
       [string, string, string, bigint, string, string, bigint[]] & {
@@ -451,24 +682,46 @@ export interface GovToken extends BaseContract {
         verifyingContract: string;
         salt: string;
         extensions: bigint[];
-      },
+      }
     ],
     "view"
   >;
-  getFunction(nameOrSignature: "getPastTotalSupply"): TypedContractMethod<[timepoint: BigNumberish], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getPastTotalSupply"
+  ): TypedContractMethod<[timepoint: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "getPastVotes"
-  ): TypedContractMethod<[account: AddressLike, timepoint: BigNumberish], [bigint], "view">;
-  getFunction(nameOrSignature: "getVotes"): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [account: AddressLike, timepoint: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getVotes"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "increaseAllowance"
-  ): TypedContractMethod<[spender: AddressLike, addedValue: BigNumberish], [boolean], "nonpayable">;
+  ): TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "mint"
-  ): TypedContractMethod<[account: AddressLike, amount: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "name"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "nonces"): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "numCheckpoints"): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [account: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "name"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "nonces"
+  ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "numCheckpoints"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "permit"
   ): TypedContractMethod<
@@ -479,24 +732,42 @@ export interface GovToken extends BaseContract {
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
-      s: BytesLike,
+      s: BytesLike
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "symbol"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "totalSupply"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "roleStore"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "symbol"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "totalSupply"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transfer"
-  ): TypedContractMethod<[to: AddressLike, amount: BigNumberish], [boolean], "nonpayable">;
+  ): TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "transferFrom"
-  ): TypedContractMethod<[from: AddressLike, to: AddressLike, amount: BigNumberish], [boolean], "nonpayable">;
+  ): TypedContractMethod<
+    [from: AddressLike, to: AddressLike, amount: BigNumberish],
+    [boolean],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "Approval"
-  ): TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+  ): TypedContractEvent<
+    ApprovalEvent.InputTuple,
+    ApprovalEvent.OutputTuple,
+    ApprovalEvent.OutputObject
+  >;
   getEvent(
     key: "DelegateChanged"
   ): TypedContractEvent<
@@ -520,7 +791,11 @@ export interface GovToken extends BaseContract {
   >;
   getEvent(
     key: "Transfer"
-  ): TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
+  ): TypedContractEvent<
+    TransferEvent.InputTuple,
+    TransferEvent.OutputTuple,
+    TransferEvent.OutputObject
+  >;
 
   filters: {
     "Approval(address,address,uint256)": TypedContractEvent<
@@ -528,7 +803,11 @@ export interface GovToken extends BaseContract {
       ApprovalEvent.OutputTuple,
       ApprovalEvent.OutputObject
     >;
-    Approval: TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+    Approval: TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
 
     "DelegateChanged(address,address,address)": TypedContractEvent<
       DelegateChangedEvent.InputTuple,
@@ -568,6 +847,10 @@ export interface GovToken extends BaseContract {
       TransferEvent.OutputTuple,
       TransferEvent.OutputObject
     >;
-    Transfer: TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
+    Transfer: TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
   };
 }
