@@ -106,7 +106,7 @@ function ChartHeaderInfoMobile() {
 
         <div>
           <div className="mb-4 whitespace-nowrap">
-            <span className="ExchangeChart-info-label text-slate-100">
+            <span className="text-body-small whitespace-nowrap text-slate-100">
               <Trans>Open Interest</Trans>
             </span>
             <span className="text-slate-100">{" ("}</span>
@@ -178,7 +178,7 @@ function ChartHeaderInfoMobile() {
           <div className="flex cursor-pointer flex-row items-start gap-8" role="button" onClick={toggleDetailsVisible}>
             <div className="flex flex-col">
               <div className="mr-4">{avgPrice}</div>
-              <div className="ExchangeChart-daily-change size text-body-small">{dayPriceDelta}</div>
+              <div className="ExchangeChart-daily-change text-body-small">{dayPriceDelta}</div>
             </div>
             <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4")}>
               {detailsVisible ? (

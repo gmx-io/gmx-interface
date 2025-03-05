@@ -9,9 +9,9 @@ import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
 import type { ModalProps } from "components/Modal/Modal";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 import LanguageModalContent from "./LanguageModalContent";
 

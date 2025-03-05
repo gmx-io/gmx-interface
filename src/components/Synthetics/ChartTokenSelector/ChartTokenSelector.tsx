@@ -91,7 +91,7 @@ export default function ChartTokenSelector(props: Props) {
               "items-center": oneRowLabels,
             })}
           >
-            <TokenIcon className="mr-8 mt-2" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            <TokenIcon className="mr-8 mt-4" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
             <span
               className={cx("flex justify-start", {
                 "flex-col": !oneRowLabels,
@@ -261,7 +261,7 @@ function MarketsList() {
     return t`Search Market`;
   }, [isSwap]);
 
-  const availableLiquidityLabel = isMobile ? t`AVAIL. LIQ.` : t`AVAILABLE LIQ.`;
+  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQ.`;
 
   return (
     <>
@@ -335,9 +335,7 @@ function MarketsList() {
                     </th>
                   )}
                   <th className={thClassName} colSpan={2}>
-                    <Sorter {...getSorterProps("combinedAvailableLiquidity")}>
-                      {isSmallMobile ? <Trans>LIQ.</Trans> : availableLiquidityLabel}
-                    </Sorter>
+                    <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
                   </th>
                 </>
               )}
