@@ -1,10 +1,11 @@
 import { sleep } from "lib/sleep";
 import { useDebounce } from "lib/useDebounce";
 import { useMemo } from "react";
+import { usePrevious } from "react-use";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
-import { ExternalSwapAggregator, ExternalSwapOutput, ExternalSwapQuote } from "sdk/types/trade";
+import { ExternalSwapAggregator, ExternalSwapOutput } from "sdk/types/trade";
 import useSWR from "swr";
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getOpenOceanTxnData } from "./openOcean";
@@ -41,9 +42,12 @@ export function useExternalSwapOutputRequest({
 
   const debouncedKey = useDebounce(swapKey, 300);
   const isWaitingForDebounce = debouncedKey !== swapKey;
+  const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
+  const prevTokensKey = usePrevious(tokensKey);
 
-  const { data, isLoading, error } = useSWR(debouncedKey, {
-    fetcher: async () => {
+  const { data, isLoading, error } = useSWR<{ quote: ExternalSwapOutput; requestKey: string }>(debouncedKey, {
+    keepPreviousData: prevTokensKey === tokensKey,
+    fetcher: async (requestKey: string) => {
       try {
         if (
           !tokenInAddress ||
@@ -94,7 +98,10 @@ export function useExternalSwapOutputRequest({
           },
         };
 
-        return quote;
+        return {
+          quote,
+          requestKey,
+        };
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Error fetching external swap quote", error);
@@ -104,7 +111,7 @@ export function useExternalSwapOutputRequest({
   });
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: data?.txnData?.to,
+    spenderAddress: data?.quote?.txnData?.to,
     tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
@@ -119,8 +126,8 @@ export function useExternalSwapOutputRequest({
       amountIn
     );
 
-    const externalSwapOutput: ExternalSwapQuote = {
-      ...data,
+    const externalSwapOutput: ExternalSwapOutput = {
+      ...data.quote,
       needSpenderApproval,
     };
 
