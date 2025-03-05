@@ -184,7 +184,7 @@ export const ChartTooltip = forwardRef<
   );
   const latestSetMouseRelativePositionRef = useLatest(setMouseRelativePosition);
 
-  const isRendered = !!stats && coordinate?.x !== undefined && coordinate?.y !== undefined;
+  const isRendered = stats !== undefined && coordinate?.x !== undefined && coordinate?.y !== undefined;
 
   useLayoutEffect(() => {
     if (tooltipRef.current && initialMousePositionRef.current && isRendered) {
