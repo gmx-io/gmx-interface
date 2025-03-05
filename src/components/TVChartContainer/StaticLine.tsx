@@ -14,17 +14,19 @@ export function StaticLine({
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
-    if (!chart || !chart.dataReady()) {
+    if (!chart) {
       return;
     }
 
-    const range = chart.getVisibleRange();
+    chart.dataReady(() => {
+      const range = chart.getVisibleRange();
 
-    if (range.from === 0 && range.to === 0) {
-      chart.onVisibleRangeChanged().subscribe(null, init, true);
-    } else {
-      init();
-    }
+      if (range.from === 0 && range.to === 0) {
+        chart.onVisibleRangeChanged().subscribe(null, init, true);
+      } else {
+        init();
+      }
+    });
 
     function init() {
       const positionLine = chart!.createPositionLine({ disableUndo: true });

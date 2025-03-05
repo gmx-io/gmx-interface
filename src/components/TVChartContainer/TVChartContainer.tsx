@@ -53,6 +53,7 @@ export default function TVChartContainer({
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
+  const [isChartChangingSymbol, setIsChartChangingSymbol] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
 
@@ -90,14 +91,17 @@ export default function TVChartContainer({
       chartToken.symbol &&
       isChartAvailableForToken(chainId, chartToken.symbol)
     ) {
+      setIsChartChangingSymbol(true);
+
       tvWidgetRef.current.setSymbol(
         getSymbolName(chartToken.symbol, visualMultiplier),
         tvWidgetRef.current.activeChart().resolution(),
-        async () => {
+        () => {
           const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
           if (priceScale) {
             priceScale.setAutoScale(true);
           }
+          setIsChartChangingSymbol(false);
         }
       );
     }
@@ -206,7 +210,7 @@ export default function TVChartContainer({
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
       <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
-      {shouldShowPositionLines && chartReady && (
+      {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
         <>
           <StaticLines tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
           {tradePageVersion === 2 && <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />}
