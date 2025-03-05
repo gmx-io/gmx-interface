@@ -26,9 +26,8 @@ export function AmountWithUsdHuman({
   const formattedUsd = formatAmountHuman(usd, USD_DECIMALS, true, 2);
 
   return (
-    <span>
-      {formattedAmount}
-      {multiline ? <br /> : " "}
+    <span className={multiline ? "inline-flex flex-col" : ""}>
+      <span>{formattedAmount} </span>
       <span className="text-12 text-slate-100">({formattedUsd})</span>
     </span>
   );

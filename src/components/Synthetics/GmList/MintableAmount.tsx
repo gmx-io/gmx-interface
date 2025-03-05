@@ -57,7 +57,7 @@ export function MintableAmount({
 
       return [
         <AmountWithUsdHuman
-          key={1}
+          key="longTokenMaxValue-isSameCollaterals"
           amount={(mintableInfo?.longDepositCapacityAmount ?? 0n) + (mintableInfo?.shortDepositCapacityAmount ?? 0n)}
           decimals={longToken.decimals}
           usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
@@ -71,7 +71,7 @@ export function MintableAmount({
 
     return [
       <AmountWithUsdHuman
-        key={1}
+        key="longTokenMaxValue"
         amount={mintableInfo?.longDepositCapacityAmount}
         decimals={longToken.decimals}
         usd={mintableInfo?.longDepositCapacityUsd}
@@ -98,7 +98,7 @@ export function MintableAmount({
 
     return [
       <AmountWithUsdHuman
-        key={1}
+        key="shortTokenMaxValue"
         amount={mintableInfo?.shortDepositCapacityAmount}
         decimals={shortToken.decimals}
         usd={mintableInfo?.shortDepositCapacityUsd}
