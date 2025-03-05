@@ -14,10 +14,15 @@ export function getShouldUseMaxPrice(isIncrease: boolean, isLong: boolean) {
   return isIncrease ? isLong : !isLong;
 }
 
-export function getTriggerThresholdType(orderType: OrderType, isLong: boolean) {
-  // limit order
+export function getOrderThresholdType(orderType: OrderType, isLong: boolean) {
+  // limit increase order
   if (orderType === OrderType.LimitIncrease) {
     return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
+  }
+
+  // stop market order
+  if (orderType === OrderType.StopIncrease) {
+    return isLong ? TriggerThresholdType.Above : TriggerThresholdType.Below;
   }
 
   // take profit order

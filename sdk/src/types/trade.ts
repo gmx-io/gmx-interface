@@ -11,6 +11,7 @@ export enum TradeType {
 export enum TradeMode {
   Market = "Market",
   Limit = "Limit",
+  StopMarket = "StopMarket",
   Trigger = "Trigger",
 }
 
@@ -55,7 +56,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaUsd: bigint;
 
   swapPathStats: SwapPathStats | undefined;
-
+  externalSwapQuote: ExternalSwapQuote | undefined;
   indexTokenAmount: bigint;
 
   sizeDeltaUsd: bigint;
@@ -67,6 +68,7 @@ export type IncreasePositionAmounts = {
   initialCollateralPrice: bigint;
   collateralPrice: bigint;
   triggerPrice?: bigint;
+  limitOrderType?: OrderType.LimitIncrease | OrderType.StopIncrease;
   triggerThresholdType?: TriggerThresholdType;
   acceptablePrice: bigint;
   acceptablePriceDeltaBps: bigint;

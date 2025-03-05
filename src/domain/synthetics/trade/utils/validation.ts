@@ -174,6 +174,7 @@ export function getIncreaseError(p: {
   isLong: boolean;
   isLimit: boolean;
   nextLeverageWithoutPnl: bigint | undefined;
+  thresholdType: TriggerThresholdType | undefined;
 }): ValidationResult {
   const {
     marketInfo,
@@ -194,6 +195,7 @@ export function getIncreaseError(p: {
     isLong,
     markPrice,
     triggerPrice,
+    thresholdType,
     isLimit,
     nextPositionValues,
     nextLeverageWithoutPnl,
@@ -289,12 +291,20 @@ export function getIncreaseError(p: {
       return [t`Enter a price`];
     }
 
-    if (isLong && markPrice < triggerPrice) {
+    if (isLong && thresholdType === TriggerThresholdType.Below && markPrice < triggerPrice) {
       return [t`Limit price above mark price`];
     }
 
-    if (!isLong && markPrice > triggerPrice) {
+    if (!isLong && thresholdType === TriggerThresholdType.Above && markPrice > triggerPrice) {
       return [t`Limit price below mark price`];
+    }
+
+    if (isLong && thresholdType === TriggerThresholdType.Above && triggerPrice < markPrice) {
+      return [t`Stop market price below mark price`];
+    }
+
+    if (!isLong && thresholdType === TriggerThresholdType.Below && triggerPrice > markPrice) {
+      return [t`Stop market price above mark price`];
     }
   }
 

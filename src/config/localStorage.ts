@@ -54,7 +54,7 @@ export const ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN = "one-click-trading-w
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
-
+export const LP_INTERVIEW_INVITATION_SHOWN_TIME_KEY = "lp-interview-invitation-shown-time";
 /**
  * @deprecated
  */

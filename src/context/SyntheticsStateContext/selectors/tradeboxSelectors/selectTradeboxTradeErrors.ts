@@ -102,6 +102,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
     isLimit,
     nextPositionValues,
     nextLeverageWithoutPnl,
+    thresholdType: increaseAmounts?.triggerThresholdType,
   });
 });
 

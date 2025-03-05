@@ -375,7 +375,7 @@ export function SyntheticsPage(p: Props) {
       </div>
       <PositionSeller setPendingTxns={setPendingTxns} />
       <PositionEditor />
-      <InterviewModal isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
+      <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
       <Footer isMobileTradePage={isMobile} />
     </div>

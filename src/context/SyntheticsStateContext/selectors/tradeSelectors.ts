@@ -1,5 +1,5 @@
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { OrderType } from "domain/synthetics/orders";
+import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
   FindSwapPath,
   TradeMode,
@@ -18,7 +18,11 @@ import {
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
+import { ExternalSwapQuote } from "sdk/types/trade";
+import { createTradeFlags } from "sdk/utils/trade";
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
+import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -29,10 +33,6 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { ExternalSwapQuote } from "sdk/types/trade";
-import { createTradeFlags } from "sdk/utils/trade";
-import { selectExternalSwapQuote } from "./externalSwapSelectors";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -200,71 +200,67 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     strategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
   }) =>
-    createSelectorDeprecated(
-      [
-        selectTokensData,
-        selectMarketsInfoData,
-        selectPositionsInfoData,
-        selectSavedAcceptablePriceImpactBuffer,
+    createSelector((q) => {
+      const indexToken = q((state) => getByKey(selectTokensData(state), indexTokenAddress));
+      const initialCollateralToken = q((state) => getByKey(selectTokensData(state), initialCollateralTokenAddress));
+      const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
+      const marketInfo = q((state) => getByKey(selectMarketsInfoData(state), marketAddress));
+      const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
+      const externalSwapQuote = q(selectExternalSwapQuote);
+
+      const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
+      const findSwapPath = q(
         makeSelectFindSwapPath(
           initialCollateralTokenAddress,
           tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
-        ),
-        selectUserReferralInfo,
-        selectUiFeeFactor,
-        selectExternalSwapQuote,
-      ],
-      (
-        tokensData,
-        marketsInfoData,
-        positionsInfoData,
+        )
+      );
+      const userReferralInfo = q(selectUserReferralInfo);
+      const uiFeeFactor = q(selectUiFeeFactor);
+
+      const tradeFlags = createTradeFlags(tradeType, tradeMode);
+
+      let limitOrderType: OrderType | undefined = undefined;
+      if (tradeFlags.isLimit) {
+        if (tradeMode === TradeMode.Limit) {
+          limitOrderType = OrderType.LimitIncrease;
+        } else if (tradeMode === TradeMode.StopMarket) {
+          limitOrderType = OrderType.StopIncrease;
+        }
+      }
+
+      if (
+        indexTokenAmount === undefined ||
+        !tradeFlags.isIncrease ||
+        !indexToken ||
+        !initialCollateralToken ||
+        !collateralToken ||
+        !marketInfo
+      ) {
+        return undefined;
+      }
+
+      return getIncreasePositionAmounts({
+        position,
+        marketInfo,
+        indexToken,
+        initialCollateralToken,
+        collateralToken,
+        isLong: tradeFlags.isLong,
+        initialCollateralAmount,
+        indexTokenAmount,
+        leverage,
+        triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
+        limitOrderType,
+        fixedAcceptablePriceImpactBps,
         acceptablePriceImpactBuffer,
+        externalSwapQuote,
         findSwapPath,
         userReferralInfo,
         uiFeeFactor,
-        externalSwapQuote
-      ) => {
-        const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
-        const tradeFlags = createTradeFlags(tradeType, tradeMode);
-        const indexToken = indexTokenAddress ? getByKey(tokensData, indexTokenAddress) : undefined;
-        const initialCollateralToken = initialCollateralTokenAddress
-          ? getByKey(tokensData, initialCollateralTokenAddress)
-          : undefined;
-        const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
-        const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
-
-        if (
-          indexTokenAmount === undefined ||
-          !tradeFlags.isIncrease ||
-          !indexToken ||
-          !initialCollateralToken ||
-          !collateralToken ||
-          !marketInfo
-        ) {
-          return undefined;
-        }
-
-        return getIncreasePositionAmounts({
-          marketInfo,
-          indexToken,
-          initialCollateralToken,
-          collateralToken,
-          isLong: tradeFlags.isLong,
-          initialCollateralAmount,
-          indexTokenAmount,
-          leverage,
-          triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
-          position,
-          fixedAcceptablePriceImpactBps,
-          acceptablePriceImpactBuffer,
-          findSwapPath,
-          userReferralInfo,
-          uiFeeFactor,
-          strategy,
-          externalSwapQuote,
-        });
-      }
-    )
+        strategy,
+      });
+    })
 );
 
 export const makeSelectDecreasePositionAmounts = createSelectorFactory(

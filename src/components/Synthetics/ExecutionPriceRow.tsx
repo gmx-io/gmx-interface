@@ -8,6 +8,7 @@ import { getIsHighPositionImpact } from "domain/synthetics/trade/utils/warnings"
 import { formatDeltaUsd, formatPercentage, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
+import { isStopIncreaseOrderType } from "sdk/utils/orders";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -20,7 +21,11 @@ interface Props {
   executionPrice?: bigint;
   acceptablePrice?: bigint;
   visualMultiplier?: number;
-  triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
+  triggerOrderType?:
+    | OrderType.LimitIncrease
+    | OrderType.StopIncrease
+    | OrderType.LimitDecrease
+    | OrderType.StopLossDecrease;
 }
 
 export const ExecutionPriceRow = memo(function ExecutionPriceRow({
@@ -62,6 +67,10 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     }
 
     if (isLimit) {
+      if (triggerOrderType && isStopIncreaseOrderType(triggerOrderType)) {
+        return t`Once the mark price hits the stop price, the order will attempt to execute.`;
+      }
+
       return (
         <>
           {isLong ? (
@@ -123,7 +132,9 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
           content={
             <>
               {isLimit
-                ? t`Expected execution price for the order, including the current price impact, once the limit order executes.`
+                ? triggerOrderType && isStopIncreaseOrderType(triggerOrderType)
+                  ? t`Expected execution price for the order, including the current price impact, once the stop market order executes.`
+                  : t`Expected execution price for the order, including the current price impact, once the limit order executes.`
                 : t`Expected execution price for the order, including the current price impact.`}
               <br />
               <br />

@@ -1,3 +1,5 @@
+import { maxUint256 } from "viem";
+
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
@@ -9,13 +11,25 @@ import {
   getLiquidationPrice,
   getPositionPnlUsd,
 } from "domain/synthetics/positions";
-import { TokenData, convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "domain/synthetics/tokens";
+import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import {
+  ExternalSwapQuote,
+  FindSwapPath,
+  IncreasePositionAmounts,
+  NextPositionValues,
+  TriggerThresholdType,
+} from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
-import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
-import { getAcceptablePriceInfo, getDefaultAcceptablePriceImpactBps, getMarkPrice } from "./prices";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
+import {
+  getAcceptablePriceInfo,
+  getDefaultAcceptablePriceImpactBps,
+  getMarkPrice,
+  getOrderThresholdType,
+} from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
+import { OrderType } from "sdk/types/orders";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;
@@ -29,6 +43,7 @@ type IncreasePositionParams = {
   indexTokenAmount: bigint | undefined;
   leverage?: bigint;
   triggerPrice?: bigint;
+  limitOrderType?: IncreasePositionAmounts["limitOrderType"];
   fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
@@ -48,6 +63,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     isLong,
     leverage,
     triggerPrice,
+    limitOrderType,
     position,
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
@@ -89,21 +105,27 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     borrowingFeeUsd: 0n,
     fundingFeeUsd: 0n,
     positionPriceImpactDeltaUsd: 0n,
+
+    limitOrderType: limitOrderType,
+    triggerThresholdType: undefined,
   };
 
-  const isLimit = Boolean(triggerPrice !== undefined && triggerPrice > 0);
+  const isLimit = limitOrderType !== undefined;
 
   const prices = getIncreasePositionPrices({
     triggerPrice,
     indexToken,
     initialCollateralToken,
     collateralToken,
+    limitOrderType,
     isLong,
   });
 
   values.indexPrice = prices.indexPrice;
   values.initialCollateralPrice = prices.initialCollateralPrice;
   values.collateralPrice = prices.collateralPrice;
+  values.triggerPrice = prices.triggerPrice;
+  values.triggerThresholdType = prices.triggerThresholdType;
 
   values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || 0n;
   values.fundingFeeUsd = position?.pendingFundingFeesUsd || 0n;
@@ -323,29 +345,37 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
   if (isLimit) {
-    let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
-    if (maxNegativePriceImpactBps === undefined) {
-      maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
+    if (limitOrderType === OrderType.StopIncrease) {
+      if (isLong) {
+        values.acceptablePrice = maxUint256;
+      } else {
+        values.acceptablePrice = 0n;
+      }
+    } else {
+      let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
+      if (maxNegativePriceImpactBps === undefined) {
+        maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
+          isIncrease: true,
+          isLong,
+          indexPrice: values.indexPrice,
+          sizeDeltaUsd: values.sizeDeltaUsd,
+          priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+          acceptablePriceImapctBuffer: acceptablePriceImpactBuffer,
+        });
+      }
+
+      const limitAcceptablePriceInfo = getAcceptablePriceInfo({
+        marketInfo,
         isIncrease: true,
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
-        priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
-        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer,
+        maxNegativePriceImpactBps,
       });
+
+      values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
+      values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
     }
-
-    const limitAcceptablePriceInfo = getAcceptablePriceInfo({
-      marketInfo,
-      isIncrease: true,
-      isLong,
-      indexPrice: values.indexPrice,
-      sizeDeltaUsd: values.sizeDeltaUsd,
-      maxNegativePriceImpactBps,
-    });
-
-    values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
-    values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
   }
 
   let priceImpactAmount = 0n;
@@ -374,6 +404,7 @@ export function getIncreasePositionPrices({
   indexToken,
   initialCollateralToken,
   collateralToken,
+  limitOrderType,
   isLong,
 }: {
   triggerPrice?: bigint;
@@ -381,14 +412,14 @@ export function getIncreasePositionPrices({
   initialCollateralToken: TokenData;
   collateralToken: TokenData;
   isLong: boolean;
+  limitOrderType?: IncreasePositionAmounts["limitOrderType"];
 }) {
-  let indexPrice;
-  let initialCollateralPrice;
-  let collateralPrice;
+  let indexPrice: bigint;
+  let initialCollateralPrice: bigint;
+  let triggerThresholdType: TriggerThresholdType | undefined;
+  let collateralPrice: bigint;
 
-  const isLimit = Boolean(triggerPrice !== undefined && triggerPrice > 0);
-
-  if (isLimit && triggerPrice !== undefined) {
+  if (triggerPrice !== undefined && triggerPrice > 0 && limitOrderType !== undefined) {
     indexPrice = triggerPrice;
     initialCollateralPrice = getIsEquivalentTokens(indexToken, initialCollateralToken)
       ? triggerPrice
@@ -397,6 +428,8 @@ export function getIncreasePositionPrices({
     collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
       ? triggerPrice
       : collateralToken.prices.minPrice;
+
+    triggerThresholdType = getOrderThresholdType(limitOrderType, isLong);
   } else {
     indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: true, isLong });
     initialCollateralPrice = initialCollateralToken.prices.minPrice;
@@ -407,6 +440,8 @@ export function getIncreasePositionPrices({
     indexPrice,
     initialCollateralPrice,
     collateralPrice,
+    triggerThresholdType,
+    triggerPrice,
   };
 }
 

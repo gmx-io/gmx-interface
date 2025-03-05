@@ -42,7 +42,7 @@ type IncreaseOrderParams = {
   acceptablePrice: bigint;
   triggerPrice: bigint | undefined;
   isLong: boolean;
-  orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
+  orderType: OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease;
   executionFee: bigint;
   executionGasLimit: bigint;
   allowedSlippage: number;
