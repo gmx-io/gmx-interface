@@ -13,6 +13,7 @@ export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
 export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useState<string[]>([]);
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [sizeInputValue, setSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
 
@@ -88,6 +89,8 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       setCancellingOrdersKeys,
       editingOrderKey,
       setEditingOrderKey,
+      isSubmitting,
+      setIsSubmitting,
       sizeInputValue,
       setSizeInputValue,
       triggerPriceInputValue,
@@ -114,6 +117,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       cancellingOrdersKeys,
       editingOrderKey,
       initialAcceptablePriceImpactBps,
+      isSubmitting,
       setAcceptablePriceImpactBps,
       sizeInputValue,
       triggerPriceInputValue,
