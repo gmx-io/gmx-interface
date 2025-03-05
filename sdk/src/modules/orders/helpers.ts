@@ -2,12 +2,26 @@ import type { GmxSdk } from "../../index";
 import { getIncreasePositionAmounts } from "utils/trade/amounts";
 import { OrderType } from "types/orders";
 import { createFindSwapPath } from "utils/swap/swapPath";
+import { MarketsInfoData } from "types/markets";
+import { TokensData } from "types/tokens";
+import { FindSwapPath, SwapAmounts } from "types/trade";
+import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
+import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
+
+/** Base Optional params for helpers, allows to avoid calling markets, tokens and uiFeeFactor methods if they are already passed */
+interface BaseOptionalParams {
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
+  uiFeeFactor?: bigint;
+}
 
 export type PositionIncreaseParams = (
   | {
+      /** Increase amounts will be calculated based on collateral amount */
       payAmount: bigint;
     }
   | {
+      /** Increase amounts will be calculated based on position size amount */
       sizeAmount: bigint;
     }
 ) & {
@@ -19,7 +33,6 @@ export type PositionIncreaseParams = (
   /** @default 100 */
   allowedSlippageBps?: number;
   referralCodeForTxn?: string;
-  uiFeeFactor: bigint;
 
   leverage?: bigint;
   /** If presented, then it's limit order */
@@ -36,15 +49,17 @@ export type PositionIncreaseParams = (
   fixedAcceptablePriceImpactBps?: bigint;
 
   skipSimulation?: boolean;
-};
+} & BaseOptionalParams;
 
-export async function increaseOrderHelper(
-  sdk: GmxSdk,
-  params: PositionIncreaseParams & {
-    isLong: boolean;
+async function getAndValidateBaseParams(sdk: GmxSdk, params: BaseOptionalParams) {
+  let tokensData: TokensData | undefined = params.tokensData;
+  let marketsInfoData: MarketsInfoData | undefined = params.marketsInfoData;
+
+  if (!params.marketsInfoData && !params.tokensData) {
+    const result = await sdk.markets.getMarketsInfo();
+    marketsInfoData = result.marketsInfoData;
+    tokensData = result.tokensData;
   }
-) {
-  const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
 
   if (!tokensData) {
     throw new Error("Tokens data is not available");
@@ -53,6 +68,26 @@ export async function increaseOrderHelper(
   if (!marketsInfoData) {
     throw new Error("Markets info data is not available");
   }
+
+  let uiFeeFactor = params.uiFeeFactor;
+  if (!uiFeeFactor) {
+    uiFeeFactor = await sdk.utils.getUiFeeFactor();
+  }
+
+  return {
+    tokensData,
+    marketsInfoData,
+    uiFeeFactor,
+  };
+}
+
+export async function increaseOrderHelper(
+  sdk: GmxSdk,
+  params: PositionIncreaseParams & {
+    isLong: boolean;
+  }
+) {
+  const { tokensData, marketsInfoData, uiFeeFactor } = await getAndValidateBaseParams(sdk, params);
 
   const isLimit = Boolean(params.limitPrice);
 
@@ -92,7 +127,7 @@ export async function increaseOrderHelper(
   const increaseAmounts = getIncreasePositionAmounts({
     marketInfo,
     indexToken: marketInfo.indexToken,
-    initialCollateralToken: collateralToken,
+    initialCollateralToken: fromToken,
     collateralToken,
     isLong: params.isLong,
     initialCollateralAmount: payOrSizeAmount,
@@ -104,7 +139,7 @@ export async function increaseOrderHelper(
     userReferralInfo: undefined,
     strategy: "payAmount" in params ? "leverageByCollateral" : "leverageBySize",
     findSwapPath: findSwapPath,
-    uiFeeFactor: params.uiFeeFactor,
+    uiFeeFactor,
     acceptablePriceImpactBuffer: params.acceptablePriceImpactBuffer,
     fixedAcceptablePriceImpactBps: params.fixedAcceptablePriceImpactBps,
   });
@@ -129,4 +164,122 @@ export async function increaseOrderHelper(
   };
 
   return sdk.orders.createIncreaseOrder(createIncreaseOrderParams);
+}
+
+export type SwapParams = (
+  | {
+      fromAmount: bigint;
+    }
+  | {
+      toAmount: bigint;
+    }
+) & {
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  allowedSlippageBps?: number;
+  referralCodeForTxn?: string;
+
+  /** If presented, then it's limit swap order */
+  triggerRatio?: bigint;
+} & BaseOptionalParams;
+
+export async function swap(sdk: GmxSdk, params: SwapParams) {
+  const { tokensData, marketsInfoData, uiFeeFactor } = await getAndValidateBaseParams(sdk, params);
+
+  const fromToken = tokensData[params.fromTokenAddress];
+  const toToken = tokensData[params.toTokenAddress];
+
+  if (!fromToken || !toToken) {
+    throw new Error("From or to token is not available");
+  }
+
+  const isLimit = Boolean(params.triggerRatio);
+  const fromTokenPrice = fromToken?.prices.minPrice;
+
+  if (!fromToken || !toToken || fromTokenPrice === undefined) {
+    return undefined;
+  }
+
+  const findSwapPath = createFindSwapPath({
+    chainId: sdk.chainId,
+    fromTokenAddress: params.fromTokenAddress,
+    toTokenAddress: params.toTokenAddress,
+    marketsInfoData,
+  });
+
+  const isWrapOrUnwrap = Boolean(
+    fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
+  );
+
+  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = isLimit ? ["length", "liquidity"] : undefined;
+
+  let swapAmounts: SwapAmounts | undefined;
+
+  const triggerRatio = params.triggerRatio
+    ? getTokensRatioByPrice({
+        fromToken,
+        toToken,
+        fromPrice: fromTokenPrice,
+        toPrice: toToken.prices.minPrice,
+      })
+    : undefined;
+
+  if (isWrapOrUnwrap) {
+    const tokenAmount = "fromAmount" in params ? params.fromAmount : params.toAmount;
+    const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
+    const price = fromTokenPrice;
+
+    swapAmounts = {
+      amountIn: tokenAmount,
+      usdIn: usdAmount!,
+      amountOut: tokenAmount,
+      usdOut: usdAmount!,
+      swapPathStats: undefined,
+      priceIn: price,
+      priceOut: price,
+      minOutputAmount: tokenAmount,
+    };
+
+    return swapAmounts;
+  } else if ("fromAmount" in params) {
+    swapAmounts = getSwapAmountsByFromValue({
+      tokenIn: fromToken,
+      tokenOut: toToken,
+      amountIn: params.fromAmount,
+      triggerRatio,
+      isLimit,
+      findSwapPath: findSwapPath,
+      uiFeeFactor,
+      swapOptimizationOrder,
+      allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
+    });
+  } else {
+    swapAmounts = getSwapAmountsByToValue({
+      tokenIn: fromToken,
+      tokenOut: toToken,
+      amountOut: params.toAmount,
+      triggerRatio,
+      isLimit: isLimit,
+      findSwapPath: findSwapPath,
+      uiFeeFactor,
+      swapOptimizationOrder,
+      allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
+    });
+  }
+
+  if (!swapAmounts) {
+    return undefined;
+  }
+
+  const createSwapOrderParams: Parameters<typeof sdk.orders.createSwapOrder>[0] = {
+    tokensData,
+    fromToken: tokensData[params.fromTokenAddress],
+    toToken: tokensData[params.toTokenAddress],
+    swapAmounts,
+    isLimit,
+    allowedSlippage: params.allowedSlippageBps ?? 100,
+    referralCodeForTxn: params.referralCodeForTxn,
+  };
+
+  return sdk.orders.createSwapOrder(createSwapOrderParams);
 }

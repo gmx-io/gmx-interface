@@ -1,12 +1,12 @@
 import { FindSwapPath } from "types/trade";
 
-import { TokenData } from "types/tokens";
+import { TokenData, TokensRatio } from "types/tokens";
 
 import { MarketInfo } from "types/markets";
 import { PositionInfo } from "types/positions";
 import { IncreasePositionAmounts } from "types/trade";
 import { UserReferralInfo } from "types/referrals";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
+import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getTokensRatioByPrice } from "utils/tokens";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
@@ -397,4 +397,40 @@ export function getIncreasePositionAmounts(p: IncreasePositionAmountsParams): In
   }
 
   return values;
+}
+
+export function getTokensRatio({
+  fromToken,
+  toToken,
+  triggerRatioValue,
+  markPrice,
+}: {
+  fromToken: TokenData;
+  toToken: TokenData;
+  triggerRatioValue: bigint;
+  markPrice: bigint;
+}) {
+  const fromTokenPrice = fromToken?.prices.minPrice;
+
+  const markRatio = getTokensRatioByPrice({
+    fromToken,
+    toToken,
+    fromPrice: fromTokenPrice,
+    toPrice: markPrice,
+  });
+
+  if (triggerRatioValue === undefined) {
+    return { markRatio };
+  }
+
+  const triggerRatio: TokensRatio = {
+    ratio: triggerRatioValue > 0 ? triggerRatioValue : markRatio.ratio,
+    largestToken: markRatio.largestToken,
+    smallestToken: markRatio.smallestToken,
+  };
+
+  return {
+    markRatio,
+    triggerRatio,
+  };
 }

@@ -24,22 +24,6 @@ export function getNeedTokenApprove(
   return amountToSpend > tokenAllowanceData[tokenAddress];
 }
 
-export function getTokensRatioByPrice(p: {
-  fromToken: TokenData;
-  toToken: TokenData;
-  fromPrice: bigint;
-  toPrice: bigint;
-}): TokensRatio {
-  const { fromToken, toToken, fromPrice, toPrice } = p;
-
-  const [largestToken, smallestToken, largestPrice, smallestPrice] =
-    fromPrice > toPrice ? [fromToken, toToken, fromPrice, toPrice] : [toToken, fromToken, toPrice, fromPrice];
-
-  const ratio = (largestPrice * PRECISION) / smallestPrice;
-
-  return { ratio, largestToken, smallestToken };
-}
-
 export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {
   if (!fromToken || !toToken || !ratio) {
     return undefined;
