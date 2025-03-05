@@ -101,6 +101,11 @@ export type TokensRatio = {
   smallestToken: Token;
 };
 
+export type TokensRatioAndSlippage = TokensRatio & {
+  allowedSwapSlippageBps: bigint;
+  acceptablePrice: bigint;
+};
+
 export type TokenBalancesData = {
   [tokenAddress: string]: bigint;
 };

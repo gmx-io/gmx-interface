@@ -238,6 +238,8 @@ export function useTradeboxState(
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
+  const [defaultAllowedSwapSlippageBps, setDefaultAllowedSwapSlippageBps] = useState<bigint>();
+  const [selectedAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps] = useState<bigint>();
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
@@ -703,6 +705,10 @@ export function useTradeboxState(
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
     setSelectedAcceptablePriceImpactBps: setSelectedTriggerAcceptablePriceImpactBps,
+    defaultAllowedSwapSlippageBps,
+    setDefaultAllowedSwapSlippageBps,
+    selectedAllowedSwapSlippageBps,
+    setSelectedAllowedSwapSlippageBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,

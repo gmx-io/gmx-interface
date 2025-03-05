@@ -1,4 +1,5 @@
-.AcceptablePriceImpactInputRow-handle {
+.AcceptablePriceImpactInputRow-handle,
+.AllowedSwapSlippageInputRow-handle {
   z-index: 1;
   cursor: pointer;
   position: relative;
@@ -15,4 +16,9 @@
     text-decoration-color: var(--color-white);
     color: var(--color-white);
   }
+}
+
+// @TODO check na
+.AcceptablePriceImpactInputRow-na .AllowedSwapSlippageInputRow-na {
+  line-height: 2.3rem;
 }

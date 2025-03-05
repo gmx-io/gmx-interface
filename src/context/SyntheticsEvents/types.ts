@@ -1,4 +1,4 @@
-import { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import { OrderTxnType, OrderType, UpdateOrderParams } from "domain/synthetics/orders";
 import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
@@ -70,6 +70,10 @@ export type PendingPositionsUpdates = {
   [key: string]: PendingPositionUpdate | undefined;
 };
 
+export type PendingOrdersUpdates = {
+  [key: string]: OrderTxnType;
+};
+
 export type EventLogItems<T> = {
   [key: string]: T;
 };
@@ -104,10 +108,12 @@ export type SyntheticsEventsContextType = {
   withdrawalStatuses: WithdrawalStatuses;
   shiftStatuses: ShiftStatuses;
   approvalStatuses: ApprovalStatuses;
+  pendingOrdersUpdates: PendingOrdersUpdates;
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   setPendingOrder: SetPendingOrder;
+  setPendingOrderUpdate: SetPendingOrderUpdate;
   setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
   setPendingPosition: SetPendingPosition;
   setPendingDeposit: SetPendingDeposit;
@@ -120,6 +126,7 @@ export type SyntheticsEventsContextType = {
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
+export type SetPendingOrderUpdate = (data: UpdateOrderParams, remove?: "remove") => void;
 export type SetPendingPosition = (update: PendingPositionUpdate) => void;
 export type SetPendingDeposit = (data: PendingDepositData) => void;
 export type SetPendingWithdrawal = (data: PendingWithdrawalData) => void;

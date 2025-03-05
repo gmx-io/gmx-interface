@@ -112,6 +112,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
   const isLimit = limitOrderType !== undefined;
 
+  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = isLimit ? ["length", "liquidity"] : undefined;
+
   const prices = getIncreasePositionPrices({
     triggerPrice,
     indexToken,
@@ -158,6 +160,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       isLimit: false,
       findSwapPath,
       uiFeeFactor,
+      swapOptimizationOrder,
     });
     values.swapPathStats = swapAmounts.swapPathStats;
 
@@ -302,6 +305,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         isLimit: false,
         findSwapPath,
         uiFeeFactor,
+        swapOptimizationOrder,
       });
 
       values.swapPathStats = swapAmounts.swapPathStats;

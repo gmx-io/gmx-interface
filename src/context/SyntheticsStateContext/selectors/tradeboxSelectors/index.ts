@@ -22,6 +22,7 @@ import {
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import {
+  FindSwapPath,
   SwapAmounts,
   TradeFeesType,
   TradeType,
@@ -95,6 +96,14 @@ export const selectTradeboxSelectedTriggerAcceptablePriceImpactBps = (s: Synthet
   s.tradebox.selectedTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSetSelectedAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.setSelectedAcceptablePriceImpactBps;
+export const selectTradeboxDefaultAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.tradebox.defaultAllowedSwapSlippageBps;
+export const selectTradeboxSetDefaultAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.tradebox.setDefaultAllowedSwapSlippageBps;
+export const selectTradeboxSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.tradebox.selectedAllowedSwapSlippageBps;
+export const selectTradeboxSetSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
+  s.tradebox.setSelectedAllowedSwapSlippageBps;
 export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
 export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
 export const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
@@ -109,6 +118,22 @@ export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
 export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
+
+export const selectTradeboxTotalSwapImpactBps = createSelector((q) => {
+  const fees = q(selectTradeboxFees);
+  let swapPriceImpact = fees?.swapPriceImpact?.bps ?? 0n;
+
+  const swapFees = fees?.swapFees ?? [];
+
+  return (
+    swapPriceImpact +
+    (swapFees.length
+      ? swapFees.reduce((acc, fee) => {
+          return acc + (fee.bps ?? 0n);
+        }, 0n)
+      : 0n)
+  );
+});
 
 export const selectTradeboxFindSwapPath = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -262,6 +287,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const amountBy = q(selectTradeboxFocusedInput);
   const uiFeeFactor = q(selectUiFeeFactor);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const allowedSwapSlippageBps = q(selectTradeboxSelectedAllowedSwapSlippageBps);
 
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
@@ -279,6 +305,9 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   );
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
+  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = tradeFlags.isLimit
+    ? ["length", "liquidity"]
+    : undefined;
 
   if (isWrapOrUnwrap) {
     const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
@@ -306,6 +335,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       isLimit: tradeFlags.isLimit,
       findSwapPath: findSwapPath,
       uiFeeFactor,
+      swapOptimizationOrder,
+      allowedSwapSlippageBps: tradeFlags.isLimit && tradeFlags.isSwap ? allowedSwapSlippageBps : undefined,
     });
   } else {
     return getSwapAmountsByToValue({
@@ -316,6 +347,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       isLimit: tradeFlags.isLimit,
       findSwapPath: findSwapPath,
       uiFeeFactor,
+      swapOptimizationOrder,
+      allowedSwapSlippageBps: tradeFlags.isLimit && tradeFlags.isSwap ? allowedSwapSlippageBps : undefined,
     });
   }
 });

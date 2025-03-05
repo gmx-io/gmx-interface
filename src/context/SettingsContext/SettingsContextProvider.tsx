@@ -3,7 +3,7 @@ import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffe
 
 import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   DISABLE_ORDER_VALIDATION_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
@@ -82,7 +82,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedAcceptablePriceImpactBuffer, setSavedAcceptablePriceImpactBuffer] = useLocalStorageSerializeKey(
     getSyntheticsAcceptablePriceImpactBufferKey(chainId),
-    DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER
+    DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER
   );
 
   const [hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey, setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey] =
