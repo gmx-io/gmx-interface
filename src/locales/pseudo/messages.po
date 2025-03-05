@@ -1361,6 +1361,10 @@ msgstr ""
 msgid "Set Max Leverage"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Version and network"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
@@ -4520,7 +4524,6 @@ msgstr ""
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr ""
