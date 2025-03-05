@@ -16,7 +16,6 @@ relay.onTaskStatusUpdate((taskStatus: TransactionStatusResponse) => {
   console.log("Task status update", taskStatus);
 });
 
-// Add the canSignTypedData function at the top of the file
 async function canSignTypedData(signer: Signer): Promise<boolean> {
   try {
     // In ethers v6, signTypedData is a standard method

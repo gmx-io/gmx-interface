@@ -64,7 +64,7 @@ export async function getCreateOrderCalldata(
     };
     collateralDeltaAmount: bigint;
     account: string;
-    params: any;
+    params: CreateOrderParams;
     signature?: string;
     userNonce?: bigint;
     deadline: bigint;
