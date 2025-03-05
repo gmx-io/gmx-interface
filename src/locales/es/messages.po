@@ -4523,6 +4523,10 @@ msgstr ""
 msgid "Stryke"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+msgid "External swap is temporarily disabled. Please try again."
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
 msgstr ""
@@ -7350,8 +7354,8 @@ msgid "Increase"
 msgstr "Incrementar"
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-msgid "External swap was temporarily disabled. Please try again."
-msgstr ""
+#~ msgid "External swap was temporarily disabled. Please try again."
+#~ msgstr ""
 
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"

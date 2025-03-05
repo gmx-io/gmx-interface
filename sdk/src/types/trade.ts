@@ -240,7 +240,7 @@ export type ExternalSwapOutput = {
   priceOut: bigint | undefined;
   feesUsd: bigint | undefined;
   needSpenderApproval?: boolean;
-  txnData?: {
+  txnData: {
     to: string;
     data: string;
     value: bigint;
@@ -260,7 +260,7 @@ export type ExternalSwapQuote = {
   priceOut: bigint;
   feesUsd: bigint;
   needSpenderApproval?: boolean;
-  txnData?: {
+  txnData: {
     to: string;
     data: string;
     value: bigint;

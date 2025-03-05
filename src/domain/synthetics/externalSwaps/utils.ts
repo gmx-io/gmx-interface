@@ -1,8 +1,10 @@
 import { ethers } from "ethers";
 import Token from "sdk/abis/Token.json";
 
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
+import { parseError } from "lib/parseError";
 import { convertTokenAddress, getNativeToken } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
@@ -18,9 +20,6 @@ import {
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
-import { parseError } from "lib/parseError";
-import { TxErrorType } from "sdk/utils/contracts";
-import { getSwapDebugSettings } from "config/externalSwaps";
 
 const tokenContract = new ethers.Interface(Token.abi);
 
@@ -182,8 +181,9 @@ export function getExternalSwapInputsByLeverageSize({
 export function isPossibleExternalSwapError(error: Error) {
   const parsedError = parseError(error);
 
-  const isNotPayloadRelatedError =
-    parsedError?.txErrorType && [TxErrorType.RpcError, TxErrorType.NetworkChanged].includes(parsedError.txErrorType);
+  const isExternalCallError = parsedError?.contractError === "ExternalCallFailed";
 
-  return parsedError && !parsedError.isUserError && !isNotPayloadRelatedError;
+  const isPayloadRelatedError = parsedError?.errorMessage?.includes("execution reverted");
+
+  return isExternalCallError || isPayloadRelatedError;
 }

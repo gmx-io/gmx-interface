@@ -51,7 +51,8 @@ export const selectExternalSwapQuote = createSelector((q) => {
     !tokenIn ||
     !tokenOut ||
     tokenIn.address !== baseOutput.inTokenAddress ||
-    tokenOut.address !== baseOutput.outTokenAddress
+    tokenOut.address !== baseOutput.outTokenAddress ||
+    shouldFallbackToInternalSwap
   ) {
     return undefined;
   }
@@ -86,10 +87,6 @@ export const selectExternalSwapQuote = createSelector((q) => {
     inputs.internalSwapAmounts.amountOut > 0n &&
     inputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
     inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
-
-  if (shouldFallbackToInternalSwap) {
-    return undefined;
-  }
 
   if (isInternalSwapBetter && !debugForceExternalSwaps) {
     return undefined;

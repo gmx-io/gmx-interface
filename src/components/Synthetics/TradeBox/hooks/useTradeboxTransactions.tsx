@@ -278,7 +278,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         <>
           <br />
           <br />
-          <Trans>External swap was temporarily disabled. Please try again.</Trans>
+          <Trans>External swap is temporarily disabled. Please try again.</Trans>
         </>
       ) : undefined;
 
