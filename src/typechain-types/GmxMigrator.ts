@@ -57,10 +57,17 @@ export interface GmxMigratorInterface extends Interface {
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "ClearAction" | "SignAction" | "SignalApprove" | "SignalPendingAction"
+    nameOrSignatureOrTopic:
+      | "ClearAction"
+      | "SignAction"
+      | "SignalApprove"
+      | "SignalPendingAction"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "actionsNonce", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "actionsNonce",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
   encodeFunctionData(functionFragment: "ammRouter", values?: undefined): string;
   encodeFunctionData(
@@ -68,10 +75,22 @@ export interface GmxMigratorInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "caps", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "endMigration", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getIouToken", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "getTokenAmounts", values: [AddressLike[]]): string;
-  encodeFunctionData(functionFragment: "getTokenPrice", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "endMigration",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getIouToken",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenAmounts",
+    values: [AddressLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenPrice",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "gmxPrice", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -85,58 +104,145 @@ export interface GmxMigratorInterface extends Interface {
       BigNumberish[],
       AddressLike[],
       AddressLike[],
-      AddressLike[],
+      AddressLike[]
     ]
   ): string;
-  encodeFunctionData(functionFragment: "iouTokens", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "isInitialized", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isMigrationActive", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isSigner", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "lpTokenAs", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "lpTokenBs", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "lpTokens", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "migrate", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "minAuthorizations", values?: undefined): string;
-  encodeFunctionData(functionFragment: "pendingActions", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "iouTokens",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isInitialized",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isMigrationActive",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSigner",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lpTokenAs",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lpTokenBs",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lpTokens",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "migrate",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minAuthorizations",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingActions",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "prices", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "signApprove",
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "signalApprove", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "signedActions", values: [AddressLike, BytesLike]): string;
-  encodeFunctionData(functionFragment: "signers", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "tokenAmounts", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "whitelistedTokens", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "signalApprove",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signedActions",
+    values: [AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signers",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenAmounts",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "whitelistedTokens",
+    values: [AddressLike]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "actionsNonce", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "actionsNonce",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ammRouter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "caps", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "endMigration", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getIouToken", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getTokenAmounts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getTokenPrice", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "endMigration",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getIouToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenAmounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenPrice",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gmxPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "iouTokens", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isInitialized", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isMigrationActive", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isInitialized",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isMigrationActive",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isSigner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lpTokenAs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lpTokenBs", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lpTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "migrate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "minAuthorizations", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pendingActions", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "minAuthorizations",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingActions",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "prices", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signApprove", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalApprove", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signedActions", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "signApprove",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signalApprove",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signedActions",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "signers", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenAmounts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "whitelistedTokens", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenAmounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "whitelistedTokens",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace ClearActionEvent {
@@ -171,9 +277,15 @@ export namespace SignalApproveEvent {
     spender: AddressLike,
     amount: BigNumberish,
     action: BytesLike,
-    nonce: BigNumberish,
+    nonce: BigNumberish
   ];
-  export type OutputTuple = [token: string, spender: string, amount: bigint, action: string, nonce: bigint];
+  export type OutputTuple = [
+    token: string,
+    spender: string,
+    amount: bigint,
+    action: string,
+    nonce: bigint
+  ];
   export interface OutputObject {
     token: string;
     spender: string;
@@ -217,21 +329,31 @@ export interface GmxMigrator extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   actionsNonce: TypedContractMethod<[], [bigint], "view">;
 
@@ -240,7 +362,12 @@ export interface GmxMigrator extends BaseContract {
   ammRouter: TypedContractMethod<[], [string], "view">;
 
   approve: TypedContractMethod<
-    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish, _nonce: BigNumberish],
+    [
+      _token: AddressLike,
+      _spender: AddressLike,
+      _amount: BigNumberish,
+      _nonce: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -251,7 +378,11 @@ export interface GmxMigrator extends BaseContract {
 
   getIouToken: TypedContractMethod<[_token: AddressLike], [string], "view">;
 
-  getTokenAmounts: TypedContractMethod<[_tokens: AddressLike[]], [bigint[]], "view">;
+  getTokenAmounts: TypedContractMethod<
+    [_tokens: AddressLike[]],
+    [bigint[]],
+    "view"
+  >;
 
   getTokenPrice: TypedContractMethod<[_token: AddressLike], [bigint], "view">;
 
@@ -268,7 +399,7 @@ export interface GmxMigrator extends BaseContract {
       _caps: BigNumberish[],
       _lpTokens: AddressLike[],
       _lpTokenAs: AddressLike[],
-      _lpTokenBs: AddressLike[],
+      _lpTokenBs: AddressLike[]
     ],
     [void],
     "nonpayable"
@@ -288,7 +419,11 @@ export interface GmxMigrator extends BaseContract {
 
   lpTokens: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
-  migrate: TypedContractMethod<[_token: AddressLike, _tokenAmount: BigNumberish], [void], "nonpayable">;
+  migrate: TypedContractMethod<
+    [_token: AddressLike, _tokenAmount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   minAuthorizations: TypedContractMethod<[], [bigint], "view">;
 
@@ -297,7 +432,12 @@ export interface GmxMigrator extends BaseContract {
   prices: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   signApprove: TypedContractMethod<
-    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish, _nonce: BigNumberish],
+    [
+      _token: AddressLike,
+      _spender: AddressLike,
+      _amount: BigNumberish,
+      _nonce: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -308,32 +448,65 @@ export interface GmxMigrator extends BaseContract {
     "nonpayable"
   >;
 
-  signedActions: TypedContractMethod<[arg0: AddressLike, arg1: BytesLike], [boolean], "view">;
+  signedActions: TypedContractMethod<
+    [arg0: AddressLike, arg1: BytesLike],
+    [boolean],
+    "view"
+  >;
 
   signers: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   tokenAmounts: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
-  whitelistedTokens: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  whitelistedTokens: TypedContractMethod<
+    [arg0: AddressLike],
+    [boolean],
+    "view"
+  >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "actionsNonce"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "admin"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "ammRouter"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "actionsNonce"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "admin"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "ammRouter"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "approve"
   ): TypedContractMethod<
-    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish, _nonce: BigNumberish],
+    [
+      _token: AddressLike,
+      _spender: AddressLike,
+      _amount: BigNumberish,
+      _nonce: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "caps"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "endMigration"): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(nameOrSignature: "getIouToken"): TypedContractMethod<[_token: AddressLike], [string], "view">;
-  getFunction(nameOrSignature: "getTokenAmounts"): TypedContractMethod<[_tokens: AddressLike[]], [bigint[]], "view">;
-  getFunction(nameOrSignature: "getTokenPrice"): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "gmxPrice"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "caps"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "endMigration"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "getIouToken"
+  ): TypedContractMethod<[_token: AddressLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "getTokenAmounts"
+  ): TypedContractMethod<[_tokens: AddressLike[]], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "getTokenPrice"
+  ): TypedContractMethod<[_token: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "gmxPrice"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<
@@ -347,50 +520,105 @@ export interface GmxMigrator extends BaseContract {
       _caps: BigNumberish[],
       _lpTokens: AddressLike[],
       _lpTokenAs: AddressLike[],
-      _lpTokenBs: AddressLike[],
+      _lpTokenBs: AddressLike[]
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "iouTokens"): TypedContractMethod<[arg0: AddressLike], [string], "view">;
-  getFunction(nameOrSignature: "isInitialized"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "isMigrationActive"): TypedContractMethod<[], [boolean], "view">;
-  getFunction(nameOrSignature: "isSigner"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "lpTokenAs"): TypedContractMethod<[arg0: AddressLike], [string], "view">;
-  getFunction(nameOrSignature: "lpTokenBs"): TypedContractMethod<[arg0: AddressLike], [string], "view">;
-  getFunction(nameOrSignature: "lpTokens"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "iouTokens"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "isInitialized"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isMigrationActive"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isSigner"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "lpTokenAs"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "lpTokenBs"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "lpTokens"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "migrate"
-  ): TypedContractMethod<[_token: AddressLike, _tokenAmount: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "minAuthorizations"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "pendingActions"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
-  getFunction(nameOrSignature: "prices"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _tokenAmount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "minAuthorizations"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "pendingActions"
+  ): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "prices"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "signApprove"
   ): TypedContractMethod<
-    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish, _nonce: BigNumberish],
+    [
+      _token: AddressLike,
+      _spender: AddressLike,
+      _amount: BigNumberish,
+      _nonce: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "signalApprove"
-  ): TypedContractMethod<[_token: AddressLike, _spender: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "signedActions"
-  ): TypedContractMethod<[arg0: AddressLike, arg1: BytesLike], [boolean], "view">;
-  getFunction(nameOrSignature: "signers"): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-  getFunction(nameOrSignature: "tokenAmounts"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "whitelistedTokens"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: BytesLike],
+    [boolean],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "signers"
+  ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "tokenAmounts"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "whitelistedTokens"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
   getEvent(
     key: "ClearAction"
-  ): TypedContractEvent<ClearActionEvent.InputTuple, ClearActionEvent.OutputTuple, ClearActionEvent.OutputObject>;
+  ): TypedContractEvent<
+    ClearActionEvent.InputTuple,
+    ClearActionEvent.OutputTuple,
+    ClearActionEvent.OutputObject
+  >;
   getEvent(
     key: "SignAction"
-  ): TypedContractEvent<SignActionEvent.InputTuple, SignActionEvent.OutputTuple, SignActionEvent.OutputObject>;
+  ): TypedContractEvent<
+    SignActionEvent.InputTuple,
+    SignActionEvent.OutputTuple,
+    SignActionEvent.OutputObject
+  >;
   getEvent(
     key: "SignalApprove"
-  ): TypedContractEvent<SignalApproveEvent.InputTuple, SignalApproveEvent.OutputTuple, SignalApproveEvent.OutputObject>;
+  ): TypedContractEvent<
+    SignalApproveEvent.InputTuple,
+    SignalApproveEvent.OutputTuple,
+    SignalApproveEvent.OutputObject
+  >;
   getEvent(
     key: "SignalPendingAction"
   ): TypedContractEvent<

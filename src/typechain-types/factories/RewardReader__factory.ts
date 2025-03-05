@@ -90,7 +90,10 @@ export class RewardReader__factory {
   static createInterface(): RewardReaderInterface {
     return new Interface(_abi) as RewardReaderInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): RewardReader {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): RewardReader {
     return new Contract(address, _abi, runner) as unknown as RewardReader;
   }
 }
