@@ -82,7 +82,7 @@ export default function ChartTokenSelector(props: Props) {
       popoverXOffset={-8}
       handleClassName={oneRowLabels === false ? "mr-24" : undefined}
       chevronClassName={chevronClassName}
-      desktopPanelClassName="w-[840px] max-w-[100vw]"
+      desktopPanelClassName="w-[860px] max-w-[100vw]"
       label={
         selectedToken ? (
           <span
@@ -91,7 +91,7 @@ export default function ChartTokenSelector(props: Props) {
               "items-center": oneRowLabels,
             })}
           >
-            <TokenIcon className="mr-8 mt-4" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            <TokenIcon className="mr-8 mt-2" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
             <span
               className={cx("flex justify-start", {
                 "flex-col": !oneRowLabels,

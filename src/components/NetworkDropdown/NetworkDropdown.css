@@ -38,19 +38,6 @@
   background: var(--dark-blue-active);
 }
 
-.network-dropdown > button.transparent {
-  height: 3.6rem;
-  border-radius: 0.4rem;
-  border: none;
-  min-width: 34px;
-  pointer-events: none;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 0.8rem;
-  background: transparent;
-}
-
 .network-dropdown-icon {
   width: 20px;
   height: 20px;
@@ -59,12 +46,6 @@
 
 .language-popup .Modal-content {
   width: 32rem;
-}
-
-.network-dropdown-seperator {
-  width: 1px;
-  background: var(--dark-blue-border);
-  margin: 0.8rem 0;
 }
 
 .menu-item-group {
@@ -205,9 +186,7 @@
   .App-header-language {
     margin-left: 0;
   }
-  .network-dropdown > button {
-    padding: 0 0.5rem;
-  }
+
   .network-dropdown.homepage-header > button {
     padding: 0 0.8rem;
   }

@@ -4,7 +4,6 @@ import { memo, useCallback, useMemo } from "react";
 import { HIGH_ALLOWED_SWAP_SLIPPAGE_BPS } from "config/factors";
 import { formatPercentage } from "lib/numbers";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 
 import "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.scss";
