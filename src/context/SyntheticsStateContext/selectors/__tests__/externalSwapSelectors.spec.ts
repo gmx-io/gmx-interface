@@ -90,8 +90,6 @@ describe("externalSwapSelectors", () => {
       externalSwap: {
         baseOutput: mockBaseSwapQuote,
         setBaseOutput: () => undefined,
-        fails: 0,
-        setFails: () => undefined,
         shouldFallbackToInternalSwap: false,
         setShouldFallbackToInternalSwap: () => undefined,
       },

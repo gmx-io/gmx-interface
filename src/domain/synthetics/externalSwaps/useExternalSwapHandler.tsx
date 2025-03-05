@@ -1,15 +1,13 @@
+import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
-import { AUTO_SWAP_FALLBACK_MAX_FEES_BPS, DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT } from "config/externalSwaps";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectBaseExternalSwapOutput,
-  selectExternalSwapFails,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
-  selectSetExternalSwapFails,
   selectSetShouldFallbackToInternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldRequestExternalSwapQuote,
@@ -25,7 +23,6 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { useEffect } from "react";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
-import { getIsFlagEnabled } from "config/ab";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -37,9 +34,6 @@ export function useExternalSwapHandler() {
   const setBaseExternalSwapOutput = useSelector(selectSetBaseExternalSwapOutput);
   const storedBaseExternalSwapOutput = useSelector(selectBaseExternalSwapOutput);
   const gasPrice = useSelector(selectGasPrice);
-
-  const externalSwapFails = useSelector(selectExternalSwapFails);
-  const setExternalSwapFails = useSelector(selectSetExternalSwapFails);
 
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
 
@@ -80,44 +74,6 @@ export function useExternalSwapHandler() {
       }
     },
     [externalSwapOutput, setBaseExternalSwapOutput, storedBaseExternalSwapOutput]
-  );
-
-  useEffect(() => {
-    if (externalSwapFails > 0 && !shouldFallbackToInternalSwap) {
-      if (
-        externalSwapInputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
-        externalSwapQuote &&
-        externalSwapInputs.internalSwapTotalFeesDeltaUsd - -externalSwapQuote.feesUsd > AUTO_SWAP_FALLBACK_MAX_FEES_BPS
-      ) {
-        setShouldFallbackToInternalSwap(true);
-      }
-    }
-  }, [
-    externalSwapQuote,
-    externalSwapFails,
-    setExternalSwapFails,
-    settings,
-    shouldFallbackToInternalSwap,
-    externalSwapInputs,
-    setShouldFallbackToInternalSwap,
-  ]);
-
-  useEffect(
-    function disableExternalSwapByFails() {
-      if (externalSwapFails >= DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT && settings.externalSwapsEnabled) {
-        setExternalSwapFails(0);
-        setShouldFallbackToInternalSwap(false);
-        settings.setExternalSwapsEnabled(false);
-      }
-    },
-    [
-      externalSwapFails,
-      settings.externalSwapsEnabled,
-      shouldFallbackToInternalSwap,
-      setExternalSwapFails,
-      setShouldFallbackToInternalSwap,
-      settings,
-    ]
   );
 
   useEffect(

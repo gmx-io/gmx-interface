@@ -8,7 +8,6 @@ import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/number
 export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -30n;
 
 // Enable auto swap fallback if fees difference of internal and external swap are less than this threshold
-export const AUTO_SWAP_FALLBACK_MAX_FEES_BPS = -10n;
 
 // Disable external swap aggregator if this number of build transactions fail
 export const DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT = 3;
@@ -17,7 +16,6 @@ let isSwapDebugSettingsInited = false;
 
 let swapDebugSettings = {
   swapPriceImpactForExternalSwapThresholdBps: SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS,
-  autoSwapFallbackMaxFeesBps: AUTO_SWAP_FALLBACK_MAX_FEES_BPS,
   forceExternalSwaps: false,
   failExternalSwaps: false,
 };

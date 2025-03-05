@@ -5,10 +5,7 @@ import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import {
-  selectSetExternalSwapFails,
-  selectSetShouldFallbackToInternalSwap,
-} from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
+import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -60,8 +57,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { toast } from "react-toastify";
-import { parseError } from "lib/parseError";
+import { isPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -88,7 +84,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
 
-  const setExternalSwapFails = useSelector(selectSetExternalSwapFails);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
   const { shouldDisableValidationForTesting } = useSettings();
@@ -268,15 +263,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         <>
           <br />
           <br />
-          <span
-            className="inline-block cursor-pointer border-b border-dashed"
-            onClick={() => {
-              toast.dismiss();
-              setShouldFallbackToInternalSwap(true);
-            }}
-          >
-            <Trans>Switch to internal swap</Trans>
-          </span>
+          <Trans>External swap was temporarily disabled. Please try again.</Trans>
         </>
       ) : undefined;
 
@@ -359,9 +346,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((e) => {
-          const errorData = parseError(e);
-          if (!errorData?.isUserError && increaseAmounts.externalSwapQuote) {
-            setExternalSwapFails((old) => old + 1);
+          if (isPossibleExternalSwapError(e) && increaseAmounts.externalSwapQuote) {
+            setShouldFallbackToInternalSwap(true);
           }
 
           throw e;
@@ -397,12 +383,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
-      setShouldFallbackToInternalSwap,
       cancelSltpEntries,
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
-      setExternalSwapFails,
+      setShouldFallbackToInternalSwap,
     ]
   );
 

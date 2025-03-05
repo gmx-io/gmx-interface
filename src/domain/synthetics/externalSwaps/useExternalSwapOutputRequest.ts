@@ -1,5 +1,5 @@
+import { sleep } from "lib/sleep";
 import { useDebounce } from "lib/useDebounce";
-import { usePrevious } from "lib/usePrevious";
 import { useMemo } from "react";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
@@ -36,16 +36,13 @@ export function useExternalSwapOutputRequest({
     amountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? ["useExternalSwapsQuote", chainId, tokenInAddress, tokenOutAddress, amountIn, slippage, gasPrice]
+      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
-  const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
-  const prevTokensKey = usePrevious(tokensKey);
+  const isWaitingForDebounce = debouncedKey !== swapKey;
 
-  const { data } = useSWR(debouncedKey, {
-    // keep previous data if the tokens have not changed to avoid flickering
-    keepPreviousData: tokensKey === prevTokensKey,
+  const { data, isLoading, error } = useSWR(debouncedKey, {
     fetcher: async () => {
       try {
         if (
@@ -58,16 +55,21 @@ export function useExternalSwapOutputRequest({
           throw new Error("Invalid swap parameters");
         }
 
-        const result = await getOpenOceanTxnData({
-          chainId,
-          senderAddress: getContract(chainId, "ExternalHandler"),
-          receiverAddress: getContract(chainId, "OrderVault"),
-          tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
-          tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
-          amountIn,
-          gasPrice,
-          slippage,
-        });
+        const result = await Promise.race([
+          getOpenOceanTxnData({
+            chainId,
+            senderAddress: getContract(chainId, "ExternalHandler"),
+            receiverAddress: getContract(chainId, "OrderVault"),
+            tokenInAddress: convertTokenAddress(chainId, tokenInAddress, "wrapped"),
+            tokenOutAddress: convertTokenAddress(chainId, tokenOutAddress, "wrapped"),
+            amountIn,
+            gasPrice,
+            slippage,
+          }),
+          sleep(5000).then(() => {
+            throw new Error("External swap request timeout");
+          }),
+        ]);
 
         if (!result) {
           throw new Error("Failed to fetch open ocean txn data");
@@ -107,7 +109,7 @@ export function useExternalSwapOutputRequest({
   });
 
   return useMemo(() => {
-    if (!tokenInAddress || !data || amountIn === undefined) {
+    if (!tokenInAddress || !data || amountIn === undefined || isWaitingForDebounce || isLoading || error) {
       return {};
     }
 
@@ -125,5 +127,5 @@ export function useExternalSwapOutputRequest({
     return {
       externalSwapOutput,
     };
-  }, [tokenInAddress, data, amountIn, tokensAllowanceData, chainId]);
+  }, [tokenInAddress, data, amountIn, isWaitingForDebounce, isLoading, error, tokensAllowanceData, chainId]);
 }

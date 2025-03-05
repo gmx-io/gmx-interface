@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import CustomErrors from "sdk/abis/CustomErrors.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
@@ -8,7 +7,6 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BaseContract, ethers } from "ethers";
@@ -18,14 +16,14 @@ import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import CustomErrors from "sdk/abis/CustomErrors.json";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { ExternalSwapQuote } from "sdk/types/trade";
+import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 import { withRetry } from "viem";
 import { isGlvEnabled } from "../markets/glv";
-import { adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { extractError } from "sdk/utils/contracts";
-import { ExternalSwapQuote } from "sdk/types/trade";
-import { getSwapDebugSettings } from "config/externalSwaps";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -142,10 +140,6 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
   }
 
   try {
-    if (p.externalSwapQuote && getSwapDebugSettings()?.failExternalSwaps) {
-      throw new Error("Debug fail external swap");
-    }
-
     await withRetry(
       () => {
         return router.multicall.staticCall(simulationPayloadData, {

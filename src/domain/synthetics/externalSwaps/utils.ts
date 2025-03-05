@@ -18,6 +18,9 @@ import {
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
+import { parseError } from "lib/parseError";
+import { TxErrorType } from "sdk/utils/contracts";
+import { getSwapDebugSettings } from "config/externalSwaps";
 
 const tokenContract = new ethers.Interface(Token.abi);
 
@@ -36,7 +39,12 @@ export function getExternalCallsParams(chainId: number, account: string, quote: 
     callData.push(tokenContract.encodeFunctionData("approve", [quote.txnData.to, ethers.MaxUint256]));
   }
 
-  addresses.push(quote.txnData.to);
+  if (getSwapDebugSettings()?.failExternalSwaps) {
+    addresses.push(quote.inTokenAddress);
+  } else {
+    addresses.push(quote.txnData.to);
+  }
+
   callData.push(quote.txnData.data);
 
   const refundTokens = [getNativeToken(chainId).wrappedAddress, inTokenAddress];
@@ -169,4 +177,13 @@ export function getExternalSwapInputsByLeverageSize({
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
   };
+}
+
+export function isPossibleExternalSwapError(error: Error) {
+  const parsedError = parseError(error);
+
+  const isNotPayloadRelatedError =
+    parsedError?.txErrorType && [TxErrorType.RpcError, TxErrorType.NetworkChanged].includes(parsedError.txErrorType);
+
+  return parsedError && !parsedError.isUserError && !isNotPayloadRelatedError;
 }

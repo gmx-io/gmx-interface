@@ -68,25 +68,6 @@ export function DebugSwapsSettings() {
                 <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">bps</div>
               </div>
             </div>
-            <div className="mb-8">
-              <div>
-                <Trans>Auto Swap Fallback Max Fees</Trans>
-              </div>
-              <div className="relative">
-                <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-100">-</div>
-                <NumberInput
-                  className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
-                  value={(-debugSettings.autoSwapFallbackMaxFeesBps).toString()}
-                  onValueChange={(e) => {
-                    const value = -BigInt(e.target.value);
-                    setSwapDebugSetting("autoSwapFallbackMaxFeesBps", value);
-                    updateDebugSettings();
-                  }}
-                  placeholder="15"
-                />
-                <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">bps</div>
-              </div>
-            </div>
             <div className="divider"></div>
           </div>
         </div>

@@ -31,9 +31,6 @@ import { SyntheticsState } from "../SyntheticsStateContextProvider";
 export const selectBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.baseOutput;
 export const selectSetBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.setBaseOutput;
 
-export const selectExternalSwapFails = (s: SyntheticsState) => s.externalSwap.fails;
-export const selectSetExternalSwapFails = (s: SyntheticsState) => s.externalSwap.setFails;
-
 export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.externalSwap.shouldFallbackToInternalSwap;
 export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
   s.externalSwap.setShouldFallbackToInternalSwap;

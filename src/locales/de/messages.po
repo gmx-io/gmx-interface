@@ -399,8 +399,8 @@ msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
-msgid "Auto Swap Fallback Max Fees"
-msgstr ""
+#~ msgid "Auto Swap Fallback Max Fees"
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
@@ -2292,8 +2292,8 @@ msgid "The maximum number of authorized Actions has been reached. Re-authorize a
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-msgid "Switch to internal swap"
-msgstr ""
+#~ msgid "Switch to internal swap"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -7236,6 +7236,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Increase"
 msgstr "Erhöhen"
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+msgid "External swap was temporarily disabled. Please try again."
+msgstr ""
 
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"
