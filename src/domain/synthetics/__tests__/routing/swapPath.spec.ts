@@ -9,7 +9,6 @@ import {
   getMarketsGraph,
 } from "domain/synthetics/trade";
 import { describe, expect, it } from "vitest";
-
 const marketsKeys = [
   "AVAX-AVAX-USDC",
   "ETH-ETH-USDC",
