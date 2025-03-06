@@ -12,6 +12,11 @@ import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/or
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import {
+  selectTradeboxCollateralTokenAddress,
+  selectTradeboxMarketAddress,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { OrderErrors, PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
@@ -23,7 +28,7 @@ import {
   getEstimatedLiquidationTimeInHours,
   getNameByOrderType,
 } from "domain/synthetics/positions";
-import { TradeMode, getOrderThresholdType } from "domain/synthetics/trade";
+import { TradeMode, TradeType, getOrderThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import {
   calculateDisplayDecimals,
@@ -62,9 +67,17 @@ export type Props = {
 export function PositionItem(p: Props) {
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
+  const currentTradeType = useSelector(selectTradeboxTradeType);
+  const currentMarketAddress = useSelector(selectTradeboxMarketAddress);
+  const currentCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const { minCollateralUsd } = usePositionsConstants();
+  const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
+  const isCurrentMarket =
+    currentMarketAddress === p.position.marketAddress &&
+    currentCollateralAddress === p.position.collateralTokenAddress &&
+    isCurrentTradeTypeLong === p.position.isLong;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
 
@@ -359,13 +372,16 @@ export function PositionItem(p: Props) {
 
     return (
       <TableTr data-qa={qaAttr}>
-        <TableTd data-qa="position-handle" className="flex" onClick={() => p.onSelectPositionClick?.()}>
+        <TableTd
+          data-qa="position-handle"
+          className={cx("flex", {
+            "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
+          })}
+          onClick={() => p.onSelectPositionClick?.()}
+        >
           {/* title */}
           <div
-            className={cx("Position-item-info relative", {
-              "Position-item-info_long": p.position.isLong,
-              "Position-item-info_short": !p.position.isLong,
-            })}
+            className={cx("Position-item-info relative")}
           >
             <div className="Exchange-list-title">
               <Tooltip
@@ -536,10 +552,7 @@ export function PositionItem(p: Props) {
         <div className="flex flex-grow flex-col">
           <div className="flex-grow">
             <div
-              className={cx("App-card-title Position-card-title", {
-                "Position-card-title_long": p.position.isLong,
-                "Position-card-title_short": !p.position.isLong,
-              })}
+              className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}
               onClick={() => p.onSelectPositionClick?.()}
             >
               <span className="Exchange-list-title inline-flex">
