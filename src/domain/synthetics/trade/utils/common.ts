@@ -114,7 +114,7 @@ export function getTradeFees(p: {
         }))
       : undefined;
 
-  const externalSwapFees: ExternalSwapFeeItem | undefined =
+  const externalSwapFee: ExternalSwapFeeItem | undefined =
     initialCollateralUsd > 0 && externalSwapQuote
       ? {
           aggregator: externalSwapQuote.aggregator,
@@ -159,7 +159,7 @@ export function getTradeFees(p: {
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
-    externalSwapFees,
+    externalSwapFee,
     swapProfitFee,
     swapPriceImpact,
     positionFeeAfterDiscount,
@@ -197,7 +197,7 @@ export function getTradeFees(p: {
     feeDiscountUsd,
     uiFee,
     uiSwapFee,
-    externalSwapFees,
+    externalSwapFee,
   };
 }
 

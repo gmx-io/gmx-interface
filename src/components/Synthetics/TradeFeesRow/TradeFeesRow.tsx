@@ -27,7 +27,7 @@ type Props = {
   totalFees?: FeeItem;
   shouldShowRebate?: boolean;
   swapFees?: SwapFeeItem[];
-  externalSwapFees?: ExternalSwapFeeItem;
+  externalSwapFee?: ExternalSwapFeeItem;
   swapProfitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
@@ -87,20 +87,20 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     const externalSwapFeeRow =
-      p.externalSwapFees && p.externalSwapFees.deltaUsd !== undefined && p.externalSwapFees.deltaUsd !== 0n
+      p.externalSwapFee && p.externalSwapFee.deltaUsd !== undefined && p.externalSwapFee.deltaUsd !== 0n
         ? {
-            id: `external-swap-${p.externalSwapFees.tokenInAddress}-${p.externalSwapFees.tokenOutAddress}`,
+            id: `external-swap-${p.externalSwapFee.tokenInAddress}-${p.externalSwapFee.tokenOutAddress}`,
             label: (
               <>
                 <div className="text-white">
-                  {t`External Swap ${getToken(chainId, p.externalSwapFees.tokenInAddress).symbol} to ${
-                    getToken(chainId, p.externalSwapFees.tokenOutAddress).symbol
+                  {t`External Swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
+                    getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
                   }`}
                   :
                 </div>
                 <div>
                   (
-                  {formatPercentage(bigMath.abs(p.externalSwapFees.precisePercentage), {
+                  {formatPercentage(bigMath.abs(p.externalSwapFee.precisePercentage), {
                     displayDecimals: 3,
                     bps: false,
                   })}{" "}
@@ -108,8 +108,8 @@ export function TradeFeesRow(p: Props) {
                 </div>
               </>
             ),
-            value: formatDeltaUsd(p.externalSwapFees.deltaUsd),
-            className: getPositiveOrNegativeClass(p.externalSwapFees.deltaUsd, "text-green-500"),
+            value: formatDeltaUsd(p.externalSwapFee.deltaUsd),
+            className: getPositiveOrNegativeClass(p.externalSwapFee.deltaUsd, "text-green-500"),
           }
         : undefined;
 
@@ -399,14 +399,14 @@ export function TradeFeesRow(p: Props) {
   }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
   const swapRouteMsg = useMemo(() => {
-    if ((p.swapFees && p.swapFees.length <= 2) || p.externalSwapFees) return;
+    if ((p.swapFees && p.swapFees.length <= 2) || p.externalSwapFee) return;
     return (
       <>
         <br />
         <Trans>This swap is routed through several GM pools for the lowest possible fees and price impact.</Trans>
       </>
     );
-  }, [p.externalSwapFees, p.swapFees]);
+  }, [p.externalSwapFee, p.swapFees]);
 
   let value: ReactNode = useMemo(() => {
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {

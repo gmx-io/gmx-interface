@@ -7,10 +7,10 @@ import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/number
 // Enable external swap if price impact delta is less than this threshold
 export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -30n;
 
-// Enable auto swap fallback if fees difference of internal and external swap are less than this threshold
-
 // Disable external swap aggregator if this number of build transactions fail
 export const DISABLE_EXTERNAL_SWAP_AGGREGATOR_FAILS_COUNT = 3;
+
+export const HIGH_EXTERNAL_SWAP_FEES_BPS = 200; // 2%
 
 let isSwapDebugSettingsInited = false;
 
