@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { abis } from "sdk/abis";
 
 type Params = {
   account: string;
@@ -19,7 +19,7 @@ export async function claimAffiliateRewardsTxn(chainId: number, signer: Signer, 
 
   await validateSignerAddress(signer, account);
 
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   return callContract(
     chainId,

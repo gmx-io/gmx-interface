@@ -3,14 +3,13 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
-import { getNativeToken } from "sdk/configs/tokens";
 import { helperToast } from "lib/helperToast";
+import { getNativeToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
+import { abis } from "sdk/abis";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-
-import Token from "sdk/abis/Token.json";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -44,7 +43,7 @@ export function approveTokens({
   approveAmount,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+  const contract = new ethers.Contract(tokenAddress, abis.Token, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   contract

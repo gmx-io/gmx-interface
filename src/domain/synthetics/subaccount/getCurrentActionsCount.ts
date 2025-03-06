@@ -1,4 +1,3 @@
-import DataStore from "sdk/abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { SUBACCOUNT_ORDER_ACTION, subaccountActionCountKey } from "config/dataStore";
 import { executeMulticall } from "lib/multicall";
@@ -17,7 +16,7 @@ export async function getCurrentMaxActionsCount({
     {
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
-        abi: DataStore.abi,
+        abiId: "DataStore",
         calls: {
           currentActionsCount: {
             methodName: "getUint",

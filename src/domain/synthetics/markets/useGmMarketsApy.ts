@@ -21,7 +21,6 @@ import { getMarketListingDate } from "config/markets";
 import { getSubgraphUrl } from "config/subgraph";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import TokenAbi from "sdk/abis/Token.json";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 import { convertToUsd } from "../tokens/utils";
 import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
@@ -95,7 +94,7 @@ function useExcludedLiquidityMarketMap(
 
     for (const marketAddress of marketAddresses) {
       req[marketAddress] = {
-        abi: TokenAbi.abi,
+        abiId: "Token",
         contractAddress: marketAddress,
         calls: {},
       };

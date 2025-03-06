@@ -3,8 +3,6 @@ import { zeroAddress } from "viem";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken } from "configs/tokens";
 
-import SyntheticsReader from "abis/SyntheticsReader.json";
-
 import { ClaimableFundingData, MarketInfo, MarketsData, MarketSdkConfig, MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
 
@@ -311,7 +309,7 @@ export class Markets extends Module {
       .executeMulticall({
         markets: {
           contractAddress: readerAddress,
-          abi: SyntheticsReader.abi,
+          abiId: "SyntheticsReader",
           calls: {
             markets: {
               methodName: "getMarkets",

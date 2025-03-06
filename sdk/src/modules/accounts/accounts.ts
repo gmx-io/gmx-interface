@@ -1,8 +1,6 @@
 import { getContract } from "configs/contracts";
 import { Module } from "../base";
 
-import GovToken from "abis/GovToken.json";
-
 export class Accounts extends Module {
   get govTokenAddress() {
     let govTokenAddress;
@@ -25,7 +23,7 @@ export class Accounts extends Module {
       .executeMulticall({
         govToken: {
           contractAddress: this.govTokenAddress,
-          abi: GovToken.abi,
+          abiId: "GovToken",
           calls: {
             delegates: {
               methodName: "delegates",

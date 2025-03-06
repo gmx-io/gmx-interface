@@ -4,26 +4,25 @@ import mapKeys from "lodash/mapKeys";
 import useSWR from "swr";
 import { useEnsName } from "wagmi";
 
-import OrderBook from "sdk/abis/OrderBook.json";
-import OrderBookReader from "sdk/abis/OrderBookReader.json";
+import { abis } from "sdk/abis";
 
 import { t } from "@lingui/macro";
 import { getServerBaseUrl } from "config/backend";
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { getMostAbundantStableToken, TokenInfo } from "domain/tokens";
+import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { isValidToken } from "sdk/configs/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import {
+  PRECISION,
   bigNumberify,
   calculateDisplayDecimals,
   deserializeBigIntsInObject,
   expandDecimals,
   formatAmount,
-  PRECISION,
 } from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
@@ -907,8 +906,8 @@ export function useAccountOrders(
     dedupingInterval: 5000,
     fetcher: async ([, chainId, orderBookAddress, account]) => {
       const provider = getProvider(signer, chainId);
-      const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
-      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, provider);
+      const orderBookContract = new ethers.Contract(orderBookAddress, abis.OrderBook, provider);
+      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, abis.OrderBookReader, provider);
 
       const fetchIndexesFromServer = () => {
         const ordersIndexesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`;

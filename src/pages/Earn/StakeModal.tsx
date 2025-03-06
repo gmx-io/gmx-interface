@@ -28,7 +28,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 
-import RewardRouter from "sdk/abis/RewardRouter.json";
+import { abis } from "sdk/abis";
 
 export function StakeModal(props: {
   isVisible: boolean;
@@ -146,7 +146,7 @@ export function StakeModal(props: {
     }
 
     setIsStaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, stakeMethodName, [amount], {
       sentMsg: t`Stake submitted!`,

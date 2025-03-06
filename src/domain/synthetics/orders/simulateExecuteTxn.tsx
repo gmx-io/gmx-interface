@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import CustomErrors from "sdk/abis/CustomErrors.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
@@ -24,6 +23,7 @@ import { isGlvEnabled } from "../markets/glv";
 import { adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { extractError } from "sdk/utils/contracts";
+import { abis } from "sdk/abis";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -156,7 +156,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
     let msg: React.ReactNode = undefined;
 
     try {

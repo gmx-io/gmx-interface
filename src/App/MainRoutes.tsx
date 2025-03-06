@@ -43,10 +43,8 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
-import PositionRouter from "sdk/abis/PositionRouter.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
-import VaultV2b from "sdk/abis/VaultV2b.json";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
+import { abis } from "sdk/abis";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
@@ -62,13 +60,13 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
-    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
+    const wsVaultAbi = chainId === ARBITRUM ? abis.VaultV2 : abis.VaultV2b;
     if (hasV1LostFocus || !wsProvider) {
       return;
     }
 
     const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider as Provider);
-    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider as Provider);
+    const wsPositionRouter = new ethers.Contract(positionRouterAddress, abis.PositionRouter, wsProvider as Provider);
 
     const callExchangeRef = (method, ...args) => {
       if (!exchangeRef || !exchangeRef.current) {

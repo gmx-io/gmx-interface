@@ -11,12 +11,12 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
@@ -34,10 +34,8 @@ import { Vesting } from "./Vesting";
 
 import { useProcessedData } from "./useProcessedData";
 
-import Token from "sdk/abis/Token.json";
-
-import "./EarnV2.css";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import "./EarnV2.css";
 
 export default function EarnV2() {
   const { active, signer, account } = useWallet();
@@ -107,7 +105,7 @@ export default function EarnV2() {
   const { data: sbfGmxBalance } = useSWR(
     [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
 

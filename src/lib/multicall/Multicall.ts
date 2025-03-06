@@ -7,7 +7,6 @@ import { isWebWorker } from "config/env";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-import CustomErrors from "sdk/abis/CustomErrors.json";
 import {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -172,8 +171,10 @@ export class Multicall {
         }
 
         // Add Errors ABI to each contract ABI to correctly parse errors
-        abis[contractCallConfig.contractAddress] =
-          abis[contractCallConfig.contractAddress] || contractCallConfig.abi.concat(CustomErrors.abi);
+        abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
+          ...abis[contractCallConfig.abiId],
+          ...abis.CustomErrors,
+        ];
 
         const abi = abis[contractCallConfig.contractAddress];
 

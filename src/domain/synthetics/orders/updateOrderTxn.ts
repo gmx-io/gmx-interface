@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { getSubaccountRouterContract } from "domain/synthetics/subaccount/getSubaccountContract";
 import { convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
+import { abis } from "sdk/abis";
 
 export type UpdateOrderParams = {
   orderKey: string;
@@ -42,7 +42,7 @@ export function updateOrderTxn(
 
   const router = subaccount
     ? getSubaccountRouterContract(chainId, subaccount.signer)
-    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   const encodedPayload = createUpdateEncodedPayload({
     chainId,

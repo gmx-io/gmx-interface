@@ -1,6 +1,5 @@
-import CustomErrors from "abis/CustomErrors.json";
-
 import type { GmxSdk } from "index";
+import { AbiId } from "abis";
 import { sleep } from "./common";
 
 export const MAX_TIMEOUT = 20000;
@@ -67,9 +66,10 @@ export class Multicall {
         }
 
         // Add Errors ABI to each contract ABI to correctly parse errors
-        abis[contractCallConfig.contractAddress] =
-          abis[contractCallConfig.contractAddress] || contractCallConfig.abi.concat(CustomErrors.abi);
-
+        abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
+          ...abis[contractCallConfig.abiId],
+          ...abis.CustomErrors,
+        ];
         const abi = abis[contractCallConfig.contractAddress];
 
         originalKeys.push({
@@ -172,7 +172,7 @@ export type ContractCallConfig = {
 
 export type ContractCallsConfig<T extends { calls: any }> = {
   contractAddress: string;
-  abi: any;
+  abiId: AbiId;
   calls: {
     [callKey in keyof T["calls"]]: ContractCallConfig | SkipKey;
   };
