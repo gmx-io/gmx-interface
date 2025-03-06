@@ -446,5 +446,6 @@ export function getPendingOrderFromParams(
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativeReceive,
     orderKey,
+    externalSwapQuote: undefined,
   };
 }

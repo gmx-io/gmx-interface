@@ -4,29 +4,30 @@ import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
+import { getToken } from "sdk/configs/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "sdk/types/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { TradeFeesType } from "domain/synthetics/trade";
-import { getIsHighSwapImpact } from "domain/synthetics/trade/utils/getIsHighSwapImpact";
+import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { getToken } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
 
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./TradeFeesRow.scss";
+
 type Props = {
   totalFees?: FeeItem;
   shouldShowRebate?: boolean;
   swapFees?: SwapFeeItem[];
+  externalSwapFee?: ExternalSwapFeeItem;
   swapProfitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
@@ -37,6 +38,7 @@ type Props = {
   borrowFeeRateStr?: string;
   fundingFeeRateStr?: string;
   feeDiscountUsd?: bigint;
+  isTop?: boolean;
   feesType: TradeFeesType | null;
   uiFee?: FeeItem;
   uiSwapFee?: FeeItem;
@@ -54,7 +56,6 @@ export function TradeFeesRow(p: Props) {
   const tradingIncentives = useTradingIncentives(chainId);
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
-  const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
@@ -84,6 +85,33 @@ export function TradeFeesRow(p: Props) {
           className: getPositiveOrNegativeClass(p.swapPriceImpact!.deltaUsd, "text-green-500"),
         }
       : undefined;
+
+    const externalSwapFeeRow =
+      p.externalSwapFee && p.externalSwapFee.deltaUsd !== undefined && p.externalSwapFee.deltaUsd !== 0n
+        ? {
+            id: `external-swap-${p.externalSwapFee.tokenInAddress}-${p.externalSwapFee.tokenOutAddress}`,
+            label: (
+              <>
+                <div className="text-white">
+                  {t`External Swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
+                    getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
+                  }`}
+                  :
+                </div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.externalSwapFee.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of swap amount)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.externalSwapFee.deltaUsd),
+            className: getPositiveOrNegativeClass(p.externalSwapFee.deltaUsd, "text-green-500"),
+          }
+        : undefined;
 
     const swapFeeRows: FeeRow[] =
       p.swapFees?.map((swap) => ({
@@ -281,12 +309,13 @@ export function TradeFeesRow(p: Props) {
         : undefined;
 
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, externalSwapFeeRow, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
       return [
         swapPriceImpactRow,
+        externalSwapFeeRow,
         ...swapFeeRows,
         positionFeeRow,
         rebateRow,
@@ -311,6 +340,7 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         swapProfitFeeRow,
         swapPriceImpactRow,
+        externalSwapFeeRow,
         ...swapFeeRows,
       ].filter(Boolean) as FeeRow[];
     }
@@ -335,12 +365,6 @@ export function TradeFeesRow(p: Props) {
   }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives, estimatedRebatesPercentage]);
 
   const title = useMemo(() => {
-    let text = t`Fees`;
-
-    if (p.feesType !== "swap" && p.swapFees && p.swapFees.length > 0) {
-      text = t`Fees (Incl. Swap)`;
-    }
-
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
       const rebatedTextWithSparkle = (
         <span className="relative">
@@ -349,15 +373,11 @@ export function TradeFeesRow(p: Props) {
         </span>
       );
 
-      return (
-        <>
-          {text} {rebatedTextWithSparkle}
-        </>
-      );
+      return <Trans>Fees {rebatedTextWithSparkle}</Trans>;
     } else {
-      return text;
+      return t`Fees`;
     }
-  }, [p.feesType, p.swapFees, shouldShowRebate, tradingIncentives]);
+  }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
     if (!incentivesTokenTitle || !rebateIsApplicable) {
@@ -379,40 +399,27 @@ export function TradeFeesRow(p: Props) {
   }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
   const swapRouteMsg = useMemo(() => {
-    if (p.swapFees && p.swapFees.length <= 2) return;
+    if ((p.swapFees && p.swapFees.length <= 2) || p.externalSwapFee) return;
     return (
       <>
         <br />
         <Trans>This swap is routed through several GM pools for the lowest possible fees and price impact.</Trans>
       </>
     );
-  }, [p.swapFees]);
+  }, [p.externalSwapFee, p.swapFees]);
 
   let value: ReactNode = useMemo(() => {
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
     } else if (!feeRows.length && !incentivesBottomText) {
-      return (
-        <span
-          className={cx({
-            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500": shouldShowWarning,
-          })}
-        >
-          {formatDeltaUsd(totalFeeUsd)}
-        </span>
-      );
+      return <span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>;
     } else {
       return (
         <TooltipWithPortal
           tooltipClassName="TradeFeesRow-tooltip"
-          handleClassName={cx({
-            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500 !decoration-yellow-500/50": shouldShowWarning,
-          })}
-          handle={formatDeltaUsd(totalFeeUsd)}
-          position="left-start"
-          content={
+          handle={<span className={cx({ positive: totalFeeUsd > 0 })}>{formatDeltaUsd(totalFeeUsd)}</span>}
+          position="top-end"
+          renderContent={() => (
             <div>
               {feeRows.map((feeRow) => (
                 <StatsTooltipRow
@@ -427,11 +434,11 @@ export function TradeFeesRow(p: Props) {
               {incentivesBottomText}
               {swapRouteMsg}
             </div>
-          }
+          )}
         />
       );
     }
-  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, swapRouteMsg]);
+  }, [feeRows, incentivesBottomText, totalFeeUsd, swapRouteMsg]);
 
-  return <SyntheticsInfoRow label={title} value={value} />;
+  return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
 }

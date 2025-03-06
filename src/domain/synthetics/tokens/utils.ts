@@ -16,11 +16,9 @@ export function getNeedTokenApprove(
   if (tokenAddress === NATIVE_TOKEN_ADDRESS || amountToSpend === undefined || amountToSpend <= 0n) {
     return false;
   }
-
   if (!tokenAllowanceData || !tokenAddress || tokenAllowanceData?.[tokenAddress] === undefined) {
     return true;
   }
-
   return amountToSpend > tokenAllowanceData[tokenAddress];
 }
 

@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { PositionManager, PositionManagerInterface } from "../PositionManager";
+import type {
+  PositionManager,
+  PositionManagerInterface,
+} from "../PositionManager";
 
 const _abi = [
   {
@@ -1169,7 +1172,10 @@ export class PositionManager__factory {
   static createInterface(): PositionManagerInterface {
     return new Interface(_abi) as PositionManagerInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): PositionManager {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): PositionManager {
     return new Contract(address, _abi, runner) as unknown as PositionManager;
   }
 }

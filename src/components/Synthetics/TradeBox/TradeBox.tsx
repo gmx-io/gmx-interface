@@ -7,9 +7,9 @@ import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -27,8 +27,8 @@ import {
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
-  selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
+  selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxTradeFlags,
@@ -95,6 +95,7 @@ import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
+import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import "./TradeBox.scss";
 
 export function TradeBox() {
@@ -108,19 +109,19 @@ export function TradeBox() {
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
+  const showDebugValues = useSelector(selectShowDebugValues);
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
-  const marketsInfoData = useMarketsInfoData();
-
+  const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
-  const { showDebugValues, shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
+  const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -197,6 +198,7 @@ export function TradeBox() {
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
     willDecreaseOrdersBeExecuted: decreaseOrdersThatWillBeExecuted.length > 0,
+    externalSwapFeeItem: fees?.externalSwapFee,
     tradeFlags,
   });
 
@@ -929,6 +931,7 @@ export function TradeBox() {
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
+                externalSwapFeeItem={fees?.externalSwapFee}
               />
             )}
           </div>

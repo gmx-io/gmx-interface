@@ -60,6 +60,7 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
+import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
@@ -129,6 +130,7 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
     uiFeeFactor,
+    externalSwapQuote: undefined,
   });
 });
 
@@ -314,6 +316,7 @@ const makeSelectOrderEditorNextPositionValuesForIncreaseArgs = createSelectorFac
         marketAddress: positionOrder?.marketAddress,
         positionKey: existingPosition?.key,
         increaseStrategy: "independent",
+        externalSwapQuote: undefined,
         tradeMode: isLimitOrderType(order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
         tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
         triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
@@ -328,7 +331,10 @@ export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q)
 
   if (!args) return undefined;
 
-  const selector = makeSelectNextPositionValuesForIncrease(args);
+  const selector = makeSelectNextPositionValuesForIncrease({
+    ...args,
+    externalSwapQuote: q(selectExternalSwapQuote),
+  });
 
   return q(selector);
 });
@@ -353,6 +359,7 @@ export const selectOrderEditorNextPositionValuesWithoutPnlForIncrease = createSe
 
   const selector = makeSelectNextPositionValuesForIncrease({
     ...args,
+    externalSwapQuote: q(selectExternalSwapQuote),
     isPnlInLeverage: false,
   });
 
@@ -652,6 +659,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
 
   const positionOrder = order as PositionOrderInfo;
   const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
+  const externalSwapQuote = q(selectExternalSwapQuote);
 
   return getIncreasePositionAmounts({
     marketInfo: market,
@@ -660,6 +668,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     collateralToken: order.targetCollateralToken,
     isLong: order.isLong,
     initialCollateralAmount: order.initialCollateralDeltaAmount,
+    externalSwapQuote,
     indexTokenAmount,
     leverage: existingPosition?.leverage,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,

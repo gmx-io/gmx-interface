@@ -46,8 +46,9 @@ import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { createTradeFlags } from "sdk/utils/trade";
 import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
-import { createTradeFlags, makeSelectIncreasePositionAmounts } from "../tradeSelectors";
+import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
 export type AvailableMarketsOptions = {

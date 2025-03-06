@@ -6,8 +6,9 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   DISABLE_ORDER_VALIDATION_KEY,
-  IS_PNL_IN_LEVERAGE_KEY,
+  EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
+  IS_PNL_IN_LEVERAGE_KEY,
   ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -15,8 +16,8 @@ import {
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
-  getSyntheticsAcceptablePriceImpactBufferKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
+  getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
@@ -59,6 +60,9 @@ export type SettingsContextType = {
 
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
+
+  externalSwapsEnabled: boolean;
+  setExternalSwapsEnabled: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -128,6 +132,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyLsKeys.enabled,
     false
   );
+
+  const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -203,6 +209,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       isSettingsVisible,
       setIsSettingsVisible,
+
+      externalSwapsEnabled: externalSwapsEnabled!,
+      setExternalSwapsEnabled,
     };
   }, [
     showDebugValues,
@@ -237,6 +246,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    externalSwapsEnabled,
+    setExternalSwapsEnabled,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

@@ -106,9 +106,9 @@ describe("swapPath", () => {
         expected: ["ETH-ETH-USDC"],
         expectedPaths: [
           ["ETH-ETH-USDC"],
+          ["SOL-ETH-USDC"],
           ["ETH-ETH-DAI", "SPOT-USDC-DAI"],
           ["ETH-ETH-DAI", "SPOT-DAI-USDC"],
-          ["SOL-ETH-USDC"],
         ],
       },
       {
@@ -134,9 +134,9 @@ describe("swapPath", () => {
         expected: ["ETH-ETH-USDC", "AVAX-AVAX-USDC"],
         expectedPaths: [
           ["ETH-ETH-USDC", "AVAX-AVAX-USDC"],
+          ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
           ["ETH-ETH-DAI", "SPOT-USDC-DAI", "AVAX-AVAX-USDC"],
           ["ETH-ETH-DAI", "SPOT-DAI-USDC", "AVAX-AVAX-USDC"],
-          ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
         ],
       },
       {
@@ -211,9 +211,9 @@ describe("swapPath", () => {
         expected: ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
         expectedPaths: [
           ["ETH-ETH-USDC", "AVAX-AVAX-USDC"],
+          ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
           ["ETH-ETH-DAI", "SPOT-USDC-DAI", "AVAX-AVAX-USDC"],
           ["ETH-ETH-DAI", "SPOT-DAI-USDC", "AVAX-AVAX-USDC"],
-          ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
         ],
       },
       {

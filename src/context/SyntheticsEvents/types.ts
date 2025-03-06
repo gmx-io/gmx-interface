@@ -1,4 +1,5 @@
 import { OrderTxnType, OrderType, UpdateOrderParams } from "domain/synthetics/orders";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export type MultiTransactionStatus<TEventData> = {
   key: string;
@@ -156,6 +157,7 @@ export type OrderCreatedEventData = {
   orderType: OrderType;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
+  externalSwapQuote: undefined;
   isFrozen: boolean;
 };
 
@@ -165,6 +167,7 @@ export type PendingOrderData = {
   marketAddress: string;
   initialCollateralTokenAddress: string;
   swapPath: string[];
+  externalSwapQuote: ExternalSwapQuote | undefined;
   initialCollateralDeltaAmount: bigint;
   minOutputAmount: bigint;
   sizeDeltaUsd: bigint;

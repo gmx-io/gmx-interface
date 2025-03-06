@@ -406,6 +406,10 @@ msgstr "Positions"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+#~ msgid "Auto Swap Fallback Max Fees"
+#~ msgstr "Auto Swap Fallback Max Fees"
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr "Funding Claimed"
@@ -1695,6 +1699,10 @@ msgstr "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgid "High Swap Profit Fee"
 msgstr "High Swap Profit Fee"
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+#~ msgid "High External Swap Fee"
+#~ msgstr "High External Swap Fee"
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
@@ -2172,6 +2180,10 @@ msgstr "You have an existing limit order with {symbol} as collateral. <0>Switch 
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees {rebatedTextWithSparkle}"
+msgstr "Fees {rebatedTextWithSparkle}"
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
 msgstr "Index"
@@ -2311,6 +2323,10 @@ msgstr "Reduce wallet signing popups with One-Click Trading. This option is also
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+#~ msgid "Switch to internal swap"
+#~ msgstr "Switch to internal swap"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -2512,8 +2528,8 @@ msgid "APRs are updated weekly on Wednesday and will depend on the fees collecte
 msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees (Incl. Swap)"
-msgstr "Fees (Incl. Swap)"
+#~ msgid "Fees (Incl. Swap)"
+#~ msgstr "Fees (Incl. Swap)"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Generate & Activate Subaccount"
@@ -3403,6 +3419,10 @@ msgstr "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Plea
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High External Swap Impact"
+msgstr "High External Swap Impact"
+
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
@@ -3519,6 +3539,10 @@ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. U
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Fail External Swaps"
+msgstr "Fail External Swaps"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -4502,6 +4526,10 @@ msgstr "Execute Take Profit"
 msgid "Stryke"
 msgstr "Stryke"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+msgid "External swap is temporarily disabled. Please try again."
+msgstr "External swap is temporarily disabled. Please try again."
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
 msgstr "GMX APR"
@@ -4917,6 +4945,10 @@ msgstr "Sell order executed"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr "Affiliate Rewards Claimed"
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Swap Price Impact for External Swap Threshold"
+msgstr "Swap Price Impact for External Swap Threshold"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Limit / Take Profit / Stop Loss"
@@ -5353,6 +5385,10 @@ msgstr "Perpie"
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Useful Links"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Enable external swaps"
+msgstr "Enable external swaps"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
@@ -6837,6 +6873,10 @@ msgstr "Download"
 msgid "{col1}"
 msgstr "{col1}"
 
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Swap {0} for {1}"
+msgstr "Swap {0} for {1}"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
 msgstr "Max auto top-up amount"
@@ -7177,6 +7217,10 @@ msgstr "<0>The pool's capacity has been reached for {0}. Please use another toke
 msgid "GMX dashboards and analytics."
 msgstr "GMX dashboards and analytics."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "External Swap {0} to {1}"
+msgstr "External Swap {0} to {1}"
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7319,6 +7363,10 @@ msgstr "Confirming..."
 msgid "Increase"
 msgstr "Increase"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
+#~ msgid "External swap was temporarily disabled. Please try again."
+#~ msgstr "External swap was temporarily disabled. Please try again."
+
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "Claim {wrappedTokenSymbol} Rewards"
@@ -7369,6 +7417,10 @@ msgstr "{ordersText} cancelled"
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
 msgstr "take profit"
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Force External Swaps"
+msgstr "Force External Swaps"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."

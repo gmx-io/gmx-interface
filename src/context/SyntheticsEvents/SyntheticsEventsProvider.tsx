@@ -165,6 +165,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isLong: eventData.boolItems.items.isLong,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         isFrozen: eventData.boolItems.items.isFrozen,
+        externalSwapQuote: undefined,
         key: eventData.bytes32Items.items.key,
       };
 
