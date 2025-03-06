@@ -380,9 +380,7 @@ export function PositionItem(p: Props) {
           onClick={() => p.onSelectPositionClick?.()}
         >
           {/* title */}
-          <div
-            className={cx("Position-item-info relative")}
-          >
+          <div className={cx("Position-item-info relative")}>
             <div className="Exchange-list-title">
               <Tooltip
                 handle={
@@ -555,7 +553,7 @@ export function PositionItem(p: Props) {
               className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}
               onClick={() => p.onSelectPositionClick?.()}
             >
-              <span className="Exchange-list-title inline-flex">
+              <span className="Exchange-list-title text-body-medium flex">
                 <TokenIcon
                   className="PositionList-token-icon"
                   symbol={p.position.indexToken?.symbol}
@@ -565,9 +563,9 @@ export function PositionItem(p: Props) {
                 {p.position.indexToken && getTokenVisualMultiplier(p.position.indexToken)}
                 {p.position.indexToken?.symbol}
               </span>
-              <div>
+              <div className="flex items-center">
                 <span
-                  className={cx("mr-8 rounded-4 px-4 py-1 pb-3 leading-1", {
+                  className={cx("text-body-medium -mb-2 mr-8 rounded-4 px-4 py-2 pb-4 leading-1", {
                     "bg-green-700": p.position.isLong,
                     "bg-red-500": !p.position.isLong,
                   })}
@@ -575,7 +573,7 @@ export function PositionItem(p: Props) {
                   {formatLeverage(p.position.leverage) || "..."}
                 </span>
                 <span
-                  className={cx("Exchange-list-side", {
+                  className={cx("Exchange-list-side text-body-medium", {
                     positive: p.position.isLong,
                     negative: !p.position.isLong,
                   })}
