@@ -5,10 +5,7 @@ on:
     branches:
       - master
       - "release-*"
-  push:
-    branches:
-      - master
-      - "release-*"
+    types: [opened, edited, synchronized, reopened]
 
 jobs:
   test:
