@@ -114,7 +114,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
           <div className="dropdown-label">
-            <Trans>Version and network</Trans>
+            <Trans>Version and Network</Trans>
           </div>
           <div className="px-8 pb-8">
             <VersionSwitch />

@@ -230,14 +230,14 @@ function MarketsList() {
     : cx("px-5 first-of-type:pl-16 last-of-type:pr-16");
   const thClassName = cx(
     "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100",
-    "first-of-type:text-left last-of-type:[&:not(:first-of-type)]:text-right",
+    "first-of-type:text-left",
     isMobile ? "first-of-type:!pl-40" : "first-of-type:!pl-37",
     rowVerticalPadding,
     rowHorizontalPadding
   );
 
   const tdClassName = cx(
-    "text-body-medium last-of-type:text-right",
+    "text-body-medium",
     isMobile ? "align-top" : "align-middle",
     rowVerticalPadding,
     rowHorizontalPadding
@@ -633,7 +633,7 @@ function MarketListItem({
 
       {!isMobile ? (
         <>
-          <td className={cx(tdClassName, "group text-right hover:bg-cold-blue-700")} onClick={handleSelectLong}>
+          <td className={cx(tdClassName, "group hover:bg-cold-blue-700")} onClick={handleSelectLong}>
             <div className="inline-flex items-center justify-end gap-4">
               <LongIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
