@@ -8,13 +8,14 @@ import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { useGmxPrice } from "domain/legacy";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
-import { expandDecimals, formatAmount, formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatBalanceAmountWithUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { bigMath } from "sdk/utils/bigmath";
 
+import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -136,8 +137,11 @@ export function EscrowedGmxCard({
             <Trans>Total Staked</Trans>
           </div>
           <div>
-            {formatKeyAmount(processedData, "stakedEsGmxSupply", 18, 0, true)} esGMX ($
-            {formatKeyAmount(processedData, "stakedEsGmxSupplyUsd", USD_DECIMALS, 0, true)})
+            <AmountWithUsdHuman
+              amount={processedData?.stakedEsGmxSupply}
+              decimals={18}
+              usd={processedData?.stakedEsGmxSupplyUsd}
+            />
           </div>
         </div>
         <div className="App-card-row">
@@ -145,7 +149,7 @@ export function EscrowedGmxCard({
             <Trans>Total Supply</Trans>
           </div>
           <div>
-            {formatAmount(esGmxSupply, 18, 0, true)} esGMX (${formatAmount(esGmxSupplyUsd, USD_DECIMALS, 0, true)})
+            <AmountWithUsdHuman amount={esGmxSupply} decimals={18} usd={esGmxSupplyUsd} />
           </div>
         </div>
         <div className="App-card-footer">

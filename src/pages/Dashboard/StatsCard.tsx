@@ -11,7 +11,7 @@ import { useInfoTokens } from "domain/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { GLP_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatAmountHuman } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
@@ -136,7 +136,7 @@ export function StatsCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(totalFeesUsd, USD_DECIMALS, 0, true)}`}
+              handle={formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}
               content={<ChainsStatsTooltipRow entries={totalFeesEntries} />}
             />
           </div>
@@ -149,7 +149,7 @@ export function StatsCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={`$${formatAmount(
+              handle={formatAmountHuman(
                 sumBigInts(
                   v1TotalVolume?.[ARBITRUM],
                   v1TotalVolume?.[AVALANCHE],
@@ -157,9 +157,9 @@ export function StatsCard({
                   v2AvalancheOverview?.totalVolume
                 ),
                 USD_DECIMALS,
-                0,
-                true
-              )}`}
+                true,
+                2
+              )}
               content={<ChainsStatsTooltipRow entries={totalVolumeEntries} />}
             />
           </div>
@@ -191,7 +191,7 @@ export function StatsCard({
           <div className="label">
             <Trans>Treasury</Trans>
           </div>
-          <div>${formatAmount(totalTreasuryFundUsd, USD_DECIMALS, 0, true)}</div>
+          <div>{formatAmountHuman(totalTreasuryFundUsd, USD_DECIMALS, true, 2)}</div>
         </div>
       </div>
     </div>

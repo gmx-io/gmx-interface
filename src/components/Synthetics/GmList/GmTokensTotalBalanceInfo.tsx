@@ -30,7 +30,7 @@ export const GmTokensBalanceInfo = ({
 }) => {
   const content = (
     <TokenValuesInfoCell
-      token={formatBalanceAmount(token.balance ?? 0n, token.decimals, token.symbol)}
+      token={formatBalanceAmount(token.balance ?? 0n, token.decimals)}
       usd={
         token.balance !== undefined && token.balance !== 0n
           ? formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {

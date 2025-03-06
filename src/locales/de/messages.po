@@ -7020,10 +7020,6 @@ msgstr ""
 msgid "Request Settlement of Funding Fees"
 msgstr "Antrag auf Abrechnung von Finanzierungsgebühren"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
-
 #: src/pages/Earn/EarnV1.jsx
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "Genehmigung von {stakingTokenSymbol}..."
