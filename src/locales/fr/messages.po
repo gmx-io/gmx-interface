@@ -5266,6 +5266,10 @@ msgstr "Donner"
 msgid "No open positions"
 msgstr "Pas de position ouverte"
 
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Size, $"
+msgstr ""
+
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Close {0} {1}{2}"
 msgstr ""
@@ -8456,6 +8460,10 @@ msgstr "Copier l'adresse"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Pending Transfer Approval"
+msgstr ""
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "ORACLE PRICE"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx

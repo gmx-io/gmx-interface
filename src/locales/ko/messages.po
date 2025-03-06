@@ -5266,6 +5266,10 @@ msgstr "공급량"
 msgid "No open positions"
 msgstr "열려있는 포지션이 없습니다"
 
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Size, $"
+msgstr ""
+
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Close {0} {1}{2}"
 msgstr ""
@@ -8456,6 +8460,10 @@ msgstr "주소 복사"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Pending Transfer Approval"
+msgstr ""
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "ORACLE PRICE"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
