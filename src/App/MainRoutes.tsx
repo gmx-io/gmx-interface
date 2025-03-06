@@ -7,7 +7,6 @@ import type { Address } from "viem";
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { getIsSyntheticsSupported } from "config/features";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
@@ -25,6 +24,7 @@ import BuyGlp from "pages/BuyGlp/BuyGlp";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import Earn from "pages/Earn/Earn";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Jobs from "pages/Jobs/Jobs";
@@ -37,9 +37,7 @@ import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Earn from "pages/Earn/Earn";
 import Stats from "pages/Stats/Stats";
-import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -106,7 +104,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Redirect exact from="/stats/v2" to="/stats" />
       <Route exact path="/stats">
-        {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
+        <SyntheticsStats />
       </Route>
       <Route exact path="/earn">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
@@ -119,23 +117,15 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/pools">
-        {getIsSyntheticsSupported(chainId) ? (
-          <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-            <MarketPoolsPage />
-          </SyntheticsStateContextProvider>
-        ) : (
-          <SyntheticsFallbackPage />
-        )}
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+          <MarketPoolsPage />
+        </SyntheticsStateContextProvider>
       </Route>
 
       <Route exact path="/trade/:tradeType?">
-        {getIsSyntheticsSupported(chainId) ? (
-          <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
-            <SyntheticsPage openSettings={openSettings} />
-          </SyntheticsStateContextProvider>
-        ) : (
-          <SyntheticsFallbackPage />
-        )}
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
+          <SyntheticsPage openSettings={openSettings} />
+        </SyntheticsStateContextProvider>
       </Route>
       <Redirect from="/v2" to="/trade" />
       <Route exact path="/buy_glp">
@@ -151,31 +141,19 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <Ecosystem />
       </Route>
       <Route path="/leaderboard/">
-        {getIsSyntheticsSupported(chainId) ? (
-          <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
-            <LeaderboardPage />
-          </SyntheticsStateContextProvider>
-        ) : (
-          <SyntheticsFallbackPage />
-        )}
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
+          <LeaderboardPage />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/competitions/">
-        {getIsSyntheticsSupported(chainId) ? (
-          <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
-            <CompetitionRedirect />
-          </SyntheticsStateContextProvider>
-        ) : (
-          <SyntheticsFallbackPage />
-        )}
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
+          <CompetitionRedirect />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route path="/competitions/:leaderboardPageKey">
-        {getIsSyntheticsSupported(chainId) ? (
-          <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
-            <LeaderboardPage />
-          </SyntheticsStateContextProvider>
-        ) : (
-          <SyntheticsFallbackPage />
-        )}
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
+          <LeaderboardPage />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/referrals">
         <Referrals />

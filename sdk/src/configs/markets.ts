@@ -556,6 +556,20 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // HYPE/USD [WBTC-USDC]
+    "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0": {
+      marketTokenAddress: "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0",
+      indexTokenAddress: "0xfDFA0A749dA3bCcee20aE0B4AD50E39B26F58f7C",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // JUP/USD [WBTC-USDC]
+    "0x7DE8E1A1fbA845A330A6bD91118AfDA09610fB02": {
+      marketTokenAddress: "0x7DE8E1A1fbA845A330A6bD91118AfDA09610fB02",
+      indexTokenAddress: "0xfEd500Df379427Fbc48BDaf3b511b519c7eCCD26",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

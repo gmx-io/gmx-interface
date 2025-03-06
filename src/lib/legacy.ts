@@ -23,9 +23,12 @@ import {
   deserializeBigIntsInObject,
   expandDecimals,
   formatAmount,
+  adjustForDecimals,
 } from "./numbers";
 import { getProvider } from "./rpc";
 import useWallet from "./wallets/useWallet";
+
+export { adjustForDecimals } from "./numbers";
 
 const { ZeroAddress } = ethers;
 
@@ -159,10 +162,6 @@ const adjustForDecimalsFactory = (n: number) => (number: bigint) => {
   }
   return number / expandDecimals(1, -n);
 };
-
-export function adjustForDecimals(amount: bigint, divDecimals: number, mulDecimals: number) {
-  return (amount * expandDecimals(1, mulDecimals)) / expandDecimals(1, divDecimals);
-}
 
 export function getTargetUsdgAmount(token, usdgSupply: bigint, totalTokenWeights): bigint | undefined {
   if (!token || token.weight === undefined || usdgSupply === undefined) {

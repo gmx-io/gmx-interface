@@ -2,7 +2,9 @@ import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
+import type { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import type { SetPendingOrderUpdate } from "context/SyntheticsEvents";
 import { getSubaccountRouterContract } from "domain/synthetics/subaccount/getSubaccountContract";
 import { convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -19,14 +21,19 @@ export type UpdateOrderParams = {
   autoCancel: boolean;
   // used to top-up execution fee for frozen orders
   executionFee?: bigint;
-  setPendingTxns: (txns: any) => void;
 };
 
-export function updateOrderTxn(
+export type UpdateOrderCallbacks = {
+  setPendingTxns: SetPendingTransactions;
+  setPendingOrderUpdate: SetPendingOrderUpdate;
+};
+
+export async function updateOrderTxn(
   chainId: number,
   signer: Signer,
   subaccount: Subaccount,
-  p: UpdateOrderParams
+  p: UpdateOrderParams,
+  callbacks: UpdateOrderCallbacks
 ): Promise<void> {
   const {
     orderKey,
@@ -35,7 +42,6 @@ export function updateOrderTxn(
     acceptablePrice,
     minOutputAmount,
     executionFee,
-    setPendingTxns,
     indexToken,
     autoCancel,
   } = p;
@@ -57,15 +63,22 @@ export function updateOrderTxn(
     autoCancel,
   });
 
-  return callContract(chainId, router, "multicall", [encodedPayload], {
-    value: executionFee != undefined && executionFee > 0 ? executionFee : undefined,
-    sentMsg: t`Updating order`,
-    successMsg: t`Update order executed`,
-    failMsg: t`Failed to update order`,
-    customSigners: subaccount?.customSigners,
-    setPendingTxns,
-    showPreliminaryMsg: Boolean(subaccount),
-  });
+  callbacks.setPendingOrderUpdate(p);
+
+  try {
+    return await callContract(chainId, router, "multicall", [encodedPayload], {
+      value: executionFee != undefined && executionFee > 0 ? executionFee : undefined,
+      sentMsg: t`Updating order`,
+      successMsg: t`Update order executed`,
+      failMsg: t`Failed to update order`,
+      customSigners: subaccount?.customSigners,
+      setPendingTxns: callbacks.setPendingTxns,
+      showPreliminaryMsg: Boolean(subaccount),
+    });
+  } catch (e) {
+    callbacks.setPendingOrderUpdate(p, "remove");
+    throw e;
+  }
 }
 
 export function createUpdateEncodedPayload({

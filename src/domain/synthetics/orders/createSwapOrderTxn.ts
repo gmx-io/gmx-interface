@@ -27,6 +27,7 @@ export type SwapOrderParams = {
   swapPath: string[];
   referralCode?: string;
   tokensData: TokensData;
+  triggerRatio: bigint;
   minOutputAmount: bigint;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
@@ -65,6 +66,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.fromTokenAmount,
     swapPath: p.swapPath,
+    externalSwapQuote: undefined,
     sizeDeltaUsd: 0n,
     minOutputAmount,
     isLong: false,
@@ -162,7 +164,11 @@ async function getParams(
     numbers: {
       sizeDeltaUsd: 0n,
       initialCollateralDeltaAmount,
-      triggerPrice: 0n,
+      /**
+       * We're passing trigger ratio in here to display actual ratio in table of positions
+       * @see https://app.asana.com/0/1207525044994982/1209109731071143/f
+       */
+      triggerPrice: p.triggerRatio,
       acceptablePrice: 0n,
       executionFee: p.executionFee,
       callbackGasLimit: 0n,

@@ -57,6 +57,7 @@ import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBox
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tab from "components/Tab/Tab";
+import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 
 export type Props = {
   openSettings: () => void;
@@ -75,6 +76,8 @@ export function SyntheticsPage(p: Props) {
   const { account } = useWallet();
   const calcSelector = useCalcSelector();
   const { setPendingTxns } = usePendingTxns();
+
+  useExternalSwapHandler();
 
   const isMobile = useMedia("(max-width: 1100px)");
 

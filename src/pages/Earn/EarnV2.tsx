@@ -5,7 +5,6 @@ import { zeroAddress } from "viem";
 
 import { AVALANCHE, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
-import { getIsSyntheticsSupported } from "config/features";
 import { getIncentivesV2Url } from "config/links";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
@@ -287,45 +286,42 @@ export default function EarnV2() {
         </div>
       </div>
 
-      {getIsSyntheticsSupported(chainId) && (
-        <div className="mt-15">
-          <PageTitle
-            title={<Trans>Select a GLV Vault</Trans>}
-            showNetworkIcon={false}
-            subtitle={
-              <Trans>
-                Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in
-                brackets.
-              </Trans>
-            }
-          />
-          <GlvList
-            marketsTokensApyData={marketsTokensApyData}
-            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-            marketsTokensLidoAprData={marketsTokensLidoAprData}
-            glvTokensApyData={glvApyInfoData}
-            shouldScrollToTop
-            isDeposit={false}
-          />
-          <PageTitle
-            title={t`Select a GM Pool`}
-            showNetworkIcon={false}
-            subtitle={
-              <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets.</Trans>
-            }
-          />
-          <GmList
-            marketsTokensApyData={marketsTokensApyData}
-            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            glvTokensIncentiveAprData={undefined}
-            marketsTokensLidoAprData={marketsTokensLidoAprData}
-            glvTokensApyData={undefined}
-            isDeposit={false}
-            shouldScrollToTop
-          />
-        </div>
-      )}
+      <div className="mt-15">
+        <PageTitle
+          title={<Trans>Select a GLV Vault</Trans>}
+          showNetworkIcon={false}
+          subtitle={
+            <Trans>
+              Yield-optimized vaults enabling trading across multiple markets, backed by the tokens listed in brackets.
+            </Trans>
+          }
+        />
+        <GlvList
+          marketsTokensApyData={marketsTokensApyData}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
+          glvTokensApyData={glvApyInfoData}
+          shouldScrollToTop
+          isDeposit={false}
+        />
+        <PageTitle
+          title={t`Select a GM Pool`}
+          showNetworkIcon={false}
+          subtitle={
+            <Trans>Pools that enable trading for a single market, backed by the tokens listed in brackets.</Trans>
+          }
+        />
+        <GmList
+          marketsTokensApyData={marketsTokensApyData}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          glvTokensIncentiveAprData={undefined}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
+          glvTokensApyData={undefined}
+          isDeposit={false}
+          shouldScrollToTop
+        />
+      </div>
 
       <Vesting processedData={processedData} />
 

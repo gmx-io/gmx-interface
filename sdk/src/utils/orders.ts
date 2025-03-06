@@ -1,11 +1,19 @@
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 import { MarketsInfoData } from "types/markets";
 import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "types/orders";
 import { Token, TokensData } from "types/tokens";
+import { bigMath } from "./bigmath";
 import { getByKey } from "./objects";
-import { getSwapPathOutputAddresses, getSwapPathStats } from "./swapStats";
-import { convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "./tokens";
-import { getOrderThresholdType } from "./prices";
 import { parsePositionKey } from "./positions";
+import { getOrderThresholdType } from "./prices";
+import { getSwapPathOutputAddresses, getSwapPathStats } from "./swapStats";
+import {
+  convertToTokenAmount,
+  convertToUsd,
+  getTokensRatioByAmounts,
+  getTokensRatioByMinOutputAmountAndTriggerPrice,
+  parseContractPrice,
+} from "./tokens";
 
 export function isMarketOrderType(orderType: OrderType) {
   return [OrderType.MarketDecrease, OrderType.MarketIncrease, OrderType.MarketSwap].includes(orderType);
@@ -106,14 +114,38 @@ export function getOrderInfo(p: {
       targetCollateralToken.prices.minPrice
     );
 
-    const toAmount = order.minOutputAmount - (priceImpactAmount ?? 0n) + (swapFeeAmount ?? 0n);
+    let toAmount;
+    let triggerRatio;
 
-    const triggerRatio = getTokensRatioByAmounts({
-      fromToken: initialCollateralToken,
-      toToken: targetCollateralToken,
-      fromTokenAmount: order.initialCollateralDeltaAmount,
-      toTokenAmount: toAmount,
-    });
+    const isLimitSwapOrder = isLimitSwapOrderType(order.orderType);
+
+    if (isLimitSwapOrder) {
+      if (order.contractTriggerPrice === 0n) {
+        /**
+         * If not stored trigger price in contract, we use the min output amount with default slippage
+         * @see https://app.asana.com/0/1207525044994982/1209109731071143
+         */
+        toAmount =
+          order.minOutputAmount -
+          bigMath.mulDiv(order.minOutputAmount, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, BASIS_POINTS_DIVISOR_BIGINT);
+      }
+      triggerRatio = getTokensRatioByMinOutputAmountAndTriggerPrice({
+        fromToken: initialCollateralToken,
+        toToken: targetCollateralToken,
+        fromTokenAmount: order.initialCollateralDeltaAmount,
+        toTokenAmount: toAmount,
+        triggerPrice: order.contractTriggerPrice,
+        minOutputAmount: order.minOutputAmount,
+      });
+    } else {
+      toAmount = order.minOutputAmount - (priceImpactAmount ?? 0n) + (swapFeeAmount ?? 0n);
+      triggerRatio = getTokensRatioByAmounts({
+        fromToken: initialCollateralToken,
+        toToken: targetCollateralToken,
+        fromTokenAmount: order.initialCollateralDeltaAmount,
+        toTokenAmount: toAmount,
+      });
+    }
 
     const orderInfo: SwapOrderInfo = {
       ...order,

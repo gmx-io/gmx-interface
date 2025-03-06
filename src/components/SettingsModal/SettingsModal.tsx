@@ -11,6 +11,7 @@ import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
+import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -19,6 +20,7 @@ import NumberInput from "components/NumberInput/NumberInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getIsFlagEnabled } from "config/ab";
 
 const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
 
@@ -233,6 +235,15 @@ export function SettingsModal({
             <Trans>Chart positions</Trans>
           </ToggleSwitch>
         </div>
+
+        {getIsFlagEnabled("testExternalSwap") && (
+          <div className="Exchange-settings-row">
+            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+              <Trans>Enable external swaps</Trans>
+            </ToggleSwitch>
+          </div>
+        )}
+
         {isDevelopment() && (
           <ToggleSwitch
             isChecked={shouldDisableValidationForTesting}
@@ -249,6 +260,8 @@ export function SettingsModal({
         )}
 
         {isDevelopment() && <AbFlagSettings />}
+
+        {isDevelopment() && <DebugSwapsSettings />}
 
         {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
       </div>

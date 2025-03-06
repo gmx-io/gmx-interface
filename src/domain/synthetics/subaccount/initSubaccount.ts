@@ -4,6 +4,7 @@ import { SUBACCOUNT_ORDER_ACTION } from "./constants";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
 import { SubaccountParams } from "./types";
 import { BN_ZERO } from "lib/numbers";
+import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 
 export async function initSubaccount(
   chainId: number,
@@ -12,7 +13,7 @@ export async function initSubaccount(
   mainAccountAddress: string,
   isAccountActive: boolean,
   currentActionsCount: bigint | null,
-  setPendingTxns: (txns: any[]) => void,
+  setPendingTxns: SetPendingTransactions,
   { topUp, maxAllowedActions, maxAutoTopUpAmount, wntForAutoTopUps }: SubaccountParams
 ) {
   const subaccountRouter = getSubaccountRouterContract(chainId, signer);

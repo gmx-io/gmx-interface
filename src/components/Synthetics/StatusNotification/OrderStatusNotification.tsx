@@ -73,11 +73,16 @@ export function OrderStatusNotification({
     });
     const targetCollateralToken = getByKey(tokensData, outTokenAddress);
 
+    const externalSwapFromToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.inTokenAddress);
+    const externalSwapToToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.outTokenAddress);
+
     return {
       ...pendingOrderData,
       marketInfo,
       initialCollateralToken,
       targetCollateralToken,
+      externalSwapFromToken,
+      externalSwapToToken,
     };
   }, [marketsInfoData, orderStatuses, pendingOrderData, tokensData, wrappedNativeToken]);
 
@@ -156,6 +161,29 @@ export function OrderStatusNotification({
       }
     }
   }, [orderData]);
+
+  const externalSwapStatus = useMemo(() => {
+    if (!orderData?.externalSwapQuote) {
+      return null;
+    }
+
+    let status: TransactionStatusType = "loading";
+    let text = t`Swap ${formatTokenAmount(
+      orderData.externalSwapQuote.amountIn,
+      orderData.externalSwapFromToken?.decimals,
+      orderData.externalSwapFromToken?.symbol
+    )} for ${formatTokenAmount(
+      orderData.externalSwapQuote.amountOut,
+      orderData.externalSwapToToken?.decimals,
+      orderData.externalSwapToToken?.symbol
+    )}`;
+
+    if (orderStatus?.createdTxnHash) {
+      status = "success";
+    }
+
+    return <TransactionStatus status={status} txnHash={undefined} text={text} />;
+  }, [orderData, orderStatus]);
 
   const sendingStatus = useMemo(() => {
     let text = t`Sending order request`;
@@ -250,6 +278,7 @@ export function OrderStatusNotification({
         <div className="StatusNotification-title">{title}</div>
 
         <div className="StatusNotification-items">
+          {externalSwapStatus}
           {sendingStatus}
           {executionStatus}
         </div>

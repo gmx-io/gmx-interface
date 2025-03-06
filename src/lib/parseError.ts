@@ -14,6 +14,7 @@ export type ErrorLike = {
   data?: any;
   error?: any;
   errorSource?: string;
+  errorContext?: OrderErrorContext;
   parentError?: ErrorLike;
   isAdditinalValidationPassed?: boolean;
   additionalValidationType?: string;
@@ -58,6 +59,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
   // all human readable details are in info field
   const errorInfo = typeof error === "string" ? undefined : error?.info?.error;
   const errorSource = typeof error === "string" ? undefined : error?.errorSource;
+  const errorContext: OrderErrorContext | undefined = typeof error === "string" ? undefined : error?.errorContext;
   const isAdditinalValidationPassed = typeof error === "string" ? undefined : error?.isAdditinalValidationPassed;
   const additionalValidationType = typeof error === "string" ? undefined : error?.additionalValidationType;
 
@@ -155,6 +157,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     errorName,
     contractError,
     contractErrorArgs,
+    errorContext,
     isUserError,
     isUserRejectedError,
     txErrorType,

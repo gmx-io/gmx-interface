@@ -1,4 +1,4 @@
-import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -520,7 +520,7 @@ function applyAcceptablePrice(p: {
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
         priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
-        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
+        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
       });
 
       if (maxNegativePriceImpactBps === undefined) {

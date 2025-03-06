@@ -137,6 +137,7 @@ export async function registerReferralCode(chainId, referralCode, signer, opts) 
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, signer);
+
   return callContract(chainId, contract, "registerCode", [referralCodeHex], opts);
 }
 

@@ -1,8 +1,8 @@
 import cx from "classnames";
-import "./VersionSwitch.scss";
+import { getIsV1Supported } from "config/features";
 import { useChainId } from "lib/chains";
-import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
 import { useTradePageVersion } from "lib/useTradePageVersion";
+import "./VersionSwitch.scss";
 
 type Props = {
   className?: string;
@@ -22,14 +22,12 @@ export function VersionSwitch({ className }: Props) {
           V1
         </div>
       )}
-      {getIsSyntheticsSupported(chainId) && (
-        <div
-          className={cx("VersionSwitch-option v2", { active: currentVersion === 2 })}
-          onClick={() => setCurrentVersion(2)}
-        >
-          V2
-        </div>
-      )}
+      <div
+        className={cx("VersionSwitch-option v2", { active: currentVersion === 2 })}
+        onClick={() => setCurrentVersion(2)}
+      >
+        V2
+      </div>
     </div>
   );
 }

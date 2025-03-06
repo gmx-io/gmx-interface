@@ -9,22 +9,22 @@ import { produce } from "immer";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
-import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
+import { getToken, isSimilarToken } from "sdk/configs/tokens";
+import { createTradeFlags } from "sdk/utils/trade";
 
 import { MarketInfo } from "domain/synthetics/markets";
+import { TradeMode, TradeType } from "sdk/types/trade";
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrdersInfoData } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
@@ -238,6 +238,8 @@ export function useTradeboxState(
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
+  const [defaultAllowedSwapSlippageBps, setDefaultAllowedSwapSlippageBps] = useState<bigint>();
+  const [selectedAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps] = useState<bigint>();
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
@@ -277,6 +279,7 @@ export function useTradeboxState(
   const toTokenAddress = tradeFlags.isSwap
     ? storedOptions?.tokens.swapToTokenAddress
     : storedOptions?.tokens.indexTokenAddress;
+
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const isWrapOrUnwrap = Boolean(
@@ -702,6 +705,10 @@ export function useTradeboxState(
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
     setSelectedAcceptablePriceImpactBps: setSelectedTriggerAcceptablePriceImpactBps,
+    defaultAllowedSwapSlippageBps,
+    setDefaultAllowedSwapSlippageBps,
+    selectedAllowedSwapSlippageBps,
+    setSelectedAllowedSwapSlippageBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,
