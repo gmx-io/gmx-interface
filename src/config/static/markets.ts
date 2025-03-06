@@ -396,6 +396,21 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("20 Feb 2025"),
     },
+    // AIXBT/USD [WETH-USDC]
+    "0x04DecfB37e46075189324817df80a32D22b9eD8D": {
+      enabled: true,
+      listingDate: p("27 Feb 2025"),
+    },
+    // S/USD [WBTC-USDC]
+    "0x4d9bA415649c4B3c703562770C8ff3033478Cea1": {
+      enabled: true,
+      listingDate: p("27 Feb 2025"),
+    },
+    // CAKE/USD [WBTC-USDC]
+    "0xdE967676db7b1ccdBA2bD94B01B5b19DE4b563e4": {
+      enabled: true,
+      listingDate: p("27 Feb 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

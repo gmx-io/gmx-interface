@@ -16,7 +16,6 @@ import {
   selectTradeboxChooseSuitableMarket,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
-  selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxKeepLeverage,
@@ -27,6 +26,8 @@ import {
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
+  selectTradeboxSetDefaultAllowedSwapSlippageBps,
+  selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
@@ -49,6 +50,7 @@ import {
   formatAmountFree,
   formatBalanceAmount,
   formatDeltaUsd,
+  formatPercentage,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -63,7 +65,7 @@ import { TradeMode } from "sdk/types/trade";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
+import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -81,17 +83,14 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { ExecutionPriceRow } from "../ExecutionPriceRow";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { OneClickTradingInfo } from "./OneClickTradingInfo";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
-import { LimitPriceRow } from "./TradeBoxRows/LimitPriceRow";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
-
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
@@ -101,6 +100,9 @@ import "./TradeBox.scss";
 export function TradeBox() {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
+
+  const setDefaultAllowedSwapSlippageBps = useSelector(selectTradeboxSetDefaultAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectTradeboxSetSelectedAllowedSwapSlippageBps);
 
   const availableTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
@@ -183,7 +185,6 @@ export function TradeBox() {
 
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
   const maxLeverage = useSelector(selectTradeboxMaxLeverage);
-  const executionPrice = useSelector(selectTradeboxExecutionPrice);
 
   const maxAllowedLeverage = maxLeverage / 2;
 
@@ -202,22 +203,29 @@ export function TradeBox() {
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   const setFromTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, resetPriceImpactAndSwapSlippage?: boolean) => {
       setFromTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+
+      if (resetPriceImpactAndSwapSlippage) {
         setIsDismissedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setFromTokenInputValueRaw, setIsDismissedRef]
+    [setFromTokenInputValueRaw, setIsDismissedRef, setDefaultAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps]
   );
   const setToTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, shouldResetPriceImpactAndSwapSlippage: boolean) => {
       setToTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+      if (shouldResetPriceImpactAndSwapSlippage) {
         setIsDismissedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setIsDismissedRef, setToTokenInputValueRaw]
+    [setIsDismissedRef, setToTokenInputValueRaw, setDefaultAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps]
   );
 
   const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
@@ -230,7 +238,7 @@ export function TradeBox() {
     setToTokenInputValue,
   });
 
-  useTradeboxAvailablePriceImpactValues();
+  useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
 
   const prevIsISwap = usePrevious(isSwap);
@@ -407,6 +415,7 @@ export function TradeBox() {
     if (swapPathStats) {
       // eslint-disable-next-line no-console
       console.log("Swap Path", {
+        steps: swapPathStats.swapSteps,
         path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
         priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),
         usdOut: swapPathStats.swapSteps.map((step) => formatUsd(step.usdOut)).join(" -> "),
@@ -731,36 +740,6 @@ export function TradeBox() {
     );
   }
 
-  function renderTriggerOrderInfo() {
-    let formattedTriggerPrice = "-";
-
-    if (decreaseAmounts && decreaseAmounts.triggerPrice !== undefined && decreaseAmounts.triggerPrice !== 0n) {
-      formattedTriggerPrice = `${decreaseAmounts.triggerThresholdType || ""} ${formatUsdPrice(
-        decreaseAmounts.triggerPrice,
-        {
-          visualMultiplier: toToken?.visualMultiplier,
-        }
-      )}`;
-    }
-
-    return (
-      <>
-        <SyntheticsInfoRow label={t`Trigger Price`} value={formattedTriggerPrice} />
-
-        {!isTrigger && (
-          <ExecutionPriceRow
-            tradeFlags={tradeFlags}
-            fees={fees}
-            executionPrice={executionPrice ?? undefined}
-            triggerOrderType={decreaseAmounts?.triggerOrderType}
-            acceptablePrice={decreaseAmounts?.acceptablePrice}
-            visualMultiplier={toToken?.visualMultiplier}
-          />
-        )}
-      </>
-    );
-  }
-
   useKey(
     "Enter",
     () => {
@@ -871,8 +850,8 @@ export function TradeBox() {
             {isSwap && isLimit && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                 <Trans>
-                  The execution price will constantly vary based on fees and price impact to guarantee that you receive
-                  the minimum receive amount.
+                  The actual trigger price at which order gets filled will depend on fees and price impact at the time
+                  of execution to guarantee that you receive the minimum receive amount.
                 </Trans>
               </AlertInfoCard>
             )}
@@ -928,7 +907,7 @@ export function TradeBox() {
                   isMarket={isMarket}
                 />
 
-                {isTrigger && selectedPosition && selectedPosition?.leverage && (
+                {isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
                   <ToggleSwitch
                     isChecked={keepLeverageChecked}
                     setIsChecked={setKeepLeverage}
@@ -958,7 +937,6 @@ export function TradeBox() {
           <div>{button}</div>
           <div className="h-1 bg-stroke-primary" />
           {isSwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
-          {!(isSwap && isLimit) && <LimitPriceRow />}
           {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
             <SyntheticsInfoRow
               label={t`Receive`}
@@ -971,7 +949,29 @@ export function TradeBox() {
             />
           )}
 
-          {isTrigger && renderTriggerOrderInfo()}
+          {isTrigger && (
+            <SyntheticsInfoRow
+              label={t`PnL`}
+              value={
+                <ValueTransition
+                  from={
+                    <>
+                      {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                      {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+                    </>
+                  }
+                  to={
+                    decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
+                      <>
+                        {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                        {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
+                      </>
+                    ) : undefined
+                  }
+                />
+              }
+            />
+          )}
           {!(isTrigger && !selectedPosition) && !isSwap && (
             <SyntheticsInfoRow
               label={t`Liquidation Price`}

@@ -1,5 +1,5 @@
 import { MarketInfo } from "./markets";
-import { TokenData, TokensRatio } from "./tokens";
+import { TokenData, TokensRatio, TokensRatioAndSlippage } from "./tokens";
 import { SwapPathStats, TriggerThresholdType } from "./trade";
 
 export enum OrderType {
@@ -65,7 +65,7 @@ export type Order = {
 
 export type SwapOrderInfo = Order & {
   swapPathStats?: SwapPathStats;
-  triggerRatio?: TokensRatio;
+  triggerRatio?: TokensRatio | TokensRatioAndSlippage;
   initialCollateralToken: TokenData;
   targetCollateralToken: TokenData;
 };

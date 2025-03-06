@@ -1,7 +1,11 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { PendingTransactionData } from "context/PendingTxnsContext/PendingTxnsContext";
+import {
+  PendingTransaction,
+  PendingTransactionData,
+  SetPendingTransactions,
+} from "context/PendingTxnsContext/PendingTxnsContext";
 import { Contract, Overrides, Wallet } from "ethers";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
@@ -32,7 +36,7 @@ export async function callContract(
     customSignersGasLimits?: (bigint | number)[];
     customSignersGasPrices?: GasPriceData[];
     bestNonce?: number;
-    setPendingTxns?: (txns: any) => void;
+    setPendingTxns?: SetPendingTransactions;
     pendingTransactionData?: PendingTransactionData;
     metricId?: OrderMetricId;
   }
@@ -149,8 +153,8 @@ export async function callContract(
     }
 
     if (opts.setPendingTxns) {
-      const message = opts.hideSuccessMsg ? undefined : opts.successMsg || t`Transaction completed!`;
-      const pendingTxn = {
+      const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed!`;
+      const pendingTxn: PendingTransaction = {
         hash: res.hash,
         message,
         messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,

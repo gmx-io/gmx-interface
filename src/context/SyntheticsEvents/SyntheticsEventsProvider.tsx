@@ -19,6 +19,8 @@ import {
   isLiquidationOrderType,
   isMarketOrderType,
   isSwapOrderType,
+  OrderTxnType,
+  UpdateOrderParams,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
@@ -37,7 +39,7 @@ import {
   sendOrderExecutedMetric,
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
-import { getByKey, setByKey, updateByKey } from "lib/objects";
+import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -55,6 +57,7 @@ import {
   PendingDepositData,
   PendingFundingFeeSettlementData,
   PendingOrderData,
+  PendingOrdersUpdates,
   PendingPositionsUpdates,
   PendingPositionUpdate,
   PendingShiftData,
@@ -115,6 +118,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { tokensBalancesUpdates, setTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
+  const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
@@ -183,6 +187,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           createdAt: Date.now(),
         })
       );
+
+      setPendingOrdersUpdates((old) => deleteByKey(old, data.key));
     },
 
     OrderUpdated: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -207,6 +213,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           });
         }
       });
+
+      setPendingOrdersUpdates((old) => deleteByKey(old, key));
     },
 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -876,6 +884,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       shiftStatuses,
       tokensBalancesUpdates,
       approvalStatuses,
+      pendingOrdersUpdates,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
@@ -895,6 +904,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             toastId,
             className: "OrdersStatusNotificiation",
           }
+        );
+
+        const arrayData = Array.isArray(data) ? data : [data];
+        const objData: Record<string, OrderTxnType> = arrayData.reduce(
+          (acc, order) => (!order.orderKey ? acc : setByKey(acc, order.orderKey, order.txnType)),
+          {}
+        );
+
+        setPendingOrdersUpdates((old) => ({ ...old, ...objData }));
+      },
+      setPendingOrderUpdate: (data: UpdateOrderParams, remove?: "remove") => {
+        setPendingOrdersUpdates((old) =>
+          remove ? deleteByKey(old, data.orderKey) : setByKey(old, data.orderKey, "update")
         );
       },
       setPendingFundingFeeSettlement: (data: PendingFundingFeeSettlementData) => {
@@ -987,6 +1009,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     shiftStatuses,
     tokensBalancesUpdates,
     approvalStatuses,
+    pendingOrdersUpdates,
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,
