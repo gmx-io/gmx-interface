@@ -65,7 +65,7 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
     [isAdditionOrdersMsg]
   );
 
-  const estimatedRefundText = useMemo(() => {
+  const estimatedRefund = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
     if (!executionFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
@@ -92,6 +92,15 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
         tokenData[executionFee.feeToken.address].prices.minPrice
       );
     }
+
+    return {
+      estimatedRefundTokenAmount,
+      estimatedRefundUsd,
+    };
+  }, [executionFee, executionFeeBufferBps, tokenData]);
+
+  const estimatedRefundText = useMemo(() => {
+    const { estimatedRefundTokenAmount, estimatedRefundUsd } = estimatedRefund;
     const estimatedRefundText = formatTokenAmountWithUsd(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
@@ -104,7 +113,17 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
     );
 
     return estimatedRefundText;
-  }, [displayDecimals, executionFee, executionFeeBufferBps, tokenData]);
+  }, [displayDecimals, executionFee, estimatedRefund]);
+
+  const executionFeeWithRefundUsd = useMemo(() => {
+    if (!executionFee || typeof estimatedRefund.estimatedRefundUsd === "undefined") {
+      return undefined;
+    }
+
+    const feeWithRefundUsd = executionFee.feeUsd - estimatedRefund.estimatedRefundUsd;
+
+    return feeWithRefundUsd;
+  }, [executionFee, estimatedRefund.estimatedRefundUsd]);
 
   const value: ReactNode = useMemo(() => {
     if (executionFee?.feeUsd === undefined) {
@@ -143,10 +162,10 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
           </>
         }
       >
-        {formatUsd(executionFee?.feeUsd ? executionFee.feeUsd * -1n : undefined)}
+        {formatUsd(typeof executionFeeWithRefundUsd !== "undefined" ? executionFeeWithRefundUsd * -1n : undefined)}
       </TooltipWithPortal>
     );
-  }, [chainId, estimatedRefundText, executionFee, executionFeeText, additionalOrdersMsg]);
+  }, [executionFee, chainId, executionFeeText, estimatedRefundText, additionalOrdersMsg, executionFeeWithRefundUsd]);
 
   if (rowPadding) {
     return (
