@@ -222,7 +222,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
   });
 
   const transformedData: PnlHistoricalData = useMemo(() => {
-    return (
+    const dataPoints =
       res.data?.accountPnlHistoryStats?.map((row: any) => {
         const parsedDebugFields = showDebugValues
           ? DEBUG_FIELDS.reduce(
@@ -249,8 +249,41 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
           cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
           ...parsedDebugFields,
         };
-      }) || EMPTY_ARRAY
-    );
+      }) || EMPTY_ARRAY;
+
+    if (dataPoints.length < 7) {
+      const lastTimestamp =
+        dataPoints.length > 0
+          ? new Date(dataPoints[dataPoints.length - 1].date).getTime() / 1000
+          : Math.floor(Date.now() / 1000);
+
+      for (let i = dataPoints.length; i < 7; i++) {
+        const newTimestamp = lastTimestamp - 86400 * (i - dataPoints.length + 1);
+
+        const emptyPoint = {
+          date: formatDate(newTimestamp),
+          dateCompact: lightFormat(newTimestamp * 1000, "dd/MM"),
+          pnl: undefined,
+          pnlFloat: undefined,
+          cumulativePnl: undefined,
+          cumulativePnlFloat: undefined,
+          ...(showDebugValues
+            ? DEBUG_FIELDS.reduce(
+                (acc, key) => {
+                  acc[key] = 0n;
+                  acc[`${key}Float`] = 0;
+                  return acc;
+                },
+                {} as Record<string, bigint | number>
+              )
+            : EMPTY_OBJECT),
+        };
+
+        dataPoints.unshift(emptyPoint);
+      }
+    }
+
+    return dataPoints;
   }, [res.data?.accountPnlHistoryStats, showDebugValues]);
 
   return { data: transformedData, error: res.error, loading: res.loading };
