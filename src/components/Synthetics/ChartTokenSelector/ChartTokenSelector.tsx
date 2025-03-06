@@ -82,7 +82,7 @@ export default function ChartTokenSelector(props: Props) {
       popoverXOffset={-8}
       handleClassName={oneRowLabels === false ? "mr-24" : undefined}
       chevronClassName={chevronClassName}
-      desktopPanelClassName="w-[860px] max-w-[100vw]"
+      desktopPanelClassName="w-[880px] max-w-[100vw]"
       label={
         selectedToken ? (
           <span
