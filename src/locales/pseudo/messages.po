@@ -1349,10 +1349,6 @@ msgstr ""
 msgid "Set Max Leverage"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Version and network"
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
@@ -4233,6 +4229,10 @@ msgstr ""
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Address copied to your clipboard"
+msgstr ""
+
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Version and Network"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx

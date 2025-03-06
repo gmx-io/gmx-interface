@@ -1349,10 +1349,6 @@ msgstr "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgid "Set Max Leverage"
 msgstr "Set Max Leverage"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Version and network"
-msgstr "Version and network"
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr "Insufficient Available Liquidity to swap to {0}:"
@@ -4237,6 +4233,10 @@ msgstr "Failed Stop Market"
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
+
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Version and Network"
+msgstr "Version and Network"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
