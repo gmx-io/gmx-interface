@@ -68,7 +68,12 @@ export function getAmountByRatio(p: {
   const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
   const amount = (p.fromTokenAmount * adjustedDecimalsRatio) / PRECISION;
 
-  return amount - bigMath.mulDiv(amount, allowedSwapSlippageBps ?? 100n, BASIS_POINTS_DIVISOR_BIGINT);
+  const swapSlippageAmount =
+    allowedSwapSlippageBps !== undefined
+      ? bigMath.mulDiv(amount, allowedSwapSlippageBps, BASIS_POINTS_DIVISOR_BIGINT)
+      : 0n;
+
+  return amount - swapSlippageAmount;
 }
 
 /**
