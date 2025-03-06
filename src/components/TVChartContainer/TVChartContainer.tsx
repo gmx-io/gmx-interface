@@ -85,25 +85,31 @@ export default function TVChartContainer({
   const symbolRef = useRef(chartToken.symbol);
 
   useEffect(() => {
+    const newSymbolWithMultiplier = getSymbolName(chartToken.symbol, visualMultiplier);
+    const currentSymbolInfo = tvWidgetRef.current?.activeChart().symbolExt();
+    const currentSymbolWithMultiplier = currentSymbolInfo
+      ? getSymbolName(
+          currentSymbolInfo.name,
+          currentSymbolInfo.unit_id ? parseInt(currentSymbolInfo.unit_id) : undefined
+        )
+      : undefined;
+
     if (
       chartReady &&
       tvWidgetRef.current &&
       chartToken.symbol &&
-      isChartAvailableForToken(chainId, chartToken.symbol)
+      isChartAvailableForToken(chainId, chartToken.symbol) &&
+      newSymbolWithMultiplier !== currentSymbolWithMultiplier
     ) {
       setIsChartChangingSymbol(true);
 
-      tvWidgetRef.current.setSymbol(
-        getSymbolName(chartToken.symbol, visualMultiplier),
-        tvWidgetRef.current.activeChart().resolution(),
-        () => {
-          const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
-          if (priceScale) {
-            priceScale.setAutoScale(true);
-          }
-          setIsChartChangingSymbol(false);
+      tvWidgetRef.current.setSymbol(newSymbolWithMultiplier, tvWidgetRef.current.activeChart().resolution(), () => {
+        const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
+        if (priceScale) {
+          priceScale.setAutoScale(true);
         }
-      );
+        setIsChartChangingSymbol(false);
+      });
     }
   }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
 
