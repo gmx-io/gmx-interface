@@ -1,5 +1,5 @@
 import type { GmxSdk } from "index";
-import { AbiId } from "abis";
+import { AbiId, abis as allAbis } from "abis";
 import { sleep } from "./common";
 
 export const MAX_TIMEOUT = 20000;
@@ -67,8 +67,8 @@ export class Multicall {
 
         // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
-          ...abis[contractCallConfig.abiId],
-          ...abis.CustomErrors,
+          ...allAbis[contractCallConfig.abiId],
+          ...allAbis.CustomErrors,
         ];
         const abi = abis[contractCallConfig.contractAddress];
 
