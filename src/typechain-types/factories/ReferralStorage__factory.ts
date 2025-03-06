@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { ReferralStorage, ReferralStorageInterface } from "../ReferralStorage";
+import type {
+  ReferralStorage,
+  ReferralStorageInterface,
+} from "../ReferralStorage";
 
 const _abi = [
   {
@@ -511,7 +514,10 @@ export class ReferralStorage__factory {
   static createInterface(): ReferralStorageInterface {
     return new Interface(_abi) as ReferralStorageInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): ReferralStorage {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): ReferralStorage {
     return new Contract(address, _abi, runner) as unknown as ReferralStorage;
   }
 }

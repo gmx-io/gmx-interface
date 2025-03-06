@@ -12,6 +12,7 @@ export type Props = {
   positionImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
   swapProfitFee?: FeeItem;
+  externalSwapFeeItem?: FeeItem;
   executionFeeUsd?: bigint;
 };
 
@@ -21,6 +22,7 @@ export function HighPriceImpactOrFeesWarningCard({
   positionImpact,
   swapPriceImpact,
   swapProfitFee,
+  externalSwapFeeItem,
   executionFeeUsd,
 }: Props) {
   const warnings = useMemo(() => {
@@ -72,17 +74,20 @@ export function HighPriceImpactOrFeesWarningCard({
       });
     }
 
+    if (externalSwapFeeItem) {
+      warnings.push({
+        id: "high-external-swap-fee",
+        key: t`High External Swap Impact`,
+        value: formatUsd(externalSwapFeeItem.deltaUsd),
+      });
+    }
     return warnings;
   }, [
+    priceImpactWarningState,
+    externalSwapFeeItem,
+    positionImpact?.precisePercentage,
     collateralImpact?.precisePercentage,
     executionFeeUsd,
-    positionImpact?.precisePercentage,
-    priceImpactWarningState.shouldShowWarningForCollateral,
-    priceImpactWarningState.shouldShowWarningForExecutionFee,
-    priceImpactWarningState.shouldShowWarningForPosition,
-    priceImpactWarningState.shouldShowWarningForSwap,
-    priceImpactWarningState.shouldShowWarningForSwapProfitFee,
-    priceImpactWarningState.shouldShowWarningForTriggerOrders,
     swapPriceImpact?.deltaUsd,
     swapProfitFee?.deltaUsd,
   ]);

@@ -1,5 +1,5 @@
 import { MarketInfo } from "types/markets";
-import { FeeItem, SwapFeeItem } from "./fees";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
 
 export enum TradeType {
@@ -56,7 +56,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaUsd: bigint;
 
   swapPathStats: SwapPathStats | undefined;
-
+  externalSwapQuote: ExternalSwapQuote | undefined;
   indexTokenAmount: bigint;
 
   sizeDeltaUsd: bigint;
@@ -220,9 +220,67 @@ export type SwapEstimator = (
   usdOut: bigint;
 };
 
-export type FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;
+export type FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
+
+export enum ExternalSwapAggregator {
+  OpenOcean = "openOcean",
+}
+
+export type ExternalSwapOutput = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+  amountIn: bigint;
+  amountOut: bigint;
+  usdIn: bigint | undefined;
+  usdOut: bigint | undefined;
+  priceIn: bigint | undefined;
+  priceOut: bigint | undefined;
+  feesUsd: bigint | undefined;
+  needSpenderApproval?: boolean;
+  txnData: {
+    to: string;
+    data: string;
+    value: bigint;
+    estimatedGas: bigint;
+  };
+};
+
+export type ExternalSwapQuote = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+  amountIn: bigint;
+  amountOut: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  feesUsd: bigint;
+  needSpenderApproval?: boolean;
+  txnData: {
+    to: string;
+    data: string;
+    value: bigint;
+    estimatedGas: bigint;
+  };
+};
+
+export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
+
+export type ExternalSwapInputs = {
+  amountIn: bigint;
+  priceIn: bigint;
+  priceOut: bigint;
+  usdIn: bigint;
+  usdOut: bigint;
+  strategy: ExternalSwapCalculationStrategy;
+  internalSwapTotalFeesDeltaUsd?: bigint;
+  internalSwapTotalFeeItem?: FeeItem;
+  internalSwapAmounts: SwapAmounts;
+};
 
 export type TradeFees = {
   totalFees?: FeeItem;
@@ -241,6 +299,7 @@ export type TradeFees = {
   uiSwapFee?: FeeItem;
   feeDiscountUsd?: bigint;
   swapProfitFee?: FeeItem;
+  externalSwapFee?: ExternalSwapFeeItem;
 };
 
 export type GmSwapFees = {

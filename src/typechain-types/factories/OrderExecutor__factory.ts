@@ -124,7 +124,10 @@ export class OrderExecutor__factory {
   static createInterface(): OrderExecutorInterface {
     return new Interface(_abi) as OrderExecutorInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): OrderExecutor {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): OrderExecutor {
     return new Contract(address, _abi, runner) as unknown as OrderExecutor;
   }
 }

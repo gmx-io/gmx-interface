@@ -52,31 +52,85 @@ export interface RouterInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "Swap"): EventFragment;
 
-  encodeFunctionData(functionFragment: "addPlugin", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "approvePlugin", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "approvedPlugins", values: [AddressLike, AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "addPlugin",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approvePlugin",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approvedPlugins",
+    values: [AddressLike, AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "decreasePosition",
-    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, boolean, AddressLike, BigNumberish]
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      AddressLike,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "decreasePositionETH",
-    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, boolean, AddressLike, BigNumberish]
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      AddressLike,
+      BigNumberish
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "denyPlugin", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "directPoolDeposit", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "denyPlugin",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "directPoolDeposit",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "gov", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "increasePosition",
-    values: [AddressLike[], AddressLike, BigNumberish, BigNumberish, BigNumberish, boolean, BigNumberish]
+    values: [
+      AddressLike[],
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "increasePositionETH",
-    values: [AddressLike[], AddressLike, BigNumberish, BigNumberish, boolean, BigNumberish]
+    values: [
+      AddressLike[],
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "pluginDecreasePosition",
-    values: [AddressLike, AddressLike, AddressLike, BigNumberish, BigNumberish, boolean, AddressLike]
+    values: [
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      AddressLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "pluginIncreasePosition",
@@ -86,14 +140,23 @@ export interface RouterInterface extends Interface {
     functionFragment: "pluginTransfer",
     values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "plugins", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "removePlugin", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "plugins",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removePlugin",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "setGov", values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: "swap",
     values: [AddressLike[], BigNumberish, BigNumberish, AddressLike]
   ): string;
-  encodeFunctionData(functionFragment: "swapETHToTokens", values: [AddressLike[], BigNumberish, AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "swapETHToTokens",
+    values: [AddressLike[], BigNumberish, AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "swapTokensToETH",
     values: [AddressLike[], BigNumberish, BigNumberish, AddressLike]
@@ -103,24 +166,63 @@ export interface RouterInterface extends Interface {
   encodeFunctionData(functionFragment: "weth", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "addPlugin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "approvePlugin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "approvedPlugins", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "decreasePosition", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "decreasePositionETH", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "approvePlugin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "approvedPlugins",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "decreasePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "decreasePositionETH",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "denyPlugin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "directPoolDeposit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "directPoolDeposit",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "increasePosition", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "increasePositionETH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pluginDecreasePosition", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pluginIncreasePosition", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pluginTransfer", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "increasePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "increasePositionETH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pluginDecreasePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pluginIncreasePosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pluginTransfer",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "plugins", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removePlugin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removePlugin",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "swap", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "swapETHToTokens", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "swapTokensToETH", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "swapETHToTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "swapTokensToETH",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "usdg", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "vault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "weth", data: BytesLike): Result;
@@ -132,9 +234,15 @@ export namespace SwapEvent {
     tokenIn: AddressLike,
     tokenOut: AddressLike,
     amountIn: BigNumberish,
-    amountOut: BigNumberish,
+    amountOut: BigNumberish
   ];
-  export type OutputTuple = [account: string, tokenIn: string, tokenOut: string, amountIn: bigint, amountOut: bigint];
+  export type OutputTuple = [
+    account: string,
+    tokenIn: string,
+    tokenOut: string,
+    amountIn: bigint,
+    amountOut: bigint
+  ];
   export interface OutputObject {
     account: string;
     tokenIn: string;
@@ -165,27 +273,45 @@ export interface Router extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   addPlugin: TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
 
-  approvePlugin: TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
+  approvePlugin: TypedContractMethod<
+    [_plugin: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  approvedPlugins: TypedContractMethod<[arg0: AddressLike, arg1: AddressLike], [boolean], "view">;
+  approvedPlugins: TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike],
+    [boolean],
+    "view"
+  >;
 
   decreasePosition: TypedContractMethod<
     [
@@ -195,7 +321,7 @@ export interface Router extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -209,7 +335,7 @@ export interface Router extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -217,7 +343,11 @@ export interface Router extends BaseContract {
 
   denyPlugin: TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
 
-  directPoolDeposit: TypedContractMethod<[_token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  directPoolDeposit: TypedContractMethod<
+    [_token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   gov: TypedContractMethod<[], [string], "view">;
 
@@ -229,7 +359,7 @@ export interface Router extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -242,7 +372,7 @@ export interface Router extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "payable"
@@ -256,7 +386,7 @@ export interface Router extends BaseContract {
       _collateralDelta: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _receiver: AddressLike,
+      _receiver: AddressLike
     ],
     [bigint],
     "nonpayable"
@@ -268,26 +398,40 @@ export interface Router extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _sizeDelta: BigNumberish,
-      _isLong: boolean,
+      _isLong: boolean
     ],
     [void],
     "nonpayable"
   >;
 
   pluginTransfer: TypedContractMethod<
-    [_token: AddressLike, _account: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [
+      _token: AddressLike,
+      _account: AddressLike,
+      _receiver: AddressLike,
+      _amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
 
   plugins: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
-  removePlugin: TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
+  removePlugin: TypedContractMethod<
+    [_plugin: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   setGov: TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
 
   swap: TypedContractMethod<
-    [_path: AddressLike[], _amountIn: BigNumberish, _minOut: BigNumberish, _receiver: AddressLike],
+    [
+      _path: AddressLike[],
+      _amountIn: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -299,7 +443,12 @@ export interface Router extends BaseContract {
   >;
 
   swapTokensToETH: TypedContractMethod<
-    [_path: AddressLike[], _amountIn: BigNumberish, _minOut: BigNumberish, _receiver: AddressLike],
+    [
+      _path: AddressLike[],
+      _amountIn: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
     [void],
     "nonpayable"
   >;
@@ -310,13 +459,23 @@ export interface Router extends BaseContract {
 
   weth: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "addPlugin"): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "approvePlugin"): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "addPlugin"
+  ): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "approvePlugin"
+  ): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "approvedPlugins"
-  ): TypedContractMethod<[arg0: AddressLike, arg1: AddressLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "decreasePosition"
   ): TypedContractMethod<
@@ -327,7 +486,7 @@ export interface Router extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -342,16 +501,24 @@ export interface Router extends BaseContract {
       _sizeDelta: BigNumberish,
       _isLong: boolean,
       _receiver: AddressLike,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "denyPlugin"): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "denyPlugin"
+  ): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "directPoolDeposit"
-  ): TypedContractMethod<[_token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "gov"): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "gov"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "increasePosition"
   ): TypedContractMethod<
@@ -362,7 +529,7 @@ export interface Router extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -376,7 +543,7 @@ export interface Router extends BaseContract {
       _minOut: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _price: BigNumberish,
+      _price: BigNumberish
     ],
     [void],
     "payable"
@@ -391,7 +558,7 @@ export interface Router extends BaseContract {
       _collateralDelta: BigNumberish,
       _sizeDelta: BigNumberish,
       _isLong: boolean,
-      _receiver: AddressLike,
+      _receiver: AddressLike
     ],
     [bigint],
     "nonpayable"
@@ -404,7 +571,7 @@ export interface Router extends BaseContract {
       _collateralToken: AddressLike,
       _indexToken: AddressLike,
       _sizeDelta: BigNumberish,
-      _isLong: boolean,
+      _isLong: boolean
     ],
     [void],
     "nonpayable"
@@ -412,35 +579,72 @@ export interface Router extends BaseContract {
   getFunction(
     nameOrSignature: "pluginTransfer"
   ): TypedContractMethod<
-    [_token: AddressLike, _account: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [
+      _token: AddressLike,
+      _account: AddressLike,
+      _receiver: AddressLike,
+      _amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "plugins"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "removePlugin"): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "setGov"): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "plugins"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "removePlugin"
+  ): TypedContractMethod<[_plugin: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setGov"
+  ): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "swap"
   ): TypedContractMethod<
-    [_path: AddressLike[], _amountIn: BigNumberish, _minOut: BigNumberish, _receiver: AddressLike],
+    [
+      _path: AddressLike[],
+      _amountIn: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "swapETHToTokens"
-  ): TypedContractMethod<[_path: AddressLike[], _minOut: BigNumberish, _receiver: AddressLike], [void], "payable">;
+  ): TypedContractMethod<
+    [_path: AddressLike[], _minOut: BigNumberish, _receiver: AddressLike],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "swapTokensToETH"
   ): TypedContractMethod<
-    [_path: AddressLike[], _amountIn: BigNumberish, _minOut: BigNumberish, _receiver: AddressLike],
+    [
+      _path: AddressLike[],
+      _amountIn: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "usdg"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "vault"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "weth"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "usdg"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "vault"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "weth"
+  ): TypedContractMethod<[], [string], "view">;
 
-  getEvent(key: "Swap"): TypedContractEvent<SwapEvent.InputTuple, SwapEvent.OutputTuple, SwapEvent.OutputObject>;
+  getEvent(
+    key: "Swap"
+  ): TypedContractEvent<
+    SwapEvent.InputTuple,
+    SwapEvent.OutputTuple,
+    SwapEvent.OutputObject
+  >;
 
   filters: {
     "Swap(address,address,address,uint256,uint256)": TypedContractEvent<
@@ -448,6 +652,10 @@ export interface Router extends BaseContract {
       SwapEvent.OutputTuple,
       SwapEvent.OutputObject
     >;
-    Swap: TypedContractEvent<SwapEvent.InputTuple, SwapEvent.OutputTuple, SwapEvent.OutputObject>;
+    Swap: TypedContractEvent<
+      SwapEvent.InputTuple,
+      SwapEvent.OutputTuple,
+      SwapEvent.OutputObject
+    >;
   };
 }

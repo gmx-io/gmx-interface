@@ -1,33 +1,32 @@
-import Loader from "components/Common/Loader";
+import { useLatest, useLocalStorage, useMedia } from "react-use";
+
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
-import { isChartAvailableForToken } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { useTradePageVersion } from "lib/useTradePageVersion";
-import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useLatest, useLocalStorage, useMedia } from "react-use";
+import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { isChartAvailableForToken } from "sdk/configs/tokens";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
   IChartingLibraryWidget,
-  IPositionLineAdapter,
   ResolutionString,
 } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import type { StaticChartLine } from "./types";
 
-export type ChartLine = {
-  price: number;
-  title: string;
-};
+import Loader from "components/Common/Loader";
+import { DynamicLines } from "./DynamicLines";
+import { StaticLines } from "./StaticLines";
 
 type Props = {
   chainId: number;
-  chartLines: ChartLine[];
+  chartLines: StaticChartLine[];
   period: string;
   setPeriod: (period: string) => void;
   chartToken:
@@ -54,6 +53,7 @@ export default function TVChartContainer({
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
+  const [isChartChangingSymbol, setIsChartChangingSymbol] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
 
@@ -84,60 +84,32 @@ export default function TVChartContainer({
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
 
-  const drawLineOnChart = useCallback(
-    (title: string, price: number) => {
-      if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
-        const chart = tvWidgetRef.current.activeChart();
-        const positionLine = chart.createPositionLine({ disableUndo: true });
-
-        return positionLine
-          .setText(title)
-          .setPrice(price)
-          .setQuantity("")
-          .setLineStyle(1)
-          .setLineLength(1)
-          .setBodyFont(`normal 12pt "Relative", sans-serif`)
-          .setBodyTextColor("#fff")
-          .setLineColor("#3a3e5e")
-          .setBodyBackgroundColor("#3a3e5e")
-          .setBodyBorderColor("#3a3e5e");
-      }
-    },
-    [chartReady]
-  );
-
-  useEffect(
-    function updateLines() {
-      const lines: (IPositionLineAdapter | undefined)[] = [];
-      if (shouldShowPositionLines) {
-        chartLines.forEach((order) => {
-          lines.push(drawLineOnChart(order.title, order.price));
-        });
-      }
-      return () => {
-        lines.forEach((line) => line?.remove());
-      };
-    },
-    [chartLines, shouldShowPositionLines, drawLineOnChart]
-  );
-
   useEffect(() => {
+    const newSymbolWithMultiplier = getSymbolName(chartToken.symbol, visualMultiplier);
+    const currentSymbolInfo = tvWidgetRef.current?.activeChart().symbolExt();
+    const currentSymbolWithMultiplier = currentSymbolInfo
+      ? getSymbolName(
+          currentSymbolInfo.name,
+          currentSymbolInfo.unit_id ? parseInt(currentSymbolInfo.unit_id) : undefined
+        )
+      : undefined;
+
     if (
       chartReady &&
       tvWidgetRef.current &&
       chartToken.symbol &&
-      isChartAvailableForToken(chainId, chartToken.symbol)
+      isChartAvailableForToken(chainId, chartToken.symbol) &&
+      newSymbolWithMultiplier !== currentSymbolWithMultiplier
     ) {
-      tvWidgetRef.current.setSymbol(
-        getSymbolName(chartToken.symbol, visualMultiplier),
-        tvWidgetRef.current.activeChart().resolution(),
-        async () => {
-          const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
-          if (priceScale) {
-            priceScale.setAutoScale(true);
-          }
+      setIsChartChangingSymbol(true);
+
+      tvWidgetRef.current.setSymbol(newSymbolWithMultiplier, tvWidgetRef.current.activeChart().resolution(), () => {
+        const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
+        if (priceScale) {
+          priceScale.setAutoScale(true);
         }
-      );
+        setIsChartChangingSymbol(false);
+      });
     }
   }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
 
@@ -244,6 +216,12 @@ export default function TVChartContainer({
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
       <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
+      {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
+        <>
+          <StaticLines tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
+          {tradePageVersion === 2 && <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />}
+        </>
+      )}
     </div>
   );
 }

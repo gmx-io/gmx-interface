@@ -8,20 +8,25 @@ import {
   selectTradeboxAdvancedOptions,
   selectTradeboxAllowedSlippage,
   selectTradeboxDecreasePositionAmounts,
+  selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxExecutionFee,
   selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxNextPositionValues,
+  selectTradeboxSelectedAllowedSwapSlippageBps,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetAdvancedOptions,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
+  selectTradeboxSetSelectedAllowedSwapSlippageBps,
+  selectTradeboxTotalSwapImpactBps,
   selectTradeboxToToken,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
+  selectTradeboxTriggerRatioInputValue,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
@@ -41,6 +46,8 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
+import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
+import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 
 function LeverageInfoRows() {
   const { isIncrease, isTrigger } = useSelector(selectTradeboxTradeFlags);
@@ -102,7 +109,7 @@ function ExistingPositionInfoRows() {
 
   return (
     <>
-      {selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && (
+      {selectedPosition?.sizeInUsd !== undefined && selectedPosition.sizeInUsd > 0 && (
         <SyntheticsInfoRow
           label={t`Size`}
           value={
@@ -193,12 +200,20 @@ export function TradeBoxAdvancedGroups() {
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const triggerRatioInputValue = useSelector(selectTradeboxTriggerRatioInputValue);
+  const totalSwapImpactBps = useSelector(selectTradeboxTotalSwapImpactBps);
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
 
-  const isInputDisabled = useMemo(() => {
+  const defaultAllowedSwapSlippageBps = useSelector(selectTradeboxDefaultAllowedSwapSlippageBps);
+  const selectedAllowedSwapSlippageBps = useSelector(selectTradeboxSelectedAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectTradeboxSetSelectedAllowedSwapSlippageBps);
+
+  useTradeboxAllowedSwapSlippageValues();
+
+  const isPriceImpactInputDisabled = useMemo(() => {
     if (isLimit && increaseAmounts) {
       if (increaseAmounts.limitOrderType && isStopIncreaseOrderType(increaseAmounts.limitOrderType)) {
         return true;
@@ -209,6 +224,14 @@ export function TradeBoxAdvancedGroups() {
 
     return decreaseAmounts && decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease;
   }, [decreaseAmounts, increaseAmounts, isLimit, limitPrice]);
+
+  const isSwapImpactInputDisabled = useMemo(() => {
+    if (isLimit && isSwap) {
+      return !triggerRatioInputValue;
+    }
+
+    return true;
+  }, [isLimit, isSwap, triggerRatioInputValue]);
 
   const collateralSpreadInfo = useSelector(selectTradeboxCollateralSpreadInfo);
 
@@ -243,7 +266,7 @@ export function TradeBoxAdvancedGroups() {
         <>
           <AcceptablePriceImpactInputRow
             notAvailable={
-              isInputDisabled ||
+              isPriceImpactInputDisabled ||
               defaultTriggerAcceptablePriceImpactBps === undefined ||
               selectedTriggerAcceptablePriceImpactBps === undefined
             }
@@ -266,6 +289,19 @@ export function TradeBoxAdvancedGroups() {
       {/* only when isSwap */}
       {isSwap && <SwapSpreadRow />}
       {/* only when isLimit */}
+      {isSwap && isLimit && (
+        <AllowedSwapSlippageInputRow
+          notAvailable={
+            isSwapImpactInputDisabled ||
+            defaultAllowedSwapSlippageBps === undefined ||
+            selectedAllowedSwapSlippageBps === undefined
+          }
+          totalSwapImpactBps={totalSwapImpactBps}
+          allowedSwapSlippageBps={selectedAllowedSwapSlippageBps}
+          recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
+          setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
+        />
+      )}
       {isLimit && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
       {isMarket && !isSwap && <CollateralSpreadRow />}

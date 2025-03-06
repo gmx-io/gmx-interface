@@ -1,8 +1,7 @@
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { OrderType } from "domain/synthetics/orders";
+import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
   FindSwapPath,
-  TradeFlags,
   TradeMode,
   TradeType,
   createSwapEstimator,
@@ -15,11 +14,16 @@ import {
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
+  getSwapPathComparator,
   getSwapPathStats,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
+import { ExternalSwapQuote } from "sdk/types/trade";
+import { createTradeFlags } from "sdk/utils/trade";
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
+import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -30,7 +34,6 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -133,15 +136,16 @@ export const makeSelectFindSwapPath = createSelectorFactory(
       const allPaths = q(selectAllPaths);
       const estimator = q(selectSwapEstimator);
 
-      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { byLiquidity?: boolean }) => {
+      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => {
         if (!allPaths?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
           return undefined;
         }
 
         let swapPath: string[] | undefined = undefined;
+        const sortedPaths = opts.order ? [...allPaths].sort(getSwapPathComparator(opts.order ?? [])) : allPaths;
 
-        if (opts.byLiquidity) {
-          swapPath = allPaths[0].path;
+        if (opts.order) {
+          swapPath = sortedPaths[0].path;
         } else {
           swapPath = getBestSwapPath(allPaths, usdIn, estimator);
         }
@@ -204,6 +208,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
       const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
       const marketInfo = q((state) => getByKey(selectMarketsInfoData(state), marketAddress));
       const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
+      const externalSwapQuote = q(selectExternalSwapQuote);
 
       const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
       const findSwapPath = q(
@@ -251,6 +256,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
         limitOrderType,
         fixedAcceptablePriceImpactBps,
         acceptablePriceImpactBuffer,
+        externalSwapQuote,
         findSwapPath,
         userReferralInfo,
         uiFeeFactor,
@@ -258,30 +264,6 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
       });
     })
 );
-
-export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): TradeFlags => {
-  const isLong = tradeType === TradeType.Long;
-  const isShort = tradeType === TradeType.Short;
-  const isSwap = tradeType === TradeType.Swap;
-  const isPosition = isLong || isShort;
-  const isMarket = tradeMode === TradeMode.Market;
-  const isLimit = tradeMode === TradeMode.Limit || tradeMode === TradeMode.StopMarket;
-  const isTrigger = tradeMode === TradeMode.Trigger;
-  const isIncrease = isPosition && (isMarket || isLimit);
-
-  const tradeFlags: TradeFlags = {
-    isLong,
-    isShort,
-    isSwap,
-    isPosition,
-    isIncrease,
-    isMarket,
-    isLimit,
-    isTrigger,
-  };
-
-  return tradeFlags;
-};
 
 export const makeSelectDecreasePositionAmounts = createSelectorFactory(
   ({
@@ -419,6 +401,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
     isPnlInLeverage: boolean;
+    externalSwapQuote: ExternalSwapQuote | undefined;
   }) =>
     createSelectorDeprecated(
       [
