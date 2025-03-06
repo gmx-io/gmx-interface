@@ -58,7 +58,7 @@ export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): Tr
   const isSwap = tradeType === TradeType.Swap;
   const isPosition = isLong || isShort;
   const isMarket = tradeMode === TradeMode.Market;
-  const isLimit = tradeMode === TradeMode.Limit;
+  const isLimit = tradeMode === TradeMode.Limit || tradeMode === TradeMode.StopMarket;
   const isTrigger = tradeMode === TradeMode.Trigger;
   const isIncrease = isPosition && (isMarket || isLimit);
 
