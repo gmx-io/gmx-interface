@@ -1,7 +1,6 @@
 import { sleep } from "lib/sleep";
 import { useDebounce } from "lib/useDebounce";
 import { useMemo } from "react";
-import { usePrevious } from "react-use";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
@@ -42,13 +41,11 @@ export function useExternalSwapOutputRequest({
 
   const debouncedKey = useDebounce(swapKey, 300);
   const isWaitingForDebounce = debouncedKey !== swapKey;
-  const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
-  const prevTokensKey = usePrevious(tokensKey);
 
   const { data, isLoading, error } = useSWR<{ quote: ExternalSwapOutput; requestKey: string }>(
     enabled ? debouncedKey : null,
     {
-      keepPreviousData: enabled && prevTokensKey === tokensKey,
+      keepPreviousData: enabled,
       fetcher: async (requestKey: string) => {
         try {
           if (
