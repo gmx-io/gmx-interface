@@ -41,7 +41,6 @@ export function useExternalSwapOutputRequest({
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
-  const isWaitingForDebounce = debouncedKey !== swapKey;
   const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
@@ -117,7 +116,7 @@ export function useExternalSwapOutputRequest({
   });
 
   return useMemo(() => {
-    if (!tokenInAddress || !data || amountIn === undefined || isWaitingForDebounce) {
+    if (!tokenInAddress || !data || amountIn === undefined) {
       return {};
     }
 
@@ -135,5 +134,5 @@ export function useExternalSwapOutputRequest({
     return {
       externalSwapOutput,
     };
-  }, [tokenInAddress, data, amountIn, isWaitingForDebounce, tokensAllowanceData, chainId]);
+  }, [tokenInAddress, data, amountIn, tokensAllowanceData, chainId]);
 }
