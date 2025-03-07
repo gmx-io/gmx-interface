@@ -85,6 +85,15 @@ export default function TVChartContainer({
   const symbolRef = useRef(chartToken.symbol);
 
   useEffect(() => {
+    if (
+      !chartReady ||
+      !tvWidgetRef.current ||
+      !chartToken.symbol ||
+      !isChartAvailableForToken(chainId, chartToken.symbol)
+    ) {
+      return;
+    }
+
     const newSymbolWithMultiplier = getSymbolName(chartToken.symbol, visualMultiplier);
     const currentSymbolInfo = tvWidgetRef.current?.activeChart().symbolExt();
     const currentSymbolWithMultiplier = currentSymbolInfo
@@ -94,13 +103,7 @@ export default function TVChartContainer({
         )
       : undefined;
 
-    if (
-      chartReady &&
-      tvWidgetRef.current &&
-      chartToken.symbol &&
-      isChartAvailableForToken(chainId, chartToken.symbol) &&
-      newSymbolWithMultiplier !== currentSymbolWithMultiplier
-    ) {
+    if (newSymbolWithMultiplier !== currentSymbolWithMultiplier) {
       setIsChartChangingSymbol(true);
 
       tvWidgetRef.current.setSymbol(newSymbolWithMultiplier, tvWidgetRef.current.activeChart().resolution(), () => {
