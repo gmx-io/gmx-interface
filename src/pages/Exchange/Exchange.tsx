@@ -5,7 +5,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useSt
 import useSWR from "swr";
 
 import { getConstant, getExplorerUrl } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
 import {
   LONG,
@@ -20,14 +20,8 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 
 import { getContract } from "config/contracts";
-
-import Reader from "sdk/abis/ReaderV2.json";
-import Router from "sdk/abis/Router.json";
-import Token from "sdk/abis/Token.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
@@ -43,20 +37,20 @@ import Tab from "components/Tab/Tab";
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIsV1Supported } from "config/features";
-import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useWallet from "lib/wallets/useWallet";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import "./Exchange.css";
 const { ZeroAddress } = ethers;
 
@@ -536,13 +530,13 @@ export const Exchange = forwardRef(
 
     const tokenAddresses = tokens.map((token) => token.address);
     const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
-      fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
+      fetcher: contractFetcher(signer, "Reader", [tokenAddresses]),
     });
 
     const { data: positionData, error: positionDataError } = useSWR(
       active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
       {
-        fetcher: contractFetcher(signer, Reader, [
+        fetcher: contractFetcher(signer, "Reader", [
           positionQuery.collateralTokens,
           positionQuery.indexTokens,
           positionQuery.isLong,
@@ -553,7 +547,7 @@ export const Exchange = forwardRef(
     const positionsDataIsLoading = active && !positionData && !positionDataError;
 
     const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-      fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+      fetcher: contractFetcher(signer, "Reader", [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
     });
 
     const updateTradeOptions = useCallback(
@@ -594,12 +588,12 @@ export const Exchange = forwardRef(
     const { data: totalTokenWeights } = useSWR(
       [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
       {
-        fetcher: contractFetcher(signer, VaultV2),
+        fetcher: contractFetcher(signer, "VaultV2"),
       }
     );
 
     const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
-      fetcher: contractFetcher(signer, Token),
+      fetcher: contractFetcher(signer, "Token"),
     });
 
     const orderBookAddress = getContract(chainId, "OrderBook");
@@ -607,14 +601,14 @@ export const Exchange = forwardRef(
     const { data: orderBookApproved } = useSWR(
       active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
       {
-        fetcher: contractFetcher(signer, Router),
+        fetcher: contractFetcher(signer, "Router"),
       }
     );
 
     const { data: positionRouterApproved } = useSWR(
       active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
       {
-        fetcher: contractFetcher(signer, Router),
+        fetcher: contractFetcher(signer, "Router"),
       }
     );
 

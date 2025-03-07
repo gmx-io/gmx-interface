@@ -2,8 +2,6 @@ import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
 import { MarketConfigMulticallRequestConfig } from "sdk/modules/markets/types";
 
-import DataStore from "sdk/abis/DataStore.json";
-
 export async function buildMarketsConfigsRequest(
   chainId: number,
   {
@@ -26,7 +24,7 @@ export async function buildMarketsConfigsRequest(
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
-      abi: DataStore.abi,
+      abiId: "DataStore",
       calls: {
         isDisabled: {
           methodName: "getBool",

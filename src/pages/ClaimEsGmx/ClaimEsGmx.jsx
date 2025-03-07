@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import { abis } from "sdk/abis";
 
 import { getContract } from "config/contracts";
-
-import Token from "sdk/abis/Token.json";
-import RewardReader from "sdk/abis/RewardReader.json";
 
 import Checkbox from "components/Checkbox/Checkbox";
 
@@ -149,7 +147,7 @@ export default function ClaimEsGmx() {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(signer, Token),
+      fetcher: contractFetcher(signer, "Token"),
     }
   );
 
@@ -168,7 +166,7 @@ export default function ClaimEsGmx() {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [arbVesterAdddresses]),
+      fetcher: contractFetcher(undefined, "RewardReader", [arbVesterAdddresses]),
     }
   );
 
@@ -181,7 +179,7 @@ export default function ClaimEsGmx() {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [avaxVesterAdddresses]),
+      fetcher: contractFetcher(undefined, "RewardReader", [avaxVesterAdddresses]),
     }
   );
 
@@ -318,7 +316,7 @@ export default function ClaimEsGmx() {
       receiver = "0x28863Dd19fb52DF38A9f2C6dfed40eeB996e3818";
     }
 
-    const contract = new ethers.Contract(esGmxIouAddress, Token.abi, signer);
+    const contract = new ethers.Contract(esGmxIouAddress, abis.Token, signer);
     callContract(chainId, contract, "transfer", [receiver, amount], {
       sentMsg: t`Claim submitted!`,
       failMsg: t`Claim failed.`,

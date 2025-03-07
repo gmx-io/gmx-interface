@@ -8,8 +8,6 @@ import { TokensData } from "domain/synthetics/tokens/types";
 
 import { HASHED_MARKET_VALUES_KEYS } from "sdk/prebuilt";
 
-import DataStore from "sdk/abis/DataStore.json";
-import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 import { MarketValuesMulticallRequestConfig } from "sdk/modules/markets/types";
 
 export async function buildMarketsValuesRequest(
@@ -50,7 +48,7 @@ export async function buildMarketsValuesRequest(
 
     request[`${marketAddress}-reader`] = {
       contractAddress: syntheticsReaderAddress,
-      abi: SyntheticsReader.abi,
+      abiId: "SyntheticsReader",
       calls: {
         marketInfo: {
           methodName: "getMarketInfo",
@@ -97,7 +95,7 @@ export async function buildMarketsValuesRequest(
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
-      abi: DataStore.abi,
+      abiId: "DataStore",
       calls: {
         longPoolAmount: {
           methodName: "getUint",

@@ -9,7 +9,7 @@ import { getSubaccountRouterContract } from "domain/synthetics/subaccount/getSub
 import { convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { abis } from "sdk/abis";
 
 export type UpdateOrderParams = {
   orderKey: string;
@@ -48,7 +48,7 @@ export async function updateOrderTxn(
 
   const router = subaccount
     ? getSubaccountRouterContract(chainId, subaccount.signer)
-    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   const encodedPayload = createUpdateEncodedPayload({
     chainId,

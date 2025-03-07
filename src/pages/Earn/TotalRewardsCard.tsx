@@ -22,8 +22,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ClaimModal } from "./ClaimModal";
 
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-
 export function TotalRewardsCard({
   processedData,
   showStakeGmxModal,
@@ -62,7 +60,7 @@ export function TotalRewardsCard({
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(signer, ReaderV2, [walletTokens]),
+      fetcher: contractFetcher(signer, "ReaderV2", [walletTokens]),
     }
   );
 

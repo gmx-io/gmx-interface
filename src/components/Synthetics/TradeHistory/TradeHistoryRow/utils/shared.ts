@@ -14,7 +14,7 @@ import { TradeActionType } from "sdk/types/tradeHistory";
 
 import { CustomErrorName } from "./CustomErrorName";
 
-import CustomErrors from "sdk/abis/CustomErrors.json";
+import { abis } from "sdk/abis";
 
 export function getOrderActionText(eventName: TradeActionType) {
   let actionText = "";
@@ -167,7 +167,7 @@ export function formatTradeActionTimestampISO(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
 
 export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErrors.interface.parseError> | undefined {
   let error: ReturnType<typeof customErrors.interface.parseError> | undefined;

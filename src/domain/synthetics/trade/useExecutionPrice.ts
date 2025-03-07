@@ -1,9 +1,8 @@
-import SyntheticsReader from "sdk/abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
+import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import { MarketInfo } from "../markets";
 import { convertToContractPrice, parseContractPrice } from "../tokens";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
 
 export function useDebugExecutionPrice(
   chainId,
@@ -46,7 +45,7 @@ export function useDebugExecutionPrice(
       return {
         reader: {
           contractAddress: getContract(chainId, "SyntheticsReader"),
-          abi: SyntheticsReader.abi,
+          abiId: "SyntheticsReader",
           calls: {
             executionPrice: {
               methodName: "getExecutionPrice",

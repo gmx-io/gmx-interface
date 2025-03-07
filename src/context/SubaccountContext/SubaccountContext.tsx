@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import DataStore from "sdk/abis/DataStore.json";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
 import { getContract } from "config/contracts";
 import {
@@ -10,10 +9,14 @@ import {
   subaccountListKey,
 } from "config/dataStore";
 import { getSubaccountConfigKey } from "config/localStorage";
-import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import cryptoJs from "crypto-js";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
-import { estimateExecuteIncreaseOrderGasLimit, useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import {
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateOrderOraclePriceCount,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
 import { STRING_FOR_SIGNING } from "domain/synthetics/subaccount/constants";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensDataRequest } from "domain/synthetics/tokens";
@@ -23,13 +26,13 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { clientToSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
-import { createContext, useContextSelector } from "use-context-selector";
-import { clientToSigner } from "lib/wallets/useEthersSigner";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { createContext, useContextSelector } from "use-context-selector";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
@@ -163,7 +166,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       return {
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             isSubaccountActive: {
               methodName: "containsAddress",

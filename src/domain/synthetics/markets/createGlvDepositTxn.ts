@@ -1,15 +1,14 @@
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { abis } from "sdk/abis";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
-
-import GlvRouter from "sdk/abis/GlvRouter.json";
-import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { CreateDepositParams } from "./createDepositTxn";
 
 interface CreateGlvDepositParams extends CreateDepositParams {
@@ -19,7 +18,7 @@ interface CreateGlvDepositParams extends CreateDepositParams {
 }
 
 export async function createGlvDepositTxn(chainId: number, signer: Signer, p: CreateGlvDepositParams) {
-  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), GlvRouter.abi, signer);
+  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const depositVaultAddress = getContract(chainId, "GlvVault");
 
   const isNativeLongDeposit = Boolean(

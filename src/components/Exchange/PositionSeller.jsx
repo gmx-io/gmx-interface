@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
-import PositionRouter from "sdk/abis/PositionRouter.json";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import PercentageInput from "components/PercentageInput/PercentageInput";
@@ -72,7 +71,7 @@ import { useKey } from "react-use";
 import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-
+import { abis } from "sdk/abis";
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
@@ -940,7 +939,7 @@ export default function PositionSeller(props) {
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
+    const contract = new ethers.Contract(positionRouterAddress, abis.PositionRouter, signer);
 
     callContract(chainId, contract, "createDecreasePosition", params, {
       value: minExecutionFee,

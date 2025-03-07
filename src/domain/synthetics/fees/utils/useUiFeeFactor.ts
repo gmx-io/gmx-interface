@@ -5,7 +5,6 @@ import { useMulticall } from "lib/multicall";
 import { BN_ZERO } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import DataStore from "sdk/abis/DataStore.json";
 import { useMemo } from "react";
 
 export default function useUiFeeFactorRequest(chainId: number) {
@@ -16,7 +15,7 @@ export default function useUiFeeFactorRequest(chainId: number) {
     request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
-        abi: DataStore.abi,
+        abiId: "DataStore",
         calls: {
           keys: {
             methodName: "getUint",

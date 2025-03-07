@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { RebateInfoItem } from "../fees/useRebatesInfo";
+import { abis } from "sdk/abis";
 
 export type ClaimPriceImpactRebateParams = {
   account: string;
@@ -15,7 +15,7 @@ export async function createClaimCollateralTxn(
   signer: Signer,
   { account, claimablePositionPriceImpactFees }: ClaimPriceImpactRebateParams
 ) {
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   const args: [markets: string[], tokens: string[], timeKeys: number[], account: string] = [[], [], [], account];
 

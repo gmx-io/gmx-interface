@@ -1,3 +1,4 @@
+// @ts-check
 import useSWR from "swr";
 
 import {
@@ -7,12 +8,6 @@ import {
   getProcessedData,
   getStakingData,
 } from "lib/legacy";
-
-import GlpManager from "sdk/abis/GlpManager.json";
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-import RewardReader from "sdk/abis/RewardReader.json";
-import Token from "sdk/abis/Token.json";
-import Vault from "sdk/abis/Vault.json";
 
 import { useGmxPrice } from "domain/legacy";
 
@@ -75,39 +70,39 @@ export default function APRLabel({ chainId, label }) {
   const { data: walletBalances } = useSWR(
     [`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, ReaderV2, [walletTokens]),
+      fetcher: contractFetcher(undefined, "ReaderV2", [walletTokens]),
     }
   );
 
   const { data: depositBalances } = useSWR(
     [`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
+      fetcher: contractFetcher(undefined, "RewardReader", [depositTokens, rewardTrackersForDepositBalances]),
     }
   );
 
   const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(undefined, "RewardReader", [rewardTrackersForStakingInfo]),
     }
   );
 
   const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
 
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(undefined, GlpManager),
+    fetcher: contractFetcher(undefined, "GlpManager"),
   });
 
   const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
-      fetcher: contractFetcher(undefined, Vault),
+      fetcher: contractFetcher(undefined, "Vault"),
     }
   );
   const { gmxPrice } = useGmxPrice(chainId, {}, active);

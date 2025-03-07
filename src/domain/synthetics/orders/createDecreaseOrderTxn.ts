@@ -10,8 +10,9 @@ import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { isMarketOrderType } from "sdk/utils/orders";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
@@ -19,7 +20,6 @@ import { prepareOrderTxn } from "./prepareOrderTxn";
 import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { getPendingOrderFromParams } from "./utils";
-import { isMarketOrderType } from "sdk/utils/orders";
 
 const { ZeroAddress } = ethers;
 
@@ -65,7 +65,7 @@ export async function createDecreaseOrderTxn(
   metricId?: OrderMetricId
 ) {
   const ps = Array.isArray(params) ? params : [params];
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");

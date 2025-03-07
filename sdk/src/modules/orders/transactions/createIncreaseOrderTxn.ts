@@ -1,4 +1,4 @@
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 
@@ -106,7 +106,7 @@ export async function createIncreaseOrderTxn({
   ).reduce((acc, p) => (p ? acc + p.executionFee : acc), wntAmountToIncrease);
 
   const encodedPayload = await createEncodedPayload({
-    routerAbi: ExchangeRouter.abi as Abi,
+    routerAbi: abis.ExchangeRouter as Abi,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
     p,
@@ -116,7 +116,7 @@ export async function createIncreaseOrderTxn({
   });
 
   const simulationEncodedPayload = await createEncodedPayload({
-    routerAbi: ExchangeRouter.abi as Abi,
+    routerAbi: abis.ExchangeRouter as Abi,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
     p,
@@ -176,7 +176,7 @@ export async function createIncreaseOrderTxn({
 
   const finalPayload = [...encodedPayload, ...decreaseEncodedPayload, ...cancelEncodedPayload, ...updateEncodedPayload];
 
-  await sdk.callContract(exchangeRouter, ExchangeRouter.abi as Abi, "multicall", [finalPayload], {
+  await sdk.callContract(exchangeRouter, abis.ExchangeRouter as Abi, "multicall", [finalPayload], {
     value: totalWntAmount,
   });
 }

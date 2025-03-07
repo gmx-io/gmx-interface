@@ -24,8 +24,6 @@ import { AffiliateVesterWithdrawModal } from "./AffiliateVesterWithdrawModal";
 import { VesterDepositModal } from "./VesterDepositModal";
 import { VesterWithdrawModal } from "./VesterWithdrawModal";
 
-import Token from "sdk/abis/Token.json";
-
 export function Vesting({ processedData }: { processedData: ProcessedData | undefined }) {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
@@ -63,7 +61,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   const { data: sbfGmxBalance } = useSWR(
     [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, "Token"),
     }
   );
 

@@ -17,7 +17,7 @@ import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils"
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
-import CustomErrors from "sdk/abis/CustomErrors.json";
+import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { extractError } from "sdk/utils/contracts";
@@ -158,7 +158,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, CustomErrors.abi);
+    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
     let msg: React.ReactNode = undefined;
 
     try {

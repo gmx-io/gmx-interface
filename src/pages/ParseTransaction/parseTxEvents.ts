@@ -1,8 +1,7 @@
 import * as ethers from "ethers";
-import Errors from "sdk/abis/CustomErrors.json";
-import EventEmitter from "sdk/abis/EventEmitter.json";
 import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
 
+import { abis } from "sdk/abis";
 import { expandDecimals } from "lib/numbers";
 import { LogEntry } from "./types";
 
@@ -20,8 +19,8 @@ const PANIC_MAP = {
   0x51: "call a zero-initialized variable of internal function type.",
 };
 
-const errorsInterface = new ethers.Interface(Errors.abi);
-const eventEmitterInterface = new ethers.Interface(EventEmitter.abi);
+const errorsInterface = new ethers.Interface(abis.CustomErrors);
+const eventEmitterInterface = new ethers.Interface(abis.EventEmitter);
 const defaultAbiCoder = new ethers.AbiCoder();
 
 function getErrorString(error: { name: string; args: any[] }) {
@@ -121,7 +120,7 @@ export async function parseTxEvents(client: PublicClient, txHash: Hash) {
   if (!receipt) throw new Error("Transaction not found");
 
   const parsed = parseEventLogs({
-    abi: EventEmitter.abi as Abi,
+    abi: abis.EventEmitter as Abi,
     logs: receipt.logs,
   });
 

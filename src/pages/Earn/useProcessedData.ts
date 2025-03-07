@@ -17,12 +17,6 @@ import {
 } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
 
-import GlpManager from "sdk/abis/GlpManager.json";
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-import RewardReader from "sdk/abis/RewardReader.json";
-import Token from "sdk/abis/Token.json";
-import Vault from "sdk/abis/Vault.json";
-
 export function useProcessedData() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
@@ -81,7 +75,7 @@ export function useProcessedData() {
   const { data: stakedGmxSupply } = useSWR<bigint>(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher<bigint>(signer, Token),
+      fetcher: contractFetcher<bigint>(signer, "Token"),
     }
   );
 
@@ -89,7 +83,7 @@ export function useProcessedData() {
     [`processedData:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
     {
       fetcher: async (key: any[]) => {
-        const aums = await contractFetcher<bigint[]>(signer, GlpManager)(key);
+        const aums = await contractFetcher<bigint[]>(signer, "GlpManager")(key);
 
         let aum: bigint | undefined;
         if (aums && aums.length > 0) {
@@ -103,7 +97,7 @@ export function useProcessedData() {
   const { data: nativeTokenPrice } = useSWR<bigint>(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
-      fetcher: contractFetcher<bigint>(signer, Vault),
+      fetcher: contractFetcher<bigint>(signer, "Vault"),
     }
   );
 
@@ -121,7 +115,7 @@ export function useProcessedData() {
     ],
     {
       fetcher: async (key: any[]) => {
-        const walletBalances = await contractFetcher<bigint[]>(signer, ReaderV2, [walletTokens])(key);
+        const walletBalances = await contractFetcher<bigint[]>(signer, "ReaderV2", [walletTokens])(key);
         return getBalanceAndSupplyData(walletBalances);
       },
     }
@@ -139,7 +133,7 @@ export function useProcessedData() {
     ],
     {
       fetcher: async (key: any[]) => {
-        const depositBalances = await contractFetcher<bigint[]>(signer, RewardReader, [
+        const depositBalances = await contractFetcher<bigint[]>(signer, "RewardReader", [
           depositTokens,
           rewardTrackersForDepositBalances,
         ])(key);
@@ -158,7 +152,9 @@ export function useProcessedData() {
     ],
     {
       fetcher: async (key: any[]) => {
-        const stakingInfo = await contractFetcher<bigint[]>(signer, RewardReader, [rewardTrackersForStakingInfo])(key);
+        const stakingInfo = await contractFetcher<bigint[]>(signer, "RewardReader", [rewardTrackersForStakingInfo])(
+          key
+        );
         return getStakingData(stakingInfo);
       },
     }

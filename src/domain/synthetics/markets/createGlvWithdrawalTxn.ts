@@ -1,16 +1,16 @@
 import { t } from "@lingui/macro";
-import GlvRouter from "sdk/abis/GlvRouter.json";
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { isAddressZero } from "lib/legacy";
+import { abis } from "sdk/abis";
 import { SwapPricingType } from "../orders";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { applySlippageToMinOut } from "../trade";
 import { CreateWithdrawalParams } from "./createWithdrawalTxn";
-import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
 
 interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenAmount" | "marketTokenAddress"> {
   glv: string;
@@ -20,7 +20,7 @@ interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenA
 }
 
 export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p: GlvWithdrawalParams) {
-  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), GlvRouter.abi, signer);
+  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
 
   const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);

@@ -1,7 +1,6 @@
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
-import ExchangeRouter from "abis/ExchangeRouter.json";
-
+import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "configs/tokens";
 
@@ -42,7 +41,7 @@ export async function createSwapOrderTxn(sdk: GmxSdk, p: SwapOrderParams) {
 
   await sdk.callContract(
     getContract(sdk.chainId, "ExchangeRouter"),
-    ExchangeRouter.abi as Abi,
+    abis.ExchangeRouter as Abi,
     "multicall",
     [encodedPayload],
     {
@@ -115,7 +114,7 @@ async function getParams(sdk: GmxSdk, p: SwapOrderParams) {
     encodedPayload: multicall
       .filter(Boolean)
       .map((call) =>
-        encodeFunctionData({ abi: ExchangeRouter.abi as Abi, functionName: call!.method, args: call!.params })
+        encodeFunctionData({ abi: abis.ExchangeRouter as Abi, functionName: call!.method, args: call!.params })
       ),
   };
 }

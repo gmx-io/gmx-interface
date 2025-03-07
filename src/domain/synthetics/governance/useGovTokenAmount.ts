@@ -1,10 +1,9 @@
 import useSWR from "swr";
 
-import { contractFetcher } from "lib/contracts";
 import { getContract } from "config/contracts";
-import GovToken from "sdk/abis/GovToken.json";
-import useWallet from "lib/wallets/useWallet";
+import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import useWallet from "lib/wallets/useWallet";
 
 export function useGovTokenAmount(chainId: number) {
   let govTokenAddress;
@@ -26,7 +25,7 @@ export function useGovTokenAmount(chainId: number) {
       account ?? PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, GovToken),
+      fetcher: contractFetcher(undefined, "GovToken"),
     }
   );
 

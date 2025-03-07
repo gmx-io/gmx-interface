@@ -1,12 +1,12 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import flatten from "lodash/flatten";
+import { abis } from "sdk/abis";
+import { createUpdateEncodedPayload } from "./updateOrderTxn";
 
 export type SetAutoCancelOrdersParams = {
   orderKey: string;
@@ -30,7 +30,7 @@ export function setAutoCancelOrdersTxn(
   ps: SetAutoCancelOrdersParams[],
   { updateOrdersCount, totalUpdatableOrdersCount }: SetAutoCancelOrdersMeta
 ): Promise<void> {
-  const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   const encodedPayload = ps.map((p) => {
     const { orderKey, sizeDeltaUsd, triggerPrice, acceptablePrice, minOutputAmount, executionFee, indexToken } = p;

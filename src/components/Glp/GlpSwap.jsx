@@ -26,14 +26,6 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 
-import GlpManager from "sdk/abis/GlpManager.json";
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-import RewardReader from "sdk/abis/RewardReader.json";
-import RewardRouter from "sdk/abis/RewardRouter.json";
-import RewardTracker from "sdk/abis/RewardTracker.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
-import Vester from "sdk/abis/Vester.json";
-
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -52,7 +44,6 @@ import { getFeeItem } from "domain/synthetics/fees";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { useLocalStorageByChainId } from "lib/localStorage";
@@ -73,6 +64,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { IoChevronDownOutline } from "react-icons/io5";
+import { abis } from "sdk/abis";
 import {
   getNativeToken,
   getToken,
@@ -81,6 +73,7 @@ import {
   getWhitelistedV1Tokens,
   getWrappedToken,
 } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
@@ -225,7 +218,7 @@ export default function GlpSwap(props) {
   const { data: tokenBalances } = useSWR(
     [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, ReaderV2, [tokenAddresses]),
+      fetcher: contractFetcher(signer, "ReaderV2", [tokenAddresses]),
     }
   );
 
@@ -252,18 +245,18 @@ export default function GlpSwap(props) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(signer, ReaderV2, [tokensForBalanceAndSupplyQuery]),
+      fetcher: contractFetcher(signer, "ReaderV2", [tokensForBalanceAndSupplyQuery]),
     }
   );
 
   const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(signer, GlpManager),
+    fetcher: contractFetcher(signer, "GlpManager"),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(signer, VaultV2),
+      fetcher: contractFetcher(signer, "VaultV2"),
     }
   );
 
@@ -277,14 +270,14 @@ export default function GlpSwap(props) {
   const { data: lastPurchaseTime } = useSWR(
     [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, GlpManager),
+      fetcher: contractFetcher(signer, "GlpManager"),
     }
   );
 
   const { data: glpBalance } = useSWR(
     [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, RewardTracker),
+      fetcher: contractFetcher(signer, "RewardTracker"),
     }
   );
 
@@ -292,7 +285,7 @@ export default function GlpSwap(props) {
   const { data: reservedAmount } = useSWR(
     [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, Vester),
+      fetcher: contractFetcher(signer, "Vester"),
     }
   );
 
@@ -302,7 +295,7 @@ export default function GlpSwap(props) {
   const { data: stakingInfo } = useSWR(
     [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(signer, "RewardReader", [rewardTrackersForStakingInfo]),
     }
   );
 
@@ -753,7 +746,7 @@ export default function GlpSwap(props) {
       BASIS_POINTS_DIVISOR_BIGINT
     );
 
-    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(glpRewardRouterAddress, abis.RewardRouter, signer);
     const method = swapTokenAddress === ZeroAddress ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
     const params = swapTokenAddress === ZeroAddress ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
     const value = swapTokenAddress === ZeroAddress ? swapAmount : 0;
@@ -783,7 +776,7 @@ export default function GlpSwap(props) {
       BASIS_POINTS_DIVISOR_BIGINT
     );
 
-    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(glpRewardRouterAddress, abis.RewardRouter, signer);
     const method = swapTokenAddress === ZeroAddress ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
     const params =
       swapTokenAddress === ZeroAddress ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];

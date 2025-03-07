@@ -1,13 +1,10 @@
 import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
-import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { MulticallRequestConfig } from "lib/multicall/types";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-
-import GlpManager from "sdk/abis/GlpManager.json";
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-import VaultV2 from "sdk/abis/VaultV2.json";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 
 function buildDashboardRequest(chainId: number) {
   const gmxAddress = getContract(chainId, "GMX");
@@ -21,7 +18,7 @@ function buildDashboardRequest(chainId: number) {
   return {
     glp: {
       contractAddress: getContract(chainId, "GlpManager"),
-      abi: GlpManager.abi,
+      abiId: "GlpManager",
       calls: {
         getAums: {
           methodName: "getAums",
@@ -31,7 +28,7 @@ function buildDashboardRequest(chainId: number) {
     },
     reader: {
       contractAddress: getContract(chainId, "Reader"),
-      abi: ReaderV2.abi,
+      abiId: "ReaderV2",
       calls: {
         getTokenBalancesWithSupplies: {
           methodName: "getTokenBalancesWithSupplies",
@@ -45,7 +42,7 @@ function buildDashboardRequest(chainId: number) {
     },
     vault: {
       contractAddress: getContract(chainId, "Vault"),
-      abi: VaultV2.abi,
+      abiId: "VaultV2",
       calls: {
         totalTokenWeights: {
           methodName: "totalTokenWeights",
@@ -53,7 +50,7 @@ function buildDashboardRequest(chainId: number) {
         },
       },
     },
-  };
+  } satisfies MulticallRequestConfig<any>;
 }
 
 function parseDashboardResponse(result) {
