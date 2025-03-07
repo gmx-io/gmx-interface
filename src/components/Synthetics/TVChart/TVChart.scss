@@ -36,7 +36,7 @@
 
 .Chart-header {
   display: grid;
-  grid-template-columns: minmax(auto, max-content) auto 115px;
+  grid-template-columns: minmax(auto, max-content) auto;
   background-color: var(--color-slate-800);
 }
 
@@ -91,6 +91,6 @@
   }
 
   .Chart-header {
-    grid-template-columns: minmax(auto, max-content) auto 100px;
+    grid-template-columns: minmax(auto, max-content) auto;
   }
 }

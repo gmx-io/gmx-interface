@@ -3238,6 +3238,10 @@ msgstr ""
 msgid "Order Acceptable Price"
 msgstr "주문 가능 가격"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "VOL."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}의 최대치에 도달했습니다."
@@ -4286,6 +4290,10 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Version and Network"
+msgstr ""
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4560,7 +4568,6 @@ msgid "Combined take profits are at maximum (100%). Decrease existing values to 
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "네트워크"
 
@@ -4796,6 +4803,10 @@ msgstr ""
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
 msgstr "유요하지 않은 NFT 주소"
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"

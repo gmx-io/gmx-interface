@@ -106,10 +106,12 @@ const colors = {
   red: {
     "400": "bg-red-400",
     "500": "bg-red-500",
+    "700": "bg-red-700",
   },
   green: {
     "300": "bg-green-300",
     "500": "bg-green-500",
+    "700": "bg-green-700",
   },
   white: "bg-white",
   black: "bg-black",

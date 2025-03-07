@@ -3238,6 +3238,10 @@ msgstr ""
 msgid "Order Acceptable Price"
 msgstr "Допустимая цена ордера"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "VOL."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Capacity for {0} Reached"
 msgstr "Максимальная Вместимость для {0} Достигнута"
@@ -4286,6 +4290,10 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Version and Network"
+msgstr ""
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4560,7 +4568,6 @@ msgid "Combined take profits are at maximum (100%). Decrease existing values to 
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "Сети"
 
@@ -4796,6 +4803,10 @@ msgstr ""
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
 msgstr "Неверный адрес NFT"
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
