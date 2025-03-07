@@ -281,10 +281,10 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
     fetcher: async (): Promise<SwrResult> => {
       const marketFeesQuery = (marketAddress: string) => {
         return `
-            _${marketAddress}_lte_start_of_period_: collectedMarketFeesInfos(
+            _${marketAddress}_lte_start_of_period_: collectedFeesInfos(
                 orderBy:timestampGroup_DESC
                 where: {
-                  marketAddress_eq: "${marketAddress}"
+                  address_eq: "${marketAddress}"
                   period_eq: "1h"
                   timestampGroup_lte: ${Math.floor(sub(new Date(), { days: daysConsidered }).valueOf() / 1000)}
                 },
@@ -294,10 +294,10 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
                 cumulativeBorrowingFeeUsdPerPoolValue
             }
 
-            _${marketAddress}_recent: collectedMarketFeesInfos(
+            _${marketAddress}_recent: collectedFeesInfos(
               orderBy:timestampGroup_DESC
               where: {
-                marketAddress_eq: "${marketAddress}"
+                address_eq: "${marketAddress}"
                 period_eq: "1h"
               },
               limit: 1
@@ -306,7 +306,7 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
               cumulativeBorrowingFeeUsdPerPoolValue
           }
 
-          _${marketAddress}_poolValue: poolValues(where: { marketAddress_eq: "${marketAddress}" }) {
+          _${marketAddress}_poolValue: marketInfos(where: { id_eq: "${marketAddress}" }) {
             poolValue
           }
         `;
