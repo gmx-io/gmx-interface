@@ -225,7 +225,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
   });
 
   const transformedData: PnlHistoricalData = useMemo(() => {
-    const dataPoints =
+    let dataPoints =
       res.data?.accountPnlHistoryStats?.map((row: any) => {
         const parsedDebugFields = showDebugValues
           ? DEBUG_FIELDS.reduce(
@@ -282,7 +282,7 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
             : EMPTY_OBJECT),
         };
 
-        dataPoints.unshift(emptyPoint);
+        dataPoints = [emptyPoint].concat(dataPoints);
       }
     }
 
