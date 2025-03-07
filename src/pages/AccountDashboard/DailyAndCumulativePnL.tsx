@@ -18,7 +18,7 @@ import type { Address } from "viem";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
-import { formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
+import { SECONDS_IN_DAY, formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { USD_DECIMALS } from "config/factors";
@@ -215,7 +215,6 @@ const PROD_QUERY = gql`
 `;
 
 const MINIMUM_DATA_POINTS = 7;
-const SECONDS_IN_DAY = 86400;
 
 function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
   const showDebugValues = useShowDebugValues();
