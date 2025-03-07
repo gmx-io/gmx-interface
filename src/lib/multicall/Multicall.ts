@@ -6,6 +6,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { isWebWorker } from "config/env";
 import { sleep } from "lib/sleep";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { abis as allAbis } from "sdk/abis";
 
 import {
   MulticallErrorEvent,
@@ -172,8 +173,8 @@ export class Multicall {
 
         // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
-          ...abis[contractCallConfig.abiId],
-          ...abis.CustomErrors,
+          ...allAbis[contractCallConfig.abiId],
+          ...allAbis.CustomErrors,
         ];
 
         const abi = abis[contractCallConfig.contractAddress];
