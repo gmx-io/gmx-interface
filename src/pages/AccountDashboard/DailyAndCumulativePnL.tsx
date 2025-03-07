@@ -215,6 +215,7 @@ const PROD_QUERY = gql`
 `;
 
 const MINIMUM_DATA_POINTS = 7;
+const SECONDS_IN_DAY = 86400;
 
 function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
   const showDebugValues = useShowDebugValues();
@@ -242,9 +243,10 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
 
         return {
           date: showDebugValues
-            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + 86400) + " local"
+            ? formatDateTime(row.timestamp) + " - " + formatDateTime(row.timestamp + SECONDS_IN_DAY) + " local"
             : formatDate(row.timestamp),
           dateCompact: lightFormat(row.timestamp * 1000, "dd/MM"),
+          timestamp: row.timestamp,
           pnl: BigInt(row.pnl),
           pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
           cumulativePnl: BigInt(row.cumulativePnl),
@@ -254,16 +256,15 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
       }) || EMPTY_ARRAY;
 
     if (dataPoints.length < MINIMUM_DATA_POINTS) {
-      const lastTimestamp =
-        dataPoints.length > 0
-          ? new Date(dataPoints[dataPoints.length - 1].date).getTime() / 1000
-          : Math.floor(Date.now() / 1000);
+      const lastTimestamp = dataPoints.length > 0 ? dataPoints[0].timestamp : Math.floor(Date.now() / 1000);
 
-      for (let i = dataPoints.length; i < MINIMUM_DATA_POINTS; i++) {
-        const newTimestamp = lastTimestamp - 86400 * (i - dataPoints.length + 1);
-
+      const pointsLength = dataPoints.length;
+      for (let i = pointsLength; i < MINIMUM_DATA_POINTS; i++) {
+        const newTimestamp = lastTimestamp - SECONDS_IN_DAY * (i - pointsLength + 1);
         const emptyPoint = {
-          date: formatDate(newTimestamp),
+          date: showDebugValues
+            ? formatDateTime(newTimestamp) + " - " + formatDateTime(newTimestamp + SECONDS_IN_DAY) + " local"
+            : formatDate(newTimestamp),
           dateCompact: lightFormat(newTimestamp * 1000, "dd/MM"),
           pnl: undefined,
           pnlFloat: undefined,
