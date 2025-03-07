@@ -12,11 +12,7 @@ import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/or
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import {
-  selectTradeboxCollateralTokenAddress,
-  selectTradeboxMarketAddress,
-  selectTradeboxTradeType,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { OrderErrors, PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
@@ -28,7 +24,7 @@ import {
   getEstimatedLiquidationTimeInHours,
   getNameByOrderType,
 } from "domain/synthetics/positions";
-import { TradeMode, TradeType, getOrderThresholdType } from "domain/synthetics/trade";
+import { TradeMode, getOrderThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import {
   calculateDisplayDecimals,
@@ -67,17 +63,11 @@ export type Props = {
 export function PositionItem(p: Props) {
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
-  const currentTradeType = useSelector(selectTradeboxTradeType);
-  const currentMarketAddress = useSelector(selectTradeboxMarketAddress);
-  const currentCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const { minCollateralUsd } = usePositionsConstants();
-  const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
-  const isCurrentMarket =
-    currentMarketAddress === p.position.marketAddress &&
-    currentCollateralAddress === p.position.collateralTokenAddress &&
-    isCurrentTradeTypeLong === p.position.isLong;
+  const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
+  const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
 
@@ -550,10 +540,12 @@ export function PositionItem(p: Props) {
         <div className="flex flex-grow flex-col">
           <div className="flex-grow">
             <div
-              className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}
+              className={cx("App-card-title Position-card-title text-body-medium", {
+                "Position-active-card": isCurrentMarket,
+              })}
               onClick={() => p.onSelectPositionClick?.()}
             >
-              <span className="Exchange-list-title text-body-medium flex">
+              <span className="Exchange-list-title flex">
                 <TokenIcon
                   className="PositionList-token-icon"
                   symbol={p.position.indexToken?.symbol}
@@ -565,7 +557,7 @@ export function PositionItem(p: Props) {
               </span>
               <div className="flex items-center">
                 <span
-                  className={cx("text-body-medium -mb-2 mr-8 rounded-4 px-4 py-2 pb-4 leading-1", {
+                  className={cx("-mb-2 mr-8 rounded-4 px-4 py-2 pb-4 leading-1", {
                     "bg-green-700": p.position.isLong,
                     "bg-red-500": !p.position.isLong,
                   })}
@@ -573,7 +565,7 @@ export function PositionItem(p: Props) {
                   {formatLeverage(p.position.leverage) || "..."}
                 </span>
                 <span
-                  className={cx("Exchange-list-side text-body-medium", {
+                  className={cx("Exchange-list-side", {
                     positive: p.position.isLong,
                     negative: !p.position.isLong,
                   })}
