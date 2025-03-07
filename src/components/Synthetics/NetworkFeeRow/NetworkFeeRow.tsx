@@ -115,8 +115,8 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
     return estimatedRefundText;
   }, [displayDecimals, executionFee, estimatedRefund]);
 
-  const executionFeeWithRefundUsd = useMemo(() => {
-    if (!executionFee || typeof estimatedRefund.estimatedRefundUsd === "undefined") {
+  const executionFeeAfterUsd = useMemo(() => {
+    if (!executionFee || estimatedRefund.estimatedRefundUsd === undefined) {
       return undefined;
     }
 
@@ -162,10 +162,10 @@ export function NetworkFeeRow({ executionFee, isAdditionOrdersMsg, rowPadding = 
           </>
         }
       >
-        {formatUsd(typeof executionFeeWithRefundUsd !== "undefined" ? executionFeeWithRefundUsd * -1n : undefined)}
+        {formatUsd(executionFeeAfterUsd !== undefined ? executionFeeAfterUsd * -1n : undefined)}
       </TooltipWithPortal>
     );
-  }, [executionFee, chainId, executionFeeText, estimatedRefundText, additionalOrdersMsg, executionFeeWithRefundUsd]);
+  }, [executionFee, chainId, executionFeeText, estimatedRefundText, additionalOrdersMsg, executionFeeAfterUsd]);
 
   if (rowPadding) {
     return (
