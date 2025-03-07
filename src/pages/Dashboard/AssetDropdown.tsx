@@ -1,26 +1,21 @@
 import { autoUpdate, flip, FloatingPortal, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { t, Trans } from "@lingui/macro";
-import { ethers, isAddress } from "ethers";
+import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-import { getTokenExplorerUrl } from "config/chains";
-import { getIcon } from "config/icons";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
-import useWallet from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import coingeckoIcon from "img/ic_coingecko_16.svg";
-import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 
 import "./AssetDropdown.scss";
+import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 
 const PLATFORM_TOKEN_ROUTES = {
   GMX: "/buy_gmx",
@@ -32,14 +27,13 @@ type Props = {
   assetSymbol?: string;
   token?: Token;
   position?: "left" | "right";
+  marketsStats?: MarketStat[];
 };
 
-function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: Props) {
-  const { active, walletClient } = useWallet();
+function AssetDropdown({ assetSymbol, token: propsToken, position = "right", marketsStats }: Props) {
   const { chainId } = useChainId();
 
   const token = propsToken ? propsToken : assetSymbol && getTokenBySymbol(chainId, assetSymbol);
-  const chainIcon = getIcon(chainId, "network");
 
   const { refs, floatingStyles } = useFloating({
     middleware: [flip(), shift()],
@@ -108,50 +102,24 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               )}
             </Menu.Item>
             <Menu.Item as="div">
-              {token.coingeckoUrl && (
-                <ExternalLink href={token.coingeckoUrl} className="asset-item">
-                  <img className="asset-item-icon" width={16} height={16} src={coingeckoIcon} alt="Open in Coingecko" />
-                  <p>
-                    <Trans>Open {token.coingeckoSymbol ?? token.assetSymbol ?? token.symbol} in Coingecko</Trans>
-                  </p>
-                </ExternalLink>
-              )}
-            </Menu.Item>
-            <Menu.Item as="div">
-              {!token.isNative && !token.isSynthetic && token.address && isAddress(token.address) && (
-                <ExternalLink href={getTokenExplorerUrl(chainId, token.address)} className="asset-item">
-                  <img className="asset-item-icon" width={16} height={16} src={chainIcon} alt="Open in explorer" />
-                  <p>
-                    <Trans>Open {token.assetSymbol ?? token.symbol} in Explorer</Trans>
-                  </p>
-                </ExternalLink>
-              )}
-            </Menu.Item>
-            <Menu.Item as="div">
-              {active && !token.isNative && !token.isSynthetic && ethers.isAddress(token.address) && (
-                <div
-                  onClick={() => {
-                    if (walletClient?.watchAsset && token) {
-                      const { address, decimals, imageUrl, metamaskSymbol, assetSymbol, symbol } = token;
-                      walletClient.watchAsset({
-                        type: "ERC20",
-                        options: {
-                          address: address,
-                          decimals: decimals,
-                          image: imageUrl,
-                          symbol: assetSymbol ?? metamaskSymbol ?? symbol,
-                        },
-                      });
-                    }
-                  }}
+              {(marketsStats ?? []).map((stat) => (
+                <Link
+                  to={`/pools/?market=${stat.marketInfo.marketTokenAddress}&operation=buy`}
                   className="asset-item"
+                  key={stat.marketInfo.marketTokenAddress}
                 >
-                  <img className="asset-item-icon" width={16} height={16} src={metamaskIcon} alt={t`Add to Metamask`} />
+                  <img
+                    className="asset-item-icon"
+                    width={16}
+                    height={16}
+                    src={token.imageUrl}
+                    alt="Open in Coingecko"
+                  />
                   <p>
-                    <Trans>Add {token.assetSymbol ?? token.symbol} to Metamask</Trans>
+                    <Trans>Buy GM {stat.marketInfo.name}</Trans>
                   </p>
-                </div>
-              )}
+                </Link>
+              ))}
             </Menu.Item>
           </Menu.Items>
         </FloatingPortal>
