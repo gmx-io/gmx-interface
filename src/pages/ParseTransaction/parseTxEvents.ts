@@ -110,6 +110,7 @@ function parseEvent(event: ParseEventLogsReturnType<Abi, undefined, true, undefi
   return {
     key: `${event.logIndex}${event.transactionHash}`,
     log: event.eventName,
+    logIndex: event.logIndex,
     topics: event.topics,
     name: eventName,
     values,
