@@ -1,5 +1,5 @@
-import type { Abi } from "viem";
 import type { JsonFragment } from "ethers";
+import { Abi, erc20Abi } from "viem";
 
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
@@ -48,6 +48,7 @@ export type AbiId =
   | "CustomErrors"
   | "DataStore"
   | "ERC721"
+  | "ERC20"
   | "EventEmitter"
   | "ExchangeRouter"
   | "GlpManager"
@@ -92,6 +93,7 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   CustomErrors: CustomErrors.abi,
   DataStore: DataStore.abi,
   ERC721: ERC721.abi,
+  ERC20: erc20Abi,
   EventEmitter: EventEmitter.abi,
   ExchangeRouter: ExchangeRouter.abi,
   GlpManager: GlpManager.abi,
