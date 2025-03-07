@@ -214,6 +214,8 @@ const PROD_QUERY = gql`
   }
 `;
 
+const MINIMUM_DATA_POINTS = 7;
+
 function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: number | undefined) {
   const showDebugValues = useShowDebugValues();
   const res = useGqlQuery(showDebugValues ? DEV_QUERY : PROD_QUERY, {
@@ -251,13 +253,13 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
         };
       }) || EMPTY_ARRAY;
 
-    if (dataPoints.length < 7) {
+    if (dataPoints.length < MINIMUM_DATA_POINTS) {
       const lastTimestamp =
         dataPoints.length > 0
           ? new Date(dataPoints[dataPoints.length - 1].date).getTime() / 1000
           : Math.floor(Date.now() / 1000);
 
-      for (let i = dataPoints.length; i < 7; i++) {
+      for (let i = dataPoints.length; i < MINIMUM_DATA_POINTS; i++) {
         const newTimestamp = lastTimestamp - 86400 * (i - dataPoints.length + 1);
 
         const emptyPoint = {
