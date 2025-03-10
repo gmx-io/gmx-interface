@@ -254,6 +254,10 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
         };
       }) || EMPTY_ARRAY;
 
+    if (dataPoints.length === 0) {
+      return EMPTY_ARRAY;
+    }
+
     if (dataPoints.length < MINIMUM_DATA_POINTS) {
       const lastTimestamp = dataPoints.length > 0 ? dataPoints[0].timestamp : Math.floor(Date.now() / 1000);
 
