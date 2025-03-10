@@ -38,7 +38,6 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
@@ -49,6 +48,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import Skeleton from "react-loading-skeleton";
 import "./PositionItem.scss";
+import { getMarketIndexName } from "sdk/utils/markets";
 
 export type Props = {
   position: PositionInfo;
@@ -390,8 +390,7 @@ export function PositionItem(p: Props) {
                     displaySize={20}
                     importSize={24}
                   />
-                  {getTokenVisualMultiplier(p.position.indexToken)}
-                  {p.position.indexToken.symbol}
+                  {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
                 </>
               }
               position="bottom-start"
@@ -551,8 +550,7 @@ export function PositionItem(p: Props) {
                   displaySize={20}
                   importSize={24}
                 />
-                {p.position.indexToken && getTokenVisualMultiplier(p.position.indexToken)}
-                {p.position.indexToken?.symbol}
+                {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
               </span>
               <div>
                 <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>

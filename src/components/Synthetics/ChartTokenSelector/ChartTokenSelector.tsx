@@ -100,7 +100,7 @@ export default function ChartTokenSelector(props: Props) {
             >
               <span className="text-body-large">
                 {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                {selectedToken.symbol} / USD
+                {selectedToken.symbol}/USD
               </span>
               {poolName && (
                 <span
