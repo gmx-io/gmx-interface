@@ -6,7 +6,10 @@ import { getAvailableUsdLiquidityForCollateral } from "utils/markets";
 import { getMaxSwapPathLiquidity, getSwapCapacityUsd, getSwapStats } from "./swapStats";
 import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "configs/markets";
 
-export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
+export function limitMarketsPerTokens(
+  markets: MarketInfo[],
+  limit: number = SWAP_GRAPH_MAX_MARKETS_PER_TOKEN
+): MarketInfo[] {
   const marketsByTokens: { [token: string]: MarketInfo[] } = {};
 
   for (const market of markets) {
@@ -47,12 +50,17 @@ export function limitMarketsPerTokens(markets: MarketInfo[]): MarketInfo[] {
     let marketsPerTokenCount = 0;
 
     for (const market of sortedMarkets) {
-      if (marketsPerTokenCount > SWAP_GRAPH_MAX_MARKETS_PER_TOKEN || resultMarkets[market.marketTokenAddress]) {
+      if (marketsPerTokenCount >= limit) {
         break;
       }
 
-      resultMarkets[market.marketTokenAddress] = market;
+      if (resultMarkets[market.marketTokenAddress]) {
+        marketsPerTokenCount++;
+        continue;
+      }
+
       marketsPerTokenCount++;
+      resultMarkets[market.marketTokenAddress] = market;
     }
   }
 
@@ -97,58 +105,6 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   }
 
   return graph;
-}
-
-export function findAllPaths(
-  marketsInfoData: MarketsInfoData,
-  graph: MarketsGraph,
-  from: string,
-  to: string,
-  maxDepth = 3
-): SwapRoute[] | undefined {
-  const routes: SwapRoute[] = [];
-
-  const edges = graph.abjacencyList[from];
-
-  if (!edges?.length) {
-    return undefined;
-  }
-
-  for (const e of edges) {
-    dfs(e, [], [], {});
-  }
-
-  function dfs(edge: MarketEdge, path: string[], pathEdges: MarketEdge[], visited: { [edgeId: string]: boolean }) {
-    // avoid too deep paths and cycles
-    if (path.length >= maxDepth || visited[edge.marketAddress]) {
-      return;
-    }
-
-    visited[edge.marketAddress] = true;
-    pathEdges.push(edge);
-    path.push(edge.marketAddress);
-
-    if (edge.to === to) {
-      routes.push({
-        edges: pathEdges,
-        path: path,
-        liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: path, initialCollateralAddress: from }),
-      });
-      return;
-    }
-
-    const edges = graph.abjacencyList[edge.to];
-
-    if (!edges?.length) {
-      return;
-    }
-
-    for (const e of edges) {
-      dfs(e, [...path], [...pathEdges], { ...visited });
-    }
-  }
-
-  return routes;
 }
 
 export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
@@ -204,4 +160,56 @@ export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: S
   }
 
   return bestPath;
+}
+
+export function findAllPaths(
+  marketsInfoData: MarketsInfoData,
+  graph: MarketsGraph,
+  from: string,
+  to: string,
+  maxDepth = 3
+): SwapRoute[] | undefined {
+  const routes: SwapRoute[] = [];
+
+  const edges = graph.abjacencyList[from];
+
+  if (!edges?.length) {
+    return undefined;
+  }
+
+  for (const e of edges) {
+    dfs(e, [], [], {});
+  }
+
+  function dfs(edge: MarketEdge, path: string[], pathEdges: MarketEdge[], visited: { [edgeId: string]: boolean }) {
+    // avoid too deep paths and cycles
+    if (path.length >= maxDepth || visited[edge.marketAddress]) {
+      return;
+    }
+
+    visited[edge.marketAddress] = true;
+    pathEdges.push(edge);
+    path.push(edge.marketAddress);
+
+    if (edge.to === to) {
+      routes.push({
+        edges: pathEdges,
+        path: path,
+        liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: path, initialCollateralAddress: from }),
+      });
+      return;
+    }
+
+    const edges = graph.abjacencyList[edge.to];
+
+    if (!edges?.length) {
+      return;
+    }
+
+    for (const e of edges) {
+      dfs(e, [...path], [...pathEdges], { ...visited });
+    }
+  }
+
+  return routes;
 }

@@ -1,4 +1,5 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { t } from "@lingui/macro";
+import { ComponentRef, SVGProps, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
   CartesianGrid,
@@ -22,56 +23,54 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
-import { USD_DECIMALS } from "config/factors";
-
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
+import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 
+import { USD_DECIMALS } from "config/factors";
 import {
   bigintToNumber,
   calculateDisplayDecimals,
+  clamp,
   expandDecimals,
   formatAmount,
   numberToBigint,
-  numberWithCommas,
 } from "lib/numbers";
-
 import { bigMath } from "sdk/utils/bigmath";
-import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
+
+import { GREEN, RED } from "components/TVChartContainer/constants";
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
-import { GREEN } from "components/TVChartContainer/constants";
-import { clamp } from "lib/numbers";
 
-const RED = "#FF506A";
-
-const Y_AXIS_LABEL: LabelProps = {
-  value: "Size, k",
+const getYAxisLabel = (): LabelProps => ({
+  value: t`Size, $`,
   position: "top",
-  offset: 10,
+  offset: 0,
   fill: "#ffffff",
   opacity: 0.7,
   dx: -3,
   fontSize: 12,
-};
+});
 const Y_AXIS_DOMAIN: [AxisDomainItem, AxisDomainItem] = [0, "dataMax"];
+const Y_AXIS_DOMAIN_EMPTY: [AxisDomainItem, AxisDomainItem] = [0, 1];
 const Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT: [AxisDomainItem, AxisDomainItem] = [0, "auto"];
+const Y_AXIS_PADDING: YAxisProps["padding"] = { top: 10 };
 
-const ORACLE_PRICE_LABEL: ImplicitLabelType = {
+const getOraclePriceLabel = (): ImplicitLabelType => ({
   position: "bottom",
   offset: 28,
-  value: "ORACLE PRICE",
+  value: t`ORACLE PRICE`,
   fill: "#ffffff",
   opacity: 0.7,
   fontSize: 10,
-};
+});
 
 const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
 
 const CHART_MARGIN: Margin = { bottom: 10, top: 20, right: 0 };
 const TOOLTIP_WRAPPER_POSITION = { x: 0, y: 0 };
-const Y_AXIS_TICK: YAxisProps["tick"] = { fill: "#ffffff", opacity: 0.7, fontSize: 12 };
+const Y_AXIS_TICK = { fill: "#ffffff", opacity: 0.7, fontSize: 12 } satisfies SVGProps<SVGTextElement>;
 const TICKS_SPACING = 120;
 const DEFAULT_TICK_COUNT_BIGINT = 9n;
 const LINE_PATH_ELLIPSIS = "3px 3px 3px 3px 3px 3px 1000%";
@@ -84,7 +83,7 @@ const ZERO_PRICE_IMPACT_LEFT_MULTIPLIER_BIGINT = 9990n; // 0.999
 const ZERO_PRICE_IMPACT_RIGHT_MULTIPLIER_BIGINT = 10010n; // 1.001
 const FLOAT_PRECISION = 10000n;
 const FLOAT_DECIMALS = 4;
-const SIDE_POINTS_COUNT = 60n;
+const SIDE_POINTS_COUNT = 200n;
 const MIN_FACTOR_THRESHOLD_BIGINT = 2000000000000000n;
 
 export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
@@ -96,6 +95,96 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
   const [zoom, setZoom] = useState(1);
   const [isZooming, setIsZooming] = useState(false);
 
+  const {
+    leftMaxExecutionPrice,
+    rightMaxExecutionPrice,
+    leftMax,
+    rightMax,
+    leftMin,
+    rightMin,
+    realLeftMax,
+    realRightMax,
+    isLeftEmpty,
+    isRightEmpty,
+  } = useEdgePoints(marketInfo, zoom);
+
+  const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
+    leftExecutionPrice: leftMaxExecutionPrice,
+    rightExecutionPrice: rightMaxExecutionPrice,
+    isZeroPriceImpact,
+  });
+
+  const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
+    leftMax,
+    rightMax,
+    leftMin,
+    rightMin,
+    isZeroPriceImpact,
+    isLeftEmpty,
+    isRightEmpty,
+  });
+
+  const drawLeftTransparent = leftMax > leftMin;
+  const drawRightTransparent = rightMax > rightMin;
+
+  const drawLeftTransparentEllipsis = leftMax < realLeftMax;
+  const drawRightTransparentEllipsis = rightMax < realRightMax;
+
+  const drawLeftOpaqueEllipsis = leftMax < leftMin;
+  const drawRightOpaqueEllipsis = rightMax < rightMin;
+
+  const handleResize = useCallback(
+    (width: number) => {
+      setTickCount(BigInt(Math.round(width / TICKS_SPACING)));
+    },
+    [setTickCount]
+  );
+
+  useEffect(() => {
+    setZoom(1);
+  }, [marketInfo.marketTokenAddress]);
+
+  const tooltipRef = useRef<ChartTooltipHandle>(null);
+  const lastMousePositionRef = useRef<{ x: number; y: number } | undefined>(undefined);
+
+  const handleMouseMove = useCallback<CategoricalChartFunc>((nextState) => {
+    if (!tooltipRef.current) {
+      return;
+    }
+
+    tooltipRef.current.setMouseRelativePosition(nextState.chartX, nextState.chartY);
+
+    if (nextState.chartX !== undefined && nextState.chartY !== undefined) {
+      lastMousePositionRef.current = { x: nextState.chartX, y: nextState.chartY };
+      document.dispatchEvent(
+        new CustomEvent("chartMouseMove", { detail: { x: nextState.chartX, y: nextState.chartY } })
+      );
+    } else {
+      lastMousePositionRef.current = undefined;
+      document.dispatchEvent(new CustomEvent("chartMouseMove", { detail: undefined }));
+    }
+  }, []);
+
+  const chartController = useRef<ComponentRef<typeof ComposedChart>>(null);
+  const handleMouseDown = useCallback<CategoricalChartFunc>(
+    (nextState, event) => {
+      if (event instanceof Touch) {
+        // https://github.com/recharts/recharts/blob/2074e2e404d820db5207a7724def33aaa299a785/src/chart/generateCategoricalChart.tsx#L1630-L1643
+        chartController.current?.handleClick(event as unknown as React.MouseEvent);
+        handleMouseMove(nextState, event);
+      }
+    },
+    [handleMouseMove]
+  );
+
+  const oraclePriceLabel = useMemo(() => {
+    return getOraclePriceLabel();
+  }, []);
+
+  const yAxisLabel = useMemo(() => {
+    return getYAxisLabel();
+  }, []);
+
   useEffect(
     function listenWheel() {
       const container = containerRef.current;
@@ -106,7 +195,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       const abortController = new AbortController();
 
       const wheelHandler = (event: WheelEvent) => {
-        if (isZeroPriceImpact) {
+        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
           return;
         }
         event.preventDefault();
@@ -123,7 +212,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       let gestureRecognizeDistanceY = 0;
 
       const touchDownHandler = (event: TouchEvent) => {
-        if (isZeroPriceImpact) {
+        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
           return;
         }
 
@@ -137,7 +226,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       };
 
       const touchUpHandler = (event: TouchEvent) => {
-        if (isZeroPriceImpact) {
+        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
           return;
         }
 
@@ -152,7 +241,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       };
 
       const touchMoveHandler = (event: TouchEvent) => {
-        if (isZeroPriceImpact) {
+        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
           return;
         }
 
@@ -202,78 +291,18 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         abortController.abort();
       };
     },
-    [isZeroPriceImpact]
+    [isLeftEmpty, isRightEmpty, isZeroPriceImpact]
   );
-
-  const {
-    leftMaxExecutionPrice,
-    rightMaxExecutionPrice,
-    leftMax,
-    rightMax,
-    leftMin,
-    rightMin,
-    realLeftMax,
-    realRightMax,
-  } = useEdgePoints(marketInfo, zoom);
-
-  const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
-    leftExecutionPrice: leftMaxExecutionPrice,
-    rightExecutionPrice: rightMaxExecutionPrice,
-    isZeroPriceImpact,
-  });
-
-  const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
-    leftMax,
-    rightMax,
-    leftMin,
-    rightMin,
-    isZeroPriceImpact,
-  });
-
-  const drawLeftTransparent = leftMax > leftMin;
-  const drawRightTransparent = rightMax > rightMin;
-
-  const drawLeftTransparentEllipsis = leftMax < realLeftMax;
-  const drawRightTransparentEllipsis = rightMax < realRightMax;
-
-  const drawLeftOpaqueEllipsis = leftMax < leftMin;
-  const drawRightOpaqueEllipsis = rightMax < rightMin;
-
-  const handleResize = useCallback(
-    (width: number) => {
-      setTickCount(BigInt(Math.round(width / TICKS_SPACING)));
-    },
-    [setTickCount]
-  );
-
-  useEffect(() => {
-    setZoom(1);
-  }, [marketInfo.marketTokenAddress]);
-
-  const tooltipRef = useRef<ChartTooltipHandle>(null);
-  const lastMousePositionRef = useRef<{ x: number; y: number } | undefined>(undefined);
-
-  const handleMouseMove = useCallback<CategoricalChartFunc>((nextState) => {
-    if (!tooltipRef.current) {
-      return;
-    }
-
-    tooltipRef.current.setMouseRelativePosition(nextState.chartX, nextState.chartY);
-
-    if (nextState.chartX !== undefined && nextState.chartY !== undefined) {
-      lastMousePositionRef.current = { x: nextState.chartX, y: nextState.chartY };
-      document.dispatchEvent(
-        new CustomEvent("chartMouseMove", { detail: { x: nextState.chartX, y: nextState.chartY } })
-      );
-    } else {
-      lastMousePositionRef.current = undefined;
-      document.dispatchEvent(new CustomEvent("chartMouseMove", { detail: undefined }));
-    }
-  }, []);
 
   return (
     <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
-      <ComposedChart data={data} margin={CHART_MARGIN} onMouseMove={handleMouseMove}>
+      <ComposedChart
+        ref={chartController}
+        data={data}
+        margin={CHART_MARGIN}
+        onMouseMove={handleMouseMove}
+        onMouseDown={handleMouseDown}
+      >
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
             <stop offset="50%" stopColor={GREEN} stopOpacity={0.5} />
@@ -387,6 +416,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               leftMin={leftMin}
               rightMin={rightMin}
               isZeroPriceImpact={isZeroPriceImpact}
+              initialMousePositionRef={lastMousePositionRef}
             />
           }
         />
@@ -397,14 +427,21 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           axisLine={false}
           tickLine={false}
           tickMargin={2}
-          tick={Y_AXIS_TICK}
-          label={Y_AXIS_LABEL}
-          domain={isZeroPriceImpact ? Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT : Y_AXIS_DOMAIN}
-          interval={0}
-          tickCount={15}
+          tick={<YAxisTick />}
+          label={yAxisLabel}
+          padding={Y_AXIS_PADDING}
+          domain={
+            isZeroPriceImpact
+              ? Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT
+              : isLeftEmpty && isRightEmpty
+                ? Y_AXIS_DOMAIN_EMPTY
+                : Y_AXIS_DOMAIN
+          }
+          interval="preserveStart"
+          minTickGap={25}
+          tickCount={100}
           allowDecimals={true}
           allowDataOverflow={false}
-          tickFormatter={yAxisTickFormatter}
         />
         <XAxis
           dataKey="executionPrice"
@@ -421,7 +458,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         />
         <ReferenceLine
           x={bigintToNumber(getMidPrice(marketInfo.indexToken.prices), USD_DECIMALS)}
-          label={ORACLE_PRICE_LABEL}
+          label={oraclePriceLabel}
           stroke="#ffffff"
           opacity={0.6}
           strokeDasharray="2 2"
@@ -662,10 +699,19 @@ function useDepthChartPricesData(
     leftMin,
     rightMin,
     isZeroPriceImpact,
-  }: { leftMax: bigint; rightMax: bigint; leftMin: bigint; rightMin: bigint; isZeroPriceImpact: boolean }
+    isLeftEmpty,
+    isRightEmpty,
+  }: {
+    leftMax: bigint;
+    rightMax: bigint;
+    leftMin: bigint;
+    rightMin: bigint;
+    isZeroPriceImpact: boolean;
+    isLeftEmpty: boolean;
+    isRightEmpty: boolean;
+  }
 ) {
   let data: DataPoint[] = [];
-
   let leftMinExecutionPrice = 0;
   let rightMinExecutionPrice = 0;
 
@@ -725,193 +771,197 @@ function useDepthChartPricesData(
       priceImpactBigInt: 0n,
     });
   } else {
-    const leftInc = (leftMax - DOLLAR) / SIDE_POINTS_COUNT;
-    const rightInc = (rightMax - DOLLAR) / SIDE_POINTS_COUNT;
-
     // open short
-    // from left to center
-    for (let positionSize = leftMax; positionSize >= DOLLAR; positionSize -= leftInc) {
-      const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, false, { fallbackToZero: true });
-
-      const executionPrice = getNextPositionExecutionPrice({
-        isIncrease: true,
-        isLong: false,
-        priceImpactUsd,
-        sizeDeltaUsd: positionSize,
-        triggerPrice: marketInfo.indexToken.prices.minPrice,
-      })!;
-
-      data.push({
-        leftOpaqueSize: positionSize <= leftMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
-        leftOpaqueSizeBigInt: positionSize <= leftMin ? positionSize : null,
-        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        size: bigintToNumber(positionSize, USD_DECIMALS),
-        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        rightOpaqueSize: null,
-        rightOpaqueSizeBigInt: null,
-        rightTransparentSize: null,
-        rightTransparentSizeBigInt: null,
-        leftTransparentSize: positionSize > leftMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
-        leftTransparentSizeBigInt: positionSize > leftMin ? positionSize : null,
-        sizeBigInt: positionSize,
-        executionPriceBigInt: executionPrice,
-        priceImpactBigInt: priceImpactUsd,
-      });
-
-      if (positionSize - leftInc < leftMin && positionSize > leftMin && leftMin > DOLLAR) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, {
-          fallbackToZero: true,
-        });
-        const executionPrice = getNextPositionExecutionPrice({
-          isIncrease: true,
-          isLong: false,
-          priceImpactUsd,
-          sizeDeltaUsd: leftMin,
-          triggerPrice: marketInfo.indexToken.prices.minPrice,
-        })!;
-
-        leftMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
-
-        data.push({
-          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          leftOpaqueSize: bigintToNumber(leftMin, USD_DECIMALS),
-          leftOpaqueSizeBigInt: leftMin,
-          size: bigintToNumber(leftMin, USD_DECIMALS),
-          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-          rightOpaqueSize: null,
-          rightOpaqueSizeBigInt: null,
-          rightTransparentSize: null,
-          rightTransparentSizeBigInt: null,
-          leftTransparentSize: bigintToNumber(leftMin, USD_DECIMALS),
-          leftTransparentSizeBigInt: leftMin,
-
-          sizeBigInt: leftMin,
-          executionPriceBigInt: executionPrice,
-          priceImpactBigInt: priceImpactUsd,
-        });
-      }
-
-      if (positionSize - leftInc < DOLLAR && positionSize > DOLLAR) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, false, { fallbackToZero: true });
+    if (!isLeftEmpty) {
+      const leftInc = (leftMax - DOLLAR) / SIDE_POINTS_COUNT;
+      // from left to center
+      for (let positionSize = leftMax; positionSize >= DOLLAR; positionSize -= leftInc) {
+        const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, false, { fallbackToZero: true });
 
         const executionPrice = getNextPositionExecutionPrice({
           isIncrease: true,
           isLong: false,
           priceImpactUsd,
-          sizeDeltaUsd: DOLLAR,
+          sizeDeltaUsd: positionSize,
           triggerPrice: marketInfo.indexToken.prices.minPrice,
         })!;
 
         data.push({
+          leftOpaqueSize: positionSize <= leftMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+          leftOpaqueSizeBigInt: positionSize <= leftMin ? positionSize : null,
           executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          leftOpaqueSize: DOLLAR > leftMin ? null : bigintToNumber(DOLLAR, USD_DECIMALS),
-          leftOpaqueSizeBigInt: DOLLAR > leftMin ? null : DOLLAR,
-          size: bigintToNumber(DOLLAR, USD_DECIMALS),
+          size: bigintToNumber(positionSize, USD_DECIMALS),
           priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
           rightOpaqueSize: null,
           rightOpaqueSizeBigInt: null,
           rightTransparentSize: null,
           rightTransparentSizeBigInt: null,
-          leftTransparentSize: DOLLAR > leftMin ? bigintToNumber(DOLLAR, USD_DECIMALS) : null,
-          leftTransparentSizeBigInt: DOLLAR > leftMin ? DOLLAR : null,
-          sizeBigInt: DOLLAR,
+          leftTransparentSize: positionSize > leftMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+          leftTransparentSizeBigInt: positionSize > leftMin ? positionSize : null,
+          sizeBigInt: positionSize,
           executionPriceBigInt: executionPrice,
           priceImpactBigInt: priceImpactUsd,
         });
+
+        if (positionSize - leftInc < leftMin && positionSize > leftMin && leftMin > DOLLAR) {
+          const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, {
+            fallbackToZero: true,
+          });
+          const executionPrice = getNextPositionExecutionPrice({
+            isIncrease: true,
+            isLong: false,
+            priceImpactUsd,
+            sizeDeltaUsd: leftMin,
+            triggerPrice: marketInfo.indexToken.prices.minPrice,
+          })!;
+
+          leftMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
+
+          data.push({
+            executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+            leftOpaqueSize: bigintToNumber(leftMin, USD_DECIMALS),
+            leftOpaqueSizeBigInt: leftMin,
+            size: bigintToNumber(leftMin, USD_DECIMALS),
+            priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+            rightOpaqueSize: null,
+            rightOpaqueSizeBigInt: null,
+            rightTransparentSize: null,
+            rightTransparentSizeBigInt: null,
+            leftTransparentSize: bigintToNumber(leftMin, USD_DECIMALS),
+            leftTransparentSizeBigInt: leftMin,
+
+            sizeBigInt: leftMin,
+            executionPriceBigInt: executionPrice,
+            priceImpactBigInt: priceImpactUsd,
+          });
+        }
+
+        if (positionSize - leftInc < DOLLAR && positionSize > DOLLAR) {
+          const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, false, { fallbackToZero: true });
+
+          const executionPrice = getNextPositionExecutionPrice({
+            isIncrease: true,
+            isLong: false,
+            priceImpactUsd,
+            sizeDeltaUsd: DOLLAR,
+            triggerPrice: marketInfo.indexToken.prices.minPrice,
+          })!;
+
+          data.push({
+            executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+            leftOpaqueSize: DOLLAR > leftMin ? null : bigintToNumber(DOLLAR, USD_DECIMALS),
+            leftOpaqueSizeBigInt: DOLLAR > leftMin ? null : DOLLAR,
+            size: bigintToNumber(DOLLAR, USD_DECIMALS),
+            priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+            rightOpaqueSize: null,
+            rightOpaqueSizeBigInt: null,
+            rightTransparentSize: null,
+            rightTransparentSizeBigInt: null,
+            leftTransparentSize: DOLLAR > leftMin ? bigintToNumber(DOLLAR, USD_DECIMALS) : null,
+            leftTransparentSizeBigInt: DOLLAR > leftMin ? DOLLAR : null,
+            sizeBigInt: DOLLAR,
+            executionPriceBigInt: executionPrice,
+            priceImpactBigInt: priceImpactUsd,
+          });
+        }
       }
     }
 
     // open long
-    // from right max to center
-    for (let positionSize = rightMax; positionSize >= DOLLAR; positionSize -= rightInc) {
-      const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, true, { fallbackToZero: true });
+    if (!isRightEmpty) {
+      const rightInc = (rightMax - DOLLAR) / SIDE_POINTS_COUNT;
 
-      const executionPrice = getNextPositionExecutionPrice({
-        isIncrease: true,
-        isLong: true,
-        priceImpactUsd,
-        sizeDeltaUsd: positionSize,
-        triggerPrice: marketInfo.indexToken.prices.maxPrice,
-      })!;
-
-      data.push({
-        executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-        rightOpaqueSize: positionSize <= rightMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
-        rightOpaqueSizeBigInt: positionSize <= rightMin ? positionSize : null,
-        size: bigintToNumber(positionSize, USD_DECIMALS),
-        priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-        leftOpaqueSize: null,
-        leftOpaqueSizeBigInt: null,
-        rightTransparentSize: positionSize > rightMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
-        rightTransparentSizeBigInt: positionSize > rightMin ? positionSize : null,
-        leftTransparentSize: null,
-        leftTransparentSizeBigInt: null,
-        sizeBigInt: positionSize,
-        executionPriceBigInt: executionPrice,
-        priceImpactBigInt: priceImpactUsd,
-      });
-
-      if (positionSize - rightInc < rightMin && positionSize > rightMin && rightMin > DOLLAR) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, {
-          fallbackToZero: true,
-        });
+      // from right max to center
+      for (let positionSize = rightMax; positionSize >= DOLLAR; positionSize -= rightInc) {
+        const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, true, { fallbackToZero: true });
 
         const executionPrice = getNextPositionExecutionPrice({
           isIncrease: true,
           isLong: true,
           priceImpactUsd,
-          sizeDeltaUsd: rightMin,
-          triggerPrice: marketInfo.indexToken.prices.maxPrice,
-        })!;
-
-        rightMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
-
-        data.push({
-          executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          rightOpaqueSize: bigintToNumber(rightMin, USD_DECIMALS),
-          rightOpaqueSizeBigInt: rightMin,
-          size: bigintToNumber(rightMin, USD_DECIMALS),
-          priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
-          leftOpaqueSize: null,
-          leftOpaqueSizeBigInt: null,
-          rightTransparentSize: bigintToNumber(rightMin, USD_DECIMALS),
-          rightTransparentSizeBigInt: rightMin,
-          leftTransparentSize: null,
-          leftTransparentSizeBigInt: null,
-
-          sizeBigInt: rightMin,
-          executionPriceBigInt: executionPrice,
-          priceImpactBigInt: priceImpactUsd,
-        });
-      }
-
-      if (positionSize - rightInc < DOLLAR && positionSize > DOLLAR) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, true, { fallbackToZero: true });
-
-        const executionPrice = getNextPositionExecutionPrice({
-          isIncrease: true,
-          isLong: true,
-          priceImpactUsd,
-          sizeDeltaUsd: DOLLAR,
+          sizeDeltaUsd: positionSize,
           triggerPrice: marketInfo.indexToken.prices.maxPrice,
         })!;
 
         data.push({
           executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
-          rightOpaqueSize: DOLLAR > rightMin ? null : bigintToNumber(DOLLAR, USD_DECIMALS),
-          rightOpaqueSizeBigInt: DOLLAR > rightMin ? null : DOLLAR,
-          size: bigintToNumber(DOLLAR, USD_DECIMALS),
+          rightOpaqueSize: positionSize <= rightMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+          rightOpaqueSizeBigInt: positionSize <= rightMin ? positionSize : null,
+          size: bigintToNumber(positionSize, USD_DECIMALS),
           priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
           leftOpaqueSize: null,
           leftOpaqueSizeBigInt: null,
-          rightTransparentSize: DOLLAR > rightMin ? bigintToNumber(DOLLAR, USD_DECIMALS) : null,
-          rightTransparentSizeBigInt: DOLLAR > rightMin ? DOLLAR : null,
+          rightTransparentSize: positionSize > rightMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
+          rightTransparentSizeBigInt: positionSize > rightMin ? positionSize : null,
           leftTransparentSize: null,
           leftTransparentSizeBigInt: null,
-          sizeBigInt: DOLLAR,
+          sizeBigInt: positionSize,
           executionPriceBigInt: executionPrice,
           priceImpactBigInt: priceImpactUsd,
         });
+
+        if (positionSize - rightInc < rightMin && positionSize > rightMin && rightMin > DOLLAR) {
+          const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, {
+            fallbackToZero: true,
+          });
+
+          const executionPrice = getNextPositionExecutionPrice({
+            isIncrease: true,
+            isLong: true,
+            priceImpactUsd,
+            sizeDeltaUsd: rightMin,
+            triggerPrice: marketInfo.indexToken.prices.maxPrice,
+          })!;
+
+          rightMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
+
+          data.push({
+            executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+            rightOpaqueSize: bigintToNumber(rightMin, USD_DECIMALS),
+            rightOpaqueSizeBigInt: rightMin,
+            size: bigintToNumber(rightMin, USD_DECIMALS),
+            priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+            leftOpaqueSize: null,
+            leftOpaqueSizeBigInt: null,
+            rightTransparentSize: bigintToNumber(rightMin, USD_DECIMALS),
+            rightTransparentSizeBigInt: rightMin,
+            leftTransparentSize: null,
+            leftTransparentSizeBigInt: null,
+
+            sizeBigInt: rightMin,
+            executionPriceBigInt: executionPrice,
+            priceImpactBigInt: priceImpactUsd,
+          });
+        }
+
+        if (positionSize - rightInc < DOLLAR && positionSize > DOLLAR) {
+          const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, true, { fallbackToZero: true });
+
+          const executionPrice = getNextPositionExecutionPrice({
+            isIncrease: true,
+            isLong: true,
+            priceImpactUsd,
+            sizeDeltaUsd: DOLLAR,
+            triggerPrice: marketInfo.indexToken.prices.maxPrice,
+          })!;
+
+          data.push({
+            executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+            rightOpaqueSize: DOLLAR > rightMin ? null : bigintToNumber(DOLLAR, USD_DECIMALS),
+            rightOpaqueSizeBigInt: DOLLAR > rightMin ? null : DOLLAR,
+            size: bigintToNumber(DOLLAR, USD_DECIMALS),
+            priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+            leftOpaqueSize: null,
+            leftOpaqueSizeBigInt: null,
+            rightTransparentSize: DOLLAR > rightMin ? bigintToNumber(DOLLAR, USD_DECIMALS) : null,
+            rightTransparentSizeBigInt: DOLLAR > rightMin ? DOLLAR : null,
+            leftTransparentSize: null,
+            leftTransparentSizeBigInt: null,
+            sizeBigInt: DOLLAR,
+            executionPriceBigInt: executionPrice,
+            priceImpactBigInt: priceImpactUsd,
+          });
+        }
       }
     }
   }
@@ -1029,21 +1079,25 @@ function useEdgePoints(
   rightMin: bigint;
   realLeftMax: bigint;
   realRightMax: bigint;
+  isLeftEmpty: boolean;
+  isRightEmpty: boolean;
 } {
   const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
   const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
 
   const realLeftMax = bigMath.max(marketInfo.longInterestUsd, shortLiquidity);
+  const isLeftEmpty = realLeftMax === 0n;
   const leftMin = shortLiquidity;
   const rightMin = longLiquidity;
   const realRightMax = bigMath.max(marketInfo.shortInterestUsd, longLiquidity);
+  const isRightEmpty = realRightMax === 0n;
 
   const zoomBigInt = numberToBigint(zoom, FLOAT_DECIMALS);
 
-  let max = bigMath.max(realRightMax, realLeftMax);
-
-  let rightMax = bigMath.min(realRightMax, bigMath.mulDiv(max, FLOAT_PRECISION, zoomBigInt));
-  let leftMax = bigMath.min(realLeftMax, bigMath.mulDiv(max, FLOAT_PRECISION, zoomBigInt));
+  const max = bigMath.max(realRightMax, realLeftMax);
+  const maxZoomed = bigMath.mulDiv(max, FLOAT_PRECISION, zoomBigInt);
+  const rightMax = bigMath.min(realRightMax, maxZoomed);
+  const leftMax = bigMath.min(realLeftMax, maxZoomed);
 
   let leftMaxExecutionPrice = 0n;
   let rightMaxExecutionPrice = 0n;
@@ -1055,7 +1109,7 @@ function useEdgePoints(
       isIncrease: true,
       isLong: true,
       priceImpactUsd,
-      sizeDeltaUsd: rightMax,
+      sizeDeltaUsd: rightMax === 0n ? DOLLAR : rightMax,
       triggerPrice: marketInfo.indexToken.prices.maxPrice,
     })!;
 
@@ -1069,7 +1123,7 @@ function useEdgePoints(
       isIncrease: true,
       isLong: false,
       priceImpactUsd,
-      sizeDeltaUsd: leftMax,
+      sizeDeltaUsd: leftMax === 0n ? DOLLAR : leftMax,
       triggerPrice: marketInfo.indexToken.prices.minPrice,
     })!;
 
@@ -1085,14 +1139,45 @@ function useEdgePoints(
     rightMin,
     realLeftMax,
     realRightMax,
+    isLeftEmpty,
+    isRightEmpty,
   };
 }
 
-function yAxisTickFormatter(value: number) {
-  // remove top tick because it contains decimals
-  if (value % 1 !== 0) {
-    return "";
+function yAxisTickFormatter(value: number, isLast: boolean) {
+  let scaledValue = value;
+  let suffix = "";
+
+  if (value >= 1_000_000_000) {
+    scaledValue = value / 1_000_000_000;
+    suffix = "b";
+  } else if (value >= 1_000_000) {
+    scaledValue = value / 1_000_000;
+    suffix = "m";
+  } else if (value >= 1_000) {
+    scaledValue = value / 1_000;
+    suffix = "k";
   }
 
-  return numberWithCommas(value / 1000);
+  if (isLast && (scaledValue % 1).toString().length > 1) {
+    scaledValue = Math.round(scaledValue * 10) / 10;
+  }
+
+  return `${scaledValue}${suffix}`;
+}
+
+function YAxisTick(
+  props: Partial<TextProps & { index: number; payload: { value: number }; visibleTicksCount: number }>
+) {
+  const { index, payload, visibleTicksCount } = props as Required<typeof props>;
+
+  let text: string;
+
+  text = yAxisTickFormatter(payload.value, visibleTicksCount === index + 1);
+
+  return (
+    <Text {...props} {...Y_AXIS_TICK}>
+      {text}
+    </Text>
+  );
 }

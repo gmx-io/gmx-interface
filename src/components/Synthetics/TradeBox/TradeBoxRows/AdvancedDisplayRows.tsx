@@ -33,7 +33,7 @@ import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/sele
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
-import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
 
 import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
@@ -45,7 +45,6 @@ import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
-import { LimitPriceRow } from "./LimitPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
@@ -102,8 +101,7 @@ function LeverageInfoRows() {
 function ExistingPositionInfoRows() {
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
-  const { isSwap, isIncrease } = useSelector(selectTradeboxTradeFlags);
-  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   if (!selectedPosition || isSwap) {
     return null;
@@ -118,29 +116,6 @@ function ExistingPositionInfoRows() {
             <ValueTransition
               from={formatUsd(selectedPosition.sizeInUsd)!}
               to={formatUsd(nextPositionValues?.nextSizeUsd)}
-            />
-          }
-        />
-      )}
-      {!isIncrease && (
-        <SyntheticsInfoRow
-          label={t`PnL`}
-          value={
-            <ValueTransition
-              from={
-                <>
-                  {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                  {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                </>
-              }
-              to={
-                decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                  <>
-                    {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                    {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                  </>
-                ) : undefined
-              }
             />
           }
         />
@@ -303,9 +278,19 @@ export function TradeBoxAdvancedGroups() {
           <div className="h-1 shrink-0 bg-stroke-primary" />
         </>
       )}
-      {isLimit && isSwap && (
+
+      {isIncrease && <IncreaseOrderRow />}
+      {isTrigger && <DecreaseOrderRow />}
+      <TradeFeesRow {...fees} feesType={feesType} />
+      <NetworkFeeRow executionFee={executionFee} />
+
+      {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
+
+      {/* only when isSwap */}
+      {isSwap && <SwapSpreadRow />}
+      {/* only when isLimit */}
+      {isSwap && isLimit && (
         <AllowedSwapSlippageInputRow
-          className="!mb-0 mt-8"
           notAvailable={
             isSwapImpactInputDisabled ||
             defaultAllowedSwapSlippageBps === undefined ||
@@ -317,18 +302,6 @@ export function TradeBoxAdvancedGroups() {
           setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
         />
       )}
-
-      {isIncrease && <IncreaseOrderRow />}
-      {isTrigger && <DecreaseOrderRow />}
-      <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow executionFee={executionFee} />
-
-      {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
-
-      {/* only when isSwap */}
-      {isSwap && <SwapSpreadRow />}
-      {isSwap && isLimit && <LimitPriceRow />}
-      {/* only when isLimit */}
       {isLimit && <AvailableLiquidityRow />}
       {/* only when isMarket and not a swap */}
       {isMarket && !isSwap && <CollateralSpreadRow />}

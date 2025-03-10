@@ -1,6 +1,7 @@
-import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { MarketInfo } from "../markets";
+import { ExternalSwapQuote } from "sdk/types/trade";
 
 export enum TradeType {
   Long = "Long",
@@ -43,6 +44,7 @@ export type SwapAmounts = {
   priceIn: bigint;
   priceOut: bigint;
   swapPathStats: SwapPathStats | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   minOutputAmount: bigint;
   uiFeeUsd?: bigint;
 };
@@ -55,6 +57,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaUsd: bigint;
 
   swapPathStats: SwapPathStats | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
 
   indexTokenAmount: bigint;
 
@@ -239,6 +242,7 @@ export type TradeFees = {
   uiSwapFee?: FeeItem;
   feeDiscountUsd?: bigint;
   swapProfitFee?: FeeItem;
+  externalSwapFee?: ExternalSwapFeeItem;
 };
 
 export type GmSwapFees = {

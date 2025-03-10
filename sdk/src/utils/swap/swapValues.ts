@@ -97,16 +97,10 @@ export function getSwapAmountsByFromValue(p: {
       fromTokenAmount: amountIn,
       ratio: triggerRatio.ratio,
       shouldInvertRatio: triggerRatio.largestToken.address === tokenOut.address,
+      allowedSwapSlippageBps,
     });
 
     usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-
-    if (allowedSwapSlippageBps !== undefined) {
-      usdOut -= bigMath.mulDiv(usdOut, allowedSwapSlippageBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
-    } else {
-      usdOut = usdOut - swapPathStats.totalSwapFeeUsd - swapUiFeeUsd + swapPathStats.totalSwapPriceImpactDeltaUsd;
-    }
-
     amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
     minOutputAmount = amountOut;
   } else {

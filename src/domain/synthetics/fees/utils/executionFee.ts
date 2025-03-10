@@ -14,10 +14,7 @@ export function estimateExecutionGasPrice(p: {
 
   const buffer = bigMath.mulDiv(gasPrice, BigInt(bufferBps ?? 0), BASIS_POINTS_DIVISOR_BIGINT);
 
-  gasPrice = gasPrice + buffer;
-  gasPrice = gasPrice + premium;
-
-  return gasPrice + premium;
+  return gasPrice + premium + buffer;
 }
 
 export function getExecutionFeeBufferBps(chainId: number, settledBufferBps: number | undefined) {

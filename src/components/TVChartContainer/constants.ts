@@ -1,7 +1,11 @@
+import type { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/macro";
 import { ChartingLibraryFeatureset, ChartingLibraryWidgetOptions, WidgetOverrides } from "charting_library";
+import { lightFormat, parse } from "date-fns";
+
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { lightFormat, parse } from "date-fns";
+import { OrderType } from "domain/synthetics/orders";
 import { formatTVDate, formatTVTime } from "lib/dates";
 import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
@@ -130,3 +134,17 @@ export const defaultChartProps = {
 } satisfies Partial<ChartingLibraryWidgetOptions>;
 
 export const availableNetworksForChart = [ARBITRUM, AVALANCHE];
+
+export const orderTypeToTitle: Partial<Record<`${OrderType}-${"long" | "short"}`, MessageDescriptor>> = {
+  [`${OrderType.LimitIncrease}-short`]: msg`Limit - Short Inc.`,
+  [`${OrderType.LimitIncrease}-long`]: msg`Limit - Long Inc.`,
+
+  [`${OrderType.LimitDecrease}-short`]: msg`TP - Short Dec.`,
+  [`${OrderType.LimitDecrease}-long`]: msg`TP - Long Dec.`,
+
+  [`${OrderType.StopLossDecrease}-long`]: msg`SL - Long Dec.`,
+  [`${OrderType.StopLossDecrease}-short`]: msg`SL - Short Dec.`,
+
+  [`${OrderType.StopIncrease}-short`]: msg`Stop Market - Short Inc.`,
+  [`${OrderType.StopIncrease}-long`]: msg`Stop Market - Long Inc.`,
+};

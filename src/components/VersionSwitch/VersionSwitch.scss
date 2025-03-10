@@ -1,11 +1,14 @@
 .VersionSwitch {
-  display: inline-flex;
+  display: grid;
   background: var(--color-cold-blue-900);
   border-radius: 3px;
+  width: 100%;
+  grid-template-columns: 50% 50%;
 }
 
 .VersionSwitch-option {
-  padding: 1.2rem;
+  padding: 7px;
+  text-align: center;
   text-decoration: none;
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);

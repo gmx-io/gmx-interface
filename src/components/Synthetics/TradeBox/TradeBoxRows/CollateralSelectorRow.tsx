@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import React, { useMemo } from "react";
 
 import {
-  selectTradeboxAvailableAndDisabledTokensForCollateral,
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxCollateralTokenAddress,
   selectTradeboxHasExistingLimitOrder,
@@ -21,6 +20,7 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
 import { useCollateralInTooltipContent } from "../hooks/useCollateralInTooltipContent";
+import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxAvailableAndDisabledTokensForCollateral";
 
 export type Props = {
   selectedMarketAddress?: string;

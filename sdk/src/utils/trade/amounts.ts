@@ -98,6 +98,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionAmountsParams): In
 
     limitOrderType: limitOrderType,
     triggerThresholdType: undefined,
+    externalSwapQuote: undefined,
   };
 
   const isLimit = limitOrderType !== undefined;
