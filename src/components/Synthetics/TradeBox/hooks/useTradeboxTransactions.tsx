@@ -3,13 +3,9 @@ import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import {
-  selectBlockTimestampData,
-  selectIsFirstOrder,
-  selectMarketsInfoData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -18,7 +14,6 @@ import {
   selectTradeboxExecutionFee,
   selectTradeboxFees,
   selectTradeboxFromTokenAddress,
-  selectTradeboxFromTokenInputValue,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarketInfo,
   selectTradeboxSelectedPosition,
@@ -63,10 +58,6 @@ import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 
-import { GmxSdk } from "sdk";
-import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
-import { parseValue } from "lib/numbers";
-
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
 }
@@ -90,7 +81,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
-  const marketsInfoData = useSelector(selectMarketsInfoData);
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
 
@@ -103,7 +93,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const { triggerRatio = EMPTY_TRIGGER_RATIO } = useSelector(selectTradeboxTradeRatios);
-  const { account, signer, walletClient } = useWallet();
+  const { account, signer } = useWallet();
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -117,8 +107,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
 
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
-  const fromTokenInputValue = useSelector(selectTradeboxFromTokenInputValue);
-  const uiFeeFactor = useUiFeeFactor();
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
@@ -126,16 +114,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   });
 
   const initialCollateralAllowance = getByKey(tokensAllowanceData, fromToken?.address);
-
-  const sdk = new GmxSdk({
-    walletClient,
-    chainId,
-    account,
-    rpcUrl: getCurrentRpcUrls(chainId).primary,
-    oracleUrl: "https://synthetics-api-avax-fuji-upovm.ondigitalocean.app",
-    subgraphUrl: "some",
-    subsquidUrl: "some",
-  });
 
   const onSubmitSwap = useCallback(
     function onSubmitSwap() {
@@ -172,14 +150,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       }
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
-
-      sdk.orders.swap({
-        fromTokenAddress: fromToken.address,
-        toTokenAddress: toToken.address,
-        fromAmount: swapAmounts.amountIn,
-        allowedSlippageBps: allowedSlippage,
-        referralCodeForTxn: referralCodeForTxn,
-      });
 
       return createSwapOrderTxn(chainId, signer, subaccount, {
         account,
@@ -298,100 +268,83 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-      debugger;
-
-      const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
-
-      return sdk.orders.long({
-        marketAddress: marketInfo.marketTokenAddress,
-        payAmount: fromTokenAmount,
-        payTokenAddress: fromToken?.address,
-        collateralIn: collateralToken.address,
-        receiveTokenAddress: collateralToken.address,
-        leverage: 50000n,
-        uiFeeFactor,
-        tokensData,
-        marketsInfoData,
-        skipSimulation: true,
-      });
-
-      // return createIncreaseOrderTxn({
-      //   chainId,
-      //   signer,
-      //   subaccount,
-      //   metricId: metricData.metricId,
-      //   blockTimestampData,
-      //   createIncreaseOrderParams: {
-      //     account,
-      //     marketAddress: marketInfo.marketTokenAddress,
-      //     initialCollateralAddress: fromToken?.address,
-      //     initialCollateralAmount: increaseAmounts.initialCollateralAmount,
-      //     targetCollateralAddress: collateralToken.address,
-      //     collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-      //     swapPath: increaseAmounts.swapPathStats?.swapPath || [],
-      //     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-      //     sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-      //     triggerPrice: isLimit ? triggerPrice : undefined,
-      //     acceptablePrice: increaseAmounts.acceptablePrice,
-      //     isLong,
-      //     orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
-      //     executionFee: executionFee.feeTokenAmount,
-      //     executionGasLimit: executionFee.gasLimit,
-      //     allowedSlippage,
-      //     referralCode: referralCodeForTxn,
-      //     indexToken: marketInfo.indexToken,
-      //     tokensData,
-      //     skipSimulation: isLimit || shouldDisableValidationForTesting,
-      //     setPendingTxns: setPendingTxns,
-      //     setPendingOrder,
-      //     setPendingPosition,
-      //   },
-      //   createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
-      //     return {
-      //       ...commonSecondaryOrderParams,
-      //       initialCollateralDeltaAmount: entry.decreaseAmounts.collateralDeltaAmount ?? 0n,
-      //       sizeDeltaUsd: entry.decreaseAmounts.sizeDeltaUsd,
-      //       sizeDeltaInTokens: entry.decreaseAmounts.sizeDeltaInTokens,
-      //       acceptablePrice: entry.decreaseAmounts.acceptablePrice,
-      //       triggerPrice: entry.decreaseAmounts.triggerPrice,
-      //       minOutputUsd: 0n,
-      //       decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
-      //       orderType: entry.decreaseAmounts.triggerOrderType!,
-      //       referralCode: referralCodeForTxn,
-      //       executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
-      //       executionGasLimit: 0n, // Don't need for tp/sl entries
-      //       tokensData,
-      //       txnType: entry.txnType!,
-      //       skipSimulation: isLimit || shouldDisableValidationForTesting,
-      //       autoCancel: i < autoCancelOrdersLimit,
-      //     };
-      //   }),
-      //   cancelOrderParams: cancelSltpEntries.map((entry) => ({
-      //     ...commonSecondaryOrderParams,
-      //     orderKey: entry.order!.key,
-      //     orderType: entry.order!.orderType,
-      //     minOutputAmount: 0n,
-      //     sizeDeltaUsd: entry.order!.sizeDeltaUsd,
-      //     txnType: entry.txnType!,
-      //     initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
-      //   })),
-      //   updateOrderParams: updateSltpEntries.map((entry) => ({
-      //     ...commonSecondaryOrderParams,
-      //     orderKey: entry.order!.key,
-      //     orderType: entry.order!.orderType,
-      //     sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
-      //     acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
-      //     triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
-      //     executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
-      //     minOutputAmount: 0n,
-      //     txnType: entry.txnType!,
-      //     initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
-      //     autoCancel: entry.order!.autoCancel,
-      //   })),
-      // })
-      //   .then(makeTxnSentMetricsHandler(metricData.metricId))
-      //   .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-      //   .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
+      return createIncreaseOrderTxn({
+        chainId,
+        signer,
+        subaccount,
+        metricId: metricData.metricId,
+        blockTimestampData,
+        createIncreaseOrderParams: {
+          account,
+          marketAddress: marketInfo.marketTokenAddress,
+          initialCollateralAddress: fromToken?.address,
+          initialCollateralAmount: increaseAmounts.initialCollateralAmount,
+          targetCollateralAddress: collateralToken.address,
+          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+          swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+          triggerPrice: isLimit ? triggerPrice : undefined,
+          acceptablePrice: increaseAmounts.acceptablePrice,
+          isLong,
+          orderType: isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease,
+          executionFee: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+          allowedSlippage,
+          referralCode: referralCodeForTxn,
+          indexToken: marketInfo.indexToken,
+          tokensData,
+          skipSimulation: isLimit || shouldDisableValidationForTesting,
+          setPendingTxns: setPendingTxns,
+          setPendingOrder,
+          setPendingPosition,
+        },
+        createDecreaseOrderParams: createSltpEntries.map((entry, i) => {
+          return {
+            ...commonSecondaryOrderParams,
+            initialCollateralDeltaAmount: entry.decreaseAmounts.collateralDeltaAmount ?? 0n,
+            sizeDeltaUsd: entry.decreaseAmounts.sizeDeltaUsd,
+            sizeDeltaInTokens: entry.decreaseAmounts.sizeDeltaInTokens,
+            acceptablePrice: entry.decreaseAmounts.acceptablePrice,
+            triggerPrice: entry.decreaseAmounts.triggerPrice,
+            minOutputUsd: 0n,
+            decreasePositionSwapType: entry.decreaseAmounts.decreaseSwapType,
+            orderType: entry.decreaseAmounts.triggerOrderType!,
+            referralCode: referralCodeForTxn,
+            executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
+            executionGasLimit: 0n, // Don't need for tp/sl entries
+            tokensData,
+            txnType: entry.txnType!,
+            skipSimulation: isLimit || shouldDisableValidationForTesting,
+            autoCancel: i < autoCancelOrdersLimit,
+          };
+        }),
+        cancelOrderParams: cancelSltpEntries.map((entry) => ({
+          ...commonSecondaryOrderParams,
+          orderKey: entry.order!.key,
+          orderType: entry.order!.orderType,
+          minOutputAmount: 0n,
+          sizeDeltaUsd: entry.order!.sizeDeltaUsd,
+          txnType: entry.txnType!,
+          initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
+        })),
+        updateOrderParams: updateSltpEntries.map((entry) => ({
+          ...commonSecondaryOrderParams,
+          orderKey: entry.order!.key,
+          orderType: entry.order!.orderType,
+          sizeDeltaUsd: (entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd)!,
+          acceptablePrice: (entry.increaseAmounts?.acceptablePrice || entry.decreaseAmounts?.acceptablePrice)!,
+          triggerPrice: (entry.increaseAmounts?.triggerPrice || entry.decreaseAmounts?.triggerPrice)!,
+          executionFee: getExecutionFeeAmountForEntry(entry) ?? 0n,
+          minOutputAmount: 0n,
+          txnType: entry.txnType!,
+          initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
+          autoCancel: entry.order!.autoCancel,
+        })),
+      })
+        .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
       isLimit,

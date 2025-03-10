@@ -369,6 +369,7 @@ export class Orders extends Module {
     toToken,
     referralCodeForTxn,
     tokensData,
+    triggerPrice,
   }: {
     isLimit: boolean;
     allowedSlippage: number;
@@ -377,6 +378,7 @@ export class Orders extends Module {
     referralCodeForTxn?: string;
     toToken: TokenData;
     tokensData: TokensData;
+    triggerPrice?: bigint;
   }) {
     const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
@@ -399,6 +401,7 @@ export class Orders extends Module {
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       tokensData,
+      triggerPrice: isLimit && triggerPrice !== undefined ? triggerPrice : undefined,
     });
   }
 

@@ -1,12 +1,14 @@
-import type { GmxSdk } from "../../index";
-import { getIncreasePositionAmounts } from "utils/trade/amounts";
-import { OrderType } from "types/orders";
-import { createFindSwapPath } from "utils/swap/swapPath";
 import { MarketsInfoData } from "types/markets";
-import { TokensData } from "types/tokens";
+import { OrderType } from "types/orders";
+import { TokenData, TokensData, TokensRatio } from "types/tokens";
 import { FindSwapPath, SwapAmounts } from "types/trade";
-import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
+import { getByKey } from "utils/objects";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
+import { createFindSwapPath } from "utils/swap/swapPath";
+import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
+import { getIncreasePositionAmounts } from "utils/trade/amounts";
+
+import type { GmxSdk } from "../..";
 
 /** Base Optional params for helpers, allows to avoid calling markets, tokens and uiFeeFactor methods if they are already passed */
 interface BaseOptionalParams {
@@ -39,11 +41,6 @@ export type PositionIncreaseParams = (
   limitPrice?: bigint;
   /** If presented, then it's stop market order */
   stopPrice?: bigint;
-  /** Tp sl entries  */
-  tpSl?: {
-    valueBps: number;
-    price: bigint;
-  }[];
   receiveTokenAddress?: string;
   acceptablePriceImpactBuffer?: number;
   fixedAcceptablePriceImpactBps?: bigint;
@@ -102,11 +99,7 @@ export async function increaseOrderHelper(
     throw new Error("Collateral token is not available");
   }
 
-  if (params.tpSl && params.tpSl.length > 0 && !params.receiveTokenAddress) {
-    throw new Error("Receive token address is required for tp/sl orders");
-  }
-
-  const marketInfo = marketsInfoData[params.marketAddress];
+  const marketInfo = getByKey(marketsInfoData, params.marketAddress);
 
   if (!marketInfo) {
     throw new Error("Market info is not available");
@@ -166,6 +159,34 @@ export async function increaseOrderHelper(
   return sdk.orders.createIncreaseOrder(createIncreaseOrderParams);
 }
 
+function getTriggerRatio({
+  toToken,
+  fromToken,
+  triggerPrice,
+}: {
+  toToken: TokenData;
+  fromToken: TokenData;
+  triggerPrice: bigint;
+}) {
+  const fromTokenPrice = fromToken?.prices.minPrice;
+  const markPrice = toToken.prices.minPrice;
+
+  const markRatio = getTokensRatioByPrice({
+    fromToken,
+    toToken,
+    fromPrice: fromTokenPrice,
+    toPrice: markPrice,
+  });
+
+  const triggerRatio: TokensRatio = {
+    ratio: triggerPrice > 0 ? triggerPrice : markRatio.ratio,
+    largestToken: markRatio.largestToken,
+    smallestToken: markRatio.smallestToken,
+  };
+
+  return triggerRatio;
+}
+
 export type SwapParams = (
   | {
       fromAmount: bigint;
@@ -180,7 +201,7 @@ export type SwapParams = (
   referralCodeForTxn?: string;
 
   /** If presented, then it's limit swap order */
-  triggerRatio?: bigint;
+  triggerPrice?: bigint;
 } & BaseOptionalParams;
 
 export async function swap(sdk: GmxSdk, params: SwapParams) {
@@ -193,10 +214,9 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     throw new Error("From or to token is not available");
   }
 
-  const isLimit = Boolean(params.triggerRatio);
-  const fromTokenPrice = fromToken?.prices.minPrice;
+  const isLimit = Boolean(params.triggerPrice);
 
-  if (!fromToken || !toToken || fromTokenPrice === undefined) {
+  if (!fromToken || !toToken) {
     return undefined;
   }
 
@@ -215,12 +235,12 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
 
   let swapAmounts: SwapAmounts | undefined;
 
-  const triggerRatio = params.triggerRatio
-    ? getTokensRatioByPrice({
+  const fromTokenPrice = fromToken.prices.minPrice;
+  const triggerRatio = params.triggerPrice
+    ? getTriggerRatio({
         fromToken,
         toToken,
-        fromPrice: fromTokenPrice,
-        toPrice: toToken.prices.minPrice,
+        triggerPrice: params.triggerPrice,
       })
     : undefined;
 
@@ -279,6 +299,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     isLimit,
     allowedSlippage: params.allowedSlippageBps ?? 100,
     referralCodeForTxn: params.referralCodeForTxn,
+    triggerPrice: params.triggerPrice,
   };
 
   return sdk.orders.createSwapOrder(createSwapOrderParams);

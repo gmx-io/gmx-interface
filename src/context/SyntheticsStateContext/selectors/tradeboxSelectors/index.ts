@@ -446,7 +446,7 @@ export const selectTradeboxExecutionFee = createSelector(function selectTradebox
   return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
 });
 
-const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {
+export const selectTradeboxTriggerRatioValue = createSelector(function selectTradeboxTriggerRatioValue(q) {
   const triggerRatioInputValue = q(selectTradeboxTriggerRatioInputValue);
   return parseValue(triggerRatioInputValue, USD_DECIMALS);
 });
