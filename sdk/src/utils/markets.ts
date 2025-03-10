@@ -31,10 +31,6 @@ export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
   const { longToken, shortToken } = p;
 
-  if (longToken.address === shortToken.address) {
-    return longToken.symbol;
-  }
-
   return `${longToken.symbol}-${shortToken.symbol}`;
 }
 
