@@ -370,7 +370,7 @@ export function PositionItem(p: Props) {
           onClick={() => p.onSelectPositionClick?.()}
         >
           {/* title */}
-          <div className={cx("Position-item-info relative")}>
+        <div className={cx("Position-item-info relative")}>
             <div className="Exchange-list-title">
               <Tooltip
                 handle={
@@ -388,7 +388,7 @@ export function PositionItem(p: Props) {
                 renderContent={() => (
                   <div>
                     <StatsTooltipRow
-                      label={t`Market`}
+                      label={t`Pool`}
                       value={
                         <div className="flex items-center">
                           <span>{indexName && indexName}</span>
@@ -584,7 +584,7 @@ export function PositionItem(p: Props) {
               )}
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Market</Trans>
+                  <Trans>Pool</Trans>
                 </div>
                 <div>
                   <div className="flex items-start">
