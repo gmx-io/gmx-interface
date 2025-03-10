@@ -8,6 +8,7 @@ import { useChainId } from "lib/chains";
 import { GLP_DECIMALS, ProcessedData } from "lib/legacy";
 import { formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
 
+import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -162,8 +163,7 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Trans>Total Staked</Trans>
             </div>
             <div>
-              {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
-              {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
+              <AmountWithUsdHuman amount={processedData?.glpSupply} decimals={18} usd={processedData?.glpSupplyUsd} />
             </div>
           </div>
           <div className="App-card-row">
@@ -171,8 +171,7 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Trans>Total Supply</Trans>
             </div>
             <div>
-              {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
-              {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
+              <AmountWithUsdHuman amount={processedData?.glpSupply} decimals={18} usd={processedData?.glpSupplyUsd} />
             </div>
           </div>
 
