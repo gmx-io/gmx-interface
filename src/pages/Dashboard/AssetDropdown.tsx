@@ -7,17 +7,17 @@ import { Link } from "react-router-dom";
 
 import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";
 import { Token } from "domain/tokens";
+import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { getMarketBadge } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 
 import "./AssetDropdown.scss";
-import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { getMarketBadge } from "domain/synthetics/markets";
 
 const PLATFORM_TOKEN_ROUTES = {
   GMX: "/buy_gmx",
