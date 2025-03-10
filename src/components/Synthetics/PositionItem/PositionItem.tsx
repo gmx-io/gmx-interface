@@ -370,7 +370,7 @@ export function PositionItem(p: Props) {
           onClick={() => p.onSelectPositionClick?.()}
         >
           {/* title */}
-        <div className={cx("Position-item-info relative")}>
+          <div className={cx("Position-item-info relative")}>
             <div className="Exchange-list-title">
               <Tooltip
                 handle={
