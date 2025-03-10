@@ -21,7 +21,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -140,7 +139,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
                 })} in "Capital Used" are ranked.`}
                 tooltipPosition="bottom-start"
               />
-              <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`Address`} width={14} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PnL ($)`}
@@ -148,7 +147,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
                 tooltip={t`The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees.`}
                 tooltipPosition="bottom-end"
               />
-              <TableHeaderCell title={t`Position`} width={10} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`Position`} width={12} tooltipPosition="bottom-end" />
               <TableHeaderCell {...getSorterProps("entryPrice")} title={t`Entry Price`} width={10} />
               <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`Size`} width={12} />
               <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={4} />
@@ -378,9 +377,9 @@ const TableRow = memo(
                   />
                 ) : null}
                 <span>
-                  {marketInfo?.indexToken && getTokenVisualMultiplier(marketInfo.indexToken)}
-                  {marketInfo?.indexToken.symbol}
+                  {marketInfo ? getMarketIndexName({ indexToken: marketInfo?.indexToken, isSpotOnly: false }) : null}
                 </span>
+
                 <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
                   {position.isLong ? t`Long` : t`Short`}
                 </span>

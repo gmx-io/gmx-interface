@@ -406,10 +406,6 @@ msgstr "Positions"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
 
-#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
-#~ msgid "Auto Swap Fallback Max Fees"
-#~ msgstr "Auto Swap Fallback Max Fees"
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr "Funding Claimed"
@@ -598,10 +594,6 @@ msgstr "Incentives are airdropped weekly."
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr "Acceptable Price Impact"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "Add to Metamask"
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
@@ -963,13 +955,13 @@ msgstr "GMX uses TradingView to provide real-time cryptocurrency charts, so you 
 msgid "Swap on 1inch"
 msgstr "Swap on 1inch"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "Open {0} in Coingecko"
-
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
 msgstr "Buy {operationTokenSymbol}"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Buy GM: {0}"
+msgstr "Buy GM: {0}"
 
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -1699,10 +1691,6 @@ msgstr "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgid "High Swap Profit Fee"
 msgstr "High Swap Profit Fee"
 
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High External Swap Fee"
-#~ msgstr "High External Swap Fee"
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
@@ -2180,10 +2168,6 @@ msgstr "You have an existing limit order with {symbol} as collateral. <0>Switch 
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees {rebatedTextWithSparkle}"
-#~ msgstr "Fees {rebatedTextWithSparkle}"
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
 msgstr "Index"
@@ -2323,10 +2307,6 @@ msgstr "Reduce wallet signing popups with One-Click Trading. This option is also
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-#~ msgid "Switch to internal swap"
-#~ msgstr "Switch to internal swap"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -3071,8 +3051,6 @@ msgstr "No claims match the selected filters"
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
@@ -6412,10 +6390,6 @@ msgstr "Maximum auto top-up amount is required"
 msgid "Buy / Sell GLP"
 msgstr "Buy / Sell GLP"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "Open {0} in Explorer"
-
 #: src/components/Synthetics/GmList/MintableAmount.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
@@ -7207,6 +7181,8 @@ msgstr "Long"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
@@ -7373,10 +7349,6 @@ msgstr "Confirming..."
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Increase"
 msgstr "Increase"
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
-#~ msgid "External swap was temporarily disabled. Please try again."
-#~ msgstr "External swap was temporarily disabled. Please try again."
 
 #: src/pages/Earn/ClaimModal.tsx
 msgid "Claim {wrappedTokenSymbol} Rewards"
@@ -7864,10 +7836,6 @@ msgstr "Confirm Swap"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "Add {0} to Metamask"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Save"

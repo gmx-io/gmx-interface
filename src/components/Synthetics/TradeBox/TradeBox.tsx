@@ -4,7 +4,7 @@ import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -656,10 +656,7 @@ export function TradeBox() {
                     <>
                       <span className="inline-flex items-center">
                         <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
-                        <span>
-                          {getTokenVisualMultiplier(toToken)}
-                          {toToken.symbol}
-                        </span>
+                        <span>{getMarketIndexName({ indexToken: toToken, isSpotOnly: false })}</span>
                       </span>
                     </>
                   )
