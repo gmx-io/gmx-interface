@@ -33,7 +33,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isV1Available: true,
     },
     {
-      name: "Bitcoin (WBTC)",
+      name: "Wrapped Bitcoin",
       symbol: "BTC",
       assetSymbol: "WBTC",
       baseSymbol: "BTC",
@@ -1215,7 +1215,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     },
     {
-      name: "Bitcoin (WBTC)",
+      name: "Wrapped Bitcoin",
       symbol: "WBTC",
       decimals: 8,
       address: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
