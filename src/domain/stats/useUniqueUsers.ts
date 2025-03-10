@@ -2,7 +2,7 @@ import useSWR from "swr";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getSubgraphUrl } from "config/subgraph";
-import graphqlFetcher from "lib/graphqlFetcher";
+import graphqlFetcher from "sdk/utils/graphqlFetcher";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];

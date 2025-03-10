@@ -3,10 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type {
-  SyntheticsRouter,
-  SyntheticsRouterInterface,
-} from "../SyntheticsRouter";
+import type { SyntheticsRouter, SyntheticsRouterInterface } from "../SyntheticsRouter";
 
 const _abi = [
   {
@@ -84,10 +81,7 @@ export class SyntheticsRouter__factory {
   static createInterface(): SyntheticsRouterInterface {
     return new Interface(_abi) as SyntheticsRouterInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): SyntheticsRouter {
+  static connect(address: string, runner?: ContractRunner | null): SyntheticsRouter {
     return new Contract(address, _abi, runner) as unknown as SyntheticsRouter;
   }
 }

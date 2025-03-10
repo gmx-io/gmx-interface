@@ -17,7 +17,7 @@ import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCou
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
 import { MulticallResult } from "utils/multicall";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
-import { getSwapPathOutputAddresses } from "utils/swapStats";
+import { getSwapPathOutputAddresses } from "utils/swap";
 import { Address, isAddressEqual } from "viem";
 
 export const getOrderExecutionFee = (

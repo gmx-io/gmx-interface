@@ -23,7 +23,8 @@
     "baseUrl": "./src",
     "paths": {
       "sdk": ["../sdk/src/index.ts"],
-      "sdk/*": ["../sdk/src/*"]
+      "sdk/*": ["../sdk/src/*"],
+      "abis/*": ["../sdk/src/abis/*"]
     }
   },
   "references": [{ "path": "./sdk" }],
