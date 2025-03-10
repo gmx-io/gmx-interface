@@ -18,6 +18,7 @@ export function MintableAmount({
   token,
   longToken,
   shortToken,
+  multiline,
 }: {
   mintableInfo:
     | {
@@ -33,6 +34,7 @@ export function MintableAmount({
   token: TokenData;
   longToken?: TokenData;
   shortToken?: TokenData;
+  multiline?: boolean;
 }) {
   const isGlv = isGlvInfo(market);
 
@@ -109,7 +111,7 @@ export function MintableAmount({
 
   const content = (
     <AmountWithUsdHuman
-      multiline
+      multiline={multiline}
       amount={mintableInfo?.mintableAmount}
       decimals={token.decimals}
       usd={mintableInfo?.mintableUsd}

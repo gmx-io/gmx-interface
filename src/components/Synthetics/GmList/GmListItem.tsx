@@ -26,12 +26,12 @@ import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { MintableAmount } from "components/MintableAmount/MintableAmount";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
-import { MintableAmount } from "./MintableAmount";
 
 export const tokenAddressStyle = { fontSize: 5 };
 
@@ -197,6 +197,7 @@ export function GmListItem({
       <TableTd>
         {isGlv ? (
           <MintableAmount
+            multiline
             mintableInfo={getMintableInfoGlv(marketOrGlv, marketTokensData)}
             market={marketOrGlv}
             token={token}
@@ -204,6 +205,7 @@ export function GmListItem({
         ) : (
           marketOrGlv && (
             <MintableAmount
+              multiline
               mintableInfo={mintableInfo}
               market={marketOrGlv}
               token={token}
