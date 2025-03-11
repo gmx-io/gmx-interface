@@ -64,7 +64,9 @@ export function MintableAmount({
           decimals={longToken.decimals}
           usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
         />,
-        `(${poolUsd} / ${maxPoolUsd})`,
+        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100">
+          ({poolUsd} / {maxPoolUsd})
+        </span>,
       ];
     }
 
@@ -78,7 +80,9 @@ export function MintableAmount({
         decimals={longToken.decimals}
         usd={mintableInfo?.longDepositCapacityUsd}
       />,
-      `(${poolUsd} / ${maxPoolUsd})`,
+      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100">
+        ({poolUsd} / {maxPoolUsd})
+      </span>,
     ];
   }, [
     isGlv,
@@ -105,7 +109,9 @@ export function MintableAmount({
         decimals={shortToken.decimals}
         usd={mintableInfo?.shortDepositCapacityUsd}
       />,
-      `(${poolUsd} / ${maxPoolUsd})`,
+      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100">
+        ({poolUsd} / {maxPoolUsd})
+      </span>,
     ];
   }, [isGlv, market, mintableInfo, shortToken]);
 

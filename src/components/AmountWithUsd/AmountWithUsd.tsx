@@ -51,10 +51,7 @@ export function AmountWithUsdBalance({
     return "...";
   }
 
-  let formattedAmount = formatBalanceAmount(amount, decimals, symbol, true);
-  if (symbol) {
-    formattedAmount = `${formattedAmount} ${symbol}`;
-  }
+  const formattedAmount = formatBalanceAmount(amount, decimals, symbol, true);
 
   const formattedUsd = formatUsd(usd);
 

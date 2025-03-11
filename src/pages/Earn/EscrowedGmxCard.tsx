@@ -11,11 +11,11 @@ import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
-import { expandDecimals, formatAmount, formatBalanceAmountWithUsd } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -89,15 +89,12 @@ export function EscrowedGmxCard({
             <Trans>Wallet</Trans>
           </div>
           <div>
-            {processedData?.esGmxBalance === undefined || processedData?.esGmxBalanceUsd === undefined
-              ? "..."
-              : formatBalanceAmountWithUsd(
-                  processedData.esGmxBalance,
-                  processedData.esGmxBalanceUsd,
-                  18,
-                  "esGMX",
-                  true
-                )}
+            <AmountWithUsdBalance
+              amount={processedData?.esGmxBalance}
+              decimals={18}
+              symbol="esGMX"
+              usd={processedData?.esGmxBalanceUsd}
+            />
           </div>
         </div>
         <div className="App-card-row">
@@ -105,15 +102,12 @@ export function EscrowedGmxCard({
             <Trans>Staked</Trans>
           </div>
           <div>
-            {processedData?.esGmxInStakedGmx === undefined || processedData?.esGmxInStakedGmxUsd === undefined
-              ? "..."
-              : formatBalanceAmountWithUsd(
-                  processedData.esGmxInStakedGmx,
-                  processedData.esGmxInStakedGmxUsd,
-                  18,
-                  "esGMX",
-                  true
-                )}
+            <AmountWithUsdBalance
+              amount={processedData?.esGmxInStakedGmx}
+              decimals={18}
+              symbol="esGMX"
+              usd={processedData?.esGmxInStakedGmxUsd}
+            />
           </div>
         </div>
         <div className="App-card-divider"></div>

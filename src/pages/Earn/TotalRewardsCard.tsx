@@ -14,9 +14,10 @@ import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
-import { formatAmount, formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
+import { formatAmount, formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -164,15 +165,11 @@ export function TotalRewardsCard({
             <div className="label">GMX</div>
             <Tooltip
               handle={
-                processedData?.totalGmxRewards === undefined || processedData?.totalGmxRewardsUsd === undefined
-                  ? "..."
-                  : formatBalanceAmountWithUsd(
-                      processedData.totalGmxRewards,
-                      processedData.totalGmxRewardsUsd,
-                      18,
-                      undefined,
-                      true
-                    )
+                <AmountWithUsdBalance
+                  amount={processedData?.totalGmxRewards}
+                  decimals={18}
+                  usd={processedData?.totalGmxRewardsUsd}
+                />
               }
               position="bottom-end"
               content={
@@ -186,16 +183,11 @@ export function TotalRewardsCard({
                     }
                     showDollar={false}
                     value={
-                      processedData?.extendedGmxTrackerRewards === undefined ||
-                      processedData?.extendedGmxTrackerRewardsUsd === undefined
-                        ? "..."
-                        : formatBalanceAmountWithUsd(
-                            processedData.extendedGmxTrackerRewards,
-                            processedData.extendedGmxTrackerRewardsUsd,
-                            18,
-                            undefined,
-                            true
-                          )
+                      <AmountWithUsdBalance
+                        amount={processedData?.extendedGmxTrackerRewards}
+                        decimals={18}
+                        usd={processedData?.extendedGmxTrackerRewardsUsd}
+                      />
                     }
                   />
                   <StatsTooltipRow
@@ -207,16 +199,11 @@ export function TotalRewardsCard({
                     }
                     showDollar={false}
                     value={
-                      processedData?.totalVesterRewards === undefined ||
-                      processedData?.totalVesterRewardsUsd === undefined
-                        ? "..."
-                        : formatBalanceAmountWithUsd(
-                            processedData.totalVesterRewards,
-                            processedData.totalVesterRewardsUsd,
-                            18,
-                            undefined,
-                            true
-                          )
+                      <AmountWithUsdBalance
+                        amount={processedData?.totalVesterRewards}
+                        decimals={18}
+                        usd={processedData?.totalVesterRewardsUsd}
+                      />
                     }
                   />
                 </>
@@ -228,15 +215,11 @@ export function TotalRewardsCard({
               <Trans>Escrowed GMX</Trans>
             </div>
             <div>
-              {processedData?.totalEsGmxRewards === undefined || processedData?.totalEsGmxRewardsUsd === undefined
-                ? "..."
-                : formatBalanceAmountWithUsd(
-                    processedData.totalEsGmxRewards,
-                    processedData.totalEsGmxRewardsUsd,
-                    18,
-                    undefined,
-                    true
-                  )}
+              <AmountWithUsdBalance
+                amount={processedData?.totalEsGmxRewards}
+                decimals={18}
+                usd={processedData?.totalEsGmxRewardsUsd}
+              />
             </div>
           </div>
           {isAnyNativeTokenRewards ? (

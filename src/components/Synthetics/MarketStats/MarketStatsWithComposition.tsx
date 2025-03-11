@@ -13,7 +13,7 @@ import {
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -31,7 +31,7 @@ import { bigintToNumber } from "lib/numbers";
 import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
 
-import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { MintableAmount } from "components/MintableAmount/MintableAmount";
 import { CompositionBar } from "./components/CompositionBar";
 import { CompositionTableGm } from "./components/CompositionTable";
@@ -344,15 +344,11 @@ export function MarketStatsWithComposition(p: Props) {
           <CardRow
             label={t`Wallet`}
             value={
-              marketToken
-                ? formatBalanceAmountWithUsd(
-                    marketBalance ?? 0n,
-                    marketBalanceUsd ?? 0n,
-                    marketToken?.decimals ?? 18,
-                    undefined,
-                    true
-                  )
-                : "..."
+              <AmountWithUsdBalance
+                amount={marketBalance}
+                decimals={marketToken?.decimals ?? 18}
+                usd={marketBalanceUsd}
+              />
             }
           />
 

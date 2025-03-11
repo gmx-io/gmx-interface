@@ -10,13 +10,7 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useChainId } from "lib/chains";
 import { ProcessedData, useENS } from "lib/legacy";
-import {
-  expandDecimals,
-  formatAmount,
-  formatBalanceAmount,
-  formatBalanceAmountWithUsd,
-  formatKeyAmount,
-} from "lib/numbers";
+import { expandDecimals, formatAmount, formatBalanceAmount, formatKeyAmount } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -24,7 +18,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
@@ -156,9 +150,12 @@ export function GmxAndVotingPowerCard({
             <Trans>Wallet</Trans>
           </div>
           <div>
-            {processedData?.gmxBalance === undefined || processedData?.gmxBalanceUsd === undefined
-              ? "..."
-              : formatBalanceAmountWithUsd(processedData.gmxBalance, processedData.gmxBalanceUsd, 18, "GMX", true)}
+            <AmountWithUsdBalance
+              amount={processedData?.gmxBalance}
+              decimals={18}
+              symbol="GMX"
+              usd={processedData?.gmxBalanceUsd}
+            />
           </div>
         </div>
         <div className="App-card-row">
@@ -166,15 +163,12 @@ export function GmxAndVotingPowerCard({
             <Trans>Staked</Trans>
           </div>
           <div>
-            {processedData?.gmxInStakedGmx === undefined || processedData?.gmxInStakedGmxUsd === undefined
-              ? "..."
-              : formatBalanceAmountWithUsd(
-                  processedData.gmxInStakedGmx,
-                  processedData.gmxInStakedGmxUsd,
-                  18,
-                  "GMX",
-                  true
-                )}
+            <AmountWithUsdBalance
+              amount={processedData?.gmxInStakedGmx}
+              decimals={18}
+              symbol="GMX"
+              usd={processedData?.gmxInStakedGmxUsd}
+            />
           </div>
         </div>
         {chainId === ARBITRUM && (
@@ -251,62 +245,45 @@ export function GmxAndVotingPowerCard({
             <Tooltip
               handle={`$${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
               position="bottom-end"
-              renderContent={() => {
-                return (
-                  <>
-                    <StatsTooltipRow
-                      label={t`GMX`}
-                      value={
-                        processedData?.extendedGmxTrackerRewards === undefined ||
-                        processedData?.extendedGmxTrackerRewardsUsd === undefined
-                          ? "..."
-                          : formatBalanceAmountWithUsd(
-                              processedData.extendedGmxTrackerRewards,
-                              processedData.extendedGmxTrackerRewardsUsd,
-                              18,
-                              undefined,
-                              true
-                            )
-                      }
-                      showDollar={false}
-                    />
-                    <StatsTooltipRow
-                      label="Escrowed GMX"
-                      value={
-                        processedData?.stakedGmxTrackerRewards === undefined ||
-                        processedData?.stakedGmxTrackerRewardsUsd === undefined
-                          ? "..."
-                          : formatBalanceAmountWithUsd(
-                              processedData.stakedGmxTrackerRewards,
-                              processedData.stakedGmxTrackerRewardsUsd,
-                              18,
-                              undefined,
-                              true
-                            )
-                      }
-                      showDollar={false}
-                    />
-                    {isAnyFeeGmxTrackerRewards && (
-                      <StatsTooltipRow
-                        label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                        value={
-                          processedData?.feeGmxTrackerRewards === undefined ||
-                          processedData?.feeGmxTrackerRewardsUsd === undefined
-                            ? "..."
-                            : formatBalanceAmountWithUsd(
-                                processedData.feeGmxTrackerRewards,
-                                processedData.feeGmxTrackerRewardsUsd,
-                                18,
-                                undefined,
-                                true
-                              )
-                        }
-                        showDollar={false}
+              content={
+                <>
+                  <StatsTooltipRow
+                    label={t`GMX`}
+                    value={
+                      <AmountWithUsdBalance
+                        amount={processedData?.extendedGmxTrackerRewards}
+                        decimals={18}
+                        usd={processedData?.extendedGmxTrackerRewardsUsd}
                       />
-                    )}
-                  </>
-                );
-              }}
+                    }
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label="Escrowed GMX"
+                    value={
+                      <AmountWithUsdBalance
+                        amount={processedData?.stakedGmxTrackerRewards}
+                        decimals={18}
+                        usd={processedData?.stakedGmxTrackerRewardsUsd}
+                      />
+                    }
+                    showDollar={false}
+                  />
+                  {isAnyFeeGmxTrackerRewards && (
+                    <StatsTooltipRow
+                      label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                      value={
+                        <AmountWithUsdBalance
+                          amount={processedData?.feeGmxTrackerRewards}
+                          decimals={18}
+                          usd={processedData?.feeGmxTrackerRewardsUsd}
+                        />
+                      }
+                      showDollar={false}
+                    />
+                  )}
+                </>
+              }
             />
           </div>
         </div>

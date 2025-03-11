@@ -6,9 +6,9 @@ import { getIcons } from "config/icons";
 import { GLP_PRICE_DECIMALS } from "config/ui";
 import { useChainId } from "lib/chains";
 import { GLP_DECIMALS, ProcessedData } from "lib/legacy";
-import { formatBalanceAmountWithUsd, formatKeyAmount } from "lib/numbers";
+import { formatKeyAmount } from "lib/numbers";
 
-import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -45,15 +45,12 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Trans>Wallet</Trans>
             </div>
             <div>
-              {processedData?.glpBalance === undefined || processedData?.glpBalanceUsd === undefined
-                ? "..."
-                : formatBalanceAmountWithUsd(
-                    processedData.glpBalance,
-                    processedData.glpBalanceUsd,
-                    GLP_DECIMALS,
-                    "GLP",
-                    true
-                  )}
+              <AmountWithUsdBalance
+                amount={processedData?.glpBalance}
+                decimals={GLP_DECIMALS}
+                symbol="GLP"
+                usd={processedData?.glpBalanceUsd}
+              />
             </div>
           </div>
           <div className="App-card-row">
@@ -61,15 +58,12 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Trans>Staked</Trans>
             </div>
             <div>
-              {processedData?.glpBalance === undefined || processedData?.glpBalanceUsd === undefined
-                ? "..."
-                : formatBalanceAmountWithUsd(
-                    processedData.glpBalance,
-                    processedData.glpBalanceUsd,
-                    GLP_DECIMALS,
-                    "GLP",
-                    true
-                  )}
+              <AmountWithUsdBalance
+                amount={processedData?.glpBalance}
+                decimals={GLP_DECIMALS}
+                symbol="GLP"
+                usd={processedData?.glpBalanceUsd}
+              />
             </div>
           </div>
           <div className="App-card-divider"></div>
@@ -123,32 +117,22 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
                     <StatsTooltipRow
                       label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
                       value={
-                        processedData?.feeGlpTrackerRewards === undefined ||
-                        processedData?.feeGlpTrackerRewardsUsd === undefined
-                          ? "..."
-                          : formatBalanceAmountWithUsd(
-                              processedData.feeGlpTrackerRewards,
-                              processedData.feeGlpTrackerRewardsUsd,
-                              18,
-                              undefined,
-                              true
-                            )
+                        <AmountWithUsdBalance
+                          amount={processedData?.feeGlpTrackerRewards}
+                          decimals={18}
+                          usd={processedData?.feeGlpTrackerRewardsUsd}
+                        />
                       }
                       showDollar={false}
                     />
                     <StatsTooltipRow
                       label="Escrowed GMX"
                       value={
-                        processedData?.stakedGlpTrackerRewards === undefined ||
-                        processedData?.stakedGlpTrackerRewardsUsd === undefined
-                          ? "..."
-                          : formatBalanceAmountWithUsd(
-                              processedData.stakedGlpTrackerRewards,
-                              processedData.stakedGlpTrackerRewardsUsd,
-                              18,
-                              undefined,
-                              true
-                            )
+                        <AmountWithUsdBalance
+                          amount={processedData?.stakedGlpTrackerRewards}
+                          decimals={18}
+                          usd={processedData?.stakedGlpTrackerRewardsUsd}
+                        />
                       }
                       showDollar={false}
                     />
