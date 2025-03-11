@@ -102,7 +102,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       unit_id: visualMultiplier.toString(),
       name: symbolName,
       type: "crypto",
-      description: `${prefix}${symbolName} / USD`,
+      description: `${prefix}${symbolName}/USD`,
       ticker: symbolName,
       session: "24x7",
       minmov: 1,
