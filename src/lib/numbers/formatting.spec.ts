@@ -1,7 +1,6 @@
 import { USD_DECIMALS } from "config/factors";
 import { describe, expect, it } from "vitest";
 import {
-  formatAmount,
   formatAmountHuman,
   formatBalanceAmount,
   formatBalanceAmountWithUsd,
@@ -9,6 +8,7 @@ import {
   formatUsdPrice,
   formatPercentage,
 } from "./formatting";
+import { PERCENT_PRECISION_DECIMALS, toBigNumberWithDecimals } from ".";
 
 const ONE_USD = 1000000000000000000000000000000n;
 
@@ -119,8 +119,8 @@ describe("formatFactor", () => {
 });
 
 describe("formatPercentage", () => {
-  it.only("should format a basic percentage", () => {
-    expect(formatPercentage(100n, { bps: true })).toBe("1.0000%");
+  it("should format a basic percentage", () => {
+    expect(formatPercentage(100n, { displayDecimals: 4 })).toBe("1.0000%");
     expect(formatPercentage(2500n)).toBe("25.0000%");
     expect(formatPercentage(123456n)).toBe("1234.5600%");
   });
@@ -140,7 +140,11 @@ describe("formatPercentage", () => {
   });
 
   it("should handle basis points (bps) formatting", () => {
-    expect(formatPercentage(100n, { bps: true })).toBe("1.00%");
-    expect(formatPercentage(10000n, { bps: true })).toBe("100.00%");
+    expect(
+      formatPercentage(toBigNumberWithDecimals("1", PERCENT_PRECISION_DECIMALS), { bps: false, displayDecimals: 4 })
+    ).toBe("1.0000%");
+    expect(
+      formatPercentage(toBigNumberWithDecimals("0.999", PERCENT_PRECISION_DECIMALS), { bps: false, displayDecimals: 5 })
+    ).toBe("0.99900%");
   });
 });

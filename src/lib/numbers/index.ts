@@ -7,7 +7,7 @@ import { bigintToNumber } from "sdk/utils/numbers";
 export * from "sdk/utils/numbers";
 export * from "./formatting";
 
-const PRECISION_DECIMALS = 30;
+export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
@@ -237,7 +237,10 @@ export function absDiffBps(value: bigint, base: bigint) {
   return bigMath.mulDiv(bigMath.abs(value - base), BASIS_POINTS_DIVISOR_BIGINT, base);
 }
 
-export function roundBigNumberWithDecimals(value: BigNumberish, opts: { displayDecimals: number, tokenDecimals: number }): bigint {
+export function roundBigNumberWithDecimals(
+  value: BigNumberish,
+  opts: { displayDecimals: number; tokenDecimals: number }
+): bigint {
   let valueString = value.toString();
   let isNegative = false;
 
@@ -258,9 +261,9 @@ export function roundBigNumberWithDecimals(value: BigNumberish, opts: { displayD
   const partToRound = valueString.slice(valueString.length - opts.tokenDecimals + opts.displayDecimals);
 
   let mainPartBigInt = BigInt(mainPart);
-  
+
   let returnValue = mainPartBigInt;
-  
+
   if (partToRound.length !== 0) {
     let partToRoundBigInt = BigInt(partToRound);
     if (partToRoundBigInt >= BigInt(5 + "0".repeat(partToRound.length - 1))) {
@@ -273,20 +276,21 @@ export function roundBigNumberWithDecimals(value: BigNumberish, opts: { displayD
   return isNegative ? returnValue * -1n : returnValue;
 }
 
-export function toBigNumberWithDecimals(value: string): bigint {
+export function toBigNumberWithDecimals(value: string, decimals: number): bigint {
   if (!value) return BN_ZERO;
 
   const parts = value.split(".");
   const integerPart = parts[0];
   const decimalPart = parts.length > 1 ? parts[1] : "";
 
-  const paddingZeros = PRECISION_DECIMALS - decimalPart.length;
+  const paddingZeros = decimals - decimalPart.length;
 
   if (paddingZeros >= 0) {
     const result = integerPart + decimalPart + "0".repeat(paddingZeros);
     return BigInt(result);
   } else {
-    const result = integerPart + decimalPart.substring(0, PRECISION_DECIMALS);
+    const result = integerPart + decimalPart.substring(0, decimals);
     return BigInt(result);
   }
 }
+
