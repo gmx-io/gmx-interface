@@ -13,13 +13,19 @@ import {
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
-import { TokenData, TokensData, TokensRatio } from "domain/synthetics/tokens";
+import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { ethers } from "ethers";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "sdk/types/trade";
+import {
+  ExternalSwapQuote,
+  GmSwapFees,
+  NextPositionValues,
+  SwapPathStats,
+  TradeFees,
+  TriggerThresholdType,
+} from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
 export type ValidationTooltipName = "maxLeverage";
@@ -58,6 +64,7 @@ export function getSwapError(p: {
   markRatio: TokensRatio | undefined;
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   isWrapOrUnwrap: boolean;
   swapLiquidity: bigint | undefined;
 }): ValidationResult {
@@ -74,6 +81,7 @@ export function getSwapError(p: {
     isWrapOrUnwrap,
     swapLiquidity,
     swapPathStats,
+    externalSwapQuote,
   } = p;
 
   if (!fromToken || !toToken) {
@@ -104,7 +112,12 @@ export function getSwapError(p: {
     return [t`Insufficient liquidity`];
   }
 
-  if (!swapPathStats?.swapPath || (!isLimit && swapPathStats.swapSteps.some((step) => step.isOutLiquidity))) {
+  const noInternalSwap =
+    !swapPathStats?.swapPath || (!isLimit && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
+
+  const noExternalSwap = !externalSwapQuote;
+
+  if (noInternalSwap && noExternalSwap) {
     return [t`Couldn't find a swap path with enough liquidity`];
   }
 
@@ -152,6 +165,7 @@ export function getIncreaseError(p: {
   fees: TradeFees | undefined;
   markPrice: bigint | undefined;
   triggerPrice: bigint | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   swapPathStats: SwapPathStats | undefined;
   collateralLiquidity: bigint | undefined;
   longLiquidity: bigint | undefined;
@@ -174,6 +188,7 @@ export function getIncreaseError(p: {
     existingPosition,
     fees,
     swapPathStats,
+    externalSwapQuote,
     collateralLiquidity,
     longLiquidity,
     shortLiquidity,
@@ -214,14 +229,16 @@ export function getIncreaseError(p: {
   }
 
   const isNeedSwap = !getIsEquivalentTokens(initialCollateralToken, targetCollateralToken);
+  const noInternalSwap = !swapPathStats?.swapPath?.length;
+  const noExternalSwap = !externalSwapQuote;
 
   if (isNeedSwap) {
-    if (!swapPathStats?.swapPath?.length) {
+    if (noInternalSwap && noExternalSwap) {
       return [t`No swap path found`, "noSwapPath"];
     }
 
     if (!isLimit) {
-      if (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n)) {
+      if (noExternalSwap && (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n))) {
         return [t`Insufficient liquidity to swap collateral`];
       }
     }

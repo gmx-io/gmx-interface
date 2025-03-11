@@ -5,7 +5,12 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData } from "domain/synthetics/tokens";
-import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "domain/synthetics/trade";
+import {
+  DecreasePositionAmounts,
+  ExternalSwapQuote,
+  IncreasePositionAmounts,
+  SwapAmounts,
+} from "domain/synthetics/trade";
 import { ErrorLike } from "lib/parseError";
 import { bigintToNumber, formatPercentage, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -130,6 +135,7 @@ export function initIncreaseOrderMetricData({
   increaseAmounts,
   initialCollateralAllowance,
   hasExistingPosition,
+  externalSwapQuote,
   leverage,
   executionFee,
   orderType,
@@ -157,6 +163,7 @@ export function initIncreaseOrderMetricData({
   allowedSlippage: number | undefined;
   hasReferralCode: boolean;
   hasExistingPosition: boolean | undefined;
+  externalSwapQuote: ExternalSwapQuote | undefined;
   triggerPrice: bigint | undefined;
   marketInfo: MarketInfo | undefined;
   subaccount: Subaccount | undefined;
@@ -213,6 +220,17 @@ export function initIncreaseOrderMetricData({
       priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
     priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
     netRate1h: parseFloat(formatRatePercentage(netRate1h)),
+    externalSwapQuote: externalSwapQuote
+      ? {
+          inTokenAddress: externalSwapQuote.inTokenAddress,
+          outTokenAddress: externalSwapQuote.outTokenAddress,
+          amountIn: formatAmountForMetrics(externalSwapQuote.amountIn),
+          amountOut: formatAmountForMetrics(externalSwapQuote.amountOut),
+          usdIn: formatAmountForMetrics(externalSwapQuote.usdIn),
+          usdOut: formatAmountForMetrics(externalSwapQuote.usdOut),
+          feesUsd: formatAmountForMetrics(externalSwapQuote.feesUsd),
+        }
+      : undefined,
     interactionId,
   });
 }

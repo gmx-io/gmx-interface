@@ -31,6 +31,7 @@ export type Token = {
   isV1Available?: boolean;
   isPlatformToken?: boolean;
   isPlatformTradingToken?: boolean;
+  shouldResetAllowance?: boolean;
 };
 
 export type TokenInfo = Token & {
@@ -98,6 +99,11 @@ export type TokensRatio = {
   ratio: bigint;
   largestToken: Token;
   smallestToken: Token;
+};
+
+export type TokensRatioAndSlippage = TokensRatio & {
+  allowedSwapSlippageBps: bigint;
+  acceptablePrice: bigint;
 };
 
 export type TokenBalancesData = {

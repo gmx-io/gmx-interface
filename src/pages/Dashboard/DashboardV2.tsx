@@ -3,8 +3,6 @@ import { Trans, t } from "@lingui/macro";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 
-import { getIsSyntheticsSupported } from "config/features";
-import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
 import { useInfoTokens } from "domain/tokens";
@@ -14,6 +12,7 @@ import { GLP_DECIMALS, GMX_DECIMALS, getPageTitle } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { useDashboardChainStatsMulticall } from "./useDashboardChainStatsMulticall";
 
 import SEO from "components/Common/SEO";
@@ -163,7 +162,7 @@ export default function DashboardV2() {
                 adjustedUsdgSupply={adjustedUsdgSupply}
               />
             )}
-            {isV2 && getIsSyntheticsSupported(chainId) && (
+            {isV2 && (
               <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
                 <MarketsList />
               </SyntheticsStateContextProvider>

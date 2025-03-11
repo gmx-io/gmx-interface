@@ -56,11 +56,13 @@ const colors = {
   red: {
     400: "#ff637a",
     500: "#FF506A",
+    700: "#B33055"
   },
   green: {
     300: "#56dba8",
     400: "#8CF3CB",
     500: "#0FDE8D",
+    700: "#178969"
   },
   white: "#ffffff",
   black: "#000000",

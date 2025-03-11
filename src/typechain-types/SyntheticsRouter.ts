@@ -22,7 +22,9 @@ import type {
 } from "./common";
 
 export interface SyntheticsRouterInterface extends Interface {
-  getFunction(nameOrSignature: "pluginTransfer" | "roleStore"): FunctionFragment;
+  getFunction(
+    nameOrSignature: "pluginTransfer" | "roleStore"
+  ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "pluginTransfer",
@@ -30,7 +32,10 @@ export interface SyntheticsRouterInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "pluginTransfer", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "pluginTransfer",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
 }
 
@@ -51,40 +56,64 @@ export interface SyntheticsRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   pluginTransfer: TypedContractMethod<
-    [token: AddressLike, account: AddressLike, receiver: AddressLike, amount: BigNumberish],
+    [
+      token: AddressLike,
+      account: AddressLike,
+      receiver: AddressLike,
+      amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
   getFunction(
     nameOrSignature: "pluginTransfer"
   ): TypedContractMethod<
-    [token: AddressLike, account: AddressLike, receiver: AddressLike, amount: BigNumberish],
+    [
+      token: AddressLike,
+      account: AddressLike,
+      receiver: AddressLike,
+      amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "roleStore"
+  ): TypedContractMethod<[], [string], "view">;
 
   filters: {};
 }

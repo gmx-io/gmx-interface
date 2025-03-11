@@ -1,10 +1,11 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectBlockTimestampData, selectIsFirstOrder } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -20,6 +21,7 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -56,10 +58,17 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { isPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
 }
+
+const EMPTY_TRIGGER_RATIO = {
+  ratio: 0n,
+  largestToken: undefined,
+  smallestToken: undefined,
+};
 
 export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
   const { chainId } = useChainId();
@@ -82,10 +91,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
 
+  const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+
   const { shouldDisableValidationForTesting } = useSettings();
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const { triggerRatio = EMPTY_TRIGGER_RATIO } = useSelector(selectTradeboxTradeRatios);
   const { account, signer } = useWallet();
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
@@ -152,6 +164,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         toTokenAddress: toToken.address,
         orderType,
         minOutputAmount: swapAmounts.minOutputAmount,
+        triggerRatio: triggerRatio?.ratio ?? 0n,
         referralCode: referralCodeForTxn,
         executionFee: executionFee.feeTokenAmount,
         executionGasLimit: executionFee.gasLimit,
@@ -186,6 +199,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       setPendingOrder,
       shouldDisableValidationForTesting,
       blockTimestampData,
+      triggerRatio,
     ]
   );
 
@@ -226,6 +240,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         interactionId: marketInfo?.name
           ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name))
           : undefined,
+        externalSwapQuote: increaseAmounts?.externalSwapQuote,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -259,12 +274,21 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+      const additionalErrorContent = increaseAmounts.externalSwapQuote ? (
+        <>
+          <br />
+          <br />
+          <Trans>External swap is temporarily disabled. Please try again.</Trans>
+        </>
+      ) : undefined;
+
       return createIncreaseOrderTxn({
         chainId,
         signer,
         subaccount,
         metricId: metricData.metricId,
         blockTimestampData,
+        additionalErrorContent,
         createIncreaseOrderParams: {
           account,
           marketAddress: marketInfo.marketTokenAddress,
@@ -273,6 +297,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           targetCollateralAddress: collateralToken.address,
           collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
           swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+          externalSwapQuote: increaseAmounts.externalSwapQuote,
           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
           sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
           triggerPrice: isLimit ? triggerPrice : undefined,
@@ -335,6 +360,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch((e) => {
+          if (isPossibleExternalSwapError(e) && increaseAmounts.externalSwapQuote) {
+            setShouldFallbackToInternalSwap(true);
+          }
+
+          throw e;
+        })
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
@@ -370,6 +402,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       updateSltpEntries,
       getExecutionFeeAmountForEntry,
       autoCancelOrdersLimit,
+      setShouldFallbackToInternalSwap,
     ]
   );
 
