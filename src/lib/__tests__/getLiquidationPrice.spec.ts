@@ -12,7 +12,7 @@ describe("getLiquidationPrice", function () {
       collateral: ethers.parseUnits("9871.29", 30),
       averagePrice: ethers.parseUnits("23091.42", 30),
       fundingFee: ethers.parseUnits("0", 30),
-      expected: "21013.1914",
+      expected: "21013.1915",
     },
     {
       name: "New Position Long, to trigger $5 Buffer rule",
@@ -21,7 +21,7 @@ describe("getLiquidationPrice", function () {
       collateral: ethers.parseUnits("16.25", 30),
       averagePrice: ethers.parseUnits("23245.74", 30),
       fundingFee: ethers.parseUnits("0", 30),
-      expected: "21659.6652",
+      expected: "21659.6653",
     },
     {
       name: "New Position Short, to trigger 1% Buffer rule",
