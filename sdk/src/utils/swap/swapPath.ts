@@ -1,33 +1,27 @@
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { MarketsInfoData } from "types/markets";
-import { createSwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "./swapRouting";
+import { FindSwapPath, MarketsGraph, SwapEstimator, SwapRoute } from "types/trade";
+import { findAllPaths, getBestSwapPath } from "./swapRouting";
 import { getSwapPathStats } from "./swapStats";
 import { getSwapPathComparator } from "./swapValues";
-import { FindSwapPath } from "types/trade";
 
-const getWrappedFromAddress = (chainId: number, fromTokenAddress: string | undefined) => {
-  const wrappedFromAddress = fromTokenAddress ? convertTokenAddress(chainId, fromTokenAddress, "wrapped") : undefined;
-  return wrappedFromAddress;
+export const getWrappedAddress = (chainId: number, address: string | undefined) => {
+  return address ? convertTokenAddress(chainId, address, "wrapped") : undefined;
 };
 
-const getWrappedToAddress = (chainId: number, toTokenAddress: string | undefined) => {
-  const wrappedToAddress = toTokenAddress ? convertTokenAddress(chainId, toTokenAddress, "wrapped") : undefined;
-  return wrappedToAddress;
-};
-
-const findAllSwapPaths = (params: {
+export const findAllSwapPaths = (params: {
   chainId: number;
   fromTokenAddress: string | undefined;
   toTokenAddress: string | undefined;
   marketsInfoData: MarketsInfoData;
+  graph: MarketsGraph | undefined;
+  wrappedFromAddress: string | undefined;
+  wrappedToAddress: string | undefined;
 }) => {
-  const { chainId, fromTokenAddress, toTokenAddress, marketsInfoData } = params;
+  const { chainId, fromTokenAddress, toTokenAddress, marketsInfoData, graph, wrappedFromAddress, wrappedToAddress } =
+    params;
 
   if (!marketsInfoData) return undefined;
-
-  const graph = getMarketsGraph(Object.values(marketsInfoData));
-  const wrappedFromAddress = getWrappedFromAddress(chainId, fromTokenAddress);
-  const wrappedToAddress = getWrappedToAddress(chainId, toTokenAddress);
 
   const wrappedToken = getWrappedToken(chainId);
   const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
@@ -47,13 +41,12 @@ export const createFindSwapPath = (params: {
   chainId: number;
   fromTokenAddress: string | undefined;
   toTokenAddress: string | undefined;
-  marketsInfoData: MarketsInfoData;
+  marketsInfoData: MarketsInfoData | undefined;
+  estimator: SwapEstimator | undefined;
+  allPaths: SwapRoute[] | undefined;
 }): FindSwapPath => {
-  const { chainId, fromTokenAddress, toTokenAddress, marketsInfoData } = params;
-
+  const { chainId, fromTokenAddress, toTokenAddress, marketsInfoData, estimator, allPaths } = params;
   const wrappedToken = getWrappedToken(chainId);
-  const allPaths = findAllSwapPaths(params);
-  const estimator = createSwapEstimator(marketsInfoData);
 
   const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => {
     if (!allPaths?.length || !estimator || !marketsInfoData || !fromTokenAddress) {

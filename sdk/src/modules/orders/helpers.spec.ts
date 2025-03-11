@@ -61,12 +61,16 @@ describe("increaseOrderHelper", () => {
 
     await arbitrumSdk.orders.long(mockParams);
 
-    expect(findSwapPathSpy).toHaveBeenCalledWith({
-      chainId: ARBITRUM,
-      fromTokenAddress: payToken.address,
-      toTokenAddress: collateralToken.address,
-      marketsInfoData: expect.any(Object),
-    });
+    expect(findSwapPathSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chainId: ARBITRUM,
+        fromTokenAddress: payToken.address,
+        toTokenAddress: collateralToken.address,
+        marketsInfoData: expect.any(Object),
+        estimator: expect.any(Function),
+        allPaths: expect.any(Array),
+      })
+    );
 
     expect(getIncreasePositionAmountsSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -80,19 +84,21 @@ describe("increaseOrderHelper", () => {
 
     expect(createIncreaseOrderSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        marketInfo: market,
         marketsInfoData: expect.any(Object),
         tokensData: expect.any(Object),
+        marketInfo: market,
+        indexToken: market.indexToken,
         isLimit: false,
         marketAddress: market.marketTokenAddress,
         allowedSlippage: 125,
         collateralTokenAddress: collateralToken.address,
+        collateralToken,
         isLong: true,
         receiveTokenAddress: collateralToken.address,
         increaseAmounts: expect.objectContaining({
           initialCollateralAmount: 1000n,
           estimatedLeverage: 50000n,
-          triggerPrice: 0n,
+          triggerPrice: undefined,
           acceptablePrice: 0n,
           acceptablePriceDeltaBps: 0n,
           positionFeeUsd: 0n,
@@ -104,8 +110,8 @@ describe("increaseOrderHelper", () => {
           positionPriceImpactDeltaUsd: 0n,
           limitOrderType: undefined,
           triggerThresholdType: undefined,
+          externalSwapQuote: undefined,
         }),
-        triggerPrice: undefined,
       })
     );
   });

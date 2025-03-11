@@ -4,11 +4,12 @@ import { TokenData, TokensData, TokensRatio } from "types/tokens";
 import { FindSwapPath, SwapAmounts } from "types/trade";
 import { getByKey } from "utils/objects";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
-import { createFindSwapPath } from "utils/swap/swapPath";
+import { createFindSwapPath, findAllSwapPaths, getWrappedAddress } from "utils/swap/swapPath";
 import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
 import { getIncreasePositionAmounts } from "utils/trade/amounts";
 
 import type { GmxSdk } from "../..";
+import { createSwapEstimator, getMarketsGraph } from "utils/swap/swapRouting";
 
 /** Base Optional params for helpers, allows to avoid calling markets, tokens and uiFeeFactor methods if they are already passed */
 interface BaseOptionalParams {
@@ -108,11 +109,29 @@ export async function increaseOrderHelper(
   const receiveTokenAddress = params.receiveTokenAddress ?? collateralToken.address;
   const allowedSlippage = params.allowedSlippageBps ?? 100;
 
+  const graph = getMarketsGraph(Object.values(marketsInfoData));
+  const wrappedFromAddress = getWrappedAddress(sdk.chainId, params.payTokenAddress);
+  const wrappedToAddress = getWrappedAddress(sdk.chainId, receiveTokenAddress);
+
+  const allPaths = findAllSwapPaths({
+    chainId: sdk.chainId,
+    fromTokenAddress: params.payTokenAddress,
+    toTokenAddress: receiveTokenAddress,
+    marketsInfoData,
+    graph,
+    wrappedFromAddress,
+    wrappedToAddress,
+  });
+
+  const estimator = createSwapEstimator(marketsInfoData);
+
   const findSwapPath = createFindSwapPath({
     chainId: sdk.chainId,
     fromTokenAddress: params.payTokenAddress,
     toTokenAddress: receiveTokenAddress,
     marketsInfoData,
+    estimator,
+    allPaths,
   });
 
   const payOrSizeAmount = "payAmount" in params ? params.payAmount : params.sizeAmount;
@@ -135,6 +154,7 @@ export async function increaseOrderHelper(
     uiFeeFactor,
     acceptablePriceImpactBuffer: params.acceptablePriceImpactBuffer,
     fixedAcceptablePriceImpactBps: params.fixedAcceptablePriceImpactBps,
+    externalSwapQuote: undefined,
   });
 
   const createIncreaseOrderParams: Parameters<typeof sdk.orders.createIncreaseOrder>[0] = {
@@ -220,11 +240,29 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     return undefined;
   }
 
+  const graph = getMarketsGraph(Object.values(marketsInfoData));
+  const wrappedFromAddress = getWrappedAddress(sdk.chainId, params.fromTokenAddress);
+  const wrappedToAddress = getWrappedAddress(sdk.chainId, params.toTokenAddress);
+
+  const allPaths = findAllSwapPaths({
+    chainId: sdk.chainId,
+    fromTokenAddress: params.fromTokenAddress,
+    toTokenAddress: params.toTokenAddress,
+    marketsInfoData,
+    graph,
+    wrappedFromAddress,
+    wrappedToAddress,
+  });
+
+  const estimator = createSwapEstimator(marketsInfoData);
+
   const findSwapPath = createFindSwapPath({
     chainId: sdk.chainId,
     fromTokenAddress: params.fromTokenAddress,
     toTokenAddress: params.toTokenAddress,
     marketsInfoData,
+    estimator,
+    allPaths,
   });
 
   const isWrapOrUnwrap = Boolean(
