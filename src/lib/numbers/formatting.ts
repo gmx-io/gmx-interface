@@ -10,6 +10,7 @@ import {
   padDecimals,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
+  roundBigNumberWithDecimals,
   trimZeroDecimals,
 } from ".";
 
@@ -358,7 +359,11 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  let amountStr = ethers.formatUnits(BigInt(amount) * BigInt(visualMultiplier ?? 1), tokenDecimals);
+  const amountBigInt = roundBigNumberWithDecimals(BigInt(amount) * BigInt(visualMultiplier ?? 1), {
+    displayDecimals,
+    tokenDecimals,
+  });
+  let amountStr = ethers.formatUnits(amountBigInt, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);

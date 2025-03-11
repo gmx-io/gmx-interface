@@ -236,3 +236,57 @@ export function absDiffBps(value: bigint, base: bigint) {
 
   return bigMath.mulDiv(bigMath.abs(value - base), BASIS_POINTS_DIVISOR_BIGINT, base);
 }
+
+export function roundBigNumberWithDecimals(value: BigNumberish, opts: { displayDecimals: number, tokenDecimals: number }): bigint {
+  let valueString = value.toString();
+  let isNegative = false;
+
+  if (opts.displayDecimals === opts.tokenDecimals) {
+    return BigInt(valueString);
+  }
+
+  if (valueString[0] === "-") {
+    valueString = valueString.slice(1);
+    isNegative = true;
+  }
+
+  if (valueString.length < opts.tokenDecimals) {
+    valueString = valueString.padStart(opts.tokenDecimals, "0");
+  }
+
+  const mainPart = valueString.slice(0, valueString.length - opts.tokenDecimals + opts.displayDecimals);
+  const partToRound = valueString.slice(valueString.length - opts.tokenDecimals + opts.displayDecimals);
+
+  let mainPartBigInt = BigInt(mainPart);
+  
+  let returnValue = mainPartBigInt;
+  
+  if (partToRound.length !== 0) {
+    let partToRoundBigInt = BigInt(partToRound);
+    if (partToRoundBigInt >= BigInt(5 + "0".repeat(partToRound.length - 1))) {
+      mainPartBigInt += 1n;
+    }
+
+    returnValue = BigInt(mainPartBigInt.toString() + new Array(partToRound.length).fill("0").join(""));
+  }
+
+  return isNegative ? returnValue * -1n : returnValue;
+}
+
+export function toBigNumberWithDecimals(value: string): bigint {
+  if (!value) return BN_ZERO;
+
+  const parts = value.split(".");
+  const integerPart = parts[0];
+  const decimalPart = parts.length > 1 ? parts[1] : "";
+
+  const paddingZeros = PRECISION_DECIMALS - decimalPart.length;
+
+  if (paddingZeros >= 0) {
+    const result = integerPart + decimalPart + "0".repeat(paddingZeros);
+    return BigInt(result);
+  } else {
+    const result = integerPart + decimalPart.substring(0, PRECISION_DECIMALS);
+    return BigInt(result);
+  }
+}
