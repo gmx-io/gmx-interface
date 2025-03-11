@@ -2181,8 +2181,8 @@ msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes 
 msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees {rebatedTextWithSparkle}"
-msgstr "Fees {rebatedTextWithSparkle}"
+#~ msgid "Fees {rebatedTextWithSparkle}"
+#~ msgstr "Fees {rebatedTextWithSparkle}"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
@@ -2528,8 +2528,8 @@ msgid "APRs are updated weekly on Wednesday and will depend on the fees collecte
 msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Fees (Incl. Swap)"
-#~ msgstr "Fees (Incl. Swap)"
+msgid "Fees (Incl. Swap)"
+msgstr "Fees (Incl. Swap)"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Generate & Activate Subaccount"
@@ -3237,6 +3237,10 @@ msgstr "GM can be sold for {0} and {1} for this market up to the specified selli
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price"
 msgstr "Order Acceptable Price"
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "VOL."
+msgstr "VOL."
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Max Capacity for {0} Reached"
@@ -4289,6 +4293,10 @@ msgstr "Failed Stop Market"
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Version and Network"
+msgstr "Version and Network"
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4563,7 +4571,6 @@ msgid "Combined take profits are at maximum (100%). Decrease existing values to 
 msgstr "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "Networks"
 
@@ -4799,6 +4806,10 @@ msgstr "Harmonix"
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
 msgstr "Invalid NFT Address"
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr "LIQ."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"

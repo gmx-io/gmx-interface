@@ -1,13 +1,11 @@
 import { Trans, t } from "@lingui/macro";
 
 import PageTitle from "components/PageTitle/PageTitle";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
 export function DashboardPageTitle({ tradePageVersion }: { tradePageVersion: number }) {
   return (
     <PageTitle
       title={t`Tokens`}
-      afterTitle={<VersionSwitch className="ml-15" />}
       subtitle={
         tradePageVersion === 1 ? (
           <>

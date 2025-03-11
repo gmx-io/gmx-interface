@@ -8,7 +8,6 @@ import { USD_DECIMALS } from "config/factors";
 import { t } from "@lingui/macro";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getPriceDecimals, getToken, getV1Tokens } from "sdk/configs/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -354,9 +353,6 @@ export default function ExchangeTVChart(props) {
               </div>
             </div>
           </div>
-        </div>
-        <div className="ExchangeChart-info VersionSwitch-wrapper">
-          <VersionSwitch />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
