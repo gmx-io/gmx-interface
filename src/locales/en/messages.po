@@ -3925,8 +3925,6 @@ msgstr "Trading incentives program is live on {avalancheLink}."
 msgid "Sending sell request"
 msgstr "Sending sell request"
 
-#: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -5809,8 +5807,8 @@ msgid "Claiming failed"
 msgstr "Claiming failed"
 
 #: src/components/AprInfo/AprInfo.tsx
-msgid "The base APY estimate will be available {0} to ensure accurate data display."
-msgstr "The base APY estimate will be available {0} to ensure accurate data display."
+#~ msgid "The base APY estimate will be available {0} to ensure accurate data display."
+#~ msgstr "The base APY estimate will be available {0} to ensure accurate data display."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"

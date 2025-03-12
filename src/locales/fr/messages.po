@@ -3922,8 +3922,6 @@ msgstr ""
 msgid "Sending sell request"
 msgstr ""
 
-#: src/components/AprInfo/AprInfo.tsx
-#: src/components/AprInfo/AprInfo.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -5814,8 +5812,8 @@ msgid "Claiming failed"
 msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
-msgid "The base APY estimate will be available {0} to ensure accurate data display."
-msgstr ""
+#~ msgid "The base APY estimate will be available {0} to ensure accurate data display."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"

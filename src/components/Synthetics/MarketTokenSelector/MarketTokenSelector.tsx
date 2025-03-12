@@ -6,7 +6,6 @@ import { useHistory } from "react-router-dom";
 import { useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
-import { getMarketListingDate } from "config/markets";
 import {
   TokenFavoritesTabOption,
   useTokensFavorites,
@@ -24,7 +23,6 @@ import {
   getMintableMarketTokens,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
-import { getIsBaseApyReadyToBeShown } from "domain/synthetics/markets/getIsBaseApyReadyToBeShown";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { formatAmountHuman, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -437,13 +435,13 @@ function useFilterSortTokensInfo({
       favoriteTokens.includes(token.market.address)
     );
 
-    const comparator = marketSortingComparatorBuilder({ chainId, orderBy, direction });
+    const comparator = marketSortingComparatorBuilder({ orderBy, direction });
 
     const sortedFavorites = favorites.sort(comparator);
     const sortedNonFavorites = nonFavorites.sort(comparator);
 
     return [...sortedFavorites, ...sortedNonFavorites];
-  }, [orderBy, direction, filteredTokensInfo, chainId, favoriteTokens]);
+  }, [orderBy, direction, filteredTokensInfo, favoriteTokens]);
 
   return sortedTokensInfo;
 }
@@ -539,15 +537,7 @@ function MarketTokenListItem({
   );
 }
 
-function marketSortingComparatorBuilder({
-  chainId,
-  orderBy,
-  direction,
-}: {
-  chainId: number;
-  orderBy: SortField;
-  direction: SortDirection;
-}) {
+function marketSortingComparatorBuilder({ orderBy, direction }: { orderBy: SortField; direction: SortDirection }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
   return (
@@ -584,14 +574,10 @@ function marketSortingComparatorBuilder({
 
     if (orderBy === "apy") {
       let aprA = a.incentiveApr ?? 0n;
-      if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(a.marketInfo)))) {
-        aprA += a.apr ?? 0n;
-      }
+      aprA += a.apr ?? 0n;
 
       let aprB = b.incentiveApr ?? 0n;
-      if (getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, getGlvOrMarketAddress(b.marketInfo)))) {
-        aprB += b.apr ?? 0n;
-      }
+      aprB += b.apr ?? 0n;
 
       return aprA > aprB ? directionMultiplier : -directionMultiplier;
     }
