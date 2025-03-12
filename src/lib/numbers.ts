@@ -241,11 +241,11 @@ export function formatPercentage(
   percentage?: bigint,
   opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean } = {}
 ) {
-  const { fallbackToZero = false, signed = false, displayDecimals = 4, bps = true } = opts;
+  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true } = opts;
 
-  if (typeof percentage !== "bigint") {
+  if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, bps ? 2 : PERCENT_PRECISION_DECIMALS + 2, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
     }
 
     return undefined;

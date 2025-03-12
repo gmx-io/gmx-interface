@@ -230,7 +230,7 @@ describe("roundBigNumberWithDecimals", () => {
         tokenDecimals: PRECISION_DECIMALS,
         displayDecimals: 25,
       })
-    ).toBe(toBigNumberWithDecimals("0.5000000000000000000000000000", PRECISION_DECIMALS));
+    ).toBe(toBigNumberWithDecimals("0.5", PRECISION_DECIMALS));
     expect(
       roundBigNumberWithDecimals(toBigNumberWithDecimals("123.456789", PRECISION_DECIMALS), {
         tokenDecimals: PRECISION_DECIMALS,
@@ -277,17 +277,17 @@ describe("roundBigNumberWithDecimals", () => {
 describe("formatPercentage", () => {
   it("should format a basic percentage", () => {
     expect(formatPercentage(100n, { displayDecimals: 4 })).toBe("1.0000%");
-    expect(formatPercentage(2500n)).toBe("25.0000%");
-    expect(formatPercentage(123456n)).toBe("1234.5600%");
+    expect(formatPercentage(2500n)).toBe("25.00%");
+    expect(formatPercentage(123456n)).toBe("1234.56%");
   });
 
   it("should handle undefined input with fallbackToZero", () => {
-    expect(formatPercentage(undefined, { fallbackToZero: true })).toBe("0.0000%");
+    expect(formatPercentage(undefined, { fallbackToZero: true })).toBe("0.00%");
   });
 
   it("should display signed percentage", () => {
-    expect(formatPercentage(100n, { signed: true })).toBe("+1.0000%");
-    expect(formatPercentage(-100n, { signed: true })).toBe("-1.0000%");
+    expect(formatPercentage(100n, { signed: true })).toBe("+1.00%");
+    expect(formatPercentage(-100n, { signed: true })).toBe("-1.00%");
   });
 
   it("should format with different displayDecimals", () => {
