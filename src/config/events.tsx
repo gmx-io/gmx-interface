@@ -44,7 +44,7 @@ export const appEventsData: EventData[] = [
         /USD and <TokenSymbolWithIcon symbol="OM" />
         /USD, or <Link to="/pools">provide liquidity</Link> to these pools by purchasing{" "}
         <span className="whitespace-nowrap">
-          <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC]
+          <TokenSymbolWithIcon symbol="GLV" />
         </span>{" "}
         or using <TokenSymbolWithIcon symbol="WBTC" />, <TokenSymbolWithIcon symbol="WETH" /> or{" "}
         <TokenSymbolWithIcon symbol="USDC" />.
