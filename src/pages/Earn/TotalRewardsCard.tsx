@@ -228,8 +228,11 @@ export function TotalRewardsCard({
                 {nativeTokenSymbol} ({wrappedTokenSymbol})
               </div>
               <div>
-                {formatKeyAmount(processedData, "totalNativeTokenRewards", 18, 4, true)} ($
-                {formatKeyAmount(processedData, "totalNativeTokenRewardsUsd", USD_DECIMALS, 2, true)})
+                <AmountWithUsdBalance
+                  amount={processedData?.totalNativeTokenRewards}
+                  decimals={18}
+                  usd={processedData?.totalNativeTokenRewardsUsd}
+                />
               </div>
             </div>
           ) : null}

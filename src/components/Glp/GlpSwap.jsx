@@ -64,7 +64,6 @@ import {
   formatAmountFree,
   formatAmountHuman,
   formatDeltaUsd,
-  formatKeyAmount,
   formatUsdPrice,
   limitDecimals,
   parseValue,
@@ -1661,8 +1660,12 @@ export default function GlpSwap(props) {
                       <Trans>Wallet</Trans>
                     </div>
                     <div>
-                      {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} ($
-                      {formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                      <AmountWithUsdBalance
+                        amount={tokenInfo?.balance}
+                        decimals={tokenInfo?.decimals ?? 0}
+                        symbol={tokenInfo?.symbol}
+                        usd={balanceUsd}
+                      />
                     </div>
                   </div>
                   <div className="App-card-row">

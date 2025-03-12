@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
@@ -10,9 +10,10 @@ import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 
-import { formatBalanceAmount, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
 export const GmTokensBalanceInfo = ({
@@ -98,21 +99,15 @@ export const GmTokensTotalBalanceInfo = ({
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
-  const walletTotalValue = useMemo(
-    () => [
-      formatTokenAmount(balance, 18, "GM", {
-        useCommas: true,
-        fallbackToZero: true,
-      }),
-      `(${formatUsd(balanceUsd)})`,
-    ],
-    [balance, balanceUsd]
-  );
 
   const renderTooltipContent = useCallback(() => {
     return (
       <>
-        <StatsTooltipRow label={t`Wallet total`} value={walletTotalValue} showDollar={false} />
+        <StatsTooltipRow
+          label={t`Wallet total`}
+          value={<AmountWithUsdBalance multiline amount={balance} decimals={18} symbol="GM" usd={balanceUsd} />}
+          showDollar={false}
+        />
         {userEarnings && (
           <>
             <StatsTooltipRow
@@ -153,7 +148,7 @@ export const GmTokensTotalBalanceInfo = ({
         )}
       </>
     );
-  }, [daysConsidered, shouldShowIncentivesNote, userEarnings, walletTotalValue]);
+  }, [balance, balanceUsd, daysConsidered, shouldShowIncentivesNote, userEarnings]);
 
   return balance !== undefined && balanceUsd !== undefined ? (
     <TooltipWithPortal
