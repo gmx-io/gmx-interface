@@ -34,7 +34,7 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getMarketIndexName } from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
@@ -381,15 +381,14 @@ export function PositionItem(p: Props) {
                       displaySize={20}
                       importSize={24}
                     />
-                    {getTokenVisualMultiplier(p.position.indexToken)}
-                    {p.position.indexToken.symbol}
+                    {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
                   </>
                 }
                 position="bottom-start"
                 renderContent={() => (
                   <div>
                     <StatsTooltipRow
-                      label={t`Market`}
+                      label={t`Pool`}
                       value={
                         <div className="flex items-center">
                           <span>{indexName && indexName}</span>
@@ -429,12 +428,7 @@ export function PositionItem(p: Props) {
               )}
             </div>
             <div className="Exchange-list-info-label">
-              <span
-                className={cx("mr-4 rounded-2 px-2 pb-1", {
-                  "bg-green-700": p.position.isLong,
-                  "bg-red-700": !p.position.isLong,
-                })}
-              >
+              <span className={cx("muted mr-4 rounded-2 px-2 pb-1")}>
                 {formatLeverage(p.position.leverage) || "..."}
               </span>
               <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
@@ -552,16 +546,10 @@ export function PositionItem(p: Props) {
                   displaySize={20}
                   importSize={24}
                 />
-                {p.position.indexToken && getTokenVisualMultiplier(p.position.indexToken)}
-                {p.position.indexToken?.symbol}
+                {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
               </span>
               <div className="flex items-center">
-                <span
-                  className={cx("-mb-2 mr-8 rounded-4 px-4 py-2 pb-4 leading-1", {
-                    "bg-green-700": p.position.isLong,
-                    "bg-red-500": !p.position.isLong,
-                  })}
-                >
+                <span className={cx("mr-8 rounded-4 px-4 leading-1")}>
                   {formatLeverage(p.position.leverage) || "..."}
                 </span>
                 <span
@@ -586,7 +574,7 @@ export function PositionItem(p: Props) {
               )}
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Market</Trans>
+                  <Trans>Pool</Trans>
                 </div>
                 <div>
                   <div className="flex items-start">
