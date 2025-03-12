@@ -411,6 +411,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("27 Feb 2025"),
     },
+    // HYPE/USD [WBTC-USDC]
+    "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0": {
+      enabled: true,
+      listingDate: p("6 Mar 2025"),
+    },
+    // JUP/USD [WBTC-USDC]
+    "0x7DE8E1A1fbA845A330A6bD91118AfDA09610fB02": {
+      enabled: true,
+      listingDate: p("6 Mar 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

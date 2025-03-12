@@ -66,6 +66,7 @@ import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
+import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 
 interface TradeboxButtonStateOptions {
   account?: string;
@@ -486,7 +487,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
-
+  const externalSwapQuote = useSelector(selectExternalSwapQuote);
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
 
@@ -503,6 +504,7 @@ export function useDetectAndSetAvailableMaxLeverage({
           indexTokenAmount: toTokenAmount,
           initialCollateralAmount: fromTokenAmount,
           initialCollateralToken: fromToken,
+          externalSwapQuote,
           isLong,
           marketInfo,
           position: selectedPosition,
@@ -573,6 +575,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     collateralToken,
     findSwapPath,
     fromToken,
+    externalSwapQuote,
     fromTokenAmount,
     isLeverageSliderEnabled,
     isLong,

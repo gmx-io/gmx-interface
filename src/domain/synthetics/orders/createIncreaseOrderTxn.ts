@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { PendingOrderData, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
@@ -9,11 +8,16 @@ import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import concat from "lodash/concat";
 import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { ExternalSwapQuote } from "sdk/types/trade";
+import { isMarketOrderType } from "sdk/utils/orders";
+import { applySlippageToPrice } from "sdk/utils/trade";
+import { getExternalCallsParams } from "../externalSwaps/utils";
 import { getPositionKey } from "../positions";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
-import { applySlippageToPrice } from "sdk/utils/trade";
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { DecreaseOrderParams as BaseDecreaseOrderParams, createDecreaseEncodedPayload } from "./createDecreaseOrderTxn";
 import { prepareOrderTxn } from "./prepareOrderTxn";
@@ -21,8 +25,6 @@ import { PriceOverrides, simulateExecuteTxn } from "./simulateExecuteTxn";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "./types";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
 import { getPendingOrderFromParams } from "./utils";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { isMarketOrderType } from "sdk/utils/orders";
 
 const { ZeroAddress } = ethers;
 
@@ -34,6 +36,7 @@ export type IncreaseOrderParams = {
   initialCollateralAmount: bigint;
   collateralDeltaAmount: bigint;
   swapPath: string[];
+  externalSwapQuote: ExternalSwapQuote | undefined;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
   acceptablePrice: bigint;
@@ -94,6 +97,7 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams,
   cancelOrderParams,
   updateOrderParams,
+  additionalErrorContent,
 }: {
   chainId: number;
   signer: Signer;
@@ -104,6 +108,7 @@ export async function createIncreaseOrderTxn({
   createDecreaseOrderParams?: SecondaryDecreaseOrderParams[];
   cancelOrderParams?: SecondaryCancelOrderParams[];
   updateOrderParams?: SecondaryUpdateOrderParams[];
+  additionalErrorContent?: React.ReactNode;
 }) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
@@ -115,7 +120,9 @@ export async function createIncreaseOrderTxn({
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : 0n;
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+
+  const { initialCollateralTokenAddress, swapPath, tokenToSendAddress } = getCollateralAndSwapAddresses(chainId, p);
+
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
@@ -132,7 +139,8 @@ export async function createIncreaseOrderTxn({
     marketAddress: p.marketAddress,
     initialCollateralTokenAddress,
     initialCollateralDeltaAmount: p.initialCollateralAmount,
-    swapPath: p.swapPath,
+    swapPath,
+    externalSwapQuote: p.externalSwapQuote,
     sizeDeltaUsd: p.sizeDeltaUsd,
     minOutputAmount: 0n,
     isLong: p.isLong,
@@ -142,6 +150,7 @@ export async function createIncreaseOrderTxn({
   };
 
   const encodedPayload = await createEncodedPayload({
+    chainId,
     router: exchangeRouter,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
@@ -150,6 +159,8 @@ export async function createIncreaseOrderTxn({
     subaccount,
     isNativePayment,
     initialCollateralTokenAddress,
+    tokenToSendAddress,
+    swapPath,
     signer,
   });
 
@@ -165,6 +176,7 @@ export async function createIncreaseOrderTxn({
   }
 
   const simulationEncodedPayload = await createEncodedPayload({
+    chainId,
     router: walletExchangeRouter,
     orderVaultAddress,
     totalWntAmount: wntAmountToIncrease,
@@ -173,6 +185,8 @@ export async function createIncreaseOrderTxn({
     subaccount: null,
     isNativePayment,
     initialCollateralTokenAddress,
+    tokenToSendAddress,
+    swapPath,
     signer,
   });
 
@@ -234,8 +248,10 @@ export async function createIncreaseOrderTxn({
         createMulticallPayload: simulationEncodedPayload,
         value: totalWntAmount,
         errorTitle: t`Order error.`,
+        additionalErrorContent,
         metricId,
         blockTimestampData,
+        externalSwapQuote: p.externalSwapQuote,
       })
     : undefined;
 
@@ -247,7 +263,8 @@ export async function createIncreaseOrderTxn({
     totalWntAmount,
     subaccount?.customSigners,
     simulationPromise,
-    metricId
+    metricId,
+    additionalErrorContent
   );
 
   const txnCreatedAt = Date.now();
@@ -292,6 +309,7 @@ export async function createIncreaseOrderTxn({
 }
 
 async function createEncodedPayload({
+  chainId,
   router,
   orderVaultAddress,
   totalWntAmount,
@@ -300,8 +318,11 @@ async function createEncodedPayload({
   subaccount,
   isNativePayment,
   initialCollateralTokenAddress,
+  tokenToSendAddress,
+  swapPath,
   signer,
 }: {
+  chainId: number;
   router: ethers.Contract;
   orderVaultAddress: string;
   totalWntAmount: bigint;
@@ -310,20 +331,48 @@ async function createEncodedPayload({
   subaccount: Subaccount;
   isNativePayment: boolean;
   initialCollateralTokenAddress: string;
+  tokenToSendAddress;
+  swapPath: string[];
   signer: Signer;
 }) {
   const orderParams = createOrderParams({
     p,
     acceptablePrice,
     initialCollateralTokenAddress,
+    swapPath,
     subaccount,
     isNativePayment,
   });
+
+  const externalSwapWntAmount = isNativePayment && p.externalSwapQuote?.txnData ? p.externalSwapQuote.amountIn : 0n;
+  const orderVaultWntAmount = totalWntAmount - externalSwapWntAmount;
+
+  const externalHandlerAddress = getContract(chainId, "ExternalHandler");
+
+  const tokensDestination = p.externalSwapQuote?.txnData ? externalHandlerAddress : orderVaultAddress;
+
   const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, orderVaultWntAmount] },
+
+    externalSwapWntAmount !== 0n
+      ? {
+          method: "sendWnt",
+          params: [externalHandlerAddress, externalSwapWntAmount],
+        }
+      : undefined,
 
     !isNativePayment && !subaccount
-      ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
+      ? {
+          method: "sendTokens",
+          params: [tokenToSendAddress, tokensDestination, p.initialCollateralAmount],
+        }
+      : undefined,
+
+    p.externalSwapQuote?.txnData
+      ? {
+          method: "makeExternalCalls",
+          params: getExternalCallsParams(chainId, p.account, p.externalSwapQuote),
+        }
       : undefined,
 
     {
@@ -331,19 +380,26 @@ async function createEncodedPayload({
       params: subaccount ? [await signer.getAddress(), orderParams] : [orderParams],
     },
   ];
-  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+
+  const encodedData = multicall
+    .filter(Boolean)
+    .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+
+  return encodedData;
 }
 
 function createOrderParams({
   p,
   acceptablePrice,
   initialCollateralTokenAddress,
+  swapPath,
   subaccount,
   isNativePayment,
 }: {
   p: IncreaseOrderParams;
   acceptablePrice: bigint;
   initialCollateralTokenAddress: string;
+  swapPath: string[];
   subaccount: Subaccount | null;
   isNativePayment: boolean;
 }) {
@@ -354,7 +410,7 @@ function createOrderParams({
       initialCollateralToken: initialCollateralTokenAddress,
       callbackContract: ZeroAddress,
       market: p.marketAddress,
-      swapPath: p.swapPath,
+      swapPath,
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
     },
     numbers: {
@@ -373,5 +429,22 @@ function createOrderParams({
     shouldUnwrapNativeToken: isNativePayment,
     autoCancel: false,
     referralCode: p.referralCode || ethers.ZeroHash,
+  };
+}
+
+function getCollateralAndSwapAddresses(chainId: number, p: IncreaseOrderParams) {
+  let swapPath = p.swapPath;
+  let initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+  const tokenToSendAddress = initialCollateralTokenAddress;
+
+  if (p.externalSwapQuote?.txnData) {
+    swapPath = [];
+    initialCollateralTokenAddress = p.targetCollateralAddress;
+  }
+
+  return {
+    swapPath,
+    initialCollateralTokenAddress,
+    tokenToSendAddress,
   };
 }

@@ -14,7 +14,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { bigMath } from "sdk/utils/bigmath";
 import { useTradeboxChanges } from "./useTradeboxChanges";
 
-export function useTradeboxAvailablePriceImpactValues() {
+export function useTradeboxAcceptablePriceImpactValues() {
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);

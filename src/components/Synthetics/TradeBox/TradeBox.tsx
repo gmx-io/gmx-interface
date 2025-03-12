@@ -7,9 +7,9 @@ import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -26,7 +26,9 @@ import {
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
+  selectTradeboxSetDefaultAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
+  selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxTradeFlags,
@@ -63,7 +65,7 @@ import { TradeMode } from "sdk/types/trade";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { useTradeboxAvailablePriceImpactValues } from "./hooks/useTradeboxAvailablePriceImpactValues";
+import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -93,29 +95,33 @@ import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
+import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import "./TradeBox.scss";
 
 export function TradeBox() {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
+  const setDefaultAllowedSwapSlippageBps = useSelector(selectTradeboxSetDefaultAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectTradeboxSetSelectedAllowedSwapSlippageBps);
+
   const availableTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
+  const showDebugValues = useSelector(selectShowDebugValues);
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
-  const marketsInfoData = useMarketsInfoData();
-
+  const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
-  const { showDebugValues, shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
+  const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -192,28 +198,36 @@ export function TradeBox() {
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
     willDecreaseOrdersBeExecuted: decreaseOrdersThatWillBeExecuted.length > 0,
+    externalSwapFeeItem: fees?.externalSwapFee,
     tradeFlags,
   });
 
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   const setFromTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, resetPriceImpactAndSwapSlippage?: boolean) => {
       setFromTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+
+      if (resetPriceImpactAndSwapSlippage) {
         setIsDismissedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setFromTokenInputValueRaw, setIsDismissedRef]
+    [setFromTokenInputValueRaw, setIsDismissedRef, setDefaultAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps]
   );
   const setToTokenInputValue = useCallback(
-    (value: string, shouldResetPriceImpactWarning: boolean) => {
+    (value: string, shouldResetPriceImpactAndSwapSlippage: boolean) => {
       setToTokenInputValueRaw(value);
-      if (shouldResetPriceImpactWarning) {
+      if (shouldResetPriceImpactAndSwapSlippage) {
         setIsDismissedRef.current(false);
+
+        setDefaultAllowedSwapSlippageBps(undefined);
+        setSelectedAllowedSwapSlippageBps(undefined);
       }
     },
-    [setIsDismissedRef, setToTokenInputValueRaw]
+    [setIsDismissedRef, setToTokenInputValueRaw, setDefaultAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps]
   );
 
   const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
@@ -226,7 +240,7 @@ export function TradeBox() {
     setToTokenInputValue,
   });
 
-  useTradeboxAvailablePriceImpactValues();
+  useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
 
   const prevIsISwap = usePrevious(isSwap);
@@ -403,6 +417,7 @@ export function TradeBox() {
     if (swapPathStats) {
       // eslint-disable-next-line no-console
       console.log("Swap Path", {
+        steps: swapPathStats.swapSteps,
         path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
         priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),
         usdOut: swapPathStats.swapSteps.map((step) => formatUsd(step.usdOut)).join(" -> "),
@@ -837,8 +852,8 @@ export function TradeBox() {
             {isSwap && isLimit && (
               <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                 <Trans>
-                  The execution price will constantly vary based on fees and price impact to guarantee that you receive
-                  the minimum receive amount.
+                  The actual trigger price at which order gets filled will depend on fees and price impact at the time
+                  of execution to guarantee that you receive the minimum receive amount.
                 </Trans>
               </AlertInfoCard>
             )}
@@ -894,7 +909,7 @@ export function TradeBox() {
                   isMarket={isMarket}
                 />
 
-                {isTrigger && selectedPosition && selectedPosition?.leverage && (
+                {isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
                   <ToggleSwitch
                     isChecked={keepLeverageChecked}
                     setIsChecked={setKeepLeverage}
@@ -916,6 +931,7 @@ export function TradeBox() {
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
+                externalSwapFeeItem={fees?.externalSwapFee}
               />
             )}
           </div>

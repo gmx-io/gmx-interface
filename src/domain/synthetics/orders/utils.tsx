@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { PendingOrderData } from "context/SyntheticsEvents";
 import { Token } from "domain/tokens";
 import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -417,7 +418,7 @@ export function getPendingOrderFromParams(
   chainId: number,
   txnType: OrderTxnType,
   p: DecreaseOrderParams | SecondaryUpdateOrderParams | SecondaryCancelOrderParams
-) {
+): PendingOrderData {
   const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const shouldApplySlippage = isMarketOrderType(p.orderType);
@@ -445,5 +446,6 @@ export function getPendingOrderFromParams(
     orderType: p.orderType,
     shouldUnwrapNativeToken: isNativeReceive,
     orderKey,
+    externalSwapQuote: undefined,
   };
 }
