@@ -8,9 +8,9 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { formatBalanceAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -114,22 +114,22 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
               <div>
                 {longTokenAmount > 0 && (
                   <div>
-                    {formatBalanceAmountWithUsd(
-                      longTokenAmount,
-                      longTokenAmountUsd,
-                      market.longToken.decimals,
-                      market.longToken.symbol
-                    )}
+                    <AmountWithUsdBalance
+                      amount={longTokenAmount}
+                      decimals={market.longToken.decimals}
+                      symbol={market.longToken.symbol}
+                      usd={longTokenAmountUsd}
+                    />
                   </div>
                 )}
                 {shortTokenAmount > 0 && (
                   <div>
-                    {formatBalanceAmountWithUsd(
-                      shortTokenAmount,
-                      shortTokenAmountUsd,
-                      market.shortToken.decimals,
-                      market.shortToken.symbol
-                    )}
+                    <AmountWithUsdBalance
+                      amount={shortTokenAmount}
+                      decimals={market.shortToken.decimals}
+                      symbol={market.shortToken.symbol}
+                      usd={shortTokenAmountUsd}
+                    />
                   </div>
                 )}
               </div>

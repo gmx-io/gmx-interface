@@ -5,6 +5,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { FaAngleRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
+import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -30,16 +31,11 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode, TradeType, getOrderThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import {
-  calculateDisplayDecimals,
-  formatBalanceAmount,
-  formatBalanceAmountWithUsd,
-  formatDeltaUsd,
-  formatUsd,
-} from "lib/numbers";
+import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -47,7 +43,6 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import Skeleton from "react-loading-skeleton";
 import "./PositionItem.scss";
 
 export type Props = {
@@ -195,14 +190,12 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Initial Collateral`}
                   value={
-                    <>
-                      {formatBalanceAmountWithUsd(
-                        p.position.collateralAmount,
-                        p.position.collateralUsd,
-                        p.position.collateralToken.decimals,
-                        p.position.collateralToken.symbol
-                      )}
-                    </>
+                    <AmountWithUsdBalance
+                      amount={p.position.collateralAmount}
+                      decimals={p.position.collateralToken.decimals}
+                      symbol={p.position.collateralToken.symbol}
+                      usd={p.position.collateralUsd}
+                    />
                   }
                   showDollar={false}
                 />

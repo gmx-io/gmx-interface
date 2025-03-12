@@ -29,18 +29,20 @@ export function AmountWithUsdHuman({
     <span>
       <span>{formattedAmount} </span>
       {multiline && <br />}
-      <span className="text-12 text-slate-100">({formattedUsd})</span>
+      <span className="text-12 text-slate-100 group-hover/hoverable:text-[inherit]">({formattedUsd})</span>
     </span>
   );
 }
 
 export function AmountWithUsdBalance({
+  className,
   amount,
   decimals,
   usd,
   symbol,
   multiline = false,
 }: {
+  className?: string;
   amount: bigint | undefined;
   decimals: number;
   usd: bigint | undefined;
@@ -56,10 +58,10 @@ export function AmountWithUsdBalance({
   const formattedUsd = formatUsd(usd);
 
   return (
-    <span>
+    <span className={className}>
       {formattedAmount}
       {multiline ? <br /> : " "}
-      <span className="text-12 text-slate-100">({formattedUsd})</span>
+      <span className="text-12 text-slate-100 group-hover/hoverable:text-[inherit]">({formattedUsd})</span>
     </span>
   );
 }
