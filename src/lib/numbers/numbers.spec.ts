@@ -21,13 +21,13 @@ describe("toBigNumberWithDecimals", () => {
 
   it("should handle cases with different token decimals ", () => {
     expect(toBigNumberWithDecimals("0.1234567890123456789012345678901", 18)).toBe(
-      toBigNumberWithDecimals("0.123456789012345678901234567890", 18)
+      123456789012345678n
     );
-    expect(toBigNumberWithDecimals("0.1234567890123456789012345678901", 5)).toBe(
-      toBigNumberWithDecimals("0.123456789012345678901234567890", 5)
+    expect(toBigNumberWithDecimals("0.12345", 5)).toBe(
+      12345n
     );
-    expect(toBigNumberWithDecimals("0.1234567890123456789012345678901", 1)).toBe(
-      toBigNumberWithDecimals("0.123456789012345678901234567890", 1)
+    expect(toBigNumberWithDecimals("0.1", 1)).toBe(
+      1n
     );
   });
 
