@@ -212,7 +212,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
               <div className="text-body-large">{marketIndexName}</div>
             </div>
             <div>
-              <AssetDropdown token={stats.token} />
+              <AssetDropdown token={stats.token} marketsStats={stats.marketsStats} />
             </div>
           </div>
         </div>

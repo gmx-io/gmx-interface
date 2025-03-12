@@ -1,11 +1,12 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import { useKey } from "react-use";
 
-import { USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   OrderInfo,
-  OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
   isLimitIncreaseOrderType,
@@ -20,8 +21,8 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
-  substractMaxLeverageSlippage,
   getNameByOrderType,
+  substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -39,24 +40,18 @@ import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
-import useWallet from "lib/wallets/useWallet";
-
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Modal from "components/Modal/Modal";
-import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
+  useOrderEditorIsSubmittingState,
   useOrderEditorSizeInputValueState,
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
@@ -65,6 +60,7 @@ import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
   selectOrderEditorDecreaseAmounts,
+  selectOrderEditorDefaultAllowedSwapSlippageBps,
   selectOrderEditorExecutionFee,
   selectOrderEditorExistingPosition,
   selectOrderEditorFindSwapPath,
@@ -77,39 +73,56 @@ import {
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
+  selectOrderEditorPositionOrderError,
   selectOrderEditorPriceImpactFeeBps,
+  selectOrderEditorSelectedAllowedSwapSlippageBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
+  selectOrderEditorSetDefaultAllowedSwapSlippageBps,
+  selectOrderEditorSetSelectedAllowedSwapSlippageBps,
   selectOrderEditorSizeDeltaUsd,
+  selectOrderEditorTotalSwapImpactBps,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
-import { useKey } from "react-use";
+import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Modal from "components/Modal/Modal";
+import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
+import { TokensRatioAndSlippage } from "domain/tokens";
+import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import "./OrderEditor.scss";
 
 type Props = {
   order: OrderInfo;
   onClose: () => void;
-  setPendingTxns: (txns: any) => void;
 };
 
 export function OrderEditor(p: Props) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const tokensData = useTokensData();
+  const { setPendingTxns } = usePendingTxns();
+  const { setPendingOrderUpdate } = useSyntheticsEvents();
 
   const [isInited, setIsInited] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
   const [sizeInputValue, setSizeInputValue] = useOrderEditorSizeInputValueState();
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useOrderEditorTriggerPriceInputValueState();
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useOrderEditorTriggerRatioInputValueState();
+
+  const calcSelector = useCalcSelector();
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
@@ -165,6 +178,12 @@ export function OrderEditor(p: Props) {
   const increaseAmounts = useSelector(selectOrderEditorIncreaseAmounts);
   const maxAllowedLeverage = useSelector(selectOrderEditorMaxAllowedLeverage);
 
+  const defaultAllowedSwapSlippageBps = useSelector(selectOrderEditorDefaultAllowedSwapSlippageBps);
+  const setDefaultAllowedSwapSlippageBps = useSelector(selectOrderEditorSetDefaultAllowedSwapSlippageBps);
+  const selectedAllowedSwapSlippageBps = useSelector(selectOrderEditorSelectedAllowedSwapSlippageBps);
+  const setSelectedAllowedSwapSlippageBps = useSelector(selectOrderEditorSetSelectedAllowedSwapSlippageBps);
+  const swapImpactBps = useSelector(selectOrderEditorTotalSwapImpactBps);
+
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -188,7 +207,7 @@ export function OrderEditor(p: Props) {
       }
 
       if (minOutputAmount === p.order.minOutputAmount) {
-        return t`Enter a new ratio`;
+        return t`Enter a new ratio or allowed slippage`;
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
@@ -202,96 +221,7 @@ export function OrderEditor(p: Props) {
       return;
     }
 
-    const positionOrder = p.order as PositionOrderInfo;
-
-    if (markPrice === undefined) {
-      return t`Loading...`;
-    }
-
-    if (sizeDeltaUsd === undefined || sizeDeltaUsd < 0) {
-      return t`Enter an amount`;
-    }
-
-    if (triggerPrice === undefined || triggerPrice < 0) {
-      return t`Enter a price`;
-    }
-
-    if (
-      sizeDeltaUsd === positionOrder.sizeDeltaUsd &&
-      triggerPrice === positionOrder.triggerPrice! &&
-      acceptablePrice === positionOrder.acceptablePrice
-    ) {
-      return t`Enter new amount or price`;
-    }
-
-    if (isLimitIncreaseOrderType(p.order.orderType) || isLimitSwapOrderType(p.order.orderType)) {
-      if (p.order.isLong) {
-        if (triggerPrice >= markPrice) {
-          return t`Limit price above mark price`;
-        }
-      } else {
-        if (triggerPrice <= markPrice) {
-          return t`Limit price below mark price`;
-        }
-      }
-    } else if (isStopIncreaseOrderType(p.order.orderType)) {
-      if (p.order.isLong && triggerPrice <= markPrice) {
-        return t`Stop Market price is below mark price`;
-      } else if (!p.order.isLong && triggerPrice >= markPrice) {
-        return t`Stop Market price is above mark price`;
-      }
-    }
-
-    if (isTriggerDecreaseOrderType(p.order.orderType)) {
-      if (markPrice === undefined) {
-        return t`Loading...`;
-      }
-
-      if (
-        sizeDeltaUsd === (p.order.sizeDeltaUsd ?? 0n) &&
-        triggerPrice === (positionOrder.triggerPrice ?? 0n) &&
-        acceptablePrice === positionOrder.acceptablePrice
-      ) {
-        return t`Enter a new size or price`;
-      }
-
-      if (existingPosition?.liquidationPrice) {
-        if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
-          return t`Trigger price below liq. price`;
-        }
-
-        if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
-          return t`Trigger price above liq. price`;
-        }
-      }
-
-      if (p.order.isLong) {
-        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
-          return t`Trigger price below mark price`;
-        }
-
-        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice >= markPrice) {
-          return t`Trigger price above mark price`;
-        }
-      } else {
-        if (p.order.orderType === OrderType.LimitDecrease && triggerPrice >= markPrice) {
-          return t`Trigger price above mark price`;
-        }
-
-        if (p.order.orderType === OrderType.StopLossDecrease && triggerPrice <= markPrice) {
-          return t`Trigger price below mark price`;
-        }
-      }
-    }
-
-    if (isLimitIncreaseOrderType(p.order.orderType)) {
-      if (
-        nextPositionValuesForIncrease?.nextLeverage !== undefined &&
-        nextPositionValuesForIncrease?.nextLeverage > maxAllowedLeverage
-      ) {
-        return t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
-      }
-    }
+    return calcSelector(selectOrderEditorPositionOrderError);
   }
 
   function getIsMaxLeverageError() {
@@ -341,6 +271,7 @@ export function OrderEditor(p: Props) {
           userReferralInfo,
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
           fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+          externalSwapQuote: undefined,
           leverage,
           triggerPrice,
         });
@@ -432,17 +363,29 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
-      orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
-      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-      executionFee: additionalExecutionFee?.feeTokenAmount,
-      indexToken: indexToken,
-      autoCancel: positionOrder.autoCancel,
-      setPendingTxns: p.setPendingTxns,
-    });
+    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
+      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
+      : triggerPrice ?? positionOrder.triggerPrice;
+
+    const txnPromise = updateOrderTxn(
+      chainId,
+      signer,
+      subaccount,
+      {
+        orderKey: p.order.key,
+        sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+        triggerPrice: orderTriggerPrice,
+        acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+        minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+        executionFee: additionalExecutionFee?.feeTokenAmount,
+        indexToken: indexToken,
+        autoCancel: positionOrder.autoCancel,
+      },
+      {
+        setPendingTxns,
+        setPendingOrderUpdate,
+      }
+    );
 
     if (subaccount) {
       p.onClose();
@@ -475,10 +418,18 @@ export function OrderEditor(p: Props) {
       if (isInited) return;
 
       if (isSwapOrderType(p.order.orderType)) {
-        const ratio = (p.order as SwapOrderInfo).triggerRatio;
+        const ratio = (p.order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
         if (ratio) {
           setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
+        }
+
+        if (isLimitSwapOrderType(p.order.orderType)) {
+          const totalSwapImpactBps = swapImpactBps >= 0n ? 0n : bigMath.abs(swapImpactBps);
+          const defaultSwapImpactBuffer = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS + totalSwapImpactBps;
+
+          setDefaultAllowedSwapSlippageBps(bigMath.abs(defaultSwapImpactBuffer));
+          setSelectedAllowedSwapSlippageBps(ratio?.allowedSwapSlippageBps, false);
         }
       } else {
         const positionOrder = p.order as PositionOrderInfo;
@@ -487,9 +438,11 @@ export function OrderEditor(p: Props) {
         const price = positionOrder.triggerPrice ?? 0n;
         const decimals = calculateDisplayDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
 
-        setTriggerPriceInputValue(
-          formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
-        );
+        if (triggerPriceInputValue === "") {
+          setTriggerPriceInputValue(
+            formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
+          );
+        }
       }
 
       setIsInited(true);
@@ -498,9 +451,13 @@ export function OrderEditor(p: Props) {
       indexToken?.visualMultiplier,
       isInited,
       p.order,
+      setDefaultAllowedSwapSlippageBps,
+      setSelectedAllowedSwapSlippageBps,
       setSizeInputValue,
       setTriggerPriceInputValue,
       setTriggerRatioInputValue,
+      swapImpactBps,
+      triggerPriceInputValue,
     ]
   );
 
@@ -685,6 +642,14 @@ export function OrderEditor(p: Props) {
 
           {isSwapOrderType(p.order.orderType) && (
             <>
+              <AllowedSwapSlippageInputRow
+                notAvailable={false}
+                totalSwapImpactBps={swapImpactBps}
+                allowedSwapSlippageBps={selectedAllowedSwapSlippageBps}
+                recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
+                setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
+              />
+              <div className="h-1 bg-stroke-primary" />
               <SyntheticsInfoRow
                 label={t`Min. Receive`}
                 value={formatBalanceAmount(

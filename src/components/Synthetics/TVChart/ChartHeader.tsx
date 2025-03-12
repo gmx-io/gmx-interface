@@ -3,7 +3,6 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce, useMedia } from "react-use";
 
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getToken } from "sdk/configs/tokens";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -12,7 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { useChainId } from "lib/chains";
 
-import { BiChevronDown, BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import { BiChevronDown, BiChevronLeft, BiChevronRight, BiChevronUp } from "react-icons/bi";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
@@ -93,7 +92,7 @@ function ChartHeaderInfoMobile() {
 
     return (
       <div
-        className={cx("grid gap-14 pt-16", {
+        className={cx("grid gap-16", {
           "grid-cols-1 grid-rows-4": isSmallMobile,
           "grid-cols-[repeat(2,_auto)] grid-rows-2": !isSmallMobile,
         })}
@@ -107,7 +106,7 @@ function ChartHeaderInfoMobile() {
 
         <div>
           <div className="mb-4 whitespace-nowrap">
-            <span className="text-slate-100">
+            <span className="text-body-small whitespace-nowrap text-slate-100">
               <Trans>Open Interest</Trans>
             </span>
             <span className="text-slate-100">{" ("}</span>
@@ -169,35 +168,29 @@ function ChartHeaderInfoMobile() {
   ]);
 
   return (
-    <div className="mb-10 rounded-4 bg-slate-800 p-16">
-      <div className="grid grid-cols-[auto_100px]">
-        <div>
+    <div className="mb-10 rounded-4 bg-slate-800 ">
+      <div className="p-16">
+        <div className="flex items-start justify-between">
           <div className="inline-flex">
-            <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={!isSmallMobile} />
+            <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
           </div>
 
-          <div
-            className="mt-8 flex cursor-pointer flex-row items-center gap-8"
-            role="button"
-            onClick={toggleDetailsVisible}
-          >
-            <span
-              className={cx("inline-flex cursor-pointer items-center justify-center rounded-4", {
-                "bg-slate-700": !detailsVisible,
-                "bg-slate-500": detailsVisible,
-              })}
-            >
-              {detailsVisible ? <BiChevronDown size={22} /> : <BiChevronRight size={22} />}
+          <div className="flex cursor-pointer flex-row items-start gap-8" role="button" onClick={toggleDetailsVisible}>
+            <div className="flex flex-col">
+              <div className="mr-4">{avgPrice}</div>
+              <div className="ExchangeChart-daily-change text-body-small">{dayPriceDelta}</div>
+            </div>
+            <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4")}>
+              {detailsVisible ? (
+                <BiChevronUp className="-ml-6 -mt-2" size={24} />
+              ) : (
+                <BiChevronDown className="-ml-6 -mt-2" size={24} />
+              )}
             </span>
-            <div className="mr-4">{avgPrice}</div>
-            <div className="ExchangeChart-daily-change">{dayPriceDelta}</div>
           </div>
         </div>
-        <div className="flex items-start justify-center">
-          <VersionSwitch />
-        </div>
       </div>
-      {details}
+      {details ? <div className="border-t-[1px] border-t-stroke-primary p-16">{details}</div> : null}
     </div>
   );
 }
@@ -418,7 +411,7 @@ function ChartHeaderInfoDesktop() {
   const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
 
   return (
-    <div className="Chart-header mb-10 rounded-4">
+    <div className="Chart-header mb-10 rounded-4 py-8 pr-8">
       <div className="flex items-center justify-start pl-8">
         <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
       </div>
@@ -454,9 +447,6 @@ function ChartHeaderInfoDesktop() {
           </div>
           {additionalInfo}
         </div>
-      </div>
-      <div className="ExchangeChart-info VersionSwitch-wrapper">
-        <VersionSwitch />
       </div>
     </div>
   );

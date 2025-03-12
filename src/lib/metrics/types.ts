@@ -290,6 +290,17 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   isTPSLCreated: boolean | undefined;
   slCount: number | undefined;
   tpCount: number | undefined;
+  externalSwapQuote:
+    | {
+        inTokenAddress: string;
+        outTokenAddress: string;
+        amountIn: number | undefined;
+        amountOut: number | undefined;
+        usdIn: number | undefined;
+        usdOut: number | undefined;
+        feesUsd: number | undefined;
+      }
+    | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {

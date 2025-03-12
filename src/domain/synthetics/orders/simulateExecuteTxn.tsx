@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import CustomErrors from "sdk/abis/CustomErrors.json";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import {
   getContract,
@@ -8,7 +7,6 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BaseContract, ethers } from "ethers";
@@ -18,12 +16,14 @@ import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import CustomErrors from "sdk/abis/CustomErrors.json";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { ExternalSwapQuote } from "sdk/types/trade";
+import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 import { withRetry } from "viem";
 import { isGlvEnabled } from "../markets/glv";
-import { adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { extractError } from "sdk/utils/contracts";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
@@ -46,6 +46,8 @@ type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
+  additionalErrorContent?: React.ReactNode;
+  externalSwapQuote?: ExternalSwapQuote;
 };
 
 export async function simulateExecuteTxn(chainId: number, p: SimulateExecuteParams) {
@@ -195,6 +197,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       msg = (
         <div>
           {errorTitle}
+          {p.additionalErrorContent}
           <br />
           <br />
           <ToastifyDebug
@@ -206,7 +209,7 @@ export async function simulateExecuteTxn(chainId: number, p: SimulateExecutePara
       // eslint-disable-next-line no-console
       console.error(parsingError);
 
-      const commonError = getErrorMessage(chainId, txnError, errorTitle);
+      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorContent);
       msg = commonError.failMsg;
     }
 

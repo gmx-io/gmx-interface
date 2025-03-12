@@ -13,11 +13,7 @@ import { useEditingOrderKeyState } from "context/SyntheticsStateContext/hooks/or
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import {
-  selectTradeboxCollateralTokenAddress,
-  selectTradeboxMarketAddress,
-  selectTradeboxTradeType,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { OrderErrors, PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
@@ -29,11 +25,11 @@ import {
   getEstimatedLiquidationTimeInHours,
   getNameByOrderType,
 } from "domain/synthetics/positions";
-import { TradeMode, TradeType, getOrderThresholdType } from "domain/synthetics/trade";
+import { TradeMode, getOrderThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getMarketIndexName } from "sdk/utils/markets";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -62,17 +58,11 @@ export type Props = {
 export function PositionItem(p: Props) {
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
-  const currentTradeType = useSelector(selectTradeboxTradeType);
-  const currentMarketAddress = useSelector(selectTradeboxMarketAddress);
-  const currentCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const { minCollateralUsd } = usePositionsConstants();
-  const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
-  const isCurrentMarket =
-    currentMarketAddress === p.position.marketAddress &&
-    currentCollateralAddress === p.position.collateralTokenAddress &&
-    isCurrentTradeTypeLong === p.position.isLong;
+  const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
+  const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
 
@@ -367,74 +357,77 @@ export function PositionItem(p: Props) {
       <TableTr data-qa={qaAttr}>
         <TableTd
           data-qa="position-handle"
-          className={cx({
+          className={cx("flex", {
             "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
           })}
           onClick={() => p.onSelectPositionClick?.()}
         >
           {/* title */}
-          <div className="Exchange-list-title">
-            <Tooltip
-              handle={
-                <>
-                  <TokenIcon
-                    className="PositionList-token-icon"
-                    symbol={p.position.indexToken.symbol}
-                    displaySize={20}
-                    importSize={24}
-                  />
-                  {getTokenVisualMultiplier(p.position.indexToken)}
-                  {p.position.indexToken.symbol}
-                </>
-              }
-              position="bottom-start"
-              renderContent={() => (
-                <div>
-                  <StatsTooltipRow
-                    label={t`Market`}
-                    value={
-                      <div className="flex items-center">
-                        <span>{indexName && indexName}</span>
-                        <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                      </div>
-                    }
-                    showDollar={false}
-                  />
-
-                  <br />
-
+          <div className={cx("Position-item-info relative")}>
+            <div className="Exchange-list-title">
+              <Tooltip
+                handle={
+                  <>
+                    <TokenIcon
+                      className="PositionList-token-icon"
+                      symbol={p.position.indexToken.symbol}
+                      displaySize={20}
+                      importSize={24}
+                    />
+                    {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+                  </>
+                }
+                position="bottom-start"
+                renderContent={() => (
                   <div>
-                    <Trans>
-                      Click on the Position to select its market, then use the trade box to increase your Position Size,
-                      or to set Take Profit / Stop Loss Orders.
-                    </Trans>
-                    <br />
-                    <br />
-                    <Trans>Use the "Close" button to reduce your Position Size.</Trans>
-                  </div>
+                    <StatsTooltipRow
+                      label={t`Pool`}
+                      value={
+                        <div className="flex items-center">
+                          <span>{indexName && indexName}</span>
+                          <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                        </div>
+                      }
+                      showDollar={false}
+                    />
 
-                  {showDebugValues && (
-                    <>
+                    <br />
+
+                    <div>
+                      <Trans>
+                        Click on the Position to select its market, then use the trade box to increase your Position
+                        Size, or to set Take Profit / Stop Loss Orders.
+                      </Trans>
                       <br />
-                      <StatsTooltipRow
-                        label={"Key"}
-                        value={<div className="debug-key muted">{p.position.contractKey}</div>}
-                        showDollar={false}
-                      />
-                    </>
-                  )}
-                </div>
+                      <br />
+                      <Trans>Use the "Close" button to reduce your Position Size.</Trans>
+                    </div>
+
+                    {showDebugValues && (
+                      <>
+                        <br />
+                        <StatsTooltipRow
+                          label={"Key"}
+                          value={<div className="debug-key muted">{p.position.contractKey}</div>}
+                          showDollar={false}
+                        />
+                      </>
+                    )}
+                  </div>
+                )}
+              />
+              {p.position.pendingUpdate && (
+                <ImSpinner2 data-qa="position-loading" className="spin position-loading-icon" />
               )}
-            />
-            {p.position.pendingUpdate && (
-              <ImSpinner2 data-qa="position-loading" className="spin position-loading-icon" />
-            )}
-          </div>
-          <div className="Exchange-list-info-label">
-            <span className="muted Position-leverage">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
-            <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
-              {p.position.isLong ? t`Long` : t`Short`}
-            </span>
+            </div>
+            <div className="Exchange-list-info-label">
+              <span className={cx("muted mr-4 rounded-2 px-2 pb-1")}>
+                {formatLeverage(p.position.leverage) || "..."}
+              </span>
+              <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
+                {p.position.isLong ? t`Long` : t`Short`}
+              </span>
+            </div>
           </div>
         </TableTd>
         <TableTd>
@@ -534,21 +527,24 @@ export function PositionItem(p: Props) {
         <div className="flex flex-grow flex-col">
           <div className="flex-grow">
             <div
-              className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}
+              className={cx("App-card-title Position-card-title text-body-medium", {
+                "Position-active-card": isCurrentMarket,
+              })}
               onClick={() => p.onSelectPositionClick?.()}
             >
-              <span className="Exchange-list-title inline-flex">
+              <span className="Exchange-list-title flex">
                 <TokenIcon
                   className="PositionList-token-icon"
                   symbol={p.position.indexToken?.symbol}
                   displaySize={20}
                   importSize={24}
                 />
-                {p.position.indexToken && getTokenVisualMultiplier(p.position.indexToken)}
-                {p.position.indexToken?.symbol}
+                {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
               </span>
-              <div>
-                <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>
+              <div className="flex items-center">
+                <span className={cx("mr-8 rounded-4 px-4 leading-1")}>
+                  {formatLeverage(p.position.leverage) || "..."}
+                </span>
                 <span
                   className={cx("Exchange-list-side", {
                     positive: p.position.isLong,
@@ -571,7 +567,7 @@ export function PositionItem(p: Props) {
               )}
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Market</Trans>
+                  <Trans>Pool</Trans>
                 </div>
                 <div>
                   <div className="flex items-start">

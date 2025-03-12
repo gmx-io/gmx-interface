@@ -6,9 +6,9 @@ import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getByKey } from "sdk/utils/objects";
 
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { TIMEZONE_OFFSET_SEC } from "domain/prices/constants";
 import { getSubsquidGraphClient } from "lib/subgraph/clients";
+import { useMemo } from "react";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 
 type PositionVolumeInfosResponse = Record<Address, bigint>;
 
@@ -26,19 +26,13 @@ export function use24hVolumes() {
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
   const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
-  const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
+  const timestamp = LAST_DAY_UNIX_TIMESTAMP;
 
   const variables = {
     timestamp: timestamp,
   };
 
-  const { data } = useSWR<
-    | {
-        byIndexToken: PositionVolumeInfosResponse;
-        byMarketToken: PositionVolumeInfosResponse;
-      }
-    | undefined
-  >(
+  const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
     [chainId, "24hVolume"],
     async () => {
       const client = getSubsquidGraphClient(chainId);
@@ -52,45 +46,61 @@ export function use24hVolumes() {
         variables,
       });
 
-      const byIndexToken: PositionVolumeInfosResponse = {};
-      const byMarketToken: PositionVolumeInfosResponse = {};
+      return response.data?.positionsVolume.reduce(
+        (acc, entry) => {
+          acc[entry.market] = BigInt(entry.volume);
 
-      response.data?.positionsVolume.forEach(
-        (entry) => {
-          const marketInfo = getByKey(marketsInfoData, entry.market);
-
-          if (!marketInfo) {
-            return;
-          }
-
-          byMarketToken[entry.market] = BigInt(entry.volume);
-
-          const indexTokenAddress = marketInfo?.indexTokenAddress;
-
-          if (!indexTokenAddress) {
-            return;
-          }
-
-          byIndexToken[indexTokenAddress] =
-            (byIndexToken[indexTokenAddress] === undefined ? 0n : byIndexToken[indexTokenAddress]) +
-            BigInt(entry.volume);
-
-          if (indexTokenAddress === convertTokenAddress(chainId, NATIVE_TOKEN_ADDRESS, "wrapped")) {
-            byIndexToken[NATIVE_TOKEN_ADDRESS] = byIndexToken[indexTokenAddress];
-          }
+          return acc;
         },
         {} as Record<Address, bigint>
       );
-
-      return {
-        byIndexToken,
-        byMarketToken,
-      };
     },
     {
       refreshInterval: 60_000,
     }
   );
 
-  return data;
+  return useMemo(() => {
+    if (!data) {
+      return {
+        byIndexToken: {},
+        byMarketToken: {},
+      };
+    }
+
+    if (!marketsInfoData) {
+      return {
+        byIndexToken: {},
+        byMarketToken: data,
+      };
+    }
+
+    const byIndexToken: PositionVolumeInfosResponse = {};
+
+    Object.entries(data).forEach(([market, volume]) => {
+      const marketInfo = getByKey(marketsInfoData, market);
+
+      if (!marketInfo) {
+        return;
+      }
+
+      const indexTokenAddress = marketInfo?.indexTokenAddress;
+
+      if (!indexTokenAddress) {
+        return;
+      }
+
+      byIndexToken[indexTokenAddress] =
+        (byIndexToken[indexTokenAddress] === undefined ? 0n : byIndexToken[indexTokenAddress]) + BigInt(volume);
+
+      if (indexTokenAddress === convertTokenAddress(chainId, NATIVE_TOKEN_ADDRESS, "wrapped")) {
+        byIndexToken[NATIVE_TOKEN_ADDRESS] = byIndexToken[indexTokenAddress];
+      }
+    });
+
+    return {
+      byIndexToken,
+      byMarketToken: data,
+    };
+  }, [data, marketsInfoData, chainId]);
 }

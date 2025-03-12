@@ -1,6 +1,8 @@
-import { Token, TokenPrices, TokensData, TokensRatio } from "types/tokens";
-import { expandDecimals, PRECISION } from "./numbers";
+import { Token, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "types/tokens";
+import { adjustForDecimals, expandDecimals, PRECISION } from "./numbers";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
+import { bigMath } from "./bigmath";
 
 export function parseContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);
@@ -102,4 +104,77 @@ export function getTokensRatioByAmounts(p: {
   const ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
 
   return { ratio, largestToken, smallestToken };
+}
+
+export function getTokensRatioByMinOutputAmountAndTriggerPrice(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromTokenAmount: bigint;
+  toTokenAmount: bigint;
+  triggerPrice: bigint;
+  minOutputAmount: bigint;
+}): TokensRatioAndSlippage {
+  const { fromToken, toToken, fromTokenAmount, toTokenAmount, triggerPrice, minOutputAmount } = p;
+
+  let allowedSwapSlippageBps = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS;
+  let smallestToken = fromToken;
+  let largestToken = toToken;
+  let largestAmount = fromTokenAmount;
+  let smallestAmount = toTokenAmount;
+  let acceptablePrice = 0n;
+  let ratio = 0n;
+
+  const adjustedFromAmount = (fromTokenAmount * PRECISION) / expandDecimals(1, fromToken.decimals);
+  const adjustedToAmount = (minOutputAmount * PRECISION) / expandDecimals(1, toToken.decimals);
+  const adjustedMinOutputAmount = (minOutputAmount * PRECISION) / expandDecimals(1, toToken.decimals);
+
+  [smallestToken, largestToken, largestAmount, smallestAmount] =
+    adjustedFromAmount > adjustedToAmount
+      ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
+      : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
+  ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
+
+  if (triggerPrice === 0n) {
+    allowedSwapSlippageBps = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS;
+    acceptablePrice = ratio;
+  } else {
+    const outputAtTriggerPrice =
+      adjustedFromAmount > adjustedToAmount
+        ? (adjustedFromAmount * PRECISION) / triggerPrice
+        : (adjustedFromAmount * triggerPrice) / PRECISION;
+
+    allowedSwapSlippageBps =
+      ((outputAtTriggerPrice - adjustedMinOutputAmount) * BASIS_POINTS_DIVISOR_BIGINT) / outputAtTriggerPrice;
+    acceptablePrice = ratio;
+    ratio = triggerPrice;
+  }
+
+  return { ratio, largestToken, smallestToken, allowedSwapSlippageBps, acceptablePrice };
+}
+
+export function getAmountByRatio(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromTokenAmount: bigint;
+  ratio: bigint;
+  shouldInvertRatio?: boolean;
+  allowedSwapSlippageBps?: bigint;
+}) {
+  const { fromToken, toToken, fromTokenAmount, ratio, shouldInvertRatio, allowedSwapSlippageBps } = p;
+
+  if (getIsEquivalentTokens(fromToken, toToken) || fromTokenAmount === 0n) {
+    return p.fromTokenAmount;
+  }
+
+  const _ratio = shouldInvertRatio ? (PRECISION * PRECISION) / ratio : ratio;
+
+  const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
+  const amount = (p.fromTokenAmount * adjustedDecimalsRatio) / PRECISION;
+
+  const swapSlippageAmount =
+    allowedSwapSlippageBps !== undefined
+      ? bigMath.mulDiv(amount, allowedSwapSlippageBps, BASIS_POINTS_DIVISOR_BIGINT)
+      : 0n;
+
+  return amount - swapSlippageAmount;
 }

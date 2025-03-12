@@ -33,6 +33,37 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "hype-jup-listing",
+    title: "HYPE and JUP markets added on Arbitrum",
+    isActive: true,
+    startDate: "6 Mar 2025, 16:00",
+    endDate: "12 Mar 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="HYPE" />
+        /USD and <TokenSymbolWithIcon symbol="JUP" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" /> [WBTC-USDC]
+        </span>{" "}
+        or using <TokenSymbolWithIcon symbol="WBTC" /> or <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
+    id: "stop-market-orders",
+    title: "Introducing Stop Market orders",
+    isActive: true,
+    startDate: "28 Feb 2025, 00:00",
+    endDate: "07 Mar 2025, 00:00",
+    bodyText: (
+      <>
+        Stop Market orders are now enabled on GMX.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2#stop-market-orders">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: "aixbt-cake-s-listing",
     title: "AIXBT, CAKE and S markets added on Arbitrum",
     isActive: true,

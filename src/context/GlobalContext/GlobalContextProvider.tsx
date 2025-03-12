@@ -1,4 +1,3 @@
-import { getIsSyntheticsSupported } from "config/features";
 import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -96,7 +95,7 @@ function useTradePageVersion() {
 
   const isV2Matched = useMemo(() => matchPath(location.pathname, { path: "/trade/:tradeType?" }), [location.pathname]);
   const isV1Matched = useMemo(() => matchPath(location.pathname, { path: "/v1/:tradeType?" }), [location.pathname]);
-  const defaultVersion = !isV1Matched && getIsSyntheticsSupported(chainId) ? 2 : 1;
+  const defaultVersion = !isV1Matched ? 2 : 1;
   const [savedTradePageVersion, setSavedTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
     defaultVersion

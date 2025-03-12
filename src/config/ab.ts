@@ -11,9 +11,10 @@ type AbStorage = {
 
 const abFlagsConfig = {
   // testExampleAb: 0.5,
+  testExternalSwap: 0.3,
 };
 
-export type AbFlag = "noop"; //keyof typeof abFlagsConfig;
+export type AbFlag = keyof typeof abFlagsConfig;
 
 const flags: AbFlag[] = Object.keys(abFlagsConfig) as AbFlag[];
 

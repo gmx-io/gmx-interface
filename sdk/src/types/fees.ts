@@ -1,4 +1,5 @@
 import { Token } from "types/tokens";
+import { ExternalSwapAggregator } from "./trade";
 
 export type ExecutionFee = {
   feeUsd: bigint;
@@ -17,6 +18,12 @@ export type FeeItem = {
 
 export type SwapFeeItem = FeeItem & {
   marketAddress: string;
+  tokenInAddress: string;
+  tokenOutAddress: string;
+};
+
+export type ExternalSwapFeeItem = FeeItem & {
+  aggregator: ExternalSwapAggregator;
   tokenInAddress: string;
   tokenOutAddress: string;
 };
