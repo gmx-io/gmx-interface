@@ -225,8 +225,7 @@ msgstr ""
 msgid "Show error"
 msgstr ""
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -1667,8 +1666,6 @@ msgstr ""
 msgid "MARKETS"
 msgstr ""
 
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Max {0}"
@@ -6396,8 +6393,7 @@ msgstr ""
 msgid "Open {0} in Explorer"
 msgstr ""
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -7015,10 +7011,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
-msgstr ""
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
 msgstr ""
 
 #: src/pages/Earn/EarnV1.jsx

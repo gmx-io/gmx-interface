@@ -14,7 +14,7 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { formatBalanceAmount, formatBalanceAmountWithUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
@@ -35,6 +35,7 @@ import VaultV2 from "sdk/abis/VaultV2.json";
 import Vester from "sdk/abis/Vester.json";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -52,7 +53,6 @@ import { getFeeItem } from "domain/synthetics/fees";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { useLocalStorageByChainId } from "lib/localStorage";
@@ -62,8 +62,8 @@ import {
   expandDecimals,
   formatAmount,
   formatAmountFree,
+  formatAmountHuman,
   formatDeltaUsd,
-  formatKeyAmount,
   formatUsdPrice,
   limitDecimals,
   parseValue,
@@ -81,6 +81,7 @@ import {
   getWhitelistedV1Tokens,
   getWrappedToken,
 } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
@@ -149,11 +150,15 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
         label={t`Current Pool Amount`}
         // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
         value={[
-          `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
-          `(${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${token.symbol})`,
+          formatAmountHuman(managedUsd, USD_DECIMALS, true, 2),
+          `${formatAmountHuman(tokenInfo?.managedAmount, token.decimals, false, 2)} ${token.symbol}`,
         ]}
       />
-      <StatsTooltipRow label={t`Max Pool Capacity`} value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
+      <StatsTooltipRow
+        label={t`Max Pool Capacity`}
+        showDollar={false}
+        value={formatAmountHuman(tokenInfo.maxUsdgAmount, 18, true, 2)}
+      />
     </>
   );
 }
@@ -977,9 +982,7 @@ export default function GlpSwap(props) {
                 <Trans>Wallet</Trans>
               </div>
               <div className="value">
-                {glpBalance === undefined || glpBalanceUsd === undefined
-                  ? "..."
-                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
+                <AmountWithUsdBalance amount={glpBalance} decimals={GLP_DECIMALS} symbol="GLP" usd={glpBalanceUsd} />
               </div>
             </div>
             <div className="App-card-row">
@@ -987,9 +990,7 @@ export default function GlpSwap(props) {
                 <Trans>Staked</Trans>
               </div>
               <div className="value">
-                {glpBalance === undefined || glpBalanceUsd === undefined
-                  ? "..."
-                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
+                <AmountWithUsdBalance amount={glpBalance} decimals={GLP_DECIMALS} symbol="GLP" usd={glpBalanceUsd} />
               </div>
             </div>
           </div>
@@ -1048,10 +1049,7 @@ export default function GlpSwap(props) {
                 <Trans>Total Supply</Trans>
               </div>
               <div className="value">
-                <Trans>
-                  {formatAmount(glpSupply, GLP_DECIMALS, 4, true)} GLP ($
-                  {formatAmount(glpSupplyUsd, USD_DECIMALS, 2, true)})
-                </Trans>
+                <AmountWithUsdHuman amount={glpSupply} usd={glpSupplyUsd} decimals={GLP_DECIMALS} />
               </div>
             </div>
           </div>
@@ -1459,12 +1457,12 @@ export default function GlpSwap(props) {
                           handle={
                             amountLeftToDeposit !== undefined && amountLeftToDeposit < 0
                               ? "$0.00"
-                              : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
+                              : formatAmountHuman(amountLeftToDeposit, USD_DECIMALS, true, 2)
                           }
                           className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
-                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
+                          content={getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
@@ -1474,20 +1472,23 @@ export default function GlpSwap(props) {
                           handle={
                             availableAmountUsd !== undefined && availableAmountUsd < 0
                               ? "$0.00"
-                              : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
+                              : formatAmountHuman(availableAmountUsd, USD_DECIMALS, true, 2)
                           }
                           className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
-                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
+                          content={getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
                   </td>
                   <td>
-                    {tokenInfo.balance === undefined || balanceUsd === undefined
-                      ? "..."
-                      : formatBalanceAmountWithUsd(tokenInfo.balance, balanceUsd, tokenInfo.decimals, tokenInfo.symbol)}
+                    <AmountWithUsdBalance
+                      amount={tokenInfo.balance}
+                      decimals={tokenInfo.decimals}
+                      symbol={tokenInfo.symbol}
+                      usd={balanceUsd}
+                    />
                   </td>
                   <td>{renderFees()}</td>
                   <td>
@@ -1659,8 +1660,12 @@ export default function GlpSwap(props) {
                       <Trans>Wallet</Trans>
                     </div>
                     <div>
-                      {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} ($
-                      {formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                      <AmountWithUsdBalance
+                        amount={tokenInfo?.balance}
+                        decimals={tokenInfo?.decimals ?? 0}
+                        symbol={tokenInfo?.symbol}
+                        usd={balanceUsd}
+                      />
                     </div>
                   </div>
                   <div className="App-card-row">

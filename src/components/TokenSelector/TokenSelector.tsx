@@ -305,7 +305,7 @@ export default function TokenSelector(props: Props) {
       </SlideModal>
       <div
         data-qa={qa}
-        className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (

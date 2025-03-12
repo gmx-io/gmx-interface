@@ -17,12 +17,13 @@ import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
-import { bigMath } from "sdk/utils/bigmath";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatBalanceAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
+import { bigMath } from "sdk/utils/bigmath";
 
 import AddressView from "components/AddressView/AddressView";
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
@@ -289,14 +290,12 @@ const TableRow = memo(
             label={t`Collateral`}
             showDollar={false}
             value={
-              collateralToken
-                ? formatBalanceAmountWithUsd(
-                    position.collateralAmount,
-                    position.collateralUsd,
-                    collateralToken.decimals,
-                    collateralToken.symbol
-                  )
-                : "..."
+              <AmountWithUsdBalance
+                amount={position.collateralAmount}
+                decimals={collateralToken?.decimals ?? 0}
+                symbol={collateralToken?.symbol}
+                usd={position.collateralUsd}
+              />
             }
           />
         </>

@@ -225,8 +225,7 @@ msgstr "Enable leverage sent."
 msgid "Show error"
 msgstr "Show error"
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} can be used to buy GM for this market up to the specified buying caps."
 
@@ -1667,8 +1666,6 @@ msgstr "4-18 Places"
 msgid "MARKETS"
 msgstr "MARKETS"
 
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Max {0}"
@@ -6402,8 +6399,7 @@ msgstr "Buy / Sell GLP"
 msgid "Open {0} in Explorer"
 msgstr "Open {0} in Explorer"
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 
@@ -7022,10 +7018,6 @@ msgstr "You can change this in the settings menu on the top right of the page.<0
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Request Settlement of Funding Fees"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
 
 #: src/pages/Earn/EarnV1.jsx
 msgid "Approving {stakingTokenSymbol}..."

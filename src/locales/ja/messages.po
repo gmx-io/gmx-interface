@@ -225,8 +225,7 @@ msgstr "レバレッジ有効化申し込み完了。"
 msgid "Show error"
 msgstr ""
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -1667,8 +1666,6 @@ msgstr ""
 msgid "MARKETS"
 msgstr "マーケット"
 
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Max {0}"
@@ -6396,8 +6393,7 @@ msgstr "GLPの購入/売却"
 msgid "Open {0} in Explorer"
 msgstr ""
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -7016,10 +7012,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "ファンディング手数料の決済リクエスト"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
 
 #: src/pages/Earn/EarnV1.jsx
 msgid "Approving {stakingTokenSymbol}..."
