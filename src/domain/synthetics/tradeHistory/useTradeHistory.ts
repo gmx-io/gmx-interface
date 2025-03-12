@@ -115,6 +115,8 @@ export function useTradeHistory(
     },
   });
 
+  console.log("data", data, error);
+
   const hasPopulatedData = data !== undefined && data.every((p) => p !== undefined);
   const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
@@ -260,6 +262,11 @@ function createRawTradeActionTransformer(
         transaction: rawAction.transaction,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
       };
+
+      console.log("tradeAction", {
+        tradeAction,
+        rawAction,
+      });
 
       return tradeAction;
     }

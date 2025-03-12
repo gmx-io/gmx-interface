@@ -1,5 +1,17 @@
-import { BigNumberish, Signature } from "ethers";
+// This file is kept for backwards compatibility
+// All permit functionality has been consolidated into permitUtils.ts
 
+import { BigNumberish, Signature } from "ethers";
+import { createTokenPermit, supportsPermit, createCollateralTokenPermit, createMultiTokenPermits } from "./permitUtils";
+// Import and re-export types properly
+import type { TokenPermit } from "./permitUtils";
+
+// Re-export for backward compatibility
+export { createTokenPermit, supportsPermit, createCollateralTokenPermit, createMultiTokenPermits };
+// Re-export types
+export type { TokenPermit };
+
+// Legacy function kept for backward compatibility
 export async function getTokenPermit(
   token: any,
   signer: any,
@@ -9,18 +21,22 @@ export async function getTokenPermit(
   deadline: BigNumberish,
   chainId: BigNumberish
 ) {
-  const permitSignature = await getPermitSignature(token, signer, spender, value, nonce, deadline, chainId);
-  const { v, r, s } = Signature.from(permitSignature);
-  return {
-    owner: signer.address,
+  console.warn("getTokenPermit is deprecated. Use createTokenPermit from permitUtils.ts instead.");
+
+  // Get owner address from signer
+  const owner = await signer.getAddress();
+
+  // Create permit using the new method but convert to the old format
+  const tokenPermit = await createTokenPermit(
+    signer,
+    token.address,
     spender,
-    value,
-    deadline,
-    v,
-    r,
-    s,
-    token: token.address,
-  };
+    BigInt(value.toString()),
+    BigInt(deadline.toString()),
+    Number(chainId)
+  );
+
+  return tokenPermit;
 }
 
 async function getPermitSignature(

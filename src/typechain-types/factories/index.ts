@@ -7,6 +7,7 @@ export { ERC721__factory } from "./ERC721__factory";
 export { EventEmitter__factory } from "./EventEmitter__factory";
 export { ExchangeRouter__factory } from "./ExchangeRouter__factory";
 export { GMT__factory } from "./GMT__factory";
+export { GelatoRelayRouter__factory } from "./GelatoRelayRouter__factory";
 export { GlpManager__factory } from "./GlpManager__factory";
 export { GlvReader__factory } from "./GlvReader__factory";
 export { GlvRouter__factory } from "./GlvRouter__factory";

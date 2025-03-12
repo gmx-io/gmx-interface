@@ -1,5 +1,7 @@
 import { hashData, hashString } from "sdk/utils/hash";
 
+console.log("hashString", hashString("ATOMIC_SWAP_FEE_TYPE"), hashString("SWAP_FEE_TYPE"));
+
 export const POSITION_IMPACT_FACTOR_KEY = hashString("POSITION_IMPACT_FACTOR");
 export const MAX_POSITION_IMPACT_FACTOR_KEY = hashString("MAX_POSITION_IMPACT_FACTOR");
 export const POSITION_IMPACT_EXPONENT_FACTOR_KEY = hashString("POSITION_IMPACT_EXPONENT_FACTOR");

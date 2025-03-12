@@ -324,16 +324,18 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
   const { walletClient } = useWallet();
 
   return useMemo(() => {
-    if (
-      !address ||
-      !active ||
-      !privateKey ||
-      !walletClient ||
-      insufficientFunds ||
-      remaining === undefined ||
-      remaining < Math.max(1, requiredActions)
-    )
-      return null;
+    // if (
+    //   !address ||
+    //   !active ||
+    //   !privateKey ||
+    //   !walletClient ||
+    //   insufficientFunds ||
+    //   remaining === undefined ||
+    //   remaining < Math.max(1, requiredActions)
+    // )
+    //   return null;
+
+    if (!address || !privateKey || !walletClient || insufficientFunds) return null;
 
     const signer = clientToSigner(walletClient);
 
@@ -344,16 +346,7 @@ export function useSubaccount(requiredBalance: bigint | null, requiredActions = 
       signer: wallet,
       customSigners: subaccountCustomSigners,
     };
-  }, [
-    address,
-    active,
-    privateKey,
-    insufficientFunds,
-    walletClient,
-    remaining,
-    requiredActions,
-    subaccountCustomSigners,
-  ]);
+  }, [address, active, privateKey, insufficientFunds, walletClient, subaccountCustomSigners]);
 }
 
 export function useSubaccountInsufficientFunds(requiredBalance?: bigint | null) {

@@ -1,10 +1,17 @@
 import { solidityPacked } from "ethers";
 
-import { Contract } from "ethers";
-
 import { getContract } from "config/contracts";
-import { Signer } from "ethers";
-import { getRelayParams, hashRelayParams, signTypedData } from "./signing";
+import { Contract, Signer, ZeroHash } from "ethers";
+import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
+import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
+import {
+  getGelatoRelayRouterDomain,
+  getRelayParams,
+  hashRelayParams,
+  hashSubaccountApproval,
+  signTypedData,
+} from "./signing";
+import { SubaccountApproval } from "./subaccountUtils";
 
 // Define the type for CreateOrderParams
 export interface CreateOrderParams {
@@ -39,7 +46,6 @@ export async function getCreateOrderCalldata(
   chainId: number,
   p: {
     signer: Signer;
-    sender: Signer;
     oracleParams?: {
       tokens: string[];
       providers: string[];
@@ -52,10 +58,14 @@ export async function getCreateOrderCalldata(
       refundReceivers: string[];
     };
     tokenPermits?: {
-      token: string;
-      spender: string;
-      value: bigint;
-      deadline: bigint;
+      owner?: string;
+      spender?: string;
+      value?: bigint;
+      deadline?: bigint;
+      v?: number;
+      r?: string;
+      s?: string;
+      token?: string;
     }[];
     feeParams: {
       feeToken: string;
@@ -68,36 +78,91 @@ export async function getCreateOrderCalldata(
     signature?: string;
     userNonce?: bigint;
     deadline: bigint;
-    relayRouter: Contract;
     chainId: number;
     relayFeeToken: string;
     relayFeeAmount: bigint;
+    subaccountApproval?: SubaccountApproval;
+    signatureValidator?: string;
   }
 ) {
-  const relayParams = await getRelayParams(p);
+  // Get relay parameters
+  const relayRouterAddress = getContract(
+    chainId,
+    p.subaccountApproval ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter"
+  );
 
-  let signature = p.signature;
-  if (!signature) {
-    signature = await getCreateOrderSignature({
-      ...p,
-      relayParams,
-      verifyingContract: await p.relayRouter.getAddress(),
-    });
+  const relayRouter = new Contract(
+    relayRouterAddress,
+    p.subaccountApproval ? SubaccountGelatoRelayRouterAbi.abi : GelatoRelayRouterAbi.abi,
+    p.signer
+  );
+
+  const relayParams = await getRelayParams({
+    ...p,
+    relayRouter,
+  });
+
+  // Get signature if not provided
+  let signature = await getCreateOrderSignature({
+    account: p.account,
+    signer: p.signer,
+    relayParams,
+    collateralDeltaAmount: p.collateralDeltaAmount,
+    verifyingContract: await relayRouter.getAddress(),
+    params: p.params,
+    chainId: p.chainId,
+    subaccountApproval: p.subaccountApproval,
+  });
+
+  console.log("Using signature:", signature);
+
+  // Ensure all BigInt values are properly converted
+  const orderParams = {
+    ...p.params,
+    numbers: {
+      sizeDeltaUsd: BigInt(p.params.numbers.sizeDeltaUsd.toString()),
+      initialCollateralDeltaAmount: BigInt(p.params.numbers.initialCollateralDeltaAmount.toString()),
+      triggerPrice: BigInt(p.params.numbers.triggerPrice.toString()),
+      acceptablePrice: BigInt(p.params.numbers.acceptablePrice.toString()),
+      executionFee: BigInt(p.params.numbers.executionFee.toString()),
+      callbackGasLimit: BigInt(p.params.numbers.callbackGasLimit.toString()),
+      minOutputAmount: BigInt(p.params.numbers.minOutputAmount.toString()),
+      validFromTime: BigInt(p.params.numbers.validFromTime.toString()),
+    },
+  };
+
+  // Determine which function to call based on whether we're using a subaccount or not
+  let createOrderCalldata: string;
+
+  if (p.subaccountApproval) {
+    // For subaccount transactions, use the createOrder method in SubaccountGelatoRelayRouter
+    // Note the different parameter order in this contract compared to GelatoRelayRouter
+    console.log("Creating subaccount order calldata");
+
+    createOrderCalldata = relayRouter.interface.encodeFunctionData("createOrder", [
+      { ...relayParams, signature, tokenPermits: p.tokenPermits },
+      p.subaccountApproval,
+      p.account, // Main account address
+      p.subaccountApproval.subaccount, // Subaccount address
+      p.collateralDeltaAmount,
+      orderParams,
+    ]);
+  } else {
+    createOrderCalldata = relayRouter.interface.encodeFunctionData("createOrder", [
+      { ...relayParams, signature, tokenPermits: p.tokenPermits },
+      p.account,
+      p.collateralDeltaAmount,
+      orderParams,
+    ]);
   }
-
-  const createOrderCalldata = p.relayRouter.interface.encodeFunctionData("createOrder", [
-    { ...relayParams, signature },
-    p.account,
-    p.collateralDeltaAmount,
-    p.params,
-  ]);
 
   const calldata = solidityPacked(
     ["bytes", "address", "address", "uint256"],
-    [createOrderCalldata, getContract(chainId, "GelatoRelayRouter"), p.relayFeeToken, p.relayFeeAmount]
+    [createOrderCalldata, relayRouterAddress, p.relayFeeToken, p.relayFeeAmount]
   );
 
   return {
+    relayRouter,
     createOrderCalldata,
     calldata,
   };
@@ -106,24 +171,27 @@ export async function getCreateOrderCalldata(
 async function getCreateOrderSignature({
   signer,
   relayParams,
+  subaccountApproval,
   collateralDeltaAmount,
+  account,
   verifyingContract,
   params,
   chainId,
 }: {
   signer: Signer;
   relayParams: any;
+  subaccountApproval?: SubaccountApproval;
   collateralDeltaAmount: bigint;
+  account: string;
   verifyingContract: string;
   params: CreateOrderParams;
   chainId: number;
 }) {
-  if (relayParams.userNonce === undefined) {
-    throw new Error("userNonce is required");
-  }
+  // These types MUST match exactly what's in the contract's CREATE_ORDER_TYPEHASH
   const types = {
     CreateOrder: [
       { name: "collateralDeltaAmount", type: "uint256" },
+      { name: "account", type: "address" },
       { name: "addresses", type: "CreateOrderAddresses" },
       { name: "numbers", type: "CreateOrderNumbers" },
       { name: "orderType", type: "uint256" },
@@ -133,6 +201,7 @@ async function getCreateOrderSignature({
       { name: "autoCancel", type: "bool" },
       { name: "referralCode", type: "bytes32" },
       { name: "relayParams", type: "bytes32" },
+      { name: "subaccountApproval", type: "bytes32" },
     ],
     CreateOrderAddresses: [
       { name: "receiver", type: "address" },
@@ -154,24 +223,23 @@ async function getCreateOrderSignature({
       { name: "validFromTime", type: "uint256" },
     ],
   };
-  const domain = {
-    name: "GmxBaseGelatoRelayRouter",
-    version: "1",
-    chainId,
-    verifyingContract,
-  };
+
+  const domain = getGelatoRelayRouterDomain(chainId, verifyingContract);
   const typedData = {
     collateralDeltaAmount,
+    account,
     addresses: params.addresses,
     numbers: params.numbers,
     orderType: params.orderType,
     decreasePositionSwapType: params.decreasePositionSwapType,
     isLong: params.isLong,
     shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
-    autoCancel: false,
+    autoCancel: params.autoCancel || false,
     referralCode: params.referralCode,
     relayParams: hashRelayParams(relayParams),
+    subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : ZeroHash,
   };
 
-  return signTypedData(signer, domain, types, typedData);
+  console.log("Creating order signature");
+  return signer.signTypedData(domain, types, typedData);
 }

@@ -35,7 +35,11 @@ import {
   createSwapOrderTxn,
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { createGasslessIncreaseOrderTxn } from "domain/synthetics/gassless/createGasslessOrderTxn";
+import {
+  createGasslessIncreaseOrderTxn,
+  prepareSubaccountApproval,
+} from "domain/synthetics/gassless/createGasslessOrderTxn";
+import { createSubaccountApproval } from "domain/synthetics/gassless/subaccountUtils";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -61,12 +65,13 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback, useState } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { Signer } from "ethers";
+import { parseUnits, Signer } from "ethers";
 import { toast } from "react-toastify";
+import { getWrappedToken } from "sdk/configs/tokens";
+import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 
 // Gasless transaction settings
 const USE_GASLESS_TRANSACTIONS = true; // Flag to enable/disable gasless transactions
-const DEFAULT_GASLESS_FEE_TOKEN = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"; // WETH for Arbitrum
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -204,6 +209,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     ]
   );
 
+  console.log("subaccount", subaccount);
+
   const onSubmitIncreaseOrder = useCallback(
     async function onSubmitIncreaseOrder() {
       // Define a helper function for creating the transaction message
@@ -294,8 +301,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       if (USE_GASLESS_TRANSACTIONS && signer && fromToken && collateralToken && marketInfo && increaseAmounts) {
         try {
           // Set up the gasless transaction parameters
-          const feeToken = fromToken.address; // Use collateral token as fee token
-          const feeAmount = executionFee.feeTokenAmount; // Use the existing execution fee
+          const feeToken = getWrappedToken(chainId).address; // Use collateral token as fee token
+          const feeAmount = parseUnits("1", 6); // Use the existing execution fee
 
           console.log("Setting up gasless transaction with params:", {
             feeToken,
@@ -304,16 +311,29 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             marketAddress: marketInfo.marketTokenAddress,
           });
 
+          const subaccountApproval = subaccount
+            ? await createSubaccountApproval(chainId, signer, subaccount.signer.address, {
+                shouldAdd: true,
+                actionType: SUBACCOUNT_ORDER_ACTION,
+                deadline: BigInt(Math.floor(Date.now() / 1000) + 3600),
+                maxAllowedCount: 10n,
+              })
+            : undefined;
+
+          console.log("subaccountApproval", subaccountApproval);
+
           // Create the transaction using the gasless method
           const txnResponse = await createGasslessIncreaseOrderTxn({
             chainId,
+            subaccountApproval,
+            subaccountSigner: subaccount?.signer,
             createOrderParams: {
               account,
               marketAddress: marketInfo.marketTokenAddress,
               initialCollateralAddress: fromToken.address,
               initialCollateralAmount: increaseAmounts.initialCollateralAmount,
               targetCollateralAddress: collateralToken.address,
-              collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+              collateralDeltaAmount: increaseAmounts.collateralDeltaAmount * 3n,
               swapPath: increaseAmounts.swapPathStats?.swapPath || [],
               sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
               sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
