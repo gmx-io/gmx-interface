@@ -4,6 +4,7 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { buildUrl } from "sdk/utils/buildUrl";
 import {
+  ApyInfo,
   BatchReportBody,
   DayPriceCandle,
   OracleFetcher,
@@ -148,6 +149,22 @@ export class OracleKeeperFetcher implements OracleFetcher {
       },
       body: JSON.stringify(body),
     });
+  }
+
+  fetchApys(): Promise<ApyInfo> {
+    return fetch(buildUrl(this.url!, "/apy"), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        this.switchOracleKeeper();
+        throw e;
+      });
   }
 
   async fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>> {
