@@ -430,10 +430,7 @@ export function PositionItem(p: Props) {
             </div>
             <div className="Exchange-list-info-label">
               <span
-                className={cx("mr-4 rounded-2 px-2 pb-1", {
-                  "bg-green-700": p.position.isLong,
-                  "bg-red-700": !p.position.isLong,
-                })}
+                className={cx("mr-4 rounded-2 px-2 pb-1 muted")}
               >
                 {formatLeverage(p.position.leverage) || "..."}
               </span>
@@ -557,10 +554,7 @@ export function PositionItem(p: Props) {
               </span>
               <div className="flex items-center">
                 <span
-                  className={cx("-mb-2 mr-8 rounded-4 px-4 py-2 pb-4 leading-1", {
-                    "bg-green-700": p.position.isLong,
-                    "bg-red-500": !p.position.isLong,
-                  })}
+                  className={cx("mr-8 rounded-4 px-4 leading-1")}
                 >
                   {formatLeverage(p.position.leverage) || "..."}
                 </span>
