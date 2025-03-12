@@ -14,7 +14,7 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
-import { formatBalanceAmount, formatBalanceAmountWithUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
@@ -35,7 +35,7 @@ import VaultV2 from "sdk/abis/VaultV2.json";
 import Vester from "sdk/abis/Vester.json";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -983,9 +983,7 @@ export default function GlpSwap(props) {
                 <Trans>Wallet</Trans>
               </div>
               <div className="value">
-                {glpBalance === undefined || glpBalanceUsd === undefined
-                  ? "..."
-                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
+                <AmountWithUsdBalance amount={glpBalance} decimals={GLP_DECIMALS} symbol="GLP" usd={glpBalanceUsd} />
               </div>
             </div>
             <div className="App-card-row">
@@ -993,9 +991,7 @@ export default function GlpSwap(props) {
                 <Trans>Staked</Trans>
               </div>
               <div className="value">
-                {glpBalance === undefined || glpBalanceUsd === undefined
-                  ? "..."
-                  : formatBalanceAmountWithUsd(glpBalance, glpBalanceUsd, GLP_DECIMALS, "GLP", true)}
+                <AmountWithUsdBalance amount={glpBalance} decimals={GLP_DECIMALS} symbol="GLP" usd={glpBalanceUsd} />
               </div>
             </div>
           </div>
@@ -1488,9 +1484,12 @@ export default function GlpSwap(props) {
                     )}
                   </td>
                   <td>
-                    {tokenInfo.balance === undefined || balanceUsd === undefined
-                      ? "..."
-                      : formatBalanceAmountWithUsd(tokenInfo.balance, balanceUsd, tokenInfo.decimals, tokenInfo.symbol)}
+                    <AmountWithUsdBalance
+                      amount={tokenInfo.balance}
+                      decimals={tokenInfo.decimals}
+                      symbol={tokenInfo.symbol}
+                      usd={balanceUsd}
+                    />
                   </td>
                   <td>{renderFees()}</td>
                   <td>
