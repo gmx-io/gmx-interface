@@ -113,7 +113,7 @@ describe("roundBigNumberWithDecimals", () => {
         tokenDecimals: PRECISION_DECIMALS,
         displayDecimals: 25,
       })
-    ).toBe(toBigNumberWithDecimals("0.5000000000000000000000000000", PRECISION_DECIMALS));
+    ).toBe(toBigNumberWithDecimals("0.5", PRECISION_DECIMALS));
     expect(
       roundBigNumberWithDecimals(toBigNumberWithDecimals("123.456789", PRECISION_DECIMALS), {
         tokenDecimals: PRECISION_DECIMALS,

@@ -82,9 +82,9 @@ export function formatPercentage(
 ) {
   const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true } = opts;
 
-  if (typeof percentage !== "bigint") {
+  if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
     }
 
     return undefined;
