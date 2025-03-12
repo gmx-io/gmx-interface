@@ -595,6 +595,10 @@ msgstr "Incentives are airdropped weekly."
 msgid "Acceptable Price Impact"
 msgstr "Acceptable Price Impact"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add to Metamask"
+msgstr "Add to Metamask"
+
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "Insufficient staked tokens"
@@ -954,6 +958,10 @@ msgstr "GMX uses TradingView to provide real-time cryptocurrency charts, so you 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap on 1inch"
 msgstr "Swap on 1inch"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr "Open {0} in Coingecko"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -6390,6 +6398,10 @@ msgstr "Maximum auto top-up amount is required"
 msgid "Buy / Sell GLP"
 msgstr "Buy / Sell GLP"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr "Open {0} in Explorer"
+
 #: src/components/Synthetics/GmList/MintableAmount.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
@@ -7836,6 +7848,10 @@ msgstr "Confirm Swap"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr "Add {0} to Metamask"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Save"
