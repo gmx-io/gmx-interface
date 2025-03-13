@@ -20,7 +20,6 @@ type SwapRoutes = Record<FromToken, Record<ToToken, MarketRoute[]>>;
 type ChainsSwapRoutes = Record<number, SwapRoutes>;
 
 const MAX_EDGE_PATH_LENGTH = 3;
-const ROUTES_COUNT_THRESHOLD = 20;
 
 function getSwapRoutes(marketsMap: Record<string, MarketConfig>, tokensMap: Record<string, Token>) {
   const graph: MarketsGraph = {};
@@ -73,17 +72,6 @@ function processNonRepeatingTokensBfs(tokensMap: Record<string, Token>, graph: M
         continue;
       }
 
-      // 1 step count: 3
-      // 2 step count: 2
-      // 3 step count: 2
-      // etc
-      const lengthCount: Record<number, number> = {};
-      // count less then or equal to 1
-      // count less then or equal to 2
-      // count less then or equal to 3
-      // etc
-      const lengthsAggCount: Record<number, number> = {};
-
       const result: string[][] = [];
 
       type Work = {
@@ -105,20 +93,11 @@ function processNonRepeatingTokensBfs(tokensMap: Record<string, Token>, graph: M
 
         if (at === tokenBAddress) {
           result.push(path);
-          lengthCount[path.length] = (lengthCount[path.length] || 0) + 1;
-
-          for (let length = 1; length <= path.length; length++) {
-            lengthsAggCount[length] = (lengthsAggCount[length] || 0) + 1;
-          }
 
           continue;
         }
 
         if (visited.has(at) || path.length >= MAX_EDGE_PATH_LENGTH) {
-          continue;
-        }
-
-        if (path.length !== 0 && lengthsAggCount[path.length - 1] >= ROUTES_COUNT_THRESHOLD) {
           continue;
         }
 
