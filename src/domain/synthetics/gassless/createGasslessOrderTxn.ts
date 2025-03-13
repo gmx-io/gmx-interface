@@ -34,7 +34,7 @@ export async function createGasslessIncreaseOrderTxn({
   relayFeeToken,
   relayFeeAmount,
   tokenPermits = [], // Optional manually provided token permits
-  createPermit = true, // Default to automatically creating permit
+  createPermit = false, // Default to automatically creating permit
   subaccountApproval, // Optional subaccount approval for trading with subaccounts
   subaccountSigner, // Optional subaccount signer if using a subaccount
 }: {
@@ -160,24 +160,26 @@ export async function createGasslessIncreaseOrderTxn({
   }
 
   const txDataResult = await getCreateOrderCalldata(chainId, {
-    signer: subaccountSigner ?? signer,
+    signer: signer,
     oracleParams: {
       tokens: [p.initialCollateralAddress, getWrappedToken(chainId).address],
       providers: ["0x527FB0bCfF63C47761039bB386cFE181A92a4701", "0x527FB0bCfF63C47761039bB386cFE181A92a4701"],
       data: ["0x", "0x"],
     },
     externalCalls: {
-      externalCallTargets: [],
-      externalCallDataList: [],
-      refundTokens: [],
-      refundReceivers: [],
+      externalCallTargets: ["0x6352a56caadC4F1E25CD6c75970Fa768A3304e64"],
+      externalCallDataList: [
+        "0xbc80f1a800000000000000000000000063dafb2ca71767129ab8d0a0909383023c4aff6e00000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000001e650e465a50f000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000018000010000000000000000006f38e884725a116c9c7fbf208e79fe8828a2595f",
+      ],
+      refundTokens: [getTokenBySymbol(chainId, "WETH")?.address, getTokenBySymbol(chainId, "USDC")?.address],
+      refundReceivers: [account, account],
     },
     subaccountApproval,
     tokenPermits, // Pass the token permits
     feeParams: {
       feeToken: getTokenBySymbol(chainId, "USDC")?.address,
       feeAmount: parseUnits("1", 6),
-      feeSwapPath: ["0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"],
+      feeSwapPath: [],
     },
     collateralDeltaAmount: p.initialCollateralAmount,
     account,
@@ -185,7 +187,7 @@ export async function createGasslessIncreaseOrderTxn({
     deadline,
     chainId,
     relayFeeToken,
-    relayFeeAmount,
+    relayFeeAmount: 534710080349455n,
   });
 
   console.log("Transaction data generated successfully");

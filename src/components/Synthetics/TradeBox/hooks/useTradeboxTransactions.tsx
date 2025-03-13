@@ -263,7 +263,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
                 shouldAdd: true,
                 actionType: SUBACCOUNT_ORDER_ACTION,
                 deadline: BigInt(Math.floor(Date.now() / 1000) + 3600),
-                maxAllowedCount: 10n,
+                maxAllowedCount: 0n,
               })
             : undefined;
 

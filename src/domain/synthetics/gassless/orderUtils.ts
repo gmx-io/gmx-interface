@@ -102,7 +102,6 @@ export async function getCreateOrderCalldata(
     relayRouter,
   });
 
-  // Get signature if not provided
   let signature = await getCreateOrderSignature({
     account: p.account,
     signer: p.signer,
@@ -111,25 +110,10 @@ export async function getCreateOrderCalldata(
     verifyingContract: await relayRouter.getAddress(),
     params: p.params,
     chainId: p.chainId,
-    subaccountApproval: p.subaccountApproval,
+    // subaccountApproval: p.subaccountApproval,
   });
 
   console.log("Using signature:", signature);
-
-  // Ensure all BigInt values are properly converted
-  const orderParams = {
-    ...p.params,
-    numbers: {
-      sizeDeltaUsd: BigInt(p.params.numbers.sizeDeltaUsd.toString()),
-      initialCollateralDeltaAmount: BigInt(p.params.numbers.initialCollateralDeltaAmount.toString()),
-      triggerPrice: BigInt(p.params.numbers.triggerPrice.toString()),
-      acceptablePrice: BigInt(p.params.numbers.acceptablePrice.toString()),
-      executionFee: BigInt(p.params.numbers.executionFee.toString()),
-      callbackGasLimit: BigInt(p.params.numbers.callbackGasLimit.toString()),
-      minOutputAmount: BigInt(p.params.numbers.minOutputAmount.toString()),
-      validFromTime: BigInt(p.params.numbers.validFromTime.toString()),
-    },
-  };
 
   // Determine which function to call based on whether we're using a subaccount or not
   let createOrderCalldata: string;
@@ -145,14 +129,16 @@ export async function getCreateOrderCalldata(
       p.account, // Main account address
       p.subaccountApproval.subaccount, // Subaccount address
       p.collateralDeltaAmount,
-      orderParams,
+      p.params,
     ]);
   } else {
+    console.log("Creating main account order calldata");
+
     createOrderCalldata = relayRouter.interface.encodeFunctionData("createOrder", [
       { ...relayParams, signature, tokenPermits: p.tokenPermits },
       p.account,
       p.collateralDeltaAmount,
-      orderParams,
+      p.params,
     ]);
   }
 
@@ -191,7 +177,7 @@ async function getCreateOrderSignature({
   const types = {
     CreateOrder: [
       { name: "collateralDeltaAmount", type: "uint256" },
-      { name: "account", type: "address" },
+      // { name: "account", type: "address" },
       { name: "addresses", type: "CreateOrderAddresses" },
       { name: "numbers", type: "CreateOrderNumbers" },
       { name: "orderType", type: "uint256" },
@@ -201,7 +187,8 @@ async function getCreateOrderSignature({
       { name: "autoCancel", type: "bool" },
       { name: "referralCode", type: "bytes32" },
       { name: "relayParams", type: "bytes32" },
-      { name: "subaccountApproval", type: "bytes32" },
+
+      // { name: "subaccountApproval", type: "bytes32" },
     ],
     CreateOrderAddresses: [
       { name: "receiver", type: "address" },
@@ -227,7 +214,7 @@ async function getCreateOrderSignature({
   const domain = getGelatoRelayRouterDomain(chainId, verifyingContract);
   const typedData = {
     collateralDeltaAmount,
-    account,
+    // account,
     addresses: params.addresses,
     numbers: params.numbers,
     orderType: params.orderType,
@@ -237,9 +224,17 @@ async function getCreateOrderSignature({
     autoCancel: params.autoCancel || false,
     referralCode: params.referralCode,
     relayParams: hashRelayParams(relayParams),
-    subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : ZeroHash,
+    // subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : ZeroHash,
   };
 
-  console.log("Creating order signature");
-  return signer.signTypedData(domain, types, typedData);
+  console.log("Creating order signature", {
+    domain,
+    signerAddress: await signer.getAddress(),
+    relayParams,
+    subaccountApproval,
+    types,
+    typedData,
+  });
+
+  return signTypedData(signer, domain, types, typedData);
 }
