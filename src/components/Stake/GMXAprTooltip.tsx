@@ -62,7 +62,7 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
       )}
       <div>
         <br />
-        <Trans>APRs are updated monthly on the first Wednesday of each month and will depend on the fees collected for the previous month.</Trans>
+        <Trans>APRs are updated at the beginning and midpoint of each month, based on the fees collected during the previous period.</Trans>
       </div>
     </>
   );
