@@ -4,6 +4,8 @@
 */
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
+export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
+
 export type MarketConfig = {
   marketTokenAddress: string;
   indexTokenAddress: string;

@@ -178,3 +178,27 @@ export function getAmountByRatio(p: {
 
   return amount - swapSlippageAmount;
 }
+
+export function getIsWrap(token1: Token, token2: Token) {
+  return token1.isNative && token2.isWrapped;
+}
+
+export function getIsUnwrap(token1: Token, token2: Token) {
+  return token1.isWrapped && token2.isNative;
+}
+
+export function getTokensRatioByPrice(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromPrice: bigint;
+  toPrice: bigint;
+}): TokensRatio {
+  const { fromToken, toToken, fromPrice, toPrice } = p;
+
+  const [largestToken, smallestToken, largestPrice, smallestPrice] =
+    fromPrice > toPrice ? [fromToken, toToken, fromPrice, toPrice] : [toToken, fromToken, toPrice, fromPrice];
+
+  const ratio = (largestPrice * PRECISION) / smallestPrice;
+
+  return { ratio, largestToken, smallestToken };
+}

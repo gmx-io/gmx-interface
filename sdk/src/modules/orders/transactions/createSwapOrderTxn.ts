@@ -24,6 +24,7 @@ export type SwapOrderParams = {
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
   allowedSlippage: number;
+  triggerPrice?: bigint;
 };
 
 export async function createSwapOrderTxn(sdk: GmxSdk, p: SwapOrderParams) {
@@ -80,7 +81,7 @@ async function getParams(sdk: GmxSdk, p: SwapOrderParams) {
     numbers: {
       sizeDeltaUsd: 0n,
       initialCollateralDeltaAmount,
-      triggerPrice: 0n,
+      triggerPrice: p.triggerPrice !== undefined ? p.triggerPrice : 0n,
       acceptablePrice: 0n,
       executionFee: p.executionFee,
       callbackGasLimit: 0n,

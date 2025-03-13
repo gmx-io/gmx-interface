@@ -19,6 +19,7 @@ import { Module } from "../base";
 import { createSwapOrderTxn } from "./transactions/createSwapOrderTxn";
 import { createWrapOrUnwrapTxn, WrapOrUnwrapParams } from "./transactions/createWrapOrUnwrapTxn";
 import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
+import { PositionIncreaseParams, SwapParams, increaseOrderHelper, swap } from "./helpers";
 
 export class Orders extends Module {
   async getOrders({
@@ -368,6 +369,7 @@ export class Orders extends Module {
     toToken,
     referralCodeForTxn,
     tokensData,
+    triggerPrice,
   }: {
     isLimit: boolean;
     allowedSlippage: number;
@@ -376,6 +378,7 @@ export class Orders extends Module {
     referralCodeForTxn?: string;
     toToken: TokenData;
     tokensData: TokensData;
+    triggerPrice?: bigint;
   }) {
     const orderType = isLimit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
@@ -398,6 +401,7 @@ export class Orders extends Module {
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       tokensData,
+      triggerPrice: isLimit && triggerPrice !== undefined ? triggerPrice : undefined,
     });
   }
 
@@ -409,5 +413,17 @@ export class Orders extends Module {
 
   async createWrapOrUnwrapOrder(p: WrapOrUnwrapParams) {
     return createWrapOrUnwrapTxn(this.sdk, p);
+  }
+
+  async long(params: PositionIncreaseParams) {
+    return increaseOrderHelper(this.sdk, { ...params, isLong: true });
+  }
+
+  async short(params: PositionIncreaseParams) {
+    return increaseOrderHelper(this.sdk, { ...params, isLong: false });
+  }
+
+  async swap(params: SwapParams) {
+    return swap(this.sdk, params);
   }
 }

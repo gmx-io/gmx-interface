@@ -83,7 +83,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
-
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
 
