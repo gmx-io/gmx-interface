@@ -160,6 +160,8 @@ export function findAllPaths({
   to,
   chainId,
   overrideSwapRoutes,
+  overrideDisabledMarkets,
+  overrideDisabledPaths,
 }: {
   marketsInfoData: MarketsInfoData;
   from: string;
@@ -169,6 +171,14 @@ export function findAllPaths({
    * For testing purposes, override the swap routes
    */
   overrideSwapRoutes?: SwapRoutes;
+  /**
+   * For testing purposes, override the disabled markets
+   */
+  overrideDisabledMarkets?: string[];
+  /**
+   * For testing purposes, override the disabled paths
+   */
+  overrideDisabledPaths?: string[][];
 }): SwapRoute[] | undefined {
   let routes: string[][] = [];
 
@@ -186,6 +196,24 @@ export function findAllPaths({
     }
 
     routes = reversedRoutes.map((route) => [...route].reverse());
+  }
+
+  if (overrideDisabledMarkets?.length || overrideDisabledPaths?.length) {
+    routes = routes.filter((route) => {
+      let match = true;
+
+      if (overrideDisabledMarkets?.length) {
+        const hasDisabledMarkets = route.some((marketAddress) => overrideDisabledMarkets.includes(marketAddress));
+        match = match && !hasDisabledMarkets;
+      }
+
+      if (overrideDisabledPaths?.length) {
+        const hasDisabledPath = overrideDisabledPaths.some((path) => route.toString() === path.toString());
+        match = match && !hasDisabledPath;
+      }
+
+      return match;
+    });
   }
 
   return routes.map((route) => ({

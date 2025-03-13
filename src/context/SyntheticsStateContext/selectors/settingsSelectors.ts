@@ -16,3 +16,5 @@ export const selectSetOracleKeeperInstancesConfig = (s: SyntheticsState) => s.se
 export const selectIsPnlInLeverage = (s: SyntheticsState) => s.settings.isPnlInLeverage;
 export const selectShowPnlAfterFees = (s: SyntheticsState) => s.settings.showPnlAfterFees;
 export const selectIsLeverageSliderEnabled = (s: SyntheticsState) => s.settings.isLeverageSliderEnabled;
+export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.debugSwapMarketsConfig;
+export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;

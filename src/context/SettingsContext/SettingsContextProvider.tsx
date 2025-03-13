@@ -5,6 +5,7 @@ import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/c
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
+  DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
@@ -22,6 +23,7 @@ import {
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { EMPTY_ARRAY } from "lib/objects";
 import { tenderlyLsKeys } from "lib/tenderly";
 
 export type SettingsContextType = {
@@ -63,6 +65,12 @@ export type SettingsContextType = {
 
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
+
+  debugSwapMarketsConfig: {
+    disabledSwapMarkets?: string[];
+    disabledPaths?: string[][];
+  };
+  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets: string[]; disabledPaths: string[][] }) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -134,6 +142,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
+  const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey(
+    [chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY],
+    { disabledSwapMarkets: EMPTY_ARRAY as string[], disabledPaths: EMPTY_ARRAY as string[][] }
+  );
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -212,6 +224,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
+
+      debugSwapMarketsConfig: debugSwapMarketsConfig!,
+      setDebugSwapMarketsConfig,
     };
   }, [
     showDebugValues,
@@ -248,6 +263,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     isSettingsVisible,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
+    debugSwapMarketsConfig,
+    setDebugSwapMarketsConfig,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

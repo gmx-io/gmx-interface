@@ -8,11 +8,11 @@ import {
   createSwapEstimator,
   findAllPaths,
   getBestSwapPath,
-  getNaiveBestSwapRoutes,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getMarkPrice,
   getMaxSwapPathLiquidity,
+  getNaiveBestSwapRoutes,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
   getSwapPathComparator,
@@ -34,7 +34,7 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
-import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import { selectDebugSwapMarketsConfig, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -85,18 +85,15 @@ const makeSelectAllPaths = (fromTokenAddress: string | undefined, toTokenAddress
       return undefined;
     }
 
-    // return findAllPaths({
-    //   chainId,
-    //   marketsInfoData,
-    //   from: wrappedFromAddress,
-    //   to: wrappedToAddress,
-    // })?.sort((a, b) => (b.liquidity - a.liquidity > 0 ? 1 : -1));
+    const debugSwapMarketsConfig = q(selectDebugSwapMarketsConfig);
 
     return findAllPaths({
       chainId,
       marketsInfoData,
       from: wrappedFromAddress,
       to: wrappedToAddress,
+      overrideDisabledMarkets: debugSwapMarketsConfig.disabledSwapMarkets,
+      overrideDisabledPaths: debugSwapMarketsConfig.disabledPaths,
     });
   });
 };
