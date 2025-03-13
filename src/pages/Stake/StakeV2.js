@@ -1535,7 +1535,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                           <br />
 
                           <Trans>
-                          APRs are updated monthly on the first Wednesday of each month and will depend on the fees collected for the previous month.{" "}
+                          APRs are updated at the beginning and midpoint of each month, based on the fees collected during the previous period.{" "}
                             <br />
                             <br />
                             {/* Historical TLP APRs can be checked in this{" "}
