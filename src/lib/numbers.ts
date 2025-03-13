@@ -7,7 +7,7 @@ import { bigintToNumber } from "sdk/utils/numbers";
 
 export * from "sdk/utils/numbers";
 
-const PRECISION_DECIMALS = 30;
+export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 

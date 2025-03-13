@@ -1,14 +1,8 @@
-import { MarketInfo } from "domain/synthetics/markets";
-import { mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
-import {
-  MarketEdge,
-  SwapEstimator,
-  findAllPaths,
-  findAllReachableTokens,
-  getBestSwapPath,
-  getMarketsGraph,
-} from "domain/synthetics/trade";
 import { describe, expect, it } from "vitest";
+
+import { mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
+import { MarketEdge, SwapEstimator, SwapRoutes, findAllPaths, getBestSwapPath } from "domain/synthetics/trade";
+
 const marketsKeys = [
   "AVAX-AVAX-USDC",
   "ETH-ETH-USDC",
@@ -91,7 +85,57 @@ const tokensData = mockTokensData({
 });
 const marketsInfoData = mockMarketsInfoData(tokensData, marketsKeys);
 
-const graph = getMarketsGraph(Object.values(marketsInfoData) as MarketInfo[]);
+const swapRoutes: SwapRoutes = {
+  AVAX: {
+    USDC: [["AVAX-AVAX-USDC"]],
+    ETH: [
+      ["AVAX-AVAX-USDC", "ETH-ETH-USDC"],
+      ["AVAX-AVAX-USDC", "SOL-ETH-USDC"],
+      ["AVAX-AVAX-USDC", "SPOT-USDC-DAI", "ETH-ETH-DAI"],
+      ["AVAX-AVAX-USDC", "SPOT-DAI-USDC", "ETH-ETH-DAI"],
+    ],
+    BTC: [
+      ["AVAX-AVAX-USDC", "SPOT-USDC-DAI", "BTC-BTC-DAI"],
+      ["AVAX-AVAX-USDC", "SPOT-DAI-USDC", "BTC-BTC-DAI"],
+    ],
+    DAI: [
+      ["AVAX-AVAX-USDC", "SPOT-USDC-DAI"],
+      ["AVAX-AVAX-USDC", "SPOT-DAI-USDC"],
+      ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
+      ["AVAX-AVAX-USDC", "SOL-ETH-USDC", "ETH-ETH-DAI"],
+    ],
+  },
+  USDC: {
+    ETH: [["ETH-ETH-USDC"], ["SOL-ETH-USDC"], ["SPOT-USDC-DAI", "ETH-ETH-DAI"], ["SPOT-DAI-USDC", "ETH-ETH-DAI"]],
+    BTC: [
+      ["SPOT-USDC-DAI", "BTC-BTC-DAI"],
+      ["SPOT-DAI-USDC", "BTC-BTC-DAI"],
+      ["ETH-ETH-USDC", "ETH-ETH-DAI", "BTC-BTC-DAI"],
+      ["SOL-ETH-USDC", "ETH-ETH-DAI", "BTC-BTC-DAI"],
+    ],
+    DAI: [["SPOT-USDC-DAI"], ["SPOT-DAI-USDC"], ["ETH-ETH-USDC", "ETH-ETH-DAI"], ["SOL-ETH-USDC", "ETH-ETH-DAI"]],
+  },
+  ETH: {
+    BTC: [
+      ["ETH-ETH-DAI", "BTC-BTC-DAI"],
+      ["ETH-ETH-USDC", "SPOT-USDC-DAI", "BTC-BTC-DAI"],
+      ["ETH-ETH-USDC", "SPOT-DAI-USDC", "BTC-BTC-DAI"],
+      ["SOL-ETH-USDC", "SPOT-USDC-DAI", "BTC-BTC-DAI"],
+      ["SOL-ETH-USDC", "SPOT-DAI-USDC", "BTC-BTC-DAI"],
+    ],
+    DAI: [
+      ["ETH-ETH-DAI"],
+      ["ETH-ETH-USDC", "SPOT-USDC-DAI"],
+      ["ETH-ETH-USDC", "SPOT-DAI-USDC"],
+      ["SOL-ETH-USDC", "SPOT-USDC-DAI"],
+      ["SOL-ETH-USDC", "SPOT-DAI-USDC"],
+    ],
+  },
+  BTC: { DAI: [["BTC-BTC-DAI"]] },
+  TEST_A: { TEST_B: [["TEST_B-TEST_B-TEST_A"]], TEST_C: [["TEST_C-TEST_C-TEST_A"]] },
+  TEST_B: { TEST_C: [["TEST_B-TEST_B-TEST_A", "TEST_C-TEST_C-TEST_A"]] },
+  TETH_A: { TETH_B: [["TETH_A-TETH_A-TETH_B"]] },
+};
 
 const BASE_FEE = BigInt(-1);
 
@@ -116,14 +160,10 @@ describe("swapPath", () => {
         to: "ETH",
         expected: ["ETH-ETH-USDC"],
         expectedPaths: [
-          ["SPOT-USDC-DAI", "SPOT-DAI-USDC", "ETH-ETH-USDC"],
-          ["SPOT-USDC-DAI", "SPOT-DAI-USDC", "SOL-ETH-USDC"],
-          ["SPOT-USDC-DAI", "ETH-ETH-DAI"],
-          ["SPOT-DAI-USDC", "SPOT-USDC-DAI", "ETH-ETH-USDC"],
-          ["SPOT-DAI-USDC", "SPOT-USDC-DAI", "SOL-ETH-USDC"],
-          ["SPOT-DAI-USDC", "ETH-ETH-DAI"],
           ["ETH-ETH-USDC"],
           ["SOL-ETH-USDC"],
+          ["SPOT-USDC-DAI", "ETH-ETH-DAI"],
+          ["SPOT-DAI-USDC", "ETH-ETH-DAI"],
         ],
       },
       {
@@ -234,7 +274,7 @@ describe("swapPath", () => {
         to: "USDT",
         expectedFee: undefined,
         expected: undefined,
-        expectedPaths: [],
+        expectedPaths: undefined,
       },
     ];
     for (const { name, from, to, expected, feeOverrides, expectedPaths } of tests) {
@@ -245,7 +285,7 @@ describe("swapPath", () => {
             usdOut: usdIn + fees,
           };
         };
-        const allRoutes = findAllPaths(marketsInfoData, graph, from, to);
+        const allRoutes = findAllPaths({ marketsInfoData, chainId: 1, overrideSwapRoutes: swapRoutes, from, to });
 
         const allPathsResult = allRoutes?.map((route) => route.path);
 
@@ -260,39 +300,5 @@ describe("swapPath", () => {
         expect(allPathsResult).toEqual(expectedPaths);
       });
     }
-  });
-});
-
-describe("findAllReachableTokens", () => {
-  it("should work for common token ETH", () => {
-    const fromTokenAddress = "ETH";
-
-    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
-
-    expect(reachableTokens).toStrictEqual(["ETH", "USDC", "AVAX", "DAI", "BTC"]);
-  });
-
-  it("should work for unreachable token TBTC", () => {
-    const fromTokenAddress = "TBTC";
-
-    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
-
-    expect(reachableTokens).toStrictEqual(["TBTC"]);
-  });
-
-  it("should work for partially unreachable token TETH_A", () => {
-    const fromTokenAddress = "TETH_A";
-
-    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
-
-    expect(reachableTokens).toStrictEqual(["TETH_A", "TETH_B"]);
-  });
-
-  it("should work for partially reachable token TEST_B", () => {
-    const fromTokenAddress = "TEST_B";
-
-    const reachableTokens = findAllReachableTokens(graph, fromTokenAddress);
-
-    expect(reachableTokens).toStrictEqual(["TEST_B", "TEST_A", "TEST_C"]);
   });
 });

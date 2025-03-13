@@ -4,6 +4,7 @@ import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
@@ -12,6 +13,7 @@ import { getIsHighSwapImpact } from "domain/synthetics/trade/utils/warnings";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { MARKETS } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -57,6 +59,7 @@ export function TradeFeesRow(p: Props) {
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
+  const showDebugValues = useShowDebugValues();
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
@@ -120,9 +123,15 @@ export function TradeFeesRow(p: Props) {
         label: (
           <>
             <div className="text-white">
-              {t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
-                getToken(chainId, swap.tokenOutAddress).symbol
-              }`}
+              <Trans>
+                Swap {getToken(chainId, swap.tokenInAddress).symbol} to {getToken(chainId, swap.tokenOutAddress).symbol}
+              </Trans>
+              {showDebugValues && (
+                <span className="text-slate-100">
+                  {" "}
+                  in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}
+                </span>
+              )}
               :
             </div>
             <div>
@@ -350,7 +359,7 @@ export function TradeFeesRow(p: Props) {
     }
 
     return [];
-  }, [p, tradingIncentives, rebateIsApplicable, chainId, estimatedRebatesPercentage]);
+  }, [p, chainId, tradingIncentives, rebateIsApplicable, estimatedRebatesPercentage, showDebugValues]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;

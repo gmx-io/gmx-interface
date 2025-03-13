@@ -19,7 +19,6 @@ import {
   makeSelectFindSwapPath,
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
-  selectSwapGraph,
 } from "./tradeSelectors";
 import {
   getIsPositionInfoLoaded,
@@ -314,16 +313,16 @@ export const selectPositionSellerFindSwapPath = createSelector((q) => {
 
 export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
-  const graph = q(selectSwapGraph);
+  const chainId = q(selectChainId);
   const tokensData = q(selectTokensData);
 
-  if (!graph || !position?.collateralTokenAddress || !tokensData) {
+  if (!position?.collateralTokenAddress || !tokensData) {
     return EMPTY_ARRAY;
   }
 
   let wasNativeTokenInserted = false;
 
-  const reachableAddresses = findAllReachableTokens(graph, position.collateralTokenAddress);
+  const reachableAddresses = findAllReachableTokens(chainId, position.collateralTokenAddress);
   const reachableTokens = reachableAddresses
     .flatMap((address) => {
       const token = getByKey(tokensData, address)!;

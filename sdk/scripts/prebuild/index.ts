@@ -1,8 +1,10 @@
 import { resolve } from "path";
 
-import { prebuildMarketValuesKeys } from "./prebuildMarketValuesKeys";
-import { prebuildMarketConfigKeys } from "./prebuildMarketConfigKeys";
 import { prebuildKinkModelMarketRatesKeys } from "./prebuildKinkModelMarketRatesKeys";
+import { prebuildMarketConfigKeys } from "./prebuildMarketConfigKeys";
+import { prebuildMarketValuesKeys } from "./prebuildMarketValuesKeys";
+import { prebuildReachableTokens } from "./prebuildReachableTokens";
+import { prebuildSwapRoutes } from "./prebuildSwapRoutes";
 
 /* eslint-disable-next-line no-restricted-globals */
 const OUTPUT_DIR = resolve(process.cwd(), "src/prebuilt");
@@ -10,3 +12,5 @@ const OUTPUT_DIR = resolve(process.cwd(), "src/prebuilt");
 prebuildMarketValuesKeys(OUTPUT_DIR);
 prebuildMarketConfigKeys(OUTPUT_DIR);
 prebuildKinkModelMarketRatesKeys(OUTPUT_DIR);
+prebuildSwapRoutes(OUTPUT_DIR);
+prebuildReachableTokens(OUTPUT_DIR);

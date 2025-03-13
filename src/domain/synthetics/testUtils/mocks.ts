@@ -12,7 +12,7 @@ import type { TokenData, TokensData } from "domain/synthetics/tokens";
 import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens/utils";
 import { expandDecimals } from "lib/numbers";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { PositionInfo } from "sdk/types/positions";
+import type { PositionInfo } from "sdk/types/positions";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
 import { expect } from "vitest";
