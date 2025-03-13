@@ -1,26 +1,24 @@
 import { t, Trans } from "@lingui/macro";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import cx from "classnames";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
 
-import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
-import { isDevelopment } from "config/env";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
+import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SlideModal } from "components/Modal/SlideModal";
-import NumberInput from "components/NumberInput/NumberInput";
+import PercentageInput from "components/PercentageInput/PercentageInput";
+import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getIsFlagEnabled } from "config/ab";
+import { isDevelopment } from "config/env";
 
 const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
 
@@ -32,7 +30,6 @@ export function SettingsModal({
   setIsSettingsVisible: (value: boolean) => void;
 }) {
   const settings = useSettings();
-  const { chainId } = useChainId();
 
   const [slippageAmount, setSlippageAmount] = useState<string>("0");
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState<string>("0");
@@ -46,12 +43,12 @@ export function SettingsModal({
   useEffect(() => {
     if (!isSettingsVisible) return;
 
-    const slippage = parseInt(String(settings.savedAllowedSlippage));
-    setSlippageAmount(String(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100)));
+    setSlippageAmount(String(settings.savedAllowedSlippage));
+
     if (settings.executionFeeBufferBps !== undefined) {
-      const bps = settings.executionFeeBufferBps;
-      setExecutionFeeBufferBps(String(roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100)));
+      setExecutionFeeBufferBps(String(settings.executionFeeBufferBps));
     }
+
     setIsPnlInLeverage(settings.isPnlInLeverage);
     setIsAutoCancelTPSL(settings.isAutoCancelTPSL);
     setShowPnlAfterFees(settings.showPnlAfterFees);
@@ -68,10 +65,12 @@ export function SettingsModal({
       helperToast.error(t`Invalid slippage value`);
       return;
     }
-    if (slippage > 5) {
+
+    if (slippage > 500) {
       helperToast.error(t`Slippage should be less than -5%`);
       return;
     }
+
     const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
     if (parseInt(String(basisPoints)) !== parseFloat(String(basisPoints))) {
       helperToast.error(t`Max slippage precision is -0.01%`);
@@ -82,6 +81,7 @@ export function SettingsModal({
 
     if (settings.shouldUseExecutionFeeBuffer) {
       const executionFeeBuffer = parseFloat(String(executionFeeBufferBps));
+
       if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
         helperToast.error(t`Invalid network fee buffer value`);
         return;
@@ -137,34 +137,54 @@ export function SettingsModal({
       className="text-body-medium"
       desktopContentClassName="w-[380px]"
     >
-      <div className="mb-8">
-        <div>
-          <Trans>Default Allowed Slippage</Trans>
-        </div>
-        <div className="relative">
-          <div className="absolute left-11 top-1/2 -translate-y-1/2 text-slate-100">-</div>
-          <NumberInput
-            className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
-            value={slippageAmount}
-            onValueChange={(e) => setSlippageAmount(e.target.value)}
-            placeholder={defaultSippageDisplay.toString()}
-          />
+      <div className="flex flex-col">
+        <h1 className="muted">
+          <Trans>Trading Settings</Trans>
+        </h1>
+        <div className="mt-16">
+          <SettingsSection>
+            <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+              <TooltipWithPortal
+                content={
+                  <Trans>
+                    Express Trading simplifies your trades on GMX. Instead of sending transactions directly and paying
+                    gas fees in ETH/AVAX, you sign secure off-chain messages.
+                    <br />
+                    <br />
+                    These messages are then processed on-chain for you, which helps reduce issues with network
+                    congestion and RPC errors.
+                  </Trans>
+                }
+                handle={<Trans>Express Orders</Trans>}
+              />
+            </ToggleSwitch>
 
-          <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">%</div>
-        </div>
-        {parseFloat(slippageAmount) < defaultSippageDisplay && (
-          <AlertInfo type="warning">
-            <Trans>Allowed Slippage below {defaultSippageDisplay}% may result in failed orders. orders.</Trans>
-          </AlertInfo>
-        )}
-      </div>
-      {settings.shouldUseExecutionFeeBuffer && (
-        <div className="mb-8">
-          <div>
-            <Tooltip
-              handle={<Trans>Max Network Fee Buffer</Trans>}
-              content={
-                <>
+            <ToggleSwitch className="mt-16" isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+              <TooltipWithPortal
+                content={<Trans>One-Click Trading requires Express Trading to function.</Trans>}
+                handle={<Trans>One-Click Trading</Trans>}
+              />
+            </ToggleSwitch>
+          </SettingsSection>
+
+          <SettingsSection className="mt-2">
+            <InputSetting
+              title={<Trans>Default Allowed Slippage</Trans>}
+              description={
+                <Trans>
+                  The maximum percentage difference between your specified price and execution price when placing
+                  orders.
+                </Trans>
+              }
+              defaultValue={defaultSippageDisplay}
+              value={parseFloat(slippageAmount)}
+              onChange={(value) => setSlippageAmount(String(value))}
+            />
+
+            <InputSetting
+              title={<Trans>Max Network Fee Buffer</Trans>}
+              description={
+                <div>
                   <Trans>
                     The Max Network Fee is set to a higher value to handle potential increases in gas price during order
                     execution. Any excess network fee will be refunded to your account when the order is executed. Only
@@ -172,100 +192,83 @@ export function SettingsModal({
                   </Trans>
                   <br />
                   <br />
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
-                </>
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">Read more</ExternalLink>
+                </div>
               }
+              defaultValue={30}
+              value={parseFloat(executionFeeBufferBps)}
+              onChange={(value) => setExecutionFeeBufferBps(String(value))}
             />
-          </div>
-          <div className="relative">
-            <NumberInput
-              className="mb-8 mt-8 w-full rounded-4 border border-gray-700"
-              value={executionFeeBufferBps}
-              onValueChange={(e) => setExecutionFeeBufferBps(e.target.value)}
-              placeholder="10"
-            />
-            <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">%</div>
-          </div>
-          {parseFloat(executionFeeBufferBps) <
-            (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="mb-15">
-              <AlertInfo type="warning">
-                <Trans>
-                  Max Network Fee buffer below{" "}
-                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps! / BASIS_POINTS_DIVISOR) * 100}% may result in
-                  failed orders.
-                </Trans>
-              </AlertInfo>
-            </div>
-          )}
-        </div>
-      )}
-      <div className="flex flex-col gap-16">
-        <ToggleSwitch isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
-          <Trans>Show leverage slider</Trans>
-        </ToggleSwitch>
 
-        <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-          <Trans>Display PnL after fees</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-          <Trans>Include PnL in leverage display</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
-          <TooltipWithPortal
-            handle={t`Auto-Cancel TP/SL`}
-            content={
-              <div onClick={(e) => e.stopPropagation()}>
-                <Trans>
-                  Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
-                  completely closed. This will only affect newly created TP/SL orders.
-                </Trans>
-                <br />
-                <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>.
-              </div>
-            }
-          />
-        </ToggleSwitch>
-
-        <div className="hidden max-[1100px]:block">
-          <ToggleSwitch isChecked={settings.shouldShowPositionLines} setIsChecked={settings.setShouldShowPositionLines}>
-            <Trans>Chart positions</Trans>
-          </ToggleSwitch>
-        </div>
-
-        {getIsFlagEnabled("testExternalSwap") && (
-          <div className="Exchange-settings-row">
-            <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-              <Trans>Enable external swaps</Trans>
+            <ToggleSwitch isChecked={isAutoCancelTPSL} setIsChecked={setIsAutoCancelTPSL}>
+              <TooltipWithPortal
+                content={
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <Trans>
+                      Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
+                      completely closed. This will only affect newly created TP/SL orders.
+                    </Trans>
+                    <br />
+                    <br />
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
+                      Read more
+                    </ExternalLink>
+                  </div>
+                }
+                handle={<Trans>Auto-Cancel TP/SL</Trans>}
+              />
             </ToggleSwitch>
-          </div>
-        )}
+
+            {getIsFlagEnabled("testExternalSwap") && (
+              <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+                <Trans>Enable external swaps</Trans>
+              </ToggleSwitch>
+            )}
+          </SettingsSection>
+
+          <div className="divider mt-16"></div>
+
+          <h1 className="muted mt-16">
+            <Trans>Display Settings</Trans>
+          </h1>
+
+          <SettingsSection className="mt-16 gap-16">
+            <ToggleSwitch isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
+              <Trans>Show leverage slider</Trans>
+            </ToggleSwitch>
+
+            <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+              <Trans>Display PnL after fees</Trans>
+            </ToggleSwitch>
+
+            <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
+              <Trans>Include PnL in leverage display</Trans>
+            </ToggleSwitch>
+          </SettingsSection>
+        </div>
 
         {isDevelopment() && (
-          <ToggleSwitch
-            isChecked={shouldDisableValidationForTesting}
-            setIsChecked={setShouldDisableValidationForTesting}
-          >
-            <Trans>Disable order validations</Trans>
-          </ToggleSwitch>
+          <>
+            <div className="divider mt-16"></div>
+
+            <h1 className="muted mt-16">
+              <Trans>Debug Settings</Trans>
+            </h1>
+
+            <SettingsSection className="mt-16">
+              <ToggleSwitch isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
+                <Trans>Show debug values</Trans>
+              </ToggleSwitch>
+
+              <AbFlagSettings />
+
+              <DebugSwapsSettings />
+
+              <TenderlySettings isSettingsVisible={isSettingsVisible} />
+            </SettingsSection>
+          </>
         )}
-
-        {isDevelopment() && (
-          <ToggleSwitch isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
-            <Trans>Show debug values</Trans>
-          </ToggleSwitch>
-        )}
-
-        {isDevelopment() && <AbFlagSettings />}
-
-        {isDevelopment() && <DebugSwapsSettings />}
-
-        {isDevelopment() && <TenderlySettings isSettingsVisible={isSettingsVisible} />}
       </div>
-
       <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
         <Trans>Save</Trans>
       </Button>
@@ -273,80 +276,39 @@ export function SettingsModal({
   );
 }
 
-function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
-  const {
-    tenderlyAccountSlug,
-    tenderlyProjectSlug,
-    tenderlyAccessKey,
-    tenderlySimulationEnabled,
-    setTenderlyAccessKey,
-    setTenderlyAccountSlug,
-    setTenderlyProjectSlug,
-    setTenderlySimulationEnabled,
-  } = useSettings();
-
-  const [accountSlug, setAccountSlug] = useState(tenderlyAccountSlug ?? "");
-  const [projectSlug, setProjectSlug] = useState(tenderlyProjectSlug ?? "");
-  const [accessKey, setAccessKey] = useState(tenderlyAccessKey ?? "");
-
-  useEffect(() => {
-    if (isSettingsVisible) {
-      setAccountSlug(tenderlyAccountSlug ?? "");
-      setProjectSlug(tenderlyProjectSlug ?? "");
-      setAccessKey(tenderlyAccessKey ?? "");
-    }
-  }, [isSettingsVisible, tenderlyAccessKey, tenderlyAccountSlug, tenderlyProjectSlug]);
-
-  return (
-    <div>
-      <br />
-      <h1>Tenderly Settings</h1>
-      <br />
-      <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
-      <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
-      <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
-      <div className="">
-        <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
-          <span className="">Simulate TXs</span>
-        </ToggleSwitch>
-      </div>
-      <br />
-      See{" "}
-      <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
-        Tenderly Docs
-      </ExternalLink>
-      .
-    </div>
-  );
+function SettingsSection({ children, className }: { children?: React.ReactNode; className?: string }) {
+  return <div className={cx("flex flex-col gap-16 rounded-4 bg-cold-blue-900 p-16", className)}>{children}</div>;
 }
 
-function TenderlyInput({
+function InputSetting({
+  title,
+  description,
+  defaultValue,
   value,
-  name,
-  placeholder,
   onChange,
+  className,
 }: {
-  value: string;
-  placeholder: string;
-  name: string;
-  onChange: (value: string) => void;
+  title: ReactNode;
+  description?: ReactNode;
+  defaultValue: number;
+  value?: number;
+  onChange: (value: number) => void;
+  className?: string;
 }) {
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      onChange(e.target.value);
-    },
-    [onChange]
+  const titleComponent = <span className="text-14 font-medium">{title}</span>;
+
+  const titleWithDescription = description ? (
+    <TooltipWithPortal position="bottom" content={description}>
+      {titleComponent}
+    </TooltipWithPortal>
+  ) : (
+    titleComponent
   );
 
   return (
-    <p className="mb-12 flex items-center justify-between gap-6">
-      <span>{name}</span>
-      <input
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        className="border-1 w-[280px] border border-stroke-primary px-5 py-4 text-12"
-      />
-    </p>
+    <div className={cx("flex items-center justify-between", className)}>
+      <div className="mr-8">{titleWithDescription}</div>
+      <PercentageInput defaultValue={defaultValue} value={value} onChange={onChange} tooltipPosition="bottom" />
+    </div>
   );
 }

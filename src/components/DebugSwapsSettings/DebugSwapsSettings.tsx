@@ -1,7 +1,11 @@
 import { Trans } from "@lingui/macro";
 import NumberInput from "components/NumberInput/NumberInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { getSwapDebugSettings, setSwapDebugSetting } from "config/externalSwaps";
+import {
+  getSwapDebugSettings,
+  setSwapDebugSetting,
+  SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS,
+} from "config/externalSwaps";
 import { useState } from "react";
 
 export function DebugSwapsSettings() {
@@ -21,7 +25,7 @@ export function DebugSwapsSettings() {
   }
 
   return (
-    <div className="mb-8 mt-16">
+    <div>
       <div className="cursor-pointer text-14 underline" onClick={() => setIsShown((old) => !old)}>
         {isShown ? "Hide" : "Show"} Debug Swaps
       </div>
@@ -63,7 +67,7 @@ export function DebugSwapsSettings() {
                     setSwapDebugSetting("swapPriceImpactForExternalSwapThresholdBps", value);
                     updateDebugSettings();
                   }}
-                  placeholder="15"
+                  placeholder={SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS.toString()}
                 />
                 <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-slate-100">bps</div>
               </div>

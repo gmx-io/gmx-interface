@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 .vscode
-.docs/
+.docs/*
 
 # lingui
 /src/locales/**/*.js
