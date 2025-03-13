@@ -1,24 +1,23 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 
 import { getContract } from "config/contracts";
 
-import Modal from "components/Modal/Modal";
 import Footer from "components/Footer/Footer";
-
-import RewardRouter from "sdk/abis/RewardRouter.json";
+import Modal from "components/Modal/Modal";
 
 import "./CompleteAccountTransfer.css";
 
 import { Trans, t } from "@lingui/macro";
+import Button from "components/Button/Button";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { useChainId } from "lib/chains";
-import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { abis } from "sdk/abis";
 
 export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();
@@ -66,7 +65,7 @@ export default function CompleteAccountTransfer() {
   const onClickPrimary = () => {
     setIsConfirming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
       sentMsg: t`Transfer submitted!`,

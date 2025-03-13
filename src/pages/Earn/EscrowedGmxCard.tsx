@@ -20,8 +20,6 @@ import Button from "components/Button/Button";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import ReaderV2 from "sdk/abis/ReaderV2.json";
-
 export function EscrowedGmxCard({
   processedData,
   showStakeEsGmxModal,
@@ -51,7 +49,7 @@ export function EscrowedGmxCard({
   const { data: esGmxSupply } = useSWR<bigint>(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
-      fetcher: contractFetcher<bigint>(signer, ReaderV2, [excludedEsGmxAccounts]),
+      fetcher: contractFetcher<bigint>(signer, "ReaderV2", [excludedEsGmxAccounts]),
     }
   );
 

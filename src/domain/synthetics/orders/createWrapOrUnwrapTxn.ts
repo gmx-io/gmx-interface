@@ -1,9 +1,9 @@
-import { NATIVE_TOKEN_ADDRESS, getToken, getWrappedToken } from "sdk/configs/tokens";
-import { callContract } from "lib/contracts";
-import WETH from "sdk/abis/WETH.json";
-import { Signer, ethers } from "ethers";
 import { t } from "@lingui/macro";
+import { Signer, ethers } from "ethers";
+import { callContract } from "lib/contracts";
 import { formatTokenAmount } from "lib/numbers";
+import { abis } from "sdk/abis";
+import { NATIVE_TOKEN_ADDRESS, getToken, getWrappedToken } from "sdk/configs/tokens";
 
 type WrapOrUnwrapParams = {
   amount: bigint;
@@ -15,7 +15,7 @@ export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOr
   const wrappedToken = getWrappedToken(chainId);
   const nativeToken = getToken(chainId, NATIVE_TOKEN_ADDRESS);
 
-  const contract = new ethers.Contract(wrappedToken.address, WETH.abi, signer);
+  const contract = new ethers.Contract(wrappedToken.address, abis.WETH, signer);
 
   if (p.isWrap) {
     return callContract(chainId, contract, "deposit", [], {

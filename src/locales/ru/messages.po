@@ -596,7 +596,7 @@ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
-msgstr ""
+msgstr "Добавить в MetaMask"
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
@@ -960,7 +960,7 @@ msgstr "Обмен на 1inch"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
-msgstr ""
+msgstr "Открыть {0} в Coingecko"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useSubmitButtonState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -6391,7 +6391,7 @@ msgstr "Купить / Продать GLP"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
-msgstr ""
+msgstr "Открыть {0} в Explorer"
 
 #: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
@@ -7837,7 +7837,7 @@ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add {0} to Metamask"
-msgstr ""
+msgstr "Добавить {0} в MetaMask"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Save"
