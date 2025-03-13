@@ -1,18 +1,18 @@
 import { t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
+import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
-import { OrderMetricId } from "lib/metrics/types";
-import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 
 export type CreateDepositParams = {
   account: string;
@@ -36,7 +36,7 @@ export type CreateDepositParams = {
 };
 
 export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
   await validateSignerAddress(signer, p.account);

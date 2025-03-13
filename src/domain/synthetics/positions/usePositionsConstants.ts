@@ -1,9 +1,8 @@
 import { getContract } from "config/contracts";
-import { MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY, MAX_AUTO_CANCEL_ORDERS_KEY } from "config/dataStore";
+import { MAX_AUTO_CANCEL_ORDERS_KEY, MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import DataStore from "sdk/abis/DataStore.json";
 import { useMemo } from "react";
 
 export type PositionsConstantsResult = {
@@ -24,7 +23,7 @@ export function usePositionsConstantsRequest(chainId: number): PositionsConstant
     request: {
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
-        abi: DataStore.abi,
+        abiId: "DataStore",
         calls: {
           minCollateralUsd: {
             methodName: "getUint",

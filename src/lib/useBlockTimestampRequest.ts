@@ -1,6 +1,5 @@
 import { getContract } from "config/contracts";
 import { useMemo } from "react";
-import Multicall from "sdk/abis/Multicall.json";
 import { useMulticall } from "./multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "./timeConstants";
 
@@ -22,7 +21,7 @@ export function useBlockTimestampRequest(chainId: number, { skip }: { skip?: boo
     request: () => ({
       multicall: {
         contractAddress: getContract(chainId, "Multicall"),
-        abi: Multicall.abi,
+        abiId: "Multicall",
         calls: {
           getCurrentBlockTimestamp: {
             methodName: "getCurrentBlockTimestamp",

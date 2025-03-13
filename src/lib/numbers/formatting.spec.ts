@@ -6,7 +6,7 @@ import {
   formatBalanceAmountWithUsd,
   formatFactor,
   formatUsdPrice,
-} from "./numbers";
+} from "./formatting";
 
 const ONE_USD = 1000000000000000000000000000000n;
 
@@ -40,14 +40,14 @@ describe("formatUsdPrice", () => {
 describe("formatAmountHuman", () => {
   it("positive", () => {
     expect(formatAmountHuman(ONE_USD, USD_DECIMALS)).toBe("1.0");
-    expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS)).toBe("1.0K");
-    expect(formatAmountHuman(ONE_USD * 1000000n, USD_DECIMALS)).toBe("1.0M");
+    expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS)).toBe("1.0k");
+    expect(formatAmountHuman(ONE_USD * 1000000n, USD_DECIMALS)).toBe("1.0m");
   });
 
   it("negative", () => {
     expect(formatAmountHuman(-1n * ONE_USD, USD_DECIMALS)).toBe("-1.0");
-    expect(formatAmountHuman(-1n * ONE_USD * 1000n, USD_DECIMALS)).toBe("-1.0K");
-    expect(formatAmountHuman(-1n * ONE_USD * 1000000n, USD_DECIMALS)).toBe("-1.0M");
+    expect(formatAmountHuman(-1n * ONE_USD * 1000n, USD_DECIMALS)).toBe("-1.0k");
+    expect(formatAmountHuman(-1n * ONE_USD * 1000000n, USD_DECIMALS)).toBe("-1.0m");
   });
 
   it("should display dollar sign", () => {
@@ -56,10 +56,10 @@ describe("formatAmountHuman", () => {
   });
 
   it("should display decimals", () => {
-    expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 2)).toBe("1.00K");
-    expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 2)).toBe("1.50M");
-    expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1K");
-    expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2M");
+    expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 2)).toBe("1.00k");
+    expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 2)).toBe("1.50m");
+    expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1k");
+    expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2m");
   });
 });
 

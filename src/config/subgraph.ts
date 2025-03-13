@@ -32,7 +32,10 @@ const SUBGRAPH_URLS = {
   },
 };
 
-export function getSubgraphUrl(chainId: number, subgraph: string): string | undefined {
+export function getSubgraphUrl(
+  chainId: number,
+  subgraph: "stats" | "referrals" | "nissohVault" | "syntheticsStats" | "subsquid" | "chainLink"
+): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getSubgraphUrlKey(chainId, subgraph);
     const url = localStorage.getItem(localStorageKey);

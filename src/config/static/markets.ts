@@ -421,6 +421,16 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
       enabled: true,
       listingDate: p("6 Mar 2025"),
     },
+    // MKR/USD [WETH-USDC]
+    "0x2aE5c5Cd4843cf588AA8D1289894318130acc823": {
+      enabled: true,
+      listingDate: p("13 Mar 2025"),
+    },
+    // OM/USD [WBTC-USDC]
+    "0x89EB78679921499632fF16B1be3ee48295cfCD91": {
+      enabled: true,
+      listingDate: p("13 Mar 2025"),
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

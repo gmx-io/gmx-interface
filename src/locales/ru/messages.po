@@ -225,8 +225,7 @@ msgstr "Активировать отправку рычага."
 msgid "Show error"
 msgstr ""
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -967,6 +966,10 @@ msgstr "Открыть {0} в Coingecko"
 msgid "Buy {operationTokenSymbol}"
 msgstr ""
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Buy GM: {0}"
+msgstr ""
+
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -1663,8 +1666,6 @@ msgstr ""
 msgid "MARKETS"
 msgstr "РЫНКИ"
 
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 msgid "Max {0}"
@@ -3055,8 +3056,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
@@ -6394,8 +6393,7 @@ msgstr "Купить / Продать GLP"
 msgid "Open {0} in Explorer"
 msgstr "Открыть {0} в Explorer"
 
-#: src/components/Synthetics/GmList/MintableAmount.tsx
-#: src/components/Synthetics/MarketStats/MarketStatsWithComposition.tsx
+#: src/components/MintableAmount/MintableAmount.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
@@ -7015,10 +7013,6 @@ msgstr ""
 msgid "Request Settlement of Funding Fees"
 msgstr "Запрос на урегулирование комиссии за финансирование"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
-
 #: src/pages/Earn/EarnV1.jsx
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "Одобрение {stakingTokenSymbol}..."
@@ -7185,6 +7179,8 @@ msgstr "Лонг"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/Synthetics/MarketsList/NetFeeTooltip.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
