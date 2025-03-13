@@ -570,6 +570,20 @@ export const MARKETS: Record<string, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // MKR/USD [WETH-USDC]
+    "0x2aE5c5Cd4843cf588AA8D1289894318130acc823": {
+      marketTokenAddress: "0x2aE5c5Cd4843cf588AA8D1289894318130acc823",
+      indexTokenAddress: "0x8904De84c3bB3B7D2383F934Af40FcB3Ef82F28b",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // OM/USD [WBTC-USDC]
+    "0x89EB78679921499632fF16B1be3ee48295cfCD91": {
+      marketTokenAddress: "0x89EB78679921499632fF16B1be3ee48295cfCD91",
+      indexTokenAddress: "0x1f3407Ea067DfBDF6dEb6bBFdA4869215fB0ab77",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

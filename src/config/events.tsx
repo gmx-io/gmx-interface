@@ -33,6 +33,25 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "mkr-om-listing",
+    title: "MKR and OM markets added on Arbitrum",
+    isActive: true,
+    startDate: "13 Mar 2025, 16:00",
+    endDate: "19 Mar 2025, 16:00",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> <TokenSymbolWithIcon symbol="MKR" />
+        /USD and <TokenSymbolWithIcon symbol="OM" />
+        /USD, or <Link to="/pools">provide liquidity</Link> to these pools by purchasing{" "}
+        <span className="whitespace-nowrap">
+          <TokenSymbolWithIcon symbol="GLV" />
+        </span>{" "}
+        or using <TokenSymbolWithIcon symbol="WBTC" />, <TokenSymbolWithIcon symbol="WETH" /> or{" "}
+        <TokenSymbolWithIcon symbol="USDC" />.
+      </>
+    ),
+  },
+  {
     id: "hype-jup-listing",
     title: "HYPE and JUP markets added on Arbitrum",
     isActive: true,
