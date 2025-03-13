@@ -61,6 +61,8 @@ const colors = {
     300: "#56dba8",
     400: "#8CF3CB",
     500: "#0FDE8D",
+    600: "#1F3445",
+    700: "#0FDE8D",
   },
   white: "#ffffff",
   black: "#000000",

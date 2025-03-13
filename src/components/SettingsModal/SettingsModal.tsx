@@ -19,8 +19,11 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
-
-const defaultSippageDisplay = (DEFAULT_SLIPPAGE_AMOUNT / BASIS_POINTS_DIVISOR) * 100;
+import { useChainId } from "lib/chains";
+import { getDefaultGasPaymentToken } from "sdk/configs/gassless";
+import OldSubaccountWithdraw from "./OldSubaccountWithdraw";
+import { ExpressTradingBanner } from "../ExpressTradingBanner/ExpressTradingBanner";
+import { GasPaymentTokenSelector } from "./GasPaymentTokenSelector";
 
 export function SettingsModal({
   isSettingsVisible,
@@ -29,6 +32,7 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
+  const { chainId } = useChainId();
   const settings = useSettings();
 
   const [slippageAmount, setSlippageAmount] = useState<string>("0");
@@ -39,6 +43,11 @@ export function SettingsModal({
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showDebugValues, setShowDebugValues] = useState(false);
   const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useState(false);
+
+  const [expressOrdersEnabled, setExpressOrdersEnabled] = useState(false);
+  const [oneClickTradingEnabled, setOneClickTradingEnabled] = useState(false);
+
+  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useState<string>(getDefaultGasPaymentToken(chainId));
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -55,6 +64,10 @@ export function SettingsModal({
     setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(settings.shouldDisableValidationForTesting);
     setIsLeverageSliderEnabled(settings.isLeverageSliderEnabled);
+
+    setExpressOrdersEnabled(settings.expressOrdersEnabled);
+    setOneClickTradingEnabled(settings.oneClickTradingEnabled);
+    setGasPaymentTokenAddress(settings.gasPaymentTokenAddress);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
@@ -103,6 +116,11 @@ export function SettingsModal({
     settings.setShowDebugValues(showDebugValues);
     settings.setIsLeverageSliderEnabled(isLeverageSliderEnabled);
 
+    // Save Express Orders and One-Click Trading settings
+    settings.setExpressOrdersEnabled(expressOrdersEnabled);
+    settings.setOneClickTradingEnabled(oneClickTradingEnabled);
+    settings.setGasPaymentTokenAddress(gasPaymentTokenAddress);
+
     setIsSettingsVisible(false);
   }, [
     slippageAmount,
@@ -113,6 +131,9 @@ export function SettingsModal({
     shouldDisableValidationForTesting,
     showDebugValues,
     isLeverageSliderEnabled,
+    expressOrdersEnabled,
+    oneClickTradingEnabled,
+    gasPaymentTokenAddress,
     setIsSettingsVisible,
     executionFeeBufferBps,
   ]);
@@ -128,6 +149,18 @@ export function SettingsModal({
     [isSettingsVisible, saveAndCloseSettings]
   );
 
+  const handleExpressOrdersToggle = (enabled: boolean) => {
+    setExpressOrdersEnabled(enabled);
+    // If One-Click Trading is enabled but Express Orders is disabled, also disable One-Click Trading
+    if (!enabled && oneClickTradingEnabled) {
+      setOneClickTradingEnabled(false);
+    }
+  };
+
+  const handleOneClickTradingToggle = (enabled: boolean) => {
+    setOneClickTradingEnabled(enabled);
+  };
+
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -135,7 +168,7 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium"
-      desktopContentClassName="w-[380px]"
+      desktopContentClassName="w-[400px]"
     >
       <div className="flex flex-col">
         <h1 className="muted">
@@ -143,7 +176,7 @@ export function SettingsModal({
         </h1>
         <div className="mt-16">
           <SettingsSection>
-            <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+            <ToggleSwitch isChecked={expressOrdersEnabled} setIsChecked={handleExpressOrdersToggle}>
               <TooltipWithPortal
                 content={
                   <Trans>
@@ -155,17 +188,37 @@ export function SettingsModal({
                     congestion and RPC errors.
                   </Trans>
                 }
-                handle={<Trans>Express Orders</Trans>}
+                handle={<Trans>Express Trading</Trans>}
               />
             </ToggleSwitch>
 
-            <ToggleSwitch className="mt-16" isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+            {expressOrdersEnabled && <ExpressTradingBanner />}
+
+            <ToggleSwitch
+              isChecked={oneClickTradingEnabled}
+              disabled={!expressOrdersEnabled}
+              setIsChecked={handleOneClickTradingToggle}
+            >
               <TooltipWithPortal
                 content={<Trans>One-Click Trading requires Express Trading to function.</Trans>}
                 handle={<Trans>One-Click Trading</Trans>}
               />
             </ToggleSwitch>
+
+            <OldSubaccountWithdraw isVisible={oneClickTradingEnabled || expressOrdersEnabled} />
           </SettingsSection>
+
+          {(expressOrdersEnabled || oneClickTradingEnabled) && (
+            <SettingsSection className="mt-2">
+              <div>
+                <Trans>Gas Payment Token</Trans>
+              </div>
+              <GasPaymentTokenSelector
+                gasPaymentTokenAddress={gasPaymentTokenAddress}
+                onSelectToken={setGasPaymentTokenAddress}
+              />
+            </SettingsSection>
+          )}
 
           <SettingsSection className="mt-2">
             <InputSetting
@@ -176,7 +229,7 @@ export function SettingsModal({
                   orders.
                 </Trans>
               }
-              defaultValue={defaultSippageDisplay}
+              defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
               value={parseFloat(slippageAmount)}
               onChange={(value) => setSlippageAmount(String(value))}
             />
@@ -234,15 +287,15 @@ export function SettingsModal({
 
           <SettingsSection className="mt-16 gap-16">
             <ToggleSwitch isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
-              <Trans>Show leverage slider</Trans>
+              <Trans>Show Leverage Slider</Trans>
             </ToggleSwitch>
 
             <ToggleSwitch isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-              <Trans>Display PnL after fees</Trans>
+              <Trans>Display PnL After Fees</Trans>
             </ToggleSwitch>
 
             <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-              <Trans>Include PnL in leverage display</Trans>
+              <Trans>Include PnL In Leverage Display</Trans>
             </ToggleSwitch>
           </SettingsSection>
         </div>
@@ -269,9 +322,11 @@ export function SettingsModal({
           </>
         )}
       </div>
-      <Button variant="primary-action" className="mt-15 w-full" onClick={saveAndCloseSettings}>
-        <Trans>Save</Trans>
-      </Button>
+      <div className="mt-24">
+        <Button variant="primary-action" className="w-full" onClick={saveAndCloseSettings}>
+          <Trans>Save</Trans>
+        </Button>
+      </div>
     </SlideModal>
   );
 }

@@ -75,6 +75,11 @@ export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
  */
 export const SORTER_CONFIG_KEY = "sorter-config";
 
+export const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
+export const ONE_CLICK_TRADING_ENABLED_KEY = "one-click-trading-enabled";
+export const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
+export const EXPRESS_TRADING_BANNER_DISMISSED_KEY = "express-trading-banner-dismissed";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {
@@ -165,4 +170,20 @@ export function getMulticallBatchingLoggingEnabledKey() {
 
 export function getSortedMarketsAddressesKey(chainId: number) {
   return [SORTED_MARKETS_KEY, chainId].join(":");
+}
+
+export function getExpressOrdersEnabledKey(chainId: number) {
+  return [chainId, EXPRESS_ORDERS_ENABLED_KEY];
+}
+
+export function getOneClickTradingEnabledKey(chainId: number) {
+  return [chainId, ONE_CLICK_TRADING_ENABLED_KEY];
+}
+
+export function getGasPaymentTokenAddressKey(chainId: number) {
+  return [chainId, GAS_PAYMENT_TOKEN_ADDRESS_KEY];
+}
+
+export function getExpressTradingBannerDismissedKey(chainId: number) {
+  return `${chainId}-${EXPRESS_TRADING_BANNER_DISMISSED_KEY}`;
 }
