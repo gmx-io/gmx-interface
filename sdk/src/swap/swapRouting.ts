@@ -1,9 +1,9 @@
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { PRECISION_DECIMALS } from "lib/numbers";
-import { REACHABLE_TOKENS, SWAP_ROUTES } from "sdk/prebuilt";
-import { MarketEdge, NaiveSwapEstimator, SwapEstimator, SwapRoute, SwapRoutes } from "sdk/types/trade";
-import { PRECISION, bigintToNumber } from "sdk/utils/numbers";
+import { MarketsInfoData } from "types/markets";
+import { MarketEdge, NaiveSwapEstimator, SwapEstimator, SwapRoute, SwapRoutes } from "types/trade";
+import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
+import { REACHABLE_TOKENS, SWAP_ROUTES } from "../prebuilt";
 import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
+import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "./constants";
 
 export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
@@ -48,12 +48,12 @@ export const createNaiveSwapEstimator = (marketsInfoData: MarketsInfoData): Naiv
     const usdOut = swapStats?.usdOut;
 
     if (usdOut === undefined || usdOut === 0n) {
-      return { yeld: 0 };
+      return { swapYield: 0 };
     }
 
-    const yeld = bigintToNumber((usdOut * PRECISION) / usdIn, PRECISION_DECIMALS);
+    const swapYield = bigintToNumber((usdOut * PRECISION) / usdIn, PRECISION_DECIMALS);
 
-    return { yeld };
+    return { swapYield };
   };
 };
 
@@ -84,8 +84,6 @@ export function getBestSwapPath(routes: SwapRoute[], usdIn: bigint, estimator: S
   return bestPath;
 }
 
-const DEFAULT_TOP_PATHS_COUNT = 3;
-
 export function getNaiveBestSwapRoutes(
   routes: SwapRoute[],
   usdIn: bigint,
@@ -107,24 +105,24 @@ export function getNaiveBestSwapRoutes(
     let pathYield = 0;
 
     try {
-      let aggYeld = 1;
+      let aggSwapYield = 1;
 
       for (const edge of route.edges) {
         const cachedYield = cachedYields[edge.marketAddress];
         if (cachedYield !== undefined) {
-          aggYeld *= cachedYield;
+          aggSwapYield *= cachedYield;
         } else {
-          const { yeld } = estimator(edge, usdIn);
-          cachedYields[edge.marketAddress] = yeld;
-          aggYeld *= yeld;
+          const { swapYield } = estimator(edge, usdIn);
+          cachedYields[edge.marketAddress] = swapYield;
+          aggSwapYield *= swapYield;
         }
 
-        if (aggYeld === 0) {
+        if (aggSwapYield === 0) {
           break;
         }
       }
 
-      pathYield = aggYeld;
+      pathYield = aggSwapYield;
     } catch (e) {
       continue;
     }
@@ -133,7 +131,7 @@ export function getNaiveBestSwapRoutes(
       continue;
     }
 
-    if (topPaths.length < DEFAULT_TOP_PATHS_COUNT) {
+    if (topPaths.length < DEFAULT_NAIVE_TOP_PATHS_COUNT) {
       topPaths.push({ path: route.path, yield: pathYield, route });
     } else {
       //  if yield is greater than any of the top paths, replace the one with the lowest yield
@@ -199,36 +197,58 @@ export function findAllPaths({
   }
 
   if (overrideDisabledMarkets?.length || overrideDisabledPaths?.length) {
-    routes = routes.filter((route) => {
-      let match = true;
-
-      if (overrideDisabledMarkets?.length) {
-        const hasDisabledMarkets = route.some((marketAddress) => overrideDisabledMarkets.includes(marketAddress));
-        match = match && !hasDisabledMarkets;
-      }
-
-      if (overrideDisabledPaths?.length) {
-        const hasDisabledPath = overrideDisabledPaths.some((path) => route.toString() === path.toString());
-        match = match && !hasDisabledPath;
-      }
-
-      return match;
-    });
+    routes = applyDebugSettings({ routes, overrideDisabledMarkets, overrideDisabledPaths });
   }
 
-  return routes.map((route) => ({
-    path: route,
-    edges: route.reduce((acc, marketAddress, index) => {
-      const currentFrom = index === 0 ? from : acc[index - 1].to;
-      const currentTo =
-        marketsInfoData[marketAddress].longTokenAddress === currentFrom
-          ? marketsInfoData[marketAddress].shortTokenAddress
-          : marketsInfoData[marketAddress].longTokenAddress;
+  return routes.map(
+    (route): SwapRoute => ({
+      path: route,
+      edges: marketRouteToMarketEdges(route, from, marketsInfoData),
+      liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: route, initialCollateralAddress: from }),
+    })
+  );
+}
 
-      return [...acc, { from: currentFrom, to: currentTo, marketAddress }];
-    }, [] as MarketEdge[]),
-    liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: route, initialCollateralAddress: from }),
-  }));
+function marketRouteToMarketEdges(marketPath: string[], from: string, marketsInfoData: MarketsInfoData): MarketEdge[] {
+  let edges: MarketEdge[] = [];
+
+  for (let i = 0; i < marketPath.length; i++) {
+    const currentFrom = i === 0 ? from : edges[i - 1].to;
+    const currentTo =
+      marketsInfoData[marketPath[i]].longTokenAddress === currentFrom
+        ? marketsInfoData[marketPath[i]].shortTokenAddress
+        : marketsInfoData[marketPath[i]].longTokenAddress;
+
+    edges.push({ from: currentFrom, to: currentTo, marketAddress: marketPath[i] });
+  }
+
+  return edges;
+}
+
+function applyDebugSettings({
+  routes,
+  overrideDisabledMarkets,
+  overrideDisabledPaths,
+}: {
+  routes: string[][];
+  overrideDisabledMarkets?: string[];
+  overrideDisabledPaths?: string[][];
+}): string[][] {
+  return routes.filter((route) => {
+    let match = true;
+
+    if (overrideDisabledMarkets?.length) {
+      const hasDisabledMarkets = route.some((marketAddress) => overrideDisabledMarkets.includes(marketAddress));
+      match = match && !hasDisabledMarkets;
+    }
+
+    if (overrideDisabledPaths?.length) {
+      const hasDisabledPath = overrideDisabledPaths.some((path) => route.toString() === path.toString());
+      match = match && !hasDisabledPath;
+    }
+
+    return match;
+  });
 }
 
 export function findAllReachableTokens(chainId: number, from: string): string[] {

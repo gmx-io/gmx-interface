@@ -229,7 +229,7 @@ export type NaiveSwapEstimator = (
    * 1.1 means output is 10% greater than input
    * 0.9 means output is 10% less than input
    */
-  yeld: number;
+  swapYield: number;
 };
 
 export type FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => SwapPathStats | undefined;

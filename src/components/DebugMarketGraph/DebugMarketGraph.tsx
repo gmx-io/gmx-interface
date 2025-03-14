@@ -11,21 +11,29 @@ import {
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
+  selectTradeboxToToken,
+  selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SwapPathStats, findAllPaths, getSwapPathStats } from "domain/synthetics/trade";
 import { formatUsd } from "lib/numbers";
-import { NATIVE_TOKEN_ADDRESS, getTokensMap, getWrappedToken } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokensMap, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketFullName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
 
-function MarketGraph() {
+function DebugMarketGraph() {
   const chainId = useSelector(selectChainId);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const fromToken = useSelector(selectTradeboxFromToken);
-  const fromTokenAddress = fromToken?.address;
-  const toToken = useSelector(selectTradeboxCollateralToken);
-  const toTokenAddress = toToken?.address;
+  const fromTokenAddress = fromToken?.address ? convertTokenAddress(chainId, fromToken.address, "wrapped") : undefined;
+
+  const collateralToken = useSelector(selectTradeboxCollateralToken);
+  const toSwapToken = useSelector(selectTradeboxToToken);
+
+  const toToken = tradeFlags.isPosition ? collateralToken : toSwapToken;
+
+  const toTokenAddress = toToken?.address ? convertTokenAddress(chainId, toToken.address, "wrapped") : undefined;
   const amountIn = useSelector(selectTradeboxFromTokenAmount);
 
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
@@ -35,6 +43,10 @@ function MarketGraph() {
   const [hideDisabledPaths, setHideDisabledPaths] = useState(false);
   const debugSwapMarketsConfig = useSelector(selectDebugSwapMarketsConfig);
   const setDebugSwapMarketsConfig = useSelector(selectSetDebugSwapMarketsConfig);
+  const wrappedToken = getWrappedToken(chainId);
+  const isWrap = fromToken?.address === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
+  const isUnwrap = fromToken?.address === wrappedToken.address && toTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const isSameToken = fromToken?.address !== undefined && fromToken?.address === toToken?.address;
 
   const allRoutes = useMemo(() => {
     if (!marketsInfoData || !fromTokenAddress || !toTokenAddress) {
@@ -98,6 +110,12 @@ function MarketGraph() {
         }
 
         return match;
+      })
+      .sort((a, b) => {
+        if (a!.usdOut === b!.usdOut) {
+          return 0;
+        }
+        return a!.usdOut > b!.usdOut ? -1 : 1;
       }) as SwapPathStats[];
   }, [
     allRoutes,
@@ -117,7 +135,7 @@ function MarketGraph() {
     if (usdIn === undefined) {
       return undefined;
     }
-    return findSwapPath(usdIn, {})?.swapPath.join(",");
+    return findSwapPath(usdIn, {})?.swapPath.toString();
   }, [findSwapPath, usdIn]);
 
   const handleToggleMarket = useCallback(
@@ -179,15 +197,39 @@ function MarketGraph() {
     return debugSwapMarketsConfig.disabledPaths.map((p) => p.toString());
   }, [debugSwapMarketsConfig.disabledPaths]);
 
+  if (!fromTokenAddress) {
+    return <div className="flex justify-center gap-8 overflow-auto p-16">No from token address</div>;
+  }
+
+  if (!toTokenAddress) {
+    return <div className="flex justify-center gap-8 overflow-auto p-16">No to token address</div>;
+  }
+
+  if (isWrap) {
+    return <div className="flex justify-center gap-8 overflow-auto p-16">Its just a wrap</div>;
+  }
+
+  if (isUnwrap) {
+    return <div className="flex justify-center gap-8 overflow-auto p-16">Its just an unwrap</div>;
+  }
+
+  if (isSameToken) {
+    return <div className="flex justify-center gap-8 overflow-auto p-16">Its a same token</div>;
+  }
+
   return (
     <div className="flex flex-col gap-8 overflow-auto p-16">
       <div>
         {fromToken?.symbol} - {toToken?.symbol}
       </div>
       <div>{allRoutes?.length} routes</div>
-      <div>Click on market to toggle it</div>
-      <div>L - liquidity, C - capacity</div>
-      <label>
+      <div>
+        Click on <span className="rounded-4 bg-slate-600 px-4 py-2">market label</span> to toggle its filtering. Click
+        on the checkbox on the left to disable the specific path. To use this debug tool on swap, stay on MARKET GRAPH
+        tab and switch to swap. Settings are being saved in local storage, don't forget to clear it when you are done.
+      </div>
+
+      <label className="flex items-center gap-8">
         <input
           type="checkbox"
           checked={excludeNonLiquidity}
@@ -196,7 +238,7 @@ function MarketGraph() {
         Exclude insufficient liquidity or capacity routes
       </label>
 
-      <label>
+      <label className="flex items-center gap-8">
         <input
           type="checkbox"
           checked={hideDisabledMarkets}
@@ -205,17 +247,19 @@ function MarketGraph() {
         Hide routes with disabled markets
       </label>
 
-      <label>
+      <label className="flex items-center gap-8">
         <input type="checkbox" checked={hideDisabledPaths} onChange={() => setHideDisabledPaths(!hideDisabledPaths)} />
         Hide routes with disabled paths
       </label>
 
-      <div className="flex flex-col gap-8 rounded-4 border border-red-700/50 p-8">
-        <div>Disabled markets</div>
-        <div className="flex flex-wrap gap-8">
-          {!debugSwapMarketsConfig.disabledSwapMarkets?.length
-            ? "No disabled markets"
-            : debugSwapMarketsConfig.disabledSwapMarkets?.map((m) => (
+      <div className="flex items-start justify-between gap-8 rounded-4 border border-red-700/50 p-8">
+        <div className="flex grow flex-col gap-8">
+          <div>Disabled markets</div>
+          <div className="flex flex-wrap gap-8">
+            {!debugSwapMarketsConfig.disabledSwapMarkets?.length ? (
+              <span className="py-2 text-slate-100">No disabled markets</span>
+            ) : (
+              debugSwapMarketsConfig.disabledSwapMarkets?.map((m) => (
                 <button
                   key={m}
                   className="flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4 py-2"
@@ -223,16 +267,38 @@ function MarketGraph() {
                 >
                   {marketsInfoData ? getMarketFullName(marketsInfoData[m]) : m}
                 </button>
-              ))}
+              ))
+            )}
+          </div>
+          <div>Disabled paths</div>
+          <div className="flex flex-wrap gap-8">
+            {!debugSwapMarketsConfig.disabledPaths?.length ? (
+              <span className="py-2 text-slate-100">No disabled paths</span>
+            ) : (
+              debugSwapMarketsConfig.disabledPaths?.map((p) => (
+                <button
+                  key={p.toString()}
+                  className="flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4 py-2"
+                  onClick={() => handleTogglePath(p)}
+                >
+                  {p.map((m) => (marketsInfoData ? getMarketFullName(marketsInfoData[m]) : m)).join(" → ")}
+                </button>
+              ))
+            )}
+          </div>
         </div>
+        <button className="rounded-4 bg-slate-600 px-8 py-6" onClick={() => setDebugSwapMarketsConfig({})}>
+          Clear debug overrides
+        </button>
       </div>
+      <div>L - liquidity, C - capacity</div>
 
-      <div className=" flex flex-col gap-16">
+      <div className="flex flex-col ">
         {swapPathsStats?.map((stats) => (
           <div
-            key={stats.swapPath.join(",")}
+            key={stats.swapPath.toString()}
             className={cx(
-              "flex justify-between gap-8 rounded-4",
+              "flex justify-between gap-8 rounded-4 py-8",
               disabledPathsStr.includes(stats.swapPath.toString()) && "bg-red-700"
             )}
           >
@@ -240,7 +306,7 @@ function MarketGraph() {
               <label>
                 <input
                   type="checkbox"
-                  checked={debugSwapMarketsConfig.disabledPaths?.includes(stats.swapPath)}
+                  checked={disabledPathsStr.includes(stats.swapPath.toString())}
                   onChange={() => handleTogglePath(stats.swapPath)}
                 />
               </label>
@@ -276,7 +342,7 @@ function MarketGraph() {
               ))}
             </div>
             <div>
-              {bestSwapPathKey === stats.swapPath.join(",") ? "👑" : ""} {formatUsd(stats.usdOut)}
+              {bestSwapPathKey === stats.swapPath.toString() ? "👑" : ""} {formatUsd(stats.usdOut)}
             </div>
           </div>
         ))}
@@ -285,4 +351,4 @@ function MarketGraph() {
   );
 }
 
-export default memo(MarketGraph);
+export default memo(DebugMarketGraph);

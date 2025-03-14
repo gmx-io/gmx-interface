@@ -23,7 +23,6 @@ import {
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { EMPTY_ARRAY } from "lib/objects";
 import { tenderlyLsKeys } from "lib/tenderly";
 
 export type SettingsContextType = {
@@ -70,7 +69,7 @@ export type SettingsContextType = {
     disabledSwapMarkets?: string[];
     disabledPaths?: string[][];
   };
-  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets: string[]; disabledPaths: string[][] }) => void;
+  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[]; disabledPaths?: string[][] }) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -142,10 +141,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
-  const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey(
-    [chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY],
-    { disabledSwapMarkets: EMPTY_ARRAY as string[], disabledPaths: EMPTY_ARRAY as string[][] }
-  );
+  const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
+    undefined | { disabledSwapMarkets?: string[]; disabledPaths?: string[][] }
+  >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;

@@ -2,13 +2,11 @@ import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { BigNumberish, ethers } from "ethers";
 import { bigMath } from "sdk/utils/bigmath";
-import { bigintToNumber } from "sdk/utils/numbers";
+import { bigintToNumber, PRECISION_DECIMALS } from "sdk/utils/numbers";
 
 export * from "sdk/utils/numbers";
 export * from "./formatting";
 
-export const PRECISION_DECIMALS = 30;
-export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";

@@ -1,5 +1,5 @@
-export * from "./swapRouting";
-export * from "./swapStats";
+export * from "sdk/swap/swapRouting";
+export * from "sdk/swap/swapStats";
 export * from "./swap";
 export * from "./increase";
 export * from "./decrease";
