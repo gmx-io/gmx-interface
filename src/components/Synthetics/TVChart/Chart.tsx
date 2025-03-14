@@ -7,10 +7,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { DepthChart } from "components/DepthChart/DepthChart";
+import Tabs from "components/Tabs/Tabs";
 
 import { ChartHeader } from "./ChartHeader";
-import { DepthChart } from "components/DepthChart/DepthChart";
-import Tab from "components/Tab/Tab";
 import { TVChart } from "./TVChart";
 
 import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
@@ -35,6 +35,11 @@ const TAB_LABELS = {
   ),
 };
 
+const TABS_OPTIONS = TABS.map((tab) => ({
+  value: tab,
+  label: TAB_LABELS[tab],
+}));
+
 export function Chart() {
   const isMobile = useMedia("(max-width: 700px)");
   const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
@@ -50,12 +55,11 @@ export function Chart() {
         ) : (
           <>
             <div className="text-body-medium border-b border-stroke-primary px-20 py-10">
-              <Tab
+              <Tabs
                 type="inline"
                 className="flex"
-                options={TABS}
-                option={tab}
-                optionLabels={TAB_LABELS}
+                options={TABS_OPTIONS}
+                selectedValue={tab ?? null}
                 onChange={setTab}
               />
             </div>

@@ -44,7 +44,7 @@ import {
 } from "config/factors";
 
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tab from "../Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import ConfirmationBox from "./ConfirmationBox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import OrdersToa from "./OrdersToa";
@@ -1996,6 +1996,18 @@ export default function SwapBox(props) {
     );
   }
 
+  const swapTabsOptions = SWAP_OPTIONS.map((option) => ({
+    value: option,
+    label: localizedSwapLabels[option],
+    className: SWAP_OPTIONS_CLASSNAMES[option],
+    icon: SWAP_ICONS[option],
+  }));
+
+  const orderTabsOptions = orderOptions.map((option) => ({
+    value: option,
+    label: localizedOrderOptionLabels[option],
+  }));
+
   return (
     <div className="Exchange-swap-box">
       <form
@@ -2006,22 +2018,18 @@ export default function SwapBox(props) {
       >
         <div className="Exchange-swap-box-inner App-box-highlight">
           <div>
-            <Tab
-              icons={SWAP_ICONS}
-              options={SWAP_OPTIONS}
-              optionLabels={localizedSwapLabels}
-              optionClassnames={SWAP_OPTIONS_CLASSNAMES}
-              option={swapOption}
+            <Tabs
+              options={swapTabsOptions}
+              selectedValue={swapOption}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
             />
             {flagOrdersEnabled && (
-              <Tab
-                options={orderOptions}
-                optionLabels={localizedOrderOptionLabels}
+              <Tabs
+                options={orderTabsOptions}
                 className="Exchange-swap-order-type-tabs"
                 type="inline"
-                option={orderOption}
+                selectedValue={orderOption}
                 onChange={onOrderOptionChange}
               />
             )}

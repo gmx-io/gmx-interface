@@ -1,4 +1,6 @@
 import { Trans, msg, t } from "@lingui/macro";
+import { useMemo } from "react";
+
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -8,7 +10,7 @@ import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import TradersStats from "components/Referrals/TradersStats";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import {
   ReferralCodeStats,
@@ -104,6 +106,13 @@ function Referrals() {
     }
   }
 
+  const tabsOptions = useMemo(() => {
+    return TAB_OPTIONS.map((option) => ({
+      value: option,
+      label: localizedTabOptionLabels[option],
+    }));
+  }, [localizedTabOptionLabels]);
+
   function renderTradersTab() {
     if (loading) return <Loader />;
     if (isHashZero(userReferralCode) || !account || !userReferralCode) {
@@ -137,13 +146,7 @@ function Referrals() {
           qa="referrals-page"
         />
         <div className="referral-tab-container">
-          <Tab
-            options={TAB_OPTIONS}
-            optionLabels={localizedTabOptionLabels}
-            option={activeTab}
-            setOption={setActiveTab}
-            onChange={setActiveTab}
-          />
+          <Tabs options={tabsOptions} selectedValue={activeTab ?? null} onChange={setActiveTab} />
         </div>
         {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
       </div>

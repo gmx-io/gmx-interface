@@ -264,9 +264,9 @@ export function useTradeboxState(
     }
 
     return {
-      [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger, TradeMode.StopMarket],
-      [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger, TradeMode.StopMarket],
-      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit],
+      [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, [TradeMode.Trigger, TradeMode.StopMarket]] as const,
+      [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, [TradeMode.Trigger, TradeMode.StopMarket]] as const,
+      [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit] as const,
     }[tradeType];
   }, [tradeType]);
 
@@ -621,7 +621,7 @@ export function useTradeboxState(
         return;
       }
 
-      if (tradeType && tradeMode && !availableTradeModes.includes(tradeMode)) {
+      if (tradeType && tradeMode && !availableTradeModes.flat().includes(tradeMode)) {
         setTradeMode(availableTradeModes[0]);
       }
     },

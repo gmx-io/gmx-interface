@@ -18,16 +18,12 @@ import { formatBalanceAmount } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
-import Tab from "../Tab/Tab";
-
-import { useGmxPrice } from "domain/legacy";
-
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import BuyInputSection from "../BuyInputSection/BuyInputSection";
-import Tooltip from "../Tooltip/Tooltip";
-
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+
 import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import Tabs from "components/Tabs/Tabs";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import { useGmxPrice } from "domain/legacy";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -75,9 +71,12 @@ import {
   getWrappedToken,
 } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
+import BuyInputSection from "../BuyInputSection/BuyInputSection";
+import Tooltip from "../Tooltip/Tooltip";
 
 const { ZeroAddress } = ethers;
 
@@ -178,6 +177,16 @@ export default function GlpSwap(props) {
       },
     }),
     [tabOptions]
+  );
+
+  const tabsOptions = useMemo(
+    () =>
+      tabOptions.map((tab) => ({
+        value: tab,
+        label: tab,
+        className: tabOptionClassNames[tab],
+      })),
+    [tabOptions, tabOptionClassNames]
   );
 
   const { active, signer, account } = useWallet();
@@ -1054,12 +1063,11 @@ export default function GlpSwap(props) {
               onClickPrimary();
             }}
           >
-            <Tab
-              options={tabOptions}
-              option={tabLabel}
+            <Tabs
+              options={tabsOptions}
+              selectedValue={tabLabel}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
-              optionClassnames={tabOptionClassNames}
             />
             <div className="mb-12 flex flex-col gap-4">
               {isBuying && (

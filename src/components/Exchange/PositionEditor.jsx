@@ -15,10 +15,6 @@ import {
   USD_DECIMALS,
 } from "config/factors";
 import { getContract } from "config/contracts";
-import Tab from "../Tab/Tab";
-import Modal from "../Modal/Modal";
-
-import Tooltip from "../Tooltip/Tooltip";
 
 import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { callContract } from "lib/contracts";
@@ -29,18 +25,22 @@ import { usePrevious } from "lib/usePrevious";
 import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
-import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
 import { getPriceDecimals } from "sdk/configs/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import Tabs from "components/Tabs/Tabs";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { abis } from "sdk/abis";
+
+import Modal from "../Modal/Modal";
+import Tooltip from "../Tooltip/Tooltip";
+import FeesTooltip from "./FeesTooltip";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -101,6 +101,13 @@ export default function PositionEditor(props) {
   const submitButtonRef = useRef(null);
   const { _ } = useLingui();
   const localizedEditOptionLabels = useLocalizedMap(EDIT_OPTIONS_LABELS);
+
+  const tabsOptions = useMemo(() => {
+    return EDIT_OPTIONS.map((option) => ({
+      value: option,
+      label: localizedEditOptionLabels[option],
+    }));
+  }, [localizedEditOptionLabels]);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -568,18 +575,17 @@ export default function PositionEditor(props) {
     [minExecutionFee, minExecutionFeeUSD]
   );
 
+  const onSelectOption = (option) => {
+    setOption(option);
+    resetForm();
+  };
+
   return (
     <div className="PositionEditor">
       {position && (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab
-              options={EDIT_OPTIONS}
-              optionLabels={localizedEditOptionLabels}
-              option={option}
-              setOption={setOption}
-              onChange={resetForm}
-            />
+            <Tabs options={tabsOptions} selectedValue={option} onChange={onSelectOption} />
             {(isDeposit || isWithdrawal) && (
               <div>
                 <div className="mb-12">
