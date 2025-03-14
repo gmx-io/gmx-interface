@@ -26,11 +26,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
+import { isPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
 import {
-  OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
+  OrderType,
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { formatLeverage } from "domain/synthetics/positions/utils";
@@ -58,7 +59,6 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback } from "react";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { isPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -213,8 +213,10 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       const orderType = isLimit ? increaseAmounts.limitOrderType! : OrderType.MarketIncrease;
 
       const metricData = initIncreaseOrderMetricData({
+        chainId,
         fromToken,
         increaseAmounts,
+        collateralToken,
         hasExistingPosition: Boolean(selectedPosition),
         leverage: formatLeverage(increaseAmounts.estimatedLeverage) ?? "",
         executionFee,
@@ -240,7 +242,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         interactionId: marketInfo?.name
           ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name))
           : undefined,
-        externalSwapQuote: increaseAmounts?.externalSwapQuote,
       });
 
       sendOrderSubmittedMetric(metricData.metricId);
