@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getSwapPathComparator } from "./swap";
-import { SwapRoute } from "../types";
+import type { SwapRoute } from "sdk/types/trade";
 
 describe("getSwapPathComparator", () => {
   it("should return a function that sorts by liquidity", () => {

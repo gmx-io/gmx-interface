@@ -6,7 +6,7 @@ import { bigMath } from "./bigmath";
 import { getByKey } from "./objects";
 import { parsePositionKey } from "./positions";
 import { getOrderThresholdType } from "./prices";
-import { getSwapPathOutputAddresses, getSwapPathStats } from "./swapStats";
+import { getSwapPathOutputAddresses, getSwapPathStats } from "../swap/swapStats";
 import {
   convertToTokenAmount,
   convertToUsd,

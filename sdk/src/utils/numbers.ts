@@ -1,6 +1,7 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 
-export const PRECISION = expandDecimals(1, 30);
+export const PRECISION_DECIMALS = 30;
+export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 
 export const BN_ZERO = 0n;
 export const BN_ONE = 1n;

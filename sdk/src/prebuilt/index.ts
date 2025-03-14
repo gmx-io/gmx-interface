@@ -2,15 +2,17 @@
  * Json files in this directory are prebuild by scripts from the `scripts/prebuild` directory.
  * No need to edit them manually, use `yarn run prebuild` command instead.
  */
-import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
-import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
-import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
-
 import {
+  KinkModelMarketRateMulticallRequestConfig,
   MarketConfigMulticallRequestConfig,
   MarketValuesMulticallRequestConfig,
-  KinkModelMarketRateMulticallRequestConfig,
 } from "modules/markets/types";
+import type { SwapRoutes } from "types/trade";
+import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
+import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
+import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
+import reachableTokens from "./reachableTokens.json";
+import swapRoutes from "./swapRoutes.json";
 
 type HashedMarketValuesKeys = Omit<
   Record<keyof MarketValuesMulticallRequestConfig[`${string}-dataStore`]["calls"], string>,
@@ -42,4 +44,20 @@ const HASHED_KINK_MODEL_MARKET_RATES_KEYS: {
   };
 } = hashedKinkModelMarketRatesKeys;
 
-export { HASHED_MARKET_VALUES_KEYS, HASHED_MARKET_CONFIG_KEYS, HASHED_KINK_MODEL_MARKET_RATES_KEYS };
+const SWAP_ROUTES: {
+  [chainId: number]: SwapRoutes;
+} = swapRoutes;
+
+const REACHABLE_TOKENS: {
+  [chainId: number]: {
+    [token: string]: string[];
+  };
+} = reachableTokens;
+
+export {
+  HASHED_KINK_MODEL_MARKET_RATES_KEYS,
+  HASHED_MARKET_CONFIG_KEYS,
+  HASHED_MARKET_VALUES_KEYS,
+  REACHABLE_TOKENS,
+  SWAP_ROUTES,
+};
