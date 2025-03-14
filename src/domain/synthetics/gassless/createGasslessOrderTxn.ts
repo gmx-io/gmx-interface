@@ -1,22 +1,15 @@
-import { ethers, parseUnits, Signer } from "ethers";
+import { ethers, Signer } from "ethers";
 import { IncreaseOrderParams } from "../orders/createIncreaseOrderTxn";
 // Import only the GelatoRelayRouterAbi and extract just the ABI part
-import GelatoRelayRouterAbiJson from "../../../../sdk/src/abis/GelatoRelayRouter.json";
-import SubaccountGelatoRelayRouterAbiJson from "../../../../sdk/src/abis/SubaccountGelatoRelayRouter.json";
-import { CreateOrderParams, getCreateOrderCalldata } from "./orderUtils";
+import { CreateOrderParams, getCreateOrderCalldata, getRelayerFeeSwapParams, RelayFeeParams } from "./orderUtils";
 // Import permit utilities
-import { createCollateralTokenPermit, supportsPermit, TokenPermit, debugPermitSignature } from "./permitUtils";
+import { createCollateralTokenPermit, debugPermitSignature, supportsPermit, TokenPermit } from "./permitUtils";
 // Import subaccount utilities
-import { SubaccountApproval, createSubaccountApproval } from "./subaccountUtils";
-
-const GelatoRelayRouterAbi = GelatoRelayRouterAbiJson.abi;
-const SubaccountGelatoRelayRouterAbi = SubaccountGelatoRelayRouterAbiJson.abi;
+import { SubaccountApproval } from "./subaccountUtils";
 
 // Import Gelato Relay SDK
 import { GelatoRelay, TransactionStatusResponse } from "@gelatonetwork/relay-sdk";
-import { getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
-import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
-import { getContract } from "config/contracts";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 const relay = new GelatoRelay();
 
@@ -29,27 +22,21 @@ export async function createGasslessIncreaseOrderTxn({
   createOrderParams: p,
   signer,
   deadline = BigInt(Math.floor(Date.now() / 1000) + 3600), // 1 hour from now
-  feeToken,
-  feeAmount,
-  relayFeeToken,
-  relayFeeAmount,
-  tokenPermits = [], // Optional manually provided token permits
-  createPermit = false, // Default to automatically creating permit
-  subaccountApproval, // Optional subaccount approval for trading with subaccounts
-  subaccountSigner, // Optional subaccount signer if using a subaccount
+  tokenPermits = [],
+  createPermit = false,
+  subaccountApproval,
+  subaccountSigner,
+  relayFeeParams,
 }: {
   chainId: number;
   createOrderParams: IncreaseOrderParams;
-  signer: Signer; // Main account signer (used for signing permits)
+  signer: Signer;
   deadline?: bigint;
-  feeToken: string;
-  feeAmount: bigint;
-  relayFeeToken: string;
-  relayFeeAmount: bigint;
-  tokenPermits?: TokenPermit[]; // Optional manually provided token permits
-  createPermit?: boolean; // Flag to auto-create permit for collateral token
-  subaccountApproval?: SubaccountApproval; // Optional subaccount approval
-  subaccountSigner?: Signer; // Optional subaccount signer
+  tokenPermits?: TokenPermit[];
+  createPermit?: boolean;
+  subaccountApproval?: SubaccountApproval;
+  subaccountSigner?: Signer;
+  relayFeeParams: RelayFeeParams;
 }) {
   if (!signer) {
     throw new Error("Signer is required for gasless transactions");
@@ -159,6 +146,8 @@ export async function createGasslessIncreaseOrderTxn({
     );
   }
 
+  const relayFeeSwapParams = getRelayerFeeSwapParams(account, relayFeeParams);
+
   const txDataResult = await getCreateOrderCalldata(chainId, {
     signer: signer,
     oracleParams: {
@@ -166,28 +155,17 @@ export async function createGasslessIncreaseOrderTxn({
       providers: ["0x527FB0bCfF63C47761039bB386cFE181A92a4701", "0x527FB0bCfF63C47761039bB386cFE181A92a4701"],
       data: ["0x", "0x"],
     },
-    externalCalls: {
-      externalCallTargets: ["0x6352a56caadC4F1E25CD6c75970Fa768A3304e64"],
-      externalCallDataList: [
-        "0xbc80f1a800000000000000000000000063dafb2ca71767129ab8d0a0909383023c4aff6e00000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000001e650e465a50f000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000018000010000000000000000006f38e884725a116c9c7fbf208e79fe8828a2595f",
-      ],
-      refundTokens: [getTokenBySymbol(chainId, "WETH")?.address, getTokenBySymbol(chainId, "USDC")?.address],
-      refundReceivers: [account, account],
-    },
+    externalCalls: relayFeeSwapParams.externalCalls,
     subaccountApproval,
     tokenPermits, // Pass the token permits
-    feeParams: {
-      feeToken: getTokenBySymbol(chainId, "USDC")?.address,
-      feeAmount: parseUnits("1", 6),
-      feeSwapPath: [],
-    },
+    feeParams: relayFeeSwapParams.feeParams,
     collateralDeltaAmount: p.initialCollateralAmount,
     account,
     params: orderParams,
     deadline,
     chainId,
-    relayFeeToken,
-    relayFeeAmount: 534710080349455n,
+    relayFeeToken: relayFeeSwapParams.relayFeeToken,
+    relayFeeAmount: relayFeeSwapParams.relayFeeAmount,
   });
 
   console.log("Transaction data generated successfully");
@@ -200,11 +178,11 @@ export async function createGasslessIncreaseOrderTxn({
     chainId: BigInt(chainId),
     target: targetRouterAddress,
     data: txDataResult.calldata, // Use the calldata string
-    feeToken: relayFeeToken,
+    feeToken: relayFeeSwapParams.relayFeeToken,
     isRelayContext: true,
   };
 
-  console.log("Relay request:", relayRequest, relayFeeToken, feeToken, feeAmount);
+  console.log("Relay request:", relayRequest, relayFeeSwapParams.relayFeeToken);
 
   console.log(
     "Submitting relay request to Gelato:",

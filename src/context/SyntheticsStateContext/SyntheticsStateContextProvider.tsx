@@ -49,6 +49,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { RelayerFeeState } from "domain/synthetics/gassless/types";
 
 export type SyntheticsPageType =
   | "accounts"
@@ -105,6 +106,8 @@ export type SyntheticsState = {
   settings: SettingsContextType;
   tradebox: TradeboxState;
   externalSwap: ExternalSwapState;
+  relayerFeeState: RelayerFeeState | undefined;
+  setRelayerFeeState: (state: RelayerFeeState | undefined) => void;
   orderEditor: OrderEditorState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
@@ -263,6 +266,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const externalSwapState = useInitExternalSwapState();
+  const [relayerFeeState, setRelayerFeeState] = useState<RelayerFeeState | undefined>();
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -308,6 +312,8 @@ export function SyntheticsStateContextProvider({
       settings,
       tradebox: tradeboxState,
       externalSwap: externalSwapState,
+      relayerFeeState,
+      setRelayerFeeState,
       orderEditor,
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
@@ -348,6 +354,7 @@ export function SyntheticsStateContextProvider({
     settings,
     tradeboxState,
     externalSwapState,
+    relayerFeeState,
     orderEditor,
     positionSellerState,
     positionEditorState,

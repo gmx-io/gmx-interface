@@ -2833,6 +2833,10 @@ msgstr "{nativeTokenSymbol} can not be sent to smart contract addresses. Select 
 msgid "Fetching token info..."
 msgstr "Fetching token info..."
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "You have {balance} ETH remaining in your old version 1CT subaccount."
+msgstr "You have {balance} ETH remaining in your old version 1CT subaccount."
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr "This swap is routed through several GM pools for the lowest possible fees and price impact."
@@ -2922,6 +2926,10 @@ msgstr "Create Take Profit"
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Update Order"
 msgstr "Update Order"
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Advanced Settings"
+msgstr "Advanced Settings"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
@@ -3071,7 +3079,6 @@ msgid "The subaccount has no funds."
 msgstr "The subaccount has no funds."
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/SettingsModal/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing..."
 msgstr "Withdrawing..."
@@ -3229,8 +3236,8 @@ msgid "Select Language"
 msgstr "Select Language"
 
 #: src/components/SettingsModal/OldSubaccountWithdraw.tsx
-msgid "You have {0} ETH remaining in your old version 1CT subaccount."
-msgstr "You have {0} ETH remaining in your old version 1CT subaccount."
+#~ msgid "You have {0} ETH remaining in your old version 1CT subaccount."
+#~ msgstr "You have {0} ETH remaining in your old version 1CT subaccount."
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
@@ -3618,7 +3625,7 @@ msgstr "Cancel Order"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/SettingsModal/OldSubaccountWithdraw.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -5183,6 +5190,10 @@ msgstr "Min residual collateral: 10 USD"
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
 msgstr "GMX & Voting Power"
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save limit settings"
+msgstr "Save limit settings"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Take profit and stop loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."

@@ -2833,6 +2833,10 @@ msgstr ""
 msgid "Fetching token info..."
 msgstr "トークン情報入手中..."
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "You have {balance} ETH remaining in your old version 1CT subaccount."
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr ""
@@ -2922,6 +2926,10 @@ msgstr ""
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Update Order"
 msgstr "注文の更新"
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Advanced Settings"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
@@ -3071,7 +3079,6 @@ msgid "The subaccount has no funds."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/SettingsModal/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing..."
 msgstr ""
@@ -3229,8 +3236,8 @@ msgid "Select Language"
 msgstr "言語選択"
 
 #: src/components/SettingsModal/OldSubaccountWithdraw.tsx
-msgid "You have {0} ETH remaining in your old version 1CT subaccount."
-msgstr ""
+#~ msgid "You have {0} ETH remaining in your old version 1CT subaccount."
+#~ msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
@@ -3618,7 +3625,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/SettingsModal/OldSubaccountWithdraw.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -5179,6 +5186,10 @@ msgstr ""
 
 #: src/pages/Earn/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
+msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Save limit settings"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx

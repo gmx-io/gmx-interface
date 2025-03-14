@@ -58,6 +58,7 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tab from "components/Tab/Tab";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { useRelayerFeeHandler } from "domain/synthetics/gassless/useRelayerFeeHandler";
 
 export type Props = {
   openSettings: () => void;
@@ -78,6 +79,7 @@ export function SyntheticsPage(p: Props) {
   const { setPendingTxns } = usePendingTxns();
 
   useExternalSwapHandler();
+  useRelayerFeeHandler();
 
   const isMobile = useMedia("(max-width: 1100px)");
 

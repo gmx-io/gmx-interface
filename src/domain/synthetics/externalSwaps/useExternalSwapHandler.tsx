@@ -23,6 +23,7 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { useEffect } from "react";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
+import { getContract } from "sdk/configs/contracts";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -53,6 +54,7 @@ export function useExternalSwapHandler() {
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
     amountIn: externalSwapInputs?.amountIn,
+    receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
     enabled: getIsFlagEnabled("testExternalSwap") && !subaccount && shouldRequestExternalSwapQuote,

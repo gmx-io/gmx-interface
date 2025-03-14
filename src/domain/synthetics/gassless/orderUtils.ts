@@ -1,16 +1,10 @@
 import { solidityPacked } from "ethers";
 
 import { getContract } from "config/contracts";
-import { Contract, Signer, ZeroHash } from "ethers";
+import { Contract, Signer } from "ethers";
 import GelatoRelayRouterAbi from "sdk/abis/GelatoRelayRouter.json";
 import SubaccountGelatoRelayRouterAbi from "sdk/abis/SubaccountGelatoRelayRouter.json";
-import {
-  getGelatoRelayRouterDomain,
-  getRelayParams,
-  hashRelayParams,
-  hashSubaccountApproval,
-  signTypedData,
-} from "./signing";
+import { getGelatoRelayRouterDomain, getRelayParams, hashRelayParams, signTypedData } from "./signing";
 import { SubaccountApproval } from "./subaccountUtils";
 
 // Define the type for CreateOrderParams
@@ -42,49 +36,101 @@ export interface CreateOrderParams {
   referralCode: string;
 }
 
-export async function getCreateOrderCalldata(
-  chainId: number,
-  p: {
-    signer: Signer;
-    oracleParams?: {
-      tokens: string[];
-      providers: string[];
-      data: string[];
+export type ExpressOrderParams = {
+  signer: Signer;
+  oracleParams?: {
+    tokens: string[];
+    providers: string[];
+    data: string[];
+  };
+  externalCalls?: {
+    externalCallTargets: string[];
+    externalCallDataList: string[];
+    refundTokens: string[];
+    refundReceivers: string[];
+  };
+  tokenPermits?: {
+    owner?: string;
+    spender?: string;
+    value?: bigint;
+    deadline?: bigint;
+    v?: number;
+    r?: string;
+    s?: string;
+    token?: string;
+  }[];
+  feeParams: {
+    feeToken: string;
+    feeAmount: bigint;
+    feeSwapPath: string[];
+  };
+  collateralDeltaAmount: bigint;
+  account: string;
+  params: CreateOrderParams;
+  signature?: string;
+  userNonce?: bigint;
+  deadline: bigint;
+  chainId: number;
+  relayFeeToken: string;
+  relayFeeAmount: bigint;
+  subaccountApproval?: SubaccountApproval;
+  signatureValidator?: string;
+};
+
+export type RelayFeeParams = {
+  gasPaymentTokenAddress: string;
+  relayerFeeTokenAddress: string;
+  gasPaymentTokenAmount: bigint;
+  relayerFeeTokenAmount: bigint;
+  swapPath: string[];
+  externalSwapQuote?: {
+    to: string;
+    data: string;
+  };
+};
+
+export function getRelayerFeeSwapParams(account: string, relayFeeParams: RelayFeeParams) {
+  const relayFeeToken = relayFeeParams.relayerFeeTokenAddress;
+  const relayFeeAmount = relayFeeParams.relayerFeeTokenAmount;
+
+  let feeParams: ExpressOrderParams["feeParams"];
+  let externalCalls: ExpressOrderParams["externalCalls"];
+
+  if (relayFeeParams.externalSwapQuote) {
+    externalCalls = {
+      externalCallTargets: [relayFeeParams.externalSwapQuote.to],
+      externalCallDataList: [relayFeeParams.externalSwapQuote.data],
+      refundReceivers: [account, account],
+      refundTokens: [relayFeeParams.gasPaymentTokenAddress, relayFeeParams.relayerFeeTokenAddress],
     };
-    externalCalls?: {
-      externalCallTargets: string[];
-      externalCallDataList: string[];
-      refundTokens: string[];
-      refundReceivers: string[];
+    feeParams = {
+      feeToken: relayFeeToken,
+      feeAmount: relayFeeAmount,
+      feeSwapPath: [],
     };
-    tokenPermits?: {
-      owner?: string;
-      spender?: string;
-      value?: bigint;
-      deadline?: bigint;
-      v?: number;
-      r?: string;
-      s?: string;
-      token?: string;
-    }[];
-    feeParams: {
-      feeToken: string;
-      feeAmount: bigint;
-      feeSwapPath: string[];
+  } else {
+    feeParams = {
+      feeToken: relayFeeParams.gasPaymentTokenAddress,
+      feeAmount: relayFeeParams.gasPaymentTokenAmount,
+      feeSwapPath: relayFeeParams.swapPath,
     };
-    collateralDeltaAmount: bigint;
-    account: string;
-    params: CreateOrderParams;
-    signature?: string;
-    userNonce?: bigint;
-    deadline: bigint;
-    chainId: number;
-    relayFeeToken: string;
-    relayFeeAmount: bigint;
-    subaccountApproval?: SubaccountApproval;
-    signatureValidator?: string;
+    externalCalls = {
+      externalCallTargets: [],
+      externalCallDataList: [],
+      refundReceivers: [],
+      refundTokens: [],
+    };
   }
-) {
+
+  return {
+    feeParams,
+    externalCalls,
+    relayFeeToken,
+    relayFeeAmount,
+  };
+}
+
+export async function getCreateOrderCalldata(chainId: number, p: ExpressOrderParams) {
   // Get relay parameters
   const relayRouterAddress = getContract(
     chainId,

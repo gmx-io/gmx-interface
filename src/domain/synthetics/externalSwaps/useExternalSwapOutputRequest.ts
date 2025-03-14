@@ -1,6 +1,6 @@
-import { sleep } from "lib/sleep";
 import { useDebounce } from "lib/useDebounce";
 import { useMemo } from "react";
+import { usePrevious } from "react-use";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
@@ -8,13 +8,12 @@ import { ExternalSwapAggregator, ExternalSwapOutput } from "sdk/types/trade";
 import useSWR from "swr";
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getOpenOceanTxnData } from "./openOcean";
-import { usePrevious } from "react-use";
-import { parseUnits } from "ethers";
 
 export function useExternalSwapOutputRequest({
   chainId,
   tokenInAddress,
   tokenOutAddress,
+  receiverAddress,
   amountIn,
   slippage,
   gasPrice,
@@ -24,6 +23,7 @@ export function useExternalSwapOutputRequest({
   tokensData: TokensData | undefined;
   tokenInAddress: string | undefined;
   tokenOutAddress: string | undefined;
+  receiverAddress: string | undefined;
   amountIn: bigint | undefined;
   slippage: number | undefined;
   gasPrice: bigint | undefined;
@@ -33,12 +33,13 @@ export function useExternalSwapOutputRequest({
     enabled &&
     tokenInAddress &&
     tokenOutAddress &&
+    receiverAddress &&
     tokenOutAddress !== tokenInAddress &&
     amountIn !== undefined &&
     amountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}`
+      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
@@ -46,39 +47,31 @@ export function useExternalSwapOutputRequest({
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
 
-  const key = "true";
-
-  const { data } = useSWR<{ quote: ExternalSwapOutput; requestKey: string }>(key, {
+  const { data } = useSWR<{ quote: ExternalSwapOutput; requestKey: string }>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
     fetcher: async (requestKey: string) => {
       try {
-        // if (
-        //   !tokenInAddress ||
-        //   !tokenOutAddress ||
-        //   amountIn === undefined ||
-        //   slippage === undefined ||
-        //   gasPrice === undefined
-        // ) {
-        //   throw new Error("Invalid swap parameters");
-        // }
+        if (
+          !tokenInAddress ||
+          !tokenOutAddress ||
+          !receiverAddress ||
+          amountIn === undefined ||
+          slippage === undefined ||
+          gasPrice === undefined
+        ) {
+          throw new Error("Invalid swap parameters");
+        }
 
-        const result = await Promise.race([
-          getOpenOceanTxnData({
-            chainId,
-            senderAddress: getContract(chainId, "ExternalHandler"),
-            receiverAddress: getContract(chainId, "GelatoRelayRouter"),
-            tokenInAddress: getTokenBySymbol(chainId, "USDC")?.address,
-            tokenOutAddress: getTokenBySymbol(chainId, "WETH")?.address,
-            amountIn: parseUnits("1", 6),
-            gasPrice: parseUnits("1", 18),
-            slippage: 1,
-          }),
-          sleep(5000).then(() => {
-            throw new Error("External swap request timeout");
-          }),
-        ]);
-
-        console.log("result", result);
+        const result = await getOpenOceanTxnData({
+          chainId,
+          senderAddress: getContract(chainId, "ExternalHandler"),
+          receiverAddress,
+          tokenInAddress,
+          tokenOutAddress,
+          amountIn,
+          gasPrice,
+          slippage,
+        });
 
         if (!result) {
           throw new Error("Failed to fetch open ocean txn data");
@@ -88,7 +81,7 @@ export function useExternalSwapOutputRequest({
           aggregator: ExternalSwapAggregator.OpenOcean,
           inTokenAddress: getTokenBySymbol(chainId, "USDC")?.address,
           outTokenAddress: getTokenBySymbol(chainId, "WETH")?.address,
-          amountIn: parseUnits("1", 6),
+          amountIn,
           amountOut: result.outputAmount,
           usdIn: result.usdIn,
           usdOut: result.usdOut,

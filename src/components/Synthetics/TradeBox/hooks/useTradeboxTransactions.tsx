@@ -30,18 +30,20 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
+import { isPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
+import { createGasslessIncreaseOrderTxn } from "domain/synthetics/gassless/createGasslessOrderTxn";
+import { createSubaccountApproval } from "domain/synthetics/gassless/subaccountUtils";
 import {
-  OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
+  OrderType,
 } from "domain/synthetics/orders";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { createGasslessIncreaseOrderTxn } from "domain/synthetics/gassless/createGasslessOrderTxn";
-import { createSubaccountApproval } from "domain/synthetics/gassless/subaccountUtils";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { parseUnits } from "ethers";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
@@ -61,14 +63,13 @@ import {
   userAnalytics,
 } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useState } from "react";
-import { useRequiredActions } from "./useRequiredActions";
-import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
-import { isPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
+import { useCallback } from "react";
 import { toast } from "react-toastify";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import { getWrappedToken } from "sdk/configs/tokens";
-import { parseUnits } from "ethers";
+import { useRequiredActions } from "./useRequiredActions";
+import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
+import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
@@ -85,7 +86,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const { signer, account } = useWallet();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const tokensData = useTokensData();
-  const { shouldDisableValidationForTesting } = useSettings();
+  const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
+  const relayerFeeState = useSelector(selectRelayerFeeState);
   const { getExecutionFeeAmountForEntry, summaryExecutionFee } = useTPSLSummaryExecutionFee();
 
   const isFirstOrder = useSelector(selectIsFirstOrder);
@@ -122,12 +124,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const subaccount = useSubaccount(summaryExecutionFee?.feeTokenAmount ?? null, requiredActions);
   const userReferralInfo = useSelector(selectUserReferralInfo);
 
-  // State for tracking gasless transaction status
-  const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
-
-  // Action creators for required actions
-
-  // Get token allowance data
   const tokensAllowanceData = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
@@ -201,6 +197,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isLimit,
       fromToken,
       toToken,
+      referralCodeForTxn,
       swapAmounts,
       executionFee,
       allowedSlippage,
@@ -211,15 +208,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       tokensData,
       signer,
       chainId,
+      triggerRatio?.ratio,
       setPendingTxns,
       setPendingOrder,
       shouldDisableValidationForTesting,
       blockTimestampData,
-      triggerRatio,
     ]
   );
-
-  console.log("subaccount", subaccount);
 
   const onSubmitIncreaseOrder = useCallback(
     async function onSubmitIncreaseOrder() {
@@ -243,21 +238,16 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         return Promise.reject();
       }
 
-      const USE_GASLESS_TRANSACTIONS = true;
-
-      if (USE_GASLESS_TRANSACTIONS && signer && fromToken && collateralToken && marketInfo && increaseAmounts) {
+      if (
+        expressOrdersEnabled &&
+        signer &&
+        fromToken &&
+        collateralToken &&
+        marketInfo &&
+        increaseAmounts &&
+        relayerFeeState
+      ) {
         try {
-          // Set up the gasless transaction parameters
-          const feeToken = getWrappedToken(chainId).address; // Use collateral token as fee token
-          const feeAmount = parseUnits("1", 6); // Use the existing execution fee
-
-          console.log("Setting up gasless transaction with params:", {
-            feeToken,
-            feeAmount: feeAmount.toString(),
-            collateralToken: collateralToken.address,
-            marketAddress: marketInfo.marketTokenAddress,
-          });
-
           const subaccountApproval = subaccount
             ? await createSubaccountApproval(chainId, signer, subaccount.signer.address, {
                 shouldAdd: true,
@@ -272,8 +262,16 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           // Create the transaction using the gasless method
           const txnResponse = await createGasslessIncreaseOrderTxn({
             chainId,
+            signer,
             subaccountApproval,
             subaccountSigner: subaccount?.signer,
+            relayFeeParams: {
+              gasPaymentTokenAddress: relayerFeeState?.gasPaymentTokenAddress,
+              relayerFeeTokenAddress: relayerFeeState?.relayerFeeTokenAddress,
+              gasPaymentTokenAmount: relayerFeeState?.gasPaymentTokenAmount,
+              relayerFeeTokenAmount: relayerFeeState?.relayerFeeAmount,
+              swapPath: relayerFeeState?.internalSwapStats?.swapPath || [],
+            },
             createOrderParams: {
               externalSwapQuote: increaseAmounts.externalSwapQuote,
               account: account!,
@@ -300,11 +298,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
               setPendingOrder,
               setPendingPosition,
             },
-            signer,
-            feeToken,
-            feeAmount,
-            relayFeeToken: feeToken,
-            relayFeeAmount: feeAmount,
           });
 
           console.log("Gasless transaction response:", txnResponse);
@@ -667,6 +660,5 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     onSubmitIncreaseOrder,
     onSubmitDecreaseOrder,
     onSubmitWrapOrUnwrap,
-    pendingTaskId,
   };
 }

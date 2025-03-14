@@ -48,6 +48,7 @@ import { EntryPriceRow } from "./EntryPriceRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
+import { selectRelayerFeeState } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
 
 function LeverageInfoRows() {
   const { isIncrease, isTrigger } = useSelector(selectTradeboxTradeFlags);
@@ -202,6 +203,7 @@ export function TradeBoxAdvancedGroups() {
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const triggerRatioInputValue = useSelector(selectTradeboxTriggerRatioInputValue);
   const totalSwapImpactBps = useSelector(selectTradeboxTotalSwapImpactBps);
+  const relayerFee = useSelector(selectRelayerFeeState);
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -282,7 +284,11 @@ export function TradeBoxAdvancedGroups() {
       {isIncrease && <IncreaseOrderRow />}
       {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
-      <NetworkFeeRow executionFee={executionFee} />
+      <NetworkFeeRow
+        executionFee={executionFee}
+        gasPaymentTokenAddress={relayerFee?.gasPaymentTokenAddress}
+        gasPaymentTokenAmount={relayerFee?.gasPaymentTokenAmount}
+      />
 
       {(isSwap || isLimit || (isMarket && !isSwap) || isMarket) && <div className="h-1 shrink-0 bg-stroke-primary" />}
 
