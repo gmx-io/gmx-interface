@@ -535,6 +535,11 @@ msgstr ""
 msgid "Trade History"
 msgstr "История торгов"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Tab/Tabs.tsx
+msgid "More"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr ""
