@@ -222,6 +222,13 @@ export function PositionEditor() {
     maxWithdrawAmount,
   ]);
 
+  const tabsOptions = useMemo(() => {
+    return Object.values(Operation).map((option) => ({
+      value: option,
+      label: localizedOperationLabels[option],
+    }));
+  }, [localizedOperationLabels]);
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -242,10 +249,7 @@ export function PositionEditor() {
             <Tabs
               onChange={setOperation}
               selectedValue={operation}
-              options={Object.values(Operation).map((option) => ({
-                value: option,
-                label: localizedOperationLabels[option],
-              }))}
+              options={tabsOptions}
               type="inline"
               className="PositionEditor-tabs"
               size="l"

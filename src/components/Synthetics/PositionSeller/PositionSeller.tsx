@@ -608,6 +608,13 @@ export function PositionSeller(p: Props) {
       />
     ));
 
+  const tabsOptions = useMemo(() => {
+    return Object.values(OrderOption).map((option) => ({
+      value: option,
+      label: localizedOrderOptionLabels[option],
+    }));
+  }, [localizedOrderOptionLabels]);
+
   return (
     <div className="text-body-medium">
       <Modal
@@ -625,10 +632,7 @@ export function PositionSeller(p: Props) {
       >
         <Tabs
           className="mb-[10.5px]"
-          options={Object.values(OrderOption).map((option) => ({
-            value: option,
-            label: localizedOrderOptionLabels[option],
-          }))}
+          options={tabsOptions}
           selectedValue={orderOption}
           type="inline"
           onChange={handleSetOrderOption}
