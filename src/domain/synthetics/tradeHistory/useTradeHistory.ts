@@ -23,7 +23,7 @@ import { Token } from "domain/tokens";
 import { definedOrThrow } from "lib/guards";
 import { bigNumberify } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient, getSyntheticsGraphClient } from "lib/subgraph";
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
 import {
   PositionTradeAction,
@@ -69,7 +69,7 @@ export function useTradeHistory(
   const tokensData = useTokensData();
   const { showDebugValues } = useSettings();
 
-  const client = getSyntheticsGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
 
   const getKey = (index: number) => {
     if (chainId && client && (account || forAllAccounts)) {
@@ -177,6 +177,7 @@ function createRawTradeActionTransformer(
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
         targetCollateralToken,
         initialCollateralToken,
+        timestamp: rawAction.timestamp,
         transaction: rawAction.transaction,
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,
@@ -258,6 +259,7 @@ function createRawTradeActionTransformer(
         reasonBytes: rawAction.reasonBytes,
 
         transaction: rawAction.transaction,
+        timestamp: rawAction.timestamp,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
       };
 
@@ -299,7 +301,7 @@ export async function fetchTradeActions({
   tokensData: TokensData | undefined;
   showDebugValues?: boolean;
 }): Promise<TradeAction[] | undefined> {
-  const client = getSyntheticsGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
 
   const skip = pageIndex * pageSize;
@@ -444,57 +446,43 @@ export async function fetchTradeActions({
   const whereClause = `where: ${filtersStr}`;
 
   const query = gql(`{
-        tradeActions(
-            skip: ${skip},
-            first: ${first},
-            orderBy: transaction__timestamp,
-            orderDirection: desc,
-            ${whereClause}
-        ) {
-            id
-            eventName
+  tradeActions(orderBy: timestamp_DESC, where: {account_eq: "0x9f7198eb1b9Ccc0Eb7A07eD228d8FbC12963ea33"}) {
+    id
+    orderType
+    account
+    marketAddress
+    swapPath
+    eventName
+    initialCollateralTokenAddress
+    initialCollateralDeltaAmount
+    sizeDeltaUsd
+    triggerPrice
+    acceptablePrice
+    executionPrice
+    minOutputAmount
+    executionAmountOut
+    priceImpactUsd
+    priceImpactDiffUsd
+    positionFeeAmount
+    borrowingFeeAmount
+    fundingFeeAmount
+    liquidationFeeAmount
+    pnlUsd
+    basePnlUsd
+    collateralTokenPriceMax
+    collateralTokenPriceMin
+    indexTokenPriceMin
+    indexTokenPriceMax
+    orderType
+    orderKey
+    isLong
+    shouldUnwrapNativeToken
+    reason
+    reasonBytes
+    transaction
+    timestamp
+  }
 
-            account
-            marketAddress
-            swapPath
-            initialCollateralTokenAddress
-
-            initialCollateralDeltaAmount
-            sizeDeltaUsd
-            triggerPrice
-            acceptablePrice
-            executionPrice
-            minOutputAmount
-            executionAmountOut
-
-            priceImpactUsd
-            priceImpactDiffUsd
-            positionFeeAmount
-            borrowingFeeAmount
-            fundingFeeAmount
-            liquidationFeeAmount
-            pnlUsd
-            basePnlUsd
-
-            collateralTokenPriceMax
-            collateralTokenPriceMin
-
-            indexTokenPriceMin
-            indexTokenPriceMax
-
-            orderType
-            orderKey
-            isLong
-            shouldUnwrapNativeToken
-
-            reason
-            reasonBytes
-
-            transaction {
-                timestamp
-                hash
-            }
-        }
       }`);
 
   const result = await client!.query({ query, fetchPolicy: "no-cache" });

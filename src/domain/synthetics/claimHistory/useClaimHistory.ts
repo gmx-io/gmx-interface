@@ -11,7 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { BN_ZERO, bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient, getSyntheticsGraphClient } from "lib/subgraph";
 import { buildFiltersBody } from "sdk/utils/subgraph";
 
 import { useFixedAddreseses } from "../common/useFixedAddresses";
@@ -33,10 +33,8 @@ type RawClaimAction = {
   amounts: string[];
   tokenPrices: string[];
   isLongOrders?: boolean[];
-  transaction: {
-    timestamp: number;
-    hash: string;
-  };
+  transaction: string;
+  timestamp: number;
 };
 
 export function useClaimCollateralHistory(
@@ -56,7 +54,7 @@ export function useClaimCollateralHistory(
 
   const account = useSelector(selectAccount);
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
-  const client = getSyntheticsGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
 
   const queryDisabled = !chainId || !client || !account;
 
@@ -118,11 +116,10 @@ export function useClaimCollateralHistory(
 
       const query = gql(`{
         claimActions(
-            skip: ${skip},
-            first: ${first},
-            orderBy: transaction__timestamp,
-            orderDirection: desc,
-            ${whereClause}
+            offset: ${skip},
+            limit: ${first},
+            orderBy: timestamp_DESC,
+            where: {account_eq: "0x9f7198eb1b9Ccc0Eb7A07eD228d8FbC12963ea33"}
         ) {
             id
             account
@@ -132,10 +129,8 @@ export function useClaimCollateralHistory(
             amounts
             tokenPrices
             isLongOrders
-            transaction {
-                timestamp
-                hash
-            }
+            transaction
+            timestamp
         }
       }`);
 
@@ -154,7 +149,7 @@ export function useClaimCollateralHistory(
 
     return data.flat().reduce((acc, rawAction) => {
       const eventName = rawAction.eventName;
-
+      debugger;
       switch (eventName) {
         case ClaimType.ClaimFunding:
         case ClaimType.ClaimPriceImpact: {
@@ -211,16 +206,16 @@ function createClaimCollateralAction(
     eventName,
     account: rawAction.account,
     claimItems: [],
-    timestamp: rawAction.transaction.timestamp,
-    transactionHash: rawAction.transaction.hash,
+    timestamp: rawAction.timestamp,
+    transactionHash: rawAction.transaction,
     tokens,
     amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
     tokenPrices: rawAction.tokenPrices.map((price) => bigNumberify(price)!),
   };
 
   for (let i = 0; i < rawAction.marketAddresses.length; i++) {
-    const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
-    const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
+    const marketAddress = rawAction.marketAddresses[i];
+    const tokenAddress = rawAction.tokenAddresses[i];
     const amount = bigNumberify(rawAction.amounts[i])!;
     const price = bigNumberify(rawAction.tokenPrices[i])!;
     const marketInfo = getByKey(marketsInfoData, marketAddress);
@@ -322,9 +317,9 @@ function createSettleFundingFeeAction(
     markets,
     tokens,
     isLongOrders: rawAction.isLongOrders ?? [],
-    transactionHash: rawAction.transaction.hash,
+    transactionHash: rawAction.transaction,
     eventName,
-    timestamp: rawAction.transaction.timestamp,
+    timestamp: rawAction.timestamp,
     claimItems: Object.values(claimItemsMap),
   };
 }

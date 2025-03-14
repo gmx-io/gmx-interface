@@ -83,6 +83,8 @@ export function ClaimsHistory() {
 
   const handleCsvDownload = useDownloadAsCsv(claimActions);
 
+  console.log("--------> currentPageData", currentPageData);
+
   return (
     <>
       <div className="App-box">
