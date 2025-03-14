@@ -14,11 +14,13 @@ export function getSwapRoutes(marketsMap: Record<string, MarketConfig>): SwapRou
 export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapRoutes {
   const smallSwapRoutes: SwapRoutes = {};
 
-  for (const tokenAAddress in graph) {
+  const allTokens = Array.from(new Set(Object.keys(graph).flatMap((token) => Object.keys(graph[token]).concat(token))));
+
+  for (const tokenAAddress of allTokens) {
     smallSwapRoutes[tokenAAddress] = {};
 
     let empty = true;
-    for (const tokenBAddress in graph[tokenAAddress]) {
+    for (const tokenBAddress of allTokens) {
       if (tokenAAddress === tokenBAddress || smallSwapRoutes[tokenBAddress]?.[tokenAAddress]) {
         continue;
       }

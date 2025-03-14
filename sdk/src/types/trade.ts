@@ -206,11 +206,12 @@ export type SwapRoute = {
   liquidity: bigint;
 };
 
-type TokenAddress = string;
-type MarketAddress = string;
+/**
+ * From Token Address -> To Token Address -> Market Addresses Array
+ */
 export type SwapRoutes = {
-  [from: TokenAddress]: {
-    [to: TokenAddress]: MarketAddress[][];
+  [from: string]: {
+    [to: string]: string[][];
   };
 };
 
