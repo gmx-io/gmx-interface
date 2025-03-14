@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useKey } from "react-use";
 
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
@@ -12,7 +12,10 @@ import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import Button from "components/Button/Button";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
+import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
+import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -21,9 +24,7 @@ import { getIsFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { useChainId } from "lib/chains";
 import { getDefaultGasPaymentToken } from "sdk/configs/gassless";
-import OldSubaccountWithdraw from "./OldSubaccountWithdraw";
 import { ExpressTradingBanner } from "../ExpressTradingBanner/ExpressTradingBanner";
-import { GasPaymentTokenSelector } from "./GasPaymentTokenSelector";
 
 export function SettingsModal({
   isSettingsVisible,
@@ -84,7 +85,7 @@ export function SettingsModal({
       return;
     }
 
-    const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
+    const basisPoints = roundToTwoDecimals(slippage);
     if (parseInt(String(basisPoints)) !== parseFloat(String(basisPoints))) {
       helperToast.error(t`Max slippage precision is -0.01%`);
       return;
@@ -99,7 +100,7 @@ export function SettingsModal({
         helperToast.error(t`Invalid network fee buffer value`);
         return;
       }
-      const nextExecutionBufferFeeBps = roundToTwoDecimals((executionFeeBuffer * BASIS_POINTS_DIVISOR) / 100);
+      const nextExecutionBufferFeeBps = roundToTwoDecimals(executionFeeBuffer);
 
       if (parseInt(String(nextExecutionBufferFeeBps)) !== parseFloat(String(nextExecutionBufferFeeBps))) {
         helperToast.error(t`Max network fee buffer precision is 0.01%`);
@@ -205,16 +206,18 @@ export function SettingsModal({
               />
             </ToggleSwitch>
 
-            <OldSubaccountWithdraw isVisible={oneClickTradingEnabled || expressOrdersEnabled} />
+            <OldSubaccountWithdraw isVisible={oneClickTradingEnabled} />
+
+            {oneClickTradingEnabled && <OneClickAdvancedSettings />}
           </SettingsSection>
 
-          {(expressOrdersEnabled || oneClickTradingEnabled) && (
+          {expressOrdersEnabled && (
             <SettingsSection className="mt-2">
               <div>
                 <Trans>Gas Payment Token</Trans>
               </div>
               <GasPaymentTokenSelector
-                gasPaymentTokenAddress={gasPaymentTokenAddress}
+                curentTokenAddress={gasPaymentTokenAddress}
                 onSelectToken={setGasPaymentTokenAddress}
               />
             </SettingsSection>

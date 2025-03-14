@@ -25,10 +25,8 @@ export function GasPaymentTokenOption({ tokenAddress, isSelected, onSelect, toke
   return (
     <button
       className={cx(
-        "border-na  flex flex-1 items-center rounded-4 border border-stroke-primary p-8 transition-colors hover:border-gray-400",
-        {
-          "border-gray-400": isSelected,
-        }
+        "border-na flex flex-1 items-center rounded-4 border p-8 transition-colors hover:border-gray-400",
+        isSelected ? "border-gray-400" : "border-stroke-primary"
       )}
       onClick={onSelect}
     >
