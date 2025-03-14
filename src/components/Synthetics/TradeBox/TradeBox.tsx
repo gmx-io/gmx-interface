@@ -75,7 +75,7 @@ import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
@@ -816,15 +816,26 @@ export function TradeBox() {
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
+  const tabsOptions = useMemo(() => {
+    const modeToOptions = (mode: TradeMode) => ({
+      value: mode,
+      label: localizedTradeModeLabels[mode],
+    });
+
+    return availableTradeModes.map((mode) => Array.isArray(mode) ? ({
+      label: t`More`,
+      options: mode.map(modeToOptions)
+    }) : modeToOptions(mode));
+  }, [availableTradeModes, localizedTradeModeLabels]);
+
   return (
     <>
       <div className="flex items-center justify-between">
-        <Tab
-          options={availableTradeModes}
-          optionLabels={localizedTradeModeLabels}
-          commonOptionClassname="py-10"
+        <Tabs
+          options={tabsOptions}
+          regularOptionClassname="py-10"
           type="inline"
-          option={tradeMode}
+          selectedValue={tradeMode}
           onChange={onSelectTradeMode}
           qa="trade-mode"
         />
