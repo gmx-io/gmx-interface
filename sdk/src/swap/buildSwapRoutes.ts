@@ -14,58 +14,65 @@ export function getSwapRoutes(marketsMap: Record<string, MarketConfig>): SwapRou
 export function processNonRepeatingTokensBfs(graph: MarketsGraph): SwapRoutes {
   const smallSwapRoutes: SwapRoutes = {};
 
-  for (const tokenAAddress in graph) {
+  const allTokens = Array.from(new Set(Object.keys(graph).flatMap((token) => Object.keys(graph[token]).concat(token))));
+
+  for (const tokenAAddress of allTokens) {
     smallSwapRoutes[tokenAAddress] = {};
 
     let empty = true;
-    for (const tokenBAddress in graph[tokenAAddress]) {
+    for (const tokenBAddress of allTokens) {
       if (tokenAAddress === tokenBAddress || smallSwapRoutes[tokenBAddress]?.[tokenAAddress]) {
         continue;
       }
 
-      const result: string[][] = [];
+      const result: Record<string, string[]> = {};
 
       type Work = {
         at: string;
         path: string[];
-        visited: Set<string>;
+        nodePath: string[];
       };
 
       const queue: Work[] = [
         {
           at: tokenAAddress,
           path: [],
-          visited: new Set(),
+          nodePath: [],
         },
       ];
 
       while (queue.length > 0) {
-        const { at, path, visited } = queue.shift()!;
+        const { at, path, nodePath } = queue.shift()!;
+
+        if (path.length >= 2 && path[path.length - 1] === path[path.length - 2]) {
+          continue;
+        }
 
         if (at === tokenBAddress) {
-          result.push(path);
-
-          continue;
+          const intermediateNodePath = nodePath.slice(0, -1);
+          // trim last token from nodePath
+          const key = intermediateNodePath.join(",");
+          if (!result[key]) {
+            result[key] = intermediateNodePath;
+          }
         }
 
-        if (visited.has(at) || path.length >= MAX_EDGE_PATH_LENGTH) {
+        if (path.length >= MAX_EDGE_PATH_LENGTH) {
           continue;
         }
-
-        const newVisited = new Set(visited).add(at);
 
         for (const destination in graph[at]) {
           const markets = graph[at][destination];
 
           for (const market of markets) {
-            queue.push({ at: destination, path: [...path, market], visited: newVisited });
+            queue.push({ at: destination, path: [...path, market], nodePath: [...nodePath, destination] });
           }
         }
       }
 
-      if (result.length > 0) {
+      if (Object.keys(result).length > 0) {
         empty = false;
-        smallSwapRoutes[tokenAAddress][tokenBAddress] = result;
+        smallSwapRoutes[tokenAAddress][tokenBAddress] = Object.values(result);
       }
     }
 

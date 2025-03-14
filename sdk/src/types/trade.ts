@@ -207,10 +207,10 @@ export type SwapRoute = {
 };
 
 type TokenAddress = string;
-type MarketAddress = string;
+// type MarketAddress = string;
 export type SwapRoutes = {
   [from: TokenAddress]: {
-    [to: TokenAddress]: MarketAddress[][];
+    [to: TokenAddress]: TokenAddress[][];
   };
 };
 

@@ -12,7 +12,10 @@ export function buildReachableTokens(marketsMap: Record<string, MarketConfig>): 
 
 export function processReachableTokens(graph: MarketsGraph): Record<string, string[]> {
   const reachableTokens: Record<string, string[]> = {};
-  for (const tokenAAddress in graph) {
+
+  const allTokens = Array.from(new Set(Object.keys(graph).flatMap((token) => Object.keys(graph[token]).concat(token))));
+
+  for (const tokenAAddress of allTokens) {
     type Work = {
       at: string;
       depth: number;
