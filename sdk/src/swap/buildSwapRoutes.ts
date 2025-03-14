@@ -14,7 +14,9 @@ export function getSwapRoutes(marketsMap: Record<string, MarketConfig>): SwapRou
 export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapRoutes {
   const smallSwapRoutes: SwapRoutes = {};
 
-  const allTokens = Array.from(new Set(Object.keys(graph).flatMap((token) => Object.keys(graph[token]).concat(token))));
+  const allTokens = Array.from(
+    new Set(Object.keys(graph).flatMap((token) => [token].concat(Object.keys(graph[token]))))
+  );
 
   for (const tokenAAddress of allTokens) {
     smallSwapRoutes[tokenAAddress] = {};

@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { processNonRepeatingTokensBfs } from "./buildSwapRoutes";
+import { findSwapPathsBetweenTokens } from "./buildSwapRoutes";
 import type { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 
-describe("processNonRepeatingTokensBfs", () => {
+describe("findSwapPathsBetweenTokens", () => {
   it("should find direct swap routes between tokens", () => {
     const graph: MarketsGraph = {
       ETH: {
@@ -13,7 +13,7 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
       ETH: {
@@ -38,7 +38,7 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
       ETH: {
@@ -61,7 +61,7 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
       ETH: {
@@ -77,14 +77,14 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({});
   });
 
   it("should handle empty graph", () => {
     const graph: MarketsGraph = {};
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
     expect(result).toEqual({});
   });
 
@@ -94,7 +94,7 @@ describe("processNonRepeatingTokensBfs", () => {
       USDC: {},
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({});
   });
@@ -125,7 +125,7 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     // Assuming MAX_EDGE_PATH_LENGTH is 3, we shouldn't see paths longer than 3 hops
     for (const tokenA in result) {

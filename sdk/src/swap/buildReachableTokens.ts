@@ -13,7 +13,9 @@ export function buildReachableTokens(marketsMap: Record<string, MarketConfig>): 
 export function processReachableTokens(graph: MarketsGraph): Record<string, string[]> {
   const reachableTokens: Record<string, string[]> = {};
 
-  const allTokens = Array.from(new Set(Object.keys(graph).flatMap((token) => Object.keys(graph[token]).concat(token))));
+  const allTokens = Array.from(
+    new Set(Object.keys(graph).flatMap((token) => [token].concat(Object.keys(graph[token]))))
+  );
 
   for (const tokenAAddress of allTokens) {
     type Work = {
