@@ -35,6 +35,7 @@ import {
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -83,7 +84,6 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
@@ -93,12 +93,11 @@ import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
-import InfoCircleOutlineIcon from "img/ic_info_circle_outline.svg?react";
 
-import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
@@ -835,77 +834,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 
-  const longMarketTooltipContent = (
-    <ul className="text-body-small list-disc leading-[16px]">
-      <li className="p-0">Long Market: Increase a long position at the current price.</li>
-      <li className="p-0">
-        Long Limit: Increase a long position when the price is below the trigger price.{" "}
-        <ExternalLink className="!text-blue-300 !no-underline" href="https://docs.gmx.io/docs/trading/v2/#limit-orders">
-          Read more
-        </ExternalLink>
-      </li>
-      <li className="p-0">
-        Long TP/SL: Decrease a long position when the trigger price is reached.{" "}
-        <ExternalLink
-          className="!text-blue-300 !no-underline"
-          href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders"
-        >
-          Read more
-        </ExternalLink>
-      </li>
-      <li className="p-0">
-        Long Stop Market: Increase a long position when the price is above the trigger price.{" "}
-        <ExternalLink
-          className="!text-blue-300 !no-underline"
-          href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders"
-        >
-          Read more
-        </ExternalLink>
-      </li>
-    </ul>
-  );
-
-  const shortMarketTooltipContent = (
-    <ul className="text-body-small list-disc leading-[16px]">
-      <li className="p-0">
-        <p>Short Market: Increase a short position at the current price.</p>
-      </li>
-      <li className="p-0">
-        <p>
-          Short Limit: Increase a short position when the price is above the trigger price.{" "}
-          <ExternalLink
-            className="!text-blue-300 !no-underline"
-            href="https://docs.gmx.io/docs/trading/v2/#limit-orders"
-          >
-            Read more
-          </ExternalLink>
-        </p>
-      </li>
-      <li className="p-0">
-        <p>
-          Short TP/SL: Decrease a short position when the trigger price is reached.{" "}
-          <ExternalLink
-            className="!text-blue-300 !no-underline"
-            href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders"
-          >
-            Read more
-          </ExternalLink>
-        </p>
-      </li>
-      <li className="p-0">
-        <p>
-          Short Stop Market: Increase a short position when the price is below the trigger price.{" "}
-          <ExternalLink
-            className="!text-blue-300 !no-underline"
-            href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders"
-          >
-            Read more
-          </ExternalLink>
-        </p>
-      </li>
-    </ul>
-  );
-
   return (
     <>
       <div className="flex items-center justify-between">
@@ -919,15 +847,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         />
         <div className="flex gap-4">
           {[TradeType.Long, TradeType.Short].includes(tradeType) && (
-            <Tooltip
-              position={isMobile ? "bottom-end" : "top-end"}
-              content={isLong ? longMarketTooltipContent : shortMarketTooltipContent}
-              openDelay={0}
-              closeDelay={10000}
-              tooltipClassName="p-10"
-            >
-              <InfoCircleOutlineIcon className="h-24 w-24 cursor-pointer text-slate-100 gmx-hover:text-white" />
-            </Tooltip>
+            <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} />
           )}
           <SettingsIcon24
             className="cursor-pointer text-slate-100 gmx-hover:text-white"
