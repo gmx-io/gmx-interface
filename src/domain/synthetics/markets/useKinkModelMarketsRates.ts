@@ -1,12 +1,11 @@
 import { getContract } from "config/contracts";
-import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
-import { useMulticall } from "lib/multicall";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { useMarkets } from "domain/synthetics/markets";
+import { ContractCallsConfig, useMulticall } from "lib/multicall";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
 
 import type { KinkModelMarketRateMulticallRequestConfig } from "sdk/modules/markets/types";
 
-import DataStore from "sdk/abis/DataStore.json";
 import { useMemo } from "react";
 
 export type KinkModelMarketsRatesResult = {
@@ -45,7 +44,7 @@ export function useKinkModelMarketsRates(chainId: number): KinkModelMarketsRates
 
         acc[`${marketAddress}-dataStore`] = {
           contractAddress: dataStoreAddress,
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             optimalUsageFactorLong: {
               methodName: "getUint",
@@ -72,7 +71,7 @@ export function useKinkModelMarketsRates(chainId: number): KinkModelMarketsRates
               params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorShort],
             },
           },
-        };
+        } satisfies ContractCallsConfig<any>;
 
         return acc;
       }, {}) as KinkModelMarketRateMulticallRequestConfig,

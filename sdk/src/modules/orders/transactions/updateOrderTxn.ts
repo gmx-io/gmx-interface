@@ -1,4 +1,4 @@
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import { abis } from "abis";
 import { getContract } from "configs/contracts";
 
 import type { GmxSdk } from "../../../index";
@@ -44,7 +44,7 @@ export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Addre
     autoCancel,
   });
 
-  return sdk.callContract(router, ExchangeRouter.abi as Abi, "multicall", [encodedPayload], {
+  return sdk.callContract(router, abis.ExchangeRouter as Abi, "multicall", [encodedPayload], {
     value: executionFee != undefined && executionFee > 0 ? executionFee : undefined,
   });
 }
@@ -92,7 +92,7 @@ export function createUpdateEncodedPayload({
 
   return multicall.filter(Boolean).map((call) =>
     encodeFunctionData({
-      abi: ExchangeRouter.abi as Abi,
+      abi: abis.ExchangeRouter as Abi,
       functionName: call!.method,
       args: call!.params,
     })

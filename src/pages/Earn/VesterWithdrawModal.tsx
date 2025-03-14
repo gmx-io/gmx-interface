@@ -9,7 +9,7 @@ import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 
-import Vester from "sdk/abis/Vester.json";
+import { abis } from "sdk/abis";
 
 export function VesterWithdrawModal(props: {
   isVisible: boolean;
@@ -25,7 +25,7 @@ export function VesterWithdrawModal(props: {
 
   const onClickPrimary = () => {
     setIsWithdrawing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
+    const contract = new ethers.Contract(vesterAddress, abis.Vester, signer);
 
     callContract(chainId, contract, "withdraw", [], {
       sentMsg: t`Withdraw submitted.`,

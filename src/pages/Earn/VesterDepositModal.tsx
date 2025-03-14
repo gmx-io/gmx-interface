@@ -18,7 +18,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import Vester from "sdk/abis/Vester.json";
+import { abis } from "sdk/abis";
 
 export function VesterDepositModal(props: {
   isVisible: boolean;
@@ -116,7 +116,7 @@ export function VesterDepositModal(props: {
 
   const onClickPrimary = useCallback(() => {
     setIsDepositing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
+    const contract = new ethers.Contract(vesterAddress, abis.Vester, signer);
 
     callContract(chainId, contract, "deposit", [amount], {
       sentMsg: t`Deposit submitted!`,

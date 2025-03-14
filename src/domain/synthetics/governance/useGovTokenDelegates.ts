@@ -5,8 +5,6 @@ import { getContract } from "config/contracts";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
-import GovToken from "sdk/abis/GovToken.json";
-
 export function useGovTokenDelegates(chainId: number) {
   let govTokenAddress;
 
@@ -27,7 +25,7 @@ export function useGovTokenDelegates(chainId: number) {
       account ?? PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(undefined, GovToken),
+      fetcher: contractFetcher(undefined, "GovToken"),
     }
   );
 

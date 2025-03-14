@@ -1,6 +1,6 @@
 import { autoUpdate, flip, FloatingPortal, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { t, Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { ethers, isAddress } from "ethers";
 import { useCallback } from "react";
 import { FiChevronDown } from "react-icons/fi";
@@ -8,12 +8,15 @@ import { Link } from "react-router-dom";
 
 import { getTokenExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { getTokenBySymbol } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";
 import { Token } from "domain/tokens";
+import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { getMarketBadge } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import useWallet from "lib/wallets/useWallet";
 
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import coingeckoIcon from "img/ic_coingecko_16.svg";
@@ -21,6 +24,7 @@ import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 
 import "./AssetDropdown.scss";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 
 const PLATFORM_TOKEN_ROUTES = {
   GMX: "/buy_gmx",
@@ -32,11 +36,15 @@ type Props = {
   assetSymbol?: string;
   token?: Token;
   position?: "left" | "right";
+  marketsStats?: MarketStat[];
 };
 
-function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: Props) {
+function AssetDropdown({ assetSymbol, token: propsToken, position = "right", marketsStats }: Props) {
   const { active, walletClient } = useWallet();
   const { chainId } = useChainId();
+  const [currentVersion] = useTradePageVersion();
+
+  const isV1 = currentVersion === 1;
 
   const token = propsToken ? propsToken : assetSymbol && getTokenBySymbol(chainId, assetSymbol);
   const chainIcon = getIcon(chainId, "network");
@@ -107,51 +115,72 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
                 </ExternalLink>
               )}
             </Menu.Item>
+            {isV1 && (
+              <>
+                <Menu.Item as="div">
+                  {token.coingeckoUrl && (
+                    <ExternalLink href={token.coingeckoUrl} className="asset-item">
+                      <img
+                        className="asset-item-icon"
+                        width={16}
+                        height={16}
+                        src={coingeckoIcon}
+                        alt="Open in Coingecko"
+                      />
+                      <p>
+                        <Trans>Open {token.coingeckoSymbol ?? token.assetSymbol ?? token.symbol} in Coingecko</Trans>
+                      </p>
+                    </ExternalLink>
+                  )}
+                </Menu.Item>
+                <Menu.Item as="div">
+                  {!token.isNative && !token.isSynthetic && token.address && isAddress(token.address) && (
+                    <ExternalLink href={getTokenExplorerUrl(chainId, token.address)} className="asset-item">
+                      <img className="asset-item-icon" width={16} height={16} src={chainIcon} alt="Open in explorer" />
+                      <p>
+                        <Trans>Open {token.assetSymbol ?? token.symbol} in Explorer</Trans>
+                      </p>
+                    </ExternalLink>
+                  )}
+                </Menu.Item>
+                <Menu.Item as="div">
+                  {active && !token.isNative && !token.isSynthetic && ethers.isAddress(token.address) && (
+                    <div
+                      onClick={() => {
+                        if (walletClient?.watchAsset && token) {
+                          const { address, decimals, imageUrl, metamaskSymbol, assetSymbol, symbol } = token;
+                          walletClient.watchAsset({
+                            type: "ERC20",
+                            options: {
+                              address: address,
+                              decimals: decimals,
+                              image: imageUrl,
+                              symbol: assetSymbol ?? metamaskSymbol ?? symbol,
+                            },
+                          });
+                        }
+                      }}
+                      className="asset-item"
+                    >
+                      <img
+                        className="asset-item-icon"
+                        width={16}
+                        height={16}
+                        src={metamaskIcon}
+                        alt={t`Add to Metamask`}
+                      />
+                      <p>
+                        <Trans>Add {token.assetSymbol ?? token.symbol} to Metamask</Trans>
+                      </p>
+                    </div>
+                  )}
+                </Menu.Item>
+              </>
+            )}
             <Menu.Item as="div">
-              {token.coingeckoUrl && (
-                <ExternalLink href={token.coingeckoUrl} className="asset-item">
-                  <img className="asset-item-icon" width={16} height={16} src={coingeckoIcon} alt="Open in Coingecko" />
-                  <p>
-                    <Trans>Open {token.coingeckoSymbol ?? token.assetSymbol ?? token.symbol} in Coingecko</Trans>
-                  </p>
-                </ExternalLink>
-              )}
-            </Menu.Item>
-            <Menu.Item as="div">
-              {!token.isNative && !token.isSynthetic && token.address && isAddress(token.address) && (
-                <ExternalLink href={getTokenExplorerUrl(chainId, token.address)} className="asset-item">
-                  <img className="asset-item-icon" width={16} height={16} src={chainIcon} alt="Open in explorer" />
-                  <p>
-                    <Trans>Open {token.assetSymbol ?? token.symbol} in Explorer</Trans>
-                  </p>
-                </ExternalLink>
-              )}
-            </Menu.Item>
-            <Menu.Item as="div">
-              {active && !token.isNative && !token.isSynthetic && ethers.isAddress(token.address) && (
-                <div
-                  onClick={() => {
-                    if (walletClient?.watchAsset && token) {
-                      const { address, decimals, imageUrl, metamaskSymbol, assetSymbol, symbol } = token;
-                      walletClient.watchAsset({
-                        type: "ERC20",
-                        options: {
-                          address: address,
-                          decimals: decimals,
-                          image: imageUrl,
-                          symbol: assetSymbol ?? metamaskSymbol ?? symbol,
-                        },
-                      });
-                    }
-                  }}
-                  className="asset-item"
-                >
-                  <img className="asset-item-icon" width={16} height={16} src={metamaskIcon} alt={t`Add to Metamask`} />
-                  <p>
-                    <Trans>Add {token.assetSymbol ?? token.symbol} to Metamask</Trans>
-                  </p>
-                </div>
-              )}
+              {(marketsStats ?? []).map((stat) => (
+                <AssetDropdownMarketItem marketStat={stat} chainId={chainId} key={stat.marketInfo.marketTokenAddress} />
+              ))}
             </Menu.Item>
           </Menu.Items>
         </FloatingPortal>
@@ -159,5 +188,26 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
     </div>
   );
 }
+
+const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketStat; chainId }) => {
+  const tokenIconName = marketStat.marketInfo.isSpotOnly
+    ? getNormalizedTokenSymbol(marketStat.marketInfo.longToken.symbol) +
+      getNormalizedTokenSymbol(marketStat.marketInfo.shortToken.symbol)
+    : getNormalizedTokenSymbol(marketStat.marketInfo.indexToken.symbol);
+
+  const tokenIconBadge = getMarketBadge(chainId, marketStat.marketInfo);
+
+  return (
+    <Link to={`/pools/?market=${marketStat.marketInfo.marketTokenAddress}&operation=buy`} className="asset-item">
+      <div className="mr-12">
+        <TokenIcon symbol={tokenIconName} badge={tokenIconBadge} displaySize={32} />
+      </div>
+
+      <p>
+        <Trans>Buy GM: {marketStat.marketInfo.name}</Trans>
+      </p>
+    </Link>
+  );
+};
 
 export default AssetDropdown;

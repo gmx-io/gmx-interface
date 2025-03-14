@@ -1,33 +1,32 @@
-import { gql } from "@apollo/client";
 import { sub } from "date-fns";
-import { bigMath } from "sdk/utils/bigmath";
+import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
+import { GlvInfoData, getPoolUsdWithoutPnl, isMarketInfo } from "domain/synthetics/markets";
 import { CHART_PERIODS, GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { BN_ZERO, bigintToNumber, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
+import { BN_ZERO, PRECISION, bigintToNumber, expandDecimals, numberToBigint } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import mapValues from "lodash/mapValues";
 import { useCallback, useMemo } from "react";
+import { getTokenBySymbolSafe } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import useSWR from "swr";
-import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { getBorrowingFactorPerPeriod } from "../fees";
 import { useTokensDataRequest } from "../tokens";
 import { GlvAndGmMarketsInfoData, MarketInfo, MarketTokensAPRData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { getPoolUsdWithoutPnl, GlvInfoData, isMarketInfo } from "domain/synthetics/markets";
-import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 
-import TokenAbi from "sdk/abis/Token.json";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { convertToUsd } from "../tokens/utils";
-import { isGlvEnabled, isGlvInfo } from "./glv";
 import { getMarketListingDate } from "config/markets";
-import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { getSubgraphUrl } from "config/subgraph";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import graphqlFetcher from "sdk/utils/graphqlFetcher";
+import { convertToUsd } from "../tokens/utils";
 import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
+import { isGlvEnabled, isGlvInfo } from "./glv";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
+import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 
 type RawCollectedFee = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -95,7 +94,7 @@ function useExcludedLiquidityMarketMap(
 
     for (const marketAddress of marketAddresses) {
       req[marketAddress] = {
-        abi: TokenAbi.abi,
+        abiId: "Token",
         contractAddress: marketAddress,
         calls: {},
       };
@@ -248,6 +247,39 @@ function useIncentivesBonusApr(
   return marketAndGlvTokensAPRData;
 }
 
+function getMarketFeesQuery(marketAddress: string) {
+  return `
+  _${marketAddress}_lte_start_of_period_: collectedFeesInfos(
+    orderBy:timestampGroup_DESC
+    where: {
+      address_eq: "${marketAddress}"
+      period_eq: "1h"
+      timestampGroup_lte: $timestampGroup_lte
+    },
+    limit: 1
+  ) {
+    cumulativeFeeUsdPerPoolValue
+    cumulativeBorrowingFeeUsdPerPoolValue
+  }
+
+  _${marketAddress}_recent: collectedFeesInfos(
+    orderBy:timestampGroup_DESC
+    where: {
+      address_eq: "${marketAddress}"
+      period_eq: "1h"
+    },
+    limit: 1
+  ) {
+    cumulativeFeeUsdPerPoolValue
+    cumulativeBorrowingFeeUsdPerPoolValue
+  }
+
+  _${marketAddress}_poolValue: marketInfos(where: { id_eq: "${marketAddress}" }) {
+    poolValue
+  }
+  `;
+}
+
 export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
   const { tokensData } = useTokensDataRequest(chainId);
@@ -269,53 +301,29 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
 
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
-  const client = getSubsquidGraphClient(chainId);
+  const subsquidUrl = getSubgraphUrl(chainId, "subsquid");
 
   const key =
-    marketAddresses.length && marketTokensData && client ? marketAddresses.concat("apr-subsquid").join(",") : null;
+    marketAddresses.length && marketTokensData && subsquidUrl ? marketAddresses.concat("apr-subsquid").join(",") : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const lidoApr = useLidoStakeApr();
 
   const { data } = useSWR<SwrResult>(key, {
     fetcher: async (): Promise<SwrResult> => {
-      const marketFeesQuery = (marketAddress: string) => {
-        return `
-            _${marketAddress}_lte_start_of_period_: collectedMarketFeesInfos(
-                orderBy:timestampGroup_DESC
-                where: {
-                  marketAddress_eq: "${marketAddress}"
-                  period_eq: "1h"
-                  timestampGroup_lte: ${Math.floor(sub(new Date(), { days: daysConsidered }).valueOf() / 1000)}
-                },
-                limit: 1
-            ) {
-                cumulativeFeeUsdPerPoolValue
-                cumulativeBorrowingFeeUsdPerPoolValue
-            }
+      let queryBody = marketAddresses.reduce((acc, marketAddress) => acc + getMarketFeesQuery(marketAddress), "");
 
-            _${marketAddress}_recent: collectedMarketFeesInfos(
-              orderBy:timestampGroup_DESC
-              where: {
-                marketAddress_eq: "${marketAddress}"
-                period_eq: "1h"
-              },
-              limit: 1
-          ) {
-              cumulativeFeeUsdPerPoolValue
-              cumulativeBorrowingFeeUsdPerPoolValue
-          }
+      queryBody = `query ($timestampGroup_lte: Int) {${queryBody}}`;
 
-          _${marketAddress}_poolValue: poolValues(where: { marketAddress_eq: "${marketAddress}" }) {
-            poolValue
-          }
-        `;
-      };
-
-      const queryBody = marketAddresses.reduce((acc, marketAddress) => acc + marketFeesQuery(marketAddress), "");
-      let responseOrNull: Record<string, [RawCollectedFee | RawPoolValue]> | null = null;
+      let responseOrNull: Record<string, [RawCollectedFee | RawPoolValue]> | undefined = undefined;
       try {
-        responseOrNull = (await client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" })).data;
+        responseOrNull = await graphqlFetcher<Record<string, [RawCollectedFee | RawPoolValue]>>(
+          subsquidUrl!,
+          queryBody,
+          {
+            timestampGroup_lte: Math.floor(sub(new Date(), { days: daysConsidered }).valueOf() / 1000),
+          }
+        );
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);

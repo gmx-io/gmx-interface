@@ -1,15 +1,15 @@
-import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { getMarketListingDate } from "config/markets";
-import { bigMath } from "sdk/utils/bigmath";
-import { GMX_DECIMALS } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
+import { getMarketListingDate } from "config/markets";
+import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
-import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
+import { bigMath } from "sdk/utils/bigmath";
+import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
+import { getSubgraphUrl } from "config/subgraph";
 import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
@@ -33,18 +33,74 @@ type RawCollectedMarketFeesInfo = {
   cumulativeFeeUsdPerGmToken: string;
 };
 
+function createQuery(marketAddress: string) {
+  return `
+  _${marketAddress}_balanceChanges: userGmTokensBalanceChanges(
+      orderBy: index
+      orderDirection: asc
+      where: {
+          account: $account
+          marketAddress: "${marketAddress.toLowerCase()}"
+          timestamp_gte: $startOfPeriod
+      }
+  ) {
+      cumulativeIncome
+      tokensBalance
+      cumulativeFeeUsdPerGmToken
+  }
+  _${marketAddress}_balanceChange_before: userGmTokensBalanceChanges(
+      first: 1
+      orderBy: index
+      orderDirection: desc
+      where: {
+        account: $account
+        marketAddress: "${marketAddress.toLowerCase()}"
+        timestamp_lt: $startOfPeriod
+      }
+    ) {
+      cumulativeIncome
+      tokensBalance
+      cumulativeFeeUsdPerGmToken
+    }
+  _${marketAddress}_fees_start: collectedMarketFeesInfos(
+      first: 1
+      orderBy: timestampGroup
+      orderDirection: desc
+      where: {
+          marketAddress: "${marketAddress.toLowerCase()}"
+          period: "1h"
+          timestampGroup_lte: $startOfPeriod
+      }
+  ) {
+      cumulativeFeeUsdPerGmToken
+  }
+
+  _${marketAddress}_fees_recent: collectedMarketFeesInfos(
+      first: 1
+      orderBy: timestampGroup
+      orderDirection: desc
+      where: {
+          marketAddress: "${marketAddress.toLowerCase()}"
+          period: "1h"
+      }
+  ) {
+      cumulativeFeeUsdPerGmToken
+  }
+`;
+}
+
 export const useUserEarnings = (chainId: number) => {
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
-  const client = getSyntheticsGraphClient(chainId);
+  const subsquidUrl = getSubgraphUrl(chainId, "syntheticsStats");
   const marketAddresses = useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
   );
 
   const key =
-    marketAddresses.length && marketTokensData && client ? marketAddresses.concat("userEarnings").join(",") : null;
+    marketAddresses.length && marketTokensData && subsquidUrl ? marketAddresses.concat("userEarnings").join(",") : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
@@ -57,60 +113,6 @@ export const useUserEarnings = (chainId: number) => {
       }
 
       const startOfPeriod = Math.floor(Date.now() / 1000) - daysConsidered * 24 * 60 * 60;
-      const createQuery = (marketAddress: string) =>
-        `
-        _${marketAddress}_balanceChanges: userGmTokensBalanceChanges(
-            orderBy: index
-            orderDirection: asc
-            where: {
-                account: "${account.toLowerCase()}"
-                marketAddress: "${marketAddress.toLowerCase()}"
-                timestamp_gte: ${startOfPeriod}
-            }
-        ) {
-            cumulativeIncome
-            tokensBalance
-            cumulativeFeeUsdPerGmToken
-        }
-        _${marketAddress}_balanceChange_before: userGmTokensBalanceChanges(
-            first: 1
-            orderBy: index
-            orderDirection: desc
-            where: {
-              account: "${account.toLowerCase()}"
-              marketAddress: "${marketAddress.toLowerCase()}"
-              timestamp_lt: ${startOfPeriod}
-            }
-          ) {
-            cumulativeIncome
-            tokensBalance
-            cumulativeFeeUsdPerGmToken
-          }
-        _${marketAddress}_fees_start: collectedMarketFeesInfos(
-            first: 1
-            orderBy: timestampGroup
-            orderDirection: desc
-            where: {
-                marketAddress: "${marketAddress.toLowerCase()}"
-                period: "1h"
-                timestampGroup_lte: ${startOfPeriod}
-            }
-        ) {
-            cumulativeFeeUsdPerGmToken
-        }
-
-        _${marketAddress}_fees_recent: collectedMarketFeesInfos(
-            first: 1
-            orderBy: timestampGroup
-            orderDirection: desc
-            where: {
-                marketAddress: "${marketAddress.toLowerCase()}"
-                period: "1h"
-            }
-        ) {
-            cumulativeFeeUsdPerGmToken
-        }
-      `;
 
       let queryBody = "";
 
@@ -118,24 +120,29 @@ export const useUserEarnings = (chainId: number) => {
         queryBody += createQuery(marketAddress);
       });
 
-      let responseOrNull: Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | null = null;
+      queryBody = `query ($account: String, $startOfPeriod: Int) {${queryBody}}`;
+
+      let responseOrUndefined: Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | undefined =
+        undefined;
       try {
-        responseOrNull = (
-          await client!.query({
-            query: gql(`{${queryBody}}`),
-            fetchPolicy: "no-cache",
-          })
-        ).data;
+        responseOrUndefined = await graphqlFetcher<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]>>(
+          subsquidUrl!,
+          queryBody,
+          {
+            account,
+            startOfPeriod,
+          }
+        );
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
       }
 
-      if (!responseOrNull) {
+      if (!responseOrUndefined) {
         return null;
       }
 
-      const response = responseOrNull;
+      const response = responseOrUndefined;
 
       const result: UserEarningsData = {
         byMarketAddress: {},

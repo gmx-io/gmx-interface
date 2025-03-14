@@ -36,7 +36,6 @@ import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
-  formatBalanceAmountWithUsd,
   formatDeltaUsd,
   formatPercentage,
   formatUsd,
@@ -84,10 +83,12 @@ import {
 } from "lib/metrics/utils";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -496,15 +497,12 @@ export function PositionSeller(p: Props) {
       className="SwapBox-info-row"
       label={t`Receive`}
       value={
-        decreaseAmounts?.receiveTokenAmount !== undefined && position !== undefined
-          ? formatBalanceAmountWithUsd(
-              decreaseAmounts.receiveTokenAmount,
-              decreaseAmounts.receiveUsd,
-              position.collateralToken.decimals,
-              position.collateralToken.symbol,
-              true
-            )
-          : "..."
+        <AmountWithUsdBalance
+          amount={decreaseAmounts?.receiveTokenAmount}
+          decimals={position?.collateralToken.decimals ?? 0}
+          symbol={position?.collateralToken.symbol}
+          usd={decreaseAmounts?.receiveUsd}
+        />
       }
     />
   ) : (
@@ -527,15 +525,15 @@ export function PositionSeller(p: Props) {
             showTokenImgInDropdown={true}
             selectedTokenLabel={
               <span className="PositionSelector-selected-receive-token">
-                {receiveTokenAmount !== undefined && receiveUsd !== undefined
-                  ? formatBalanceAmountWithUsd(
-                      receiveTokenAmount,
-                      receiveUsd,
-                      receiveToken.decimals,
-                      receiveToken.symbol,
-                      true
-                    )
-                  : "..."}
+                <AmountWithUsdBalance
+                  className={cx({
+                    "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+                  })}
+                  amount={receiveTokenAmount}
+                  decimals={receiveToken.decimals}
+                  symbol={receiveToken.symbol}
+                  usd={receiveUsd}
+                />
               </span>
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
