@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { selectTradeboxState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -6,10 +6,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { TradeType } from "domain/synthetics/trade";
 import { useLocalizedMap } from "lib/i18n";
 
-import Tab from "components/Tab/Tab";
+import { SwipeTabs } from "components/SwipeTabs/SwipeTabs";
+import Tabs from "components/Tabs/Tabs";
 
 import { mobileTradeTypeClassNames, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
-import { SwipeTabs } from "components/Tab/SwipeTabs";
 
 const OPTIONS = Object.values(TradeType);
 
@@ -28,16 +28,22 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     [history, onSelectTradeType, tradeType]
   );
 
+  const tabsOptions = useMemo(() => {
+    return Object.values(TradeType).map((type) => ({
+      value: type,
+      label: localizedTradeTypeLabels[type],
+      className: tradeTypeClassNames[type],
+      icon: tradeTypeIcons[type],
+    }));
+  }, [localizedTradeTypeLabels]);
+
   if (!isInCurtain) {
     return (
-      <Tab
-        icons={tradeTypeIcons}
-        options={Object.values(TradeType)}
-        optionLabels={localizedTradeTypeLabels}
-        option={tradeType}
+      <Tabs
+        options={tabsOptions}
+        selectedValue={tradeType}
         onChange={onTradeTypeChange}
         size="l"
-        optionClassnames={tradeTypeClassNames}
         qa="trade-direction"
       />
     );

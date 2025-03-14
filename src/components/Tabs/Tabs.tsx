@@ -11,7 +11,10 @@ type BaseOptionValue = string | number;
 
 type RegularOption<V extends BaseOptionValue> = {
   label?: string | ReactNode;
-  className?: string;
+  className?: {
+    active?: string;
+    regular?: string;
+  };
   icon?: ReactNode;
   value: V;
 };
@@ -48,13 +51,7 @@ export default function Tabs<V extends string | number>({
     <div data-qa={qa} className={cx("Tab", `Tab__${type}`, `Tab__${size}`, className)}>
       {options.map((opt) =>
         isNestedOption(opt) ? (
-          <NestedTab
-            key={opt.label?.toString()}
-            option={opt}
-            selectedValue={selectedValue}
-            onOptionClick={onChange}
-            type={type}
-          />
+          <NestedTab key={opt.label?.toString()} option={opt} selectedValue={selectedValue} onOptionClick={onChange} />
         ) : (
           <RegularTab
             key={opt.value}
@@ -62,7 +59,6 @@ export default function Tabs<V extends string | number>({
             selectedValue={selectedValue}
             onOptionClick={onChange}
             regularOptionClassname={regularOptionClassname}
-            type={type}
           />
         )
       )}
@@ -80,7 +76,6 @@ type NestedTabProps<V extends string | number> = {
   commonOptionClassname?: string;
   onOptionClick: ((value: V) => void) | undefined;
   qa?: string;
-  type: "inline" | "block";
 };
 
 function NestedTab<V extends string | number>({
@@ -89,7 +84,6 @@ function NestedTab<V extends string | number>({
   commonOptionClassname,
   onOptionClick,
   qa,
-  type,
 }: NestedTabProps<V>) {
   const { refs, floatingStyles } = useFloating({
     middleware: [flip(), shift()],
@@ -123,8 +117,6 @@ function NestedTab<V extends string | number>({
           style={floatingStyles}
         >
           {option.options.map((subOpt) => {
-            if (isNestedOption(subOpt)) return null;
-
             return (
               <Menu.Item
                 as="div"
@@ -135,7 +127,7 @@ function NestedTab<V extends string | number>({
                 )}
                 onClick={() => onOptionClick?.(subOpt.value)}
               >
-                {subOpt.label || subOpt.value}
+                {subOpt.label ?? subOpt.value}
               </Menu.Item>
             );
           })}
@@ -149,7 +141,6 @@ type RegularTabProps<V extends string | number> = {
   option: RegularOption<V>;
   selectedValue: V | null;
   onOptionClick: ((value: V) => void) | undefined;
-  type: "inline" | "block";
   regularOptionClassname?: string;
   qa?: string;
 };
@@ -159,15 +150,15 @@ function RegularTab<V extends string | number>({
   selectedValue,
   onOptionClick,
   regularOptionClassname,
-  type,
   qa,
 }: RegularTabProps<V>) {
   const isActive = option.value === selectedValue;
   const label = option.label || option.value;
+  const optionClassName = isActive ? option.className?.active : option.className?.regular;
 
   return (
     <div
-      className={cx("Tab-option flex items-center justify-center gap-8", option.className, regularOptionClassname, {
+      className={cx("Tab-option flex items-center justify-center gap-8", optionClassName, regularOptionClassname, {
         active: isActive,
       })}
       onClick={() => onOptionClick?.(option.value)}

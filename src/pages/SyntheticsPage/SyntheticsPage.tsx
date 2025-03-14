@@ -56,7 +56,7 @@ import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/Trad
 import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 
 export type Props = {
@@ -213,7 +213,14 @@ export function SyntheticsPage(p: Props) {
     }),
     [positionsCount, renderOrdersTabTitle, totalClaimables]
   );
-  const tabOptions = useMemo(() => Object.keys(ListSection), []);
+  const tabsOptions = useMemo(
+    () =>
+      Object.values(ListSection).map((value) => ({
+        value,
+        label: tabLabels[value],
+      })),
+    [tabLabels]
+  );
 
   function renderClaims() {
     return (
@@ -254,10 +261,9 @@ export function SyntheticsPage(p: Props) {
           {!isMobile && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
               <div className="Exchange-list-tab-container">
-                <Tab
-                  options={tabOptions}
-                  optionLabels={tabLabels}
-                  option={listSection}
+                <Tabs
+                  options={tabsOptions}
+                  selectedValue={listSection ?? null}
                   onChange={handleTabChange}
                   type="inline"
                   className="Exchange-list-tabs"
@@ -336,10 +342,9 @@ export function SyntheticsPage(p: Props) {
         {isMobile && (
           <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">
             <div className="Exchange-list-tab-container">
-              <Tab
-                options={tabOptions}
-                optionLabels={tabLabels}
-                option={listSection}
+              <Tabs
+                options={tabsOptions}
+                selectedValue={listSection ?? null}
                 onChange={handleTabChange}
                 type="inline"
                 className="Exchange-list-tabs"
