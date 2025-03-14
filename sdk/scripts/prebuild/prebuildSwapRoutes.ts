@@ -14,7 +14,7 @@ export function prebuildSwapRoutes(outputDir: string) {
     const markets = MARKETS[chainId];
     const chainGraph = getSwapRoutes(markets);
 
-    chainSwapRoutes[chainId] = chainGraph.nonRepeatingTokensSwapRoutes;
+    chainSwapRoutes[chainId] = chainGraph;
   }
 
   fs.writeFileSync(resolve(outputDir, `swapRoutes.json`), JSON.stringify(chainSwapRoutes, null, 2));
