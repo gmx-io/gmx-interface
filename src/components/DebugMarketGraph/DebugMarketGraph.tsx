@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { Fragment, memo, useCallback, useMemo, useState } from "react";
 
+import { USD_DECIMALS } from "config/factors";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectDebugSwapMarketsConfig,
@@ -15,13 +16,12 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { SwapPathStats, getMarketsForTokenPair, getSwapPathStats, getTokenSwapRoutes } from "domain/synthetics/trade";
+import { getMarketsForTokenPair, getTokenSwapRoutes } from "domain/synthetics/trade";
 import { formatUsd } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokensMap, getWrappedToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { getMarketFullName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
-import { bigMath } from "sdk/utils/bigmath";
-import { USD_DECIMALS } from "config/factors";
 
 function DebugMarketGraph() {
   const chainId = useSelector(selectChainId);
@@ -138,7 +138,7 @@ function DebugMarketGraph() {
   const handleToggleMarket = useCallback(
     (marketAddress: string) => {
       let newVal: string[];
-      if (!debugSwapMarketsConfig.disabledSwapMarkets) {
+      if (!debugSwapMarketsConfig?.disabledSwapMarkets) {
         newVal = [marketAddress];
       } else {
         newVal = debugSwapMarketsConfig.disabledSwapMarkets.includes(marketAddress)
@@ -146,48 +146,13 @@ function DebugMarketGraph() {
           : [...debugSwapMarketsConfig.disabledSwapMarkets, marketAddress];
       }
       setDebugSwapMarketsConfig({
-        disabledPaths: [],
         ...debugSwapMarketsConfig,
         disabledSwapMarkets: newVal,
       });
     },
     [debugSwapMarketsConfig, setDebugSwapMarketsConfig]
   );
-  const handleTogglePath = useCallback(
-    (path: string[]) => {
-      if (!debugSwapMarketsConfig.disabledPaths) {
-        setDebugSwapMarketsConfig({
-          disabledSwapMarkets: [],
-          ...debugSwapMarketsConfig,
-          disabledPaths: [path],
-        });
-        return;
-      }
-      let index = debugSwapMarketsConfig.disabledPaths.findIndex((p) => p.toString() === path.toString());
-      if (index === -1) {
-        setDebugSwapMarketsConfig({
-          disabledSwapMarkets: [],
-          ...debugSwapMarketsConfig,
-          disabledPaths: [...debugSwapMarketsConfig.disabledPaths, path],
-        });
-      } else {
-        const newPaths = [...debugSwapMarketsConfig.disabledPaths];
-        newPaths.splice(index, 1);
-        setDebugSwapMarketsConfig({
-          disabledSwapMarkets: [],
-          ...debugSwapMarketsConfig,
-          disabledPaths: newPaths,
-        });
-      }
-    },
-    [debugSwapMarketsConfig, setDebugSwapMarketsConfig]
-  );
-  const disabledPathsStr = useMemo(() => {
-    if (!debugSwapMarketsConfig.disabledPaths) {
-      return [];
-    }
-    return debugSwapMarketsConfig.disabledPaths.map((p) => p.toString());
-  }, [debugSwapMarketsConfig.disabledPaths]);
+
   if (!fromTokenAddress) {
     return <div className="flex justify-center gap-8 overflow-auto p-16">No from token address</div>;
   }
@@ -239,32 +204,16 @@ function DebugMarketGraph() {
         <div className="flex grow flex-col gap-8">
           <div>Disabled markets</div>
           <div className="flex flex-wrap gap-8">
-            {!debugSwapMarketsConfig.disabledSwapMarkets?.length ? (
+            {!debugSwapMarketsConfig?.disabledSwapMarkets?.length ? (
               <span className="py-2 text-slate-100">No disabled markets</span>
             ) : (
-              debugSwapMarketsConfig.disabledSwapMarkets?.map((m) => (
+              debugSwapMarketsConfig?.disabledSwapMarkets?.map((m) => (
                 <button
                   key={m}
                   className="flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4 py-2"
                   onClick={() => handleToggleMarket(m)}
                 >
                   {marketsInfoData ? getMarketFullName(marketsInfoData[m]) : m}
-                </button>
-              ))
-            )}
-          </div>
-          <div>Disabled paths</div>
-          <div className="flex flex-wrap gap-8">
-            {!debugSwapMarketsConfig.disabledPaths?.length ? (
-              <span className="py-2 text-slate-100">No disabled paths</span>
-            ) : (
-              debugSwapMarketsConfig.disabledPaths?.map((p) => (
-                <button
-                  key={p.toString()}
-                  className="flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4 py-2"
-                  onClick={() => handleTogglePath(p)}
-                >
-                  {p.map((m) => (marketsInfoData ? getMarketFullName(marketsInfoData[m]) : m)).join(" → ")}
                 </button>
               ))
             )}
@@ -389,7 +338,7 @@ function DebugMarketGraph() {
                     <button
                       className={cx(
                         "flex cursor-pointer gap-4 rounded-4 px-4 py-2",
-                        debugSwapMarketsConfig.disabledSwapMarkets?.includes(step.marketAddress)
+                        debugSwapMarketsConfig?.disabledSwapMarkets?.includes(step.marketAddress)
                           ? "bg-red-700"
                           : "bg-slate-600"
                       )}
