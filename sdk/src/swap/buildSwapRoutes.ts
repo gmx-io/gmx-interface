@@ -6,12 +6,12 @@ import { MAX_EDGE_PATH_LENGTH } from "./constants";
 export function getSwapRoutes(marketsMap: Record<string, MarketConfig>): SwapRoutes {
   const graph = buildMarketsAdjacencyGraph(marketsMap);
 
-  const swapRoutes = processNonRepeatingTokensBfs(graph);
+  const swapRoutes = findSwapPathsBetweenTokens(graph);
 
   return swapRoutes;
 }
 
-export function processNonRepeatingTokensBfs(graph: MarketsGraph): SwapRoutes {
+export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapRoutes {
   const smallSwapRoutes: SwapRoutes = {};
 
   for (const tokenAAddress in graph) {
