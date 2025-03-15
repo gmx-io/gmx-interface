@@ -8,7 +8,7 @@ import graphqlFetcher from "utils/graphqlFetcher";
 import { getByKey } from "utils/objects";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
 import { buildFiltersBody, GraphQlFilters } from "utils/subgraph";
-import { getSwapPathOutputAddresses } from "utils/swapStats";
+import { getSwapPathOutputAddresses } from "swap/swapStats";
 import { parseContractPrice } from "utils/tokens";
 import { Address, getAddress } from "viem";
 import { Module } from "../base";

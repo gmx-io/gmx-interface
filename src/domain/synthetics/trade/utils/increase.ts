@@ -18,6 +18,7 @@ import {
   FindSwapPath,
   IncreasePositionAmounts,
   NextPositionValues,
+  SwapOptimizationOrderArray,
   TriggerThresholdType,
 } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
@@ -112,7 +113,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
   const isLimit = limitOrderType !== undefined;
 
-  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = isLimit ? ["length", "liquidity"] : undefined;
+  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
 
   const prices = getIncreasePositionPrices({
     triggerPrice,

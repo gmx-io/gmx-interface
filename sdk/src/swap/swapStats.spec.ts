@@ -1,4 +1,4 @@
-import { MarketsInfoData } from "domain/synthetics/markets";
+import type { MarketsInfoData } from "types/markets";
 import { getSwapPathOutputAddresses } from "./swapStats";
 import { describe, expect, it } from "vitest";
 

@@ -5,6 +5,7 @@ import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/c
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
+  DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
@@ -63,6 +64,13 @@ export type SettingsContextType = {
 
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
+
+  debugSwapMarketsConfig:
+    | {
+        disabledSwapMarkets?: string[];
+      }
+    | undefined;
+  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[] }) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -134,6 +142,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
+  const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
+    undefined | { disabledSwapMarkets?: string[] }
+  >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -212,6 +223,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       externalSwapsEnabled: externalSwapsEnabled!,
       setExternalSwapsEnabled,
+
+      debugSwapMarketsConfig: debugSwapMarketsConfig!,
+      setDebugSwapMarketsConfig,
     };
   }, [
     showDebugValues,
@@ -248,6 +262,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     isSettingsVisible,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
+    debugSwapMarketsConfig,
+    setDebugSwapMarketsConfig,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

@@ -12,19 +12,19 @@ import {
   getPositionPnlUsd,
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { ethers } from "ethers";
-import { bigMath } from "sdk/utils/bigmath";
 import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
+import { getSwapStats } from "sdk/swap/swapStats";
 import { DecreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
   getOrderThresholdType,
 } from "./prices";
-import { getSwapStats } from "./swapStats";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;

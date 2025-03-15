@@ -2,10 +2,9 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountByRatio } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
-import { FindSwapPath, SwapAmounts } from "sdk/types/trade";
+import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray, SwapRoute } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
-import { SwapRoute } from "../types";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -13,7 +12,7 @@ export function getSwapAmountsByFromValue(p: {
   amountIn: bigint;
   triggerRatio?: TokensRatio;
   isLimit: boolean;
-  swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
+  swapOptimizationOrder?: SwapOptimizationOrderArray;
   allowedSwapSlippageBps?: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
@@ -129,7 +128,7 @@ export function getSwapAmountsByToValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
-  swapOptimizationOrder?: Parameters<FindSwapPath>[1]["order"];
+  swapOptimizationOrder?: SwapOptimizationOrderArray;
   allowedSwapSlippageBps?: bigint;
   uiFeeFactor: bigint;
 }): SwapAmounts {
@@ -238,7 +237,7 @@ export function getSwapAmountsByToValue(p: {
   };
 }
 
-export function getSwapPathComparator(order: Parameters<FindSwapPath>[1]["order"]) {
+export function getSwapPathComparator(order?: SwapOptimizationOrderArray | undefined) {
   return function (a: SwapRoute, b: SwapRoute) {
     for (const field of order || []) {
       const isLiquidity = field === "liquidity";
