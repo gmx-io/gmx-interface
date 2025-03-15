@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { processNonRepeatingTokensBfs } from "./buildSwapRoutes";
+import { findSwapPathsBetweenTokens } from "./buildSwapRoutes";
 import type { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 
-describe("processNonRepeatingTokensBfs", () => {
+describe("findSwapPathsBetweenTokens", () => {
   it("should find direct swap routes between tokens", () => {
     const graph: MarketsGraph = {
       ETH: {
@@ -13,11 +13,11 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
-      ETH: {
-        USDC: [["ETH [ETH-USDC]"]],
+      USDC: {
+        ETH: [[]],
       },
     });
   });
@@ -38,15 +38,15 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
-      ETH: {
-        USDC: [["ETH [ETH-USDC]"], ["BTC [BTC-ETH]", "BTC [BTC-USDC]"]],
-        BTC: [["BTC [BTC-ETH]"], ["ETH [ETH-USDC]", "BTC [BTC-USDC]"]],
+      BTC: {
+        ETH: [[], ["USDC"]],
       },
       USDC: {
-        BTC: [["BTC [BTC-USDC]"], ["ETH [ETH-USDC]", "BTC [BTC-ETH]"]],
+        BTC: [[], ["ETH"]],
+        ETH: [[], ["BTC"]],
       },
     });
   });
@@ -61,11 +61,11 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
-      ETH: {
-        USDC: [["ETH [ETH-USDC]"], ["ETH [ETH-USDC-2]"]],
+      USDC: {
+        ETH: [[], ["ETH", "USDC"]],
       },
     });
   });
@@ -77,14 +77,14 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({});
   });
 
   it("should handle empty graph", () => {
     const graph: MarketsGraph = {};
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
     expect(result).toEqual({});
   });
 
@@ -94,7 +94,7 @@ describe("processNonRepeatingTokensBfs", () => {
       USDC: {},
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({});
   });
@@ -125,13 +125,14 @@ describe("processNonRepeatingTokensBfs", () => {
       },
     };
 
-    const result = processNonRepeatingTokensBfs(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     // Assuming MAX_EDGE_PATH_LENGTH is 3, we shouldn't see paths longer than 3 hops
+    // So node path length should be less than or equal to 2
     for (const tokenA in result) {
       for (const tokenB in result[tokenA]) {
         for (const path of result[tokenA][tokenB]) {
-          expect(path.length).toBeLessThanOrEqual(3);
+          expect(path.length).toBeLessThanOrEqual(2);
         }
       }
     }

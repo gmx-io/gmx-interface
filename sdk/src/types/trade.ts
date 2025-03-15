@@ -194,9 +194,13 @@ export type SwapPathStats = {
 
 export type MarketEdge = {
   marketAddress: string;
-  // from token
+  /**
+   * Token Address
+   */
   from: string;
-  // to token
+  /**
+   * Token Address
+   */
   to: string;
 };
 
@@ -232,7 +236,8 @@ export type NaiveSwapEstimator = (
   swapYield: number;
 };
 
-export type FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => SwapPathStats | undefined;
+export type SwapOptimizationOrderArray = ("liquidity" | "length")[];
+export type FindSwapPath = (usdIn: bigint, opts?: { order?: SwapOptimizationOrderArray }) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 

@@ -1,9 +1,10 @@
-import { MarketsInfoData } from "types/markets";
-import { MarketEdge, NaiveSwapEstimator, SwapEstimator, SwapRoute } from "types/trade";
-import { bigMath } from "utils/bigmath";
-import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
 import { maxUint256 } from "viem";
-import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, SWAP_ROUTES } from "../prebuilt";
+
+import { MarketsInfoData } from "types/markets";
+import { MarketEdge, NaiveSwapEstimator, SwapEstimator } from "types/trade";
+import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
+import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "../prebuilt";
+import { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "./constants";
 import { getSwapStats } from "./swapStats";
 
@@ -90,388 +91,160 @@ export function getBestSwapPath(
   return bestRoute;
 }
 
-export function getNaiveBestSwapRoutes(
-  routes: SwapRoute[],
-  usdIn: bigint,
-  estimator: NaiveSwapEstimator
-): SwapRoute[] | undefined {
-  if (routes.length === 0) {
-    return undefined;
-  }
-
-  const cachedYields: Record<string, number> = {};
-
-  const topPaths: {
-    path: string[];
-    yield: number;
-    route: SwapRoute;
-  }[] = [];
-
-  for (const route of routes) {
-    let pathYield = 0;
-
-    try {
-      let aggSwapYield = 1;
-
-      for (const edge of route.edges) {
-        const cachedYield = cachedYields[edge.marketAddress];
-        if (cachedYield !== undefined) {
-          aggSwapYield *= cachedYield;
-        } else {
-          const { swapYield } = estimator(edge, usdIn);
-          cachedYields[edge.marketAddress] = swapYield;
-          aggSwapYield *= swapYield;
-        }
-
-        if (aggSwapYield === 0) {
-          break;
-        }
-      }
-
-      pathYield = aggSwapYield;
-    } catch (e) {
-      continue;
-    }
-
-    if (pathYield === 0) {
-      continue;
-    }
-
-    if (topPaths.length < DEFAULT_NAIVE_TOP_PATHS_COUNT) {
-      topPaths.push({ path: route.path, yield: pathYield, route });
-    } else {
-      //  if yield is greater than any of the top paths, replace the one with the lowest yield
-      let minYield = topPaths[0].yield;
-      let minYieldIndex = 0;
-      for (let i = 1; i < topPaths.length; i++) {
-        if (topPaths[i].yield < minYield) {
-          minYield = topPaths[i].yield;
-          minYieldIndex = i;
-        }
-      }
-      if (pathYield > minYield) {
-        topPaths[minYieldIndex] = { path: route.path, yield: pathYield, route };
-      }
-    }
-  }
-
-  return topPaths.map((p) => p.route);
-}
-
-export function getNaiveBestMarketSwapPathFromTokenSwapPaths(
-  chainId: number,
-  tokenSwapPaths: string[][],
-  usdIn: bigint,
-  tokenInAddress: string,
-  tokenOutAddress: string,
-  estimator: NaiveSwapEstimator
-): string[] | undefined {
-  // go through all edges and find best yield market for it
-
-  const start = performance.now();
-
-  const cachedBestMarketForTokenEdge: Record<
-    string,
-    Record<
-      string,
-      {
-        address: string;
-        yield: number;
-      }
-    >
-  > = {};
-
-  let bestPath: string[] | undefined;
-  let bestYield = 0;
-
-  for (const pathType of tokenSwapPaths) {
-    let aggSwapYield = 1;
-    let bad = false;
-
-    for (let hopIndex = 0; hopIndex <= pathType.length; hopIndex++) {
-      const tokenFromAddress = hopIndex === 0 ? tokenInAddress : pathType[hopIndex - 1];
-      const tokenToAddress = hopIndex === pathType.length ? tokenOutAddress : pathType[hopIndex];
-
-      // prevTokenAddress -> tokenAddress
-      // get all markets for prevTokenAddress -> tokenAddress
-      const markets = getMarketsForTokenPair(chainId, tokenFromAddress, tokenToAddress);
-
-      if (markets.length === 0) {
-        bad = true;
-        break;
-      }
-
-      let bestMarketInfo:
-        | {
-            address: string;
-            yield: number;
-          }
-        | undefined = cachedBestMarketForTokenEdge[tokenFromAddress]?.[tokenToAddress];
-
-      if (!bestMarketInfo) {
-        bestMarketInfo = getBestMarketForTokenEdge({
-          chainId,
-          markets,
-          usdIn,
-          tokenInAddress: tokenFromAddress,
-          tokenOutAddress: tokenToAddress,
-          estimator,
-        });
-
-        cachedBestMarketForTokenEdge[tokenFromAddress] = cachedBestMarketForTokenEdge[tokenFromAddress] || {};
-        cachedBestMarketForTokenEdge[tokenFromAddress][tokenToAddress] = bestMarketInfo;
-      }
-
-      aggSwapYield *= bestMarketInfo.yield;
-    }
-
-    if (bad) {
-      continue;
-    }
-
-    if (aggSwapYield > bestYield) {
-      bestYield = aggSwapYield;
-      bestPath = pathType;
-    }
-  }
-
-  const end = performance.now();
-  const duration = end - start;
-  if (duration > 10) {
-    console.log(`getNaiveBestMarketSwapPathFromTokenSwapPaths took ${duration}ms`);
-  }
-
-  return bestPath;
-}
-
 export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
-  chainId,
+  graph,
   tokenSwapPaths,
   usdIn,
   tokenInAddress,
   tokenOutAddress,
   estimator,
+  topPathsCount = DEFAULT_NAIVE_TOP_PATHS_COUNT,
 }: {
-  chainId: number;
+  graph: MarketsGraph;
   tokenSwapPaths: string[][];
   usdIn: bigint;
   tokenInAddress: string;
   tokenOutAddress: string;
   estimator: NaiveSwapEstimator;
+  topPathsCount?: number;
 }): string[][] | undefined {
   // go through all edges and find best yield market for it
-
-  const start = performance.now();
 
   const cachedBestMarketForTokenEdge: Record<
     string,
     Record<
       string,
       {
-        address: string;
-        yield: number;
+        marketAddress: string;
+        swapYield: number;
       }
     >
   > = {};
 
   const topPaths: {
-    path: string[];
-    yield: number;
+    marketPath: string[];
+    swapYield: number;
   }[] = [];
 
   for (const pathType of tokenSwapPaths) {
     const marketPath: string[] = [];
-    let aggSwapYield = 1;
+    let pathTypeSwapYield = 1;
     let bad = false;
 
     for (let hopIndex = 0; hopIndex <= pathType.length; hopIndex++) {
-      const tokenFromAddress = hopIndex === 0 ? tokenInAddress : pathType[hopIndex - 1];
-      const tokenToAddress = hopIndex === pathType.length ? tokenOutAddress : pathType[hopIndex];
+      const tokenHopFromAddress = hopIndex === 0 ? tokenInAddress : pathType[hopIndex - 1];
+      const tokenHopToAddress = hopIndex === pathType.length ? tokenOutAddress : pathType[hopIndex];
 
       // prevTokenAddress -> tokenAddress
       // get all markets for prevTokenAddress -> tokenAddress
-      const markets = getMarketsForTokenPair(chainId, tokenFromAddress, tokenToAddress);
+      const marketAddresses = getMarketsForTokenPair(graph, tokenHopFromAddress, tokenHopToAddress);
 
-      if (markets.length === 0) {
+      if (marketAddresses.length === 0) {
         bad = true;
         break;
       }
 
       let bestMarketInfo:
         | {
-            address: string;
-            yield: number;
+            marketAddress: string;
+            swapYield: number;
           }
-        | undefined = cachedBestMarketForTokenEdge[tokenFromAddress]?.[tokenToAddress];
+        | undefined = cachedBestMarketForTokenEdge[tokenHopFromAddress]?.[tokenHopToAddress];
 
       if (!bestMarketInfo) {
         bestMarketInfo = getBestMarketForTokenEdge({
-          chainId,
-          markets,
+          marketAddresses,
           usdIn,
-          tokenInAddress: tokenFromAddress,
-          tokenOutAddress: tokenToAddress,
+          tokenInAddress: tokenHopFromAddress,
+          tokenOutAddress: tokenHopToAddress,
           estimator,
         });
 
-        cachedBestMarketForTokenEdge[tokenFromAddress] = cachedBestMarketForTokenEdge[tokenFromAddress] || {};
-        cachedBestMarketForTokenEdge[tokenFromAddress][tokenToAddress] = bestMarketInfo;
+        cachedBestMarketForTokenEdge[tokenHopFromAddress] = cachedBestMarketForTokenEdge[tokenHopFromAddress] || {};
+        cachedBestMarketForTokenEdge[tokenHopFromAddress][tokenHopToAddress] = bestMarketInfo;
       }
 
-      aggSwapYield *= bestMarketInfo.yield;
-      marketPath.push(bestMarketInfo.address);
+      pathTypeSwapYield *= bestMarketInfo.swapYield;
+      marketPath.push(bestMarketInfo.marketAddress);
     }
 
     if (bad) {
       continue;
     }
 
-    if (topPaths.length < DEFAULT_NAIVE_TOP_PATHS_COUNT) {
-      topPaths.push({ path: marketPath, yield: aggSwapYield });
+    if (topPaths.length < topPathsCount) {
+      topPaths.push({ marketPath: marketPath, swapYield: pathTypeSwapYield });
     } else {
       //  if yield is greater than any of the top paths, replace the one with the lowest yield
-      let minYield = topPaths[0].yield;
-      let minYieldIndex = 0;
+      let minSwapYield = topPaths[0].swapYield;
+      let minSwapYieldIndex = 0;
       for (let i = 1; i < topPaths.length; i++) {
-        if (topPaths[i].yield < minYield) {
-          minYield = topPaths[i].yield;
-          minYieldIndex = i;
+        if (topPaths[i].swapYield < minSwapYield) {
+          minSwapYield = topPaths[i].swapYield;
+          minSwapYieldIndex = i;
         }
       }
-      if (aggSwapYield > minYield) {
-        topPaths[minYieldIndex] = { path: marketPath, yield: aggSwapYield };
+      if (pathTypeSwapYield > minSwapYield) {
+        topPaths[minSwapYieldIndex] = { marketPath: marketPath, swapYield: pathTypeSwapYield };
       }
     }
   }
 
-  const end = performance.now();
-  const duration = end - start;
-  if (duration > 10) {
-    console.log(`getNaiveBestMarketSwapPathsFromTokenSwapPaths took ${duration}ms`);
-  }
-
-  return topPaths.map((p) => p.path);
+  return topPaths.map((p) => p.marketPath);
 }
 
-export function getMarketsForTokenPair(chainId: number, tokenAAddress: string, tokenBAddress: string): string[] {
-  const markets = MARKETS_ADJACENCY_GRAPH[chainId];
-
-  if (markets[tokenAAddress]?.[tokenBAddress]) {
-    return markets[tokenAAddress][tokenBAddress];
+export function getMarketsForTokenPair(graph: MarketsGraph, tokenAAddress: string, tokenBAddress: string): string[] {
+  if (graph[tokenAAddress]?.[tokenBAddress]) {
+    return graph[tokenAAddress][tokenBAddress];
   }
 
-  if (markets[tokenBAddress]?.[tokenAAddress]) {
-    return markets[tokenBAddress][tokenAAddress];
+  if (graph[tokenBAddress]?.[tokenAAddress]) {
+    return graph[tokenBAddress][tokenAAddress];
   }
 
   return [];
 }
 
-function getBestMarketForTokenEdge({
-  markets,
+export function getBestMarketForTokenEdge({
+  marketAddresses,
   usdIn,
   tokenInAddress,
   tokenOutAddress,
   estimator,
 }: {
-  chainId: number;
-  markets: string[];
+  marketAddresses: string[];
   usdIn: bigint;
   tokenInAddress: string;
   tokenOutAddress: string;
   estimator: NaiveSwapEstimator;
 }): {
-  address: string;
-  yield: number;
+  marketAddress: string;
+  swapYield: number;
 } {
-  const start = performance.now();
-  let bestMarket = markets[0];
+  let bestMarketAddress = marketAddresses[0];
   let bestYield = 0;
 
-  for (const market of markets) {
+  for (const marketAddress of marketAddresses) {
     const { swapYield } = estimator(
       {
         from: tokenInAddress,
         to: tokenOutAddress,
-        marketAddress: market,
+        marketAddress,
       },
       usdIn
     );
 
     if (swapYield > bestYield) {
       bestYield = swapYield;
-      bestMarket = market;
+      bestMarketAddress = marketAddress;
     }
   }
 
-  const end = performance.now();
-  const duration = end - start;
-  if (duration > 10) {
-    console.log(`getBestMarketForTokenEdge took ${duration}ms`);
-  }
-
   return {
-    address: bestMarket,
-    yield: bestYield,
+    marketAddress: bestMarketAddress,
+    swapYield: bestYield,
   };
 }
-
-// export function findAllPaths({
-//   marketsInfoData,
-//   from,
-//   to,
-//   chainId,
-//   overrideSwapRoutes,
-//   overrideDisabledMarkets,
-//   overrideDisabledPaths,
-// }: {
-//   marketsInfoData: MarketsInfoData;
-//   from: string;
-//   to: string;
-//   chainId: number;
-//   /**
-//    * For testing purposes, override the swap routes
-//    */
-//   overrideSwapRoutes?: SwapRoutes;
-//   /**
-//    * For testing purposes, override the disabled markets
-//    */
-//   overrideDisabledMarkets?: string[];
-//   /**
-//    * For testing purposes, override the disabled paths
-//    */
-//   overrideDisabledPaths?: string[][];
-// }): SwapRoute[] | undefined {
-//   let routes: string[][] = [];
-
-//   const swapRoutes = overrideSwapRoutes ?? SWAP_ROUTES[chainId];
-
-//   const straightRoutes = swapRoutes[from]?.[to];
-
-//   if (straightRoutes?.length) {
-//     routes = straightRoutes;
-//   } else {
-//     const reversedRoutes = swapRoutes[to]?.[from];
-
-//     if (!reversedRoutes?.length) {
-//       return undefined;
-//     }
-
-//     routes = reversedRoutes.map((route) => [...route].reverse());
-//   }
-
-//   if (overrideDisabledMarkets?.length || overrideDisabledPaths?.length) {
-//     routes = applyDebugSettings({ routes, overrideDisabledMarkets, overrideDisabledPaths });
-//   }
-
-//   return routes.map(
-//     (route): SwapRoute => ({
-//       path: route,
-//       edges: marketRouteToMarketEdges(route, from, marketsInfoData),
-//       liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: route, initialCollateralAddress: from }),
-//     })
-//   );
-// }
 
 export function marketRouteToMarketEdges(
   marketPath: string[],
@@ -493,42 +266,23 @@ export function marketRouteToMarketEdges(
   return edges;
 }
 
-// function applyDebugSettings({
-//   routes,
-//   overrideDisabledMarkets,
-//   overrideDisabledPaths,
-// }: {
-//   routes: string[][];
-//   overrideDisabledMarkets?: string[];
-//   overrideDisabledPaths?: string[][];
-// }): string[][] {
-//   return routes.filter((route) => {
-//     let match = true;
-
-//     if (overrideDisabledMarkets?.length) {
-//       const hasDisabledMarkets = route.some((marketAddress) => overrideDisabledMarkets.includes(marketAddress));
-//       match = match && !hasDisabledMarkets;
-//     }
-
-//     if (overrideDisabledPaths?.length) {
-//       const hasDisabledPath = overrideDisabledPaths.some((path) => route.toString() === path.toString());
-//       match = match && !hasDisabledPath;
-//     }
-
-//     return match;
-//   });
-// }
-
-export function getTokenSwapRoutes(chainId: number, from: string, to: string): string[][] {
-  if (SWAP_ROUTES[chainId]?.[from]?.[to]) {
-    return SWAP_ROUTES[chainId][from][to];
+export function getTokenSwapPaths(chainId: number, from: string, to: string): string[][] {
+  if (TOKEN_SWAP_PATHS[chainId]?.[from]?.[to]) {
+    return TOKEN_SWAP_PATHS[chainId][from][to];
   }
 
-  if (SWAP_ROUTES[chainId]?.[to]?.[from]) {
-    return SWAP_ROUTES[chainId][to][from].map((route) => [...route].reverse());
+  if (TOKEN_SWAP_PATHS[chainId]?.[to]?.[from]) {
+    // TODO: maybe cache reverses paths in the TOKEN_SWAP_PATHS itself.
+    // Its not like it would harm anything
+    // But the vibe of mutating global object is bad
+    return TOKEN_SWAP_PATHS[chainId][to][from].map((route) => [...route].reverse());
   }
 
   return [];
+}
+
+export function getMarketAdjacencyGraph(chainId: number): MarketsGraph {
+  return MARKETS_ADJACENCY_GRAPH[chainId];
 }
 
 export function findAllReachableTokens(chainId: number, from: string): string[] {
@@ -536,13 +290,13 @@ export function findAllReachableTokens(chainId: number, from: string): string[] 
 }
 
 export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
-  chainId,
+  graph,
   tokenSwapPaths,
   tokenInAddress,
   tokenOutAddress,
   getLiquidity,
 }: {
-  chainId: number;
+  graph: MarketsGraph;
   tokenSwapPaths: string[][];
   tokenInAddress: string;
   tokenOutAddress: string;
@@ -555,17 +309,18 @@ export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
     Record<
       string,
       {
-        address: string;
+        marketAddress: string;
         liquidity: bigint;
       }
     >
   > = {};
 
-  let bestPath: string[] | undefined;
+  let bestMarketPath: string[] | undefined = undefined;
   let bestLiquidity = 0n;
 
   for (const pathType of tokenSwapPaths) {
     let bad = false;
+    let bestMarketPathForPathType: string[] = [];
     let pathTypeBestLiquidity = maxUint256;
 
     for (let hopIndex = 0; hopIndex <= pathType.length; hopIndex++) {
@@ -574,7 +329,7 @@ export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
 
       // prevTokenAddress -> tokenAddress
       // get all markets for prevTokenAddress -> tokenAddress
-      const markets = getMarketsForTokenPair(chainId, tokenFromAddress, tokenToAddress);
+      const markets = getMarketsForTokenPair(graph, tokenFromAddress, tokenToAddress);
 
       if (markets.length === 0) {
         bad = true;
@@ -583,7 +338,7 @@ export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
 
       let bestMarketInfo:
         | {
-            address: string;
+            marketAddress: string;
             liquidity: bigint;
           }
         | undefined = cachedMaxLiquidityMarketForTokenEdge[tokenFromAddress]?.[tokenToAddress];
@@ -601,10 +356,14 @@ export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
         cachedMaxLiquidityMarketForTokenEdge[tokenFromAddress][tokenToAddress] = bestMarketInfo;
       }
 
-      pathTypeBestLiquidity = bigMath.min(pathTypeBestLiquidity, bestMarketInfo.liquidity);
+      if (bestMarketInfo.liquidity < pathTypeBestLiquidity) {
+        pathTypeBestLiquidity = bestMarketInfo.liquidity;
+        bestMarketPathForPathType.push(bestMarketInfo.marketAddress);
+      }
 
       // if current path is alrweady worse than the best path, skip the rest of the path
       if (pathTypeBestLiquidity < bestLiquidity) {
+        bad = true;
         break;
       }
     }
@@ -615,14 +374,14 @@ export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
 
     if (pathTypeBestLiquidity > bestLiquidity) {
       bestLiquidity = pathTypeBestLiquidity;
-      bestPath = pathType;
+      bestMarketPath = bestMarketPathForPathType;
     }
   }
 
-  return bestPath ? { path: bestPath, liquidity: bestLiquidity } : undefined;
+  return bestMarketPath ? { path: bestMarketPath, liquidity: bestLiquidity } : undefined;
 }
 
-function getMaxLiquidityMarketForTokenEdge({
+export function getMaxLiquidityMarketForTokenEdge({
   markets,
   tokenInAddress,
   tokenOutAddress,
@@ -633,10 +392,10 @@ function getMaxLiquidityMarketForTokenEdge({
   tokenOutAddress: string;
   getLiquidity: (marketAddress: string, tokenInAddress: string, tokenOutAddress: string) => bigint;
 }): {
-  address: string;
+  marketAddress: string;
   liquidity: bigint;
 } {
-  let bestMarket = markets[0];
+  let bestMarketAddress = markets[0];
   let bestLiquidity = 0n;
 
   for (const market of markets) {
@@ -644,12 +403,12 @@ function getMaxLiquidityMarketForTokenEdge({
 
     if (liquidity > bestLiquidity) {
       bestLiquidity = liquidity;
-      bestMarket = market;
+      bestMarketAddress = market;
     }
   }
 
   return {
-    address: bestMarket,
+    marketAddress: bestMarketAddress,
     liquidity: bestLiquidity,
   };
 }

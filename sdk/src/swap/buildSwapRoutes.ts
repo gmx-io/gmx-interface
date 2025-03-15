@@ -6,80 +6,82 @@ import { MAX_EDGE_PATH_LENGTH } from "./constants";
 export function getSwapRoutes(marketsMap: Record<string, MarketConfig>): SwapRoutes {
   const graph = buildMarketsAdjacencyGraph(marketsMap);
 
-  const swapRoutes = processNonRepeatingTokensBfs(graph);
+  const swapRoutes = findSwapPathsBetweenTokens(graph);
 
   return swapRoutes;
 }
 
-export function processNonRepeatingTokensBfs(graph: MarketsGraph): SwapRoutes {
-  const smallSwapRoutes: SwapRoutes = {};
+export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapRoutes {
+  const swapRoutes: SwapRoutes = {};
 
   const allTokens = Array.from(new Set(Object.keys(graph).flatMap((token) => Object.keys(graph[token]).concat(token))));
 
   for (const tokenAAddress of allTokens) {
-    smallSwapRoutes[tokenAAddress] = {};
+    swapRoutes[tokenAAddress] = {};
 
     let empty = true;
     for (const tokenBAddress of allTokens) {
-      if (tokenAAddress === tokenBAddress || smallSwapRoutes[tokenBAddress]?.[tokenAAddress]) {
+      if (tokenAAddress === tokenBAddress || swapRoutes[tokenBAddress]?.[tokenAAddress]) {
         continue;
       }
 
       const result: Record<string, string[]> = {};
 
-      type Work = {
-        at: string;
-        path: string[];
+      type SearchHead = {
+        node: string;
+        edgePath: string[];
         nodePath: string[];
       };
 
-      const queue: Work[] = [
+      const queue: SearchHead[] = [
         {
-          at: tokenAAddress,
-          path: [],
+          node: tokenAAddress,
+          edgePath: [],
           nodePath: [],
         },
       ];
 
       while (queue.length > 0) {
-        const { at, path, nodePath } = queue.shift()!;
+        const { node, edgePath, nodePath } = queue.shift()!;
 
-        if (path.length >= 2 && path[path.length - 1] === path[path.length - 2]) {
+        const areTwoLastEdgesSame =
+          edgePath.length >= 2 && edgePath[edgePath.length - 1] === edgePath[edgePath.length - 2];
+        if (areTwoLastEdgesSame) {
           continue;
         }
 
-        if (at === tokenBAddress) {
+        if (node === tokenBAddress) {
           const intermediateNodePath = nodePath.slice(0, -1);
-          // trim last token from nodePath
+          // trim last node from nodePath
           const key = intermediateNodePath.join(",");
           if (!result[key]) {
             result[key] = intermediateNodePath;
           }
         }
 
-        if (path.length >= MAX_EDGE_PATH_LENGTH) {
+        if (edgePath.length >= MAX_EDGE_PATH_LENGTH) {
           continue;
         }
 
-        for (const destination in graph[at]) {
-          const markets = graph[at][destination];
+        for (const sibling in graph[node]) {
+          const edges = graph[node][sibling];
 
-          for (const market of markets) {
-            queue.push({ at: destination, path: [...path, market], nodePath: [...nodePath, destination] });
+          for (const edge of edges) {
+            queue.push({ node: sibling, edgePath: [...edgePath, edge], nodePath: [...nodePath, sibling] });
           }
         }
       }
 
       if (Object.keys(result).length > 0) {
         empty = false;
-        smallSwapRoutes[tokenAAddress][tokenBAddress] = Object.values(result);
+        swapRoutes[tokenAAddress][tokenBAddress] = Object.values(result);
       }
     }
 
     if (empty) {
-      delete smallSwapRoutes[tokenAAddress];
+      delete swapRoutes[tokenAAddress];
     }
   }
 
-  return smallSwapRoutes;
+  return swapRoutes;
 }

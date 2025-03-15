@@ -46,7 +46,7 @@ const HASHED_KINK_MODEL_MARKET_RATES_KEYS: {
   };
 } = hashedKinkModelMarketRatesKeys;
 
-const SWAP_ROUTES: {
+const TOKEN_SWAP_PATHS: {
   [chainId: number]: SwapRoutes;
 } = swapRoutes;
 
@@ -66,5 +66,5 @@ export {
   HASHED_MARKET_VALUES_KEYS,
   MARKETS_ADJACENCY_GRAPH,
   REACHABLE_TOKENS,
-  SWAP_ROUTES,
+  TOKEN_SWAP_PATHS,
 };
