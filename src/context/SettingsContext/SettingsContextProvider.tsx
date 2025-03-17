@@ -68,9 +68,10 @@ export type SettingsContextType = {
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
+        manualPath?: string[];
       }
     | undefined;
-  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[] }) => void;
+  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[]; manualPath?: string[] }) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -143,7 +144,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageSerializeKey(EXTERNAL_SWAPS_ENABLED_KEY, true);
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
-    undefined | { disabledSwapMarkets?: string[] }
+    undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   let savedShouldDisableValidationForTesting: boolean | undefined;

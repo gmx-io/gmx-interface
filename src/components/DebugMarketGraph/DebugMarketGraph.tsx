@@ -1,7 +1,7 @@
 import cx from "classnames";
 import entries from "lodash/entries";
 import groupBy from "lodash/groupBy";
-import { Fragment, memo, useCallback, useMemo, useState } from "react";
+import { Fragment, memo, useCallback, useMemo } from "react";
 
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -35,9 +35,8 @@ function DebugMarketGraph() {
   const debugSwapMarketsConfig = useSelector(selectDebugSwapMarketsConfig);
   const setDebugSwapMarketsConfig = useSelector(selectSetDebugSwapMarketsConfig);
 
-  const [excludeNonLiquidity, setExcludeNonLiquidity] = useState(false);
-  const [hideDisabledMarkets, setHideDisabledMarkets] = useState(false);
-  const [hideDisabledPaths, setHideDisabledPaths] = useState(false);
+  const isUsingManualPath = debugSwapMarketsConfig?.manualPath !== undefined;
+
   const wrappedToken = getWrappedToken(chainId);
   const isWrap = fromToken?.address === NATIVE_TOKEN_ADDRESS && toTokenWrappedAddress === wrappedToken.address;
   const isUnwrap = fromToken?.address === wrappedToken.address && toTokenWrappedAddress === NATIVE_TOKEN_ADDRESS;
@@ -84,6 +83,13 @@ function DebugMarketGraph() {
   );
 
   const relatedMarkets = useMemo<{ market: string; name: string }[]>(() => {
+    if (isUsingManualPath) {
+      return Object.values(marketsInfoData || {}).map((market) => ({
+        market: market.marketTokenAddress,
+        name: getMarketFullName(market),
+      }));
+    }
+
     if (!fromTokenAddress || !toTokenWrappedAddress || !allRouteTypes) {
       return [];
     }
@@ -109,7 +115,14 @@ function DebugMarketGraph() {
         name: marketsInfoData && marketsInfoData[market] ? getMarketFullName(marketsInfoData[market]) : market,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [allRouteTypes, fromTokenAddress, marketAdjacencyGraph, marketsInfoData, toTokenWrappedAddress]);
+  }, [
+    allRouteTypes,
+    fromTokenAddress,
+    isUsingManualPath,
+    marketAdjacencyGraph,
+    marketsInfoData,
+    toTokenWrappedAddress,
+  ]);
 
   if (!fromTokenAddress) {
     return <div className="flex justify-center gap-8 overflow-auto p-16">No from token address</div>;
@@ -134,32 +147,10 @@ function DebugMarketGraph() {
       </div>
       <div>{allRouteTypes?.length} route types</div>
       <div>
-        Click on <span className="rounded-4 bg-slate-600 px-4 py-2">market label</span> to toggle its filtering. Click
-        on the checkbox on the left to disable the specific path. To use this debug tool on swap, stay on MARKET GRAPH
-        tab and switch to swap. Settings are being saved in local storage, don't forget to clear it when you are done.
+        Click on <span className="rounded-4 bg-slate-600 px-4 py-2">market label</span> to toggle its filtering. To use
+        this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are being saved in local storage,
+        don't forget to clear it when you are done.
       </div>
-      <label className="flex items-center gap-8">
-        <input
-          type="checkbox"
-          checked={excludeNonLiquidity}
-          onChange={() => setExcludeNonLiquidity(!excludeNonLiquidity)}
-        />
-        Exclude insufficient liquidity or capacity routes
-      </label>
-      <label className="flex items-center gap-8">
-        <input
-          type="checkbox"
-          checked={hideDisabledMarkets}
-          onChange={() => setHideDisabledMarkets(!hideDisabledMarkets)}
-        />
-        Hide routes with disabled markets
-      </label>
-      <label className="flex items-center gap-8">
-        <input type="checkbox" checked={hideDisabledPaths} onChange={() => setHideDisabledPaths(!hideDisabledPaths)} />
-        Hide routes with disabled paths
-      </label>
-
-      <div>L - liquidity, C - capacity</div>
 
       {!allRouteTypes?.length && <div>No routes</div>}
       {allRouteTypes?.map((routeType) => (
@@ -215,7 +206,18 @@ function DebugMarketGraph() {
         </div>
       ))}
 
-      {swapPath && (
+      <label className="flex items-center gap-8">
+        <input
+          type="checkbox"
+          checked={isUsingManualPath}
+          onChange={(e) =>
+            setDebugSwapMarketsConfig({ ...debugSwapMarketsConfig, manualPath: e.target.checked ? [] : undefined })
+          }
+        />
+        Use manual path
+      </label>
+
+      {swapPath && !isUsingManualPath && (
         <div className="flex flex-col gap-8">
           <div>Best swap path</div>
           <div className="flex justify-between gap-8">
@@ -252,6 +254,33 @@ function DebugMarketGraph() {
         </div>
       )}
 
+      {isUsingManualPath && (
+        <div className="flex flex-col gap-8">
+          <div>Manual swap path (click on market to remove it)</div>
+          <div className="flex justify-between gap-8">
+            <div className="flex grow flex-wrap items-center gap-8">
+              {debugSwapMarketsConfig?.manualPath?.map((marketAddress, index, arr) => (
+                <Fragment key={`${marketAddress}-${index}`}>
+                  <div
+                    className="flex cursor-pointer items-center gap-4 rounded-4 bg-slate-600 px-4 py-2"
+                    onClick={() =>
+                      setDebugSwapMarketsConfig({
+                        ...debugSwapMarketsConfig,
+                        manualPath: debugSwapMarketsConfig?.manualPath?.filter((_, i) => i !== index),
+                      })
+                    }
+                  >
+                    {marketsInfoData ? getMarketFullName(marketsInfoData[marketAddress]) : marketAddress}
+                  </div>
+                  {index < arr.length - 1 && <div className="text-slate-100">→</div>}
+                </Fragment>
+              ))}
+            </div>
+            <div>{swapPath ? formatUsd(swapPath.usdOut) : "N/A"}</div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-start justify-between gap-8 rounded-4 border border-red-700/50 p-8">
         <div className="flex grow flex-col gap-8">
           <div>Disabled markets</div>
@@ -277,10 +306,10 @@ function DebugMarketGraph() {
       </div>
 
       <div className="flex flex-col gap-8">
-        <div>Related markets</div>
+        {isUsingManualPath ? <div>All markets</div> : <div>Related markets</div>}
         <div className="flex gap-8 overflow-x-scroll">
           {entries(groupBy(relatedMarkets, (m) => m.name[0])).map(([letter, markets], index) => (
-            <div key={letter} className="flex min-w-[220px] flex-col gap-8">
+            <div key={letter} className="flex flex-col gap-8">
               <div
                 className="text-slate-100"
                 // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
@@ -293,15 +322,32 @@ function DebugMarketGraph() {
               {markets.map((m) => (
                 <div
                   key={m.market}
-                  className="rounded-4 bg-slate-600 px-4 py-2"
+                  className="flex items-center gap-4"
                   // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
                   style={{
                     gridColumn: `${index + 1} / span 1`,
                   }}
-                  title="Click to toggle market"
-                  onClick={() => handleToggleMarket(m.market)}
                 >
-                  {m.name}
+                  <div
+                    title="Click to toggle market"
+                    onClick={() => handleToggleMarket(m.market)}
+                    className="min-w-[220px] rounded-4 bg-slate-600 px-4 py-2"
+                  >
+                    {m.name}
+                  </div>
+                  {isUsingManualPath && (
+                    <button
+                      className="rounded-4 bg-slate-600 px-4 py-2"
+                      onClick={() =>
+                        setDebugSwapMarketsConfig({
+                          ...debugSwapMarketsConfig,
+                          manualPath: [...(debugSwapMarketsConfig?.manualPath || []), m.market],
+                        })
+                      }
+                    >
+                      Add
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

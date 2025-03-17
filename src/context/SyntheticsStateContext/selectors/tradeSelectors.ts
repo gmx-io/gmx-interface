@@ -165,6 +165,7 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
   }
 );
 
+const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
 export const makeSelectFindSwapPath = createSelectorFactory(
   (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) => {
     const selectWrappedFromAddress = makeSelectWrappedFromAddress(fromTokenAddress);
@@ -182,6 +183,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
           : EMPTY_ARRAY;
       const marketAdjacencyGraph = q(selectMarketAdjacencyGraph);
       const gasLimits = q(selectGasLimits);
+      const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
       const cache: Record<string, SwapPathStats | undefined> = {};
 
@@ -197,7 +199,9 @@ export const makeSelectFindSwapPath = createSelectorFactory(
 
         let swapPath: string[] | undefined = undefined;
 
-        if (opts?.order || usdIn === 0n) {
+        if (debugSwapMarketsConfig?.manualPath !== undefined) {
+          swapPath = debugSwapMarketsConfig.manualPath;
+        } else if (opts?.order || usdIn === 0n) {
           const primaryOrder = opts?.order?.at(0) === "length" ? "length" : "liquidity";
 
           if (primaryOrder === "length") {
@@ -274,6 +278,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
           cache[cacheKey] = undefined;
           return undefined;
         }
+
         let result: SwapPathStats | undefined = getSwapPathStats({
           marketsInfoData,
           swapPath,
