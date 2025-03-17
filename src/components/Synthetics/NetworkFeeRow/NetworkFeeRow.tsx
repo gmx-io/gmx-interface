@@ -8,7 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
-import { convertToUsd } from "domain/synthetics/tokens/utils";
+import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens/utils";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -67,6 +67,7 @@ export function NetworkFeeRow({
 
   const estimatedRefundText = useMemo(() => {
     let estimatedRefundTokenAmount: bigint | undefined;
+    let feeToken = executionFee?.feeToken;
     if (!executionFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
     } else {
@@ -92,11 +93,21 @@ export function NetworkFeeRow({
         tokenData[executionFee.feeToken.address].prices.minPrice
       );
     }
+
+    if (gasPaymentToken) {
+      estimatedRefundTokenAmount = convertToTokenAmount(
+        estimatedRefundUsd,
+        gasPaymentToken.decimals,
+        gasPaymentToken.prices.minPrice
+      );
+      feeToken = gasPaymentToken;
+    }
+
     const estimatedRefundText = formatTokenAmountWithUsd(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
-      executionFee?.feeToken.symbol,
-      executionFee?.feeToken.decimals,
+      feeToken?.symbol,
+      feeToken?.decimals,
       {
         displayPlus: true,
         displayDecimals,

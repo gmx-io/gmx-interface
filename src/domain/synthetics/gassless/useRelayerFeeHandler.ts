@@ -21,8 +21,9 @@ import {
   selectRelayerFeeState,
   selectSetRelayerFeeState,
 } from "context/SyntheticsStateContext/selectors/relayserFeeSelectors";
+import { useThrottle } from "react-use";
 
-const DEFAULT_GAS_LIMIT = 10000000n;
+const DEFAULT_GAS_LIMIT = 1000000n;
 const relay = new GelatoRelay();
 
 export function useRelayerFeeHandler(): RelayerFeeState | undefined {
@@ -86,10 +87,9 @@ export function useRelayerFeeHandler(): RelayerFeeState | undefined {
   }, [isExpressOrdersEnabled, totalNetworkFeeAmount, gasPaymentTokenData, relayerFeeTokenData, findSwapPath]);
 
   const feeUsd = convertToUsd(totalNetworkFeeAmount, relayerFeeToken.decimals, relayerFeeTokenData?.prices.maxPrice);
-  const tokenInAmount = convertToTokenAmount(
-    feeUsd,
-    gasPaymentTokenData?.decimals,
-    gasPaymentTokenData?.prices.minPrice
+  const tokenInAmount = useThrottle(
+    convertToTokenAmount(feeUsd, gasPaymentTokenData?.decimals, gasPaymentTokenData?.prices.minPrice),
+    5000
   );
 
   const { externalSwapOutput } = useExternalSwapOutputRequest({

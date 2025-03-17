@@ -258,6 +258,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             : undefined;
 
           console.log("subaccountApproval", subaccountApproval);
+          console.log("relayerFeeState", relayerFeeState);
 
           // Create the transaction using the gasless method
           const txnResponse = await createGasslessIncreaseOrderTxn({
@@ -270,6 +271,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
               relayerFeeTokenAddress: relayerFeeState?.relayerFeeTokenAddress,
               gasPaymentTokenAmount: relayerFeeState?.gasPaymentTokenAmount,
               relayerFeeTokenAmount: relayerFeeState?.relayerFeeAmount,
+              externalSwapQuote: relayerFeeState.externalSwapOutput
+                ? {
+                    to: relayerFeeState.externalSwapOutput.txnData.to,
+                    data: relayerFeeState.externalSwapOutput.txnData.data,
+                  }
+                : undefined,
               swapPath: relayerFeeState?.internalSwapStats?.swapPath || [],
             },
             createOrderParams: {

@@ -104,8 +104,8 @@ export function getRelayerFeeSwapParams(account: string, relayFeeParams: RelayFe
       refundTokens: [relayFeeParams.gasPaymentTokenAddress, relayFeeParams.relayerFeeTokenAddress],
     };
     feeParams = {
-      feeToken: relayFeeToken,
-      feeAmount: relayFeeAmount,
+      feeToken: relayFeeParams.gasPaymentTokenAddress,
+      feeAmount: relayFeeParams.gasPaymentTokenAmount,
       feeSwapPath: [],
     };
   } else {

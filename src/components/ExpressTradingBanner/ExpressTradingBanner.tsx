@@ -22,7 +22,7 @@ export function ExpressTradingBanner() {
       <div className="mr-6 w-16">
         <IconBolt className="absolute top-13" />
       </div>
-      <div className="pr-8 text-12">
+      <div className="pr-14 text-12">
         <Trans>Express Trading is enabled. Enjoy smoother, more reliable trades!</Trans>
       </div>
       <button

@@ -10,6 +10,7 @@ import { SubaccountApproval } from "./subaccountUtils";
 // Import Gelato Relay SDK
 import { GelatoRelay, TransactionStatusResponse } from "@gelatonetwork/relay-sdk";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { convertToContractPrice } from "sdk/utils/tokens";
 
 const relay = new GelatoRelay();
 
@@ -103,49 +104,6 @@ export async function createGasslessIncreaseOrderTxn({
     }
   }
 
-  // Prepare the order parameters according to CreateOrderParams type
-  const orderParams: CreateOrderParams = {
-    addresses: {
-      receiver: account, // Always set the receiver to the main account, not the subaccount
-      cancellationReceiver: ethers.ZeroAddress,
-      callbackContract: ethers.ZeroAddress,
-      uiFeeReceiver: ethers.ZeroAddress,
-      market: p.marketAddress,
-      initialCollateralToken: p.initialCollateralAddress,
-      swapPath: p.swapPath || [],
-    },
-    numbers: {
-      sizeDeltaUsd: p.sizeDeltaUsd,
-      initialCollateralDeltaAmount: p.initialCollateralAmount,
-      triggerPrice: p.triggerPrice ?? 0n,
-      acceptablePrice: p.acceptablePrice,
-      executionFee: p.executionFee,
-      callbackGasLimit: 0n, // Always set to 0n for gasless orders
-      minOutputAmount: 0n,
-      validFromTime: 0n,
-    },
-    orderType: p.orderType,
-    decreasePositionSwapType: 0,
-    isLong: p.isLong,
-    shouldUnwrapNativeToken: false,
-    autoCancel: false,
-    referralCode: p.referralCode || ethers.ZeroHash,
-  };
-
-  // Log token permits if any and validate them
-  if (tokenPermits.length > 0) {
-    console.log(
-      "Using token permits:",
-      tokenPermits.map((permit) => ({
-        token: permit.token,
-        owner: permit.owner,
-        spender: permit.spender,
-        value: permit.value.toString(),
-        deadline: permit.deadline.toString(),
-      }))
-    );
-  }
-
   const relayFeeSwapParams = getRelayerFeeSwapParams(account, relayFeeParams);
 
   const txDataResult = await getCreateOrderCalldata(chainId, {
@@ -157,15 +115,41 @@ export async function createGasslessIncreaseOrderTxn({
     },
     externalCalls: relayFeeSwapParams.externalCalls,
     subaccountApproval,
-    tokenPermits, // Pass the token permits
+    tokenPermits,
     feeParams: relayFeeSwapParams.feeParams,
     collateralDeltaAmount: p.initialCollateralAmount,
     account,
-    params: orderParams,
     deadline,
     chainId,
     relayFeeToken: relayFeeSwapParams.relayFeeToken,
     relayFeeAmount: relayFeeSwapParams.relayFeeAmount,
+    params: {
+      addresses: {
+        receiver: account, // Always set the receiver to the main account, not the subaccount
+        cancellationReceiver: ethers.ZeroAddress,
+        callbackContract: ethers.ZeroAddress,
+        uiFeeReceiver: ethers.ZeroAddress,
+        market: p.marketAddress,
+        initialCollateralToken: p.initialCollateralAddress,
+        swapPath: p.swapPath || [],
+      },
+      numbers: {
+        sizeDeltaUsd: p.sizeDeltaUsd,
+        initialCollateralDeltaAmount: p.initialCollateralAmount,
+        triggerPrice: convertToContractPrice(p.triggerPrice ?? 0n, p.indexToken.decimals),
+        acceptablePrice: convertToContractPrice(p.acceptablePrice, p.indexToken.decimals),
+        executionFee: p.executionFee,
+        callbackGasLimit: 0n,
+        minOutputAmount: 0n,
+        validFromTime: 0n,
+      },
+      orderType: p.orderType,
+      decreasePositionSwapType: 0,
+      isLong: p.isLong,
+      shouldUnwrapNativeToken: false,
+      autoCancel: false,
+      referralCode: p.referralCode || ethers.ZeroHash,
+    },
   });
 
   console.log("Transaction data generated successfully");
@@ -182,7 +166,7 @@ export async function createGasslessIncreaseOrderTxn({
     isRelayContext: true,
   };
 
-  console.log("Relay request:", relayRequest, relayFeeSwapParams.relayFeeToken);
+  console.log("Relay request:", relayRequest, relayFeeSwapParams);
 
   console.log(
     "Submitting relay request to Gelato:",
