@@ -236,6 +236,13 @@ export type NaiveSwapEstimator = (
   swapYield: number;
 };
 
+export type NaiveNetworkEstimator = (
+  usdIn: bigint,
+  swapCount: number
+) => {
+  networkYield: number;
+};
+
 export type SwapOptimizationOrderArray = ("liquidity" | "length")[];
 export type FindSwapPath = (usdIn: bigint, opts?: { order?: SwapOptimizationOrderArray }) => SwapPathStats | undefined;
 

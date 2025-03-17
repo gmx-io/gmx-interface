@@ -5,12 +5,15 @@ import { mockMarketsInfoData, mockTokensData, usdToToken } from "../../test/mock
 import { findSwapPathsBetweenTokens } from "swap/buildSwapRoutes";
 import { expandDecimals } from "utils/numbers";
 import {
+  createNaiveNetworkEstimator,
   createNaiveSwapEstimator,
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
   getTokenSwapPathsForTokenPair,
 } from "swap/swapRouting";
 import { USD_DECIMALS } from "configs/factors";
 import { MarketInfo } from "types/markets";
+import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { GasLimitsConfig } from "types/fees";
 
 const marketKeys = [
   "ETH-ETH-USDC",
@@ -31,8 +34,26 @@ const baseMarketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
 const marketAdjacencyGraph = buildMarketsAdjacencyGraph(baseMarketsInfoData);
 const swapPaths = findSwapPathsBetweenTokens(marketAdjacencyGraph);
 
+const baseGasLimits: GasLimitsConfig = {
+  decreaseOrder: 4000000n,
+  depositToken: 1800000n,
+  estimatedFeeMultiplierFactor: 1000000000000000000000000000000n,
+  estimatedGasFeeBaseAmount: 600000n,
+  estimatedGasFeePerOraclePrice: 250000n,
+  glvDepositGasLimit: 2000000n,
+  glvPerMarketGasLimit: 100000n,
+  glvWithdrawalGasLimit: 2000000n,
+  increaseOrder: 4000000n,
+  shift: 2500000n,
+  singleSwap: 1000000n,
+  swapOrder: 3000000n,
+  withdrawalMultiToken: 1500000n,
+};
+
+const baseGasPrice = 1650000002n;
+
 describe("mockRouting", () => {
-  it("should pick the best path 1", () => {
+  it("selects SPOT [USDC-DAI] path for USDC->DAI swap when pool has excess of DAI", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
@@ -71,7 +92,7 @@ describe("mockRouting", () => {
     expect(topPath).toEqual(["SPOT-USDC-DAI"]);
   });
 
-  it("should pick the best path 2", () => {
+  it("selects SPOT [DAI-USDC] path for USDC->DAI swap when pool has excess of USDC", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
@@ -110,7 +131,7 @@ describe("mockRouting", () => {
     expect(topPath).toEqual(["SPOT-DAI-USDC"]);
   });
 
-  it("should pick the best path 3", () => {
+  it("routes through BTC [BTC-USDC] -> SOL [BTC-USDC] -> BTC [BTC-DAI] for optimal pricing", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
@@ -168,7 +189,7 @@ describe("mockRouting", () => {
     expect(topPath).toEqual(["BTC-BTC-USDC", "SOL-BTC-USDC", "BTC-BTC-DAI"]);
   });
 
-  it("should pick the best path 4", () => {
+  it("routes USDC-BTC through BTC [BTC-USDC] -> SOL [BTC-USDC] -> BTC [BTC-USDC] for imbalanced liquidity", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
@@ -222,7 +243,7 @@ describe("mockRouting", () => {
     expect(topPath).toEqual(["BTC-BTC-USDC", "SOL-BTC-USDC", "BTC-BTC-USDC"]);
   });
 
-  it("should pick the best path 5", () => {
+  it("selects BTC [BTC-USDC] direct path when impact factors penalize multi-hop routes", () => {
     const allPoolsBalanced = Object.fromEntries(
       marketKeys.map((marketKey) => [
         marketKey,
@@ -283,5 +304,82 @@ describe("mockRouting", () => {
 
     expect(topPath).toBeDefined();
     expect(topPath).toEqual(["BTC-BTC-USDC"]);
+  });
+
+  it("selects BTC [BTC-DAI] direct path when high gas fees outweigh multi-hop benefits", () => {
+    const allPoolsBalanced = Object.fromEntries(
+      marketKeys.map((marketKey) => [
+        marketKey,
+        {
+          longPoolAmount: usdToToken(100_000, baseMarketsInfoData[marketKey].longToken),
+          maxLongPoolAmount: usdToToken(1_000_000, baseMarketsInfoData[marketKey].longToken),
+          shortPoolAmount: usdToToken(100_000, baseMarketsInfoData[marketKey].shortToken),
+          maxShortPoolAmount: usdToToken(1_000_000, baseMarketsInfoData[marketKey].shortToken),
+        } satisfies Partial<MarketInfo>,
+      ])
+    );
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      ...allPoolsBalanced,
+      // Desired swaps BTC -> USDC, USDC -> BTC, BTC -> DAI
+      // 1st desired swap BTC -> USDC, profitable
+      "BTC-BTC-USDC": {
+        longPoolAmount: usdToToken(60_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(120_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      // 2nd desired swap USDC -> BTC, back to BTC but profitable
+      "SOL-BTC-USDC": {
+        longPoolAmount: usdToToken(120_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(60_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      // 3d desired swap BTC -> DAI, just balanced
+      "BTC-BTC-DAI": {
+        longPoolAmount: usdToToken(100_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(100_000, tokensData.DAI),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.DAI),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "BTC", "DAI");
+    const estimator = createNaiveSwapEstimator(marketsInfoData);
+
+    const fakeMultiplier = 100n;
+
+    const networkEstimator = createNaiveNetworkEstimator({
+      chainId: 1,
+      gasLimits: {
+        ...baseGasLimits,
+        singleSwap: baseGasLimits.singleSwap * fakeMultiplier,
+      },
+      gasPrice: baseGasPrice * fakeMultiplier,
+      tokensData: {
+        ...tokensData,
+        [NATIVE_TOKEN_ADDRESS]: {
+          ...tokensData.ETH,
+          address: NATIVE_TOKEN_ADDRESS,
+        },
+      },
+    });
+
+    const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      topPathsCount: 1,
+      tokenInAddress: "BTC",
+      tokenOutAddress: "DAI",
+      estimator,
+      usdIn: expandDecimals(30_000n, USD_DECIMALS),
+      networkEstimator,
+    });
+
+    const topPath = paths?.[0];
+
+    expect(topPath).toBeDefined();
+    expect(topPath).toEqual(["BTC-BTC-DAI"]);
   });
 });

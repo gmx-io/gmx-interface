@@ -279,13 +279,12 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
   const orderOption = q(selectPositionSellerOrderOption);
   const position = q(selectPositionSellerPosition);
   const isTrigger = orderOption === OrderOption.Trigger;
-  const tokensData = q(selectTokensData);
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
   const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
     ? q(selectPositionSellerReceiveTokenAddress)
     : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
-  return isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
+  return isTrigger ? position?.collateralToken : q((state) => getByKey(selectTokensData(state), receiveTokenAddress));
 });
 
 export const selectPositionSellerShouldSwap = createSelector((q) => {

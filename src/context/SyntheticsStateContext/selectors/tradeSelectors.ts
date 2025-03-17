@@ -5,6 +5,7 @@ import {
   FindSwapPath,
   TradeMode,
   TradeType,
+  createNaiveNetworkEstimator,
   createNaiveSwapEstimator,
   createSwapEstimator,
   getBestSwapPath,
@@ -32,6 +33,8 @@ import { createSelector, createSelectorDeprecated, createSelectorFactory } from 
 import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {
   selectChainId,
+  selectGasLimits,
+  selectGasPrice,
   selectMarketsInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
@@ -53,6 +56,25 @@ export const selectNaiveSwapEstimator = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
   if (!marketsInfoData) return undefined;
   return createNaiveSwapEstimator(marketsInfoData);
+});
+
+export const selectNaiveNetworkEstimator = createSelector((q) => {
+  const gasLimits = q(selectGasLimits);
+  if (!gasLimits) return undefined;
+
+  const tokensData = q(selectTokensData);
+  if (!tokensData) return undefined;
+
+  const gasPrice = q(selectGasPrice);
+  if (gasPrice === undefined) return undefined;
+  const chainId = q(selectChainId);
+
+  return createNaiveNetworkEstimator({
+    gasLimits,
+    tokensData,
+    gasPrice,
+    chainId,
+  });
 });
 
 export const selectMarketAdjacencyGraph = isDevelopment()
@@ -159,11 +181,12 @@ export const makeSelectFindSwapPath = createSelectorFactory(
           ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
           : EMPTY_ARRAY;
       const marketAdjacencyGraph = q(selectMarketAdjacencyGraph);
+      const gasLimits = q(selectGasLimits);
 
       const cache: Record<string, SwapPathStats | undefined> = {};
 
       const findSwapPath: FindSwapPath = (usdIn: bigint, opts?: { order?: ("liquidity" | "length")[] }) => {
-        if (tokenSwapPaths.length === 0 || !marketsInfoData || !wrappedFromAddress || !wrappedToAddress) {
+        if (tokenSwapPaths.length === 0 || !marketsInfoData || !wrappedFromAddress || !wrappedToAddress || !gasLimits) {
           return undefined;
         }
 
@@ -222,6 +245,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
           }
         } else {
           const naiveEstimator = q(selectNaiveSwapEstimator);
+          const naiveNetworkEstimator = q(selectNaiveNetworkEstimator);
 
           if (naiveEstimator) {
             const naiveSwapRoutes = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
@@ -231,6 +255,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
               tokenInAddress: wrappedFromAddress,
               tokenOutAddress: wrappedToAddress,
               estimator: naiveEstimator,
+              networkEstimator: naiveNetworkEstimator,
             });
             if (naiveSwapRoutes?.length) {
               const edges = naiveSwapRoutes.map((path) =>

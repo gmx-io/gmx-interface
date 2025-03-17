@@ -176,7 +176,7 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
     return buildMarketsAdjacencyGraph(marketsMap);
   };
 
-  it("should handle direct path with no intermediate tokens", () => {
+  it("returns single market path for direct token swap", () => {
     const graph = createTestGraph();
     const tokenSwapPaths = [[]]; // ETH -> USDC direct path, no intermediate tokens
 
@@ -194,7 +194,7 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
     expect(result).toEqual([["ETH [ETH-USDC]"]]);
   });
 
-  it("should find best path for multi-hop swap", () => {
+  it("returns optimal two-hop path when swapping through intermediate token", () => {
     const graph = createTestGraph();
     const tokenSwapPaths = [["BTC"]]; // ETH -> BTC -> USDC path
 
@@ -212,7 +212,7 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
     expect(result).toEqual([["BTC [BTC-ETH]", "BTC [BTC-USDC]"]]);
   });
 
-  it("should handle multiple possible paths", () => {
+  it("selects most profitable path when multiple routes exist", () => {
     const graph = createTestGraph();
     const tokenSwapPaths = [
       [], // direct path with no intermediate tokens
@@ -240,7 +240,7 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
     expect(result).toEqual([["BTC [BTC-ETH]", "BTC [BTC-USDC]"]]);
   });
 
-  it("should skip paths with no available markets", () => {
+  it("ignores paths with non-existent markets", () => {
     const graph = createTestGraph();
     const tokenSwapPaths = [
       ["DAI"], // non-existent path
@@ -257,6 +257,45 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
     });
 
     expect(result).toEqual([["BTC [BTC-ETH]", "BTC [BTC-USDC]"]]);
+  });
+
+  it("prioritizes direct path with higher network yield over indirect path", () => {
+    const graph = createTestGraph();
+    // check direct path vs indirect path
+    // of BTC to ETH swap
+    //
+    const tokenSwapPaths = [
+      // Direct path
+      [],
+      // Indirect path
+      ["USDC"],
+    ];
+
+    const result = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+      topPathsCount: 1,
+      graph,
+      tokenSwapPaths,
+      usdIn: 100n * dollar,
+      tokenInAddress: "BTC",
+      tokenOutAddress: "ETH",
+      estimator: (edge) => {
+        if (edge.marketAddress === "BTC [BTC-ETH]") {
+          return { swapYield: 0.98 };
+        }
+        // make trick indirect path is more profitable without considering the network yield
+        return { swapYield: 0.99 };
+      },
+      networkEstimator: (usdIn, swapCount) => {
+        if (swapCount === 1) {
+          return { networkYield: 0.99 };
+        } else if (swapCount === 2) {
+          return { networkYield: 0.97 };
+        }
+        return { networkYield: 0.95 };
+      },
+    });
+
+    expect(result).toEqual([["BTC [BTC-ETH]"]]);
   });
 
   describe("cycles", () => {
@@ -286,7 +325,7 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
 }
      */
 
-    it("should not pick cycle even if the first step is profitable but the latter step punishment is greater than the profit", () => {
+    it("avoids cyclic path when subsequent swap penalties outweigh initial profit", () => {
       const estimatorSpy = vi.fn<NaiveSwapEstimator>((edge, usdIn, encounters) => {
         if (edge.marketAddress === "ETH [ETH-USDC]") {
           if (edge.from === "USDC") {
@@ -357,94 +396,9 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
 
       const topPath = result![0];
       expect(topPath).toEqual(["ETH [ETH-USDC]"]);
-
-      // capture the order and arguments of estimatorSpy
-      // expect(estimatorSpy).toHaveBeenCalledTimes(8);
-      // First route type (direct)
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   1,
-      //   {
-      //     marketAddress: "ETH [ETH-USDC]",
-      //     from: "USDC",
-      //     to: "ETH",
-      //   },
-      //   50n * dollar,
-      //   0
-      // );
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   2,
-      //   {
-      //     marketAddress: "PEPE [ETH-USDC]",
-      //     from: "USDC",
-      //     to: "ETH",
-      //   },
-      //   50n * dollar,
-      //   0
-      // );
-      // // Second route type (cycle)
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   3,
-      //   {
-      //     marketAddress: "ETH [ETH-USDC]",
-      //     from: "USDC",
-      //     to: "ETH",
-      //   },
-      //   50n * dollar,
-      //   0
-      // );
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   4,
-      //   {
-      //     marketAddress: "PEPE [ETH-USDC]",
-      //     from: "USDC",
-      //     to: "ETH",
-      //   },
-      //   50n * dollar,
-      //   0
-      // );
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   5,
-      //   {
-      //     marketAddress: "ETH [ETH-USDC]",
-      //     from: "ETH",
-      //     to: "USDC",
-      //   },
-      //   50n * dollar,
-      //   -1
-      // );
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   6,
-      //   {
-      //     marketAddress: "PEPE [ETH-USDC]",
-      //     from: "ETH",
-      //     to: "USDC",
-      //   },
-      //   50n * dollar,
-      //   0
-      // );
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   7,
-      //   {
-      //     marketAddress: "ETH [ETH-USDC]",
-      //     from: "USDC",
-      //     to: "ETH",
-      //   },
-      //   50n * dollar,
-      //   1
-      // );
-      // expect(estimatorSpy).toHaveBeenNthCalledWith(
-      //   8,
-      //   {
-      //     marketAddress: "PEPE [ETH-USDC]",
-      //     from: "USDC",
-      //     to: "ETH",
-      //   },
-      //   50n * dollar,
-      //   -1
-      // );
     });
 
-    it("should pick cycle over direct path 2", () => {
+    it("selects cyclic path when total yield exceeds direct path", () => {
       const estimatorSpy = vi.fn<NaiveSwapEstimator>((edge, usdIn, encounters) => {
         if (edge.marketAddress === "ETH [ETH-USDC]") {
           if (edge.from === "USDC") {

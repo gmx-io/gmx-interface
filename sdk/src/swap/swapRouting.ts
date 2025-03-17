@@ -1,7 +1,12 @@
 import { maxUint256 } from "viem";
 
+import { GasLimitsConfig } from "types/fees";
 import { MarketInfo, MarketsInfoData } from "types/markets";
-import { MarketEdge, NaiveSwapEstimator, SwapEstimator, SwapPaths } from "types/trade";
+import { TokensData } from "types/tokens";
+import { MarketEdge, NaiveNetworkEstimator, NaiveSwapEstimator, SwapEstimator, SwapPaths } from "types/trade";
+import { bigMath } from "utils/bigmath";
+import { estimateOrderOraclePriceCount, getExecutionFee } from "utils/fees";
+import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGasBySwapCount";
 import { getTokenPoolType } from "utils/markets";
 import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
 import { convertToTokenAmount, getMidPrice } from "utils/tokens";
@@ -112,6 +117,32 @@ export const createNaiveSwapEstimator = (marketsInfoData: MarketsInfoData): Naiv
   };
 };
 
+export const createNaiveNetworkEstimator = ({
+  gasLimits,
+  tokensData,
+  gasPrice,
+  chainId,
+}: {
+  gasLimits: GasLimitsConfig;
+  tokensData: TokensData;
+  gasPrice: bigint;
+  chainId: number;
+}): NaiveNetworkEstimator => {
+  return (usdIn: bigint, swapsCount: number) => {
+    const estimatedGas = getNaiveEstimatedGasBySwapCount(gasLimits.singleSwap, swapsCount);
+    if (estimatedGas === null || estimatedGas === undefined) return { networkYield: 1.0 };
+
+    const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
+
+    const feeUsd = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount)?.feeUsd;
+    if (feeUsd === undefined) return { networkYield: 1.0 };
+
+    const networkYield = bigintToNumber(bigMath.mulDiv(usdIn, PRECISION, usdIn + feeUsd), PRECISION_DECIMALS);
+
+    return { networkYield };
+  };
+};
+
 export function getBestSwapPath(
   routes: MarketEdge[][],
   usdIn: bigint,
@@ -151,6 +182,7 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
   tokenOutAddress,
   estimator,
   topPathsCount = DEFAULT_NAIVE_TOP_PATHS_COUNT,
+  networkEstimator,
 }: {
   graph: MarketsGraph;
   tokenSwapPaths: string[][];
@@ -159,6 +191,7 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
   tokenOutAddress: string;
   estimator: NaiveSwapEstimator;
   topPathsCount?: number;
+  networkEstimator?: NaiveNetworkEstimator;
 }): string[][] | undefined {
   // This seems to be true, because for any path if we have performed swaps to and from token
   // The best markets sequence is the same
@@ -191,6 +224,8 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
     marketPath: string[];
     swapYield: number;
   }[] = [];
+
+  const networkYieldCache: Record<number, number> = {};
 
   for (const pathType of tokenSwapPaths) {
     const marketPath: string[] = [];
@@ -285,6 +320,20 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
     if (topPaths.length < topPathsCount) {
       topPaths.push({ marketPath: marketPath, swapYield: pathTypeSwapYield });
     } else {
+      let adjustedPathTypeSwapYield = pathTypeSwapYield;
+
+      if (networkEstimator) {
+        let networkYield = networkYieldCache[marketPath.length];
+
+        if (networkYield === undefined) {
+          networkYield = networkEstimator(usdIn, marketPath.length).networkYield;
+
+          networkYieldCache[marketPath.length] = networkYield;
+        }
+
+        adjustedPathTypeSwapYield = adjustedPathTypeSwapYield * networkYield;
+      }
+
       //  if yield is greater than any of the top paths, replace the one with the lowest yield
       let minSwapYield = topPaths[0].swapYield;
       let minSwapYieldIndex = 0;
@@ -294,8 +343,8 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
           minSwapYieldIndex = i;
         }
       }
-      if (pathTypeSwapYield > minSwapYield) {
-        topPaths[minSwapYieldIndex] = { marketPath: marketPath, swapYield: pathTypeSwapYield };
+      if (adjustedPathTypeSwapYield > minSwapYield) {
+        topPaths[minSwapYieldIndex] = { marketPath: marketPath, swapYield: adjustedPathTypeSwapYield };
       }
     }
   }
