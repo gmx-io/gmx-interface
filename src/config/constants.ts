@@ -6,3 +6,5 @@ export const HIGH_TRADE_VOLUME_FOR_FEEDBACK = expandDecimals(3_000_000, 30); // 
 export const HIGH_LIQUIDITY_FOR_FEEDBACK = expandDecimals(1_000_000, USD_DECIMALS); // 1m
 
 export const DAY_OF_THE_WEEK_EPOCH_STARTS_UTC = 3;
+
+export const TIME_SPENT_ON_EARN_PAGE_FOR_INVITATION_TOAST = 10_000; // 10s
