@@ -8,13 +8,13 @@ import {
   MarketValuesMulticallRequestConfig,
 } from "modules/markets/types";
 import type { MarketsGraph } from "swap/buildMarketsAdjacencyGraph";
-import type { SwapRoutes } from "types/trade";
+import type { SwapPaths } from "types/trade";
 import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
 import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
 import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
 import marketsAdjacencyGraph from "./marketsAdjacencyGraph.json";
 import reachableTokens from "./reachableTokens.json";
-import swapRoutes from "./swapRoutes.json";
+import swapPaths from "./swapPaths.json";
 
 type HashedMarketValuesKeys = Omit<
   Record<keyof MarketValuesMulticallRequestConfig[`${string}-dataStore`]["calls"], string>,
@@ -47,8 +47,8 @@ const HASHED_KINK_MODEL_MARKET_RATES_KEYS: {
 } = hashedKinkModelMarketRatesKeys;
 
 const TOKEN_SWAP_PATHS: {
-  [chainId: number]: SwapRoutes;
-} = swapRoutes;
+  [chainId: number]: SwapPaths;
+} = swapPaths;
 
 const REACHABLE_TOKENS: {
   [chainId: number]: {

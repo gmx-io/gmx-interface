@@ -1,8 +1,10 @@
 import { maxUint256 } from "viem";
 
-import { MarketsInfoData } from "types/markets";
-import { MarketEdge, NaiveSwapEstimator, SwapEstimator } from "types/trade";
+import { MarketInfo, MarketsInfoData } from "types/markets";
+import { MarketEdge, NaiveSwapEstimator, SwapEstimator, SwapPaths } from "types/trade";
+import { getTokenPoolType } from "utils/markets";
 import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
+import { convertToTokenAmount, getMidPrice } from "utils/tokens";
 import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "../prebuilt";
 import { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "./constants";
@@ -36,9 +38,59 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   };
 };
 
+export function getNextMarketInfoAfterEncounters(
+  marketInfo: MarketInfo,
+  e: MarketEdge,
+  usdIn: bigint,
+  encounters: number
+): MarketInfo {
+  if (encounters === 0) {
+    return marketInfo;
+  }
+
+  const multiplier = BigInt(encounters);
+  const totalUsdIn = usdIn * multiplier;
+  const tokenFromPoolType = getTokenPoolType(marketInfo, e.from);
+
+  const longPrice = getMidPrice(marketInfo.longToken.prices);
+  const shortPrice = getMidPrice(marketInfo.shortToken.prices);
+
+  const [longDeltaUsd, shortDeltaUsd] =
+    tokenFromPoolType === "long" ? [totalUsdIn, totalUsdIn * -1n] : [totalUsdIn * -1n, totalUsdIn];
+
+  const longDeltaAmount = convertToTokenAmount(longDeltaUsd, marketInfo.longToken.decimals, longPrice)!;
+  const shortDeltaAmount = convertToTokenAmount(shortDeltaUsd, marketInfo.shortToken.decimals, shortPrice)!;
+
+  const newLongPoolAmount = marketInfo.longPoolAmount + longDeltaAmount;
+  const newShortPoolAmount = marketInfo.shortPoolAmount + shortDeltaAmount;
+
+  marketInfo = {
+    ...marketInfo,
+    longPoolAmount: newLongPoolAmount,
+    shortPoolAmount: newShortPoolAmount,
+  };
+
+  return marketInfo;
+}
+
 export const createNaiveSwapEstimator = (marketsInfoData: MarketsInfoData): NaiveSwapEstimator => {
-  return (e: MarketEdge, usdIn: bigint) => {
-    const marketInfo = marketsInfoData[e.marketAddress];
+  return (
+    e: MarketEdge,
+    usdIn: bigint,
+    /**
+     * 0 means initial state
+     * 1 means the same swap was performed once
+     * -1 means the same swap was performed once in the opposite direction
+     */
+    encounters: number
+  ) => {
+    let marketInfo = marketsInfoData[e.marketAddress];
+
+    if (marketInfo === undefined) {
+      return { swapYield: 0 };
+    }
+
+    marketInfo = getNextMarketInfoAfterEncounters(marketInfo, e, usdIn, encounters);
 
     const swapStats = getSwapStats({
       marketInfo,
@@ -108,16 +160,30 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
   estimator: NaiveSwapEstimator;
   topPathsCount?: number;
 }): string[][] | undefined {
-  // go through all edges and find best yield market for it
-
+  // This seems to be true, because for any path if we have performed swaps to and from token
+  // The best markets sequence is the same
   const cachedBestMarketForTokenEdge: Record<
+    // Key: tokenHopFromAddress-tokenHopToAddress-tokenSwapCount-tokenSwapCountOpposite
+    string,
+    {
+      marketAddress: string;
+      swapYield: number;
+    }
+  > = {};
+
+  // What is the yield of the market if the number of swaps + opposite swaps is known?
+  // Because pool balance is negated by a pair of opposite swaps
+  const calculatedCache: Record<
+    // From token address
     string,
     Record<
+      // To token address
       string,
-      {
-        marketAddress: string;
-        swapYield: number;
-      }
+      Record<
+        // Market address + mirrored encounters
+        string,
+        number
+      >
     >
   > = {};
 
@@ -130,6 +196,34 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
     const marketPath: string[] = [];
     let pathTypeSwapYield = 1;
     let bad = false;
+
+    // How many times during this path we have swapped from token A to token B with each market
+    const encountersMap: Record<
+      // From token address
+      string,
+      Record<
+        // To token address
+        string,
+        // Encounters
+        Record<
+          // Market address
+          string,
+          // Encounters
+          number
+        >
+      >
+    > = {};
+
+    // Just how many times we have swapped from token A to token B
+    const tokenSwapCounter: Record<
+      // From token address
+      string,
+      Record<
+        // To token address
+        string,
+        number
+      >
+    > = {};
 
     for (let hopIndex = 0; hopIndex <= pathType.length; hopIndex++) {
       const tokenHopFromAddress = hopIndex === 0 ? tokenInAddress : pathType[hopIndex - 1];
@@ -144,28 +238,44 @@ export function getNaiveBestMarketSwapPathsFromTokenSwapPaths({
         break;
       }
 
-      let bestMarketInfo:
-        | {
-            marketAddress: string;
-            swapYield: number;
-          }
-        | undefined = cachedBestMarketForTokenEdge[tokenHopFromAddress]?.[tokenHopToAddress];
+      const tokenSwapCount = tokenSwapCounter[tokenHopFromAddress]?.[tokenHopToAddress] || 0;
+      const tokenSwapCountOpposite = tokenSwapCounter[tokenHopToAddress]?.[tokenHopFromAddress] || 0;
+
+      const key = `${tokenHopFromAddress}-${tokenHopToAddress}-${tokenSwapCount}-${tokenSwapCountOpposite}`;
+
+      let bestMarketInfo = cachedBestMarketForTokenEdge[key];
 
       if (!bestMarketInfo) {
+        calculatedCache[tokenHopFromAddress] = calculatedCache[tokenHopFromAddress] || {};
+        calculatedCache[tokenHopFromAddress][tokenHopToAddress] =
+          calculatedCache[tokenHopFromAddress][tokenHopToAddress] || {};
+
         bestMarketInfo = getBestMarketForTokenEdge({
           marketAddresses,
           usdIn,
           tokenInAddress: tokenHopFromAddress,
           tokenOutAddress: tokenHopToAddress,
           estimator,
+          encountersMap: encountersMap[tokenHopFromAddress]?.[tokenHopToAddress],
+          antiEncountersMap: encountersMap[tokenHopToAddress]?.[tokenHopFromAddress],
+          calculatedCache: calculatedCache[tokenHopFromAddress][tokenHopToAddress],
         });
 
-        cachedBestMarketForTokenEdge[tokenHopFromAddress] = cachedBestMarketForTokenEdge[tokenHopFromAddress] || {};
-        cachedBestMarketForTokenEdge[tokenHopFromAddress][tokenHopToAddress] = bestMarketInfo;
+        cachedBestMarketForTokenEdge[key] = bestMarketInfo;
       }
 
       pathTypeSwapYield *= bestMarketInfo.swapYield;
       marketPath.push(bestMarketInfo.marketAddress);
+
+      encountersMap[tokenHopFromAddress] = encountersMap[tokenHopFromAddress] || {};
+      encountersMap[tokenHopFromAddress][tokenHopToAddress] =
+        encountersMap[tokenHopFromAddress][tokenHopToAddress] || {};
+      encountersMap[tokenHopFromAddress][tokenHopToAddress][bestMarketInfo.marketAddress] =
+        (encountersMap[tokenHopFromAddress][tokenHopToAddress][bestMarketInfo.marketAddress] || 0) + 1;
+
+      tokenSwapCounter[tokenHopFromAddress] = tokenSwapCounter[tokenHopFromAddress] || {};
+      tokenSwapCounter[tokenHopFromAddress][tokenHopToAddress] =
+        (tokenSwapCounter[tokenHopFromAddress][tokenHopToAddress] || 0) + 1;
     }
 
     if (bad) {
@@ -211,12 +321,30 @@ export function getBestMarketForTokenEdge({
   tokenInAddress,
   tokenOutAddress,
   estimator,
+  encountersMap,
+  antiEncountersMap,
+  calculatedCache,
 }: {
   marketAddresses: string[];
   usdIn: bigint;
   tokenInAddress: string;
   tokenOutAddress: string;
   estimator: NaiveSwapEstimator;
+  encountersMap?: Record<
+    // Market address
+    string,
+    number
+  >;
+  antiEncountersMap?: Record<
+    // Market address
+    string,
+    number
+  >;
+  calculatedCache?: Record<
+    // Key: market address + mirrored encounters
+    string,
+    number
+  >;
 }): {
   marketAddress: string;
   swapYield: number;
@@ -225,14 +353,32 @@ export function getBestMarketForTokenEdge({
   let bestYield = 0;
 
   for (const marketAddress of marketAddresses) {
-    const { swapYield } = estimator(
-      {
-        from: tokenInAddress,
-        to: tokenOutAddress,
-        marketAddress,
-      },
-      usdIn
-    );
+    const encounters = encountersMap?.[marketAddress] || 0;
+    const antiEncounters = antiEncountersMap?.[marketAddress] || 0;
+    const mirroredEncounters = encounters - antiEncounters;
+
+    let swapYield: number | undefined = undefined;
+
+    const key = `${marketAddress}-${mirroredEncounters}`;
+    if (calculatedCache) {
+      swapYield = calculatedCache[key];
+    }
+
+    if (swapYield === undefined) {
+      swapYield = estimator(
+        {
+          marketAddress,
+          from: tokenInAddress,
+          to: tokenOutAddress,
+        },
+        usdIn,
+        mirroredEncounters
+      ).swapYield;
+
+      if (calculatedCache) {
+        calculatedCache[key] = swapYield;
+      }
+    }
 
     if (swapYield > bestYield) {
       bestYield = swapYield;
@@ -266,19 +412,24 @@ export function marketRouteToMarketEdges(
   return edges;
 }
 
-export function getTokenSwapPaths(chainId: number, from: string, to: string): string[][] {
-  if (TOKEN_SWAP_PATHS[chainId]?.[from]?.[to]) {
-    return TOKEN_SWAP_PATHS[chainId][from][to];
+export function getTokenSwapPathsForTokenPair(
+  tokenSwapPaths: SwapPaths,
+  tokenAAddress: string,
+  tokenBAddress: string
+): string[][] {
+  if (tokenSwapPaths[tokenAAddress]?.[tokenBAddress]) {
+    return tokenSwapPaths[tokenAAddress][tokenBAddress];
   }
 
-  if (TOKEN_SWAP_PATHS[chainId]?.[to]?.[from]) {
-    // TODO: maybe cache reverses paths in the TOKEN_SWAP_PATHS itself.
-    // Its not like it would harm anything
-    // But the vibe of mutating global object is bad
-    return TOKEN_SWAP_PATHS[chainId][to][from].map((route) => [...route].reverse());
+  if (tokenSwapPaths[tokenBAddress]?.[tokenAAddress]) {
+    return tokenSwapPaths[tokenBAddress][tokenAAddress].map((route) => [...route].reverse());
   }
 
   return [];
+}
+
+export function getTokenSwapPathsForTokenPairPrebuilt(chainId: number, from: string, to: string): string[][] {
+  return getTokenSwapPathsForTokenPair(TOKEN_SWAP_PATHS[chainId], from, to);
 }
 
 export function getMarketAdjacencyGraph(chainId: number): MarketsGraph {

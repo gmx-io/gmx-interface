@@ -1,5 +1,5 @@
 import type { MarketsInfoData } from "types/markets";
-import { getSwapPathOutputAddresses } from "./swapStats";
+import { getSwapPathOutputAddresses } from "../swapStats";
 import { describe, expect, it } from "vitest";
 
 const someWrappedToken = "0x0000000000000000000000000000000000000001";

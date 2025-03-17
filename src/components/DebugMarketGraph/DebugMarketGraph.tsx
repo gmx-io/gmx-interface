@@ -16,7 +16,7 @@ import {
   selectTradeboxSelectSwapToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMarketsForTokenPair, getTokenSwapPaths } from "domain/synthetics/trade";
+import { getMarketsForTokenPair, getTokenSwapPathsForTokenPairPrebuilt } from "domain/synthetics/trade";
 import { formatUsd } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokensMap, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketFullName } from "sdk/utils/markets";
@@ -45,7 +45,7 @@ function DebugMarketGraph() {
 
   const allRouteTypes = useMemo(() => {
     return fromTokenAddress && toTokenWrappedAddress
-      ? getTokenSwapPaths(chainId, fromTokenAddress, toTokenWrappedAddress)
+      ? getTokenSwapPathsForTokenPairPrebuilt(chainId, fromTokenAddress, toTokenWrappedAddress)
       : undefined;
   }, [chainId, fromTokenAddress, toTokenWrappedAddress]);
 
@@ -106,7 +106,7 @@ function DebugMarketGraph() {
     return Array.from(relatedMarkets)
       .map((market) => ({
         market,
-        name: marketsInfoData ? getMarketFullName(marketsInfoData[market]) : market,
+        name: marketsInfoData && marketsInfoData[market] ? getMarketFullName(marketsInfoData[market]) : market,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [allRouteTypes, fromTokenAddress, marketAdjacencyGraph, marketsInfoData, toTokenWrappedAddress]);

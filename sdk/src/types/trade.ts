@@ -211,8 +211,7 @@ export type SwapRoute = {
 };
 
 type TokenAddress = string;
-// type MarketAddress = string;
-export type SwapRoutes = {
+export type SwapPaths = {
   [from: TokenAddress]: {
     [to: TokenAddress]: TokenAddress[][];
   };
@@ -227,7 +226,8 @@ export type SwapEstimator = (
 
 export type NaiveSwapEstimator = (
   e: MarketEdge,
-  usdIn: bigint
+  usdIn: bigint,
+  encounters: number
 ) => {
   /**
    * 1.1 means output is 10% greater than input

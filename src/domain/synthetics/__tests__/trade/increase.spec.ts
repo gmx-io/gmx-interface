@@ -1,7 +1,7 @@
 import { getIncreasePositionPrices, leverageBySizeValues } from "../../trade/utils/increase";
 import { bigMath } from "sdk/utils/bigmath";
 import { describe, expect, it } from "vitest";
-import { mockTokensData } from "../../testUtils/mocks";
+import { mockTokensData } from "sdk/test/mock";
 import { OrderType } from "domain/synthetics/orders";
 
 describe("getIncreasePositionPrices", () => {

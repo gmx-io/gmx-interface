@@ -1,9 +1,9 @@
 import type { MarketConfig } from "configs/markets";
-import type { SwapRoutes } from "types/trade";
+import type { SwapPaths } from "types/trade";
 import { MarketsGraph, buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
 import { MAX_EDGE_PATH_LENGTH } from "./constants";
 
-export function getSwapRoutes(marketsMap: Record<string, MarketConfig>): SwapRoutes {
+export function getSwapPaths(marketsMap: Record<string, MarketConfig>): SwapPaths {
   const graph = buildMarketsAdjacencyGraph(marketsMap);
 
   const swapRoutes = findSwapPathsBetweenTokens(graph);
@@ -11,8 +11,8 @@ export function getSwapRoutes(marketsMap: Record<string, MarketConfig>): SwapRou
   return swapRoutes;
 }
 
-export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapRoutes {
-  const swapRoutes: SwapRoutes = {};
+export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapPaths {
+  const swapRoutes: SwapPaths = {};
 
   const allTokens = Array.from(new Set(Object.keys(graph).flatMap((token) => Object.keys(graph[token]).concat(token))));
 
@@ -29,46 +29,45 @@ export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapRoutes {
 
       type SearchHead = {
         node: string;
-        edgePath: string[];
         nodePath: string[];
       };
 
       const queue: SearchHead[] = [
         {
           node: tokenAAddress,
-          edgePath: [],
-          nodePath: [],
+          nodePath: [tokenAAddress],
         },
       ];
 
       while (queue.length > 0) {
-        const { node, edgePath, nodePath } = queue.shift()!;
+        const { node, nodePath } = queue.shift()!;
 
-        const areTwoLastEdgesSame =
-          edgePath.length >= 2 && edgePath[edgePath.length - 1] === edgePath[edgePath.length - 2];
-        if (areTwoLastEdgesSame) {
-          continue;
+        if (nodePath.length >= 3) {
+          const lastNode = nodePath[nodePath.length - 1];
+          const secondLastNode = nodePath[nodePath.length - 2];
+          const thirdLastNode = nodePath[nodePath.length - 3];
+          if (lastNode === thirdLastNode) {
+            const lastEdge = graph[lastNode]?.[secondLastNode];
+            if (lastEdge && lastEdge.length === 1) {
+              continue;
+            }
+          }
         }
 
         if (node === tokenBAddress) {
-          const intermediateNodePath = nodePath.slice(0, -1);
-          // trim last node from nodePath
+          const intermediateNodePath = nodePath.slice(1, -1);
           const key = intermediateNodePath.join(",");
           if (!result[key]) {
             result[key] = intermediateNodePath;
           }
         }
 
-        if (edgePath.length >= MAX_EDGE_PATH_LENGTH) {
+        if (nodePath.length >= MAX_EDGE_PATH_LENGTH + 1) {
           continue;
         }
 
         for (const sibling in graph[node]) {
-          const edges = graph[node][sibling];
-
-          for (const edge of edges) {
-            queue.push({ node: sibling, edgePath: [...edgePath, edge], nodePath: [...nodePath, sibling] });
-          }
+          queue.push({ node: sibling, nodePath: [...nodePath, sibling] });
         }
       }
 

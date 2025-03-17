@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
+import { buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
 import type { MarketConfig } from "configs/markets";
 
 describe("buildMarketsAdjacencyGraph", () => {

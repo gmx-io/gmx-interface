@@ -17,7 +17,7 @@ import {
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
   getSwapPathStats,
-  getTokenSwapPaths,
+  getTokenSwapPathsForTokenPairPrebuilt,
   getTriggerDecreaseOrderType,
   marketRouteToMarketEdges,
 } from "domain/synthetics/trade";
@@ -108,7 +108,7 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
       const wrappedToAddress = q(selectWrappedToAddress);
       const tokenSwapRoutes =
         wrappedFromAddress && wrappedToAddress
-          ? getTokenSwapPaths(chainId, wrappedFromAddress, wrappedToAddress)
+          ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
           : EMPTY_ARRAY;
 
       if (!marketsInfoData || !wrappedFromAddress || !wrappedToAddress) {
@@ -156,7 +156,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
       const wrappedToAddress = q(selectWrappedToAddress);
       const tokenSwapPaths =
         wrappedFromAddress && wrappedToAddress
-          ? getTokenSwapPaths(chainId, wrappedFromAddress, wrappedToAddress)
+          ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
           : EMPTY_ARRAY;
       const marketAdjacencyGraph = q(selectMarketAdjacencyGraph);
 
