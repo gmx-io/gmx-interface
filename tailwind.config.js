@@ -115,6 +115,12 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
     `@media (hover: hover) {:merge(.group):hover &}`,
     `@media (hover: none) {:merge(.group):active &}`,
   ]);
+
+  addUtilities({
+    ".text-input-bg": {
+      background: "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+    },
+  });
 }
 
 /**

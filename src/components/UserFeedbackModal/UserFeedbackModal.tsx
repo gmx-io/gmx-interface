@@ -5,7 +5,7 @@ import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { formatAmountForMetrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
@@ -38,6 +38,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   });
 
   const [feedback, setFeedback] = useState<string>("");
+  const [telegramContact, setTelegramContact] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<Error>();
 
@@ -105,6 +106,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   useEffect(
     function resetEff() {
       setFeedback("");
+      setTelegramContact("");
     },
     [isVisible]
   );
@@ -114,6 +116,17 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
       <div className="mb-15 max-w-xl">
         {feedbackQuestion}
         <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here`} />
+      </div>
+      <div className="mb-15 flex flex-col">
+        <Trans>Telegram contact (optional)</Trans>
+        <input
+          className="mt-15 text-input-bg"
+          name="telegram-username"
+          type="text"
+          value={telegramContact}
+          onChange={(evt) => setTelegramContact(evt.target.value)}
+          placeholder={t`@username`}
+        />
       </div>
       <Button
         variant="primary-action"

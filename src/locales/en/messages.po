@@ -316,6 +316,10 @@ msgstr "Enter NFT Address"
 msgid "AVAILABLE"
 msgstr "AVAILABLE"
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "@username"
+msgstr "@username"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Short Inc."
 msgstr "Stop Market - Short Inc."
@@ -601,6 +605,10 @@ msgstr "Add to Metamask"
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "Insufficient staked tokens"
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Telegram contact (optional)"
+msgstr "Telegram contact (optional)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."

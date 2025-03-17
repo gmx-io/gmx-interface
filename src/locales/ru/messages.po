@@ -316,6 +316,10 @@ msgstr "Введите Адрес NFT"
 msgid "AVAILABLE"
 msgstr "ДОСТУПНО"
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "@username"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Short Inc."
 msgstr ""
@@ -600,6 +604,10 @@ msgstr "Добавить в MetaMask"
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
+msgstr ""
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Telegram contact (optional)"
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts

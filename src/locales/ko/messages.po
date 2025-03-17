@@ -316,6 +316,10 @@ msgstr "NFT 주소 입력"
 msgid "AVAILABLE"
 msgstr "사용가능"
 
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "@username"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Short Inc."
 msgstr ""
@@ -600,6 +604,10 @@ msgstr "메타마스크에 추가해주세요"
 
 #: src/pages/Earn/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
+msgstr ""
+
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Telegram contact (optional)"
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
