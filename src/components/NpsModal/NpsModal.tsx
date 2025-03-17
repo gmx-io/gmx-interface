@@ -1,14 +1,18 @@
+import { useEffect, useMemo, useState } from "react";
+import { Trans, t } from "@lingui/macro";
+
 import { MAX_FEEDBACK_LENGTH } from "config/ui";
 import { Answer, getQuestionsByRating, useNpsSurvey } from "domain/synthetics/userFeedback";
-import { t } from "@lingui/macro";
+
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { Textarea } from "components/Textarea/Textarea";
-import { useEffect, useMemo, useState } from "react";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function NpsModal() {
   const { isModalVisible, isSubmitting, onSubmitSurvey, rating, error } = useNpsSurvey();
   const [questions, setQuestions] = useState<Answer[]>([]);
+  const [contact, setContact] = useState<string>("");
 
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
@@ -54,12 +58,17 @@ export function NpsModal() {
         answer: "",
       }));
       setQuestions(initialQuestions);
+      setContact("");
     },
     [rating]
   );
 
   return (
-    <Modal isVisible={isModalVisible} setIsVisible={() => onSubmitSurvey(questions)} label={t`Help us improve`}>
+    <Modal
+      isVisible={isModalVisible}
+      setIsVisible={() => onSubmitSurvey({ answers: questions, contact })}
+      label={t`Help us improve`}
+    >
       <div className="max-w-xl">
         {questions.map((question, index) => (
           <div key={question.questionType} className="mb-15">
@@ -71,11 +80,28 @@ export function NpsModal() {
             />
           </div>
         ))}
+
+        <div className="mb-15 flex flex-col">
+          <TooltipWithPortal
+            position="top-start"
+            content={<Trans>Leave your Telegram if you’re okay with being contacted for a quick follow-up</Trans>}
+          >
+            <Trans>Telegram contact (optional)</Trans>
+          </TooltipWithPortal>
+          <input
+            className="mt-15 text-input-bg"
+            name="contact"
+            type="text"
+            value={contact}
+            onChange={(evt) => setContact(evt.target.value)}
+            placeholder={t`@username`}
+          />
+        </div>
       </div>
       <Button
         variant="primary-action"
         className="mt-4 w-full"
-        onClick={() => onSubmitSurvey(questions)}
+        onClick={() => onSubmitSurvey({ answers: questions, contact })}
         disabled={submitButtonState.disabled}
       >
         {submitButtonState.text}
