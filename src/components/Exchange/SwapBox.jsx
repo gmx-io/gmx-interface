@@ -49,9 +49,7 @@ import ConfirmationBox from "./ConfirmationBox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import OrdersToa from "./OrdersToa";
 
-import PositionRouter from "sdk/abis/PositionRouter.json";
-import Router from "sdk/abis/Router.json";
-import WETH from "sdk/abis/WETH.json";
+import { abis } from "sdk/abis";
 
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
@@ -1241,7 +1239,7 @@ export default function SwapBox(props) {
   const wrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, signer);
+    const contract = new ethers.Contract(nativeTokenAddress, abis.WETH, signer);
     callContract(chainId, contract, "deposit", {
       value: fromAmount,
       sentMsg: t`Swap submitted.`,
@@ -1258,7 +1256,7 @@ export default function SwapBox(props) {
   const unwrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, signer);
+    const contract = new ethers.Contract(nativeTokenAddress, abis.WETH, signer);
     callContract(chainId, contract, "withdraw", [fromAmount], {
       sentMsg: t`Swap submitted!`,
       failMsg: t`Swap failed.`,
@@ -1369,7 +1367,7 @@ export default function SwapBox(props) {
       value = fromAmount;
       params = [path, minOut, account];
     }
-    contract = new ethers.Contract(routerAddress, Router.abi, signer);
+    contract = new ethers.Contract(routerAddress, abis.Router, signer);
 
     callContract(chainId, contract, method, params, {
       value,
@@ -1537,7 +1535,7 @@ export default function SwapBox(props) {
     }
 
     const contractAddress = getContract(chainId, "PositionRouter");
-    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, signer);
+    const contract = new ethers.Contract(contractAddress, abis.PositionRouter, signer);
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
     const longOrShortText = isLong ? t`Long` : t`Short`;

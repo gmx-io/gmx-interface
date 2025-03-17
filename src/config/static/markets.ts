@@ -334,6 +334,14 @@ const MARKETS_UI_CONFIGS: Record<number, Record<string, MarketUiConfig>> = {
     "0x7DE8E1A1fbA845A330A6bD91118AfDA09610fB02": {
       enabled: true,
     },
+    // MKR/USD [WETH-USDC]
+    "0x2aE5c5Cd4843cf588AA8D1289894318130acc823": {
+      enabled: true,
+    },
+    // OM/USD [WBTC-USDC]
+    "0x89EB78679921499632fF16B1be3ee48295cfCD91": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

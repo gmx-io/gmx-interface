@@ -1,17 +1,17 @@
 import { getContract } from "configs/contracts";
 
-import type { GmxSdk } from "../../../index";
 import type { DecreasePositionSwapType, OrderType } from "types/orders";
 import type { Token, TokensData } from "types/tokens";
+import type { GmxSdk } from "../../../index";
 import type { PriceOverrides } from "./createIncreaseOrderTxn";
 
-import ExchangeRouter from "abis/ExchangeRouter.json";
+import { abis } from "abis";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { isMarketOrderType } from "utils/orders";
+import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
 import { convertToContractPrice } from "utils/tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
-import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
 
 export type DecreaseOrderParams = {
   account: string;
@@ -77,7 +77,7 @@ export async function createDecreaseOrderTxn(sdk: GmxSdk, params: DecreaseOrderP
 
   const routerAddress = getContract(chainId, "ExchangeRouter");
 
-  await sdk.callContract(routerAddress, ExchangeRouter.abi as Abi, "multicall", [encodedPayload], {
+  await sdk.callContract(routerAddress, abis.ExchangeRouter as Abi, "multicall", [encodedPayload], {
     value: totalWntAmount,
   });
 }
@@ -146,7 +146,7 @@ export function createDecreaseEncodedPayload({
 
   return multicall.filter(Boolean).map((call) =>
     encodeFunctionData({
-      abi: ExchangeRouter.abi as Abi,
+      abi: abis.ExchangeRouter as Abi,
       functionName: call!.method,
       args: call!.params,
     })

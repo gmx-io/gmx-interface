@@ -1,3 +1,4 @@
+import type { AbiId } from "sdk/abis";
 import type { Key } from "swr";
 
 export type CacheKey = Key;
@@ -10,7 +11,7 @@ export type ContractCallConfig = {
 
 export type ContractCallsConfig<T extends { calls: any }> = {
   contractAddress: string;
-  abi: any;
+  abiId: AbiId;
   calls: {
     [callKey in keyof T["calls"]]: ContractCallConfig | SkipKey;
   };

@@ -9,6 +9,7 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "l
 
 import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import uniqueId from "lodash/uniqueId";
+import type { AbiId } from "sdk/abis";
 import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
@@ -30,7 +31,7 @@ type MulticallFetcherConfig = {
       callData: {
         contractAddress: string;
         callId: string;
-        abi: any;
+        abiId: AbiId;
         methodName: string;
         params: any[];
       };
@@ -201,7 +202,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
           callData: {
             contractAddress: callGroup.contractAddress,
             callId,
-            abi: callGroup.abi,
+            abiId: callGroup.abiId,
             methodName: call.methodName,
             params: call.params,
           },
@@ -319,7 +320,7 @@ function getRequest(callEntries: [string, { callData: MulticallFetcherConfig[num
   for (const [callId, { callData }] of callEntries) {
     if (!requests[callData.contractAddress]) {
       requests[callData.contractAddress] = {
-        abi: callData.abi,
+        abiId: callData.abiId,
         contractAddress: callData.contractAddress,
         calls: {},
       };

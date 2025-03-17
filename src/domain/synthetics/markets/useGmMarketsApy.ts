@@ -1,14 +1,16 @@
+import useSWR from "swr";
+import { useCallback, useMemo } from "react";
+
 import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { getPoolUsdWithoutPnl, GlvInfoData } from "domain/synthetics/markets";
 import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { getSubsquidGraphClient } from "lib/subgraph";
-import { useCallback, useMemo } from "react";
+
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import useSWR from "swr";
+
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { useTokensDataRequest } from "../tokens";
 import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
@@ -17,11 +19,11 @@ import { useMarketTokensData } from "./useMarketTokensData";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import TokenAbi from "sdk/abis/Token.json";
 import { convertToUsd } from "../tokens/utils";
 import { isGlvEnabled, isGlvInfo } from "./glv";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { getSubgraphUrl } from "config/subgraph";
 
 type GmGlvTokensAPRResult = {
   glvApyInfoData: MarketTokensAPRData;
@@ -81,7 +83,7 @@ function useExcludedLiquidityMarketMap(
 
     for (const marketAddress of marketAddresses) {
       req[marketAddress] = {
-        abi: TokenAbi.abi,
+        abiId: "Token",
         contractAddress: marketAddress,
         calls: {},
       };
@@ -255,10 +257,10 @@ export function useGmMarketsApy(chainId: number): GmGlvTokensAPRResult {
 
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
-  const client = getSubsquidGraphClient(chainId);
+  const subsquidUrl = getSubgraphUrl(chainId, "subsquid");
 
   const key =
-    marketAddresses.length && marketTokensData && client ? marketAddresses.concat("apr-subsquid").join(",") : null;
+    marketAddresses.length && marketTokensData && subsquidUrl ? marketAddresses.concat("apr-subsquid").join(",") : null;
 
   const lidoApr = useLidoStakeApr();
 

@@ -17,7 +17,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 
-import RewardRouter from "sdk/abis/RewardRouter.json";
+import { abis } from "sdk/abis";
 
 export function UnstakeModal(props: {
   isVisible: boolean;
@@ -99,7 +99,7 @@ export function UnstakeModal(props: {
 
   const onClickPrimary = useCallback(() => {
     setIsUnstaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
     callContract(chainId, contract, unstakeMethodName, [amount], {
       sentMsg: t`Unstake submitted!`,
       failMsg: t`Unstake failed.`,
