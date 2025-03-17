@@ -240,13 +240,13 @@ export function absDiffBps(value: bigint, base: bigint) {
 export function roundBigNumberWithDecimals(
   value: BigNumberish,
   opts: { displayDecimals: number; tokenDecimals: number }
-): bigint {
+): BigNumberish {
+  if (opts.displayDecimals === opts.tokenDecimals) {
+    return value;
+  }
+
   let valueString = value.toString();
   let isNegative = false;
-
-  if (opts.displayDecimals === opts.tokenDecimals) {
-    return BigInt(valueString);
-  }
 
   if (valueString[0] === "-") {
     valueString = valueString.slice(1);
@@ -265,8 +265,7 @@ export function roundBigNumberWithDecimals(
   let returnValue = mainPartBigInt;
 
   if (partToRound.length !== 0) {
-    let partToRoundBigInt = BigInt(partToRound);
-    if (partToRoundBigInt >= BigInt(5 + "0".repeat(partToRound.length - 1))) {
+    if (Number(partToRound[0]) >= 5) {
       mainPartBigInt += 1n;
     }
 
@@ -293,4 +292,3 @@ export function toBigNumberWithDecimals(value: string, decimals: number): bigint
     return BigInt(result);
   }
 }
-
