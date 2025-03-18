@@ -424,6 +424,7 @@ function createRawTradeActionTransformer(
         transaction: rawAction.transaction,
         reason: rawAction.reason,
         reasonBytes: rawAction.reasonBytes,
+        timestamp: rawAction.timestamp,
       };
 
       return tradeAction;
@@ -502,6 +503,7 @@ function createRawTradeActionTransformer(
 
         transaction: rawAction.transaction,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
+        timestamp: rawAction.timestamp,
       };
 
       return tradeAction;

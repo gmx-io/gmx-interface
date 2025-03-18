@@ -83,8 +83,6 @@ export function ClaimsHistory() {
 
   const handleCsvDownload = useDownloadAsCsv(claimActions);
 
-  console.log("--------> currentPageData", currentPageData);
-
   return (
     <>
       <div className="App-box">
@@ -169,7 +167,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
         return claimAction.claimItems.flatMap((claimItem) => {
           return [
             claimItem.longTokenAmount > 0 && {
-              explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
+              explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transaction.hash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,
               market: claimItem.marketInfo.name,
@@ -180,7 +178,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
               ),
             },
             claimItem.shortTokenAmount > 0 && {
-              explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
+              explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transaction.hash}`,
               timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
               action: action,
               market: claimItem.marketInfo.name,
@@ -196,7 +194,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
 
       let action: string = _(claimFundingFeeEventTitles[claimAction.eventName]);
       return claimAction.markets.map((market, index) => ({
-        explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transactionHash}`,
+        explorerUrl: getExplorerUrl(chainId) + `tx/${claimAction.transaction.hash}`,
         timestamp: formatTradeActionTimestamp(claimAction.timestamp, false),
         action: action,
         market: (claimAction.isLongOrders[index] ? t`Long` : t`Short`) + " " + market.name,

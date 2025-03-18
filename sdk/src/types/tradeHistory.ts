@@ -52,7 +52,9 @@ export type RawTradeAction = {
   reasonBytes?: BytesLike;
 
   timestamp: number;
-  transaction: string;
+  transaction: {
+    hash: string;
+  };
 };
 
 export type PositionTradeAction = {
@@ -91,7 +93,9 @@ export type PositionTradeAction = {
   shouldUnwrapNativeToken: boolean;
   liquidationFeeAmount?: bigint;
   timestamp: number;
-  transaction: string;
+  transaction: {
+    hash: string;
+  };
 };
 
 export type SwapTradeAction = {
@@ -113,7 +117,9 @@ export type SwapTradeAction = {
   reasonBytes?: string | Uint8Array;
 
   timestamp: number;
-  transaction: string;
+  transaction: {
+    hash: string;
+  };
 };
 
 export type TradeAction = PositionTradeAction | SwapTradeAction;

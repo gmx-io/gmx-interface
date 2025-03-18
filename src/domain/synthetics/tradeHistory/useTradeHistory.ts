@@ -6,7 +6,6 @@ import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
 
 import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { getWrappedToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
@@ -23,8 +22,8 @@ import { Token } from "domain/tokens";
 import { definedOrThrow } from "lib/guards";
 import { bigNumberify } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { getSubsquidGraphClient, getSyntheticsGraphClient } from "lib/subgraph";
-import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
+import { getSubsquidGraphClient } from "lib/subgraph";
+import { getWrappedToken } from "sdk/configs/tokens";
 import {
   PositionTradeAction,
   RawTradeAction,
@@ -32,6 +31,7 @@ import {
   TradeAction,
   TradeActionType,
 } from "sdk/types/tradeHistory";
+import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
@@ -304,8 +304,8 @@ export async function fetchTradeActions({
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
 
-  const skip = pageIndex * pageSize;
-  const first = pageSize;
+  const offset = pageIndex * pageSize;
+  const limit = pageSize;
 
   const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
     .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
@@ -332,16 +332,14 @@ export async function fetchTradeActions({
   const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
   const filtersStr = buildFiltersBody({
-    and: [
+    AND: [
       {
-        account: forAllAccounts ? undefined : account!.toLowerCase(),
-        transaction: {
-          timestamp_gte: fromTxTimestamp,
-          timestamp_lte: toTxTimestamp,
-        },
+        account_eq: forAllAccounts ? undefined : account,
+        timestamp_gte: fromTxTimestamp,
+        timestamp_lte: toTxTimestamp,
       },
       {
-        or: !hasPureDirectionFilters
+        OR: !hasPureDirectionFilters
           ? undefined
           : pureDirectionFilters.map((filter) =>
               filter.direction === "swap"
@@ -349,25 +347,25 @@ export async function fetchTradeActions({
                     orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   }
                 : {
-                    isLong: filter.direction === "long",
+                    isLong_eq: filter.direction === "long",
                     orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   }
             ),
       },
       {
-        or: [
+        OR: [
           // For non-swap orders
           {
-            and: !hasNonSwapRelevantDefinedMarkets
+            AND: !hasNonSwapRelevantDefinedMarkets
               ? undefined
               : [
                   {
                     orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   },
                   {
-                    or: nonSwapRelevantDefinedFiltersLowercased.map((filter) => ({
-                      marketAddress: filter.marketAddress === "any" ? undefined : filter.marketAddress,
-                      isLong: filter.direction === "any" ? undefined : filter.direction === "long",
+                    OR: nonSwapRelevantDefinedFiltersLowercased.map((filter) => ({
+                      marketAddress_eq: filter.marketAddress === "any" ? undefined : filter.marketAddress,
+                      isLong_eq: filter.direction === "any" ? undefined : filter.direction === "long",
                       // Collateral filtering is done outside of graphql on the client
                     })),
                   },
@@ -375,21 +373,21 @@ export async function fetchTradeActions({
           },
           // For defined markets on swap orders
           {
-            and: !hasSwapRelevantDefinedMarkets
+            AND: !hasSwapRelevantDefinedMarkets
               ? undefined
               : [
                   {
                     orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
                   },
                   {
-                    or: [
+                    OR: [
                       // Source token is not in swap path so we add it to the or filter
                       {
                         marketAddress_in: swapRelevantDefinedMarketsLowercased,
                       } as GraphQlFilters,
                     ].concat(
                       swapRelevantDefinedMarketsLowercased.map((marketAddress) => ({
-                        swapPath_contains: [marketAddress],
+                        swapPath_containsAll: [marketAddress],
                       })) || []
                     ),
                   },
@@ -398,7 +396,7 @@ export async function fetchTradeActions({
         ],
       },
       {
-        or: orderEventCombinations?.map((combination) => {
+        OR: orderEventCombinations?.map((combination) => {
           let sizeDeltaUsdCondition = {};
 
           if (
@@ -406,16 +404,16 @@ export async function fetchTradeActions({
             [OrderType.MarketDecrease, OrderType.MarketIncrease].includes(combination.orderType)
           ) {
             if (combination.isDepositOrWithdraw) {
-              sizeDeltaUsdCondition = { sizeDeltaUsd: 0 };
+              sizeDeltaUsdCondition = { sizeDeltaUsd_eq: 0 };
             } else {
-              sizeDeltaUsdCondition = { sizeDeltaUsd_not: 0 };
+              sizeDeltaUsdCondition = { sizeDeltaUsd_not_eq: 0 };
             }
           }
 
           return merge(
             {
-              eventName: combination.eventName,
-              orderType: combination.orderType,
+              eventName_eq: combination.eventName,
+              orderType_eq: combination.orderType,
             },
             sizeDeltaUsdCondition
           );
@@ -424,20 +422,20 @@ export async function fetchTradeActions({
       {
         // We do not show create liquidation orders in the trade history, thus we filter it out
         // ... && not (liquidation && orderCreated) === ... && (not liquidation || not orderCreated)
-        or: [{ orderType_not: OrderType.Liquidation }, { eventName_not: TradeActionType.OrderCreated }],
+        OR: [{ orderType_not_eq: OrderType.Liquidation }, { eventName_not_eq: TradeActionType.OrderCreated }],
       },
       // not request market increase, market decrease, market swap, (deposit, withdraw are included in increase, decrease)
       ...(showDebugValues
         ? []
         : [
             {
-              or: [{ orderType_not: OrderType.MarketIncrease }, { eventName_not: TradeActionType.OrderCreated }],
+              OR: [{ orderType_not_eq: OrderType.MarketIncrease }, { eventName_not_eq: TradeActionType.OrderCreated }],
             },
             {
-              or: [{ orderType_not: OrderType.MarketDecrease }, { eventName_not: TradeActionType.OrderCreated }],
+              OR: [{ orderType_not_eq: OrderType.MarketDecrease }, { eventName_not_eq: TradeActionType.OrderCreated }],
             },
             {
-              or: [{ orderType_not: OrderType.MarketSwap }, { eventName_not: TradeActionType.OrderCreated }],
+              OR: [{ orderType_not_eq: OrderType.MarketSwap }, { eventName_not_eq: TradeActionType.OrderCreated }],
             },
           ]),
     ],
@@ -446,43 +444,55 @@ export async function fetchTradeActions({
   const whereClause = `where: ${filtersStr}`;
 
   const query = gql(`{
-  tradeActions(orderBy: timestamp_DESC, where: {account_eq: "0x9f7198eb1b9Ccc0Eb7A07eD228d8FbC12963ea33"}) {
-    id
-    orderType
-    account
-    marketAddress
-    swapPath
-    eventName
-    initialCollateralTokenAddress
-    initialCollateralDeltaAmount
-    sizeDeltaUsd
-    triggerPrice
-    acceptablePrice
-    executionPrice
-    minOutputAmount
-    executionAmountOut
-    priceImpactUsd
-    priceImpactDiffUsd
-    positionFeeAmount
-    borrowingFeeAmount
-    fundingFeeAmount
-    liquidationFeeAmount
-    pnlUsd
-    basePnlUsd
-    collateralTokenPriceMax
-    collateralTokenPriceMin
-    indexTokenPriceMin
-    indexTokenPriceMax
-    orderType
-    orderKey
-    isLong
-    shouldUnwrapNativeToken
-    reason
-    reasonBytes
-    transaction
-    timestamp
-  }
+        tradeActions(
+            offset: ${offset},
+            limit: ${limit},
+            orderBy: transaction_timestamp_DESC,
+            ${whereClause}
+        ) {
+            id
+            eventName
 
+            account
+            marketAddress
+            swapPath
+            initialCollateralTokenAddress
+
+            initialCollateralDeltaAmount
+            sizeDeltaUsd
+            triggerPrice
+            acceptablePrice
+            executionPrice
+            minOutputAmount
+            executionAmountOut
+
+            priceImpactUsd
+            priceImpactDiffUsd
+            positionFeeAmount
+            borrowingFeeAmount
+            fundingFeeAmount
+            liquidationFeeAmount
+            pnlUsd
+            basePnlUsd
+
+            collateralTokenPriceMax
+            collateralTokenPriceMin
+
+            indexTokenPriceMin
+            indexTokenPriceMax
+
+            orderType
+            orderKey
+            isLong
+            shouldUnwrapNativeToken
+
+            reason
+            reasonBytes
+            timestamp
+            transaction {
+                hash
+            }
+        }
       }`);
 
   const result = await client!.query({ query, fetchPolicy: "no-cache" });
