@@ -263,7 +263,7 @@ export function SyntheticsPage(p: Props) {
               <div className="Exchange-list-tab-container">
                 <Tabs
                   options={tabsOptions}
-                  selectedValue={listSection ?? null}
+                  selectedValue={listSection}
                   onChange={handleTabChange}
                   type="inline"
                   className="Exchange-list-tabs"
@@ -344,7 +344,7 @@ export function SyntheticsPage(p: Props) {
             <div className="Exchange-list-tab-container">
               <Tabs
                 options={tabsOptions}
-                selectedValue={listSection ?? null}
+                selectedValue={listSection}
                 onChange={handleTabChange}
                 type="inline"
                 className="Exchange-list-tabs"

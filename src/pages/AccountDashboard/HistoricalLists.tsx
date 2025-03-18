@@ -152,7 +152,7 @@ export function HistoricalLists({ chainId, account }: Props) {
   return (
     <div>
       <div className="py-10">
-        <Tabs options={tabsOptions} selectedValue={tabKey ?? null} onChange={setTabKey} type="inline" />
+        <Tabs options={tabsOptions} selectedValue={tabKey} onChange={setTabKey} type="inline" />
       </div>
 
       {tabKey === TabKey.Positions && (
@@ -205,7 +205,7 @@ export function HistoricalListsV1({ account, chainId }: Props) {
     <>
       <div>
         <div className="py-10">
-          <Tabs options={tabsOptions} selectedValue={tabKey ?? null} onChange={setTabKey} type="inline" />
+          <Tabs options={tabsOptions} selectedValue={tabKey} onChange={setTabKey} type="inline" />
         </div>
 
         {tabKey === TabKeyV1.Positions && (

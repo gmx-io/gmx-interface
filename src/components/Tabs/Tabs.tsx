@@ -7,7 +7,7 @@ import "./Tabs.css";
 
 type Props<V extends BaseOptionValue> = {
   options: Option<V>[];
-  selectedValue: V | null;
+  selectedValue: V | undefined;
   onChange?: (value: V) => void;
   size?: "l" | "m";
   type?: "inline" | "block";

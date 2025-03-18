@@ -960,7 +960,7 @@ export const Exchange = forwardRef(
           <div className="Exchange-list-tab-container">
             <Tabs
               options={tabsOptions}
-              selectedValue={listSection ?? null}
+              selectedValue={listSection}
               onChange={setListSection}
               type="inline"
               className="Exchange-list-tabs"

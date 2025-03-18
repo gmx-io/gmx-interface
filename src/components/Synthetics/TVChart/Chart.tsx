@@ -55,13 +55,7 @@ export function Chart() {
         ) : (
           <>
             <div className="text-body-medium border-b border-stroke-primary px-20 py-10">
-              <Tabs
-                type="inline"
-                className="flex"
-                options={TABS_OPTIONS}
-                selectedValue={tab ?? null}
-                onChange={setTab}
-              />
+              <Tabs type="inline" className="flex" options={TABS_OPTIONS} selectedValue={tab} onChange={setTab} />
             </div>
 
             {tab === "PRICE" ? <TVChart /> : <DepthChartContainer />}

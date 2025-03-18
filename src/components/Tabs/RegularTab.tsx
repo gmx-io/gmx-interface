@@ -4,7 +4,7 @@ import { RegularOption } from "./types";
 
 type Props<V extends string | number> = {
   option: RegularOption<V>;
-  selectedValue: V | null;
+  selectedValue: V | undefined;
   onOptionClick: ((value: V) => void) | undefined;
   regularOptionClassname?: string;
   qa?: string;

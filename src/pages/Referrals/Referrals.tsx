@@ -146,7 +146,7 @@ function Referrals() {
           qa="referrals-page"
         />
         <div className="referral-tab-container">
-          <Tabs options={tabsOptions} selectedValue={activeTab ?? null} onChange={setActiveTab} />
+          <Tabs options={tabsOptions} selectedValue={activeTab} onChange={setActiveTab} />
         </div>
         {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
       </div>

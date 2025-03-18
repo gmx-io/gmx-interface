@@ -8,7 +8,7 @@ import { NestedOption } from "./types";
 
 type Props<V extends string | number> = {
   option: NestedOption<V>;
-  selectedValue: V | null;
+  selectedValue: V | undefined;
   commonOptionClassname?: string;
   onOptionClick: ((value: V) => void) | undefined;
   qa?: string;
