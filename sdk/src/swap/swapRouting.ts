@@ -27,6 +27,12 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   return (e: MarketEdge, usdIn: bigint) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
+    if (!marketInfo || marketInfo.isDisabled) {
+      return {
+        usdOut: 0n,
+      };
+    }
+
     const swapStats = getSwapStats({
       marketInfo,
       usdIn,
@@ -55,7 +61,7 @@ export const createMarketEdgeLiquidlyGetter = (marketsInfoData: MarketsInfoData)
   return (e: MarketEdge) => {
     const marketInfo = getByKey(marketsInfoData, e.marketAddress);
 
-    if (!marketInfo) {
+    if (!marketInfo || marketInfo.isDisabled) {
       return 0n;
     }
 
@@ -114,7 +120,7 @@ export const createNaiveSwapEstimator = (marketsInfoData: MarketsInfoData): Naiv
   ) => {
     let marketInfo = marketsInfoData[e.marketAddress];
 
-    if (marketInfo === undefined) {
+    if (marketInfo === undefined || marketInfo.isDisabled) {
       return { swapYield: 0 };
     }
 

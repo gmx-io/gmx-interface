@@ -7,6 +7,9 @@ import { describe, expect, it, vi } from "vitest";
 import { mockMarketsInfoData, mockTokensData } from "../../test/mock";
 import { MarketsGraph, buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
 import {
+  createMarketEdgeLiquidlyGetter,
+  createNaiveSwapEstimator,
+  createSwapEstimator,
   getBestMarketForTokenEdge,
   getBestSwapPath,
   getMaxLiquidityMarketForTokenEdge,
@@ -885,6 +888,136 @@ describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
     expect(result).toEqual({
       path: ["ETH [ETH-USDC]"],
       liquidity: 1_000_000n * dollar,
+    });
+  });
+});
+
+describe("createSwapEstimator", () => {
+  it("should return zero output for disabled markets", () => {
+    const tokensData = mockTokensData();
+    const marketKeys = ["ETH-ETH-USDC"];
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      "ETH-ETH-USDC": {
+        isDisabled: true,
+      },
+    });
+
+    const estimator = createSwapEstimator(marketsInfoData);
+    const result = estimator(
+      {
+        marketAddress: "ETH-ETH-USDC",
+        from: "ETH",
+        to: "USDC",
+      },
+      100n * dollar
+    );
+
+    expect(result).toEqual({
+      usdOut: 0n,
+    });
+  });
+
+  it("should return zero output for non-existent markets", () => {
+    const tokensData = mockTokensData();
+    const marketKeys = ["ETH-ETH-USDC"];
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
+
+    const estimator = createSwapEstimator(marketsInfoData);
+    const result = estimator(
+      {
+        marketAddress: "NON-EXISTENT",
+        from: "ETH",
+        to: "USDC",
+      },
+      100n * dollar
+    );
+
+    expect(result).toEqual({
+      usdOut: 0n,
+    });
+  });
+});
+
+describe("createMarketEdgeLiquidlyGetter", () => {
+  it("should return zero liquidity for disabled markets", () => {
+    const tokensData = mockTokensData();
+    const marketKeys = ["ETH-ETH-USDC"];
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      "ETH-ETH-USDC": {
+        isDisabled: true,
+      },
+    });
+
+    const getLiquidity = createMarketEdgeLiquidlyGetter(marketsInfoData);
+    const result = getLiquidity({
+      marketAddress: "ETH-ETH-USDC",
+      from: "ETH",
+      to: "USDC",
+    });
+
+    expect(result).toBe(0n);
+  });
+
+  it("should return zero liquidity for non-existent markets", () => {
+    const tokensData = mockTokensData();
+    const marketKeys = ["ETH-ETH-USDC"];
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
+
+    const getLiquidity = createMarketEdgeLiquidlyGetter(marketsInfoData);
+    const result = getLiquidity({
+      marketAddress: "NON-EXISTENT",
+      from: "ETH",
+      to: "USDC",
+    });
+
+    expect(result).toBe(0n);
+  });
+});
+
+describe("createNaiveSwapEstimator", () => {
+  it("should return zero yield for disabled markets", () => {
+    const tokensData = mockTokensData();
+    const marketKeys = ["ETH-ETH-USDC"];
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      "ETH-ETH-USDC": {
+        isDisabled: true,
+      },
+    });
+
+    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const result = estimator(
+      {
+        marketAddress: "ETH-ETH-USDC",
+        from: "ETH",
+        to: "USDC",
+      },
+      100n * dollar,
+      0
+    );
+
+    expect(result).toEqual({
+      swapYield: 0,
+    });
+  });
+
+  it("should return zero yield for non-existent markets", () => {
+    const tokensData = mockTokensData();
+    const marketKeys = ["ETH-ETH-USDC"];
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
+
+    const estimator = createNaiveSwapEstimator(marketsInfoData);
+    const result = estimator(
+      {
+        marketAddress: "NON-EXISTENT",
+        from: "ETH",
+        to: "USDC",
+      },
+      100n * dollar,
+      0
+    );
+
+    expect(result).toEqual({
+      swapYield: 0,
     });
   });
 });
