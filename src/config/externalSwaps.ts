@@ -5,7 +5,7 @@ import { DEBUG_SWAP_SETTINGS_KEY } from "./localStorage";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
 
 // Enable external swap if price impact delta is less than this threshold
-export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -20n;
+export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -15n;
 
 export const HIGH_EXTERNAL_SWAP_FEES_BPS = 200; // 2%
 
