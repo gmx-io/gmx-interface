@@ -316,6 +316,11 @@ msgstr "Introduce tu dirección de NFT"
 msgid "AVAILABLE"
 msgstr "DISPONIBLE"
 
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "@username"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Short Inc."
 msgstr ""
@@ -602,6 +607,11 @@ msgstr "Añadir a Metamask"
 msgid "Insufficient staked tokens"
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Telegram contact (optional)"
+msgstr ""
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Tap [Create Wallet] to start using your Web3 Wallet."
 msgstr "Toca [Crear cartera] para empezar a usar tu cartera Web3."
@@ -844,6 +854,11 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
