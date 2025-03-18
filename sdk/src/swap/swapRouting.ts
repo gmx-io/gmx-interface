@@ -153,24 +153,30 @@ export const createNaiveNetworkEstimator = ({
 }): NaiveNetworkEstimator => {
   return (usdIn: bigint, swapsCount: number) => {
     const estimatedGas = getNaiveEstimatedGasBySwapCount(gasLimits.singleSwap, swapsCount);
-    if (estimatedGas === null || estimatedGas === undefined) return { networkYield: 1.0 };
+    if (estimatedGas === null || estimatedGas === undefined) return { networkYield: 1.0, usdOut: usdIn };
 
     const oraclePriceCount = estimateOrderOraclePriceCount(swapsCount);
 
     const feeUsd = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount)?.feeUsd;
-    if (feeUsd === undefined) return { networkYield: 1.0 };
+    if (feeUsd === undefined) return { networkYield: 1.0, usdOut: usdIn };
 
     const networkYield = bigintToNumber(bigMath.mulDiv(usdIn, PRECISION, usdIn + feeUsd), PRECISION_DECIMALS);
 
-    return { networkYield };
+    return { networkYield, usdOut: usdIn - feeUsd };
   };
 };
 
-export function getBestSwapPath(
-  routes: MarketEdge[][],
-  usdIn: bigint,
-  estimator: SwapEstimator
-): MarketEdge[] | undefined {
+export function getBestSwapPath({
+  routes,
+  usdIn,
+  estimator,
+  networkEstimator,
+}: {
+  routes: MarketEdge[][];
+  usdIn: bigint;
+  estimator: SwapEstimator;
+  networkEstimator?: NaiveNetworkEstimator;
+}): MarketEdge[] | undefined {
   if (routes.length === 0) {
     return undefined;
   }
@@ -180,10 +186,15 @@ export function getBestSwapPath(
 
   for (const route of routes) {
     try {
-      const pathUsdOut = route.reduce((prevUsdOut, edge) => {
+      let pathUsdOut = route.reduce((prevUsdOut, edge) => {
         const { usdOut } = estimator(edge, prevUsdOut);
         return usdOut;
       }, usdIn);
+
+      if (networkEstimator) {
+        const { usdOut } = networkEstimator(pathUsdOut, route.length);
+        pathUsdOut = usdOut;
+      }
 
       if (pathUsdOut > bestUsdOut) {
         bestRoute = route;

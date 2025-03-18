@@ -241,6 +241,7 @@ export type NaiveNetworkEstimator = (
   swapCount: number
 ) => {
   networkYield: number;
+  usdOut: bigint;
 };
 
 export type MarketEdgeLiquidityGetter = (e: MarketEdge) => bigint;

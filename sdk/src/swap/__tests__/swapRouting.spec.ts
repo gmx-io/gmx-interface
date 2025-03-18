@@ -1,6 +1,7 @@
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketConfig } from "configs/markets";
 import { NaiveSwapEstimator, SwapPaths } from "types/trade";
+import { bigMath } from "utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "utils/tokens";
 import { describe, expect, it, vi } from "vitest";
 import { mockMarketsInfoData, mockTokensData } from "../../test/mock";
@@ -9,9 +10,9 @@ import {
   getBestMarketForTokenEdge,
   getBestSwapPath,
   getMaxLiquidityMarketForTokenEdge,
+  getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
   getNextMarketInfoAfterEncounters,
-  getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
 } from "../swapRouting";
 
 const dollar = 10n ** BigInt(USD_DECIMALS);
@@ -288,11 +289,11 @@ describe("getNaiveBestMarketSwapPathsFromTokenSwapPaths", () => {
       },
       networkEstimator: (usdIn, swapCount) => {
         if (swapCount === 1) {
-          return { networkYield: 0.99 };
+          return { networkYield: 0.99, usdOut: usdIn };
         } else if (swapCount === 2) {
-          return { networkYield: 0.97 };
+          return { networkYield: 0.97, usdOut: usdIn };
         }
-        return { networkYield: 0.95 };
+        return { networkYield: 0.95, usdOut: usdIn };
       },
     });
 
@@ -486,18 +487,22 @@ describe("getBestSwapPath", () => {
   };
 
   it("should return undefined for empty routes", () => {
-    const result = getBestSwapPath([], 100n * dollar, () => ({ usdOut: 0n }));
+    const result = getBestSwapPath({ routes: [], usdIn: 100n * dollar, estimator: () => ({ usdOut: 0n }) });
     expect(result).toBeUndefined();
   });
 
   it("should return route with highest usdOut", () => {
     const routes = createTestRoutes();
-    const result = getBestSwapPath(routes, 100n * dollar, (edge, usdIn) => {
-      if (edge.marketAddress === "ETH [ETH-USDC]") {
-        return { usdOut: 980000n }; // 98% output
-      }
-      // Multi-hop path: 0.99 * 0.99 = 0.9801 = 98.01% output
-      return { usdOut: BigInt(Math.floor(Number(usdIn) * 0.99)) };
+    const result = getBestSwapPath({
+      routes,
+      usdIn: 100n * dollar,
+      estimator: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") {
+          return { usdOut: 98n * dollar };
+        }
+
+        return { usdOut: 100n * dollar };
+      },
     });
 
     expect(result).toEqual([
@@ -508,18 +513,22 @@ describe("getBestSwapPath", () => {
 
   it("should handle routes with zero output", () => {
     const routes = createTestRoutes();
-    const result = getBestSwapPath(routes, 100n * dollar, () => ({ usdOut: 0n }));
+    const result = getBestSwapPath({ routes, usdIn: 100n * dollar, estimator: () => ({ usdOut: 0n }) });
 
     expect(result).toEqual(routes[0]);
   });
 
   it("should skip routes that throw errors", () => {
     const routes = createTestRoutes();
-    const result = getBestSwapPath(routes, 100n * dollar, (edge) => {
-      if (edge.marketAddress === "ETH [ETH-USDC]") {
-        return { usdOut: 980000n };
-      }
-      throw new Error("Estimation failed");
+    const result = getBestSwapPath({
+      routes,
+      usdIn: 100n * dollar,
+      estimator: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") {
+          return { usdOut: 98n * dollar };
+        }
+        throw new Error("Estimation failed");
+      },
     });
 
     expect(result).toEqual([{ from: "ETH", to: "USDC", marketAddress: "ETH [ETH-USDC]" }]);
@@ -529,9 +538,13 @@ describe("getBestSwapPath", () => {
     const routes = createTestRoutes();
     const capturedUsdIn: bigint[] = [];
 
-    getBestSwapPath(routes, 100n * dollar, (edge, usdIn) => {
-      capturedUsdIn.push(usdIn);
-      return { usdOut: usdIn / 2n };
+    getBestSwapPath({
+      routes,
+      usdIn: 100n * dollar,
+      estimator: (edge, usdIn) => {
+        capturedUsdIn.push(usdIn);
+        return { usdOut: usdIn / 2n };
+      },
     });
 
     expect(capturedUsdIn).toEqual([
@@ -539,6 +552,79 @@ describe("getBestSwapPath", () => {
       100n * dollar, // Second route, first hop
       50n * dollar, // Second route, second hop
     ]);
+  });
+
+  it("should prefer shorter path when network costs outweigh yield benefits", () => {
+    const routes = createTestRoutes();
+    const result = getBestSwapPath({
+      routes,
+      usdIn: 100n * dollar,
+      estimator: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") {
+          return { usdOut: 98n * dollar };
+        }
+
+        return { usdOut: 99n * dollar };
+      },
+      networkEstimator: (usdIn, swapCount) => {
+        if (swapCount === 1) {
+          return { networkYield: 0.99, usdOut: bigMath.mulDiv(usdIn, 99n, 100n) };
+        } else if (swapCount === 2) {
+          return { networkYield: 0.97, usdOut: bigMath.mulDiv(usdIn, 97n, 100n) };
+        }
+        return { networkYield: 0.95, usdOut: bigMath.mulDiv(usdIn, 95n, 100n) };
+      },
+    });
+
+    expect(result).toEqual([{ from: "ETH", to: "USDC", marketAddress: "ETH [ETH-USDC]" }]);
+  });
+
+  it("should prefer multi-hop path when yield benefits outweigh network costs", () => {
+    const routes = createTestRoutes();
+    const result = getBestSwapPath({
+      routes,
+      usdIn: 100n * dollar,
+      estimator: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") {
+          return { usdOut: 95n * dollar };
+        }
+
+        return { usdOut: 100n * dollar };
+      },
+      networkEstimator: (usdIn, swapCount) => {
+        if (swapCount === 1) {
+          return { networkYield: 0.99, usdOut: bigMath.mulDiv(usdIn, 99n, 100n) };
+        } else if (swapCount === 2) {
+          return { networkYield: 0.98, usdOut: bigMath.mulDiv(usdIn, 98n, 100n) };
+        }
+        return { networkYield: 0.97, usdOut: bigMath.mulDiv(usdIn, 97n, 100n) };
+      },
+    });
+
+    expect(result).toEqual([
+      { from: "ETH", to: "BTC", marketAddress: "BTC [BTC-ETH]" },
+      { from: "BTC", to: "USDC", marketAddress: "BTC [BTC-USDC]" },
+    ]);
+  });
+
+  it("should handle network estimator throwing errors", () => {
+    const routes = createTestRoutes();
+    const result = getBestSwapPath({
+      routes,
+      usdIn: 100n * dollar,
+      estimator: (edge, usdIn) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") {
+          return { usdOut: 98n * dollar };
+        }
+
+        return { usdOut: bigMath.mulDiv(usdIn, 99n, 100n) };
+      },
+      networkEstimator: () => {
+        throw new Error("Network estimation failed");
+      },
+    });
+
+    expect(result).toEqual(routes[0]);
   });
 });
 
@@ -793,7 +879,7 @@ describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
       tokenSwapPaths,
       tokenInAddress: "ETH",
       tokenOutAddress: "USDC",
-      getLiquidity: () => 1_000_000n * dollar, // Same liquidity for all markets
+      getLiquidity: () => 1_000_000n * dollar,
     });
 
     expect(result).toEqual({

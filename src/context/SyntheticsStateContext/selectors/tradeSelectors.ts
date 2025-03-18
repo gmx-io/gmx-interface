@@ -259,7 +259,12 @@ export const makeSelectFindSwapPath = createSelectorFactory(
               const estimator = q(selectSwapEstimator);
 
               if (estimator) {
-                swapPath = getBestSwapPath(edges, usdIn, estimator)?.map((edge) => edge.marketAddress);
+                swapPath = getBestSwapPath({
+                  routes: edges,
+                  usdIn,
+                  estimator,
+                  networkEstimator: naiveNetworkEstimator,
+                })?.map((edge) => edge.marketAddress);
               }
             }
           }
