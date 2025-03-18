@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { buildMarketsAdjacencyGraph } from "swap/buildMarketsAdjacencyGraph";
-import { findSwapPathsBetweenTokens } from "swap/buildSwapRoutes";
+import { findSwapPathsBetweenTokens } from "swap/findSwapPathsBetweenTokens";
 import {
   createMarketEdgeLiquidlyGetter,
   createNaiveNetworkEstimator,

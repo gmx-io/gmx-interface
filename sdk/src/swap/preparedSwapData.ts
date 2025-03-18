@@ -1,8 +1,8 @@
 import { MARKETS } from "configs/markets";
 import { SwapPaths } from "types/trade";
 import { MarketsGraph, buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
-import { processReachableTokens } from "./buildReachableTokens";
-import { findSwapPathsBetweenTokens } from "./buildSwapRoutes";
+import { findReachableTokens } from "./findReachableTokens";
+import { findSwapPathsBetweenTokens } from "./findSwapPathsBetweenTokens";
 
 const MARKETS_ADJACENCY_GRAPH: {
   [chainId: number]: MarketsGraph;
@@ -34,7 +34,7 @@ const REACHABLE_TOKENS: {
 
 for (const chainId in MARKETS) {
   const chainGraph = MARKETS_ADJACENCY_GRAPH[chainId];
-  const chainReachableTokens = processReachableTokens(chainGraph);
+  const chainReachableTokens = findReachableTokens(chainGraph);
 
   REACHABLE_TOKENS[chainId] = chainReachableTokens;
 }

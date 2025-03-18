@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { findSwapPathsBetweenTokens } from "../buildSwapRoutes";
+import { findReachableTokens } from "../findReachableTokens";
 import type { MarketsGraph } from "../buildMarketsAdjacencyGraph";
 
-describe("findSwapPathsBetweenTokens", () => {
-  it("should find direct swap routes between tokens", () => {
+describe("findReachableTokens", () => {
+  it("should find directly reachable tokens", () => {
     const graph: MarketsGraph = {
       ETH: {
         USDC: ["ETH [ETH-USDC]"],
@@ -13,16 +13,15 @@ describe("findSwapPathsBetweenTokens", () => {
       },
     };
 
-    const result = findSwapPathsBetweenTokens(graph);
+    const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      USDC: {
-        ETH: [[]],
-      },
+      ETH: ["USDC"],
+      USDC: ["ETH"],
     });
   });
 
-  it("should find multi-hop swap routes", () => {
+  it("should find multi-hop reachable tokens", () => {
     const graph: MarketsGraph = {
       ETH: {
         USDC: ["ETH [ETH-USDC]"],
@@ -38,16 +37,12 @@ describe("findSwapPathsBetweenTokens", () => {
       },
     };
 
-    const result = findSwapPathsBetweenTokens(graph);
+    const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      BTC: {
-        ETH: [[], ["USDC"]],
-      },
-      USDC: {
-        BTC: [[], ["ETH"]],
-        ETH: [[], ["BTC"]],
-      },
+      ETH: ["USDC", "BTC"],
+      USDC: ["ETH", "BTC"],
+      BTC: ["ETH", "USDC"],
     });
   });
 
@@ -61,12 +56,11 @@ describe("findSwapPathsBetweenTokens", () => {
       },
     };
 
-    const result = findSwapPathsBetweenTokens(graph);
+    const result = findReachableTokens(graph);
 
     expect(result).toEqual({
-      USDC: {
-        ETH: [[], ["ETH", "USDC"]],
-      },
+      ETH: ["USDC"],
+      USDC: ["ETH"],
     });
   });
 
@@ -77,14 +71,16 @@ describe("findSwapPathsBetweenTokens", () => {
       },
     };
 
-    const result = findSwapPathsBetweenTokens(graph);
+    const result = findReachableTokens(graph);
 
-    expect(result).toEqual({});
+    expect(result).toEqual({
+      ETH: [],
+    });
   });
 
   it("should handle empty graph", () => {
     const graph: MarketsGraph = {};
-    const result = findSwapPathsBetweenTokens(graph);
+    const result = findReachableTokens(graph);
     expect(result).toEqual({});
   });
 
@@ -94,9 +90,12 @@ describe("findSwapPathsBetweenTokens", () => {
       USDC: {},
     };
 
-    const result = findSwapPathsBetweenTokens(graph);
+    const result = findReachableTokens(graph);
 
-    expect(result).toEqual({});
+    expect(result).toEqual({
+      ETH: [],
+      USDC: [],
+    });
   });
 
   it("should respect MAX_EDGE_PATH_LENGTH limit", () => {
@@ -125,47 +124,13 @@ describe("findSwapPathsBetweenTokens", () => {
       },
     };
 
-    const result = findSwapPathsBetweenTokens(graph);
+    const result = findReachableTokens(graph);
 
-    // Assuming MAX_EDGE_PATH_LENGTH is 3, we shouldn't see paths longer than 3 hops
-    // So node path length should be less than or equal to 2
-    for (const tokenA in result) {
-      for (const tokenB in result[tokenA]) {
-        for (const path of result[tokenA][tokenB]) {
-          expect(path.length).toBeLessThanOrEqual(2);
-        }
-      }
-    }
-  });
-
-  it("should find swap routes through common node pairs", () => {
-    // A - USDC - B
-    //   ^
-    //   |
-    //   2 markets
-    const graph: MarketsGraph = {
-      A: {
-        USDC: ["A [A-USDC]", "A2 [A-USDC]"],
-      },
-      B: {
-        USDC: ["B [B-USDC]"],
-      },
-      USDC: {
-        A: ["A [A-USDC]", "A2 [A-USDC]"],
-        B: ["B [B-USDC]"],
-      },
-    };
-
-    const result = findSwapPathsBetweenTokens(graph);
-
-    expect(result).toEqual({
-      A: {
-        B: [["USDC"]],
-      },
-      USDC: {
-        A: [[], ["A", "USDC"]],
-        B: [[], ["A", "USDC"]],
-      },
-    });
+    expect(result.ETH).toEqual(["USDC", "BTC", "WBTC"]);
+    expect(result.USDC).toEqual(["ETH", "BTC", "WBTC", "USDT"]);
+    expect(result.BTC).toEqual(["USDC", "WBTC", "ETH", "USDT", "DAI"]);
+    expect(result.WBTC).toEqual(["BTC", "USDT", "USDC", "DAI", "ETH"]);
+    expect(result.USDT).toEqual(["WBTC", "DAI", "BTC", "USDC"]);
+    expect(result.DAI).toEqual(["USDT", "WBTC", "BTC"]);
   });
 });

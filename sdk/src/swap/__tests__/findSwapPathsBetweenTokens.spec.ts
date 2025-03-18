@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { processReachableTokens } from "../buildReachableTokens";
+import { findSwapPathsBetweenTokens } from "../findSwapPathsBetweenTokens";
 import type { MarketsGraph } from "../buildMarketsAdjacencyGraph";
 
-describe("processReachableTokens", () => {
-  it("should find directly reachable tokens", () => {
+describe("findSwapPathsBetweenTokens", () => {
+  it("should find direct swap routes between tokens", () => {
     const graph: MarketsGraph = {
       ETH: {
         USDC: ["ETH [ETH-USDC]"],
@@ -13,15 +13,16 @@ describe("processReachableTokens", () => {
       },
     };
 
-    const result = processReachableTokens(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
-      ETH: ["USDC"],
-      USDC: ["ETH"],
+      ETH: {
+        USDC: [[]],
+      },
     });
   });
 
-  it("should find multi-hop reachable tokens", () => {
+  it("should find multi-hop swap routes", () => {
     const graph: MarketsGraph = {
       ETH: {
         USDC: ["ETH [ETH-USDC]"],
@@ -37,12 +38,16 @@ describe("processReachableTokens", () => {
       },
     };
 
-    const result = processReachableTokens(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
-      ETH: ["USDC", "BTC"],
-      USDC: ["ETH", "BTC"],
-      BTC: ["ETH", "USDC"],
+      BTC: {
+        ETH: [[], ["USDC"]],
+        USDC: [[], ["ETH"]],
+      },
+      ETH: {
+        USDC: [[], ["BTC"]],
+      },
     });
   });
 
@@ -56,11 +61,12 @@ describe("processReachableTokens", () => {
       },
     };
 
-    const result = processReachableTokens(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
     expect(result).toEqual({
-      ETH: ["USDC"],
-      USDC: ["ETH"],
+      ETH: {
+        USDC: [[], ["USDC", "ETH"]],
+      },
     });
   });
 
@@ -71,16 +77,14 @@ describe("processReachableTokens", () => {
       },
     };
 
-    const result = processReachableTokens(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
-    expect(result).toEqual({
-      ETH: [],
-    });
+    expect(result).toEqual({});
   });
 
   it("should handle empty graph", () => {
     const graph: MarketsGraph = {};
-    const result = processReachableTokens(graph);
+    const result = findSwapPathsBetweenTokens(graph);
     expect(result).toEqual({});
   });
 
@@ -90,12 +94,9 @@ describe("processReachableTokens", () => {
       USDC: {},
     };
 
-    const result = processReachableTokens(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
-    expect(result).toEqual({
-      ETH: [],
-      USDC: [],
-    });
+    expect(result).toEqual({});
   });
 
   it("should respect MAX_EDGE_PATH_LENGTH limit", () => {
@@ -124,13 +125,47 @@ describe("processReachableTokens", () => {
       },
     };
 
-    const result = processReachableTokens(graph);
+    const result = findSwapPathsBetweenTokens(graph);
 
-    expect(result.ETH).toEqual(["USDC", "BTC", "WBTC"]);
-    expect(result.USDC).toEqual(["ETH", "BTC", "WBTC", "USDT"]);
-    expect(result.BTC).toEqual(["USDC", "WBTC", "ETH", "USDT", "DAI"]);
-    expect(result.WBTC).toEqual(["BTC", "USDT", "USDC", "DAI", "ETH"]);
-    expect(result.USDT).toEqual(["WBTC", "DAI", "BTC", "USDC"]);
-    expect(result.DAI).toEqual(["USDT", "WBTC", "BTC"]);
+    // Assuming MAX_EDGE_PATH_LENGTH is 3, we shouldn't see paths longer than 3 hops
+    // So node path length should be less than or equal to 2
+    for (const tokenA in result) {
+      for (const tokenB in result[tokenA]) {
+        for (const path of result[tokenA][tokenB]) {
+          expect(path.length).toBeLessThanOrEqual(2);
+        }
+      }
+    }
+  });
+
+  it("should find swap routes through common node pairs", () => {
+    // A - USDC - B
+    //   ^
+    //   |
+    //   2 markets
+    const graph: MarketsGraph = {
+      A: {
+        USDC: ["A [A-USDC]", "A2 [A-USDC]"],
+      },
+      B: {
+        USDC: ["B [B-USDC]"],
+      },
+      USDC: {
+        A: ["A [A-USDC]", "A2 [A-USDC]"],
+        B: ["B [B-USDC]"],
+      },
+    };
+
+    const result = findSwapPathsBetweenTokens(graph);
+
+    expect(result).toEqual({
+      A: {
+        B: [["USDC"]],
+        USDC: [[], ["USDC", "A"]],
+      },
+      B: {
+        USDC: [[], ["USDC", "A"]],
+      },
+    });
   });
 });
