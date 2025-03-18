@@ -31,8 +31,9 @@ export function mockMarketKeys() {
   ];
 }
 
-export function mockTokensData(overrides: { [symbol: string]: TokenData } = {}): TokensData {
+export function mockTokensData(overrides: { [symbol: string]: Partial<TokenData> } = {}): TokensData {
   const tokens: TokensData = {
+    ...overrides,
     AVAX: {
       address: "AVAX",
       wrappedAddress: "WAVAX",
@@ -127,7 +128,6 @@ export function mockTokensData(overrides: { [symbol: string]: TokenData } = {}):
       },
       ...((overrides.SPOT || {}) as any),
     },
-    ...overrides,
   };
 
   return tokens;

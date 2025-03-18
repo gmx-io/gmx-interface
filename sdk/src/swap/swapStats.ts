@@ -6,6 +6,7 @@ import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenP
 import { getByKey } from "../utils/objects";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../utils/tokens";
 import { maxUint256 } from "viem";
+import { getNextMarketInfoAfterEncounters } from "./swapRouting";
 
 export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
@@ -143,9 +144,15 @@ export function getSwapPathStats(p: {
   let totalSwapPriceImpactDeltaUsd = 0n;
   let totalSwapFeeUsd = 0n;
 
+  const changedMarketInfos: MarketsInfoData = {};
+
   for (let i = 0; i < swapPath.length; i++) {
     const marketAddress = swapPath[i];
-    const marketInfo = marketsInfoData[marketAddress];
+    const marketInfo = changedMarketInfos[marketAddress] ?? marketsInfoData[marketAddress];
+
+    if (!marketInfo) {
+      return undefined;
+    }
 
     tokenOutAddress = getOppositeCollateral(marketInfo, tokenInAddress)!.address;
 
@@ -160,6 +167,17 @@ export function getSwapPathStats(p: {
       usdIn: usdOut,
       shouldApplyPriceImpact,
     });
+
+    changedMarketInfos[marketAddress] = getNextMarketInfoAfterEncounters(
+      marketInfo,
+      {
+        marketAddress: marketAddress,
+        from: tokenInAddress,
+        to: tokenOutAddress,
+      },
+      usdOut,
+      1
+    );
 
     tokenInAddress = swapStep.tokenOutAddress;
     usdOut = swapStep.usdOut;
@@ -178,7 +196,7 @@ export function getSwapPathStats(p: {
 
   return {
     swapPath,
-    tokenInAddress,
+    tokenInAddress: initialCollateralAddress,
     tokenOutAddress,
     targetMarketAddress,
     swapSteps,
