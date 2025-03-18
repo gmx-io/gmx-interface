@@ -33,7 +33,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isV1Available: true,
     },
     {
-      name: "Bitcoin (WBTC)",
+      name: "Wrapped Bitcoin",
       symbol: "BTC",
       assetSymbol: "WBTC",
       baseSymbol: "BTC",
@@ -101,7 +101,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Bridged USDC (USDC.e)",
-      symbol: "USDC.e",
+      symbol: "USDC.E",
       decimals: 6,
       address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       isStable: true,
@@ -221,7 +221,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Escrowed GMX",
-      symbol: "esGMX",
+      symbol: "ESGMX",
       address: getContract(ARBITRUM, "ES_GMX"),
       decimals: 18,
       isPlatformToken: true,
@@ -344,7 +344,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Ethena USDe",
-      symbol: "USDe",
+      symbol: "USDE",
       address: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/33613/standard/USDE.png?1716355685",
@@ -353,7 +353,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Wrapped stETH",
-      symbol: "wstETH",
+      symbol: "WSTETH",
       address: "0x5979D7b546E38E414F7E9822514be443A4800529",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18834/standard/wstETH.png?1696518295",
@@ -375,7 +375,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "tBTC",
-      symbol: "tBTC",
+      symbol: "TBTC",
       address: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
       decimals: 18,
       imageUrl:
@@ -862,6 +862,28 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
+      name: "Maker",
+      symbol: "MKR",
+      address: "0x8904De84c3bB3B7D2383F934Af40FcB3Ef82F28b",
+      decimals: 18,
+      priceDecimals: 2,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/1364/standard/Mark_Maker.png?1696502423",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/maker",
+      isSynthetic: true,
+    },
+    {
+      name: "MANTRA",
+      symbol: "OM",
+      address: "0x1f3407Ea067DfBDF6dEb6bBFdA4869215fB0ab77",
+      decimals: 18,
+      priceDecimals: 4,
+      categories: ["layer1", "defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/12151/standard/OM_Token.png?1696511991",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/mantra",
+      isSynthetic: true,
+    },
+    {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
@@ -968,7 +990,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Bridged USDC (USDC.e)",
-      symbol: "USDC.e",
+      symbol: "USDC.E",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
       isStable: true,
@@ -989,7 +1011,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Tether",
-      symbol: "USDT.e",
+      symbol: "USDT.E",
       decimals: 6,
       address: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
       isStable: true,
@@ -999,7 +1021,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Dai",
-      symbol: "DAI.e",
+      symbol: "DAI.E",
       address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
       decimals: 18,
       isStable: true,
@@ -1113,7 +1135,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Escrowed GMX",
-      symbol: "esGMX",
+      symbol: "ESGMX",
       address: getContract(AVALANCHE, "ES_GMX"),
       decimals: 18,
       isPlatformToken: true,
@@ -1215,7 +1237,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     },
     {
-      name: "Bitcoin (WBTC)",
+      name: "Wrapped Bitcoin",
       symbol: "WBTC",
       decimals: 8,
       address: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
@@ -1344,7 +1366,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Escrowed GMX",
-      symbol: "esGMX",
+      symbol: "ESGMX",
       address: "",
       decimals: 18,
       isPlatformToken: true,
@@ -1382,7 +1404,7 @@ export const TOKEN_COLOR_MAP = {
   BTC: "#F7931A",
   WBTC: "#F7931A",
   USDC: "#2775CA",
-  "USDC.e": "#2A5ADA",
+  "USDC.E": "#2A5ADA",
   USDT: "#67B18A",
   MIM: "#9695F8",
   FRAX: "#000",

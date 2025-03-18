@@ -7,15 +7,13 @@ import {
   GlvOrMarketInfo,
   MarketTokensAPRData,
   getGlvDisplayName,
-  getMarketIndexName,
   getGlvOrMarketAddress,
+  getMarketIndexName,
   getMarketPoolName,
-  getStrictestMaxPoolUsdForDeposit,
-  getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatBalanceAmountWithUsd, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -28,17 +26,19 @@ import { BridgingInfo } from "../BridgingInfo/BridgingInfo";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import { MARKET_STATS_DECIMALS } from "config/ui";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
+import { formatDateTime } from "lib/dates";
+import { bigintToNumber } from "lib/numbers";
 import { useMedia } from "react-use";
 import { zeroAddress } from "viem";
-import { formatDateTime } from "../../../lib/dates";
-import { bigintToNumber } from "../../../lib/numbers";
 
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { MintableAmount } from "components/MintableAmount/MintableAmount";
 import { CompositionBar } from "./components/CompositionBar";
 import { CompositionTableGm } from "./components/CompositionTable";
 import { MarketDescription } from "./components/MarketDescription";
+import { useGlvGmMarketsWithComposition } from "./hooks/useMarketGlvGmMarketsCompositions";
 import { useMarketMintableTokens } from "./hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "./hooks/useMarketSellableToken";
-import { useGlvGmMarketsWithComposition } from "./hooks/useMarketGlvGmMarketsCompositions";
 
 const MIN_MARKETS_FOR_SCROLL = 10;
 
@@ -106,147 +106,62 @@ export function MarketStatsWithComposition(p: Props) {
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
-  const maxLongTokenValue = useMemo(
-    () =>
-      isGlv
-        ? []
-        : [
-            formatTokenAmountWithUsd(
-              mintableInfo?.longDepositCapacityAmount,
-              mintableInfo?.longDepositCapacityUsd,
-              longToken?.symbol,
-              longToken?.decimals
-            ),
-            marketInfo
-              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(marketInfo, true))})`
-              : "",
-          ],
-    [
-      isGlv,
-      longToken?.decimals,
-      longToken?.symbol,
-      marketInfo,
-      mintableInfo?.longDepositCapacityAmount,
-      mintableInfo?.longDepositCapacityUsd,
-    ]
-  );
-  const maxShortTokenValue = useMemo(
-    () =>
-      isGlv
-        ? []
-        : [
-            formatTokenAmountWithUsd(
-              mintableInfo?.shortDepositCapacityAmount,
-              mintableInfo?.shortDepositCapacityUsd,
-              shortToken?.symbol,
-              shortToken?.decimals
-            ),
-            marketInfo
-              ? `(${formatUsd(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"))} / ${formatUsd(getStrictestMaxPoolUsdForDeposit(marketInfo, false))})`
-              : "",
-          ],
-    [
-      isGlv,
-      marketInfo,
-      mintableInfo?.shortDepositCapacityAmount,
-      mintableInfo?.shortDepositCapacityUsd,
-      shortToken?.decimals,
-      shortToken?.symbol,
-    ]
-  );
-
   const buyableRow = useMemo(() => {
     const mintable = isGlv ? getMintableInfoGlv(marketInfo, marketTokensData) : mintableInfo;
-    const buyableInfo = mintable
-      ? formatTokenAmountWithUsd(
-          mintable.mintableAmount,
-          mintable.mintableUsd,
-          isGlv ? marketToken?.symbol : marketToken?.symbol,
-          marketToken?.decimals,
-          {
-            displayDecimals: 0,
-          }
-        )
-      : "...";
 
     if (isGlv) {
-      return <CardRow label={t`Buyable`} value={buyableInfo} />;
+      return (
+        <CardRow
+          label={t`Buyable`}
+          value={
+            <AmountWithUsdHuman
+              amount={mintable?.mintableAmount}
+              usd={mintable?.mintableUsd}
+              decimals={marketToken?.decimals}
+              symbol={isGlv ? marketToken?.symbol : marketToken?.symbol}
+            />
+          }
+        />
+      );
     }
 
     return (
       <CardRow
         label={t`Buyable`}
         value={
-          mintableInfo && marketTotalSupplyUsd !== undefined && marketToken ? (
-            <Tooltip
-              disabled={isGlv}
-              maxAllowedWidth={350}
-              handle={buyableInfo}
-              position="bottom-end"
-              content={
-                <div>
-                  {marketInfo?.isSameCollaterals ? (
-                    <Trans>
-                      {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified buying
-                      caps.
-                    </Trans>
-                  ) : (
-                    <Trans>
-                      {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for this
-                      market up to the specified buying caps.
-                    </Trans>
-                  )}
-
-                  <br />
-                  <br />
-
-                  <StatsTooltipRow
-                    label={t`Max ${marketInfo?.longToken.symbol}`}
-                    value={maxLongTokenValue}
-                    showDollar={false}
-                  />
-                  <br />
-                  <StatsTooltipRow
-                    label={t`Max ${marketInfo?.shortToken.symbol}`}
-                    value={maxShortTokenValue}
-                    showDollar={false}
-                  />
-                </div>
-              }
+          mintableInfo &&
+          marketInfo &&
+          marketToken && (
+            <MintableAmount
+              mintableInfo={mintableInfo}
+              market={marketInfo}
+              token={marketToken}
+              longToken={longToken}
+              shortToken={shortToken}
             />
-          ) : (
-            "..."
           )
         }
       />
     );
-  }, [
-    isGlv,
-    marketInfo,
-    marketToken,
-    marketTotalSupplyUsd,
-    mintableInfo,
-    maxLongTokenValue,
-    maxShortTokenValue,
-    marketTokensData,
-  ]);
+  }, [isGlv, marketInfo, marketTokensData, mintableInfo, marketToken, longToken, shortToken]);
 
   const sellableRow = useMemo(() => {
     const sellable = isGlv ? getTotalSellableInfoGlv(marketInfo, marketsInfoData, marketTokensData) : sellableInfo;
-    const sellableValue = sellable
-      ? formatTokenAmountWithUsd(
-          sellable?.totalAmount,
-          sellable?.totalUsd,
-          marketToken?.symbol,
-          marketToken?.decimals,
-          {
-            displayDecimals: 0,
-          }
-        )
-      : "...";
 
     if (isGlv) {
-      return <CardRow label={t`Sellable`} value={sellableValue} />;
+      return (
+        <CardRow
+          label={t`Sellable`}
+          value={
+            <AmountWithUsdHuman
+              amount={sellable?.totalAmount}
+              usd={sellable?.totalUsd}
+              decimals={marketToken?.decimals}
+              symbol={marketToken?.symbol}
+            />
+          }
+        />
+      );
     }
 
     return (
@@ -255,7 +170,14 @@ export function MarketStatsWithComposition(p: Props) {
         value={
           <Tooltip
             maxAllowedWidth={300}
-            handle={sellableValue}
+            handle={
+              <AmountWithUsdHuman
+                amount={sellable?.totalAmount}
+                usd={sellable?.totalUsd}
+                decimals={marketToken?.decimals}
+                symbol={marketToken?.symbol}
+              />
+            }
             position="bottom-end"
             content={
               <div>
@@ -274,23 +196,27 @@ export function MarketStatsWithComposition(p: Props) {
                 <br />
                 <StatsTooltipRow
                   label={t`Max ${marketInfo?.longToken.symbol}`}
-                  value={formatTokenAmountWithUsd(
-                    maxLongSellableTokenAmount,
-                    sellableInfo?.maxLongSellableUsd,
-                    longToken?.symbol,
-                    longToken?.decimals
-                  )}
+                  value={
+                    <AmountWithUsdHuman
+                      amount={maxLongSellableTokenAmount}
+                      usd={sellableInfo?.maxLongSellableUsd}
+                      decimals={longToken?.decimals}
+                      symbol={longToken?.symbol}
+                    />
+                  }
                   showDollar={false}
                 />
                 {!marketInfo?.isSameCollaterals && (
                   <StatsTooltipRow
                     label={t`Max ${marketInfo?.shortToken.symbol}`}
-                    value={formatTokenAmountWithUsd(
-                      maxShortSellableTokenAmount,
-                      sellableInfo?.maxShortSellableUsd,
-                      shortToken?.symbol,
-                      shortToken?.decimals
-                    )}
+                    value={
+                      <AmountWithUsdHuman
+                        amount={maxShortSellableTokenAmount}
+                        usd={sellableInfo?.maxShortSellableUsd}
+                        decimals={shortToken?.decimals}
+                        symbol={shortToken?.symbol}
+                      />
+                    }
                     showDollar={false}
                   />
                 )}
@@ -418,15 +344,11 @@ export function MarketStatsWithComposition(p: Props) {
           <CardRow
             label={t`Wallet`}
             value={
-              marketToken
-                ? formatBalanceAmountWithUsd(
-                    marketBalance ?? 0n,
-                    marketBalanceUsd ?? 0n,
-                    marketToken?.decimals ?? 18,
-                    isGlv ? "GLV" : "GM",
-                    true
-                  )
-                : "..."
+              <AmountWithUsdBalance
+                amount={marketBalance}
+                decimals={marketToken?.decimals ?? 18}
+                usd={marketBalanceUsd}
+              />
             }
           />
 
@@ -445,17 +367,12 @@ export function MarketStatsWithComposition(p: Props) {
           <CardRow
             label={t`Total Supply`}
             value={
-              marketTotalSupply !== undefined && marketTotalSupplyUsd !== undefined
-                ? formatTokenAmountWithUsd(
-                    marketTotalSupply,
-                    marketTotalSupplyUsd,
-                    isGlv ? "GLV" : "GM",
-                    marketToken?.decimals,
-                    {
-                      displayDecimals: 0,
-                    }
-                  )
-                : "..."
+              <AmountWithUsdHuman
+                amount={marketTotalSupply}
+                usd={marketTotalSupplyUsd}
+                decimals={marketToken?.decimals}
+                symbol={isGlv ? "GLV" : "GM"}
+              />
             }
           />
 

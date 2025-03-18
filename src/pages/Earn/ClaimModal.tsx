@@ -23,8 +23,8 @@ import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
-import RewardRouter from "sdk/abis/RewardRouter.json";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import { abis } from "sdk/abis";
 
 export function ClaimModal(props: {
   isVisible: boolean;
@@ -129,7 +129,7 @@ export function ClaimModal(props: {
 
     setIsClaiming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
+    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
     callContract(
       chainId,
       contract,

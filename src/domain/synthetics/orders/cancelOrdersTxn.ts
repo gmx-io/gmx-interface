@@ -1,11 +1,11 @@
 import { plural, t } from "@lingui/macro";
-import ExchangeRouter from "sdk/abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { ReactNode } from "react";
+import { abis } from "sdk/abis";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 export type CancelOrderParams = {
   orderKeys: string[];
@@ -16,7 +16,7 @@ export type CancelOrderParams = {
 export async function cancelOrdersTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: CancelOrderParams) {
   const router = subaccount
     ? getSubaccountRouterContract(chainId, subaccount.signer)
-    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
   const multicall = createCancelEncodedPayload({ router, orderKeys: p.orderKeys });
 

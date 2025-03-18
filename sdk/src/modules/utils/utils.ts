@@ -19,8 +19,6 @@ import {
   withdrawalGasLimitKey,
 } from "configs/dataStore";
 
-import DataStore from "abis/DataStore.json";
-
 import type { IncreasePositionAmounts } from "types/trade";
 import type { GasLimitsConfig } from "types/fees";
 import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
@@ -51,7 +49,7 @@ export class Utils extends Module {
       .executeMulticall({
         dataStore: {
           contractAddress: getContract(this.chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             depositToken: {
               methodName: "getUint",

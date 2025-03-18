@@ -18,7 +18,6 @@ import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 
-import PositionRouter from "sdk/abis/PositionRouter.json";
 import Tooltip from "../Tooltip/Tooltip";
 
 import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
@@ -41,6 +40,7 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { abis } from "sdk/abis";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -394,7 +394,7 @@ export default function PositionEditor(props) {
       return;
     }
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
+    const contract = new ethers.Contract(positionRouterAddress, abis.PositionRouter, signer);
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: t`Deposit submitted.`,
@@ -452,7 +452,7 @@ export default function PositionEditor(props) {
 
     const method = "createDecreasePosition";
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
+    const contract = new ethers.Contract(positionRouterAddress, abis.PositionRouter, signer);
     callContract(chainId, contract, method, params, {
       value: minExecutionFee,
       sentMsg: t`Withdrawal submitted.`,

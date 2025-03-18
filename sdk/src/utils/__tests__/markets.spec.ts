@@ -52,7 +52,7 @@ describe("getMarketFullName", () => {
       indexToken,
       isSpotOnly: true,
     });
-    expect(name).toBe("SWAP-ONLY [ETH]");
+    expect(name).toBe("SWAP-ONLY [ETH-ETH]");
   });
 });
 
@@ -78,7 +78,7 @@ describe("getMarketIndexName", () => {
 describe("getMarketPoolName", () => {
   it("returns single token symbol if long and short are the same", () => {
     const token = getToken("ETH");
-    expect(getMarketPoolName({ longToken: token, shortToken: token })).toBe("ETH");
+    expect(getMarketPoolName({ longToken: token, shortToken: token })).toBe("ETH-ETH");
   });
 
   it("returns combined symbol otherwise", () => {

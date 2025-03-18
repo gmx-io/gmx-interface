@@ -1,9 +1,5 @@
 import { zeroAddress, zeroHash } from "viem";
 
-import DataStore from "abis/DataStore.json";
-import ReferralStorage from "abis/ReferralStorage.json";
-import SyntheticsReader from "abis/SyntheticsReader.json";
-
 import { getContract } from "configs/contracts";
 import {
   hashedPositionKey,
@@ -41,6 +37,7 @@ import { getMarkPrice } from "utils/prices";
 import { decodeReferralCode } from "utils/referrals";
 import { convertToTokenAmount, convertToUsd } from "utils/tokens";
 import { OrderInfo } from "types/orders";
+import type { MulticallRequestConfig } from "utils/multicall";
 
 type PositionsResult = {
   positionsData?: PositionsData;
@@ -139,7 +136,7 @@ export class Positions extends Module {
     const request = {
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
-        abi: SyntheticsReader.abi,
+        abiId: "SyntheticsReader",
         calls: {
           positions: {
             methodName: "getAccountPositionInfoList",
@@ -156,7 +153,7 @@ export class Positions extends Module {
           },
         },
       },
-    };
+    } satisfies MulticallRequestConfig<any>;
 
     const positions = await this.sdk.executeMulticall(request).then((res) => {
       const positions = res.data.reader.positions.returnValues;
@@ -220,7 +217,7 @@ export class Positions extends Module {
       .executeMulticall({
         dataStore: {
           contractAddress: getContract(this.chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             keys: {
               methodName: "getUint",
@@ -244,7 +241,7 @@ export class Positions extends Module {
       .executeMulticall({
         dataStore: {
           contractAddress: getContract(this.chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             minCollateralUsd: {
               methodName: "getUint",
@@ -319,7 +316,7 @@ export class Positions extends Module {
       .executeMulticall({
         referralStorage: {
           contractAddress: referralStorageAddress,
-          abi: ReferralStorage.abi,
+          abiId: "ReferralStorage",
           calls: {
             codeOwner: {
               methodName: "codeOwners",
@@ -339,7 +336,7 @@ export class Positions extends Module {
     const onChainCode = await this.sdk.executeMulticall({
       referralStorage: {
         contractAddress: referralStorageAddress,
-        abi: ReferralStorage.abi,
+        abiId: "ReferralStorage",
         calls: {
           traderReferralCodes: {
             methodName: "traderReferralCodes",
@@ -374,7 +371,7 @@ export class Positions extends Module {
       .executeMulticall({
         referralStorage: {
           contractAddress: referralStorageAddress,
-          abi: ReferralStorage.abi,
+          abiId: "ReferralStorage",
           calls: {
             referrerTiers: {
               methodName: "referrerTiers",
@@ -402,7 +399,7 @@ export class Positions extends Module {
       .executeMulticall({
         referralStorage: {
           contractAddress: referralStorageAddress,
-          abi: ReferralStorage.abi,
+          abiId: "ReferralStorage",
           calls: {
             tiers: {
               methodName: "tiers",
@@ -430,7 +427,7 @@ export class Positions extends Module {
       .executeMulticall({
         referralStorage: {
           contractAddress: getContract(this.chainId, "ReferralStorage"),
-          abi: ReferralStorage.abi,
+          abiId: "ReferralStorage",
           calls: {
             referrerDiscountShares: {
               methodName: "referrerDiscountShares",
