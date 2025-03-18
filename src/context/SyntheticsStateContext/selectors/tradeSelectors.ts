@@ -5,6 +5,7 @@ import {
   FindSwapPath,
   TradeMode,
   TradeType,
+  createMarketEdgeLiquidlyGetter,
   createNaiveNetworkEstimator,
   createNaiveSwapEstimator,
   createSwapEstimator,
@@ -27,7 +28,6 @@ import { MARKETS } from "sdk/configs/markets";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { buildMarketsAdjacencyGraph } from "sdk/swap/buildMarketsAdjacencyGraph";
 import { ExternalSwapQuote, SwapPathStats } from "sdk/types/trade";
-import { getAvailableUsdLiquidityForCollateral, getTokenPoolType } from "sdk/utils/markets";
 import { createTradeFlags } from "sdk/utils/trade";
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import { selectExternalSwapQuote } from "./externalSwapSelectors";
@@ -56,6 +56,12 @@ export const selectNaiveSwapEstimator = createSelector((q) => {
   const marketsInfoData = q(selectMarketsInfoData);
   if (!marketsInfoData) return undefined;
   return createNaiveSwapEstimator(marketsInfoData);
+});
+
+export const selectMarketEdgeLiquidityGetter = createSelector((q) => {
+  const marketsInfoData = q(selectMarketsInfoData);
+  if (!marketsInfoData) return undefined;
+  return createMarketEdgeLiquidlyGetter(marketsInfoData);
 });
 
 export const selectNaiveNetworkEstimator = createSelector((q) => {
@@ -138,21 +144,18 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
       }
 
       const marketAdjacencyGraph = q(selectMarketAdjacencyGraph);
+      const marketEdgeLiquidityGetter = q(selectMarketEdgeLiquidityGetter);
+
+      if (!marketEdgeLiquidityGetter) {
+        return { maxLiquidity, maxLiquidityPath };
+      }
 
       const maxLiquidityPathInfo = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
         graph: marketAdjacencyGraph,
         tokenSwapPaths: tokenSwapRoutes,
         tokenInAddress: wrappedFromAddress,
         tokenOutAddress: wrappedToAddress,
-        getLiquidity: (marketAddress, tokenInAddress, tokenOutAddress): bigint => {
-          const marketInfo = getByKey(marketsInfoData, marketAddress);
-          if (!marketInfo) {
-            return 0n;
-          }
-          const isTokenOutLong = getTokenPoolType(marketInfo, tokenOutAddress) === "long";
-          const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isTokenOutLong);
-          return liquidity;
-        },
+        getLiquidity: marketEdgeLiquidityGetter,
       });
 
       if (maxLiquidityPathInfo) {
@@ -204,7 +207,11 @@ export const makeSelectFindSwapPath = createSelectorFactory(
         } else if (opts?.order || usdIn === 0n) {
           const primaryOrder = opts?.order?.at(0) === "length" ? "length" : "liquidity";
 
-          if (primaryOrder === "length") {
+          const marketEdgeLiquidityGetter = q(selectMarketEdgeLiquidityGetter);
+
+          if (!marketEdgeLiquidityGetter) {
+            swapPath = undefined;
+          } else if (primaryOrder === "length") {
             const shortestLength = Math.min(...tokenSwapPaths.map((path) => path.length));
             const shortestTokenSwapPaths = tokenSwapPaths.filter((path) => path.length === shortestLength);
             const maxLiquidityPathInfo = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
@@ -212,15 +219,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
               tokenSwapPaths: shortestTokenSwapPaths,
               tokenInAddress: wrappedFromAddress,
               tokenOutAddress: wrappedToAddress,
-              getLiquidity: (marketAddress, tokenInAddress, tokenOutAddress): bigint => {
-                const marketInfo = getByKey(marketsInfoData, marketAddress);
-                if (!marketInfo) {
-                  return 0n;
-                }
-                const isTokenOutLong = getTokenPoolType(marketInfo, tokenOutAddress) === "long";
-                const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isTokenOutLong);
-                return liquidity;
-              },
+              getLiquidity: marketEdgeLiquidityGetter,
             });
 
             if (maxLiquidityPathInfo) {
@@ -232,15 +231,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
               tokenSwapPaths,
               tokenInAddress: wrappedFromAddress,
               tokenOutAddress: wrappedToAddress,
-              getLiquidity: (marketAddress, tokenInAddress, tokenOutAddress): bigint => {
-                const marketInfo = getByKey(marketsInfoData, marketAddress);
-                if (!marketInfo) {
-                  return 0n;
-                }
-                const isTokenOutLong = getTokenPoolType(marketInfo, tokenOutAddress) === "long";
-                const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isTokenOutLong);
-                return liquidity;
-              },
+              getLiquidity: marketEdgeLiquidityGetter,
             });
 
             if (maxLiquidityPathInfo) {

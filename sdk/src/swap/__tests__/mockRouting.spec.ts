@@ -1,19 +1,21 @@
 import { describe, expect, it } from "vitest";
 
+import { USD_DECIMALS } from "configs/factors";
+import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { buildMarketsAdjacencyGraph } from "swap/buildMarketsAdjacencyGraph";
-import { mockMarketsInfoData, mockTokensData, usdToToken } from "../../test/mock";
 import { findSwapPathsBetweenTokens } from "swap/buildSwapRoutes";
-import { expandDecimals } from "utils/numbers";
 import {
+  createMarketEdgeLiquidlyGetter,
   createNaiveNetworkEstimator,
   createNaiveSwapEstimator,
+  getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
   getTokenSwapPathsForTokenPair,
 } from "swap/swapRouting";
-import { USD_DECIMALS } from "configs/factors";
-import { MarketInfo } from "types/markets";
-import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { GasLimitsConfig } from "types/fees";
+import { MarketInfo } from "types/markets";
+import { expandDecimals } from "utils/numbers";
+import { mockMarketsInfoData, mockTokensData, usdToToken } from "../../test/mock";
 
 const marketKeys = [
   "ETH-ETH-USDC",
@@ -381,5 +383,136 @@ describe("mockRouting", () => {
 
     expect(topPath).toBeDefined();
     expect(topPath).toEqual(["BTC-BTC-DAI"]);
+  });
+});
+
+describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
+  it("selects SPOT [USDC-DAI] path when it has highest liquidity", () => {
+    const allPoolsBalanced = Object.fromEntries(
+      marketKeys.map((marketKey) => [
+        marketKey,
+        {
+          marketKey,
+          longPoolAmount: usdToToken(1000, baseMarketsInfoData[marketKey].longToken),
+          shortPoolAmount: usdToToken(1000, baseMarketsInfoData[marketKey].shortToken),
+        },
+      ])
+    );
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      ...allPoolsBalanced,
+      "SPOT-USDC-DAI": {
+        longPoolAmount: usdToToken(2000, tokensData.USDC),
+        shortPoolAmount: usdToToken(2000, tokensData.DAI),
+      },
+      "SPOT-DAI-USDC": {
+        longPoolAmount: usdToToken(1000, tokensData.USDC),
+        shortPoolAmount: usdToToken(1000, tokensData.DAI),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "DAI");
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      tokenInAddress: "USDC",
+      tokenOutAddress: "DAI",
+      getLiquidity: createMarketEdgeLiquidlyGetter(marketsInfoData),
+    });
+
+    expect(result).toEqual({
+      path: ["SPOT-USDC-DAI"],
+      liquidity: usdToToken(2000, tokensData.DAI),
+    });
+  });
+
+  it("selects multi-hop path when intermediate markets have higher liquidity", () => {
+    const allPoolsBalanced = Object.fromEntries(
+      marketKeys.map((marketKey) => [
+        marketKey,
+        {
+          marketKey,
+          longPoolAmount: usdToToken(1000, baseMarketsInfoData[marketKey].longToken),
+          shortPoolAmount: usdToToken(1000, baseMarketsInfoData[marketKey].shortToken),
+        },
+      ])
+    );
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      ...allPoolsBalanced,
+      "BTC-BTC-USDC": {
+        longPoolAmount: usdToToken(3000, tokensData.BTC),
+        shortPoolAmount: usdToToken(3000, tokensData.USDC),
+      },
+      "SPOT-USDC-DAI": {
+        longPoolAmount: usdToToken(3000, tokensData.USDC),
+        shortPoolAmount: usdToToken(3000, tokensData.DAI),
+      },
+      "BTC-BTC-DAI": {
+        longPoolAmount: usdToToken(1000, tokensData.BTC),
+        shortPoolAmount: usdToToken(1000, tokensData.DAI),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "BTC", "DAI");
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      tokenInAddress: "BTC",
+      tokenOutAddress: "DAI",
+      getLiquidity: createMarketEdgeLiquidlyGetter(marketsInfoData),
+    });
+
+    expect(result).toEqual({
+      path: ["BTC-BTC-USDC", "SPOT-USDC-DAI"],
+      liquidity: 2000000000000000000000000000000000n,
+    });
+  });
+
+  it("selects direct path when multi-hop path has lower minimum liquidity", () => {
+    const allPoolsBalanced = Object.fromEntries(
+      marketKeys.map((marketKey) => [
+        marketKey,
+        {
+          marketKey,
+          longPoolAmount: usdToToken(1000, baseMarketsInfoData[marketKey].longToken),
+          shortPoolAmount: usdToToken(1000, baseMarketsInfoData[marketKey].shortToken),
+        },
+      ])
+    );
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      ...allPoolsBalanced,
+      "BTC-BTC-USDC": {
+        longPoolAmount: usdToToken(1000, tokensData.BTC),
+        shortPoolAmount: usdToToken(100, tokensData.USDC),
+      },
+      "SPOT-USDC-DAI": {
+        longPoolAmount: usdToToken(1000, tokensData.USDC),
+        shortPoolAmount: usdToToken(1000, tokensData.DAI),
+      },
+      "BTC-BTC-DAI": {
+        longPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(1_000_000, tokensData.DAI),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "BTC", "DAI");
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      tokenInAddress: "BTC",
+      tokenOutAddress: "DAI",
+      getLiquidity: createMarketEdgeLiquidlyGetter(marketsInfoData),
+    });
+
+    // Should choose direct path because multi-hop path's minimum liquidity (500) is less than direct path (2000)
+    expect(result).toEqual({
+      path: ["BTC-BTC-DAI"],
+      liquidity: 999000000000000000000000000000000000n,
+    });
   });
 });

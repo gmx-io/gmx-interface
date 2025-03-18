@@ -3,17 +3,25 @@ import { maxUint256 } from "viem";
 import { GasLimitsConfig } from "types/fees";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
-import { MarketEdge, NaiveNetworkEstimator, NaiveSwapEstimator, SwapEstimator, SwapPaths } from "types/trade";
+import {
+  MarketEdge,
+  MarketEdgeLiquidityGetter,
+  NaiveNetworkEstimator,
+  NaiveSwapEstimator,
+  SwapEstimator,
+  SwapPaths,
+} from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { estimateOrderOraclePriceCount, getExecutionFee } from "utils/fees";
 import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGasBySwapCount";
-import { getTokenPoolType } from "utils/markets";
+import { getAvailableUsdLiquidityForCollateral, getTokenPoolType } from "utils/markets";
 import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
 import { convertToTokenAmount, getMidPrice } from "utils/tokens";
 import { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "./constants";
 import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "./preparedSwapData";
 import { getSwapStats } from "./swapStats";
+import { getByKey } from "utils/objects";
 
 export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
@@ -40,6 +48,21 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
     return {
       usdOut,
     };
+  };
+};
+
+export const createMarketEdgeLiquidlyGetter = (marketsInfoData: MarketsInfoData): MarketEdgeLiquidityGetter => {
+  return (e: MarketEdge) => {
+    const marketInfo = getByKey(marketsInfoData, e.marketAddress);
+
+    if (!marketInfo) {
+      return 0n;
+    }
+
+    const isTokenOutLong = getTokenPoolType(marketInfo, e.to) === "long";
+    const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isTokenOutLong);
+
+    return liquidity;
   };
 };
 
@@ -500,7 +523,7 @@ export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
   tokenSwapPaths: string[][];
   tokenInAddress: string;
   tokenOutAddress: string;
-  getLiquidity: (marketAddress: string, tokenInAddress: string, tokenOutAddress: string) => bigint;
+  getLiquidity: MarketEdgeLiquidityGetter;
 }): { path: string[]; liquidity: bigint } | undefined {
   // go through all edges and find best yield market for it
 
@@ -556,12 +579,12 @@ export function getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
         cachedMaxLiquidityMarketForTokenEdge[tokenFromAddress][tokenToAddress] = bestMarketInfo;
       }
 
+      bestMarketPathForPathType.push(bestMarketInfo.marketAddress);
+
       if (bestMarketInfo.liquidity < pathTypeBestLiquidity) {
         pathTypeBestLiquidity = bestMarketInfo.liquidity;
-        bestMarketPathForPathType.push(bestMarketInfo.marketAddress);
       }
 
-      // if current path is alrweady worse than the best path, skip the rest of the path
       if (pathTypeBestLiquidity < bestLiquidity) {
         bad = true;
         break;
@@ -590,7 +613,7 @@ export function getMaxLiquidityMarketForTokenEdge({
   markets: string[];
   tokenInAddress: string;
   tokenOutAddress: string;
-  getLiquidity: (marketAddress: string, tokenInAddress: string, tokenOutAddress: string) => bigint;
+  getLiquidity: MarketEdgeLiquidityGetter;
 }): {
   marketAddress: string;
   liquidity: bigint;
@@ -599,7 +622,11 @@ export function getMaxLiquidityMarketForTokenEdge({
   let bestLiquidity = 0n;
 
   for (const market of markets) {
-    const liquidity = getLiquidity(market, tokenInAddress, tokenOutAddress);
+    const liquidity = getLiquidity({
+      marketAddress: market,
+      from: tokenInAddress,
+      to: tokenOutAddress,
+    });
 
     if (liquidity > bestLiquidity) {
       bestLiquidity = liquidity;

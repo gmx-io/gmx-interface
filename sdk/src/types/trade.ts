@@ -243,6 +243,8 @@ export type NaiveNetworkEstimator = (
   networkYield: number;
 };
 
+export type MarketEdgeLiquidityGetter = (e: MarketEdge) => bigint;
+
 export type SwapOptimizationOrderArray = ("liquidity" | "length")[];
 export type FindSwapPath = (usdIn: bigint, opts?: { order?: SwapOptimizationOrderArray }) => SwapPathStats | undefined;
 

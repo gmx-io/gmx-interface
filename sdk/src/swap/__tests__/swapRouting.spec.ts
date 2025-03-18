@@ -11,6 +11,7 @@ import {
   getMaxLiquidityMarketForTokenEdge,
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
   getNextMarketInfoAfterEncounters,
+  getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
 } from "../swapRouting";
 
 const dollar = 10n ** BigInt(USD_DECIMALS);
@@ -21,9 +22,9 @@ describe("getMaxLiquidityMarketForTokenEdge", () => {
       markets: ["ETH [ETH-USDC]", "ETH [ETH-USDC-2]"],
       tokenInAddress: "ETH",
       tokenOutAddress: "USDC",
-      getLiquidity: (marketAddress) => {
-        if (marketAddress === "ETH [ETH-USDC]") return 1_000_000n * dollar;
-        if (marketAddress === "ETH [ETH-USDC-2]") return 500_000n * dollar;
+      getLiquidity: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") return 1_000_000n * dollar;
+        if (edge.marketAddress === "ETH [ETH-USDC-2]") return 500_000n * dollar;
         return 0n;
       },
     });
@@ -71,10 +72,10 @@ describe("getMaxLiquidityMarketForTokenEdge", () => {
       markets: ["ETH [ETH-USDC]"],
       tokenInAddress: "ETH",
       tokenOutAddress: "USDC",
-      getLiquidity: (market, tokenIn, tokenOut) => {
-        calledWithMarket = market;
-        calledWithTokenIn = tokenIn;
-        calledWithTokenOut = tokenOut;
+      getLiquidity: (edge) => {
+        calledWithMarket = edge.marketAddress;
+        calledWithTokenIn = edge.from;
+        calledWithTokenOut = edge.to;
         return 0n;
       },
     });
@@ -665,5 +666,139 @@ describe("getNextMarketInfoAfterEncounters", () => {
     // Original market info should not be modified
     expect(marketInfo.longPoolAmount).toBe(originalLongPoolAmount);
     expect(marketInfo.shortPoolAmount).toBe(originalShortPoolAmount);
+  });
+});
+
+describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
+  const createTestGraph = () => {
+    const marketsMap: Record<string, MarketConfig> = {
+      "ETH [ETH-USDC]": {
+        marketTokenAddress: "ETH [ETH-USDC]",
+        longTokenAddress: "ETH",
+        shortTokenAddress: "USDC",
+        indexTokenAddress: "ETH",
+      },
+      "BTC [BTC-USDC]": {
+        marketTokenAddress: "BTC [BTC-USDC]",
+        longTokenAddress: "BTC",
+        shortTokenAddress: "USDC",
+        indexTokenAddress: "BTC",
+      },
+      "BTC [BTC-ETH]": {
+        marketTokenAddress: "BTC [BTC-ETH]",
+        longTokenAddress: "BTC",
+        shortTokenAddress: "ETH",
+        indexTokenAddress: "BTC",
+      },
+    };
+    return buildMarketsAdjacencyGraph(marketsMap);
+  };
+
+  it("returns direct path when it has highest liquidity", () => {
+    const graph = createTestGraph();
+    const tokenSwapPaths = [[]]; // ETH -> USDC direct path
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph,
+      tokenSwapPaths,
+      tokenInAddress: "ETH",
+      tokenOutAddress: "USDC",
+      getLiquidity: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") return 1_000_000n * dollar;
+        return 500_000n * dollar;
+      },
+    });
+
+    expect(result).toEqual({
+      path: ["ETH [ETH-USDC]"],
+      liquidity: 1_000_000n * dollar,
+    });
+  });
+
+  it("returns multi-hop path when intermediate markets have higher liquidity", () => {
+    const graph = createTestGraph();
+    const tokenSwapPaths = [
+      [], // direct ETH -> USDC
+      ["BTC"], // ETH -> BTC -> USDC
+    ];
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph,
+      tokenSwapPaths,
+      tokenInAddress: "ETH",
+      tokenOutAddress: "USDC",
+      getLiquidity: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") return 500_000n * dollar;
+        return 1_000_000n * dollar; // Higher liquidity for BTC paths
+      },
+    });
+
+    expect(result).toEqual({
+      path: ["BTC [BTC-ETH]", "BTC [BTC-USDC]"],
+      liquidity: 1_000_000n * dollar,
+    });
+  });
+
+  it("returns undefined when no valid paths exist", () => {
+    const graph = createTestGraph();
+    const tokenSwapPaths = [["XRP"]]; // Non-existent path
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph,
+      tokenSwapPaths,
+      tokenInAddress: "ETH",
+      tokenOutAddress: "USDC",
+      getLiquidity: () => 1_000_000n * dollar,
+    });
+
+    expect(result).toBeUndefined();
+  });
+
+  it("returns path with highest minimum liquidity across hops", () => {
+    const graph = createTestGraph();
+    const tokenSwapPaths = [
+      [], // direct ETH -> USDC
+      ["BTC"], // ETH -> BTC -> USDC
+    ];
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph,
+      tokenSwapPaths,
+      tokenInAddress: "ETH",
+      tokenOutAddress: "USDC",
+      getLiquidity: (edge) => {
+        if (edge.marketAddress === "ETH [ETH-USDC]") return 800_000n * dollar;
+        if (edge.marketAddress === "BTC [BTC-ETH]") return 1_000_000n * dollar;
+        if (edge.marketAddress === "BTC [BTC-USDC]") return 600_000n * dollar; // Bottleneck in multi-hop path
+        return 0n;
+      },
+    });
+
+    // Should choose direct path because multi-hop path's minimum liquidity (600k) is less than direct path (800k)
+    expect(result).toEqual({
+      path: ["ETH [ETH-USDC]"],
+      liquidity: 800_000n * dollar,
+    });
+  });
+
+  it("returns first path when all paths have equal liquidity", () => {
+    const graph = createTestGraph();
+    const tokenSwapPaths = [
+      [], // direct ETH -> USDC
+      ["BTC"], // ETH -> BTC -> USDC
+    ];
+
+    const result = getMaxLiquidityMarketSwapPathFromTokenSwapPaths({
+      graph,
+      tokenSwapPaths,
+      tokenInAddress: "ETH",
+      tokenOutAddress: "USDC",
+      getLiquidity: () => 1_000_000n * dollar, // Same liquidity for all markets
+    });
+
+    expect(result).toEqual({
+      path: ["ETH [ETH-USDC]"],
+      liquidity: 1_000_000n * dollar,
+    });
   });
 });
