@@ -1,15 +1,6 @@
-import type { MarketConfig } from "configs/markets";
 import type { SwapPaths } from "types/trade";
-import { MarketsGraph, buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
+import type { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { MAX_EDGE_PATH_LENGTH } from "./constants";
-
-export function getSwapPaths(marketsMap: Record<string, MarketConfig>): SwapPaths {
-  const graph = buildMarketsAdjacencyGraph(marketsMap);
-
-  const swapRoutes = findSwapPathsBetweenTokens(graph);
-
-  return swapRoutes;
-}
 
 export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapPaths {
   const swapRoutes: SwapPaths = {};

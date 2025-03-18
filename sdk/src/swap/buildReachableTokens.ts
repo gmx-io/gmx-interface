@@ -1,14 +1,5 @@
-import type { MarketConfig } from "configs/markets";
-import { MarketsGraph, buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
+import type { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { MAX_EDGE_PATH_LENGTH } from "./constants";
-
-export function buildReachableTokens(marketsMap: Record<string, MarketConfig>): Record<string, string[]> {
-  const graph = buildMarketsAdjacencyGraph(marketsMap);
-
-  const reachableTokens = processReachableTokens(graph);
-
-  return reachableTokens;
-}
 
 export function processReachableTokens(graph: MarketsGraph): Record<string, string[]> {
   const reachableTokens: Record<string, string[]> = {};

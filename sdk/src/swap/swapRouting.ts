@@ -10,9 +10,9 @@ import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGas
 import { getTokenPoolType } from "utils/markets";
 import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
 import { convertToTokenAmount, getMidPrice } from "utils/tokens";
-import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "../prebuilt";
 import { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "./constants";
+import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "./preparedSwapData";
 import { getSwapStats } from "./swapStats";
 
 export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
