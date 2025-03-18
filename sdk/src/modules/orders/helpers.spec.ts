@@ -47,7 +47,7 @@ describe("increaseOrderHelper", () => {
       payAmount: 1000n,
       marketAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
       payTokenAddress: market.indexToken.address,
-      collateralIn: market.shortToken.address,
+      collateralTokenAddress: market.shortToken.address,
       allowedSlippageBps: 125,
       leverage: 50000n,
       marketsInfoData,

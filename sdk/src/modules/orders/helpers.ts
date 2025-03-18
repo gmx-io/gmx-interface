@@ -30,8 +30,7 @@ export type PositionIncreaseParams = (
 ) & {
   marketAddress: string;
   payTokenAddress: string;
-
-  collateralIn: string;
+  collateralTokenAddress: string;
 
   /** @default 100 */
   allowedSlippageBps?: number;
@@ -40,7 +39,6 @@ export type PositionIncreaseParams = (
   leverage?: bigint;
   /** If presented, then it's limit order */
   limitPrice?: bigint;
-  receiveTokenAddress?: string;
   acceptablePriceImpactBuffer?: number;
   fixedAcceptablePriceImpactBps?: bigint;
 
@@ -88,7 +86,7 @@ export async function increaseOrderHelper(
   const isLimit = Boolean(params.limitPrice);
 
   const fromToken = tokensData[params.payTokenAddress];
-  const collateralToken = tokensData[params.collateralIn];
+  const collateralToken = tokensData[params.collateralTokenAddress];
 
   if (!fromToken) {
     throw new Error("From token is not available");
@@ -104,17 +102,17 @@ export async function increaseOrderHelper(
     throw new Error("Market info is not available");
   }
 
-  const receiveTokenAddress = params.receiveTokenAddress ?? collateralToken.address;
+  const collateralTokenAddress = collateralToken.address;
   const allowedSlippage = params.allowedSlippageBps ?? 100;
 
   const graph = getMarketsGraph(Object.values(marketsInfoData));
   const wrappedFromAddress = getWrappedAddress(sdk.chainId, params.payTokenAddress);
-  const wrappedToAddress = getWrappedAddress(sdk.chainId, receiveTokenAddress);
+  const wrappedToAddress = getWrappedAddress(sdk.chainId, collateralTokenAddress);
 
   const allPaths = findAllSwapPaths({
     chainId: sdk.chainId,
     fromTokenAddress: params.payTokenAddress,
-    toTokenAddress: receiveTokenAddress,
+    toTokenAddress: collateralTokenAddress,
     marketsInfoData,
     graph,
     wrappedFromAddress,
@@ -126,7 +124,7 @@ export async function increaseOrderHelper(
   const findSwapPath = createFindSwapPath({
     chainId: sdk.chainId,
     fromTokenAddress: params.payTokenAddress,
-    toTokenAddress: receiveTokenAddress,
+    toTokenAddress: collateralTokenAddress,
     marketsInfoData,
     estimator,
     allPaths,
@@ -167,7 +165,7 @@ export async function increaseOrderHelper(
     triggerPrice: params.limitPrice,
     collateralTokenAddress: collateralToken.address,
     isLong: true,
-    receiveTokenAddress,
+    receiveTokenAddress: collateralTokenAddress,
     indexToken: marketInfo.indexToken,
     marketInfo,
     skipSimulation: params.skipSimulation,
