@@ -791,6 +791,10 @@ msgstr "Допустимая цена для ордера."
 msgid "The order could not be updated"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Stop Market: Increase a short position when the price is below the trigger price."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
 msgstr ""
@@ -1173,6 +1177,10 @@ msgstr "Токены"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Withdraw"
 msgstr "Запрос на вывод"
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Market: Increase a long position at the current price."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
@@ -1593,6 +1601,10 @@ msgstr "Рыночная цена для ордера."
 msgid "Net Value"
 msgstr "Чистая Прибыль"
 
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short TP/SL: Decrease a short position when the trigger price is reached."
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
@@ -1699,6 +1711,10 @@ msgstr "Отправитель вывел все токены из Хранил�
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Swap Profit Fee"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Stop Market: Increase a long position when the price is above the trigger price."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1959,6 +1975,10 @@ msgstr "Проверка кода..."
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long Limit: Increase a long position when the price is below the trigger price."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -2269,6 +2289,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Market: Increase a short position at the current price."
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -2903,6 +2927,10 @@ msgstr "Рыночная цена для ликвидации."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Long TP/SL: Decrease a long position when the trigger price is reached."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -3835,6 +3863,12 @@ msgstr "Рибейты, заработанные этим аккаунтом в 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -5402,6 +5436,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Available"
 msgstr "Доступно"
+
+#: src/components/Synthetics/TradeBox/components/TradeBoxLongShortInfoIcon.tsx
+msgid "Short Limit: Increase a short position when the price is above the trigger price."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7 days"
