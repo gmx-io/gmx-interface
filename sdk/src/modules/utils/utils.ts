@@ -267,7 +267,7 @@ export class Utils extends Module {
       .executeMulticall({
         dataStore: {
           contractAddress: getContract(this.chainId, "DataStore"),
-          abi: DataStore.abi,
+          abiId: "DataStore",
           calls: {
             keys: {
               methodName: "getUint",

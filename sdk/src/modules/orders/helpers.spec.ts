@@ -55,7 +55,7 @@ describe("increaseOrderHelper", () => {
     };
   });
 
-  it.only("should call createIncreaseOrder with correct parameters for a market order with payAmount", async () => {
+  it("should call createIncreaseOrder with correct parameters for a market order with payAmount", async () => {
     const findSwapPathSpy = vi.spyOn(swapPath, "createFindSwapPath");
     const getIncreasePositionAmountsSpy = vi.spyOn(tradeAmounts, "getIncreasePositionAmounts");
 

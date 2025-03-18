@@ -40,8 +40,6 @@ export type PositionIncreaseParams = (
   leverage?: bigint;
   /** If presented, then it's limit order */
   limitPrice?: bigint;
-  /** If presented, then it's stop market order */
-  stopPrice?: bigint;
   receiveTokenAddress?: string;
   acceptablePriceImpactBuffer?: number;
   fixedAcceptablePriceImpactBps?: bigint;
