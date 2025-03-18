@@ -104,8 +104,8 @@ export async function getOpenOceanTxnData({
       outputAmount: BigInt(parsed.data.minOutAmount),
     };
   } catch (e) {
-    e.message += ` URL: ${url}`;
-    metrics.pushError(e, "openOceanBuildTxn");
+    e.message += ` URL: ${url.replace(receiverAddress, "...")}`;
+    metrics.pushError(e, "externalSwap.getOpenOceanTxnData");
     return undefined;
   }
 }
