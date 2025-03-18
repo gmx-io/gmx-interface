@@ -1,7 +1,8 @@
-export function TokenValuesInfoCell({ token, usd }: { token?: string; usd?: string }) {
+export function TokenValuesInfoCell({ value, usd, symbol }: { value: string; usd?: string; symbol?: string }) {
+  const isNumber = !isNaN(Number(value));
   return (
     <>
-      {token && <div className="whitespace-nowrap">{token}</div>}
+      {value && <div className="whitespace-nowrap">{symbol && isNumber ? `${value} ${symbol}` : value}</div>}
       {usd && <div className="whitespace-nowrap text-12 text-slate-100">({usd})</div>}
     </>
   );
