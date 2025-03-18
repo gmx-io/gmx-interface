@@ -10,13 +10,16 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import { useLpInterviewNotification } from "domain/synthetics/userFeedback/useLpInterviewNotification";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 
+import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -33,13 +36,13 @@ import { Vesting } from "./Vesting";
 
 import { useProcessedData } from "./useProcessedData";
 
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import "./EarnV2.css";
 
 export default function EarnV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
+  const { isLpInterviewModalVisible, setIsLpInterviewModalVisible } = useLpInterviewNotification();
 
   const incentivesMessage = useMemo(() => {
     const avalancheLink = (
@@ -339,6 +342,8 @@ export default function EarnV2() {
       </div>
       <UserIncentiveDistributionList />
       <Footer />
+
+      <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
     </div>
   );
 }
