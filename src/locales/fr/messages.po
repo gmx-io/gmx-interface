@@ -536,7 +536,7 @@ msgid "Trade History"
 msgstr "Historique des échanges"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Tabs/Tabs.tsx
+#: src/components/Tabs/NestedTab.tsx
 msgid "More"
 msgstr ""
 
