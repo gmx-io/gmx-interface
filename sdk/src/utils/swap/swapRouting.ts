@@ -1,5 +1,8 @@
 import { maxUint256 } from "viem";
 
+import { MarketsGraph } from "utils/swap/buildMarketsAdjacencyGraph";
+import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "utils/swap/constants";
+import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "utils/swap/preparedSwapData";
 import { GasLimitsConfig } from "types/fees";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
@@ -16,12 +19,9 @@ import { estimateOrderOraclePriceCount, getExecutionFee } from "utils/fees";
 import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGasBySwapCount";
 import { getAvailableUsdLiquidityForCollateral, getTokenPoolType } from "utils/markets";
 import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
-import { convertToTokenAmount, getMidPrice } from "utils/tokens";
-import { MarketsGraph } from "./buildMarketsAdjacencyGraph";
-import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "./constants";
-import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "./preparedSwapData";
-import { getSwapStats } from "./swapStats";
 import { getByKey } from "utils/objects";
+import { convertToTokenAmount, getMidPrice } from "utils/tokens";
+import { getSwapStats } from "./swapStats";
 
 export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
@@ -57,7 +57,7 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   };
 };
 
-export const createMarketEdgeLiquidlyGetter = (marketsInfoData: MarketsInfoData): MarketEdgeLiquidityGetter => {
+export const createMarketEdgeLiquidityGetter = (marketsInfoData: MarketsInfoData): MarketEdgeLiquidityGetter => {
   return (e: MarketEdge) => {
     const marketInfo = getByKey(marketsInfoData, e.marketAddress);
 

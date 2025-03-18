@@ -3,7 +3,7 @@ import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import type { MarketsInfoData } from "types/markets";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "../swapStats";
 import { describe, expect, it } from "vitest";
-import { mockMarketsInfoData as createMockMarketsInfoData, mockTokensData, usdToToken } from "../../test/mock";
+import { mockMarketsInfoData as createMockMarketsInfoData, mockTokensData, usdToToken } from "../../../test/mock";
 
 const someWrappedToken = "0x0000000000000000000000000000000000000001";
 const someNativeToken = "0x0000000000000000000000000000000000000000";

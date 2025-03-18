@@ -2,20 +2,20 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { buildMarketsAdjacencyGraph } from "swap/buildMarketsAdjacencyGraph";
-import { findSwapPathsBetweenTokens } from "swap/findSwapPathsBetweenTokens";
+import { buildMarketsAdjacencyGraph } from "utils/swap/buildMarketsAdjacencyGraph";
+import { findSwapPathsBetweenTokens } from "utils/swap/findSwapPathsBetweenTokens";
 import {
-  createMarketEdgeLiquidlyGetter,
+  createMarketEdgeLiquidityGetter,
   createNaiveNetworkEstimator,
   createNaiveSwapEstimator,
   getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
   getTokenSwapPathsForTokenPair,
-} from "swap/swapRouting";
+} from "utils/swap/swapRouting";
 import { GasLimitsConfig } from "types/fees";
 import { MarketInfo } from "types/markets";
 import { expandDecimals } from "utils/numbers";
-import { mockMarketsInfoData, mockTokensData, usdToToken } from "../../test/mock";
+import { mockMarketsInfoData, mockTokensData, usdToToken } from "../../../test/mock";
 
 const marketKeys = [
   "ETH-ETH-USDC",
@@ -418,7 +418,7 @@ describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
       tokenSwapPaths,
       tokenInAddress: "USDC",
       tokenOutAddress: "DAI",
-      getLiquidity: createMarketEdgeLiquidlyGetter(marketsInfoData),
+      getLiquidity: createMarketEdgeLiquidityGetter(marketsInfoData),
     });
 
     expect(result).toEqual({
@@ -462,7 +462,7 @@ describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
       tokenSwapPaths,
       tokenInAddress: "BTC",
       tokenOutAddress: "DAI",
-      getLiquidity: createMarketEdgeLiquidlyGetter(marketsInfoData),
+      getLiquidity: createMarketEdgeLiquidityGetter(marketsInfoData),
     });
 
     expect(result).toEqual({
@@ -506,7 +506,7 @@ describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
       tokenSwapPaths,
       tokenInAddress: "BTC",
       tokenOutAddress: "DAI",
-      getLiquidity: createMarketEdgeLiquidlyGetter(marketsInfoData),
+      getLiquidity: createMarketEdgeLiquidityGetter(marketsInfoData),
     });
 
     // Should choose direct path because multi-hop path's minimum liquidity (500) is less than direct path (2000)

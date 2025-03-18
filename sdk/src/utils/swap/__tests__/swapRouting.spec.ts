@@ -4,10 +4,10 @@ import { NaiveSwapEstimator, SwapPaths } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "utils/tokens";
 import { describe, expect, it, vi } from "vitest";
-import { mockMarketsInfoData, mockTokensData } from "../../test/mock";
+import { mockMarketsInfoData, mockTokensData } from "../../../test/mock";
 import { MarketsGraph, buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
 import {
-  createMarketEdgeLiquidlyGetter,
+  createMarketEdgeLiquidityGetter,
   createNaiveSwapEstimator,
   createSwapEstimator,
   getBestMarketForTokenEdge,
@@ -948,7 +948,7 @@ describe("createMarketEdgeLiquidlyGetter", () => {
       },
     });
 
-    const getLiquidity = createMarketEdgeLiquidlyGetter(marketsInfoData);
+    const getLiquidity = createMarketEdgeLiquidityGetter(marketsInfoData);
     const result = getLiquidity({
       marketAddress: "ETH-ETH-USDC",
       from: "ETH",
@@ -963,7 +963,7 @@ describe("createMarketEdgeLiquidlyGetter", () => {
     const marketKeys = ["ETH-ETH-USDC"];
     const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
 
-    const getLiquidity = createMarketEdgeLiquidlyGetter(marketsInfoData);
+    const getLiquidity = createMarketEdgeLiquidityGetter(marketsInfoData);
     const result = getLiquidity({
       marketAddress: "NON-EXISTENT",
       from: "ETH",

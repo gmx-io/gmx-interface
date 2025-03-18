@@ -15,7 +15,7 @@ import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics
 import { ethers } from "ethers";
 import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
-import { getSwapStats } from "sdk/swap/swapStats";
+import { getSwapStats } from "sdk/utils/swap/swapStats";
 import { DecreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";

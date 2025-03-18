@@ -16,6 +16,8 @@ import { expandDecimals, PRECISION } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "sdk/types/tokens";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 
+export * from "sdk/utils/tokens";
+
 const { ZeroAddress } = ethers;
 
 export function getTokenUrl(chainId: number, address: string) {
@@ -23,14 +25,6 @@ export function getTokenUrl(chainId: number, address: string) {
     return getExplorerUrl(chainId);
   }
   return getExplorerUrl(chainId) + "token/" + address;
-}
-
-export function getIsWrap(token1: Token, token2: Token) {
-  return token1.isNative && token2.isWrapped;
-}
-
-export function getIsUnwrap(token1: Token, token2: Token) {
-  return token1.isWrapped && token2.isNative;
 }
 
 export function getUsd(
