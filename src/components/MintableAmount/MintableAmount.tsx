@@ -79,6 +79,7 @@ export function MintableAmount({
         amount={mintableInfo?.longDepositCapacityAmount}
         decimals={longToken.decimals}
         usd={mintableInfo?.longDepositCapacityUsd}
+        symbol={longToken.symbol}
       />,
       <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100">
         ({poolUsd} / {maxPoolUsd})
@@ -108,6 +109,7 @@ export function MintableAmount({
         amount={mintableInfo?.shortDepositCapacityAmount}
         decimals={shortToken.decimals}
         usd={mintableInfo?.shortDepositCapacityUsd}
+        symbol={shortToken.symbol}
       />,
       <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100">
         ({poolUsd} / {maxPoolUsd})
@@ -121,6 +123,7 @@ export function MintableAmount({
       amount={mintableInfo?.mintableAmount}
       decimals={token.decimals}
       usd={mintableInfo?.mintableUsd}
+      symbol={token.symbol}
     />
   );
 
