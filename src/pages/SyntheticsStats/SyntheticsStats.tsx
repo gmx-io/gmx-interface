@@ -1,15 +1,9 @@
-import { ethers } from "ethers";
-import { useChainId } from "lib/chains";
-import { CHART_PERIODS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatFactor, formatUsd, PRECISION } from "lib/numbers";
 
 import cx from "classnames";
-import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
-import { ShareBar } from "components/ShareBar/ShareBar";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 import { format } from "date-fns";
+import { ethers } from "ethers";
+
+import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -31,9 +25,17 @@ import {
 import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import { bigMath } from "sdk/utils/bigmath";
+import { useChainId } from "lib/chains";
+import { CHART_PERIODS } from "lib/legacy";
+import { expandDecimals, formatAmount, formatFactor, formatUsd, PRECISION } from "lib/numbers";
 import { formatAmountHuman } from "lib/numbers";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import { bigMath } from "sdk/utils/bigmath";
+
+import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
+import { ShareBar } from "components/ShareBar/ShareBar";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import "./SyntheticsStats.scss";
 
 function pow(bn: bigint, exponent: bigint) {

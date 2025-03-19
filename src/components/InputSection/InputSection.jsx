@@ -1,5 +1,5 @@
-import React from "react";
 import cx from "classnames";
+import React from "react";
 import "./InputSection.css";
 import { Trans } from "@lingui/macro";
 

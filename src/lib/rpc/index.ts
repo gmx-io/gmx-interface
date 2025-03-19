@@ -1,4 +1,7 @@
 import { JsonRpcProvider, Network, WebSocketProvider } from "ethers";
+import { Signer, ethers } from "ethers";
+import { useEffect, useState } from "react";
+
 import {
   ARBITRUM,
   AVALANCHE,
@@ -7,8 +10,6 @@ import {
   getAlchemyArbitrumWsUrl,
   getFallbackRpcUrl,
 } from "config/chains";
-import { Signer, ethers } from "ethers";
-import { useEffect, useState } from "react";
 import { isDevelopment } from "config/env";
 import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 

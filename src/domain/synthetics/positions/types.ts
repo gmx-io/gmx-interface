@@ -1,7 +1,8 @@
 import { PendingPositionUpdate } from "context/SyntheticsEvents";
+import { Position as BasePosition, PositionInfo as BasePositionInfo } from "sdk/types/positions";
+
 import { MarketInfo } from "../markets";
 
-import { Position as BasePosition, PositionInfo as BasePositionInfo } from "sdk/types/positions";
 
 export * from "sdk/types/positions";
 

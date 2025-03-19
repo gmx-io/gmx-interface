@@ -3,14 +3,16 @@ import { useCallback } from "react";
 import { FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { isHomeSite } from "lib/legacy";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralTopMenuClickEvent } from "lib/userAnalytics/types";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import logoImg from "img/logo_GMX.svg";
+
 import { HeaderLink } from "./HeaderLink";
 
 import "./Header.scss";

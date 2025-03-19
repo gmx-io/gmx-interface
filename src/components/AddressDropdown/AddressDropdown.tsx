@@ -12,6 +12,7 @@ import { useENS } from "lib/legacy";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
+import { Avatar } from "components/Avatar/Avatar";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import copy from "img/ic_copy_20.svg";
@@ -20,7 +21,6 @@ import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import disconnect from "img/ic_sign_out_20.svg";
 import oneClickTradingIcon from "img/one_click_trading_20.svg";
 
-import { Avatar } from "components/Avatar/Avatar";
 import "./AddressDropdown.scss";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";

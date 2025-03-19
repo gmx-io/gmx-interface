@@ -4,11 +4,11 @@ import { useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
+import { abis } from "sdk/abis";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 
-import { abis } from "sdk/abis";
 
 export function AffiliateVesterWithdrawModal(props) {
   const { isVisible, setIsVisible, chainId, signer, setPendingTxns } = props;

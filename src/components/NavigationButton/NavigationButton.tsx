@@ -1,5 +1,6 @@
-import { ReactNode, memo } from "react";
 import cx from "classnames";
+import { ReactNode, memo } from "react";
+
 import rightIcon from "img/navbutton-arrow-right.svg";
 import closeIcon from "img/navbutton-close.svg";
 import "./NavigationButton.scss";

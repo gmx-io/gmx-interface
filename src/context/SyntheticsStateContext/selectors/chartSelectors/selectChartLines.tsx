@@ -10,9 +10,10 @@ import {
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getTokenData } from "domain/synthetics/tokens";
 import { formatAmount } from "lib/numbers";
-import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { StaticChartLine } from "components/TVChartContainer/types";
 import { EMPTY_ARRAY } from "lib/objects";
+import { convertTokenAddress, getPriceDecimals, getTokenVisualMultiplier } from "sdk/configs/tokens";
+
+import { StaticChartLine } from "components/TVChartContainer/types";
 
 export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
   const chainId = q(selectChainId);

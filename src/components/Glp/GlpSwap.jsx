@@ -1,53 +1,16 @@
 import { t, Trans } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import { ethers } from "ethers";
-import {
-  adjustForDecimals,
-  getBuyGlpFromAmount,
-  getBuyGlpToAmount,
-  getSellGlpFromAmount,
-  getSellGlpToAmount,
-  GLP_DECIMALS,
-  PLACEHOLDER_ACCOUNT,
-  SECONDS_PER_YEAR,
-  USDG_DECIMALS,
-} from "lib/legacy";
-import { formatBalanceAmount } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
+import { IoChevronDownOutline } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
-import Tab from "../Tab/Tab";
 
-import { useGmxPrice } from "domain/legacy";
-
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import BuyInputSection from "../BuyInputSection/BuyInputSection";
-import Tooltip from "../Tooltip/Tooltip";
-
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
-import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import PageTitle from "components/PageTitle/PageTitle";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
-import { getIcon } from "config/icons";
-import { getIncentivesV2Url } from "config/links";
-import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import { getFeeItem } from "domain/synthetics/fees";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { approveTokens, useInfoTokens } from "domain/tokens";
-import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
-import { useChainId } from "lib/chains";
-import { callContract, contractFetcher } from "lib/contracts";
 import { useLocalStorageByChainId } from "lib/localStorage";
+import { formatBalanceAmount } from "lib/numbers";
+
 import {
   applyFactor,
   basisPointsToFloat,
@@ -60,11 +23,51 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tab from "../Tab/Tab";
+
+import { useGmxPrice } from "domain/legacy";
+
+import BuyInputSection from "../BuyInputSection/BuyInputSection";
+import Tooltip from "../Tooltip/Tooltip";
+
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import PageTitle from "components/PageTitle/PageTitle";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { getContract } from "config/contracts";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { getIcon } from "config/icons";
+import { getIncentivesV2Url } from "config/links";
+import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { getFeeItem } from "domain/synthetics/fees";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { approveTokens, useInfoTokens } from "domain/tokens";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import {
+  adjustForDecimals,
+  getBuyGlpFromAmount,
+  getBuyGlpToAmount,
+  getSellGlpFromAmount,
+  getSellGlpToAmount,
+  GLP_DECIMALS,
+  PLACEHOLDER_ACCOUNT,
+  SECONDS_PER_YEAR,
+  USDG_DECIMALS,
+} from "lib/legacy";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { IoChevronDownOutline } from "react-icons/io5";
 import { abis } from "sdk/abis";
 import {
   getNativeToken,
@@ -75,6 +78,7 @@ import {
   getWrappedToken,
 } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";

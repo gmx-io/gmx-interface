@@ -1,8 +1,10 @@
-import { getIncreasePositionPrices, leverageBySizeValues } from "../../trade/utils/increase";
-import { bigMath } from "sdk/utils/bigmath";
 import { describe, expect, it } from "vitest";
-import { mockTokensData } from "../../testUtils/mocks";
+
 import { OrderType } from "domain/synthetics/orders";
+import { bigMath } from "sdk/utils/bigmath";
+
+import { mockTokensData } from "../../testUtils/mocks";
+import { getIncreasePositionPrices, leverageBySizeValues } from "../../trade/utils/increase";
 
 describe("getIncreasePositionPrices", () => {
   it("triggerPrice for limit order with ETH as initial collateral", () => {

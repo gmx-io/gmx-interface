@@ -4,17 +4,18 @@ import type { Locale as DateLocale } from "date-fns";
 import format from "date-fns/format";
 import formatISO from "date-fns/formatISO";
 import formatRelative from "date-fns/formatRelative";
+import dateEn from "date-fns/locale/en-US";
 import { BytesLike, ethers } from "ethers";
 import words from "lodash/words";
 
-import dateEn from "date-fns/locale/en-US";
+
+import { abis } from "sdk/abis";
+import { TradeActionType } from "sdk/types/tradeHistory";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
-import { TradeActionType } from "sdk/types/tradeHistory";
 
 import { CustomErrorName } from "./CustomErrorName";
 
-import { abis } from "sdk/abis";
 
 export function getOrderActionText(eventName: TradeActionType) {
   let actionText = "";

@@ -4,12 +4,11 @@ import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxAvailableTokensOptions,
@@ -60,13 +59,8 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
-
-import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
-import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
-import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
-import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -83,19 +77,22 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
+import SettingsIcon24 from "img/ic_settings_24.svg?react";
+
+import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
+import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
+import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
+import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { OneClickTradingInfo } from "./OneClickTradingInfo";
+import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
-import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
-
-import SettingsIcon24 from "img/ic_settings_24.svg?react";
-
-import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import "./TradeBox.scss";
 
 export function TradeBox() {

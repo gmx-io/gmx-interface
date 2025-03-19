@@ -1,5 +1,6 @@
 import "./MarketNetFee.scss";
 import { Trans, t } from "@lingui/macro";
+
 import { formatRatePercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 

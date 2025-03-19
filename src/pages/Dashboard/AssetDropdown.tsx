@@ -8,16 +8,16 @@ import { Link } from "react-router-dom";
 
 import { getTokenExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
-import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";
-import { Token } from "domain/tokens";
-import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { getMarketBadge } from "domain/synthetics/markets";
+import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import useWallet from "lib/wallets/useWallet";
+import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";
 
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import coingeckoIcon from "img/ic_coingecko_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";

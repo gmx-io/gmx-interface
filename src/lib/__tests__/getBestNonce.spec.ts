@@ -1,5 +1,6 @@
-import { getBestNonce } from "../contracts/utils";
 import { vi, describe, expect, beforeEach, test, afterEach } from "vitest";
+
+import { getBestNonce } from "../contracts/utils";
 
 // Mocks for Wallet providers
 class MockWallet {

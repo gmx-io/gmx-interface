@@ -1,14 +1,14 @@
-import { useMemo } from "react";
-import { USD_DECIMALS } from "config/factors";
-import { expandDecimals } from "lib/numbers";
-
 import { gql } from "@apollo/client";
-import { getSubsquidGraphClient } from "lib/subgraph";
-import useSWR from "swr";
 import { subDays, format, eachDayOfInterval } from "date-fns";
-import { toUtcDayStart } from "lib/dates";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { useMemo } from "react";
+import useSWR from "swr";
+
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
+import { toUtcDayStart } from "lib/dates";
+import { expandDecimals } from "lib/numbers";
+import { getSubsquidGraphClient } from "lib/subgraph";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const LARGE_ACCOUNT_CHAINS = [ARBITRUM, AVALANCHE];
 

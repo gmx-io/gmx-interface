@@ -6,9 +6,10 @@ import { getIsV1Supported } from "config/features";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { usePageParams } from "pages/AccountDashboard/usePageParams";
+import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
 import PageTitle from "components/PageTitle/PageTitle";
-import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
+
 import ActionsPageV1 from "./ActionsV1/ActionsV1";
 import SyntheticsActions from "./SyntheticsActions";
 

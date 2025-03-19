@@ -1,6 +1,6 @@
+import { MarketConfigMulticallRequestConfig } from "sdk/modules/markets/types";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
-import { MarketConfigMulticallRequestConfig } from "sdk/modules/markets/types";
 
 export async function buildMarketsConfigsRequest(
   chainId: number,

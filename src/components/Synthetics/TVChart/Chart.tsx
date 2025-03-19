@@ -8,13 +8,15 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-import { ChartHeader } from "./ChartHeader";
 import { DepthChart } from "components/DepthChart/DepthChart";
 import Tab from "components/Tab/Tab";
-import { TVChart } from "./TVChart";
+
 
 import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
 import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
+
+import { ChartHeader } from "./ChartHeader";
+import { TVChart } from "./TVChart";
 
 import "./TVChart.scss";
 

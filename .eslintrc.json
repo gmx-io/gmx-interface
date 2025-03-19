@@ -19,10 +19,14 @@
     "no-empty": "error",
     "@typescript-eslint/no-inferrable-types": "error",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
+    "@typescript-eslint/no-empty-object-type": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_", "caughtErrors": "none", "varsIgnorePattern": "^_" }
+    ],
     "react/no-unused-prop-types": "error",
     "react-hooks/rules-of-hooks": "warn",
     "react/hook-use-state": "warn",
-    "@typescript-eslint/no-unused-vars": "warn",
     "react/jsx-fragments": "warn",
     "react-perf/jsx-no-new-array-as-prop": "warn",
     "react-perf/jsx-no-new-object-as-prop": "warn",
@@ -31,7 +35,7 @@
     "import/order": [
       "warn",
       {
-        "groups": [["builtin", "external"], "internal", ["parent", "sibling", "index"]],
+        "groups": [["builtin", "external"], ["internal"], ["parent", "sibling", "index"]],
         "newlines-between": "always",
         "pathGroups": [
           {

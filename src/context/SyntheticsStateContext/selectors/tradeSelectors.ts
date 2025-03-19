@@ -22,6 +22,7 @@ import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {

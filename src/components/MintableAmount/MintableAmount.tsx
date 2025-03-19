@@ -1,16 +1,16 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { USD_DECIMALS } from "config/factors";
+import { getPoolUsdWithoutPnl, getStrictestMaxPoolUsdForDeposit, GlvOrMarketInfo } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { TokenData } from "domain/synthetics/tokens";
 import { formatAmountHuman } from "lib/numbers/formatting";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { USD_DECIMALS } from "config/factors";
-import { getPoolUsdWithoutPnl, getStrictestMaxPoolUsdForDeposit, GlvOrMarketInfo } from "domain/synthetics/markets";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData } from "domain/synthetics/tokens";
 
 export function MintableAmount({
   mintableInfo,

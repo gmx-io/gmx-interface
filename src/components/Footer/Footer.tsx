@@ -1,20 +1,20 @@
-import { useMedia } from "react-use";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useMedia } from "react-use";
 
 import { getAppBaseUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
-import { SOCIAL_LINKS, getFooterLinks } from "./constants";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import logoImg from "img/logo_GMX.svg";
 
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
+import { SOCIAL_LINKS, getFooterLinks } from "./constants";
+import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
 type Props = {
   showRedirectModal?: (to: string) => void;

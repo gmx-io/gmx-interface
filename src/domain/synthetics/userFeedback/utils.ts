@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+
 import { Answer, Question, QuestionType } from "./types";
 
 export const COIN_REGEXP = /[A-za-z0-9_\\.-]/;

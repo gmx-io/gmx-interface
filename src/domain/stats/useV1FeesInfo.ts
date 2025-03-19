@@ -1,10 +1,12 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
+
 import { getGmxGraphClient } from "lib/subgraph/clients";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { sumBigInts } from "lib/sumBigInts";
-import { getWeekAgoTimestamp } from "./getWeekAgoTimestamp";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+
 import { getCurrentEpochStartedTimestamp } from "./getCurrentEpochStartedTimestamp";
+import { getWeekAgoTimestamp } from "./getWeekAgoTimestamp";
 
 const feeStatsQuery = gql`
   query feesInfo($weekAgoTimestamp: Int!) {

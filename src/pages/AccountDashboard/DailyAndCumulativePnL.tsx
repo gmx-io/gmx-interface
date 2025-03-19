@@ -16,12 +16,12 @@ import {
 } from "recharts";
 import type { Address } from "viem";
 
+import { USD_DECIMALS } from "config/factors";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
 import { SECONDS_IN_DAY, formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
-import { USD_DECIMALS } from "config/factors";
 import { bigintToNumber, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
@@ -32,6 +32,8 @@ import Loader from "components/Common/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DateSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 
+import downloadIcon from "img/ic_download_simple.svg";
+
 import {
   DEBUG_FIELDS,
   DEV_QUERY,
@@ -41,7 +43,6 @@ import {
   type AccountPnlHistoryPointDebugFields,
 } from "./dailyAndCumulativePnLDebug";
 
-import downloadIcon from "img/ic_download_simple.svg";
 
 import "./DailyAndCumulativePnL.css";
 

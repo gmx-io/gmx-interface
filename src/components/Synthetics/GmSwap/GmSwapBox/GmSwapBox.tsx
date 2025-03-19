@@ -1,22 +1,23 @@
 import { msg } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
-import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
-import { Mode, Operation } from "./types";
 
 import Tab from "components/Tab/Tab";
-import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 
-import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
-
+import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
+import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
+import { Mode, Operation } from "./types";
+
+
 import "./GmSwapBox.scss";
-import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 
 export type GmSwapBoxProps = {
   selectedMarketAddress?: string;

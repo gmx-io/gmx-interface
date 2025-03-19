@@ -2,6 +2,7 @@ import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "config/markets";
 import { getAvailableUsdLiquidityForCollateral, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+
 import { getMaxSwapPathLiquidity, getSwapCapacityUsd, getSwapStats } from "./swapStats";
 
 // limit the number of markets to most N=SWAP_GRAPH_MAX_MARKETS_PER_TOKEN liquid markets for each collateral

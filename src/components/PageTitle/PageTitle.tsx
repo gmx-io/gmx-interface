@@ -1,7 +1,9 @@
 import { ReactNode } from "react";
+
 import { getIcon } from "config/icons";
 import "./PageTitle.scss";
 import { useChainId } from "lib/chains";
+
 import cx from "classnames";
 
 type Props = {

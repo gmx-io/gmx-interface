@@ -1,23 +1,30 @@
-import { useCallback, useMemo, useEffect } from "react";
+import { t, Trans } from "@lingui/macro";
 import { ethers } from "ethers";
+import { useCallback, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Tooltip from "components/Tooltip/Tooltip";
-
-import { LIQUIDATION_FEE, TRADES_PAGE_SIZE, deserialize, getExchangeRateDisplay, INCREASE } from "lib/legacy";
-import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { useTrades, useLiquidationsData } from "domain/legacy";
-import { getContract } from "config/contracts";
 
 import { getExplorerUrl } from "config/chains";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { getContract } from "config/contracts";
+import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { TRADE_HISTORY_PER_PAGE } from "config/ui";
+import { useTrades, useLiquidationsData } from "domain/legacy";
 import { formatDateTime } from "lib/dates";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { t, Trans } from "@lingui/macro";
+import { LIQUIDATION_FEE, TRADES_PAGE_SIZE, deserialize, getExchangeRateDisplay, INCREASE } from "lib/legacy";
+import { bigNumberify, formatAmount } from "lib/numbers";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Tooltip from "components/Tooltip/Tooltip";
+
+
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+
+
+
 import { getPriceDecimals } from "sdk/configs/tokens";
+
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
-import { TRADE_HISTORY_PER_PAGE } from "config/ui";
+
 import { bigMath } from "sdk/utils/bigmath";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 

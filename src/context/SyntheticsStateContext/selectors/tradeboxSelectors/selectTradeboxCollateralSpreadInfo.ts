@@ -1,10 +1,10 @@
-import { createSelector } from "context/SyntheticsStateContext/utils";
 
 import { HIGH_SPREAD_THRESHOLD } from "config/constants";
 import {
   selectTradeboxCollateralToken,
   selectTradeboxMarketInfo,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getSpread } from "domain/tokens";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 

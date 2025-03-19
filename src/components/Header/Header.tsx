@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
@@ -5,18 +6,18 @@ import { RiMenuLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { useMedia } from "react-use";
 
-import { AppHeaderLinks } from "./AppHeaderLinks";
-import { AppHeaderUser } from "./AppHeaderUser";
+import { isHomeSite } from "lib/legacy";
+
+import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
 
 import logoImg from "img/logo_GMX.svg";
 import logoSmallImg from "img/logo_GMX_small.svg";
 
-import { Trans } from "@lingui/macro";
-import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
-import { isHomeSite } from "lib/legacy";
+import { AppHeaderLinks } from "./AppHeaderLinks";
+import { AppHeaderUser } from "./AppHeaderUser";
+import { HeaderLink } from "./HeaderLink";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
 
-import { HeaderLink } from "./HeaderLink";
 
 import "./Header.scss";
 

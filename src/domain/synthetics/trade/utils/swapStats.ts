@@ -1,10 +1,11 @@
+import { ethers } from "ethers";
+
 import {
   MarketsInfoData,
   getAvailableUsdLiquidityForCollateral,
   getOppositeCollateral,
   getTokenPoolType,
 } from "domain/synthetics/markets";
-import { ethers } from "ethers";
 import { getByKey } from "lib/objects";
 
 export * from "sdk/utils/swapStats";

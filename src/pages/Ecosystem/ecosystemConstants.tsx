@@ -1,6 +1,7 @@
-import { ARBITRUM, AVALANCHE, ChainId } from "config/chains";
-import { msg } from "@lingui/macro";
 import { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/macro";
+
+import { ARBITRUM, AVALANCHE, ChainId } from "config/chains";
 
 type EcosystemGmxPage = {
   title: MessageDescriptor;

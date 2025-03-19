@@ -1,50 +1,12 @@
 import { Trans, msg, t } from "@lingui/macro";
 import React, { useEffect, useMemo, useState } from "react";
+
 import Tooltip from "../Tooltip/Tooltip";
 import "./SwapBox.scss";
 
-import { ethers } from "ethers";
 
-import { BsArrowRight } from "react-icons/bs";
-import { IoMdSwap } from "react-icons/io";
 
-import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant, isSupportedChain } from "config/chains";
-import { getContract } from "config/contracts";
-import * as Api from "domain/legacy";
-import {
-  DUST_BNB,
-  LEVERAGE_ORDER_OPTIONS,
-  LIMIT,
-  LONG,
-  MARGIN_FEE_BASIS_POINTS,
-  MARKET,
-  SHORT,
-  STOP,
-  SWAP,
-  SWAP_OPTIONS,
-  SWAP_OPTIONS_CLASSNAMES,
-  SWAP_ORDER_OPTIONS,
-  USDG_ADDRESS,
-  USDG_DECIMALS,
-  adjustForDecimals,
-  calculatePositionDelta,
-  getExchangeRate,
-  getExchangeRateDisplay,
-  getNextFromAmount,
-  getNextToAmount,
-  getPositionKey,
-  isTriggerRatioInverted,
-} from "lib/legacy";
-import {
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR_BIGINT,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  BASIS_POINTS_DIVISOR,
-  MAX_ALLOWED_LEVERAGE,
-} from "config/factors";
 
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tab from "../Tab/Tab";
 import ConfirmationBox from "./ConfirmationBox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import OrdersToa from "./OrdersToa";
@@ -91,16 +53,56 @@ import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import UsefulLinks from "./UsefulLinks";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { ethers } from "ethers";
+import { BsArrowRight } from "react-icons/bs";
+import { IoMdSwap } from "react-icons/io";
 import useWallet from "lib/wallets/useWallet";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useHistory } from "react-router-dom";
+import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant, isSupportedChain } from "config/chains";
+import { getContract } from "config/contracts";
 import { bigMath } from "sdk/utils/bigmath";
-import { useLocalizedMap } from "lib/i18n";
-import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { isDevelopment } from "config/env";
+import {
+  USD_DECIMALS,
+  BASIS_POINTS_DIVISOR_BIGINT,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
+  BASIS_POINTS_DIVISOR,
+  MAX_ALLOWED_LEVERAGE,
+} from "config/factors";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import * as Api from "domain/legacy";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { useLocalizedMap } from "lib/i18n";
+import {
+  DUST_BNB,
+  LEVERAGE_ORDER_OPTIONS,
+  LIMIT,
+  LONG,
+  MARGIN_FEE_BASIS_POINTS,
+  MARKET,
+  SHORT,
+  STOP,
+  SWAP,
+  SWAP_OPTIONS,
+  SWAP_OPTIONS_CLASSNAMES,
+  SWAP_ORDER_OPTIONS,
+  USDG_ADDRESS,
+  USDG_DECIMALS,
+  adjustForDecimals,
+  calculatePositionDelta,
+  getExchangeRate,
+  getExchangeRateDisplay,
+  getNextFromAmount,
+  getNextToAmount,
+  getPositionKey,
+  isTriggerRatioInverted,
+} from "lib/legacy";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tab from "../Tab/Tab";
 
 const SWAP_ICONS = {
   [LONG]: <LongIcon />,

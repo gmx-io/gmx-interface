@@ -1,13 +1,13 @@
 import cx from "classnames";
+import { useCallback, useState } from "react";
+import { Fragment } from "react/jsx-runtime";
+import { BiCopy } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
+import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
 import { Hash, isHash, PublicClient } from "viem";
 import { usePublicClient } from "wagmi";
 
-import Loader from "components/Common/Loader";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { Table, TableTd, TableTr } from "components/Table/Table";
-import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import {
   getGlvDisplayName,
@@ -20,11 +20,12 @@ import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
-import { useCallback, useState } from "react";
-import { BiCopy } from "react-icons/bi";
-import { useCopyToClipboard } from "react-use";
-import { Fragment } from "react/jsx-runtime";
-import { formatFactor } from "../../lib/numbers";
+
+import Loader from "components/Common/Loader";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { Table, TableTd, TableTr } from "components/Table/Table";
+import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+
 import {
   formatAmountByCollateralToken,
   formatAmountByCollateralToken15Shift,
@@ -49,6 +50,7 @@ import {
 } from "./formatting";
 import { parseTxEvents } from "./parseTxEvents";
 import { LogEntryComponentProps } from "./types";
+import { formatFactor } from "../../lib/numbers";
 
 const NETWORKS = {
   arbitrum: ARBITRUM,

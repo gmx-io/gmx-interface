@@ -1,15 +1,16 @@
 import { Trans, t } from "@lingui/macro";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { formatLeverage } from "domain/synthetics/positions";
-import { formatUsd } from "lib/numbers";
 import { useState } from "react";
 
 import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { formatLeverage } from "domain/synthetics/positions";
+import { formatUsd } from "lib/numbers";
+
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";

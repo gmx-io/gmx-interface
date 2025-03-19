@@ -25,12 +25,7 @@ import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
-import { usePositionEditorData } from "./hooks/usePositionEditorData";
-import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
-import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 
-import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
-import { OPERATION_LABELS, Operation } from "./types";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -39,6 +34,12 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import { usePositionEditorData } from "./hooks/usePositionEditorData";
+import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
+import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
+import { OPERATION_LABELS, Operation } from "./types";
+import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 

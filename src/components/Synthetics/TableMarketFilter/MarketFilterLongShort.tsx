@@ -3,21 +3,22 @@ import values from "lodash/values";
 import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 
-import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { isOrderForPosition } from "domain/synthetics/orders";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
+import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
 import type { Group, Item } from "components/Synthetics/TableOptionsFilter/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
+
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {

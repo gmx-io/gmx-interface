@@ -3,16 +3,11 @@ import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
+import { useKey } from "react-use";
 
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import PercentageInput from "components/PercentageInput/PercentageInput";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
-import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/constants";
+import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -22,9 +17,18 @@ import {
   MAX_ALLOWED_LEVERAGE,
   MAX_LEVERAGE,
 } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
+
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import PercentageInput from "components/PercentageInput/PercentageInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { createDecreaseOrder } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
@@ -44,7 +48,6 @@ import {
   getProfitPrice,
   isAddressZero,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
@@ -58,16 +61,18 @@ import {
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { usePrevious } from "lib/usePrevious";
+
+import ExchangeInfoRow from "./ExchangeInfoRow";
+import FeesTooltip from "./FeesTooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import Modal from "../Modal/Modal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import Tab from "../Tab/Tab";
 import Tooltip from "../Tooltip/Tooltip";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
-import { useKey } from "react-use";
+
+
 import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";

@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
-import { Hash } from "viem";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { ToastContainer, cssTransition } from "react-toastify";
+import { Hash } from "viem";
 import { useDisconnect } from "wagmi";
 
 import {
@@ -11,10 +11,17 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
-import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
+import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
+import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
+import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
+import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
@@ -24,15 +31,10 @@ import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
-import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
-import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
-import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
-import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
-import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
-import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+
 
 const Zoom = cssTransition({
   enter: "zoomIn",

@@ -1,6 +1,7 @@
+import { describe, expect, it } from "vitest";
+
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getTradeboxLeverageSliderMarks } from "domain/synthetics/markets";
-import { describe, expect, it } from "vitest";
 
 describe("tradeboxSelectors", () => {
   it("selectTradeboxLeverageSliderMarks", () => {

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { TokensData } from "domain/synthetics/tokens";
+
 import { MarketsData } from "domain/synthetics/markets";
+import { TokensData } from "domain/synthetics/tokens";
 
 export function useFixedAddreseses(marketsData: MarketsData | undefined, tokensData: TokensData | undefined) {
   return useMemo(() => {

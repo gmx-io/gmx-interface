@@ -2,6 +2,7 @@ import { ReactNode, useCallback } from "react";
 
 import "./HeaderPromoBanner.scss";
 import { MdOutlineClose } from "react-icons/md";
+
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 export function HeaderPromoBanner({ children }: { children: ReactNode }) {

@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
@@ -9,6 +10,8 @@ import { useUserStat } from "domain/legacy";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { getTotalVolumeSum, shouldShowRedirectModal } from "lib/legacy";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
 
 import Footer from "components/Footer/Footer";
 import { HeaderLink } from "components/Header/HeaderLink";
@@ -23,9 +26,6 @@ import statsIcon from "img/ic_stats.svg";
 import totaluserIcon from "img/ic_totaluser.svg";
 import tradingIcon from "img/ic_trading.svg";
 
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
-import { useEffect } from "react";
 import "./Home.css";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 

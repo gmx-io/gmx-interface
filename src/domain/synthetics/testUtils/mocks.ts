@@ -1,3 +1,6 @@
+import { zeroAddress } from "viem";
+import { expect } from "vitest";
+
 import { AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -15,8 +18,7 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import { PositionInfo } from "sdk/types/positions";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
-import { expect } from "vitest";
-import { zeroAddress } from "viem";
+
 import { getPositionKey } from "../positions";
 import { ExternalSwapAggregator, ExternalSwapQuote, getMarkPrice } from "../trade";
 

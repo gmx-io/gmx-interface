@@ -1,20 +1,21 @@
+import { formatDistance } from "date-fns";
+import { BigNumberish } from "ethers";
+import useSWR from "swr";
+
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { formatDistance } from "date-fns";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import useSWR from "swr";
-
-import { BigNumberish } from "ethers";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
-
-import Tooltip from "components/Tooltip/Tooltip";
 import { formatAmountHuman } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+
+import Tooltip from "components/Tooltip/Tooltip";
+
 import "./Stats.css";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {

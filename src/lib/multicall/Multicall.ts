@@ -4,10 +4,6 @@ import { arbitrum, avalanche, avalancheFuji } from "viem/chains";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { isWebWorker } from "config/env";
-import { sleep } from "lib/sleep";
-import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { abis as allAbis } from "sdk/abis";
-
 import {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -16,10 +12,15 @@ import {
   MulticallTimeoutEvent,
 } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { serializeMulticallErrors } from "./utils";
-import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
+import { sleep } from "lib/sleep";
+import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
+import { abis as allAbis } from "sdk/abis";
+
+import type { MulticallRequestConfig, MulticallResult } from "./types";
+import { serializeMulticallErrors } from "./utils";
+
 
 export const MAX_TIMEOUT = 20000;
 

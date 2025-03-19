@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import {
   getMarketIndexName,
@@ -10,10 +9,12 @@ import {
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TokensData } from "domain/synthetics/tokens";
 import { bigintToNumber } from "lib/numbers";
+import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
+
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { convertToUsd } from "../../../../domain/synthetics/tokens/utils";
 
 interface CompositionBarProps {

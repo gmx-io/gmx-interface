@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { MarketInfo } from "domain/synthetics/markets";
 import { mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
 import {
@@ -8,7 +10,6 @@ import {
   getBestSwapPath,
   getMarketsGraph,
 } from "domain/synthetics/trade";
-import { describe, expect, it } from "vitest";
 const marketsKeys = [
   "AVAX-AVAX-USDC",
   "ETH-ETH-USDC",

@@ -15,6 +15,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+
 import { useRequiredActions } from "./useRequiredActions";
 
 export function useShowOneClickTradingInfo() {

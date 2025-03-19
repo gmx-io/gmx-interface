@@ -6,10 +6,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { TradeType } from "domain/synthetics/trade";
 import { useLocalizedMap } from "lib/i18n";
 
+import { SwipeTabs } from "components/Tab/SwipeTabs";
 import Tab from "components/Tab/Tab";
 
 import { mobileTradeTypeClassNames, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
-import { SwipeTabs } from "components/Tab/SwipeTabs";
 
 const OPTIONS = Object.values(TradeType);
 

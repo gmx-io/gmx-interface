@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import Modal from "components/Modal/Modal";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { memo, useCallback, useMemo } from "react";
+
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectClaimsPriceImpactAccruedTotal,
@@ -10,10 +10,13 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { memo, useCallback, useMemo } from "react";
+import { bigMath } from "sdk/utils/bigmath";
+
+import Modal from "components/Modal/Modal";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 
 export const AccruedPositionPriceImpactRebateModal = memo(
   ({ isVisible, onClose }: { isVisible: boolean; onClose: () => void }) => {

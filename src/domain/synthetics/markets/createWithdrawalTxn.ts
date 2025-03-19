@@ -1,20 +1,23 @@
 import { t } from "@lingui/macro";
+import { Signer, ethers } from "ethers";
+
 import { getContract } from "config/contracts";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
-import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { validateSignerAddress } from "lib/contracts/transactionErrors";
 import { isAddressZero } from "lib/legacy";
 import { OrderMetricId } from "lib/metrics/types";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { abis } from "sdk/abis";
+import { convertTokenAddress } from "sdk/configs/tokens";
+
 import { SwapPricingType } from "../orders";
+import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import { TokensData } from "../tokens";
 import { applySlippageToMinOut } from "../trade";
-import { prepareOrderTxn } from "../orders/prepareOrderTxn";
-import { validateSignerAddress } from "lib/contracts/transactionErrors";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { abis } from "sdk/abis";
+
 
 export type CreateWithdrawalParams = {
   account: string;

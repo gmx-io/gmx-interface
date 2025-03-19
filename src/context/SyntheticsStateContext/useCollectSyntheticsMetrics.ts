@@ -1,9 +1,10 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useEffect, useState } from "react";
+
 import { MarketsInfoResult } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useState } from "react";
 
 export function useCollectSyntheticsMetrics({
   marketsInfo,

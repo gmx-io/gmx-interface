@@ -1,27 +1,31 @@
+import { ethers } from "ethers";
 import React, { useState } from "react";
 import useSWR from "swr";
-import { ethers } from "ethers";
+
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { getContract } from "config/contracts";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { abis } from "sdk/abis";
 
-import { getContract } from "config/contracts";
 
+import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 
 import "./ClaimEsGmx.css";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
 import avaIcon from "img/ic_avalanche_96.svg";
 
 import { Trans, t } from "@lingui/macro";
-import { ARBITRUM, AVALANCHE } from "config/chains";
-import { callContract, contractFetcher } from "lib/contracts";
-import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Button from "components/Button/Button";
+
+
 import useWallet from "lib/wallets/useWallet";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { bigMath } from "sdk/utils/bigmath";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";

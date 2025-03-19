@@ -13,6 +13,7 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "lint": "node node_modules/.bin/eslint src",
+    "lint:fix": "node node_modules/.bin/eslint src --fix",
     "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
     "pre-commit": "yarn run lint",
     "pre-push": "vitest run",

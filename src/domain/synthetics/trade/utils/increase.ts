@@ -13,6 +13,7 @@ import {
 } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
+import { OrderType } from "sdk/types/orders";
 import {
   ExternalSwapQuote,
   FindSwapPath,
@@ -22,6 +23,7 @@ import {
 } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
+
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
@@ -29,7 +31,6 @@ import {
   getOrderThresholdType,
 } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
-import { OrderType } from "sdk/types/orders";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;

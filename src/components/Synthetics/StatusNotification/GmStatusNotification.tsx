@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { ReactNode, useEffect, useMemo, useState } from "react";
+
 import {
   PendingDepositData,
   PendingShiftData,
@@ -20,7 +20,11 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { convertTokenAddress } from "sdk/configs/tokens";
+
+import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
+
+
 import { StatusNotification } from "./StatusNotification";
 import { useToastAutoClose } from "./useToastAutoClose";
 

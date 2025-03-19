@@ -1,25 +1,25 @@
+import { produce } from "immer";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import keyBy from "lodash/keyBy";
 import mapValues from "lodash/mapValues";
 import set from "lodash/set";
 import values from "lodash/values";
-
-import { produce } from "immer";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { MarketInfo } from "domain/synthetics/markets";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
+import { TradeMode, TradeType } from "sdk/types/trade";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { MarketInfo } from "domain/synthetics/markets";
-import { TradeMode, TradeType } from "sdk/types/trade";
+
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import { OrdersInfoData } from "../orders";

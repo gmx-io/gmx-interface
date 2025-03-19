@@ -1,13 +1,13 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
-import { useAllPositions } from "domain/legacy";
 import { USD_DECIMALS } from "config/factors";
+import { useAllPositions } from "domain/legacy";
 
 import "./PositionsOverview.css";
-import { formatAmount } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { getTimeRemaining } from "lib/dates";
+import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 

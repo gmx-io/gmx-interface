@@ -1,30 +1,29 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-
 import { useCallback } from "react";
 import { useRouteMatch } from "react-router-dom";
 
-import connectWalletImg from "img/ic_wallet_24.svg";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
-
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
-import { useTradePageVersion } from "lib/useTradePageVersion";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+import { useTradePageVersion } from "lib/useTradePageVersion";
+import useWallet from "lib/wallets/useWallet";
 
+import connectWalletImg from "img/ic_wallet_24.svg";
+
+import { HeaderLink } from "./HeaderLink";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import { NotifyButton } from "../NotifyButton/NotifyButton";
-import { HeaderLink } from "./HeaderLink";
 
 import "./Header.scss";
 

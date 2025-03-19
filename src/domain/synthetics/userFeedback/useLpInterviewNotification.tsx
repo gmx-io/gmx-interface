@@ -8,10 +8,12 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+
+import { InterviewToast } from "components/InterviewToast/InterviewToast";
+
 import { useMarketTokensData } from "../markets/useMarketTokensData";
 import { getTotalGlvInfo, getTotalGmInfo } from "../markets/utils";
 
-import { InterviewToast } from "components/InterviewToast/InterviewToast";
 
 function useTotalProvidedLiquidityUsd() {
   const chainId = useSelector(selectChainId);

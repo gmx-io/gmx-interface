@@ -1,7 +1,8 @@
-import React, { useState } from "react";
 import { Trans, t } from "@lingui/macro";
-import Modal from "../Modal/Modal";
+import React, { useState } from "react";
+
 import Checkbox from "../Checkbox/Checkbox";
+import Modal from "../Modal/Modal";
 
 import "./OrdersToa.css";
 import Button from "components/Button/Button";

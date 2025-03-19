@@ -1,12 +1,16 @@
 import { Trans, msg } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { CSSProperties, useMemo } from "react";
+
 import {
   selectClaimsFundingFeesAccruedTotal,
   selectClaimsPriceImpactAccruedTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { CSSProperties, useMemo } from "react";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
+
 import { ClaimableCardUI } from "./ClaimableCardUI";
 
 type Props = {

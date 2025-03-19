@@ -14,6 +14,7 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -59,14 +60,14 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
+
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
-import { selectExternalSwapQuote } from "context/SyntheticsStateContext/selectors/externalSwapSelectors";
 
 interface TradeboxButtonStateOptions {
   account?: string;

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
+import { useMemo } from "react";
 
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { HIGH_SPREAD_THRESHOLD } from "config/constants";
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -12,7 +12,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSpread } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
-import { useMemo } from "react";
+
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+
 
 export function SwapSpreadRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);

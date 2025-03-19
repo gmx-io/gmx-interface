@@ -1,5 +1,7 @@
 import { Trans, t } from "@lingui/macro";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import { BaseContract, ethers } from "ethers";
+import { withRetry } from "viem";
+
 import {
   getContract,
   getExchangeRouterContract,
@@ -9,7 +11,6 @@ import {
 } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { BaseContract, ethers } from "ethers";
 import { extractDataFromError, getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
@@ -22,7 +23,10 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { extractError } from "sdk/utils/contracts";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
-import { withRetry } from "viem";
+
+
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {

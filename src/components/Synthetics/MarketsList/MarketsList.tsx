@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
-import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import { USD_DECIMALS } from "config/factors";
 import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
@@ -12,9 +11,11 @@ import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatAmountHuman, formatRatePercentage, formatUsdPrice } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -22,7 +23,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
+
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import { NetFeeTooltip } from "./NetFeeTooltip";
 

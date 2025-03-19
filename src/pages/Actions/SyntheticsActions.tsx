@@ -1,14 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 
 import { getChainName } from "config/chains";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
 import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 
-import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
 import "./SyntheticsActions.scss";
 

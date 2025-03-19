@@ -1,7 +1,8 @@
-import { IS_LARGE_ACCOUNT_KEY } from "config/localStorage";
 import { useEffect } from "react";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+
+import { IS_LARGE_ACCOUNT_KEY } from "config/localStorage";
 import { useIsLargeAccountData } from "domain/synthetics/accountStats/useIsLargeAccountData";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 let isLargeAccount = getIsLargeAccountStoredValue();
 

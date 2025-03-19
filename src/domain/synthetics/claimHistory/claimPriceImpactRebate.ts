@@ -1,9 +1,11 @@
 import { t } from "@lingui/macro";
-import { getContract } from "config/contracts";
 import { Signer, ethers } from "ethers";
+
+import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
-import { RebateInfoItem } from "../fees/useRebatesInfo";
 import { abis } from "sdk/abis";
+
+import { RebateInfoItem } from "../fees/useRebatesInfo";
 
 export type ClaimPriceImpactRebateParams = {
   account: string;

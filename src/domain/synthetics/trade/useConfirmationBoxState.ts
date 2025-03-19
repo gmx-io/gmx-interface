@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 
 export type ConfirmationBoxState = ReturnType<typeof useConfirmationBoxState>;

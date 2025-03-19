@@ -1,7 +1,9 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useEffect } from "react";
 
+import { getChainName } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
   selectTradeboxFromToken,
@@ -15,17 +17,15 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
-import { BN_ZERO, formatPercentage } from "lib/numbers";
-import { getByKey } from "lib/objects";
-
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import { getChainName } from "config/chains";
-import { selectAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
+import { BN_ZERO, formatPercentage } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { TradeBoxWarningShownEvent } from "lib/userAnalytics/types";
+
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 

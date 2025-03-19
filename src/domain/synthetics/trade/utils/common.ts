@@ -1,4 +1,3 @@
-import { ExternalSwapQuote } from "sdk/types/trade";
 import {
   ExternalSwapFeeItem,
   SwapFeeItem,
@@ -8,6 +7,7 @@ import {
 } from "domain/synthetics/fees";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
+import { ExternalSwapQuote } from "sdk/types/trade";
 import { SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 

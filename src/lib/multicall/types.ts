@@ -1,5 +1,6 @@
-import type { AbiId } from "sdk/abis";
 import type { Key } from "swr";
+
+import type { AbiId } from "sdk/abis";
 
 export type CacheKey = Key;
 export type SkipKey = null | undefined | false;

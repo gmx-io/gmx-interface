@@ -1,3 +1,6 @@
+import { ethers } from "ethers";
+import { describe, expect, it, vi } from "vitest";
+
 import { AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getPositionFee } from "domain/synthetics/fees";
@@ -10,12 +13,12 @@ import {
   mockTokensData,
   usdToToken,
 } from "domain/synthetics/testUtils/mocks";
-import { ethers } from "ethers";
 import { expandDecimals, getBasisPoints } from "lib/numbers";
 import Token from "sdk/abis/Token.json";
 import { getNativeToken } from "sdk/configs/tokens";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
-import { describe, expect, it, vi } from "vitest";
+
+
 import {
   getExternalCallsParams,
   getExternalSwapInputsByFromValue,

@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+
 import {
   selectTradeboxSwapAmounts,
   selectTradeboxToToken,
@@ -8,6 +8,8 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { applySlippageToMinOut } from "domain/synthetics/trade";
 import { formatBalanceAmount } from "lib/numbers";
+
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) {
   const { isMarket, isSwap } = useSelector(selectTradeboxTradeFlags);

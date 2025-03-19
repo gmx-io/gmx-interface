@@ -1,7 +1,6 @@
 import { i18n } from "@lingui/core";
-import { formatPositionMessage } from "./utils/position";
-import { formatSwapMessage } from "./utils/swap";
 import { describe, expect, it } from "vitest";
+
 import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
@@ -21,6 +20,8 @@ import {
   undefinedOrder,
   withdraw1Usd,
 } from "./mocks";
+import { formatPositionMessage } from "./utils/position";
+import { formatSwapMessage } from "./utils/swap";
 
 i18n.load({ en: {} });
 i18n.activate("en");

@@ -28,7 +28,6 @@ import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
-import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -38,6 +37,9 @@ import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
+
+import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
+
 
 import "./OrderItem.scss";
 import { TokensRatioAndSlippage } from "domain/tokens";

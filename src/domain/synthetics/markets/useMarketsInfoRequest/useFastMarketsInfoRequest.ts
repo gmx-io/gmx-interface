@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
-import { metrics } from "lib/metrics";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
+
+import { metrics } from "lib/metrics";
+import { getSubsquidGraphClient } from "lib/subgraph";
+
 import { FastMarketInfoData } from "..";
 
 export function useFastMarketsInfoRequest(chainId: number) {

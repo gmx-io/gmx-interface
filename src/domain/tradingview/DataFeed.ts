@@ -1,3 +1,5 @@
+import range from "lodash/range";
+
 import {
   DatafeedErrorCallback,
   HistoryCallback,
@@ -9,8 +11,6 @@ import {
   ResolveCallback,
   SubscribeBarsCallback,
 } from "charting_library";
-import range from "lodash/range";
-
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph, getLimitChartPricesFromStats } from "domain/prices";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
@@ -20,9 +20,10 @@ import {
   multiplyBarValues,
   parseSymbolName,
 } from "domain/tradingview/utils";
-import { PauseableInterval } from "lib/PauseableInterval";
 import { LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, getRequestId, metrics } from "lib/metrics";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
+import { parseError } from "lib/parseError";
+import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
 import {
   getNativeToken,
@@ -30,7 +31,6 @@ import {
   getTokenVisualMultiplier,
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
-import { parseError } from "lib/parseError";
 
 const RESOLUTION_TO_SECONDS = {
   1: 60,

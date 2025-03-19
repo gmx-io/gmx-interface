@@ -2,17 +2,18 @@ import { Trans, t } from "@lingui/macro";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
-import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { DEFAULT_MAX_USDG_AMOUNT } from "lib/legacy";
 import { formatAmount, formatAmountHuman, formatKeyAmount, formatUsdPrice } from "lib/numbers";
+import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import PageTitle from "components/PageTitle/PageTitle";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipComponent from "components/Tooltip/Tooltip";
+
 import AssetDropdown from "./AssetDropdown";
 import { WeightText } from "./WeightText";
 

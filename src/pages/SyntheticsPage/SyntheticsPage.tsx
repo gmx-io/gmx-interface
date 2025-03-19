@@ -4,7 +4,6 @@ import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 
-import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -24,6 +23,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import type { OrderType } from "domain/synthetics/orders/types";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
@@ -51,13 +51,13 @@ import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEdi
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
+import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 import { TradeBoxOneClickTrading } from "components/Synthetics/TradeBox/TradeBoxRows/OneClickTrading";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import Tab from "components/Tab/Tab";
-import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 
 export type Props = {
   openSettings: () => void;

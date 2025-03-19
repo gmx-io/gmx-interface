@@ -1,12 +1,15 @@
 // @ts-check
-import { useKey } from "react-use";
-import { useEffect, useState, useMemo, useRef } from "react";
 import { Trans, msg, t } from "@lingui/macro";
-import { ethers } from "ethers";
-import { BsArrowRight } from "react-icons/bs";
 import { useLingui } from "@lingui/react";
+import { ethers } from "ethers";
+import { useEffect, useState, useMemo, useRef } from "react";
+import { BsArrowRight } from "react-icons/bs";
+import { useKey } from "react-use";
 
-import { DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+
+
+import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -14,19 +17,6 @@ import {
   MAX_LEVERAGE,
   USD_DECIMALS,
 } from "config/factors";
-import { getContract } from "config/contracts";
-import Tab from "../Tab/Tab";
-import Modal from "../Modal/Modal";
-
-import Tooltip from "../Tooltip/Tooltip";
-
-import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
-import { callContract } from "lib/contracts";
-import { helperToast } from "lib/helperToast";
-import { getTokenInfo } from "domain/tokens/utils";
-import { approveTokens, shouldRaiseGasError } from "domain/tokens";
-import { usePrevious } from "lib/usePrevious";
-import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
@@ -40,7 +30,18 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { bigMath } from "sdk/utils/bigmath";
 import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { approveTokens, shouldRaiseGasError } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { callContract } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
+import { usePrevious } from "lib/usePrevious";
 import { abis } from "sdk/abis";
+
+import Modal from "../Modal/Modal";
+import Tab from "../Tab/Tab";
+import Tooltip from "../Tooltip/Tooltip";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";

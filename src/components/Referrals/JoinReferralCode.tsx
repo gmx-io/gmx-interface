@@ -2,11 +2,12 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useRef, useState } from "react";
 
-import Button from "components/Button/Button";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { useDebounce } from "lib/useDebounce";
 import useWallet from "lib/wallets/useWallet";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+
+import Button from "components/Button/Button";
 
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 
