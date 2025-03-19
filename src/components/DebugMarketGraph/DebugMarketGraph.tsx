@@ -84,10 +84,12 @@ function DebugMarketGraph() {
 
   const relatedMarkets = useMemo<{ market: string; name: string }[]>(() => {
     if (isUsingManualPath) {
-      return Object.values(marketsInfoData || {}).map((market) => ({
-        market: market.marketTokenAddress,
-        name: getMarketFullName(market),
-      }));
+      return Object.values(marketsInfoData || {})
+        .map((market) => ({
+          market: market.marketTokenAddress,
+          name: getMarketFullName(market),
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
     }
 
     if (!fromTokenAddress || !toTokenWrappedAddress || !allRouteTypes) {
@@ -308,50 +310,39 @@ function DebugMarketGraph() {
       <div className="flex flex-col gap-8">
         {isUsingManualPath ? <div>All markets</div> : <div>Related markets</div>}
         <div className="flex gap-8 overflow-x-scroll">
-          {entries(groupBy(relatedMarkets, (m) => m.name[0])).map(([letter, markets], index) => (
-            <div key={letter} className="flex flex-col gap-8">
-              <div
-                className="text-slate-100"
-                // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                style={{
-                  gridColumn: `${index + 1} / span 1`,
-                }}
-              >
-                {letter}
+          {entries(groupBy(relatedMarkets, (m) => m.name[0]))
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .map(([letter, markets]) => (
+              <div key={letter} className="flex flex-col gap-8">
+                <div className="text-slate-100">{letter}</div>
+                {markets
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((m) => (
+                    <div key={m.market} className="flex items-center gap-4">
+                      <div
+                        title="Click to toggle market"
+                        onClick={() => handleToggleMarket(m.market)}
+                        className="min-w-[220px] rounded-4 bg-slate-600 px-4 py-2"
+                      >
+                        {m.name}
+                      </div>
+                      {isUsingManualPath && (
+                        <button
+                          className="rounded-4 bg-slate-600 px-4 py-2"
+                          onClick={() =>
+                            setDebugSwapMarketsConfig({
+                              ...debugSwapMarketsConfig,
+                              manualPath: [...(debugSwapMarketsConfig?.manualPath || []), m.market],
+                            })
+                          }
+                        >
+                          Add
+                        </button>
+                      )}
+                    </div>
+                  ))}
               </div>
-              {markets.map((m) => (
-                <div
-                  key={m.market}
-                  className="flex items-center gap-4"
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  style={{
-                    gridColumn: `${index + 1} / span 1`,
-                  }}
-                >
-                  <div
-                    title="Click to toggle market"
-                    onClick={() => handleToggleMarket(m.market)}
-                    className="min-w-[220px] rounded-4 bg-slate-600 px-4 py-2"
-                  >
-                    {m.name}
-                  </div>
-                  {isUsingManualPath && (
-                    <button
-                      className="rounded-4 bg-slate-600 px-4 py-2"
-                      onClick={() =>
-                        setDebugSwapMarketsConfig({
-                          ...debugSwapMarketsConfig,
-                          manualPath: [...(debugSwapMarketsConfig?.manualPath || []), m.market],
-                        })
-                      }
-                    >
-                      Add
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>
