@@ -1,4 +1,4 @@
-import { bigNumberify } from "modules/trades/trades";
+import { bigNumberify } from "utils/tradeHistory";
 import { MarketInfo } from "types/markets";
 import { TokenData } from "types/tokens";
 import { bigMath } from "utils/bigmath";
