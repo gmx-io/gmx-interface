@@ -80,7 +80,7 @@ export default function ChartTokenSelector(props: Props) {
       popoverPlacement="bottom-start"
       popoverYOffset={16}
       popoverXOffset={-8}
-      handleClassName={oneRowLabels === false ? "mr-24" : undefined}
+      handleClassName={cx("group", { "mr-24": oneRowLabels === false })}
       chevronClassName={chevronClassName}
       desktopPanelClassName="w-[880px] max-w-[100vw]"
       label={
@@ -104,11 +104,11 @@ export default function ChartTokenSelector(props: Props) {
               </span>
               {poolName && (
                 <span
-                  className={cx("text-body-small font-normal text-slate-100", {
+                  className={cx("text-body-small font-normal text-slate-100 group-hover:text-blue-300", {
                     "ml-8": oneRowLabels,
                   })}
                 >
-                  [{poolName}]
+                  <span>[{poolName}]</span>
                 </span>
               )}
             </span>

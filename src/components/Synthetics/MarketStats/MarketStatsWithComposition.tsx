@@ -348,6 +348,7 @@ export function MarketStatsWithComposition(p: Props) {
                 amount={marketBalance}
                 decimals={marketToken?.decimals ?? 18}
                 usd={marketBalanceUsd}
+                symbol={marketToken?.symbol}
               />
             }
           />

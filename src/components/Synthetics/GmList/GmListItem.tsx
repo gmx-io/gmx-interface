@@ -192,7 +192,13 @@ export function GmListItem({
       </TableTd>
       <TableTd>{formatUsdPrice(token.prices?.minPrice)}</TableTd>
       <TableTd>
-        <AmountWithUsdHuman multiline amount={totalSupply} decimals={token.decimals} usd={totalSupplyUsd} />
+        <AmountWithUsdHuman
+          multiline
+          amount={totalSupply}
+          decimals={token.decimals}
+          usd={totalSupplyUsd}
+          symbol={token.symbol}
+        />
       </TableTd>
       <TableTd>
         {isGlv ? (

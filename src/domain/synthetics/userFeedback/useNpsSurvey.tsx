@@ -49,7 +49,7 @@ export function useNpsSurvey() {
   const isTriggerActionPerformedRef = useRef<number>();
 
   const onSubmitSurvey = useCallback(
-    (answers: Answer[]) => {
+    ({ answers, contact }: { answers: Answer[]; contact: string }) => {
       if (!rating || !account) {
         setError(new Error("Error occurred. Please try again"));
         return;
@@ -64,6 +64,7 @@ export function useNpsSurvey() {
               account: "",
               rating,
               isGeneralFeedback: false,
+              contact,
               monthVolume: formatAmountForMetrics(
                 lastMonthAccountStats?.volume || 0n,
                 USD_DECIMALS,

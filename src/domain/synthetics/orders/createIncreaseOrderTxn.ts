@@ -432,7 +432,15 @@ function createOrderParams({
   };
 }
 
-function getCollateralAndSwapAddresses(chainId: number, p: IncreaseOrderParams) {
+export function getCollateralAndSwapAddresses(
+  chainId: number,
+  p: {
+    swapPath: string[];
+    initialCollateralAddress: string;
+    targetCollateralAddress: string;
+    externalSwapQuote: ExternalSwapQuote | undefined;
+  }
+) {
   let swapPath = p.swapPath;
   let initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const tokenToSendAddress = initialCollateralTokenAddress;

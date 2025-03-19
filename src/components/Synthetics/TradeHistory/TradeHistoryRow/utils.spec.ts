@@ -55,50 +55,50 @@ describe("TradeHistoryRow helpers", () => {
 `);
 
     expect(formatPositionMessage(withdraw1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  $43.2376",
-  "action": "Request Withdraw",
-  "executionPrice": undefined,
-  "fullMarket": "AVAX/USD [WAVAX-USDC]",
-  "indexName": "AVAX/USD",
-  "indexTokenSymbol": "AVAX",
-  "isLong": false,
-  "market": "Short AVAX/USD",
-  "marketPrice": undefined,
-  "poolName": "WAVAX-USDC",
-  "price": "<  $43.2376",
-  "priceComment": [
-    "Acceptable price for the order.",
-  ],
-  "priceImpact": undefined,
-  "size": "12.3357 USDC",
-  "timestamp": "15 Feb 2024, 18:34",
-  "timestampISO": "2024-02-15T18:34:48+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  $43.2376",
+        "action": "Request Withdraw",
+        "executionPrice": undefined,
+        "fullMarket": "AVAX/USD [WAVAX-USDC]",
+        "indexName": "AVAX/USD",
+        "indexTokenSymbol": "AVAX",
+        "isLong": false,
+        "market": "Short AVAX/USD",
+        "marketPrice": undefined,
+        "poolName": "WAVAX-USDC",
+        "price": "<  $43.2376",
+        "priceComment": [
+          "Acceptable price for the order.",
+        ],
+        "priceImpact": undefined,
+        "size": "12.3358 USDC",
+        "timestamp": "15 Feb 2024, 18:34",
+        "timestampISO": "2024-02-15T18:34:48+04:00",
+      }
+    `);
 
     expect(formatPositionMessage(deposit1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  $0.085151",
-  "action": "Request Deposit",
-  "executionPrice": undefined,
-  "fullMarket": "DOGE/USD [ETH-DAI]",
-  "indexName": "DOGE/USD",
-  "indexTokenSymbol": "DOGE",
-  "isLong": true,
-  "market": "Long DOGE/USD",
-  "marketPrice": undefined,
-  "poolName": "ETH-DAI",
-  "price": "<  $0.085151",
-  "priceComment": [
-    "Acceptable price for the order.",
-  ],
-  "priceImpact": undefined,
-  "size": "0.050000 DAI",
-  "timestamp": "15 Feb 2024, 21:30",
-  "timestampISO": "2024-02-15T21:30:44+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  $0.085152",
+        "action": "Request Deposit",
+        "executionPrice": undefined,
+        "fullMarket": "DOGE/USD [ETH-DAI]",
+        "indexName": "DOGE/USD",
+        "indexTokenSymbol": "DOGE",
+        "isLong": true,
+        "market": "Long DOGE/USD",
+        "marketPrice": undefined,
+        "poolName": "ETH-DAI",
+        "price": "<  $0.085152",
+        "priceComment": [
+          "Acceptable price for the order.",
+        ],
+        "priceImpact": undefined,
+        "size": "0.050000 DAI",
+        "timestamp": "15 Feb 2024, 21:30",
+        "timestampISO": "2024-02-15T21:30:44+04:00",
+      }
+    `);
 
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
@@ -226,7 +226,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order execution price takes into account price impact.",
         ],
         "priceImpact": "-$16.82",
-        "size": "+$2,070.18",
+        "size": "+$2,070.19",
         "timestamp": "18 Sep 2023, 16:43",
         "timestampISO": "2023-09-18T16:43:18+04:00",
       }
@@ -260,8 +260,8 @@ describe("TradeHistoryRow helpers", () => {
           },
           undefined,
         ],
-        "priceImpact": "-$9,488.98",
-        "size": "+$1,348.82",
+        "priceImpact": "-$9,488.99",
+        "size": "+$1,348.83",
         "timestamp": "18 Sep 2023, 15:14",
         "timestampISO": "2023-09-18T15:14:09+04:00",
       }
@@ -289,18 +289,18 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(liquidated, minCollateralUsd)).toMatchInlineSnapshot(`
       {
         "action": "Liquidated",
-        "executionPrice": "$6.1062",
+        "executionPrice": "$6.1063",
         "fullMarket": "LINK/USD [LINK-USDC]",
         "indexName": "LINK/USD",
         "indexTokenSymbol": "LINK",
         "isActionError": true,
         "isLong": false,
         "market": "Short LINK/USD",
-        "marketPrice": "$6.0906",
-        "pnl": "-$126.31",
+        "marketPrice": "$6.0907",
+        "pnl": "-$126.32",
         "pnlState": "error",
         "poolName": "LINK-USDC",
-        "price": "$6.0906",
+        "price": "$6.0907",
         "priceComment": [
           "Mark price for the liquidation.",
           "",
@@ -308,20 +308,20 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Order Execution Price",
-            "value": "$6.1062",
+            "value": "$6.1063",
           },
           "",
           "Order execution price takes into account price impact.",
           "",
           {
             "key": "Initial Collateral",
-            "value": "214.779 USDC ($214.77)",
+            "value": "214.779 USDC ($214.78)",
           },
           {
             "key": "PnL",
             "value": {
               "state": "error",
-              "text": "-$126.31",
+              "text": "-$126.32",
             },
           },
           {
@@ -342,13 +342,13 @@ describe("TradeHistoryRow helpers", () => {
             "key": "Close Fee",
             "value": {
               "state": "error",
-              "text": "-$4.50",
+              "text": "-$4.51",
             },
           },
           "",
           {
             "key": "Min. Required Collateral",
-            "value": "$64.41",
+            "value": "$64.42",
           },
           {
             "key": "Collateral at Liquidation",
@@ -366,7 +366,7 @@ describe("TradeHistoryRow helpers", () => {
             "key": "Liquidation Fee",
             "value": {
               "state": "error",
-              "text": "-$1.04",
+              "text": "-$1.05",
             },
           },
           "",
@@ -383,45 +383,45 @@ describe("TradeHistoryRow helpers", () => {
     `);
 
     expect(formatPositionMessage(increaseLongETH, minCollateralUsd)).toMatchInlineSnapshot(`
-{
-  "acceptablePrice": "<  $1,589.47",
-  "action": "Market Increase",
-  "executionPrice": "$1,584.74",
-  "fullMarket": "ETH/USD [WETH-USDC]",
-  "indexName": "ETH/USD",
-  "indexTokenSymbol": "ETH",
-  "isLong": true,
-  "market": "Long ETH/USD",
-  "marketPrice": "$4.46",
-  "poolName": "WETH-USDC",
-  "price": "$4.46",
-  "priceComment": [
-    "Mark price for the order.",
-    "",
-    {
-      "key": "Order Acceptable Price",
-      "value": "<  $1,589.47",
-    },
-    {
-      "key": "Order Execution Price",
-      "value": "$1,584.74",
-    },
-    {
-      "key": "Price Impact",
-      "value": {
-        "state": "error",
-        "text": "-$0.08",
-      },
-    },
-    "",
-    "Order execution price takes into account price impact.",
-  ],
-  "priceImpact": "-$0.08",
-  "size": "+$49.83",
-  "timestamp": "21 Sep 2023, 19:32",
-  "timestampISO": "2023-09-21T19:32:40+04:00",
-}
-`);
+      {
+        "acceptablePrice": "<  $1,589.47",
+        "action": "Market Increase",
+        "executionPrice": "$1,584.74",
+        "fullMarket": "ETH/USD [WETH-USDC]",
+        "indexName": "ETH/USD",
+        "indexTokenSymbol": "ETH",
+        "isLong": true,
+        "market": "Long ETH/USD",
+        "marketPrice": "$4.47",
+        "poolName": "WETH-USDC",
+        "price": "$4.47",
+        "priceComment": [
+          "Mark price for the order.",
+          "",
+          {
+            "key": "Order Acceptable Price",
+            "value": "<  $1,589.47",
+          },
+          {
+            "key": "Order Execution Price",
+            "value": "$1,584.74",
+          },
+          {
+            "key": "Price Impact",
+            "value": {
+              "state": "error",
+              "text": "-$0.09",
+            },
+          },
+          "",
+          "Order execution price takes into account price impact.",
+        ],
+        "priceImpact": "-$0.09",
+        "size": "+$49.83",
+        "timestamp": "21 Sep 2023, 19:32",
+        "timestampISO": "2023-09-21T19:32:40+04:00",
+      }
+    `);
 
     expect(formatPositionMessage(createOrderStopMarketLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
@@ -451,7 +451,7 @@ describe("TradeHistoryRow helpers", () => {
       {
         "acceptablePrice": undefined,
         "action": "Execute Stop Market",
-        "executionPrice": "$95,754.57",
+        "executionPrice": "$95,754.58",
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
         "indexTokenSymbol": "BTC",
@@ -470,7 +470,7 @@ describe("TradeHistoryRow helpers", () => {
           undefined,
           {
             "key": "Order Execution Price",
-            "value": "$95,754.57",
+            "value": "$95,754.58",
           },
           {
             "key": "Price Impact",
@@ -494,18 +494,18 @@ describe("TradeHistoryRow helpers", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": ">  3,327.54 USDC / WETH",
+        "acceptablePrice": ">  3,327.55 USDC / WETH",
         "action": "Request Market Swap",
         "executionPrice": "...",
         "fullMarket": "...",
         "fullMarketNames": undefined,
         "market": "...",
-        "price": ">  3,327.54 USDC / WETH",
+        "price": ">  3,327.55 USDC / WETH",
         "priceComment": [
           "Acceptable price for the order.",
         ],
-        "size": "0.011984 WETH to 39.8800 USDC",
-        "swapFromTokenAmount": "0.011984",
+        "size": "0.011985 WETH to 39.8800 USDC",
+        "swapFromTokenAmount": "0.011985",
         "swapFromTokenSymbol": "WETH",
         "swapToTokenAmount": "39.8800",
         "swapToTokenSymbol": "USDC",
@@ -515,23 +515,23 @@ describe("TradeHistoryRow helpers", () => {
     `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  968.043 USDC / ETH",
+        "acceptablePrice": "<  968.044 USDC / ETH",
         "action": "Execute Market Swap",
-        "executionPrice": "965.184 USDC / ETH",
+        "executionPrice": "965.185 USDC / ETH",
         "fullMarket": "...",
         "fullMarketNames": undefined,
         "market": "...",
-        "price": "965.184 USDC / ETH",
+        "price": "965.185 USDC / ETH",
         "priceComment": [
           "Execution price for the order.",
           "",
           {
             "key": "Order Acceptable Price",
-            "value": "<  968.043 USDC / ETH",
+            "value": "<  968.044 USDC / ETH",
           },
         ],
-        "size": "1,080.6325 USDC to 1.1196 ETH",
-        "swapFromTokenAmount": "1,080.6325",
+        "size": "1,080.6326 USDC to 1.1196 ETH",
+        "swapFromTokenAmount": "1,080.6326",
         "swapFromTokenSymbol": "USDC",
         "swapToTokenAmount": "1.1196",
         "swapToTokenSymbol": "ETH",
@@ -590,10 +590,10 @@ describe("TradeHistoryRow helpers", () => {
             "value": "<  2,054.58 USDC / ETH",
           },
         ],
-        "size": "1.0000 USDC to 0.00048634 ETH",
+        "size": "1.0000 USDC to 0.00048635 ETH",
         "swapFromTokenAmount": "1.0000",
         "swapFromTokenSymbol": "USDC",
-        "swapToTokenAmount": "0.00048634",
+        "swapToTokenAmount": "0.00048635",
         "swapToTokenSymbol": "ETH",
         "timestamp": "14 Feb 2024, 13:33",
         "timestampISO": "2024-02-14T13:33:19+04:00",
