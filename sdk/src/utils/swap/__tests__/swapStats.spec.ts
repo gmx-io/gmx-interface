@@ -435,4 +435,18 @@ describe("getSwapPathStats", () => {
     // Total fees delta should be negative (fees reduce output)
     expect(result.totalFeesDeltaUsd).toBeLessThan(0n);
   });
+
+  it("returns undefined when swap path contains market unrelated to initial collateral token", () => {
+    const result = getSwapPathStats({
+      marketsInfoData: testMarketsInfoData,
+      swapPath: ["BTC-BTC-USDC"], // A market that doesn't contain WETH
+      initialCollateralAddress: tokensData.ETH.wrappedAddress!, // WETH
+      wrappedNativeTokenAddress: tokensData.WETH.address,
+      usdIn: 100n * dollar,
+      shouldUnwrapNativeToken: false,
+      shouldApplyPriceImpact: true,
+    });
+
+    expect(result).toBeUndefined();
+  });
 });

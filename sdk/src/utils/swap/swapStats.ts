@@ -155,7 +155,13 @@ export function getSwapPathStats(p: {
       return undefined;
     }
 
-    tokenOutAddress = getOppositeCollateral(marketInfo, tokenInAddress)!.address;
+    const nextTokenOutAddress = getOppositeCollateral(marketInfo, tokenInAddress)?.address;
+
+    if (!nextTokenOutAddress) {
+      return undefined;
+    }
+
+    tokenOutAddress = nextTokenOutAddress;
 
     if (i === swapPath.length - 1 && shouldUnwrapNativeToken && tokenOutAddress === wrappedNativeTokenAddress) {
       tokenOutAddress = NATIVE_TOKEN_ADDRESS;
