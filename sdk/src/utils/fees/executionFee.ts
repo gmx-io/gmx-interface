@@ -10,6 +10,7 @@ import { convertToUsd, getTokenData } from "utils/tokens";
 export function getExecutionFee(
   chainId: number,
   gasLimits: GasLimitsConfig,
+  // TODO optimize we only need the native token data
   tokensData: TokensData,
   estimatedGasLimit: bigint,
   gasPrice: bigint,

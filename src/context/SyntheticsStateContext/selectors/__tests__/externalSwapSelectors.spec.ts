@@ -1,6 +1,7 @@
 import { AVALANCHE } from "config/chains";
 import { getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
-import { mockExternalSwapQuote, mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
+import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { FindSwapPath } from "domain/synthetics/trade";
 import { expandDecimals } from "lib/numbers";
 import { DeepPartial } from "lib/types";

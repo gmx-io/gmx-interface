@@ -1,4 +1,4 @@
-import { ExternalSwapQuote, FindSwapPath, TriggerThresholdType } from "types/trade";
+import { ExternalSwapQuote, FindSwapPath, SwapOptimizationOrderArray, TriggerThresholdType } from "types/trade";
 
 import { TokenData, TokensRatio } from "types/tokens";
 
@@ -103,7 +103,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
   const isLimit = limitOrderType !== undefined;
 
-  const swapOptimizationOrder: Parameters<FindSwapPath>[1]["order"] = isLimit ? ["length", "liquidity"] : undefined;
+  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
 
   const prices = getIncreasePositionPrices({
     triggerPrice,

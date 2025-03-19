@@ -1,6 +1,5 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { MarketInfo } from "../markets";
 import { ExternalSwapQuote } from "sdk/types/trade";
 
 export enum TradeType {
@@ -192,33 +191,6 @@ export type SwapPathStats = {
   tokenOutAddress: string;
   usdOut: bigint;
   amountOut: bigint;
-};
-
-export type MarketEdge = {
-  marketAddress: string;
-  marketInfo: MarketInfo;
-  // from token
-  from: string;
-  // to token
-  to: string;
-};
-
-export type SwapRoute = {
-  edges: MarketEdge[];
-  path: string[];
-  liquidity: bigint;
-};
-
-export type MarketsGraph = {
-  abjacencyList: { [token: string]: MarketEdge[] };
-  edges: MarketEdge[];
-};
-
-export type SwapEstimator = (
-  e: MarketEdge,
-  usdIn: bigint
-) => {
-  usdOut: bigint;
 };
 
 export type FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => SwapPathStats | undefined;
