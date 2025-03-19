@@ -129,7 +129,7 @@ export const useUserEarnings = (chainId: number) => {
           subsquidUrl!,
           queryBody,
           {
-            account,
+            account: account.toLowerCase(),
             startOfPeriod,
           }
         );
