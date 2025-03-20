@@ -1,0 +1,229 @@
+[
+  {
+    "name": "Avalanche",
+    "symbol": "AVAX",
+    "priceDecimals": 3,
+    "decimals": 18,
+    "address": "0x0000000000000000000000000000000000000000",
+    "isNative": true,
+    "isShortable": true,
+    "categories": ["layer1"],
+    "imageUrl": "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+    "wrappedAddress": "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3"
+  },
+  {
+    "name": "Wrapped AVAX",
+    "symbol": "WAVAX",
+    "priceDecimals": 3,
+    "decimals": 18,
+    "address": "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    "isWrapped": true,
+    "baseSymbol": "AVAX",
+    "categories": ["layer1"],
+    "imageUrl": "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/avalanche",
+    "explorerUrl": "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3"
+  },
+  {
+    "name": "Ethereum (WETH.e)",
+    "symbol": "ETH",
+    "assetSymbol": "WETH.e",
+    "address": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
+    "decimals": 18,
+    "isShortable": true,
+    "categories": ["layer1"],
+    "imageUrl": "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/weth",
+    "coingeckoSymbol": "WETH",
+    "explorerUrl": "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514"
+  },
+  {
+    "name": "USD Coin",
+    "symbol": "USDC",
+    "address": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+    "decimals": 6,
+    "isStable": true,
+    "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
+    "explorerUrl": "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F"
+  },
+  {
+    "name": "Tether",
+    "symbol": "USDT",
+    "decimals": 6,
+    "address": "0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
+    "isStable": true,
+    "imageUrl": "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/dai",
+    "explorerUrl": "https://testnet.snowtrace.io/address/0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c"
+  },
+  {
+    "name": "Dai",
+    "symbol": "DAI",
+    "address": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
+    "decimals": 6,
+    "isStable": true,
+    "imageUrl": "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/dai",
+    "explorerUrl": "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920"
+  },
+  {
+    "name": "Wrapped Bitcoin",
+    "symbol": "WBTC",
+    "decimals": 8,
+    "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+    "categories": ["layer1"],
+    "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+    "explorerUrl": "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca"
+  },
+  {
+    "name": "Solana",
+    "symbol": "SOL",
+    "decimals": 18,
+    "priceDecimals": 3,
+    "address": "0x137f4a7336df4f3f11894718528516edaaD0B082",
+    "categories": ["layer1"],
+    "isSynthetic": true,
+    "imageUrl": "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/solana"
+  },
+  {
+    "name": "Test token",
+    "symbol": "TEST",
+    "decimals": 18,
+    "address": "0x42DD131E1086FFCc59bAE9498D71E20E0C889B14",
+    "isSynthetic": true,
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/tether"
+  },
+  {
+    "name": "BNB",
+    "symbol": "BNB",
+    "decimals": 18,
+    "priceDecimals": 3,
+    "address": "0x110892Dd5fa73bE430c0ade694febD9a4CAc68Be",
+    "isSynthetic": true,
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/binancecoin"
+  },
+  {
+    "name": "Cardano",
+    "symbol": "ADA",
+    "decimals": 18,
+    "priceDecimals": 5,
+    "address": "0xE64dfFF37Fa6Fe969b792B4146cEe2774Ef6e1a1",
+    "categories": ["layer1"],
+    "isSynthetic": true,
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/cardano"
+  },
+  {
+    "name": "TRON",
+    "symbol": "TRX",
+    "decimals": 18,
+    "priceDecimals": 5,
+    "address": "0x0D1495527C255068F2f6feE31C85d326D0A76FE8",
+    "isSynthetic": true,
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/tron"
+  },
+  {
+    "name": "Polygon",
+    "symbol": "MATIC",
+    "decimals": 18,
+    "priceDecimals": 4,
+    "address": "0xadc4698B257F78187Fd675FBf591a09f4c975240",
+    "categories": ["layer1"],
+    "isSynthetic": true,
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/polygon"
+  },
+  {
+    "name": "Polkadot",
+    "symbol": "DOT",
+    "address": "0x65FFb5664a7B3377A5a27D9e59C72Fb1A5E94962",
+    "decimals": 18,
+    "priceDecimals": 4,
+    "isSynthetic": true,
+    "categories": ["layer1"],
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/polkadot"
+  },
+  {
+    "name": "Uniswap",
+    "symbol": "UNI",
+    "decimals": 18,
+    "priceDecimals": 4,
+    "address": "0xF62dC1d2452d0893735D22945Af53C290b158eAF",
+    "isSynthetic": true,
+    "categories": ["layer2", "defi"],
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/uniswap"
+  },
+  {
+    "name": "Dogecoin",
+    "symbol": "DOGE",
+    "decimals": 8,
+    "priceDecimals": 5,
+    "address": "0x2265F317eA5f47A684E5B26c50948617c945d986",
+    "isSynthetic": true,
+    "isShortable": true,
+    "categories": ["meme"],
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/dogecoin"
+  },
+  {
+    "name": "Chainlink",
+    "symbol": "LINK",
+    "decimals": 18,
+    "priceDecimals": 3,
+    "address": "0x6BD09E8D65AD5cc761DF62454452d4EC1545e647",
+    "isSynthetic": true,
+    "isShortable": true,
+    "categories": ["defi"],
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/chainlink"
+  },
+  {
+    "name": "XRP",
+    "symbol": "XRP",
+    "decimals": 6,
+    "priceDecimals": 4,
+    "address": "0xF1C2093383453831e8c90ecf809691123116dAaC",
+    "isSynthetic": true,
+    "categories": ["layer1"],
+    "imageUrl": "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
+    "coingeckoUrl": "https://www.coingecko.com/en/coins/xrp"
+  },
+  {
+    "name": "GMX",
+    "symbol": "GMX",
+    "address": "",
+    "decimals": 18,
+    "imageUrl": "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    "isPlatformToken": true
+  },
+  {
+    "name": "Escrowed GMX",
+    "symbol": "ESGMX",
+    "address": "",
+    "decimals": 18,
+    "isPlatformToken": true
+  },
+  {
+    "name": "GMX LP",
+    "symbol": "GLP",
+    "address": "",
+    "decimals": 18,
+    "imageUrl": "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    "isPlatformToken": true
+  },
+  {
+    "name": "GMX Market tokens",
+    "symbol": "GM",
+    "address": "<market-token-address>",
+    "decimals": 18,
+    "imageUrl": "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
+    "isPlatformToken": true
+  },
+  {
+    "name": "GLV Market tokens",
+    "symbol": "GLV",
+    "address": "<market-token-address>",
+    "decimals": 18,
+    "imageUrl": "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
+    "isPlatformToken": true
+  }
+]
