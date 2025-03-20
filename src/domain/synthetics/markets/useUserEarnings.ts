@@ -2,20 +2,17 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
-import { getMarketListingDate } from "config/markets";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
-import graphqlFetcher from "sdk/utils/graphqlFetcher";
-
-import { getSubgraphUrl } from "config/subgraph";
-import { getIsBaseApyReadyToBeShown } from "./getIsBaseApyReadyToBeShown";
 import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGmMarketsApy } from "./useGmMarketsApy";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
+import { getSubgraphUrl } from "config/subgraph";
+import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -93,14 +90,14 @@ export const useUserEarnings = (chainId: number) => {
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
-  const subsquidUrl = getSubgraphUrl(chainId, "syntheticsStats");
+  const subgraphUrl = getSubgraphUrl(chainId, "syntheticsStats");
   const marketAddresses = useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
   );
 
   const key =
-    marketAddresses.length && marketTokensData && subsquidUrl ? marketAddresses.concat("userEarnings").join(",") : null;
+    marketAddresses.length && marketTokensData && subgraphUrl ? marketAddresses.concat("userEarnings").join(",") : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
@@ -126,7 +123,7 @@ export const useUserEarnings = (chainId: number) => {
         undefined;
       try {
         responseOrUndefined = await graphqlFetcher<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]>>(
-          subsquidUrl!,
+          subgraphUrl!,
           queryBody,
           {
             account,
@@ -198,9 +195,6 @@ export const useUserEarnings = (chainId: number) => {
         result.allMarkets.recent = result.allMarkets.recent + recentIncome;
 
         if (marketsTokensAPRData && marketTokensData) {
-          const isBaseApyReadyToBeShown = getIsBaseApyReadyToBeShown(getMarketListingDate(chainId, marketAddress));
-          if (!isBaseApyReadyToBeShown) return;
-
           const apy = marketsTokensAPRData[marketAddress];
           const token = marketTokensData[marketAddress];
           const balance = token.balance;
