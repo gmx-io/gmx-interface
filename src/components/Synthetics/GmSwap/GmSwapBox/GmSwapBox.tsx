@@ -3,20 +3,19 @@ import { useMemo } from "react";
 
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useLocalizedMap } from "lib/i18n";
-import { getByKey } from "lib/objects";
-import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
-import { Mode, Operation } from "./types";
-
-import Tab from "components/Tab/Tab";
-import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
-
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets";
+import { useLocalizedMap } from "lib/i18n";
+import { getByKey } from "lib/objects";
 
+import Tabs from "components/Tabs/Tabs";
+
+import { Mode, Operation } from "./types";
+import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
+import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import "./GmSwapBox.scss";
-import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 
 export type GmSwapBoxProps = {
   selectedMarketAddress?: string;
@@ -108,24 +107,40 @@ export function GmSwapBox(p: GmSwapBoxProps) {
 
   const localizedModeLabels = useLocalizedMap(MODE_LABELS);
 
+  const availableOperationsTabsOptions = useMemo(
+    () =>
+      availableOperations.map((operation) => ({
+        value: operation,
+        label: localizedOperationLabels[operation],
+        className: operationClassNames[operation],
+      })),
+    [availableOperations, localizedOperationLabels]
+  );
+
+  const availableModesTabsOptions = useMemo(
+    () =>
+      availableModes.map((mode) => ({
+        value: mode,
+        label: localizedModeLabels[mode],
+      })),
+    [availableModes, localizedModeLabels]
+  );
+
   return (
     <div className="App-box GmSwapBox h-full">
-      <Tab
-        options={availableOperations}
-        optionLabels={localizedOperationLabels}
-        option={operation}
-        optionClassnames={operationClassNames}
+      <Tabs
+        options={availableOperationsTabsOptions}
+        selectedValue={operation}
         onChange={onSetOperation}
         className="Exchange-swap-option-tabs"
       />
 
-      <Tab
-        options={availableModes}
-        optionLabels={localizedModeLabels}
+      <Tabs
+        options={availableModesTabsOptions}
+        selectedValue={mode}
+        onChange={onSetMode}
         className="GmSwapBox-asset-options-tabs"
         type="inline"
-        option={mode}
-        onChange={onSetMode}
       />
 
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (

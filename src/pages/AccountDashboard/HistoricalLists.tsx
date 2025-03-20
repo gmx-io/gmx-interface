@@ -21,7 +21,7 @@ import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import {
   AccountActionsV1,
   AccountOrdersV1,
@@ -131,8 +131,6 @@ export function HistoricalLists({ chainId, account }: Props) {
 
   const tabLabels = useTabLabels();
 
-  const tabOptions = useMemo(() => Object.keys(TabKey), []);
-
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderType[]>([]);
 
@@ -142,10 +140,19 @@ export function HistoricalLists({ chainId, account }: Props) {
     setOrderTypesFilter([]);
   }, [setTabKey]);
 
+  const tabsOptions = useMemo(
+    () =>
+      Object.values(TabKey).map((tab) => ({
+        value: tab,
+        label: tabLabels[tab],
+      })),
+    [tabLabels]
+  );
+
   return (
     <div>
       <div className="py-10">
-        <Tab options={tabOptions} optionLabels={tabLabels} option={tabKey} onChange={setTabKey} type="inline" />
+        <Tabs options={tabsOptions} selectedValue={tabKey} onChange={setTabKey} type="inline" />
       </div>
 
       {tabKey === TabKey.Positions && (
@@ -185,13 +192,20 @@ export function HistoricalListsV1({ account, chainId }: Props) {
 
   const tabLabels = useTabLabelsV1(chainId, account, signer, active);
 
-  const tabOptions = useMemo(() => Object.keys(TabKeyV1), []);
+  const tabsOptions = useMemo(
+    () =>
+      Object.values(TabKeyV1).map((tab) => ({
+        value: tab,
+        label: tabLabels[tab],
+      })),
+    [tabLabels]
+  );
 
   return (
     <>
       <div>
         <div className="py-10">
-          <Tab options={tabOptions} optionLabels={tabLabels} option={tabKey} onChange={setTabKey} type="inline" />
+          <Tabs options={tabsOptions} selectedValue={tabKey} onChange={setTabKey} type="inline" />
         </div>
 
         {tabKey === TabKeyV1.Positions && (

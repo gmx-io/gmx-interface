@@ -260,6 +260,8 @@ export const CONTRACTS = {
     GlvRouter: "0x377d979AB35Cd848497707ffa6Ee91783f925b80",
     GlvVault: "0x76f93b5240DF811a3fc32bEDd58daA5784e46C96",
 
+    OpenOceanRouter: zeroAddress,
+
     ExternalHandler: "0x0d9F90c66C392c4d0e70EE0d399c43729B942512",
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
