@@ -65,9 +65,9 @@ export const NETWORKS_BY_CHAIN_IDS = {
 };
 
 const EXPLORER_TX_URLS = {
-  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "/tx/",
-  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "/tx/",
-  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "/tx/",
+  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "tx/",
+  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "tx/",
+  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "tx/",
 };
 
 export function ParseTransactionPage() {
@@ -357,10 +357,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
-            <ExternalLink
-              className="text-slate-100 underline"
-              href={`${explorerUrl}/address/${props.value.toString()}`}
-            >
+            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -369,10 +366,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             {isGlvInfo(marketOrGlv) ? getGlvDisplayName(marketOrGlv) : getMarketFullName(marketOrGlv)} ({props.value})
-            <ExternalLink
-              className="text-slate-100 underline"
-              href={`${explorerUrl}/address/${props.value.toString()}`}
-            >
+            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -392,7 +386,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         <Link className="text-slate-100 underline" to={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
           {props.value.toString()}
         </Link>
-        <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}/address/${props.value.toString()}`}>
+        <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
           <img src={explorerIconSrc} className="h-18 w-18" />
         </ExternalLink>
       </span>
