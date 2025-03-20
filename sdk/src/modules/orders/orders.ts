@@ -200,6 +200,17 @@ export class Orders extends Module {
       })
     );
 
+    if (
+      collateralToken.address !== marketInfo.longToken.address &&
+      collateralToken.address !== marketInfo.shortToken.address
+    ) {
+      const availableTokens = marketInfo.isSameCollaterals
+        ? `long ${marketInfo.longToken.symbol}`
+        : `long ${marketInfo.longToken.symbol} and short ${marketInfo.shortToken.symbol}`;
+
+      throw new Error(`Invalid collateral token. Only ${availableTokens} tokens are available.`);
+    }
+
     const { autoCancelOrdersLimit } = await this.sdk.positions.getMaxAutoCancelOrders({
       positionOrders,
     });
