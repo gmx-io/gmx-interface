@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .vscode
+.yarn
 
 # lingui
 /src/locales/**/*.js
@@ -29,6 +30,11 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# For publish
+.npmrc
+
+typechain-types
 
 package-lock.json
 
