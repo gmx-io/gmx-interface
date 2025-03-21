@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "NodeNext",
+    "module": "ESNext",
     "lib": ["ES2020"],
     "outDir": "./dist",
     "rootDir": ".",
@@ -12,7 +12,6 @@
     "declaration": true,
     "sourceMap": true,
     "types": ["node"],
-    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "paths": {
       "sdk": ["../sdk/src/index.ts"],

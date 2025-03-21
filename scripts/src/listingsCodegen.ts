@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
 
-import fs from "fs/promises";
-import fsSync from "fs";
-import path from "path";
+import fs from "node:fs/promises";
+import fsSync from "node:fs";
+import path from "node:path";
+import childProcess from "node:child_process";
 import prompts from "prompts";
 import { format as formatDateFn } from "date-fns";
 import chalk from "chalk";
+import { isAddress } from "viem";
 import pick from "lodash/pick";
 import { format as formatPrettier } from "prettier";
 
@@ -18,13 +20,14 @@ import { sdkConfigs } from "./sdkConfigs";
 // @ts-ignore
 const dirname = import.meta.dirname;
 
+const PROJECT_PATH = path.join(dirname, "..", "..");
 const TEMP_PATH = path.join(dirname, "..", "temp");
-const ICONS_PATH = path.join(dirname, "..", "..", "src", "img");
+const ICONS_PATH = path.join(PROJECT_PATH, "src", "img");
 
-const MARKETS_CONFIG_PATH = path.join(dirname, "..", "..", "sdk", "src", "configs", "source", "markets");
-const TOKENS_CONFIG_PATH = path.join(dirname, "..", "..", "sdk", "src", "configs", "source", "tokens");
-const SORTED_MARKETS_CONFIG_PATH = path.join(dirname, "..", "..", "src", "config", "source", "sortedMarkets");
-const MARKETS_UI_CONFIG_PATH = path.join(dirname, "..", "..", "src", "config", "source", "marketsUi");
+const MARKETS_CONFIG_PATH = path.join(PROJECT_PATH, "sdk", "src", "configs", "source", "markets");
+const TOKENS_CONFIG_PATH = path.join(PROJECT_PATH, "sdk", "src", "configs", "source", "tokens");
+const SORTED_MARKETS_CONFIG_PATH = path.join(PROJECT_PATH, "src", "config", "source", "sortedMarkets");
+const MARKETS_UI_CONFIG_PATH = path.join(PROJECT_PATH, "src", "config", "source", "marketsUi");
 
 type Chain = "arbitrum" | "avalanche" | "avalanche_fuji";
 
@@ -48,27 +51,33 @@ const Chains = makeChainMap();
 
 const PLACEHOLDER = "__FILL_ME__";
 
+const makeTokenIconsArray = (symbol: string) => [`ic_${symbol.toLowerCase()}_24.svg`, `ic_${symbol.toLowerCase()}_40.svg`];
+
 const formatJsonData = async (data: any) => {
   return await formatPrettier(JSON.stringify(data, null, 2), { parser: "json" });
 };
 
 const fetchTokensData = async (chain: Chain) => {
   const res = await fetch(`${sdkConfigs[chain].oracleUrl}/tokens`);
-  const data = await res.json();
+  const data = (await res.json()) as {
+    tokens: { address: string; symbol: string; decimals: number; synthetic: boolean }[];
+  };
 
   return data;
 };
 
 const fetchMarketsData = async (chain: Chain) => {
   const res = await fetch(`${sdkConfigs[chain].oracleUrl}/markets`);
-  const data = await res.json();
+  const data = (await res.json()) as {
+    markets: { marketToken: string; indexToken: string; longToken: string; shortToken: string; listingDate: string }[];
+  };
 
   return data;
 };
 
 const fetchPricesData = async (chain: Chain) => {
   const res = await fetch(`${sdkConfigs[chain].oracleUrl}/prices/tickers`);
-  const data = await res.json();
+  const data = (await res.json()) as { tokenAddress: string; minPrice: string }[];
 
   return data;
 };
@@ -86,9 +95,13 @@ const promptForInitialSettings = async () => {
   });
 
   const { marketsCount } = await prompts({
-    type: "number",
+    type: "select",
     name: "marketsCount",
     message: "How many markets do you want to generate?",
+    choices: [
+      { title: "1", value: 1 },
+      { title: "2", value: 2 },
+    ],
   });
 
   const answers = await prompts(
@@ -96,6 +109,13 @@ const promptForInitialSettings = async () => {
       type: "text",
       name: `marketTokenAddress_${index}`,
       message: `Enter the market token address for market ${index + 1}`,
+      validate: (value) => {
+        if (isAddress(value)) {
+          return true;
+        }
+
+        return "Invalid address";
+      },
     }))
   );
 
@@ -126,7 +146,7 @@ const pregenerateMarkets = async (chain: Chain, marketsTokensAddresses: string[]
       indexTokenAddress: market.indexToken,
       longTokenAddress: market.longToken,
       shortTokenAddress: market.shortToken,
-      listingDate: formatDateFn(market.listingDate, "dd MMM yyyy"),
+      listingDate: formatDateFn(new Date(market.listingDate), "dd MMM yyyy"),
       enabled: true,
     };
   });
@@ -140,7 +160,9 @@ const pregenerateTokens = async (chain: Chain, pregeneratedMarkets: MarketConfig
     d.longTokenAddress,
     d.shortTokenAddress,
   ]);
-  const existingTokens = await fs.readFile(path.join(TOKENS_CONFIG_PATH, `${chain}.json`), "utf-8").then(JSON.parse);
+  const existingTokens: Token[] = await fs
+    .readFile(path.join(TOKENS_CONFIG_PATH, `${chain}.json`), "utf-8")
+    .then(JSON.parse);
   const tokensData = await fetchTokensData(chain);
   const pricesData = await fetchPricesData(chain);
 
@@ -160,7 +182,7 @@ const pregenerateTokens = async (chain: Chain, pregeneratedMarkets: MarketConfig
 
       const priceDecimals = calculateDisplayDecimals(BigInt(ticker.minPrice), 30 - token.decimals);
 
-      let iconsNames = [`ic_${token.symbol.toLowerCase()}_24.svg`, `ic_${token.symbol.toLowerCase()}_40.svg`];
+      let iconsNames = makeTokenIconsArray(token.symbol);
 
       iconsNames = iconsNames.filter((d) => {
         return !fsSync.existsSync(path.join(ICONS_PATH, d));
@@ -192,6 +214,55 @@ const pregenerateTokens = async (chain: Chain, pregeneratedMarkets: MarketConfig
     });
 
   return { pregeneratedTokens };
+};
+
+const validateSettings = async (settings: ListingsSetting) => {
+  const { markets, tokens, chain } = settings;
+
+  const configMarkets = await fs.readFile(path.join(MARKETS_CONFIG_PATH, `${chain}.json`), "utf-8").then(JSON.parse);
+  const configTokens = await fs.readFile(path.join(TOKENS_CONFIG_PATH, `${chain}.json`), "utf-8").then(JSON.parse);
+  const configSortedMarkets = await fs
+    .readFile(path.join(SORTED_MARKETS_CONFIG_PATH, `${chain}.json`), "utf-8")
+    .then(JSON.parse);
+  const configMarketsUi = await fs
+    .readFile(path.join(MARKETS_UI_CONFIG_PATH, `${chain}.json`), "utf-8")
+    .then(JSON.parse);
+
+  const existingMarkets = Object.keys(configMarkets);
+  const existingMarketsUi = Object.keys(configMarketsUi);
+
+  markets.forEach((m) => {
+    if (existingMarkets.includes(m.marketTokenAddress)) {
+      throw new Error(`Market ${m.marketTokenAddress} already exists in markets config`);
+    }
+    if (existingMarketsUi.includes(m.marketTokenAddress)) {
+      throw new Error(`Market ${m.marketTokenAddress} already exists in marketsUi config`);
+    }
+    if (configSortedMarkets.includes(m.marketTokenAddress)) {
+      throw new Error(`Market ${m.marketTokenAddress} already exists in sortedMarkets config`);
+    }
+  });
+
+  const existingTokens = configTokens.map((t) => t.address);
+  tokens.forEach((t) => {
+    if (existingTokens.includes(t.address)) {
+      throw new Error(`Token ${t.address} already exists in tokens config`);
+    }
+    if (Object.values(t).some((d) => d === PLACEHOLDER)) {
+      throw new Error(`Token ${t.address} has placeholder in one of the fields`);
+    }
+    if (t.categories?.length === 0) {
+      throw new Error(`Token ${t.address} has no categories`);
+    }
+
+    let iconsNames = makeTokenIconsArray(t.symbol);
+
+    iconsNames.forEach((d) => {
+      if (!fsSync.existsSync(path.join(TEMP_PATH, d)) && !fsSync.existsSync(path.join(ICONS_PATH, d))) {
+        throw new Error(`Icon ${d} for ${t.symbol} not found`);
+      }
+    });
+  });
 };
 
 const generateListingsCode = async () => {
@@ -235,6 +306,8 @@ const generateListingsCode = async () => {
     return;
   }
 
+  await validateSettings(settings);
+
   const { markets, tokens, chain } = settings;
 
   const configMarkets = await fs.readFile(path.join(MARKETS_CONFIG_PATH, `${chain}.json`), "utf-8").then(JSON.parse);
@@ -268,12 +341,13 @@ const generateListingsCode = async () => {
   );
 
   await fs.rm(TEMP_PATH, { recursive: true, force: true });
+
+  await childProcess.exec(`cd ${PROJECT_PATH} && yarn prebuild`);
 };
 
 generateListingsCode().catch((error) => {
   console.error(chalk.red("Script failed!"));
 
-  throw error;
   console.error(chalk.red(error.message));
   process.exit(1);
 });
