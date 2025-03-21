@@ -3,7 +3,6 @@ import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
 
-import { getToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -11,7 +10,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { BN_ZERO, bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient } from "lib/subgraph";
+import { getToken } from "sdk/configs/tokens";
 import { buildFiltersBody } from "sdk/utils/subgraph";
 
 import { useFixedAddreseses } from "../common/useFixedAddresses";
@@ -34,9 +34,9 @@ type RawClaimAction = {
   tokenPrices: string[];
   isLongOrders?: boolean[];
   transaction: {
-    timestamp: number;
     hash: string;
   };
+  timestamp: number;
 };
 
 export function useClaimCollateralHistory(
@@ -56,7 +56,7 @@ export function useClaimCollateralHistory(
 
   const account = useSelector(selectAccount);
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
-  const client = getSyntheticsGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
 
   const queryDisabled = !chainId || !client || !account;
 
@@ -86,42 +86,44 @@ export function useClaimCollateralHistory(
   } = useSWRInfinite<RawClaimAction[]>(key, {
     fetcher: async (key) => {
       const pageIndex = key[3];
-      const skip = pageIndex * pageSize;
-      const first = pageSize;
+      const offset = pageIndex * pageSize;
+      const limit = pageSize;
 
-      const filterStr = buildFiltersBody({
-        and: [
-          {
-            account: account!.toLowerCase(),
-            transaction: {
-              timestamp_gte: fromTxTimestamp,
-              timestamp_lte: toTxTimestamp,
+      const filterStr = buildFiltersBody(
+        {
+          AND: [
+            {
+              account_eq: account,
+              transaction_timestamp_gte: fromTxTimestamp,
+              transaction_timestamp_lte: toTxTimestamp,
+              eventName_in: eventName,
             },
-            eventName_in: eventName,
-          },
-          {
-            or: marketAddresses?.map((tokenAddress) => ({
-              marketAddresses_contains: [tokenAddress.toLowerCase()],
-            })),
-          },
-          ...(showDebugValues
-            ? []
-            : [
-                {
-                  or: [{ eventName_not: ClaimType.SettleFundingFeeCreated }],
-                },
-              ]),
-        ],
-      });
+            {
+              OR: marketAddresses?.map((tokenAddress) => ({
+                marketAddresses_contains: [tokenAddress.toLowerCase()],
+              })),
+            },
+            ...(showDebugValues
+              ? []
+              : [
+                  {
+                    OR: [{ eventName_not_eq: ClaimType.SettleFundingFeeCreated }],
+                  },
+                ]),
+          ],
+        },
+        {
+          enums: ClaimType,
+        }
+      );
 
       const whereClause = `where: ${filterStr}`;
 
       const query = gql(`{
         claimActions(
-            skip: ${skip},
-            first: ${first},
-            orderBy: transaction__timestamp,
-            orderDirection: desc,
+            offset: ${offset},
+            limit: ${limit},
+            orderBy: transaction_timestamp_DESC,
             ${whereClause}
         ) {
             id
@@ -132,8 +134,8 @@ export function useClaimCollateralHistory(
             amounts
             tokenPrices
             isLongOrders
+            timestamp
             transaction {
-                timestamp
                 hash
             }
         }
@@ -211,16 +213,16 @@ function createClaimCollateralAction(
     eventName,
     account: rawAction.account,
     claimItems: [],
-    timestamp: rawAction.transaction.timestamp,
-    transactionHash: rawAction.transaction.hash,
+    timestamp: rawAction.timestamp,
+    transaction: rawAction.transaction,
     tokens,
     amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
     tokenPrices: rawAction.tokenPrices.map((price) => bigNumberify(price)!),
   };
 
   for (let i = 0; i < rawAction.marketAddresses.length; i++) {
-    const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
-    const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
+    const marketAddress = rawAction.marketAddresses[i];
+    const tokenAddress = rawAction.tokenAddresses[i];
     const amount = bigNumberify(rawAction.amounts[i])!;
     const price = bigNumberify(rawAction.tokenPrices[i])!;
     const marketInfo = getByKey(marketsInfoData, marketAddress);
@@ -322,9 +324,9 @@ function createSettleFundingFeeAction(
     markets,
     tokens,
     isLongOrders: rawAction.isLongOrders ?? [],
-    transactionHash: rawAction.transaction.hash,
+    transaction: rawAction.transaction,
     eventName,
-    timestamp: rawAction.transaction.timestamp,
+    timestamp: rawAction.timestamp,
     claimItems: Object.values(claimItemsMap),
   };
 }
