@@ -1,5 +1,5 @@
-import type { Address } from "viem";
 import merge from "lodash/merge";
+import type { Address } from "viem";
 
 import type { GmxSdk } from "../..";
 
@@ -11,7 +11,7 @@ import { PositionTradeAction, RawTradeAction, TradeAction, TradeActionType } fro
 import graphqlFetcher from "utils/graphqlFetcher";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
 import { buildFiltersBody, GraphQlFilters } from "utils/subgraph";
-import { getSwapPathOutputAddresses } from "utils/swapStats";
+import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import { createRawTradeActionTransformer } from "utils/tradeHistory";
 import { Module } from "../base";
 

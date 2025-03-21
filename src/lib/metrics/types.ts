@@ -290,17 +290,13 @@ export type IncreaseOrderMetricData = PositionOrderMetricParams & {
   isTPSLCreated: boolean | undefined;
   slCount: number | undefined;
   tpCount: number | undefined;
-  externalSwapQuote:
-    | {
-        inTokenAddress: string;
-        outTokenAddress: string;
-        amountIn: number | undefined;
-        amountOut: number | undefined;
-        usdIn: number | undefined;
-        usdOut: number | undefined;
-        feesUsd: number | undefined;
-      }
-    | undefined;
+  internalSwapTotalFeesBps: number | undefined;
+  internalSwapTotalFeesDeltaUsd: number | undefined;
+  externalSwapInTokenAddress: string | undefined;
+  externalSwapOutTokenAddress: string | undefined;
+  externalSwapUsdIn: number | undefined;
+  externalSwapUsdOut: number | undefined;
+  externalSwapFeesUsd: number | undefined;
 };
 
 export type DecreaseOrderMetricData = PositionOrderMetricParams & {
@@ -443,6 +439,10 @@ export type MulticallBatchedErrorCounter = {
   data: {
     priority: string;
   };
+};
+
+export type OpenOceanQuoteTiming = {
+  event: "openOcean.quote.timing";
 };
 
 export type MulticallRequestCounter = {

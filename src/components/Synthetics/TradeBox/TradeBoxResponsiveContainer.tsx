@@ -11,14 +11,14 @@ export function TradeBoxResponsiveContainer() {
     return (
       <div className="text-body-medium flex flex-col rounded-4 bg-slate-800 p-15" data-qa="tradebox">
         <TradeBoxHeaderTabs />
-        <TradeBox />
+        <TradeBox isMobile={isMobile} />
       </div>
     );
   }
 
   return (
     <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox">
-      <TradeBox />
+      <TradeBox isMobile={isMobile} />
     </Curtain>
   );
 }

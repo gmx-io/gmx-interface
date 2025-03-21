@@ -1,6 +1,6 @@
 import { getByKey } from "./objects";
 
-import { getSwapPathOutputAddresses } from "./swapStats";
+import { getSwapPathOutputAddresses } from "./swap/swapStats";
 
 import { Token, TokensData } from "types/tokens";
 import { getAddress } from "viem";

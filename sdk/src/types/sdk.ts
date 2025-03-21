@@ -22,4 +22,8 @@ export interface GmxSdkConfig {
   tokens?: Record<string, Partial<Token>>;
   /** Markets override configurations */
   markets?: Record<string, Partial<MarketSdkConfig>>;
+
+  settings?: {
+    uiFeeReceiverAccount?: string;
+  };
 }

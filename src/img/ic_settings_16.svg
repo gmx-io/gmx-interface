@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16">
-  <g clip-path="url(#a)">
+  <g clip-path="url(#ic_settings_16)">
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width=".667"
       d="M6.883 2.878c.284-1.17 1.95-1.17 2.234 0a1.15 1.15 0 0 0 1.715.71c1.029-.626 2.207.551 1.58 1.58a1.148 1.148 0 0 0 .71 1.715c1.17.284 1.17 1.95 0 2.234a1.15 1.15 0 0 0-.71 1.715c.626 1.029-.551 2.207-1.58 1.58a1.148 1.148 0 0 0-1.715.71c-.284 1.17-1.95 1.17-2.234 0a1.15 1.15 0 0 0-1.715-.71c-1.029.626-2.207-.551-1.58-1.58a1.15 1.15 0 0 0-.71-1.715c-1.17-.284-1.17-1.95 0-2.234a1.15 1.15 0 0 0 .71-1.715c-.626-1.029.551-2.207 1.58-1.58a1.149 1.149 0 0 0 1.715-.71Z" />
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width=".667"
       d="M6 8a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z" />
   </g>
   <defs>
-    <clipPath id="a">
+    <clipPath id="ic_settings_16">
       <path fill="#fff" d="M0 0h16v16H0z" />
     </clipPath>
   </defs>
