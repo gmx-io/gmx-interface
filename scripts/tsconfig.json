@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020"],
+    "outDir": "./dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "sourceMap": true,
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "paths": {
+      "sdk": ["../sdk/src/index.ts"],
+      "sdk/*": ["../sdk/src/*"],
+      "modules/*": ["../sdk/src/modules/*"],
+      "configs/*": ["../sdk/src/configs/*"],
+      "types/*": ["../sdk/src/types/*"],
+      "utils/*": ["../sdk/src/utils/*"],
+      "abis/*": ["../sdk/src/abis/*"],  
+      "abis": ["../sdk/src/abis"]  
+    }
+  },
+  "references": [{ "path": "../sdk" }],
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+
