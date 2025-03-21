@@ -1,6 +1,6 @@
-import arbitrum from "config/source/marketsUi/arbitrum.json";
-import avalanche from "config/source/marketsUi/avalanche.json";
-import avalancheFuji from "config/source/marketsUi/avalanche_fuji.json";
+import arbitrum from "config/source/sortedMarkets/arbitrum.json";
+import avalanche from "config/source/sortedMarkets/avalanche.json";
+import avalancheFuji from "config/source/sortedMarkets/avalanche_fuji.json";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 

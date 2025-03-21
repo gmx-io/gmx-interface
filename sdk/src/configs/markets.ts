@@ -15,8 +15,6 @@ export type MarketConfig = {
   indexTokenAddress: string;
   longTokenAddress: string;
   shortTokenAddress: string;
-  listingDate: Date;
-  enabled: boolean;
 };
 
 /*

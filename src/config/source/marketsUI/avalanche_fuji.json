@@ -1,161 +1,81 @@
 {
   "0xD996ff47A1F763E1e55415BC4437c59292D1F415": {
-    "marketTokenAddress": "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
-    "indexTokenAddress": "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
-    "longTokenAddress": "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xbf338a6C595f06B7Cfff2FA8c958d49201466374": {
-    "marketTokenAddress": "0xbf338a6C595f06B7Cfff2FA8c958d49201466374",
-    "indexTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xDdF708B284C5C26BE67Adf9C51DFa935b5035bF8": {
-    "marketTokenAddress": "0xDdF708B284C5C26BE67Adf9C51DFa935b5035bF8",
-    "indexTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xe28323955C05B75E25B56C1c996C1354Eb5Aa13D": {
-    "marketTokenAddress": "0xe28323955C05B75E25B56C1c996C1354Eb5Aa13D",
-    "indexTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "longTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x79E6e0E454dE82fA98c02dB012a2A69103630B07": {
-    "marketTokenAddress": "0x79E6e0E454dE82fA98c02dB012a2A69103630B07",
-    "indexTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-    "longTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x4b6ccF6E429f038087A26b13DD6ab4304F7E5DF1": {
-    "marketTokenAddress": "0x4b6ccF6E429f038087A26b13DD6ab4304F7E5DF1",
-    "indexTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-    "longTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xEDF9Be35bE84cD1e39Bda59Bd7ae8A704C12e06f": {
-    "marketTokenAddress": "0xEDF9Be35bE84cD1e39Bda59Bd7ae8A704C12e06f",
-    "indexTokenAddress": "0x137f4a7336df4f3f11894718528516edaaD0B082",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xeE8827D67C054cAa89C9d6058Fdddccd1C499c74": {
-    "marketTokenAddress": "0xeE8827D67C054cAa89C9d6058Fdddccd1C499c74",
-    "indexTokenAddress": "0x0000000000000000000000000000000000000000",
-    "longTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
-    "shortTokenAddress": "0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xAC2c6C1b0cd1CabF78B4e8ad58aA9d43375318Cb": {
-    "marketTokenAddress": "0xAC2c6C1b0cd1CabF78B4e8ad58aA9d43375318Cb",
-    "indexTokenAddress": "0x2265F317eA5f47A684E5B26c50948617c945d986",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xeDf53322e288F597436f5d5849771662AEe16A1C": {
-    "marketTokenAddress": "0xeDf53322e288F597436f5d5849771662AEe16A1C",
-    "indexTokenAddress": "0x6BD09E8D65AD5cc761DF62454452d4EC1545e647",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x017de90B0fa830C592805C6148c089191716f04c": {
-    "marketTokenAddress": "0x017de90B0fa830C592805C6148c089191716f04c",
-    "indexTokenAddress": "0x110892Dd5fa73bE430c0ade694febD9a4CAc68Be",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x695a07d3DD551b0E77A348cC6A873c1eb183FA98": {
-    "marketTokenAddress": "0x695a07d3DD551b0E77A348cC6A873c1eb183FA98",
-    "indexTokenAddress": "0xE64dfFF37Fa6Fe969b792B4146cEe2774Ef6e1a1",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x927f31364b8836021e4F73B27a5d0EbB35C74679": {
-    "marketTokenAddress": "0x927f31364b8836021e4F73B27a5d0EbB35C74679",
-    "indexTokenAddress": "0x0D1495527C255068F2f6feE31C85d326D0A76FE8",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x62408de4cB1a499842EC53296EF8dD99A825CcEb": {
-    "marketTokenAddress": "0x62408de4cB1a499842EC53296EF8dD99A825CcEb",
-    "indexTokenAddress": "0xadc4698B257F78187Fd675FBf591a09f4c975240",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "17 Sep 2024"
   },
   "0xCc6AC193E1d1Ef102eCBBA864BBfE87E414a7A0D": {
-    "marketTokenAddress": "0xCc6AC193E1d1Ef102eCBBA864BBfE87E414a7A0D",
-    "indexTokenAddress": "0x65FFb5664a7B3377A5a27D9e59C72Fb1A5E94962",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xE446E8f7074c0A97bb7cd448fA2CC3346045F514": {
-    "marketTokenAddress": "0xE446E8f7074c0A97bb7cd448fA2CC3346045F514",
-    "indexTokenAddress": "0xF62dC1d2452d0893735D22945Af53C290b158eAF",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x1d9dC405CCEFA78b203BaD9CCe1b1623D2B25D9e": {
-    "marketTokenAddress": "0x1d9dC405CCEFA78b203BaD9CCe1b1623D2B25D9e",
-    "indexTokenAddress": "0x42DD131E1086FFCc59bAE9498D71E20E0C889B14",
-    "longTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "shortTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0xd783EB54407d6d3A4D5c94b634eC9BAE3F574098": {
-    "marketTokenAddress": "0xd783EB54407d6d3A4D5c94b634eC9BAE3F574098",
-    "indexTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-    "longTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
-    "shortTokenAddress": "0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x6d72D2787107c32a48bbA4687Eb8F9C19FE5e29C": {
-    "marketTokenAddress": "0x6d72D2787107c32a48bbA4687Eb8F9C19FE5e29C",
-    "indexTokenAddress": "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
-    "longTokenAddress": "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
-    "shortTokenAddress": "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   },
   "0x3b649015Fe0a4d15617e57aA11c0FbbfA03A9e11": {
-    "marketTokenAddress": "0x3b649015Fe0a4d15617e57aA11c0FbbfA03A9e11",
-    "indexTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-    "longTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
-    "shortTokenAddress": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
     "enabled": true,
     "listingDate": "01 Jan 1970"
   }
