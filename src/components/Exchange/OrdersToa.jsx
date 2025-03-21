@@ -1,11 +1,12 @@
 import { Trans, t } from "@lingui/macro";
 import React, { useState } from "react";
 
+import Button from "components/Button/Button";
+
 import Checkbox from "../Checkbox/Checkbox";
 import Modal from "../Modal/Modal";
 
 import "./OrdersToa.css";
-import Button from "components/Button/Button";
 
 export default function OrdersToa(props) {
   const { setIsVisible, isPluginApproving, approveOrderBook } = props;

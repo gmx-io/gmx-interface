@@ -1,3 +1,5 @@
+import { t, Trans, msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { NavLink } from "react-router-dom";
 
@@ -19,14 +21,11 @@ import {
   shouldInvertTriggerRatio,
   SWAP,
 } from "lib/legacy";
-
-import "./OrdersOverview.css";
-import { t, Trans, msg } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
-
 import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+
+import "./OrdersOverview.css";
 
 const ORDER_TYPE_LABELS = {
   Increase: msg`Increase`,

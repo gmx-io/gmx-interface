@@ -1,21 +1,19 @@
 import { t } from "@lingui/macro";
-
-import logoImg from "img/logo_GMX.svg";
-
 import { FiX } from "react-icons/fi";
-
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
-
 import { Link } from "react-router-dom";
 
-import "./Header.scss";
 import { shouldShowRedirectModal } from "lib/legacy";
+import { userAnalytics } from "lib/userAnalytics";
+import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import logoImg from "img/logo_GMX.svg";
+
 import { HeaderLink } from "./HeaderLink";
+
+import "./Header.scss";
 
 type Props = {
   small?: boolean;

@@ -1,11 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-
-import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
-
 import { useEffect, useMemo, useState } from "react";
 
-import "./StatusNotification.scss";
 import { getExplorerUrl } from "config/chains";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
@@ -31,8 +27,11 @@ import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 import { useToastAutoClose } from "./useToastAutoClose";
+
+import "./StatusNotification.scss";
 
 type Props = {
   toastTimestamp: number;

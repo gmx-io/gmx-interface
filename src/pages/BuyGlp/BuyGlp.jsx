@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { Trans, t } from "@lingui/macro";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { getIncentivesV2Url } from "config/links";
@@ -9,13 +10,9 @@ import { getNativeToken } from "sdk/configs/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import GlpSwap from "components/Glp/GlpSwap";
-import "./BuyGlp.css";
-
-import { Trans, t } from "@lingui/macro";
-
-
 import PageTitle from "components/PageTitle/PageTitle";
 
+import "./BuyGlp.css";
 
 export default function BuyGlp() {
   const { chainId } = useChainId();

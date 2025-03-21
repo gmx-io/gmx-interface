@@ -16,6 +16,7 @@ import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "dom
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
@@ -26,7 +27,6 @@ import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 import { shouldPreSelectPosition } from "./utils";
 
 import "./SettleAccruedFundingFeeModal.scss";
-import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 type Props = {
   allowedSlippage: number;

@@ -1,9 +1,9 @@
 import { ReactNode, useCallback } from "react";
-
-import "./HeaderPromoBanner.scss";
 import { MdOutlineClose } from "react-icons/md";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+
+import "./HeaderPromoBanner.scss";
 
 export function HeaderPromoBanner({ children }: { children: ReactNode }) {
   const [hidden, setHidden] = useLocalStorageSerializeKey("header-promo-banner", false);

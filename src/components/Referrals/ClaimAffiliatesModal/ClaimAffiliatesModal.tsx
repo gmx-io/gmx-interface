@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { useState } from "react";
 
 import { getMarketIndexName, getMarketPoolName, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffiliateRewardsTxn";
@@ -9,6 +10,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -16,9 +18,6 @@ import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import "./ClaimAffiliatesModal.scss";
-import { useState } from "react";
-
-import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   onClose: () => void;

@@ -1,7 +1,7 @@
-import cx from "classnames";
-import React from "react";
-import "./InputSection.css";
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
+
+import "./InputSection.css";
 
 export default function InputSection(props) {
   const {

@@ -30,6 +30,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { expandDecimals, formatAmount, formatPercentage, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { getPriceDecimals, getToken, getWrappedToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
 import PercentageInput from "components/PercentageInput/PercentageInput";
@@ -44,7 +45,6 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import Tooltip from "../Tooltip/Tooltip";
 
 import "./ConfirmationBox.css";
-import { bigMath } from "sdk/utils/bigmath";
 
 function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo?.spread && toTokenInfo?.spread) {

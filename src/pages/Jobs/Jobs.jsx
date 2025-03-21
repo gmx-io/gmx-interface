@@ -1,6 +1,6 @@
+import { t, Trans } from "@lingui/macro";
 import React from "react";
 
-import "./Jobs.css";
 import { getPageTitle } from "lib/legacy";
 
 import Card from "components/Common/Card";
@@ -8,8 +8,7 @@ import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 
-import { t, Trans } from "@lingui/macro";
-
+import "./Jobs.css";
 
 function Jobs() {
   return (

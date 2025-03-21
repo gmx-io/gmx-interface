@@ -8,36 +8,6 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 
-import { useLocalStorageByChainId } from "lib/localStorage";
-import { formatBalanceAmount } from "lib/numbers";
-
-import {
-  applyFactor,
-  basisPointsToFloat,
-  expandDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatAmountHuman,
-  formatDeltaUsd,
-  formatUsdPrice,
-  limitDecimals,
-  parseValue,
-} from "lib/numbers";
-import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tab from "../Tab/Tab";
-
-import { useGmxPrice } from "domain/legacy";
-
-import BuyInputSection from "../BuyInputSection/BuyInputSection";
-import Tooltip from "../Tooltip/Tooltip";
-
-import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import PageTitle from "components/PageTitle/PageTitle";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getContract } from "config/contracts";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -46,6 +16,7 @@ import { getIncentivesV2Url } from "config/links";
 import { GLP_PRICE_DECIMALS, MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useGmxPrice } from "domain/legacy";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getFeeItem } from "domain/synthetics/fees";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
@@ -64,6 +35,20 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
 } from "lib/legacy";
+import { useLocalStorageByChainId } from "lib/localStorage";
+import {
+  applyFactor,
+  basisPointsToFloat,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatAmountHuman,
+  formatDeltaUsd,
+  formatUsdPrice,
+  limitDecimals,
+  parseValue,
+} from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import useSearchParams from "lib/useSearchParams";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
@@ -79,9 +64,21 @@ import {
 } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import "./GlpSwap.css";
+import { AmountWithUsdBalance, AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import PageTitle from "components/PageTitle/PageTitle";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+
 import SwapErrorModal from "./SwapErrorModal";
+import BuyInputSection from "../BuyInputSection/BuyInputSection";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import Tab from "../Tab/Tab";
+import Tooltip from "../Tooltip/Tooltip";
+
+import "./GlpSwap.css";
 
 const { ZeroAddress } = ethers;
 

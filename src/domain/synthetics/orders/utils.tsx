@@ -427,7 +427,7 @@ export function getPendingOrderFromParams(
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   let minOutputAmount = 0n;
   if ("minOutputUsd" in p) {
-    shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd;
+    shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd; // eslint-disable-line
   }
   if ("minOutputAmount" in p) {
     minOutputAmount = p.minOutputAmount;

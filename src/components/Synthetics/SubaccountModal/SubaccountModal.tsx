@@ -51,17 +51,14 @@ import { StatusNotification } from "components/Synthetics/StatusNotification/Sta
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
-
 import copyIcon from "img/ic_copy_20.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
 
-
-
-import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
-import "./SubaccountModal.scss";
 import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
+import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
 
+import "./SubaccountModal.scss";
 
 export type FormState = "empty" | "inactive" | "activated";
 

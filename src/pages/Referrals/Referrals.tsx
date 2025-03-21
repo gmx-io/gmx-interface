@@ -18,11 +18,14 @@ import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { getPageTitle, isHashZero } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { serializeBigIntsInObject } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
+import PageTitle from "components/PageTitle/PageTitle";
 import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
@@ -30,15 +33,7 @@ import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "componen
 import TradersStats from "components/Referrals/TradersStats";
 import Tab from "components/Tab/Tab";
 
-
-
-
 import "./Referrals.css";
-import useWallet from "lib/wallets/useWallet";
-
-import PageTitle from "components/PageTitle/PageTitle";
-
-import { serializeBigIntsInObject } from "lib/numbers";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";

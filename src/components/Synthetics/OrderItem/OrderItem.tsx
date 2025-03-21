@@ -25,6 +25,7 @@ import {
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
+import { TokensRatioAndSlippage } from "domain/tokens";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -40,9 +41,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
-
 import "./OrderItem.scss";
-import { TokensRatioAndSlippage } from "domain/tokens";
 
 type Props = {
   order: OrderInfo;
@@ -420,7 +419,7 @@ function OrderItemLarge({
 
   const handleSetRef = useCallback(
     (el: HTMLElement | null) => {
-      setRef && setRef(el, order.key);
+      if (setRef) setRef(el, order.key);
     },
     [order.key, setRef]
   );
@@ -570,7 +569,7 @@ function OrderItemSmall({
 
   const handleSetRef = useCallback(
     (el: HTMLElement | null) => {
-      setRef && setRef(el, order.key);
+      if (setRef) setRef(el, order.key);
     },
     [order.key, setRef]
   );

@@ -12,6 +12,7 @@ import { getTotalVolumeSum, shouldShowRedirectModal } from "lib/legacy";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
+import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 import Footer from "components/Footer/Footer";
 import { HeaderLink } from "components/Header/HeaderLink";
@@ -27,7 +28,6 @@ import totaluserIcon from "img/ic_totaluser.svg";
 import tradingIcon from "img/ic_trading.svg";
 
 import "./Home.css";
-import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 function LaunchExchangeButton({
   showRedirectModal,

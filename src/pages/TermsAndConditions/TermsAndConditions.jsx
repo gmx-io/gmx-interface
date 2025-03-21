@@ -1,10 +1,10 @@
 import { t } from "@lingui/macro";
-import React from "react";
 
 import { getPageTitle } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";
+
 import "./TermsAndConditions.css";
 
 export default function TermsAndConditions() {

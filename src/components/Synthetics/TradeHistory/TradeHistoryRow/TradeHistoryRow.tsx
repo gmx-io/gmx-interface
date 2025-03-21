@@ -11,6 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import { NETWORKS_BY_CHAIN_IDS } from "pages/ParseTransaction/ParseTransaction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
@@ -26,10 +27,7 @@ import { formatPositionMessage } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
-
-
 import "./TradeHistoryRow.scss";
-import { NETWORKS_BY_CHAIN_IDS } from "pages/ParseTransaction/ParseTransaction";
 
 type Props = {
   tradeAction: TradeAction;

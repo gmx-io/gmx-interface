@@ -1,14 +1,12 @@
-import React from "react";
+import { t } from "@lingui/macro";
 
 import { getPageTitle } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 
 import "./ReferralTerms.css";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-
-import { t } from "@lingui/macro";
 
 export default function ReferralTerms() {
   return (

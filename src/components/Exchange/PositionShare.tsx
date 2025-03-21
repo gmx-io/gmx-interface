@@ -20,9 +20,11 @@ import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import shareBgImg from "img/position-share-bg.png";
 
-import Modal from "../Modal/Modal";
-import "./PositionShare.css";
 import { PositionShareCard } from "./PositionShareCard";
+import Modal from "../Modal/Modal";
+
+import "./PositionShare.css";
+
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";

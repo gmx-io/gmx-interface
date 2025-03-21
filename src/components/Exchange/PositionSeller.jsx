@@ -20,19 +20,11 @@ import {
 import { USD_DECIMALS } from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
-
-import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import PercentageInput from "components/PercentageInput/PercentageInput";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
 import { createDecreaseOrder } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
+import { useLocalizedMap } from "lib/i18n";
 import {
   DECREASE,
   DUST_USD,
@@ -60,8 +52,20 @@ import {
 } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { usePrevious } from "lib/usePrevious";
+import { abis } from "sdk/abis";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import PercentageInput from "components/PercentageInput/PercentageInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { ErrorCode, ErrorDisplayType } from "./constants";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import Checkbox from "../Checkbox/Checkbox";
@@ -69,14 +73,9 @@ import Modal from "../Modal/Modal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import Tab from "../Tab/Tab";
 import Tooltip from "../Tooltip/Tooltip";
+
 import "./PositionSeller.css";
-import { ErrorCode, ErrorDisplayType } from "./constants";
 
-
-import { bigMath } from "sdk/utils/bigmath";
-import { useLocalizedMap } from "lib/i18n";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { abis } from "sdk/abis";
 const { ZeroAddress } = ethers;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 

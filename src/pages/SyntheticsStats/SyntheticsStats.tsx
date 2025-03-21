@@ -1,4 +1,3 @@
-
 import cx from "classnames";
 import { format } from "date-fns";
 import { ethers } from "ethers";
@@ -36,6 +35,7 @@ import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import "./SyntheticsStats.scss";
 
 function pow(bn: bigint, exponent: bigint) {

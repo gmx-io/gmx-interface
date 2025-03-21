@@ -13,6 +13,7 @@ import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokens
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
+import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -24,7 +25,6 @@ import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 
 import "./AssetDropdown.scss";
-import { useTradePageVersion } from "lib/useTradePageVersion";
 
 const PLATFORM_TOKEN_ROUTES = {
   GMX: "/buy_gmx",

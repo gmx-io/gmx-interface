@@ -13,7 +13,6 @@ import "styles/Shared.scss";
 import "styles/recharts.css";
 import "./App.scss";
 
-
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";

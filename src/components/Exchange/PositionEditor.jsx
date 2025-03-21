@@ -6,8 +6,6 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { BsArrowRight } from "react-icons/bs";
 import { useKey } from "react-use";
 
-
-
 import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getContract } from "config/contracts";
 import {
@@ -17,28 +15,29 @@ import {
   MAX_LEVERAGE,
   USD_DECIMALS,
 } from "config/factors";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import Button from "components/Button/Button";
-import FeesTooltip from "./FeesTooltip";
-import getLiquidationPrice from "lib/positions/getLiquidationPrice";
-import { getLeverage } from "lib/positions/getLeverage";
-import { getPriceDecimals } from "sdk/configs/tokens";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { bigMath } from "sdk/utils/bigmath";
-import { useLocalizedMap } from "lib/i18n";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import { DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
+import { getLeverage } from "lib/positions/getLeverage";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { usePrevious } from "lib/usePrevious";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { abis } from "sdk/abis";
+import { getPriceDecimals } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import { ErrorCode, ErrorDisplayType } from "./constants";
+import FeesTooltip from "./FeesTooltip";
 import Modal from "../Modal/Modal";
 import Tab from "../Tab/Tab";
 import Tooltip from "../Tooltip/Tooltip";

@@ -1,18 +1,18 @@
 import { Trans, t } from "@lingui/macro";
 import { memo } from "react";
 
-import Modal from "../Modal/Modal";
-import Button from "../Button/Button";
-
 import { useNotifyModalState } from "lib/useNotifyModalState";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import "./NotifyModal.scss";
-
 import ArrowBulletIcon from "img/arrow-bullet.svg?react";
 import ExternalLinkIcon from "img/external-link.svg?react";
 import NotifiLogoIcon from "img/notifi-logo.svg?react";
+
+import Button from "../Button/Button";
+import Modal from "../Modal/Modal";
+
+import "./NotifyModal.scss";
 
 export function NotifyModal() {
   const { notifyModalOpen, setNotifyModalOpen } = useNotifyModalState();

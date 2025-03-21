@@ -9,6 +9,8 @@ import type { Address } from "viem";
 import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountContext";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
+import { userAnalytics } from "lib/userAnalytics";
+import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -22,8 +24,6 @@ import disconnect from "img/ic_sign_out_20.svg";
 import oneClickTradingIcon from "img/one_click_trading_20.svg";
 
 import "./AddressDropdown.scss";
-import { userAnalytics } from "lib/userAnalytics";
-import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 
 type Props = {
   account: string;

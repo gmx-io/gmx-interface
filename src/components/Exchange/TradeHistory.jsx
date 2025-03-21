@@ -11,22 +11,16 @@ import { useTrades, useLiquidationsData } from "domain/legacy";
 import { formatDateTime } from "lib/dates";
 import { LIQUIDATION_FEE, TRADES_PAGE_SIZE, deserialize, getExchangeRateDisplay, INCREASE } from "lib/legacy";
 import { bigNumberify, formatAmount } from "lib/numbers";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import { getPriceDecimals } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Tooltip from "components/Tooltip/Tooltip";
-
-
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-
-
-
-import { getPriceDecimals } from "sdk/configs/tokens";
-
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
+import Tooltip from "components/Tooltip/Tooltip";
 
-import { bigMath } from "sdk/utils/bigmath";
-import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 import "./TradeHistory.css";
 
