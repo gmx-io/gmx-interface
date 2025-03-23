@@ -26,7 +26,9 @@ export type ClaimCollateralAction = {
   tokenPrices: bigint[];
   claimItems: ClaimMarketItem[];
   timestamp: number;
-  transactionHash: string;
+  transaction: {
+    hash: string;
+  };
   tokens: Token[];
 };
 
@@ -44,7 +46,9 @@ export type ClaimFundingFeeAction = {
   tokens: Token[];
   isLongOrders: boolean[];
   timestamp: number;
-  transactionHash: string;
+  transaction: {
+    hash: string;
+  };
   claimItems: ClaimMarketItem[];
 };
 
