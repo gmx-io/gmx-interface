@@ -4,6 +4,7 @@ import { SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { MARKETS } from "configs/markets";
 
 import { getOracleKeeperUrlByChain } from "./oracleKeeperUrlByChain";
+import { withRetry } from "viem";
 
 type KeeperMarket = {
   marketToken: string;
@@ -18,25 +19,31 @@ const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarke
     markets: KeeperMarket[];
   };
 
+  if (!data || !data.markets || data.markets.length === 0) throw Error("No markets in response");
+
   return data;
 };
 
 describe("markets config", () => {
   SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {
     it(`markets should be consistent with keeper for ${chainId}`, async () => {
-      const keeperMarkets = await getKeeperMarkets(chainId);
-
-      Object.entries(MARKETS[chainId]).forEach(async ([marketAddress, market]) => {
-        expect(marketAddress).toBe(market.marketTokenAddress);
-
-        const keeperMarket = keeperMarkets.markets.find((m) => m.marketToken === marketAddress);
-
-        expect(keeperMarket).toBeDefined();
-        expect(keeperMarket?.indexToken).toBe(market.indexTokenAddress);
-        expect(keeperMarket?.longToken).toBe(market.longTokenAddress);
-        expect(keeperMarket?.shortToken).toBe(market.shortTokenAddress);
-        expect(keeperMarket?.marketToken).toBe(marketAddress);
+      const keeperMarkets = await withRetry(() => getKeeperMarkets(chainId), {
+        retryCount: 2,
       });
+
+      await Promise.all(
+        Object.entries(MARKETS[chainId]).map(async ([marketAddress, market]) => {
+          expect(marketAddress).toBe(market.marketTokenAddress);
+
+          const keeperMarket = keeperMarkets.markets.find((m) => m.marketToken === marketAddress);
+
+          expect(keeperMarket).toBeDefined();
+          expect(keeperMarket?.indexToken).toBe(market.indexTokenAddress);
+          expect(keeperMarket?.longToken).toBe(market.longTokenAddress);
+          expect(keeperMarket?.shortToken).toBe(market.shortTokenAddress);
+          expect(keeperMarket?.marketToken).toBe(marketAddress);
+        })
+      );
     });
   });
 });
