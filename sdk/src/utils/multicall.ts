@@ -1,5 +1,6 @@
-import type { GmxSdk } from "index";
 import { AbiId, abis as allAbis } from "abis";
+import type { GmxSdk } from "index";
+
 import { sleep } from "./common";
 
 export const MAX_TIMEOUT = 20000;

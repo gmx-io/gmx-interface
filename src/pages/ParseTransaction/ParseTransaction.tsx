@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { BiCopy } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
@@ -9,6 +9,7 @@ import { Hash, isHash, PublicClient } from "viem";
 import { usePublicClient } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
   getMarketFullName,
@@ -19,7 +20,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
-import { formatUsd } from "lib/numbers";
+import { formatFactor, formatUsd } from "lib/numbers";
 
 import Loader from "components/Common/Loader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -46,11 +47,11 @@ import {
   formatPriceByField,
   formatPriceByIndexToken,
   formatPriceByToken,
+  formatRoleKey,
   formatSwapPath,
 } from "./formatting";
 import { parseTxEvents } from "./parseTxEvents";
 import { LogEntryComponentProps } from "./types";
-import { formatFactor } from "../../lib/numbers";
 
 const NETWORKS = {
   arbitrum: ARBITRUM,
@@ -65,9 +66,9 @@ export const NETWORKS_BY_CHAIN_IDS = {
 };
 
 const EXPLORER_TX_URLS = {
-  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "/tx/",
-  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "/tx/",
-  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "/tx/",
+  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "tx/",
+  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "tx/",
+  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "tx/",
 };
 
 export function ParseTransactionPage() {
@@ -146,9 +147,12 @@ export function ParseTransactionPage() {
                   <TableTr>
                     <TableTd className="w-[25rem] font-bold">Name</TableTd>
                     <TableTd className="group !text-left" colSpan={2}>
-                      <div className="flex flex-row items-center gap-8">
-                        {event.log}: {event.name}
-                        <CopyButton value={event.name} />
+                      <div className="flex flex-row items-center justify-between gap-8">
+                        <span className="flex flex-row items-center gap-8 whitespace-nowrap">
+                          {event.log}: {event.name}
+                          <CopyButton value={event.name} />
+                        </span>
+                        <span>LogIndex: {event.logIndex}</span>
                       </div>
                     </TableTd>
                   </TableTr>
@@ -277,6 +281,7 @@ const fieldFormatters = {
   shortTokenAmount: formatByMarketShortToken,
 
   orderType: (t: bigint) => getOrderTypeLabel(Number(t)),
+  roleKey: formatRoleKey,
 
   fundingFeeAmountPerSize: formatAmountByCollateralToken15Shift,
   latestFundingFeeAmountPerSize: formatAmountByCollateralToken15Shift,
@@ -339,6 +344,9 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   let value;
   let withError = false;
 
+  const explorerIconSrc = useMemo(() => getIcon(props.chainId, "network"), [props.chainId]);
+  const explorerUrl = useMemo(() => getExplorerUrl(props.chainId), [props.chainId]);
+
   if (props.type === "address" && typeof props.value === "string") {
     if (props.item === "affiliate" || props.item === "callbackContract" || props.item === "uiFeeReceiver") {
       value = props.value;
@@ -348,15 +356,21 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
       if (token) {
         value = (
-          <>
+          <span className="flex flex-row items-center gap-8">
             <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
-          </>
+            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+              <img src={explorerIconSrc} className="h-18 w-18" />
+            </ExternalLink>
+          </span>
         );
       } else if (marketOrGlv) {
         value = (
-          <>
+          <span className="flex flex-row items-center gap-8">
             {isGlvInfo(marketOrGlv) ? getGlvDisplayName(marketOrGlv) : getMarketFullName(marketOrGlv)} ({props.value})
-          </>
+            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+              <img src={explorerIconSrc} className="h-18 w-18" />
+            </ExternalLink>
+          </span>
         );
       } else {
         value = props.value;
@@ -366,10 +380,17 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
   if (props.item === "trader" || props.item === "account" || props.item === "receiver") {
     const network = NETWORKS_BY_CHAIN_IDS[props.chainId];
+    const explorerUrl = getExplorerUrl(props.chainId);
+
     value = (
-      <Link className="text-slate-100 underline" to={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
-        {props.value.toString()}
-      </Link>
+      <span className="flex flex-row items-center gap-8">
+        <Link className="text-slate-100 underline" to={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
+          {props.value.toString()}
+        </Link>
+        <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+          <img src={explorerIconSrc} className="h-18 w-18" />
+        </ExternalLink>
+      </span>
     );
   }
 
@@ -409,6 +430,15 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
   if (props.type === "bytes32") {
     value = props.value.toString();
+
+    if (field) {
+      try {
+        value = field(props.value, props);
+      } catch (e) {
+        value = e.message;
+        withError = true;
+      }
+    }
   }
 
   if (props.error) {

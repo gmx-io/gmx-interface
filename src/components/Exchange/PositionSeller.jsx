@@ -61,6 +61,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import PercentageInput from "components/PercentageInput/PercentageInput";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -71,7 +72,6 @@ import FeesTooltip from "./FeesTooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import Modal from "../Modal/Modal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import Tab from "../Tab/Tab";
 import Tooltip from "../Tooltip/Tooltip";
 
 import "./PositionSeller.css";
@@ -83,6 +83,8 @@ const ORDER_OPTION_LABELS = {
   [MARKET]: msg`Market`,
   [STOP]: msg`Trigger`,
 };
+
+const ORDER_OPTIONS = [MARKET, STOP];
 
 function applySpread(amount, spread) {
   if (!amount || !spread) {
@@ -260,8 +262,6 @@ export default function PositionSeller(props) {
   const [swapToToken, setSwapToToken] = useState(() =>
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
-
-  const ORDER_OPTIONS = useMemo(() => [MARKET, STOP], []);
 
   let [orderOption, setOrderOption] = useState(MARKET);
 
@@ -1094,17 +1094,19 @@ export default function PositionSeller(props) {
     );
   }
 
+  const tabsOptions = useMemo(() => {
+    return ORDER_OPTIONS.map((option) => ({
+      value: option,
+      label: localizedOrderOptionLabels[option],
+    }));
+  }, [localizedOrderOptionLabels]);
+
   return (
     <div className="PositionEditor">
       {position && (
         <Modal className="PositionSeller-modal" isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           {flagOrdersEnabled && (
-            <Tab
-              options={ORDER_OPTIONS}
-              option={orderOption}
-              optionLabels={localizedOrderOptionLabels}
-              onChange={onOrderOptionChange}
-            />
+            <Tabs options={tabsOptions} selectedValue={orderOption} onChange={onOrderOptionChange} />
           )}
           <div className="mb-12 flex flex-col gap-4">
             <BuyInputSection

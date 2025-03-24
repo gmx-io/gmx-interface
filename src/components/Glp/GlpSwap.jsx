@@ -75,7 +75,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import SwapErrorModal from "./SwapErrorModal";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import Tab from "../Tab/Tab";
+import Tabs from "../Tabs/Tabs";
 import Tooltip from "../Tooltip/Tooltip";
 
 import "./GlpSwap.css";
@@ -179,6 +179,16 @@ export default function GlpSwap(props) {
       },
     }),
     [tabOptions]
+  );
+
+  const tabsOptions = useMemo(
+    () =>
+      tabOptions.map((tab) => ({
+        value: tab,
+        label: tab,
+        className: tabOptionClassNames[tab],
+      })),
+    [tabOptions, tabOptionClassNames]
   );
 
   const { active, signer, account } = useWallet();
@@ -1055,12 +1065,11 @@ export default function GlpSwap(props) {
               onClickPrimary();
             }}
           >
-            <Tab
-              options={tabOptions}
-              option={tabLabel}
+            <Tabs
+              options={tabsOptions}
+              selectedValue={tabLabel}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
-              optionClassnames={tabOptionClassNames}
             />
             <div className="mb-12 flex flex-col gap-4">
               {isBuying && (

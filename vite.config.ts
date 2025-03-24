@@ -27,7 +27,6 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      abis: path.resolve(__dirname, "src/abis"),
       App: path.resolve(__dirname, "src/App"),
       components: path.resolve(__dirname, "src/components"),
       config: path.resolve(__dirname, "src/config"),

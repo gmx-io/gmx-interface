@@ -1,10 +1,13 @@
+import { maxUint256 } from "viem";
+
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { MarketInfo, MarketsInfoData } from "types/markets";
-import { getByKey } from "./objects";
-import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "./markets";
 import { SwapPathStats, SwapStats } from "types/trade";
-import { convertToTokenAmount, convertToUsd, getMidPrice } from "./tokens";
-import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "./fees";
+
+import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "../fees";
+import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "../markets";
+import { getByKey } from "../objects";
+import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 
 export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
@@ -312,4 +315,48 @@ export function getSwapStats(p: {
     isOutLiquidity,
     isOutCapacity,
   };
+}
+
+export function getMaxSwapPathLiquidity(p: {
+  marketsInfoData: MarketsInfoData;
+  swapPath: string[];
+  initialCollateralAddress: string;
+}) {
+  const { marketsInfoData, swapPath, initialCollateralAddress } = p;
+
+  if (swapPath.length === 0) {
+    return 0n;
+  }
+
+  let minMarketLiquidity = maxUint256;
+  let tokenInAddress = initialCollateralAddress;
+
+  for (const marketAddress of swapPath) {
+    const marketInfo = getByKey(marketsInfoData, marketAddress);
+
+    if (!marketInfo) {
+      return 0n;
+    }
+
+    const tokenOut = getOppositeCollateral(marketInfo, tokenInAddress);
+
+    if (!tokenOut) {
+      return 0n;
+    }
+
+    const isTokenOutLong = getTokenPoolType(marketInfo, tokenOut.address) === "long";
+    const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, isTokenOutLong);
+
+    if (liquidity < minMarketLiquidity) {
+      minMarketLiquidity = liquidity;
+    }
+
+    tokenInAddress = tokenOut.address;
+  }
+
+  if (minMarketLiquidity === maxUint256) {
+    return 0n;
+  }
+
+  return minMarketLiquidity;
 }

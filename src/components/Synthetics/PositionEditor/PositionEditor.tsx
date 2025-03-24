@@ -25,12 +25,10 @@ import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 
-
-
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -223,6 +221,13 @@ export function PositionEditor() {
     maxWithdrawAmount,
   ]);
 
+  const tabsOptions = useMemo(() => {
+    return Object.values(Operation).map((option) => ({
+      value: option,
+      label: localizedOperationLabels[option],
+    }));
+  }, [localizedOperationLabels]);
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -240,11 +245,10 @@ export function PositionEditor() {
       >
         {position && (
           <>
-            <Tab
+            <Tabs
               onChange={setOperation}
-              option={operation}
-              options={Object.values(Operation)}
-              optionLabels={localizedOperationLabels}
+              selectedValue={operation}
+              options={tabsOptions}
               type="inline"
               className="PositionEditor-tabs"
               size="l"

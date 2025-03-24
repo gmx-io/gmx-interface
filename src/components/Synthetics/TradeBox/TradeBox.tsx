@@ -37,6 +37,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
+import { TradeType } from "domain/synthetics/trade/types";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -69,7 +70,7 @@ import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
@@ -79,6 +80,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 
+import TradeBoxLongShortInfoIcon from "./components/TradeBoxLongShortInfoIcon";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowOneClickTradingInfo } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
@@ -95,7 +97,7 @@ import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import "./TradeBox.scss";
 
-export function TradeBox() {
+export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
@@ -813,22 +815,42 @@ export function TradeBox() {
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
+  const tabsOptions = useMemo(() => {
+    const modeToOptions = (mode: TradeMode) => ({
+      value: mode,
+      label: localizedTradeModeLabels[mode],
+    });
+
+    return availableTradeModes.map((mode) =>
+      Array.isArray(mode)
+        ? {
+            label: t`More`,
+            options: mode.map(modeToOptions),
+          }
+        : modeToOptions(mode)
+    );
+  }, [availableTradeModes, localizedTradeModeLabels]);
+
   return (
     <>
       <div className="flex items-center justify-between">
-        <Tab
-          options={availableTradeModes}
-          optionLabels={localizedTradeModeLabels}
-          commonOptionClassname="py-10"
+        <Tabs
+          options={tabsOptions}
+          regularOptionClassname="py-10"
           type="inline"
-          option={tradeMode}
+          selectedValue={tradeMode}
           onChange={onSelectTradeMode}
           qa="trade-mode"
         />
-        <SettingsIcon24
-          className="cursor-pointer text-slate-100 gmx-hover:text-white"
-          onClick={() => setIsSettingsVisible(true)}
-        />
+        <div className="flex gap-4">
+          {[TradeType.Long, TradeType.Short].includes(tradeType) && (
+            <TradeBoxLongShortInfoIcon isMobile={isMobile} isLong={isLong} />
+          )}
+          <SettingsIcon24
+            className="cursor-pointer text-slate-100 gmx-hover:text-white"
+            onClick={() => setIsSettingsVisible(true)}
+          />
+        </div>
       </div>
       <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
         <div className="flex flex-col gap-2">

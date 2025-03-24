@@ -3,13 +3,11 @@ import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
 import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "configs/tokens";
-
 import { DecreasePositionSwapType, OrderType } from "types/orders";
 import { TokensData } from "types/tokens";
-
 import { isMarketOrderType } from "utils/orders";
-import { applySlippageToMinOut } from "utils/trade";
 import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
+import { applySlippageToMinOut } from "utils/trade";
 
 import type { GmxSdk } from "../../..";
 
@@ -24,6 +22,7 @@ export type SwapOrderParams = {
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: bigint;
   allowedSlippage: number;
+  triggerPrice?: bigint;
 };
 
 export async function createSwapOrderTxn(sdk: GmxSdk, p: SwapOrderParams) {
@@ -80,7 +79,7 @@ async function getParams(sdk: GmxSdk, p: SwapOrderParams) {
     numbers: {
       sizeDeltaUsd: 0n,
       initialCollateralDeltaAmount,
-      triggerPrice: 0n,
+      triggerPrice: p.triggerPrice !== undefined ? p.triggerPrice : 0n,
       acceptablePrice: 0n,
       executionFee: p.executionFee,
       callbackGasLimit: 0n,

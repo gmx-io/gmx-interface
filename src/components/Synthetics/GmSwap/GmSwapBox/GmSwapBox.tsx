@@ -9,13 +9,12 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 
 import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 import { Mode, Operation } from "./types";
-
 
 import "./GmSwapBox.scss";
 
@@ -109,24 +108,40 @@ export function GmSwapBox(p: GmSwapBoxProps) {
 
   const localizedModeLabels = useLocalizedMap(MODE_LABELS);
 
+  const availableOperationsTabsOptions = useMemo(
+    () =>
+      availableOperations.map((operation) => ({
+        value: operation,
+        label: localizedOperationLabels[operation],
+        className: operationClassNames[operation],
+      })),
+    [availableOperations, localizedOperationLabels]
+  );
+
+  const availableModesTabsOptions = useMemo(
+    () =>
+      availableModes.map((mode) => ({
+        value: mode,
+        label: localizedModeLabels[mode],
+      })),
+    [availableModes, localizedModeLabels]
+  );
+
   return (
     <div className="App-box GmSwapBox h-full">
-      <Tab
-        options={availableOperations}
-        optionLabels={localizedOperationLabels}
-        option={operation}
-        optionClassnames={operationClassNames}
+      <Tabs
+        options={availableOperationsTabsOptions}
+        selectedValue={operation}
         onChange={onSetOperation}
         className="Exchange-swap-option-tabs"
       />
 
-      <Tab
-        options={availableModes}
-        optionLabels={localizedModeLabels}
+      <Tabs
+        options={availableModesTabsOptions}
+        selectedValue={mode}
+        onChange={onSetMode}
         className="GmSwapBox-asset-options-tabs"
         type="inline"
-        option={mode}
-        onChange={onSetMode}
       />
 
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (

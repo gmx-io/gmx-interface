@@ -48,8 +48,10 @@ import TradeHistory from "components/Exchange/TradeHistory";
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
+
 import "./Exchange.css";
+
 const { ZeroAddress } = ethers;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -923,6 +925,7 @@ export const Exchange = forwardRef(
       [POSITIONS]: positions.length ? t`Positions (${positions.length})` : t`Positions`,
       [TRADES]: t`Trades`,
     };
+
     if (!LIST_SECTIONS.includes(listSection as any)) {
       listSection = LIST_SECTIONS[0];
     }
@@ -945,15 +948,19 @@ export const Exchange = forwardRef(
       );
     };
 
+    const tabsOptions = LIST_SECTIONS.map((section) => ({
+      value: section,
+      label: LIST_SECTIONS_LABELS[section],
+    }));
+
     const getListSection = () => {
       return (
         <div>
           <div className="Exchange-list-tab-container">
-            <Tab
-              options={LIST_SECTIONS}
-              optionLabels={LIST_SECTIONS_LABELS}
-              option={listSection}
-              onChange={(section) => setListSection(section)}
+            <Tabs
+              options={tabsOptions}
+              selectedValue={listSection}
+              onChange={setListSection}
               type="inline"
               className="Exchange-list-tabs"
             />

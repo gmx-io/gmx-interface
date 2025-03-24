@@ -1,4 +1,3 @@
-import { hashDataMap } from "utils/hash";
 
 import {
   BORROWING_EXPONENT_FACTOR_KEY,
@@ -41,6 +40,7 @@ import {
   VIRTUAL_TOKEN_ID_KEY,
 } from "configs/dataStore";
 import { MarketConfig } from "configs/markets";
+import { hashDataMap } from "utils/hash";
 
 export function hashMarketConfigKeys(market: MarketConfig) {
   const marketAddress = market.marketTokenAddress;

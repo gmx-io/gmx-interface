@@ -1,4 +1,5 @@
 import { getContract } from "configs/contracts";
+
 import { Module } from "../base";
 
 export class Accounts extends Module {

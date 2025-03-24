@@ -1,5 +1,6 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { ethers } from "ethers";
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 
@@ -31,7 +32,7 @@ import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 
 import "./Referrals.css";
 
@@ -107,6 +108,13 @@ function Referrals() {
     }
   }
 
+  const tabsOptions = useMemo(() => {
+    return TAB_OPTIONS.map((option) => ({
+      value: option,
+      label: localizedTabOptionLabels[option],
+    }));
+  }, [localizedTabOptionLabels]);
+
   function renderTradersTab() {
     if (loading) return <Loader />;
     if (isHashZero(userReferralCode) || !account || !userReferralCode) {
@@ -140,13 +148,7 @@ function Referrals() {
           qa="referrals-page"
         />
         <div className="referral-tab-container">
-          <Tab
-            options={TAB_OPTIONS}
-            optionLabels={localizedTabOptionLabels}
-            option={activeTab}
-            setOption={setActiveTab}
-            onChange={setActiveTab}
-          />
+          <Tabs options={tabsOptions} selectedValue={activeTab} onChange={setActiveTab} />
         </div>
         {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
       </div>

@@ -25,15 +25,13 @@ import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Tab from "components/Tab/Tab";
-
+import Tabs from "components/Tabs/Tabs";
 
 import { CompetitionCountdown } from "./CompetitionCountdown";
 import { CompetitionPrizes } from "./CompetitionPrizes";
 import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
 import { LeaderboardPositionsTable } from "./LeaderboardPositionsTable";
-
 
 const competitionsTabs = [0, 1];
 const leaderboardTimeframeTabs = [0, 1, 2];
@@ -173,6 +171,27 @@ export function LeaderboardContainer() {
     }
   }, [isMobile, leaderboardPageKey, wrongNetworkSwitcher]);
 
+  const leaderboardDataTypeTabsOptions = useMemo(() => {
+    return leaderboardDataTypeTabs.map((value) => ({
+      value,
+      label: leaderboardDataTypeLabels[value],
+    }));
+  }, [leaderboardDataTypeLabels]);
+
+  const leaderboardTimeframeTabsOptions = useMemo(() => {
+    return leaderboardTimeframeTabs.map((value) => ({
+      value,
+      label: leaderboardTimeframeLabels[value],
+    }));
+  }, [leaderboardTimeframeLabels]);
+
+  const competitionsTabsOptions = useMemo(() => {
+    return competitionsTabs.map((value) => ({
+      value,
+      label: competitionLabels[value],
+    }));
+  }, [competitionLabels]);
+
   return (
     <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
@@ -187,22 +206,20 @@ export function LeaderboardContainer() {
       {!isCompetition && (
         <>
           <div className="LeaderboardContainer__competition-tabs default-container">
-            <Tab
-              option={activeLeaderboardDataTypeIndex}
+            <Tabs
+              selectedValue={activeLeaderboardDataTypeIndex}
               onChange={handleLeaderboardDataTypeTabChange}
-              options={leaderboardDataTypeTabs}
-              optionLabels={leaderboardDataTypeLabels}
+              options={leaderboardDataTypeTabsOptions}
             />
           </div>
         </>
       )}
       {!isCompetition && (
-        <Tab
-          option={activeLeaderboardTimeframeIndex}
+        <Tabs
+          selectedValue={activeLeaderboardTimeframeIndex}
           onChange={handleLeaderboardTimeframeTabChange}
-          options={leaderboardTimeframeTabs}
-          optionLabels={leaderboardTimeframeLabels}
           type="inline"
+          options={leaderboardTimeframeTabsOptions}
           className={cx("LeaderboardContainer__leaderboard-tabs default-container", {
             "LeaderboardContainer__leaderboard-tabs_positions": leaderboardDataType === "positions",
           })}
@@ -212,11 +229,11 @@ export function LeaderboardContainer() {
       {isCompetition && (
         <>
           <div className="LeaderboardContainer__competition-tabs default-container">
-            <Tab
-              option={activeCompetitionIndex}
+            <Tabs
+              selectedValue={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
-              options={competitionsTabs}
-              optionLabels={competitionLabels}
+              options={competitionsTabsOptions}
+              type="inline"
             />
             {!isMobile && <CompetitionCountdown className="default-container" size="desktop" />}
           </div>

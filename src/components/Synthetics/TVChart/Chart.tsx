@@ -9,8 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { DepthChart } from "components/DepthChart/DepthChart";
-import Tab from "components/Tab/Tab";
-
+import Tabs from "components/Tabs/Tabs";
 
 import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
 import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
@@ -37,6 +36,11 @@ const TAB_LABELS = {
   ),
 };
 
+const TABS_OPTIONS = TABS.map((tab) => ({
+  value: tab,
+  label: TAB_LABELS[tab],
+}));
+
 export function Chart() {
   const isMobile = useMedia("(max-width: 700px)");
   const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
@@ -52,14 +56,7 @@ export function Chart() {
         ) : (
           <>
             <div className="text-body-medium border-b border-stroke-primary px-20 py-10">
-              <Tab
-                type="inline"
-                className="flex"
-                options={TABS}
-                option={tab}
-                optionLabels={TAB_LABELS}
-                onChange={setTab}
-              />
+              <Tabs type="inline" className="flex" options={TABS_OPTIONS} selectedValue={tab} onChange={setTab} />
             </div>
 
             {tab === "PRICE" ? <TVChart /> : <DepthChartContainer />}

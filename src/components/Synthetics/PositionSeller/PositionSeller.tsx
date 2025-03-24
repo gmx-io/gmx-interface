@@ -78,7 +78,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import Tab from "components/Tab/Tab";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -607,6 +607,13 @@ export function PositionSeller(p: Props) {
       />
     ));
 
+  const tabsOptions = useMemo(() => {
+    return Object.values(OrderOption).map((option) => ({
+      value: option,
+      label: localizedOrderOptionLabels[option],
+    }));
+  }, [localizedOrderOptionLabels]);
+
   return (
     <div className="text-body-medium">
       <Modal
@@ -622,12 +629,11 @@ export function PositionSeller(p: Props) {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <Tab
+        <Tabs
           className="mb-[10.5px]"
-          options={Object.values(OrderOption)}
-          option={orderOption}
+          options={tabsOptions}
+          selectedValue={orderOption}
           type="inline"
-          optionLabels={localizedOrderOptionLabels}
           onChange={handleSetOrderOption}
           qa="operation-tabs"
         />

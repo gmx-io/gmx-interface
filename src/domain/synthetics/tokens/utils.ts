@@ -1,6 +1,6 @@
 import { USD_DECIMALS } from "config/factors";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
-import { formatAmount, PRECISION } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { getTokenData } from "sdk/utils/tokens";
 
@@ -20,22 +20,6 @@ export function getNeedTokenApprove(
     return true;
   }
   return amountToSpend > tokenAllowanceData[tokenAddress];
-}
-
-export function getTokensRatioByPrice(p: {
-  fromToken: TokenData;
-  toToken: TokenData;
-  fromPrice: bigint;
-  toPrice: bigint;
-}): TokensRatio {
-  const { fromToken, toToken, fromPrice, toPrice } = p;
-
-  const [largestToken, smallestToken, largestPrice, smallestPrice] =
-    fromPrice > toPrice ? [fromToken, toToken, fromPrice, toPrice] : [toToken, fromToken, toPrice, fromPrice];
-
-  const ratio = (largestPrice * PRECISION) / smallestPrice;
-
-  return { ratio, largestToken, smallestToken };
 }
 
 export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {

@@ -17,8 +17,8 @@ import {
 } from "config/factors";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { approveTokens, shouldRaiseGasError } from "domain/tokens";
-import { getTokenInfo } from "domain/tokens/utils";
+import { approveTokens } from "domain/tokens";
+import { getTokenInfo, shouldRaiseGasError } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -34,12 +34,12 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Tabs from "components/Tabs/Tabs";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
 import Modal from "../Modal/Modal";
-import Tab from "../Tab/Tab";
 import Tooltip from "../Tooltip/Tooltip";
 
 const DEPOSIT = "Deposit";
@@ -101,6 +101,13 @@ export default function PositionEditor(props) {
   const submitButtonRef = useRef(null);
   const { _ } = useLingui();
   const localizedEditOptionLabels = useLocalizedMap(EDIT_OPTIONS_LABELS);
+
+  const tabsOptions = useMemo(() => {
+    return EDIT_OPTIONS.map((option) => ({
+      value: option,
+      label: localizedEditOptionLabels[option],
+    }));
+  }, [localizedEditOptionLabels]);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -568,18 +575,17 @@ export default function PositionEditor(props) {
     [minExecutionFee, minExecutionFeeUSD]
   );
 
+  const onSelectOption = (option) => {
+    setOption(option);
+    resetForm();
+  };
+
   return (
     <div className="PositionEditor">
       {position && (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab
-              options={EDIT_OPTIONS}
-              optionLabels={localizedEditOptionLabels}
-              option={option}
-              setOption={setOption}
-              onChange={resetForm}
-            />
+            <Tabs options={tabsOptions} selectedValue={option} onChange={onSelectOption} />
             {(isDeposit || isWithdrawal) && (
               <div>
                 <div className="mb-12">

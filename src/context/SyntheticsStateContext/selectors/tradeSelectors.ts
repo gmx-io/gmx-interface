@@ -1,12 +1,9 @@
 import { OrderType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
-  FindSwapPath,
   TradeMode,
   TradeType,
   createSwapEstimator,
-  findAllPaths,
-  getBestSwapPath,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getMarkPrice,
@@ -14,13 +11,11 @@ import {
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
-  getSwapPathComparator,
-  getSwapPathStats,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
+import { createFindSwapPath, findAllSwapPaths, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
@@ -53,14 +48,14 @@ const selectSwapEstimator = createSelector((q) => {
 const makeSelectWrappedFromAddress = (fromTokenAddress: string | undefined) =>
   createSelector((q) => {
     const chainId = q(selectChainId);
-    const wrappedFromAddress = fromTokenAddress ? convertTokenAddress(chainId, fromTokenAddress, "wrapped") : undefined;
+    const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
     return wrappedFromAddress;
   });
 
 const makeSelectWrappedToAddress = (toTokenAddress: string | undefined) => {
   return createSelector((q) => {
     const chainId = q(selectChainId);
-    const wrappedToAddress = toTokenAddress ? convertTokenAddress(chainId, toTokenAddress, "wrapped") : undefined;
+    const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
     return wrappedToAddress;
   });
 };
@@ -77,18 +72,16 @@ const makeSelectAllPaths = (fromTokenAddress: string | undefined, toTokenAddress
     const wrappedFromAddress = q(selectWrappedFromAddress);
     const wrappedToAddress = q(selectWrappedToAddress);
     const chainId = q(selectChainId);
-    const wrappedToken = getWrappedToken(chainId);
-    const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
-    const isUnwrap = fromTokenAddress === wrappedToken.address && toTokenAddress === NATIVE_TOKEN_ADDRESS;
-    const isSameToken = fromTokenAddress === toTokenAddress;
 
-    if (!graph || !wrappedFromAddress || !wrappedToAddress || isWrap || isUnwrap || isSameToken) {
-      return undefined;
-    }
-
-    return findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)?.sort((a, b) =>
-      b.liquidity - a.liquidity > 0 ? 1 : -1
-    );
+    return findAllSwapPaths({
+      chainId,
+      fromTokenAddress,
+      toTokenAddress,
+      marketsInfoData,
+      graph,
+      wrappedFromAddress,
+      wrappedToAddress,
+    });
   });
 };
 
@@ -133,39 +126,17 @@ export const makeSelectFindSwapPath = createSelectorFactory(
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
-      const wrappedToken = getWrappedToken(chainId);
       const allPaths = q(selectAllPaths);
       const estimator = q(selectSwapEstimator);
 
-      const findSwapPath: FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => {
-        if (!allPaths?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
-          return undefined;
-        }
-
-        let swapPath: string[] | undefined = undefined;
-        const sortedPaths = opts.order ? [...allPaths].sort(getSwapPathComparator(opts.order ?? [])) : allPaths;
-
-        if (opts.order) {
-          swapPath = sortedPaths[0].path;
-        } else {
-          swapPath = getBestSwapPath(allPaths, usdIn, estimator);
-        }
-
-        if (!swapPath) {
-          return undefined;
-        }
-
-        return getSwapPathStats({
-          marketsInfoData,
-          swapPath,
-          initialCollateralAddress: fromTokenAddress,
-          wrappedNativeTokenAddress: wrappedToken.address,
-          shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
-          shouldApplyPriceImpact: true,
-          usdIn,
-        });
-      };
-
+      const findSwapPath = createFindSwapPath({
+        chainId,
+        fromTokenAddress,
+        toTokenAddress,
+        marketsInfoData,
+        estimator,
+        allPaths,
+      });
       return findSwapPath;
     });
   }
