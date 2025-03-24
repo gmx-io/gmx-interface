@@ -3,8 +3,8 @@ import { describe, it, expect } from "vitest";
 import { SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { MARKETS } from "configs/markets";
 
-import { getOracleKeeperUrlByChain } from "./oracleKeeperUrlByChain";
 import { withRetry } from "viem";
+import { getOracleKeeperUrl } from "configs/oracleKeeper";
 
 type KeeperMarket = {
   marketToken: string;
@@ -14,7 +14,7 @@ type KeeperMarket = {
 };
 
 const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarket[] }> => {
-  const res = await fetch(`${getOracleKeeperUrlByChain(chainId)}/markets`);
+  const res = await fetch(`${getOracleKeeperUrl(chainId, 0)}/markets`);
   const data = (await res.json()) as {
     markets: KeeperMarket[];
   };

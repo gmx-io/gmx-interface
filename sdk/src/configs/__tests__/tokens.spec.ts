@@ -3,8 +3,7 @@ import { withRetry, zeroAddress } from "viem";
 
 import { ARBITRUM, AVALANCHE, SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { TOKENS } from "configs/tokens";
-
-import { getOracleKeeperUrlByChain } from "./oracleKeeperUrlByChain";
+import { getOracleKeeperUrl } from "configs/oracleKeeper";
 
 type KeeperToken = {
   symbol: string;
@@ -14,7 +13,7 @@ type KeeperToken = {
 };
 
 const getKeeperTokens = async (chainId: number): Promise<{ tokens: KeeperToken[] }> => {
-  const res = await fetch(`${getOracleKeeperUrlByChain(chainId)}/tokens`);
+  const res = await fetch(`${getOracleKeeperUrl(chainId, 0)}/tokens`);
   const data = (await res.json()) as {
     tokens: KeeperToken[];
   };
@@ -26,7 +25,7 @@ const getKeeperTokens = async (chainId: number): Promise<{ tokens: KeeperToken[]
 
 const IGNORED_TOKENS = ["ESGMX", "GLP", "GM", "GLV"];
 
-const getFilteredTokensByChain = (chainId: number) => {
+const getIgnoredTokensByChain = (chainId: number) => {
   return IGNORED_TOKENS.concat(
     {
       [ARBITRUM]: ["FRAX", "MIM"],
@@ -44,7 +43,7 @@ describe("tokens config", () => {
 
       TOKENS[chainId]
         .filter((token) => token.address !== zeroAddress)
-        .filter((token) => !getFilteredTokensByChain(chainId).includes(token.symbol))
+        .filter((token) => !getIgnoredTokensByChain(chainId).includes(token.symbol))
         .forEach((token) => {
           const keeperToken = keeperTokens.tokens.find((t) => t.address === token.address);
 
