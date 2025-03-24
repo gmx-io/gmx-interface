@@ -31,19 +31,17 @@ describe("markets config", () => {
         retryCount: 2,
       });
 
-      await Promise.all(
-        Object.entries(MARKETS[chainId]).map(async ([marketAddress, market]) => {
-          expect(marketAddress).toBe(market.marketTokenAddress);
+      Object.entries(MARKETS[chainId]).forEach(([marketAddress, market]) => {
+        expect(marketAddress).toBe(market.marketTokenAddress);
 
-          const keeperMarket = keeperMarkets.markets.find((m) => m.marketToken === marketAddress);
+        const keeperMarket = keeperMarkets.markets.find((m) => m.marketToken === marketAddress);
 
-          expect(keeperMarket).toBeDefined();
-          expect(keeperMarket?.indexToken).toBe(market.indexTokenAddress);
-          expect(keeperMarket?.longToken).toBe(market.longTokenAddress);
-          expect(keeperMarket?.shortToken).toBe(market.shortTokenAddress);
-          expect(keeperMarket?.marketToken).toBe(marketAddress);
-        })
-      );
+        expect(keeperMarket).toBeDefined();
+        expect(keeperMarket?.indexToken).toBe(market.indexTokenAddress);
+        expect(keeperMarket?.longToken).toBe(market.longTokenAddress);
+        expect(keeperMarket?.shortToken).toBe(market.shortTokenAddress);
+        expect(keeperMarket?.marketToken).toBe(marketAddress);
+      });
     });
   });
 });

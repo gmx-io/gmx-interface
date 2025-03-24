@@ -42,19 +42,17 @@ describe("tokens config", () => {
         retryCount: 2,
       });
 
-      await Promise.all(
-        TOKENS[chainId]
-          .filter((token) => token.address !== zeroAddress)
-          .filter((token) => !getFilteredTokensByChain(chainId).includes(token.symbol))
-          .map(async (token) => {
-            const keeperToken = keeperTokens.tokens.find((t) => t.address === token.address);
+      TOKENS[chainId]
+        .filter((token) => token.address !== zeroAddress)
+        .filter((token) => !getFilteredTokensByChain(chainId).includes(token.symbol))
+        .forEach((token) => {
+          const keeperToken = keeperTokens.tokens.find((t) => t.address === token.address);
 
-            expect(keeperToken).toBeDefined();
-            expect(keeperToken?.address).toBe(token.address);
-            expect(keeperToken?.decimals).toBe(token.decimals);
-            expect(Boolean(keeperToken?.synthetic)).toBe(Boolean(token.isSynthetic));
-          })
-      );
+          expect(keeperToken).toBeDefined();
+          expect(keeperToken?.address).toBe(token.address);
+          expect(keeperToken?.decimals).toBe(token.decimals);
+          expect(Boolean(keeperToken?.synthetic)).toBe(Boolean(token.isSynthetic));
+        });
     });
   });
 });
