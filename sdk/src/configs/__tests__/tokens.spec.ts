@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { zeroAddress } from "viem";
 
-import { SUPPORTED_CHAIN_IDS_DEV } from "configs/chains";
+import { ARBITRUM, AVALANCHE, SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { TOKENS } from "configs/tokens";
 
 import { getOracleKeeperUrlByChain } from "./oracleKeeperUrlByChain";
@@ -24,22 +24,30 @@ const getKeeperTokens = async (chainId: number): Promise<{ tokens: KeeperToken[]
 
 const FILTERED_TOKENS = ["ESGMX", "GLP", "GM", "GLV"];
 
+const getFilteredTokensByChain = (chainId: number) => {
+  return FILTERED_TOKENS.concat(
+    {
+      [ARBITRUM]: ["FRAX", "MIM"],
+      [AVALANCHE]: ["MIM", "WBTC"],
+    }[chainId] ?? []
+  );
+};
+
 describe("tokens config", () => {
-  SUPPORTED_CHAIN_IDS_DEV.forEach(async (chainId) => {
-    describe(`tokens should be consistent with keeper for ${chainId}`, async () => {
+  SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {
+    it(`tokens should be consistent with keeper for ${chainId}`, async () => {
       const keeperTokens = await getKeeperTokens(chainId);
 
       TOKENS[chainId]
         .filter((token) => token.address !== zeroAddress)
-        .filter((token) => !FILTERED_TOKENS.includes(token.symbol))
+        .filter((token) => !getFilteredTokensByChain(chainId).includes(token.symbol))
         .forEach(async (token) => {
           const keeperToken = keeperTokens.tokens.find((t) => t.address === token.address);
-          it(`token ${token.symbol} should be defined`, () => {
-            expect(keeperToken).toBeDefined();
-            expect(keeperToken?.address).toBe(token.address);
-            expect(keeperToken?.decimals).toBe(token.decimals);
-            expect(Boolean(keeperToken?.synthetic)).toBe(Boolean(token.isSynthetic));
-          });
+
+          expect(keeperToken).toBeDefined();
+          expect(keeperToken?.address).toBe(token.address);
+          expect(keeperToken?.decimals).toBe(token.decimals);
+          expect(Boolean(keeperToken?.synthetic)).toBe(Boolean(token.isSynthetic));
         });
     });
   });

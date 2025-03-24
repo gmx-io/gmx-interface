@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { SUPPORTED_CHAIN_IDS_DEV } from "configs/chains";
+import { SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { MARKETS } from "configs/markets";
 
 import { getOracleKeeperUrlByChain } from "./oracleKeeperUrlByChain";
@@ -12,9 +12,7 @@ type KeeperMarket = {
   shortToken: string;
 };
 
-const getKeeperMarkets = async (
-  chainId: number
-): Promise<{ markets: KeeperMarket[] }> => {
+const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarket[] }> => {
   const res = await fetch(`${getOracleKeeperUrlByChain(chainId)}/markets`);
   const data = (await res.json()) as {
     markets: KeeperMarket[];
@@ -24,7 +22,7 @@ const getKeeperMarkets = async (
 };
 
 describe("markets config", () => {
-  SUPPORTED_CHAIN_IDS_DEV.forEach(async (chainId) => {
+  SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {
     it(`markets should be consistent with keeper for ${chainId}`, async () => {
       const keeperMarkets = await getKeeperMarkets(chainId);
 
@@ -32,7 +30,7 @@ describe("markets config", () => {
         expect(marketAddress).toBe(market.marketTokenAddress);
 
         const keeperMarket = keeperMarkets.markets.find((m) => m.marketToken === marketAddress);
-        
+
         expect(keeperMarket).toBeDefined();
         expect(keeperMarket?.indexToken).toBe(market.indexTokenAddress);
         expect(keeperMarket?.longToken).toBe(market.longTokenAddress);
