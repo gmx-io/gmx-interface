@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 type BridgingOption = {

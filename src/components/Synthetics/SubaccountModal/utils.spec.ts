@@ -1,5 +1,6 @@
-import { getApproxSubaccountActionsCountByBalance } from "./utils";
 import { describe, expect, it } from "vitest";
+
+import { getApproxSubaccountActionsCountByBalance } from "./utils";
 
 describe("getApproxSubaccountActionsCountByBalance", () => {
   it("case 1", () => {

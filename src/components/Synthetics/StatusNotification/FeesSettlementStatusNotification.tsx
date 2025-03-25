@@ -1,5 +1,6 @@
 import { Trans, plural, t } from "@lingui/macro";
-import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
+import { useEffect, useMemo, useState } from "react";
+
 import {
   OrderStatus,
   PendingFundingFeeSettlementData,
@@ -10,10 +11,13 @@ import {
 import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isMarketOrderType } from "domain/synthetics/orders";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo, useState } from "react";
+
+import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
+
+
 import "./StatusNotification.scss";
-import { useToastAutoClose } from "./useToastAutoClose";
 import { StatusNotification } from "./StatusNotification";
+import { useToastAutoClose } from "./useToastAutoClose";
 
 type Props = {
   toastTimestamp: number;

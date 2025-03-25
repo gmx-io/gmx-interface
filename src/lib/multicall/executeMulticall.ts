@@ -1,15 +1,15 @@
 import chunk from "lodash/chunk";
 import entries from "lodash/entries";
 import throttle from "lodash/throttle";
+import uniqueId from "lodash/uniqueId";
 import values from "lodash/values";
 
 import { isDevelopment } from "config/env";
+import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-
-import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
-import uniqueId from "lodash/uniqueId";
 import type { AbiId } from "sdk/abis";
+
 import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";

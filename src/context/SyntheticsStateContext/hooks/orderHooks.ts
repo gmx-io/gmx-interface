@@ -1,10 +1,11 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+
 import { selectChainId } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,

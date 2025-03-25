@@ -15,8 +15,28 @@ import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount } from "lib/numbers";
+import { userAnalytics } from "lib/userAnalytics";
+import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
+
+
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import Tooltip from "components/Tooltip/Tooltip";
+import { TrackingLink } from "components/TrackingLink/TrackingLink";
+
+import { AffiliateCodeForm } from "./AddAffiliateCode";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
+import EmptyMessage from "./EmptyMessage";
+import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
+import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
   getSharePercentage,
@@ -26,25 +46,6 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
-
-import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
-import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import Tooltip from "components/Tooltip/Tooltip";
-import Card from "../Common/Card";
-import Modal from "../Modal/Modal";
-import { AffiliateCodeForm } from "./AddAffiliateCode";
-import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
-import EmptyMessage from "./EmptyMessage";
-import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
-import ReferralInfoCard from "./ReferralInfoCard";
-
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
-import { userAnalytics } from "lib/userAnalytics";
-import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import "./AffiliatesStats.scss";
 
 type Props = {

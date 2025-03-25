@@ -1,10 +1,13 @@
 import { Trans, t } from "@lingui/macro";
+import { useMemo } from "react";
+
+import { USD_DECIMALS } from "config/factors";
+import { Position } from "domain/positions/types";
+import { formatAmount } from "lib/numbers";
+
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { Position } from "domain/positions/types";
-import { USD_DECIMALS } from "config/factors";
-import { formatAmount } from "lib/numbers";
-import { useMemo } from "react";
+
 
 type Props = {
   position: Position;

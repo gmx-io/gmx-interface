@@ -1,10 +1,16 @@
+import { t, Trans, msg } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
-
 import { NavLink } from "react-router-dom";
 
 import { getContract } from "config/contracts";
+import { USD_DECIMALS } from "config/factors";
 import * as Api from "domain/legacy";
 import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "domain/legacy";
+import { useInfoTokens } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
+import { formatDateTime } from "lib/dates";
 import {
   DECREASE,
   getExchangeRate,
@@ -15,18 +21,11 @@ import {
   shouldInvertTriggerRatio,
   SWAP,
 } from "lib/legacy";
-import { USD_DECIMALS } from "config/factors";
-
-import "./OrdersOverview.css";
-import { t, Trans, msg } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
-import { getTokenInfo } from "domain/tokens/utils";
-import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
-import { useChainId } from "lib/chains";
-import { formatDateTime } from "lib/dates";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+
+import "./OrdersOverview.css";
 
 const ORDER_TYPE_LABELS = {
   Increase: msg`Increase`,

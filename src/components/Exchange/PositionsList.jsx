@@ -1,27 +1,29 @@
-import React, { useState } from "react";
-import cx from "classnames";
 import { Trans, t } from "@lingui/macro";
-import Tooltip from "../Tooltip/Tooltip";
-import PositionSeller from "./PositionSeller";
-import PositionEditor from "./PositionEditor";
-import OrdersToa from "./OrdersToa";
+import cx from "classnames";
+import React, { useState } from "react";
+import { AiOutlineEdit } from "react-icons/ai";
+import { FaAngleRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 
-import { getOrderError, FUNDING_RATE_PRECISION, SWAP, LONG, SHORT, INCREASE, DECREASE } from "lib/legacy";
 import { USD_DECIMALS } from "config/factors";
-import PositionShare from "./PositionShare";
-import PositionDropdown from "./PositionDropdown";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import NetValueTooltip from "./NetValueTooltip";
 import { getUsd } from "domain/tokens/utils";
+import { getOrderError, FUNDING_RATE_PRECISION, SWAP, LONG, SHORT, INCREASE, DECREASE } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import { AiOutlineEdit } from "react-icons/ai";
-import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import { getPriceDecimals } from "sdk/configs/tokens";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import Button from "components/Button/Button";
-import { FaAngleRight } from "react-icons/fa";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import NetValueTooltip from "./NetValueTooltip";
+import OrdersToa from "./OrdersToa";
+import PositionDropdown from "./PositionDropdown";
+import PositionEditor from "./PositionEditor";
+import PositionSeller from "./PositionSeller";
+import PositionShare from "./PositionShare";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import Tooltip from "../Tooltip/Tooltip";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {

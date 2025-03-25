@@ -1,11 +1,10 @@
 import { useCallback } from "react";
-import type { IChartingLibraryWidget } from "../../charting_library";
+
 
 import { USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import {
   useCancellingOrdersKeysState,
   useEditingOrderKeyState,
@@ -21,6 +20,7 @@ import {
   makeSelectOrderEditorPositionOrderError,
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarkets } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -31,6 +31,7 @@ import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
 
 import { DynamicLine } from "./DynamicLine";
+import type { IChartingLibraryWidget } from "../../charting_library";
 
 export function DynamicLines({
   tvWidgetRef,

@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 import { BigNumberish, Signer, ethers, isAddress } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { abis } from "sdk/abis";
-import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
+import { Hash } from "viem";
+
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -11,12 +11,15 @@ import { helperToast } from "lib/helperToast";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { basisPointsToFloat } from "lib/numbers";
 import { getProvider } from "lib/rpc";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-
 import { getReferralsGraphClient } from "lib/subgraph";
-import { UserReferralInfo } from "../types";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { abis } from "sdk/abis";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
-import { Hash } from "viem";
+
+import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
+
+import { UserReferralInfo } from "../types";
+
 
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";

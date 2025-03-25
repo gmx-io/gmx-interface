@@ -1,10 +1,11 @@
+import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "configs/markets";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { MarketEdge, SwapEstimator, SwapRoute } from "types/trade";
 import { MarketsGraph } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getAvailableUsdLiquidityForCollateral } from "utils/markets";
+
 import { getMaxSwapPathLiquidity, getSwapCapacityUsd, getSwapStats } from "./swapStats";
-import { SWAP_GRAPH_MAX_MARKETS_PER_TOKEN } from "configs/markets";
 
 export function limitMarketsPerTokens(
   markets: MarketInfo[],

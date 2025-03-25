@@ -6,12 +6,13 @@ import { ComponentType, KeyboardEvent as ReactKeyboardEvent, ReactNode, useCallb
 import { defined, definedOrThrow } from "lib/guards";
 import { EMPTY_ARRAY } from "lib/objects";
 
+import SearchInput from "components/SearchInput/SearchInput";
+import { TableFilterBase } from "components/Synthetics/TableFilterBase/TableFilterBase";
+
 import { FlatItems, useFilteredFlatItems } from "./flat";
 import { Groups, useFilteredGroups } from "./groups";
 import { FilteredGroup, Group, Item } from "./types";
 
-import SearchInput from "components/SearchInput/SearchInput";
-import { TableFilterBase } from "components/Synthetics/TableFilterBase/TableFilterBase";
 
 import "./TableOptionsFilter.scss";
 

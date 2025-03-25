@@ -1,21 +1,22 @@
+import { useMemo } from "react";
+
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
+import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
-import { useMemo } from "react";
-
-import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+
 import { Operation } from "../types";
 
 export type Options = {

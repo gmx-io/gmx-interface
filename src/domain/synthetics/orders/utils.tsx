@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import { PendingOrderData } from "context/SyntheticsEvents";
 import { Token } from "domain/tokens";
 import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -11,6 +11,9 @@ import {
   isOrderForPosition,
   isSwapOrderType,
 } from "sdk/utils/orders";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
 import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
@@ -22,10 +25,10 @@ import {
   getMaxSwapPathLiquidity,
   getSwapAmountsByFromValue,
 } from "../trade";
-import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 import { DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { SecondaryCancelOrderParams, SecondaryUpdateOrderParams } from "./createIncreaseOrderTxn";
 import { OrderError, OrderInfo, OrderTxnType, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
+import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 
 export function getSwapOrderTitle(p: {
   initialCollateralToken: Token;
@@ -424,7 +427,7 @@ export function getPendingOrderFromParams(
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   let minOutputAmount = 0n;
   if ("minOutputUsd" in p) {
-    shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd;
+    shouldApplySlippage ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd) : p.minOutputUsd; // eslint-disable-line
   }
   if ("minOutputAmount" in p) {
     minOutputAmount = p.minOutputAmount;

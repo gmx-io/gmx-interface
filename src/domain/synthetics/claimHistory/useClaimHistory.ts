@@ -3,7 +3,6 @@ import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
 
-import { getToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -12,10 +11,11 @@ import { MarketsInfoData } from "domain/synthetics/markets";
 import { BN_ZERO, bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getToken } from "sdk/configs/tokens";
 import { buildFiltersBody } from "sdk/utils/subgraph";
 
-import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
+import { useFixedAddreseses } from "../common/useFixedAddresses";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];

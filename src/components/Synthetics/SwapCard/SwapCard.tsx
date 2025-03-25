@@ -1,14 +1,17 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { USD_DECIMALS } from "config/factors";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { calculateDisplayDecimals, formatAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import { USD_DECIMALS } from "config/factors";
-import { calculateDisplayDecimals, formatAmount, formatUsd, formatUsdPrice } from "lib/numbers";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
+
 
 export type Props = {
   maxLiquidityUsd?: bigint;

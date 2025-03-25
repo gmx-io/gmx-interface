@@ -7,9 +7,11 @@ import { useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/conte
 import { formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getFeeItem } from "sdk/utils/fees";
-import type { DataPoint } from "./DepthChart";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
+import type { DataPoint } from "./DepthChart";
+
 
 const LEFT_OPAQUE_TOOLTIP = (
   <Trans>

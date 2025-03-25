@@ -1,13 +1,16 @@
 import { Trans } from "@lingui/macro";
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useMemo } from "react";
+
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { useMemo } from "react";
+
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 
 export function useMaxAutoCancelOrdersState({
   positionKey,

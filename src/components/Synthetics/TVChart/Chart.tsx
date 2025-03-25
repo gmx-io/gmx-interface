@@ -7,14 +7,15 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+
 import { DepthChart } from "components/DepthChart/DepthChart";
 import Tabs from "components/Tabs/Tabs";
 
-import { ChartHeader } from "./ChartHeader";
-import { TVChart } from "./TVChart";
-
 import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
 import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
+
+import { ChartHeader } from "./ChartHeader";
+import { TVChart } from "./TVChart";
 
 import "./TVChart.scss";
 

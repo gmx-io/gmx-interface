@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM } from "configs/chains";
+import { TOKENS } from "configs/tokens";
+
+import { MarketInfo } from "../../types/markets";
+import { Token, TokensData } from "../../types/tokens";
 import {
   getMarketFullName,
   getMarketIndexName,
@@ -19,10 +24,6 @@ import {
   getOpenInterestInTokens,
   getPriceForPnl,
 } from "../markets";
-import { MarketInfo } from "../../types/markets";
-import { Token, TokensData } from "../../types/tokens";
-import { TOKENS } from "configs/tokens";
-import { ARBITRUM } from "configs/chains";
 import { expandDecimals } from "../numbers";
 
 function getToken(symbol: string) {

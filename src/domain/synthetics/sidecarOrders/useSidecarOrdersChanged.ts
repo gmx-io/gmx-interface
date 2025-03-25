@@ -1,5 +1,6 @@
-import { usePrevious } from "react-use";
 import isEqual from "lodash/isEqual";
+import { useMemo } from "react";
+import { usePrevious } from "react-use";
 
 import {
   selectTradeboxSidecarOrdersExistingLimitEntries,
@@ -9,7 +10,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { InitialEntry } from "./types";
-import { useMemo } from "react";
+
 
 function isEqualOrders(a?: InitialEntry[], b?: InitialEntry[]) {
   return (

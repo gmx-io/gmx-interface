@@ -1,9 +1,8 @@
+import { withRetry } from "viem";
 import { describe, it, expect } from "vitest";
 
 import { SUPPORTED_CHAIN_IDS } from "configs/chains";
 import { MARKETS } from "configs/markets";
-
-import { withRetry } from "viem";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
 
 type KeeperMarket = {

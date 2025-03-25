@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Button/Button";
-import Modal from "components/Modal/Modal";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { memo, useCallback, useMemo, useState } from "react";
+
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
@@ -14,11 +13,15 @@ import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPr
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { memo, useCallback, useMemo, useState } from "react";
+import { bigMath } from "sdk/utils/bigmath";
+
+import Button from "components/Button/Button";
+import Modal from "components/Modal/Modal";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 
 export function ClaimablePositionPriceImpactRebateModal({
   isVisible,

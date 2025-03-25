@@ -1,10 +1,13 @@
 import { t } from "@lingui/macro";
-import Checkbox from "components/Checkbox/Checkbox";
-import Tooltip from "components/Tooltip/Tooltip";
+import { useCallback } from "react";
+
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
-import { useCallback } from "react";
+
+import Checkbox from "components/Checkbox/Checkbox";
+import Tooltip from "components/Tooltip/Tooltip";
+
 
 type Props = {
   position: PositionInfo;

@@ -1,17 +1,17 @@
 import { t, Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatUsd } from "lib/numbers";
-
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   getMaxOpenInterestUsd,
   getMaxReservedUsd,
   getOpenInterestUsd,
   getReservedUsd,
 } from "domain/synthetics/markets";
+import { formatUsd } from "lib/numbers";
+
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 export function AvailableLiquidityTooltip({ isLong }) {
   const longShortText = isLong ? t`Long` : t`Short`;

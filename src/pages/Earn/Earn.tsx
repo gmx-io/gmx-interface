@@ -1,7 +1,7 @@
 import { AVALANCHE, getConstant } from "config/chains";
 
-import EarnV2 from "./EarnV2";
 import EarnV1 from "./EarnV1";
+import EarnV2 from "./EarnV2";
 
 export default function Earn(props) {
   const chainId = AVALANCHE;

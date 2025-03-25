@@ -1,14 +1,10 @@
 import { MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config/dataStore";
-import { getByKey } from "lib/objects";
-
 import { MarketsData } from "domain/synthetics/markets/types";
-
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
-
-import { HASHED_MARKET_VALUES_KEYS } from "sdk/prebuilt";
-
+import { getByKey } from "lib/objects";
 import { MarketValuesMulticallRequestConfig } from "sdk/modules/markets/types";
+import { HASHED_MARKET_VALUES_KEYS } from "sdk/prebuilt";
 
 export async function buildMarketsValuesRequest(
   chainId: number,

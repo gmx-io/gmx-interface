@@ -1,4 +1,5 @@
 import { Market } from "domain/synthetics/markets/types";
+
 import { Mode, Operation } from "./types";
 
 export const getGmSwapBoxAvailableModes = (

@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import SpinningLoader from "components/Common/SpinningLoader";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ReactNode, memo, useMemo } from "react";
+
 import { getExplorerUrl } from "config/chains";
 import {
   SubaccountNotificationState,
@@ -10,9 +10,13 @@ import {
 import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
-import { ReactNode, memo, useMemo } from "react";
-import { useToastAutoClose } from "./useToastAutoClose";
+
+import SpinningLoader from "components/Common/SpinningLoader";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
+
 import { StatusNotification } from "./StatusNotification";
+import { useToastAutoClose } from "./useToastAutoClose";
 
 const SubaccountNotificationImpl = ({
   toastId,

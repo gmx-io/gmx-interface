@@ -1,4 +1,3 @@
-import { useSyntheticsStateSelector as useSelector } from "../SyntheticsStateContextProvider";
 import {
   selectExecutionFeeBufferBps,
   selectOracleKeeperInstancesConfig,
@@ -12,6 +11,7 @@ import {
   selectShouldUseExecutionFeeBuffer,
   selectShowDebugValues,
 } from "../selectors/settingsSelectors";
+import { useSyntheticsStateSelector as useSelector } from "../SyntheticsStateContextProvider";
 
 export const useShowDebugValues = () => useSelector(selectShowDebugValues);
 export const useSetShowDebugValues = () => useSelector(selectSetShowDebugValues);

@@ -1,6 +1,3 @@
-import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
-import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   Dispatch,
   PropsWithChildren,
@@ -15,6 +12,10 @@ import {
 } from "react";
 import { matchPath, useHistory, useLocation } from "react-router-dom";
 import { useLocalStorage } from "react-use";
+
+import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
+import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 type GlobalContextType = null | {
   tradePageVersion: number;

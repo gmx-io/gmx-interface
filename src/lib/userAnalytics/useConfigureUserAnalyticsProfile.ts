@@ -1,4 +1,7 @@
 import { useLingui } from "@lingui/react";
+import { useEffect, useMemo } from "react";
+import { useHistory } from "react-router-dom";
+
 import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
@@ -13,8 +16,7 @@ import { formatAmountForMetrics } from "lib/metrics";
 import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+
 import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {

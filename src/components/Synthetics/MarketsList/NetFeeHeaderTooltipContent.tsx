@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/macro";
+
 import { DOCS_LINKS } from "config/links";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import "./NetFeeHeaderTooltipContent.scss";

@@ -1,7 +1,7 @@
+import { t, Trans } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useState } from "react";
 
-import { t, Trans } from "@lingui/macro";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";

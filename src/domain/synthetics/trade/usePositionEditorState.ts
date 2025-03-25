@@ -1,9 +1,12 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Address } from "viem";
+
 import { getSyntheticsCollateralEditAddressKey, getSyntheticsCollateralEditAddressMapKey } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { SUPPORTED_CHAIN_IDS } from "sdk/configs/chains";
 import { getTokens } from "sdk/configs/tokens";
-import { Address } from "viem";
+
+
 import { parsePositionKey } from "../positions";
 
 export type PositionEditorState = ReturnType<typeof usePositionEditorState>;

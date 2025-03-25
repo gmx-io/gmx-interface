@@ -1,6 +1,7 @@
 import { AbFlag, getAbFlagUrlParams } from "config/ab";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
+
 import { metrics } from "../metrics/Metrics";
 
 type CommonEventParams = {

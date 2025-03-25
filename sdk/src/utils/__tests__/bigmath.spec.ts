@@ -1,5 +1,6 @@
-import { bigMath } from "../bigmath";
 import { describe, expect, it } from "vitest";
+
+import { bigMath } from "../bigmath";
 
 describe("bigMath", () => {
   describe("abs", () => {

@@ -1,6 +1,7 @@
 import type { TokenOption } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import type { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
 import { TradeType } from "domain/synthetics/trade";
+
 import { isMarketIndexToken } from "./utils";
 import { isLimitOrderType, OrdersInfoData } from "../orders";
 import { OrderInfo } from "../orders/types";

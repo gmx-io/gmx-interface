@@ -1,8 +1,10 @@
 import "./BuyInputSection.scss";
-import React, { useRef, ReactNode, ChangeEvent, useState, useCallback } from "react";
-import cx from "classnames";
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
+import React, { useRef, ReactNode, ChangeEvent, useState, useCallback } from "react";
+
 import { PERCENTAGE_SUGGESTIONS } from "config/ui";
+
 import NumberInput from "components/NumberInput/NumberInput";
 
 type Props = {

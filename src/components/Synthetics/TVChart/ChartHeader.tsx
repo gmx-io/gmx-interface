@@ -1,19 +1,19 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BiChevronDown, BiChevronLeft, BiChevronRight, BiChevronUp } from "react-icons/bi";
 import { useEffectOnce, useMedia } from "react-use";
 
-import { getToken } from "sdk/configs/tokens";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
 import { useChainId } from "lib/chains";
+import { getToken } from "sdk/configs/tokens";
 
-import { BiChevronDown, BiChevronLeft, BiChevronRight, BiChevronUp } from "react-icons/bi";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";

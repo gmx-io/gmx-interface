@@ -1,7 +1,9 @@
 import { t } from "@lingui/macro";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
 import { ProcessedData } from "lib/legacy";
 import { formatKeyAmount } from "lib/numbers";
+
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 type Props = {
   processedData?: ProcessedData;

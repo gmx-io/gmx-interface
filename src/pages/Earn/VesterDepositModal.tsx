@@ -8,6 +8,7 @@ import { callContract } from "lib/contracts";
 import { getPageTitle } from "lib/legacy";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
@@ -18,7 +19,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { abis } from "sdk/abis";
 
 export function VesterDepositModal(props: {
   isVisible: boolean;

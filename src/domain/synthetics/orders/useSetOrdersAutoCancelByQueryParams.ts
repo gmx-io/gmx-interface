@@ -1,21 +1,21 @@
+import groupBy from "lodash/groupBy";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import groupBy from "lodash/groupBy";
 
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectOrdersInfoData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isLimitDecreaseOrderType, isStopLossOrderType } from "domain/synthetics/orders";
-import { getPositionKey } from "domain/synthetics/positions";
-import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { setAutoCancelOrdersTxn } from "./setAutoCancelOrdersTxn";
-import useWallet from "lib/wallets/useWallet";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { PositionOrderInfo } from "domain/synthetics/orders";
-import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
-import { SetAutoCloseOrdersAction } from "lib/metrics";
+import { getPositionKey } from "domain/synthetics/positions";
 import { helperToast } from "lib/helperToast";
-
+import { SetAutoCloseOrdersAction } from "lib/metrics";
+import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import useSearchParams from "lib/useSearchParams";
+import useWallet from "lib/wallets/useWallet";
+
+import { setAutoCancelOrdersTxn } from "./setAutoCancelOrdersTxn";
 
 type SearchParams = {
   setOrdersAutoCancel?: string;

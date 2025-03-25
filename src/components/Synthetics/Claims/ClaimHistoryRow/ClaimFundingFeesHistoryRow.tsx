@@ -8,7 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
+
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -22,6 +22,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
+
+import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;

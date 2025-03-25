@@ -1,5 +1,6 @@
-import { createClient } from "./utils";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "config/chains";
+
+import { createClient } from "./utils";
 
 export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 

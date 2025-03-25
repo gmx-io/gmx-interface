@@ -10,19 +10,19 @@ import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { approveTokens } from "domain/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 
-import { abis } from "sdk/abis";
 
 import "./EarnV1.scss";
 

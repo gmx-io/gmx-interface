@@ -1,5 +1,6 @@
-import useWallet from "lib/wallets/useWallet";
 import { useEffect, useState } from "react";
+
+import useWallet from "lib/wallets/useWallet";
 
 export function useTransactionPending(hash: string | null | undefined) {
   const { signer } = useWallet();

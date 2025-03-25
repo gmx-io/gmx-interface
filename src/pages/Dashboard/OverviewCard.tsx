@@ -7,6 +7,7 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
+import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
@@ -15,15 +16,16 @@ import { expandDecimals, formatAmountHuman } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
-import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
-import { getPositionStats } from "./getPositionStats";
-import type { ChainStats } from "./useDashboardChainStatsMulticall";
+
 
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
-import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
+
+import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
 import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
+import { getPositionStats } from "./getPositionStats";
+import type { ChainStats } from "./useDashboardChainStatsMulticall";
 
 export function OverviewCard({
   statsArbitrum,

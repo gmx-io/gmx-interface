@@ -1,7 +1,5 @@
 import { t } from "@lingui/macro";
 
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
 import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxSwapAmounts,
@@ -11,6 +9,9 @@ import {
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
+
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import Tooltip from "components/Tooltip/Tooltip";
 
 export function AvailableLiquidityRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);

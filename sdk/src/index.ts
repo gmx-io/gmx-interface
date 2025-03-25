@@ -1,5 +1,7 @@
 import { Abi, Address, createPublicClient, createWalletClient, http, PublicClient, WalletClient } from "viem";
 
+import { BATCH_CONFIGS } from "configs/batch";
+import { getChain } from "configs/chains";
 import { Accounts } from "modules/accounts/accounts";
 import { Markets } from "modules/markets";
 import { Oracle } from "modules/oracle";
@@ -8,12 +10,7 @@ import { Positions } from "modules/positions/positions";
 import { Tokens } from "modules/tokens/tokens";
 import { Trades } from "modules/trades/trades";
 import { Utils } from "modules/utils/utils";
-
-import { BATCH_CONFIGS } from "configs/batch";
-import { getChain } from "configs/chains";
-
 import type { GmxSdkConfig } from "types/sdk";
-
 import { callContract, CallContractOpts } from "utils/callContract";
 import { MAX_TIMEOUT, Multicall, MulticallRequestConfig } from "utils/multicall";
 

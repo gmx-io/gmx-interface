@@ -1,4 +1,6 @@
 import { t, Trans } from "@lingui/macro";
+import { useCallback } from "react";
+
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
@@ -56,7 +58,7 @@ import {
   userAnalytics,
 } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback } from "react";
+
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 

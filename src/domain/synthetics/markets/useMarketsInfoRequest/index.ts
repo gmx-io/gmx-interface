@@ -1,20 +1,21 @@
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
+import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
+
 import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
 import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
-
 import { TokensData, useTokensDataRequest } from "../../tokens";
-import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
 import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { getMarketDivisor } from "../utils";
-import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
+
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;

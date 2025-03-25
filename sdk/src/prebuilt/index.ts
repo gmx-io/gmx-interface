@@ -2,15 +2,16 @@
  * Json files in this directory are prebuild by scripts from the `scripts/prebuild` directory.
  * No need to edit them manually, use `yarn run prebuild` command instead.
  */
-import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
-import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
-import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
-
 import {
   MarketConfigMulticallRequestConfig,
   MarketValuesMulticallRequestConfig,
   KinkModelMarketRateMulticallRequestConfig,
 } from "modules/markets/types";
+
+import hashedKinkModelMarketRatesKeys from "./hashedKinkModelMarketRatesKeys.json";
+import hashedMarketConfigKeysJson from "./hashedMarketConfigKeys.json";
+import hashedMarketValuesKeysJson from "./hashedMarketValuesKeys.json";
+
 
 type HashedMarketValuesKeys = Omit<
   Record<keyof MarketValuesMulticallRequestConfig[`${string}-dataStore`]["calls"], string>,

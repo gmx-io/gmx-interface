@@ -13,10 +13,11 @@ import type { MarketInfo } from "domain/synthetics/markets";
 import type { TokenData } from "domain/synthetics/tokens/types";
 import type { TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
-import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
+
 
 import { TableTd } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
   SelectorBase,
@@ -25,6 +26,7 @@ import {
   SelectorBaseMobileList,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
+import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
 
 import "./CollateralSelector.scss";
 

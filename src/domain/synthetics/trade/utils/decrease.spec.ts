@@ -1,9 +1,11 @@
+import { describe, expect, it } from "vitest";
+
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { expandDecimals } from "lib/numbers";
-import { describe, expect, it } from "vitest";
+
 import { getDecreasePositionAmounts } from "./decrease";
 
 const closeSizeUsd = BigInt(99);

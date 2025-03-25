@@ -1,13 +1,15 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
+
 import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
 import { mustNeverExist } from "lib/types";
-import { useMemo } from "react";
-import { Link } from "react-router-dom";
+
+import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 type LeaderboardNavigationItem = {
   key: string;

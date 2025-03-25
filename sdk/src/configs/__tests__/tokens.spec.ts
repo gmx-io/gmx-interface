@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
 import { withRetry, zeroAddress } from "viem";
+import { describe, it, expect } from "vitest";
 
 import { ARBITRUM, AVALANCHE, SUPPORTED_CHAIN_IDS } from "configs/chains";
-import { TOKENS } from "configs/tokens";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
+import { TOKENS } from "configs/tokens";
 
 type KeeperToken = {
   symbol: string;

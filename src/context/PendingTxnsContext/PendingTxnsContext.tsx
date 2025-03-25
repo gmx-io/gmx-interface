@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
+
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -16,7 +16,10 @@ import { formatPercentage } from "lib/numbers";
 import { parseError } from "lib/parseError";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
 
 export type PendingTransactionData = {
   estimatedExecutionFee: bigint;

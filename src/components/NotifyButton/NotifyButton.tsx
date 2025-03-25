@@ -1,4 +1,5 @@
 import { memo } from "react";
+
 import { useNotifyModalState } from "lib/useNotifyModalState";
 
 import "./NotifyButton.scss";

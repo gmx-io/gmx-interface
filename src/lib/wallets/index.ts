@@ -1,7 +1,9 @@
 import { switchChain } from "@wagmi/core";
-import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
-import { getRainbowKitConfig } from "./rainbowKitConfig";
+
 import { ChainId } from "config/chains";
+import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
+
+import { getRainbowKitConfig } from "./rainbowKitConfig";
 
 export type NetworkMetadata = {
   chainId: string;

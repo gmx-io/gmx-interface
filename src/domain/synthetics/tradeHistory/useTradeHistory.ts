@@ -5,8 +5,6 @@ import { useMemo } from "react";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
 
-import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { getWrappedToken } from "sdk/configs/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets/types";
@@ -24,7 +22,7 @@ import { definedOrThrow } from "lib/guards";
 import { bigNumberify } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
+import { getWrappedToken } from "sdk/configs/tokens";
 import {
   PositionTradeAction,
   RawTradeAction,
@@ -32,6 +30,9 @@ import {
   TradeAction,
   TradeActionType,
 } from "sdk/types/tradeHistory";
+import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
+
+import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];

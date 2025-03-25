@@ -1,9 +1,10 @@
 import { MessageDescriptor, i18n } from "@lingui/core";
-import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
-import { isDevelopment } from "config/env";
-import mapValues from "lodash/mapValues";
 import { useLingui } from "@lingui/react";
+import mapValues from "lodash/mapValues";
 import { useMemo } from "react";
+
+import { isDevelopment } from "config/env";
+import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 
 // uses BCP-47 codes from https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
 export const locales = {

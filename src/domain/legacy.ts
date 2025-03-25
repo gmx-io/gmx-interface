@@ -1,28 +1,29 @@
 import { gql } from "@apollo/client";
+import { t } from "@lingui/macro";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import { ethers } from "ethers";
+import groupBy from "lodash/groupBy";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
 
+import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName, getConstant, getHighExecutionFee } from "config/chains";
 import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
-import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
-
-import { t } from "@lingui/macro";
-import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { callContract, contractFetcher } from "lib/contracts";
+import { DECREASE, INCREASE, SWAP, getOrderKey } from "lib/legacy";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
-import groupBy from "lodash/groupBy";
+import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import useSWRInfinite from "swr/infinite";
+
+
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
-import { abis } from "sdk/abis";
 
 export * from "./prices";
 

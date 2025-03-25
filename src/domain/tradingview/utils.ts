@@ -1,4 +1,5 @@
 import { CHART_PERIODS } from "lib/legacy";
+
 import type { Bar } from "./types";
 
 export function getObjectKeyFromValue(value, object) {

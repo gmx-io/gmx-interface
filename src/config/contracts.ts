@@ -1,9 +1,10 @@
 import { Contract, ContractRunner, ethers, InterfaceAbi } from "ethers";
+
+import { getContract, CONTRACTS } from "sdk/configs/contracts";
+import { GlvRouter__factory } from "typechain-types";
 import { DataStore__factory } from "typechain-types/factories/DataStore__factory";
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
-import { GlvRouter__factory } from "typechain-types";
-import { getContract, CONTRACTS } from "sdk/configs/contracts";
 
 const { ZeroAddress } = ethers;
 

@@ -5,11 +5,11 @@ import { FindSwapPath, SwapAmounts } from "types/trade";
 import { getByKey } from "utils/objects";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { createFindSwapPath, findAllSwapPaths, getWrappedAddress } from "utils/swap/swapPath";
+import { createSwapEstimator, getMarketsGraph } from "utils/swap/swapRouting";
 import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
 import { getIncreasePositionAmounts } from "utils/trade/amounts";
 
 import type { GmxSdk } from "../..";
-import { createSwapEstimator, getMarketsGraph } from "utils/swap/swapRouting";
 
 /** Base Optional params for helpers, allows to avoid calling markets, tokens and uiFeeFactor methods if they are already passed */
 interface BaseOptionalParams {

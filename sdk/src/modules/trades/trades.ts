@@ -1,5 +1,8 @@
-import { getWrappedToken } from "configs/tokens";
 import merge from "lodash/merge";
+import { Address, getAddress } from "viem";
+
+import { getWrappedToken } from "configs/tokens";
+import { GmxSdk } from "index";
 import { MarketsInfoData } from "types/markets";
 import { OrderType } from "types/orders";
 import { Token, TokensData } from "types/tokens";
@@ -10,9 +13,8 @@ import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecrea
 import { buildFiltersBody, GraphQlFilters } from "utils/subgraph";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import { parseContractPrice } from "utils/tokens";
-import { Address, getAddress } from "viem";
+
 import { Module } from "../base";
-import { GmxSdk } from "index";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {

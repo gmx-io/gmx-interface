@@ -1,10 +1,11 @@
 import { gql } from "@apollo/client";
 import { getAddress } from "ethers";
+import { useMemo } from "react";
+import useSWR from "swr";
+
 import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
-import useSWR from "swr";
 
 type RawClaimableCollateral = {
   marketAddress: string;

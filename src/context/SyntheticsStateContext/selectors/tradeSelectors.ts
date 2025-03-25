@@ -17,6 +17,7 @@ import { getByKey } from "lib/objects";
 import { ExternalSwapQuote } from "sdk/types/trade";
 import { createFindSwapPath, findAllSwapPaths, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import { createTradeFlags } from "sdk/utils/trade";
+
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import { selectExternalSwapQuote } from "./externalSwapSelectors";
 import {

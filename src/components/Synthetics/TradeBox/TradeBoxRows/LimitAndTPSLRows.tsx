@@ -1,9 +1,7 @@
 import { t, Trans } from "@lingui/macro";
+import { useCallback, useMemo, useRef } from "react";
+import { FaPlus } from "react-icons/fa";
 
-import { ExpandableRow } from "components/Synthetics/ExpandableRow";
-
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAdvancedOptions,
@@ -16,8 +14,12 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { PERCENTAGE_DECIMALS } from "domain/synthetics/sidecarOrders/utils";
 import { formatAmount, formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";
-import { useCallback, useMemo, useRef } from "react";
-import { FaPlus } from "react-icons/fa";
+
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+
 import { EntryButton } from "../components/EntryButton";
 import { SideOrderEntries } from "../components/SideOrderEntries";
 

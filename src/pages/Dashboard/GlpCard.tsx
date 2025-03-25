@@ -12,6 +12,7 @@ import { TOKEN_COLOR_MAP, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+
 import AssetDropdown from "./AssetDropdown";
 
 export function GlpCard({

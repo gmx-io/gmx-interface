@@ -3,11 +3,12 @@ import { useLingui } from "@lingui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
+import { helperToast } from "lib/helperToast";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
+
 import { orderTypeToTitle } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
-import { helperToast } from "lib/helperToast";
+import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 
 const BODY_BACKGROUND_COLOR = "#3a3e5e";
 const BUTTON_BACKGROUND_COLOR = "#16182e";

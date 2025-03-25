@@ -4,18 +4,14 @@ import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
-import { isSwapOrderType } from "domain/synthetics/orders";
-import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
-
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-
+import { isSwapOrderType } from "domain/synthetics/orders";
+import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { formatPositionMessage } from "./utils/position";
-import { TooltipContent, TooltipString } from "./utils/shared";
-import { formatSwapMessage } from "./utils/swap";
+import { NETWORKS_BY_CHAIN_IDS } from "pages/ParseTransaction/ParseTransaction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
@@ -27,8 +23,11 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
+import { formatPositionMessage } from "./utils/position";
+import { TooltipContent, TooltipString } from "./utils/shared";
+import { formatSwapMessage } from "./utils/swap";
+
 import "./TradeHistoryRow.scss";
-import { NETWORKS_BY_CHAIN_IDS } from "pages/ParseTransaction/ParseTransaction";
 
 type Props = {
   tradeAction: TradeAction;

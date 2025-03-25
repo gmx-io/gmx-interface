@@ -1,7 +1,10 @@
 import { Trans, t } from "@lingui/macro";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+
 import ArrowBulletIcon from "img/arrow-bullet.svg?react";
+
 import Modal from "../Modal/Modal";
 
 type Props = {
