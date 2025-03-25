@@ -19,7 +19,7 @@ import {
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
-import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
+import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
