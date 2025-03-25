@@ -7,13 +7,13 @@ import { bigMath } from "sdk/utils/bigmath";
 import { isIncreaseOrderType, isStopIncreaseOrderType, isStopLossOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 
-import { OrderInfo, OrdersInfoData, PositionOrderInfo } from "./types";
+import { EditingOrderState, OrderInfo, OrdersInfoData, PositionOrderInfo } from "./types";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
 
 export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useState<string[]>([]);
-  const [editingOrderKey, setEditingOrderKey] = useState<string>();
+  const [editingOrderState, setEditingOrderState] = useState<EditingOrderState>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sizeInputValue, setSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
@@ -51,17 +51,17 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
         setShouldCalculateMinOutputAmount(false);
       };
 
-      if (!editingOrderKey) {
+      if (!editingOrderState?.orderKey) {
         setTimeout(reset, 100);
       }
     },
-    [editingOrderKey, setShouldCalculateMinOutputAmount, setTriggerRatioInputValue]
+    [editingOrderState?.orderKey, setShouldCalculateMinOutputAmount, setTriggerRatioInputValue]
   );
 
-  const order = getByKey(ordersInfoData, editingOrderKey);
+  const order = getByKey(ordersInfoData, editingOrderState?.orderKey);
 
   const triggerPrice = useMemo(() => {
-    const order = getByKey(ordersInfoData, editingOrderKey);
+    const order = getByKey(ordersInfoData, editingOrderState?.orderKey);
 
     let triggerPrice = parseValue(triggerPriceInputValue || "0", USD_DECIMALS);
 
@@ -79,17 +79,17 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     }
 
     return triggerPrice;
-  }, [editingOrderKey, ordersInfoData, triggerPriceInputValue]);
+  }, [editingOrderState?.orderKey, ordersInfoData, triggerPriceInputValue]);
 
   const { acceptablePrice, acceptablePriceImpactBps, initialAcceptablePriceImpactBps, setAcceptablePriceImpactBps } =
     useAcceptablePrice(order, triggerPrice);
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    return {
       cancellingOrdersKeys,
       setCancellingOrdersKeys,
-      editingOrderKey,
-      setEditingOrderKey,
+      editingOrderState,
+      setEditingOrderState,
       isSubmitting,
       setIsSubmitting,
       sizeInputValue,
@@ -111,30 +111,29 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
 
       shouldCalculateMinOutputAmount,
       setShouldCalculateMinOutputAmount,
-    }),
-    [
-      acceptablePrice,
-      acceptablePriceImpactBps,
-      cancellingOrdersKeys,
-      editingOrderKey,
-      initialAcceptablePriceImpactBps,
-      isSubmitting,
-      setAcceptablePriceImpactBps,
-      sizeInputValue,
-      triggerPriceInputValue,
-      triggerRatioInputValue,
+    };
+  }, [
+    acceptablePrice,
+    acceptablePriceImpactBps,
+    cancellingOrdersKeys,
+    editingOrderState,
+    initialAcceptablePriceImpactBps,
+    isSubmitting,
+    setAcceptablePriceImpactBps,
+    sizeInputValue,
+    triggerPriceInputValue,
+    triggerRatioInputValue,
 
-      defaultAllowedSwapSlippageBps,
-      setDefaultAllowedSwapSlippageBps,
-      selectedAllowedSwapSlippageBps,
-      setSelectedAllowedSwapSlippageBps,
+    defaultAllowedSwapSlippageBps,
+    setDefaultAllowedSwapSlippageBps,
+    selectedAllowedSwapSlippageBps,
+    setSelectedAllowedSwapSlippageBps,
 
-      shouldCalculateMinOutputAmount,
-      setShouldCalculateMinOutputAmount,
+    shouldCalculateMinOutputAmount,
+    setShouldCalculateMinOutputAmount,
 
-      setTriggerRatioInputValue,
-    ]
-  );
+    setTriggerRatioInputValue,
+  ]);
 }
 
 function useAcceptablePrice(

@@ -51,6 +51,7 @@ import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateC
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
+  EditingOrderSource,
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
@@ -85,6 +86,7 @@ import {
   formatTokenAmountWithUsd,
   formatUsdPrice,
 } from "lib/numbers";
+import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -104,6 +106,7 @@ import "./OrderEditor.scss";
 
 type Props = {
   order: OrderInfo;
+  source: EditingOrderSource;
   onClose: () => void;
 };
 
@@ -365,6 +368,10 @@ export function OrderEditor(p: Props) {
     const orderTriggerPrice = isSwapOrderType(p.order.orderType)
       ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
       : triggerPrice ?? positionOrder.triggerPrice;
+
+    if (market) {
+      sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
+    }
 
     const txnPromise = updateOrderTxn(
       chainId,

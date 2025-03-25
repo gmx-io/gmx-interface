@@ -6,6 +6,7 @@ import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useReferralCodeFromUrl } from "domain/referrals";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useUtmParams } from "domain/utm";
@@ -29,6 +30,7 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
   const { data: bowser } = useBowser();
+  const { shouldShowPositionLines } = useSettings();
 
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
@@ -101,10 +103,11 @@ export function useConfigureUserAnalyticsProfile() {
       last30DVolume: formatAmountForMetrics(last30DVolume, USD_DECIMALS, "toSecondOrderInt"),
       totalVolume: formatAmountForMetrics(totalVolume, USD_DECIMALS, "toSecondOrderInt"),
       languageCode: currentLanguage,
+      isChartPositionsEnabled: shouldShowPositionLines,
       ref: referralCode,
       utm: utmParams?.utmString,
     });
-  }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString]);
+  }, [currentLanguage, last30DVolume, totalVolume, referralCode, utmParams?.utmString, shouldShowPositionLines]);
 
   useEffect(() => {
     userAnalytics.setDebug(showDebugValues || false);
